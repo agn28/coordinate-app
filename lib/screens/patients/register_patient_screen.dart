@@ -9,19 +9,19 @@ import 'package:nhealth/screens/patients/register_patient_second_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import '../../custom-classes/custom_stepper.dart';
 
-class RegisterPatientFirstScreen extends CupertinoPageRoute {
-  RegisterPatientFirstScreen()
-      : super(builder: (BuildContext context) => new RegisterPatientFirst());
+class RegisterPatientScreen extends CupertinoPageRoute {
+  RegisterPatientScreen()
+      : super(builder: (BuildContext context) => new RegisterPatient());
 
 }
 
 
-class RegisterPatientFirst extends StatefulWidget {
+class RegisterPatient extends StatefulWidget {
   @override
-  _RegisterPatientFirstState createState() => _RegisterPatientFirstState();
+  _RegisterPatientState createState() => _RegisterPatientState();
 }
 
-class _RegisterPatientFirstState extends State<RegisterPatientFirst> {
+class _RegisterPatientState extends State<RegisterPatient> {
   
   int _currentStep = 0;
   
