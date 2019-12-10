@@ -60,6 +60,7 @@ class CustomStepper extends StatefulWidget {
     this.onStepContinue,
     this.onStepCancel,
     this.controlsBuilder,
+    this.isHeader = true,
   }) : assert(steps != null),
        assert(type != null),
        assert(currentStep != null),
@@ -74,6 +75,7 @@ class CustomStepper extends StatefulWidget {
   final VoidCallback onStepContinue;
   final VoidCallback onStepCancel;
   final ControlsWidgetBuilder controlsBuilder;
+  final bool isHeader;
 
   @override
   _StepperState createState() => _StepperState();
@@ -461,7 +463,7 @@ class _StepperState extends State<CustomStepper> with TickerProviderStateMixin {
               if (widget.onStepTapped != null)
                 widget.onStepTapped(i);
             } : null,
-            child: Column(
+            child: widget.isHeader ? Column(
               children: <Widget>[
                 Container(
                   height: 50.0,
@@ -473,7 +475,7 @@ class _StepperState extends State<CustomStepper> with TickerProviderStateMixin {
                 ),
                 SizedBox(height: 10,)
               ],
-            ),
+            ) : Column(),
           ),
       );
 
@@ -482,7 +484,7 @@ class _StepperState extends State<CustomStepper> with TickerProviderStateMixin {
         children.add(
           Expanded(
             child: Container(
-              margin: const EdgeInsets.only(bottom: 25.0),
+              margin: widget.isHeader ? EdgeInsets.only(bottom: 25.0) : null,
               height: 1.0,
               color: Colors.grey.shade300,
             ),
@@ -504,7 +506,7 @@ class _StepperState extends State<CustomStepper> with TickerProviderStateMixin {
         ),
         Expanded(
           child: ListView(
-            padding: const EdgeInsets.all(24.0),
+            padding: widget.isHeader ? EdgeInsets.all(24.0) : null,
             children: <Widget>[
               AnimatedSize(
                 curve: Curves.fastOutSlowIn,

@@ -6,6 +6,7 @@ import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pr
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-test/blood_test_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/body-measurements/measurements_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/new_observation_screen.dart';
+import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/questionnaire_screen.dart';
 
 
 class NewEncounterScreen extends CupertinoPageRoute {
@@ -128,7 +129,7 @@ class NewEncounter extends StatelessWidget {
                     icon: Image.asset('assets/images/icons/questionnaire.png'),
                     text: Text('Questionnaire', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
                     status: 'Incomplete',
-                    onTap: () {},
+                    onTap: () => Navigator.of(context).push(QuestionnaireScreen()),
                   ),
                 ],
               )

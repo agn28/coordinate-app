@@ -94,7 +94,10 @@ class Measurements extends StatelessWidget {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return AaddHeightDialogue();
+                          return AddDialogue(
+                            title: 'Add Height',
+                            inputText: 'height',
+                          );
                         } 
                       );
                     },
@@ -108,7 +111,10 @@ class Measurements extends StatelessWidget {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return AaddHeightDialogue();
+                          return AddDialogue(
+                            title: 'Add Weight',
+                            inputText: 'weight',
+                          );
                         } 
                       );
                     },
@@ -122,7 +128,10 @@ class Measurements extends StatelessWidget {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return AaddHeightDialogue();
+                          return AddDialogue(
+                            title: 'Add Waist/Hip',
+                            inputText: 'waist/hip',
+                          );
                         } 
                       );
                     },
@@ -238,14 +247,17 @@ class EncounnterSteps extends StatelessWidget {
 
 
 
-class AaddHeightDialogue extends StatefulWidget {
-  AaddHeightDialogue();
+class AddDialogue extends StatefulWidget {
+  String title;
+  String inputText;
+
+  AddDialogue({this.title, inputText});
 
   @override
-  _AddHeightDialogueState createState() => _AddHeightDialogueState();
+  _AddDialogueState createState() => _AddDialogueState();
 }
 
-class _AddHeightDialogueState extends State<AaddHeightDialogue> {
+class _AddDialogueState extends State<AddDialogue> {
 
    String selectedHeightUnit;
 
@@ -275,7 +287,7 @@ class _AddHeightDialogueState extends State<AaddHeightDialogue> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text('Add BP Measurement', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+            Text(widget.title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
             SizedBox(height: 20,),
             Container(
               // margin: EdgeInsets.symmetric(horizontal: 30),
@@ -285,7 +297,7 @@ class _AddHeightDialogueState extends State<AaddHeightDialogue> {
                   Container(
                     width: 150,
                     child: PrimaryTextField(
-                      hintText: 'Height',
+                      hintText: widget.inputText,
                       topPaadding: 15,
                       bottomPadding: 15,
                     ),
