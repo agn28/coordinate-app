@@ -122,9 +122,7 @@ class NewObservationScreen extends StatelessWidget {
                             height: 60.0,
                             child: RaisedButton(
                               color: Colors.grey,
-                              onPressed: () => Navigator.push(context, 
-                                MaterialPageRoute(builder: (ctx) => QuestionnaireScreen())
-                              ),
+                              onPressed: () => Navigator.of(context).push(QuestionnaireScreen()),
                               child: Text("Questionnaire", style: TextStyle(color: Colors.white, fontSize: 22),),
                             ),
                           ),
