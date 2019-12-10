@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import './patients/manage/patients_search_screen.dart';
-import './patients/register_patient_first_screen.dart';
+import './patients/register_patient_screen.dart';
 
 
 class HomeScreen extends CupertinoPageRoute {
@@ -210,7 +210,7 @@ class Home extends StatelessWidget {
                         SizedBox(height: 20,),
 
                         GestureDetector(
-                          onTap: () => Navigator.of(context).push(RegisterPatientFirstScreen()),
+                          onTap: () => Navigator.of(context).push(RegisterPatientScreen()),
                           child: Container(
                             height: 190,
                             width: double.infinity,
@@ -223,7 +223,7 @@ class Home extends StatelessWidget {
                                 children: <Widget>[
                                   Image.asset('assets/images/icons/register_patient.png'),
                                   FlatButton(
-                                    onPressed: () => Navigator.of(context).push(RegisterPatientFirstScreen()),
+                                    onPressed: () => Navigator.of(context).push(RegisterPatientScreen()),
                                     child: Row(
 
                                       children: <Widget>[

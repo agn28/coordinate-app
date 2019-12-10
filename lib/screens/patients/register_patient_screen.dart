@@ -7,30 +7,34 @@ import 'dart:io';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/screens/patients/register_patient_second_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
+import '../../custom-classes/custom_stepper.dart';
 
-class RegisterPatientFirstScreen extends CupertinoPageRoute {
-  RegisterPatientFirstScreen()
-      : super(builder: (BuildContext context) => new RegisterPatientFirst());
+class RegisterPatientScreen extends CupertinoPageRoute {
+  RegisterPatientScreen()
+      : super(builder: (BuildContext context) => new RegisterPatient());
 
 }
 
 
-class RegisterPatientFirst extends StatefulWidget {
+class RegisterPatient extends StatefulWidget {
   @override
-  _RegisterPatientFirstState createState() => _RegisterPatientFirstState();
+  _RegisterPatientState createState() => _RegisterPatientState();
 }
 
-class _RegisterPatientFirstState extends State<RegisterPatientFirst> {
+class _RegisterPatientState extends State<RegisterPatient> {
   
   int _currentStep = 0;
   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Stepper(
+      appBar: AppBar(
+        title: Text('Register a New Patient'),
+      ),
+      body: CustomStepper(
         physics: ClampingScrollPhysics(),
-        type: StepperType.horizontal,
+        type: CustomStepperType.horizontal,
+        
         controlsBuilder: (BuildContext context, {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
         return Row();
       },
@@ -103,26 +107,26 @@ class _RegisterPatientFirstState extends State<RegisterPatientFirst> {
     );
   }
 
-  List<Step> _mySteps() {
-    List<Step> _steps = [
-      Step(
+  List<CustomStep> _mySteps() {
+    List<CustomStep> _steps = [
+      CustomStep(
         title: Text('Patient Details', textAlign: TextAlign.center,),
         content: PatientDetails(),
         isActive: _currentStep >= 0,
       ),
-      Step(
+      CustomStep(
         title: Text('Contact Details'),
         content: ContactDetails(),
         isActive: _currentStep >= 1,
       ),
-      Step(
+      CustomStep(
         title: Text('Photo'),
         content: AddPhoto(),
         isActive: _currentStep >= 2,
       ),
-      Step(
+      CustomStep(
         title: Text('Thumbprint'),
-        content: TextField(),
+        content: Text(''),
         isActive: _currentStep >= 3,
       )
     ];
@@ -483,7 +487,7 @@ class _AddPhotoState extends State<AddPhoto> {
                 // crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Icon(Icons.camera_alt, size: 90, color: kTextGrey,),
+                  Icon(Icons.camera_alt, size: 90, color: kPrimaryColor,),
                   Text('Add a Photo', style: TextStyle(color: kPrimaryColor, fontSize: 20, height: 2))
                 ],
               ) : Container(
@@ -510,119 +514,9 @@ class _AddPhotoState extends State<AddPhoto> {
             ),
           ),
 
-          SizedBox(height: 800,)
           
         ],
       ),
     );
   }
 }
-
-// Container(
-//               alignment: Alignment.topLeft,
-//               margin: EdgeInsets.only(left: 40, right: 40),
-//               width: double.infinity,
-//               child: Column(
-//                 children: <Widget>[
-//                   SizedBox(height: 20,),
-//                   TextField(
-//                     style: TextStyle(
-//                       fontSize: 22,
-//                     ),
-//                     decoration: InputDecoration(
-//                       border: OutlineInputBorder(),
-//                       hintText: "First Name",
-//                       contentPadding: EdgeInsets.symmetric(vertical: 18, horizontal: 15)
-//                     ),
-//                   ),
-//                   SizedBox(height: 20,),
-//                   TextField(
-//                     style: TextStyle(
-//                       fontSize: 22,
-//                     ),
-//                     decoration: InputDecoration(
-//                       border: OutlineInputBorder(),
-//                       hintText: "Last Name",
-//                       contentPadding: EdgeInsets.symmetric(vertical: 18, horizontal: 15)
-//                     ),
-//                   ),
-//                   SizedBox(height: 20,),
-//                   TextField(
-//                     style: TextStyle(
-//                       fontSize: 22,
-//                     ),
-//                     decoration: InputDecoration(
-//                       border: OutlineInputBorder(),
-//                       hintText: "Gender",
-//                       contentPadding: EdgeInsets.symmetric(vertical: 18, horizontal: 15)
-//                     ),
-//                   ),
-//                   SizedBox(height: 20,),
-//                   TextField(
-//                     style: TextStyle(
-//                       fontSize: 22,
-//                     ),
-//                     decoration: InputDecoration(
-//                       border: OutlineInputBorder(),
-//                       hintText: "Date of Birth",
-//                       contentPadding: EdgeInsets.symmetric(vertical: 18, horizontal: 15)
-//                     ),
-//                   ),
-//                   SizedBox(height: 20,),
-//                   TextField(
-//                     style: TextStyle(
-//                       fontSize: 22,
-//                     ),
-//                     decoration: InputDecoration(
-//                       border: OutlineInputBorder(),
-//                       hintText: "Address",
-//                       contentPadding: EdgeInsets.symmetric(vertical: 18, horizontal: 15)
-//                     ),
-//                   ),
-//                   SizedBox(height: 20,),
-//                   TextField(
-//                     style: TextStyle(
-//                       fontSize: 22,
-//                     ),
-//                     decoration: InputDecoration(
-//                       border: OutlineInputBorder(),
-//                       hintText: "Mobile Phone",
-//                       contentPadding: EdgeInsets.symmetric(vertical: 18, horizontal: 15)
-//                     ),
-//                   ),
-//                   SizedBox(height: 20,),
-//                   TextField(
-//                     style: TextStyle(
-//                       fontSize: 22,
-//                     ),
-//                     decoration: InputDecoration(
-//                       border: OutlineInputBorder(),
-//                       hintText: "Home Phone",
-//                       contentPadding: EdgeInsets.symmetric(vertical: 18, horizontal: 15)
-//                     ),
-//                   ),
-//                   SizedBox(height: 20,),
-//                   TextField(
-//                     style: TextStyle(
-//                       fontSize: 22,
-//                     ),
-//                     decoration: InputDecoration(
-//                       border: OutlineInputBorder(),
-//                       hintText: "Email",
-//                       contentPadding: EdgeInsets.symmetric(vertical: 18, horizontal: 15)
-//                     ),
-//                   ),
-//                   SizedBox(height: 20,),
-//                   ButtonTheme(
-//                     minWidth: 200.0,
-//                     height: 60.0,
-//                     child: RaisedButton(
-//                       onPressed: () => Navigator.push(context, 
-//                         MaterialPageRoute(builder: (ctx) => RegisterPatientSecondScreen())
-//                       ),
-//                       child: Text("Next", style: TextStyle(color: Colors.white, fontSize: 22),),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
