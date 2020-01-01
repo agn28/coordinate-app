@@ -5,6 +5,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/models/patients.dart';
 import 'package:nhealth/screens/patients/register_patient_second_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import '../../custom-classes/custom_stepper.dart';
@@ -24,6 +25,36 @@ class RegisterPatient extends StatefulWidget {
 class _RegisterPatientState extends State<RegisterPatient> {
   
   int _currentStep = 0;
+
+  String nextText = 'NEXT';
+
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+  // final gender = TextEditingController();
+  final birthDateController = TextEditingController();
+  final birthMonthController = TextEditingController();
+  final birthYearController = TextEditingController();
+  final districtController = TextEditingController();
+  final postalCodeController = TextEditingController();
+  final townController = TextEditingController();
+  final villageController = TextEditingController();
+  final streetNameController = TextEditingController();
+  final mobilePhoneController = TextEditingController();
+  final homePhoneController = TextEditingController();
+  final emailController = TextEditingController();
+  final nidController = TextEditingController();
+
+  final contactFirstNameController = TextEditingController();
+  final contactLastNameController = TextEditingController();
+  final contactRelationshipController = TextEditingController();
+  final contactDistrictController = TextEditingController();
+  final contactPostalCodeController = TextEditingController();
+  final contactTownController = TextEditingController();
+  final contactVillageController = TextEditingController();
+  final contactStreetNameController = TextEditingController();
+  final contactMobilePhoneController = TextEditingController();
+  final contactHomePhoneController = TextEditingController();
+  final contactEmailController = TextEditingController();
   
   @override
   Widget build(BuildContext context) {
@@ -57,6 +88,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
                 onPressed: () {
                   setState(() {
                     _currentStep = _currentStep - 1;
+                    nextText = 'NEXT';
                   });
                 },
                 child: Row(
@@ -87,15 +119,35 @@ class _RegisterPatientState extends State<RegisterPatient> {
             Expanded(
               child: _currentStep < _mySteps().length - 1 ? FlatButton(
                 onPressed: () {
+                  print('firstname' + firstNameController.text);
+                  print('contact email ' + contactEmailController.text);
                   setState(() {
-                    _currentStep = _currentStep + 1;
+                    print('step' + _currentStep.toString());
+
+                    
+
+                    // print('formData ' + formData.toString());
+
+                    if (nextText == 'SAVE') {
+                      var formData = _prepareFormData();
+                      Patients().createPatient(formData);
+                      // return;
+                    }
+
+                    if (_currentStep < 1) {
+                      _currentStep = _currentStep + 1;
+                      nextText = 'SAVE';
+                    }
+
+                    
+                    
                   });
                 },
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    Text('NEXT', style: TextStyle(fontSize: 20)),
+                    Text(nextText, style: TextStyle(fontSize: 20)),
                     Icon(Icons.chevron_right)
                   ],
                 ),
@@ -111,12 +163,39 @@ class _RegisterPatientState extends State<RegisterPatient> {
     List<CustomStep> _steps = [
       CustomStep(
         title: Text('Patient Details', textAlign: TextAlign.center,),
-        content: PatientDetails(),
+        content: PatientDetails(
+          firstNameController: firstNameController,
+          lastNameController: lastNameController,
+          birthDateController: birthDateController,
+          birthMonthController: birthMonthController,
+          birthYearController: birthYearController,
+          districtController: districtController,
+          postalCodeController: postalCodeController,
+          townController: townController,
+          villageController: villageController,
+          streetNameController: streetNameController,
+          mobilePhoneController: mobilePhoneController,
+          homePhoneController: homePhoneController,
+          emailController: emailController,
+          nidController: nidController,
+        ),
         isActive: _currentStep >= 0,
       ),
       CustomStep(
         title: Text('Contact Details'),
-        content: ContactDetails(),
+        content: ContactDetails(
+          contactFirstNameController: contactFirstNameController,
+          contactLastNameController: contactLastNameController,
+          contactRelationshipController: contactRelationshipController,
+          contactDistrictController: contactDistrictController,
+          contactPostalCodeController: contactPostalCodeController,
+          contactTownController: contactTownController,
+          contactVillageController: contactVillageController,
+          contactStreetNameController: contactStreetNameController,
+          contactMobilePhoneController: contactMobilePhoneController,
+          contactHomePhoneController: contactHomePhoneController,
+          contactEmailController: contactEmailController
+        ),
         isActive: _currentStep >= 1,
       ),
       CustomStep(
@@ -133,13 +212,63 @@ class _RegisterPatientState extends State<RegisterPatient> {
 
     return _steps;
   }
+
+  _prepareFormData() {
+    return {
+      'name': firstNameController.text + ' ' + lastNameController.text,
+      'age': 26, //age needs to be calculated
+      'nid': nidController.text,
+      'registration_data': DateTime.now().toString(),
+      'address': {
+        'district': districtController.text,
+        'postal_code': postalCodeController.text,
+        'town': townController.text,
+        'village': villageController.text,
+        'street_name': streetNameController.text,
+      },
+      'mobile': mobilePhoneController.text,
+      'phone': homePhoneController.text,
+      'email': emailController.text,
+
+      'contact_first_name': contactFirstNameController.text,
+      'contact_last_name': contactLastNameController.text,
+      'contact_relationship': contactRelationshipController.text, //age needs to be calculated
+      'contact_address': {
+        'contact_district': contactDistrictController.text,
+        'contact_postal_code': contactPostalCodeController.text,
+        'contact_town': contactTownController.text,
+        'contact_village': contactVillageController.text,
+        'contact_street_name': contactStreetNameController.text,
+      },
+      'contact_mobile': contactMobilePhoneController.text,
+      'contact_phone': contactHomePhoneController.text,
+      'contact_email': contactEmailController.text,
+      
+    };
+  }
   
 }
 
 class PatientDetails extends StatefulWidget {
-  const PatientDetails({
-    Key key,
-  }) : super(key: key);
+  getData() => createState()._getData();
+
+  final firstNameController;
+  final lastNameController;
+  // final gender = TextEditingController();
+  final birthDateController;
+  final birthMonthController;
+  final birthYearController;
+  final districtController;
+  final postalCodeController;
+  final townController;
+  final villageController;
+  final streetNameController;
+  final mobilePhoneController;
+  final homePhoneController;
+  final emailController;
+  final nidController;
+
+  PatientDetails({this.firstNameController, this.lastNameController, this.birthDateController, this.birthMonthController, this.birthYearController, this.districtController, this.postalCodeController, this.townController, this.villageController, this.streetNameController, this.mobilePhoneController, this.homePhoneController, this.emailController, this.nidController});
 
   @override
   _PatientDetailsState createState() => _PatientDetailsState();
@@ -147,6 +276,11 @@ class PatientDetails extends StatefulWidget {
 
 class _PatientDetailsState extends State<PatientDetails> {
   String selectedGender = 'male';
+  // final firstNameController = TextEditingController();
+
+  _getData() {
+    // print('hello' + firstNameController.text);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -157,6 +291,7 @@ class _PatientDetailsState extends State<PatientDetails> {
         children: <Widget>[
           Text('Patient Details', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
           SizedBox(height: 20,),
+
           Row(
             children: <Widget>[
               Expanded(
@@ -164,6 +299,7 @@ class _PatientDetailsState extends State<PatientDetails> {
                   topPaadding: 18,
                   bottomPadding: 18,
                   hintText: 'First Name',
+                  controller: widget.firstNameController,
                 ),
               ),
               SizedBox(width: 20,),
@@ -172,6 +308,7 @@ class _PatientDetailsState extends State<PatientDetails> {
                   topPaadding: 18,
                   bottomPadding: 18,
                   hintText: 'Last Name',
+                  controller: widget.lastNameController,
                 ),
               ),
             ],
@@ -231,6 +368,7 @@ class _PatientDetailsState extends State<PatientDetails> {
                   topPaadding: 18,
                   bottomPadding: 18,
                   hintText: 'dd',
+                  controller: widget.birthDateController,
                 ),
               ),
               SizedBox(width: 20,),
@@ -239,6 +377,7 @@ class _PatientDetailsState extends State<PatientDetails> {
                   topPaadding: 18,
                   bottomPadding: 18,
                   hintText: 'mm',
+                  controller: widget.birthMonthController,
                 ),
               ),
               SizedBox(width: 20,),
@@ -247,6 +386,7 @@ class _PatientDetailsState extends State<PatientDetails> {
                   topPaadding: 18,
                   bottomPadding: 18,
                   hintText: 'yyyy',
+                  controller: widget.birthYearController,
                 ),
               ),
             ],
@@ -263,12 +403,14 @@ class _PatientDetailsState extends State<PatientDetails> {
             topPaadding: 18,
             bottomPadding: 18,
             hintText: 'District',
+            controller: widget.districtController,
           ),
           SizedBox(height: 30,),
           PrimaryTextField(
             topPaadding: 18,
             bottomPadding: 18,
             hintText: 'Postal Code',
+            controller: widget.postalCodeController,
           ),
           SizedBox(height: 30,),
           PrimaryTextField(
@@ -281,12 +423,14 @@ class _PatientDetailsState extends State<PatientDetails> {
             topPaadding: 18,
             bottomPadding: 18,
             hintText: 'Village',
+            controller: widget.villageController,
           ),
           SizedBox(height: 30,),
           PrimaryTextField(
             topPaadding: 18,
             bottomPadding: 18,
             hintText: 'Street Name',
+            controller: widget.streetNameController,
           ),
           SizedBox(height: 30,),
           Divider(),
@@ -296,6 +440,7 @@ class _PatientDetailsState extends State<PatientDetails> {
             bottomPadding: 18,
             prefixIcon: Icon(Icons.phone),
             hintText: 'Mobile Phone',
+            controller: widget.mobilePhoneController,
           ),
           SizedBox(height: 30,),
           PrimaryTextField(
@@ -303,6 +448,7 @@ class _PatientDetailsState extends State<PatientDetails> {
             bottomPadding: 18,
             prefixIcon: Icon(Icons.phone),
             hintText: 'Home Phone (Optional)',
+            controller: widget.homePhoneController,
           ),
           SizedBox(height: 30,),
           PrimaryTextField(
@@ -310,12 +456,14 @@ class _PatientDetailsState extends State<PatientDetails> {
             bottomPadding: 18,
             prefixIcon: Icon(Icons.email),
             hintText: 'Email Address (Optional)',
+            controller: widget.emailController,
           ),
           SizedBox(height: 30,),
           PrimaryTextField(
             topPaadding: 18,
             bottomPadding: 18,
             hintText: 'National ID',
+            controller: widget.nidController,
           ),
         ],
       ),
@@ -324,9 +472,32 @@ class _PatientDetailsState extends State<PatientDetails> {
 }
 
 class ContactDetails extends StatefulWidget {
-  const ContactDetails({
-    Key key,
-  }) : super(key: key);
+
+  final contactFirstNameController;
+  final contactLastNameController;
+  final contactRelationshipController;
+  final contactDistrictController;
+  final contactPostalCodeController;
+  final contactTownController;
+  final contactVillageController;
+  final contactStreetNameController;
+  final contactMobilePhoneController;
+  final contactHomePhoneController;
+  final contactEmailController;
+
+  ContactDetails({
+    this.contactFirstNameController,
+    this.contactLastNameController,
+    this.contactRelationshipController,
+    this.contactDistrictController,
+    this.contactPostalCodeController,
+    this.contactTownController,
+    this.contactVillageController,
+    this.contactStreetNameController,
+    this.contactMobilePhoneController,
+    this.contactHomePhoneController,
+    this.contactEmailController
+  });
 
   @override
   _ContactDetailsState createState() => _ContactDetailsState();
@@ -351,6 +522,7 @@ class _ContactDetailsState extends State<ContactDetails> {
                   topPaadding: 18,
                   bottomPadding: 18,
                   hintText: "Contact's First Name",
+                  controller: widget.contactFirstNameController,
                 ),
               ),
               SizedBox(width: 20,),
@@ -359,6 +531,7 @@ class _ContactDetailsState extends State<ContactDetails> {
                   topPaadding: 18,
                   bottomPadding: 18,
                   hintText: "Contact's Last Name",
+                  controller: widget.contactLastNameController,
                 ),
               ),
             ],
@@ -370,6 +543,7 @@ class _ContactDetailsState extends State<ContactDetails> {
             topPaadding: 18,
             bottomPadding: 18,
             hintText: 'Relationship with contact',
+            controller: widget.contactRelationshipController,
           ),
 
 
@@ -385,30 +559,35 @@ class _ContactDetailsState extends State<ContactDetails> {
             topPaadding: 18,
             bottomPadding: 18,
             hintText: 'District',
+            controller: widget.contactDistrictController,
           ),
           SizedBox(height: 30,),
           PrimaryTextField(
             topPaadding: 18,
             bottomPadding: 18,
             hintText: 'Postal Code',
+            controller: widget.contactPostalCodeController,
           ),
           SizedBox(height: 30,),
           PrimaryTextField(
             topPaadding: 18,
             bottomPadding: 18,
             hintText: 'Town',
+            controller: widget.contactTownController,
           ),
           SizedBox(height: 30,),
           PrimaryTextField(
             topPaadding: 18,
             bottomPadding: 18,
             hintText: 'Village',
+            controller: widget.contactVillageController,
           ),
           SizedBox(height: 30,),
           PrimaryTextField(
             topPaadding: 18,
             bottomPadding: 18,
             hintText: 'Street Name',
+            controller: widget.contactStreetNameController,
           ),
           
           SizedBox(height: 30,),
@@ -420,6 +599,7 @@ class _ContactDetailsState extends State<ContactDetails> {
             bottomPadding: 18,
             prefixIcon: Icon(Icons.phone),
             hintText: "Contact's Mobile Phone",
+            controller: widget.contactMobilePhoneController,
           ),
           SizedBox(height: 30,),
           PrimaryTextField(
@@ -427,6 +607,7 @@ class _ContactDetailsState extends State<ContactDetails> {
             bottomPadding: 18,
             prefixIcon: Icon(Icons.phone),
             hintText: "Contact's Home Phone (Optional)",
+            controller: widget.contactHomePhoneController,
           ),
           SizedBox(height: 30,),
           PrimaryTextField(
@@ -434,6 +615,7 @@ class _ContactDetailsState extends State<ContactDetails> {
             bottomPadding: 18,
             prefixIcon: Icon(Icons.email),
             hintText: "Contact's Email Address (Optional)",
+            controller: widget.contactEmailController,
           ),
           SizedBox(height: 30,),
         ],

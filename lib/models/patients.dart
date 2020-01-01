@@ -13,6 +13,35 @@ class Patients with ChangeNotifier{
   //   return [..._patients];
   // }
 
+  createPatient(formData) async {
+
+    var data = {
+      "meta": {
+        "performed_by": "9b900fa6-209e-11ea-978f-2e728ce88125",
+      },
+      "body": formData
+
+    };
+
+    // print(jsonEncode(data));
+
+    // return;
+
+    await http.post(
+      localUrl + 'patients',
+      headers: {
+        "Accept": "appliaction/json",
+        "Content-Type": "appliaction/json"
+      },
+      body: data
+    ).then((response) => {
+      print('response ' + response.body.toString())
+      
+    }).catchError((error) => {
+      print('error ' + error.toString())
+    });
+  }
+
   getPatientById(id) async {
     print(id);
     var patient;
