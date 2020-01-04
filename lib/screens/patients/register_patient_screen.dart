@@ -55,6 +55,8 @@ class _RegisterPatientState extends State<RegisterPatient> {
   final contactMobilePhoneController = TextEditingController();
   final contactHomePhoneController = TextEditingController();
   final contactEmailController = TextEditingController();
+  String selectedGender = 'male';
+  static GlobalKey<FormState> _patientFormKey = new GlobalKey<FormState>();
   
   @override
   Widget build(BuildContext context) {
@@ -135,7 +137,12 @@ class _RegisterPatientState extends State<RegisterPatient> {
                     }
 
                     if (_currentStep < 1) {
-                      _currentStep = _currentStep + 1;
+                      
+                      print(_patientFormKey);
+                      if (_patientFormKey.currentState.validate()) {
+                        // If the form is valid, display a Snackbar.
+                        _currentStep = _currentStep + 1;
+                      }
                       nextText = 'SAVE';
                     }
 
@@ -178,6 +185,8 @@ class _RegisterPatientState extends State<RegisterPatient> {
           homePhoneController: homePhoneController,
           emailController: emailController,
           nidController: nidController,
+          selectedGender: selectedGender,
+          formKey: _patientFormKey
         ),
         isActive: _currentStep >= 0,
       ),
@@ -216,6 +225,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
   _prepareFormData() {
     return {
       'name': firstNameController.text + ' ' + lastNameController.text,
+      'gender': selectedGender,
       'age': 26, //age needs to be calculated
       'nid': nidController.text,
       'registration_data': DateTime.now().toString(),
@@ -252,6 +262,14 @@ class _RegisterPatientState extends State<RegisterPatient> {
 class PatientDetails extends StatefulWidget {
   getData() => createState()._getData();
 
+  // validateForm() {
+  //   if (formKey.currentState.validate()) {
+  //       // If the form is valid, display a Snackbar.
+  //       Scaffold.of(context)
+  //           .showSnackBar(SnackBar(content: Text('Processing Data')));
+  //     }
+  // }
+
   final firstNameController;
   final lastNameController;
   // final gender = TextEditingController();
@@ -267,15 +285,24 @@ class PatientDetails extends StatefulWidget {
   final homePhoneController;
   final emailController;
   final nidController;
+  String selectedGender;
+  final GlobalKey<FormState> formKey;
 
-  PatientDetails({this.firstNameController, this.lastNameController, this.birthDateController, this.birthMonthController, this.birthYearController, this.districtController, this.postalCodeController, this.townController, this.villageController, this.streetNameController, this.mobilePhoneController, this.homePhoneController, this.emailController, this.nidController});
+  PatientDetails({this.firstNameController, this.lastNameController, this.birthDateController, this.birthMonthController, this.birthYearController, this.districtController, this.postalCodeController, this.townController, this.villageController, this.streetNameController, this.mobilePhoneController, this.homePhoneController, this.emailController, this.nidController, this.selectedGender, this.formKey});
 
+  validateForm() {
+    print('validateform');
+    if (formKey.currentState.validate()) {
+      // If the form is valid, display a Snackbar.
+      
+    }
+  }
   @override
   _PatientDetailsState createState() => _PatientDetailsState();
 }
 
 class _PatientDetailsState extends State<PatientDetails> {
-  String selectedGender = 'male';
+  
   // final firstNameController = TextEditingController();
 
   _getData() {
@@ -284,189 +311,207 @@ class _PatientDetailsState extends State<PatientDetails> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text('Patient Details', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
-          SizedBox(height: 20,),
-
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: PrimaryTextField(
-                  topPaadding: 18,
-                  bottomPadding: 18,
-                  hintText: 'First Name',
-                  controller: widget.firstNameController,
-                ),
-              ),
-              SizedBox(width: 20,),
-              Expanded(
-                child: PrimaryTextField(
-                  topPaadding: 18,
-                  bottomPadding: 18,
-                  hintText: 'Last Name',
-                  controller: widget.lastNameController,
-                ),
-              ),
-            ],
-          ),
-
-          SizedBox(height: 40,),
-
-          Container(
-              // margin: EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text('Gender', style: TextStyle(fontSize: 16),),
-                  Row(
-                    children: <Widget>[
-                      // SizedBox(width: 20,),
-                      Radio(
-                        activeColor: kPrimaryColor,
-                        value: 'male',
-                        groupValue: selectedGender,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedGender = value;
-                          });
-                        },
-                      ),
-                      Text("Male", style: TextStyle(color: Colors.black)),
-
-                      Radio(
-                        activeColor: kPrimaryColor,
-                        value: 'female',
-                        groupValue: selectedGender,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedGender = value;
-                          });
-                        },
-                      ),
-                      Text(
-                        "Female",
-                      ),
-                    ],
-                  ),
-                ],
-              )
-            ),
-
-            SizedBox(height: 30,),
-
-            Text('Date of Birth', style: TextStyle(fontSize: 16),),
+      child: Form(
+        key: widget.formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text('Patient Details', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
             SizedBox(height: 20,),
 
             Row(
-            children: <Widget>[
-              Expanded(
-                child: PrimaryTextField(
-                  topPaadding: 18,
-                  bottomPadding: 18,
-                  hintText: 'dd',
-                  controller: widget.birthDateController,
+              children: <Widget>[
+                Expanded(
+                  child: PrimaryTextField(
+                    topPaadding: 18,
+                    bottomPadding: 18,
+                    hintText: 'First Name',
+                    controller: widget.firstNameController,
+                    name: "First Name"
+                  ),
                 ),
-              ),
-              SizedBox(width: 20,),
-              Expanded(
-                child: PrimaryTextField(
-                  topPaadding: 18,
-                  bottomPadding: 18,
-                  hintText: 'mm',
-                  controller: widget.birthMonthController,
+                SizedBox(width: 20,),
+                Expanded(
+                  child: PrimaryTextField(
+                    topPaadding: 18,
+                    bottomPadding: 18,
+                    hintText: 'Last Name',
+                    controller: widget.lastNameController,
+                  ),
                 ),
+              ],
+            ),
+
+            SizedBox(height: 40,),
+
+            Container(
+                // margin: EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('Gender', style: TextStyle(fontSize: 16),),
+                    Row(
+                      children: <Widget>[
+                        // SizedBox(width: 20,),
+                        Radio(
+                          activeColor: kPrimaryColor,
+                          value: 'male',
+                          groupValue: widget.selectedGender,
+                          onChanged: (value) {
+                            setState(() {
+                              widget.selectedGender = value;
+                            });
+                          },
+                        ),
+                        Text("Male", style: TextStyle(color: Colors.black)),
+
+                        Radio(
+                          activeColor: kPrimaryColor,
+                          value: 'female',
+                          groupValue: widget.selectedGender,
+                          onChanged: (value) {
+                            setState(() {
+                              widget.selectedGender = value;
+                            });
+                          },
+                        ),
+                        Text(
+                          "Female",
+                        ),
+                      ],
+                    ),
+                  ],
+                )
               ),
-              SizedBox(width: 20,),
-              Expanded(
-                child: PrimaryTextField(
-                  topPaadding: 18,
-                  bottomPadding: 18,
-                  hintText: 'yyyy',
-                  controller: widget.birthYearController,
+
+              SizedBox(height: 30,),
+
+              Text('Date of Birth', style: TextStyle(fontSize: 16),),
+              SizedBox(height: 20,),
+
+              Row(
+              children: <Widget>[
+                Expanded(
+                  child: PrimaryTextField(
+                    topPaadding: 18,
+                    bottomPadding: 18,
+                    hintText: 'dd',
+                    controller: widget.birthDateController,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 30,),
-          Divider(),
+                SizedBox(width: 20,),
+                Expanded(
+                  child: PrimaryTextField(
+                    topPaadding: 18,
+                    bottomPadding: 18,
+                    hintText: 'mm',
+                    controller: widget.birthMonthController,
+                  ),
+                ),
+                SizedBox(width: 20,),
+                Expanded(
+                  child: PrimaryTextField(
+                    topPaadding: 18,
+                    bottomPadding: 18,
+                    hintText: 'yyyy',
+                    controller: widget.birthYearController,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 30,),
+            Divider(),
 
-          SizedBox(height: 30,),
+            SizedBox(height: 30,),
 
-          Text('Address', style: TextStyle(fontSize: 16),),
-          SizedBox(height: 20,),
+            Text('Address', style: TextStyle(fontSize: 16),),
+            SizedBox(height: 20,),
 
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'District',
-            controller: widget.districtController,
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'Postal Code',
-            controller: widget.postalCodeController,
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'Town',
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'Village',
-            controller: widget.villageController,
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'Street Name',
-            controller: widget.streetNameController,
-          ),
-          SizedBox(height: 30,),
-          Divider(),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            prefixIcon: Icon(Icons.phone),
-            hintText: 'Mobile Phone',
-            controller: widget.mobilePhoneController,
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            prefixIcon: Icon(Icons.phone),
-            hintText: 'Home Phone (Optional)',
-            controller: widget.homePhoneController,
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            prefixIcon: Icon(Icons.email),
-            hintText: 'Email Address (Optional)',
-            controller: widget.emailController,
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'National ID',
-            controller: widget.nidController,
-          ),
-        ],
-      ),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'District',
+              controller: widget.districtController,
+            ),
+            SizedBox(height: 30,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'Postal Code',
+              controller: widget.postalCodeController,
+            ),
+            SizedBox(height: 30,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'Town',
+            ),
+            SizedBox(height: 30,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'Village',
+              controller: widget.villageController,
+            ),
+            SizedBox(height: 30,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'Street Name',
+              controller: widget.streetNameController,
+            ),
+            SizedBox(height: 30,),
+            Divider(),
+            SizedBox(height: 30,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              prefixIcon: Icon(Icons.phone),
+              hintText: 'Mobile Phone',
+              controller: widget.mobilePhoneController,
+            ),
+            SizedBox(height: 30,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              prefixIcon: Icon(Icons.phone),
+              hintText: 'Home Phone (Optional)',
+              controller: widget.homePhoneController,
+            ),
+            SizedBox(height: 30,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              prefixIcon: Icon(Icons.email),
+              hintText: 'Email Address (Optional)',
+              controller: widget.emailController,
+            ),
+            SizedBox(height: 30,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'National ID',
+              controller: widget.nidController,
+            ),
+
+            RaisedButton(
+              onPressed: () {
+                // Validate returns true if the form is valid, or false
+                // otherwise.
+                if (widget.formKey.currentState.validate()) {
+                  // If the form is valid, display a Snackbar.
+                  Scaffold.of(context)
+                      .showSnackBar(SnackBar(content: Text('Processing Data')));
+                }
+              },
+              child: Text('Submit'),
+            ),
+          ],
+        ),
+      )
     );
   }
 }
@@ -634,7 +679,7 @@ class AddPhoto extends StatefulWidget {
 }
 
 class _AddPhotoState extends State<AddPhoto> {
-  String selectedGender = 'male';
+  // String selectedGender = 'male';
 
   File _image;
 

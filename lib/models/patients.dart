@@ -23,19 +23,18 @@ class Patients with ChangeNotifier{
 
     };
 
-    // print(jsonEncode(data));
+    print(formData);
 
-    // return;
+    return;
 
     await http.post(
       localUrl + 'patients',
       headers: {
-        "Accept": "appliaction/json",
-        "Content-Type": "appliaction/json"
+        'Accept': 'application/json'
       },
-      body: data
+      body: json.encode(data)
     ).then((response) => {
-      print('response ' + response.body.toString())
+      print('response ' + response.body)
       
     }).catchError((error) => {
       print('error ' + error.toString())
