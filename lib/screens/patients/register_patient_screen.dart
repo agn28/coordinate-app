@@ -5,10 +5,40 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:nhealth/constants/constants.dart';
-import 'package:nhealth/models/patients.dart';
-import 'package:nhealth/screens/patients/register_patient_second_screen.dart';
+import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import '../../custom-classes/custom_stepper.dart';
+
+final firstNameController = TextEditingController();
+final lastNameController = TextEditingController();
+// final gender = TextEditingController();
+final birthDateController = TextEditingController();
+final birthMonthController = TextEditingController();
+final birthYearController = TextEditingController();
+final districtController = TextEditingController();
+final postalCodeController = TextEditingController();
+final townController = TextEditingController();
+final villageController = TextEditingController();
+final streetNameController = TextEditingController();
+final mobilePhoneController = TextEditingController();
+final homePhoneController = TextEditingController();
+final emailController = TextEditingController();
+final nidController = TextEditingController();
+
+final contactFirstNameController = TextEditingController();
+final contactLastNameController = TextEditingController();
+final contactRelationshipController = TextEditingController();
+final contactDistrictController = TextEditingController();
+final contactPostalCodeController = TextEditingController();
+final contactTownController = TextEditingController();
+final contactVillageController = TextEditingController();
+final contactStreetNameController = TextEditingController();
+final contactMobilePhoneController = TextEditingController();
+final contactHomePhoneController = TextEditingController();
+final contactEmailController = TextEditingController();
+String selectedGender = 'male';
+final GlobalKey<FormState> _patientFormKey = new GlobalKey<FormState>();
+final GlobalKey<FormState> _contactFormKey = new GlobalKey<FormState>();
 
 class RegisterPatientScreen extends CupertinoPageRoute {
   RegisterPatientScreen()
@@ -27,36 +57,6 @@ class _RegisterPatientState extends State<RegisterPatient> {
   int _currentStep = 0;
 
   String nextText = 'NEXT';
-
-  final firstNameController = TextEditingController();
-  final lastNameController = TextEditingController();
-  // final gender = TextEditingController();
-  final birthDateController = TextEditingController();
-  final birthMonthController = TextEditingController();
-  final birthYearController = TextEditingController();
-  final districtController = TextEditingController();
-  final postalCodeController = TextEditingController();
-  final townController = TextEditingController();
-  final villageController = TextEditingController();
-  final streetNameController = TextEditingController();
-  final mobilePhoneController = TextEditingController();
-  final homePhoneController = TextEditingController();
-  final emailController = TextEditingController();
-  final nidController = TextEditingController();
-
-  final contactFirstNameController = TextEditingController();
-  final contactLastNameController = TextEditingController();
-  final contactRelationshipController = TextEditingController();
-  final contactDistrictController = TextEditingController();
-  final contactPostalCodeController = TextEditingController();
-  final contactTownController = TextEditingController();
-  final contactVillageController = TextEditingController();
-  final contactStreetNameController = TextEditingController();
-  final contactMobilePhoneController = TextEditingController();
-  final contactHomePhoneController = TextEditingController();
-  final contactEmailController = TextEditingController();
-  String selectedGender = 'male';
-  static GlobalKey<FormState> _patientFormKey = new GlobalKey<FormState>();
   
   @override
   Widget build(BuildContext context) {
@@ -125,14 +125,14 @@ class _RegisterPatientState extends State<RegisterPatient> {
                   print('contact email ' + contactEmailController.text);
                   setState(() {
                     print('step' + _currentStep.toString());
-
-                    
-
                     // print('formData ' + formData.toString());
-
-                    if (nextText == 'SAVE') {
-                      var formData = _prepareFormData();
-                      Patients().createPatient(formData);
+                    if (_currentStep == 1) {
+                      if (_contactFormKey.currentState.validate()) {
+                        var formData = _prepareFormData();
+                        
+                        PatientController.create(formData);
+                        _currentStep = _currentStep + 1;
+                      }
                       // return;
                     }
 
@@ -143,11 +143,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
                         // If the form is valid, display a Snackbar.
                         _currentStep = _currentStep + 1;
                       }
-                      nextText = 'SAVE';
                     }
-
-                    
-                    
                   });
                 },
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -170,41 +166,12 @@ class _RegisterPatientState extends State<RegisterPatient> {
     List<CustomStep> _steps = [
       CustomStep(
         title: Text('Patient Details', textAlign: TextAlign.center,),
-        content: PatientDetails(
-          firstNameController: firstNameController,
-          lastNameController: lastNameController,
-          birthDateController: birthDateController,
-          birthMonthController: birthMonthController,
-          birthYearController: birthYearController,
-          districtController: districtController,
-          postalCodeController: postalCodeController,
-          townController: townController,
-          villageController: villageController,
-          streetNameController: streetNameController,
-          mobilePhoneController: mobilePhoneController,
-          homePhoneController: homePhoneController,
-          emailController: emailController,
-          nidController: nidController,
-          selectedGender: selectedGender,
-          formKey: _patientFormKey
-        ),
+        content: PatientDetails(),
         isActive: _currentStep >= 0,
       ),
       CustomStep(
         title: Text('Contact Details'),
-        content: ContactDetails(
-          contactFirstNameController: contactFirstNameController,
-          contactLastNameController: contactLastNameController,
-          contactRelationshipController: contactRelationshipController,
-          contactDistrictController: contactDistrictController,
-          contactPostalCodeController: contactPostalCodeController,
-          contactTownController: contactTownController,
-          contactVillageController: contactVillageController,
-          contactStreetNameController: contactStreetNameController,
-          contactMobilePhoneController: contactMobilePhoneController,
-          contactHomePhoneController: contactHomePhoneController,
-          contactEmailController: contactEmailController
-        ),
+        content: ContactDetails(),
         isActive: _currentStep >= 1,
       ),
       CustomStep(
@@ -227,6 +194,9 @@ class _RegisterPatientState extends State<RegisterPatient> {
       'name': firstNameController.text + ' ' + lastNameController.text,
       'gender': selectedGender,
       'age': 26, //age needs to be calculated
+      'birth_date': birthDateController.text,
+      'birth_month': birthMonthController.text,
+      'birth_year': birthYearController.text,
       'nid': nidController.text,
       'registration_data': DateTime.now().toString(),
       'address': {
@@ -270,29 +240,9 @@ class PatientDetails extends StatefulWidget {
   //     }
   // }
 
-  final firstNameController;
-  final lastNameController;
-  // final gender = TextEditingController();
-  final birthDateController;
-  final birthMonthController;
-  final birthYearController;
-  final districtController;
-  final postalCodeController;
-  final townController;
-  final villageController;
-  final streetNameController;
-  final mobilePhoneController;
-  final homePhoneController;
-  final emailController;
-  final nidController;
-  String selectedGender;
-  final GlobalKey<FormState> formKey;
-
-  PatientDetails({this.firstNameController, this.lastNameController, this.birthDateController, this.birthMonthController, this.birthYearController, this.districtController, this.postalCodeController, this.townController, this.villageController, this.streetNameController, this.mobilePhoneController, this.homePhoneController, this.emailController, this.nidController, this.selectedGender, this.formKey});
-
   validateForm() {
     print('validateform');
-    if (formKey.currentState.validate()) {
+    if (_patientFormKey.currentState.validate()) {
       // If the form is valid, display a Snackbar.
       
     }
@@ -315,7 +265,7 @@ class _PatientDetailsState extends State<PatientDetails> {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
       child: Form(
-        key: widget.formKey,
+        key: _patientFormKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -329,8 +279,9 @@ class _PatientDetailsState extends State<PatientDetails> {
                     topPaadding: 18,
                     bottomPadding: 18,
                     hintText: 'First Name',
-                    controller: widget.firstNameController,
-                    name: "First Name"
+                    controller: firstNameController,
+                    name: "First Name",
+                    validation: true,
                   ),
                 ),
                 SizedBox(width: 20,),
@@ -339,30 +290,32 @@ class _PatientDetailsState extends State<PatientDetails> {
                     topPaadding: 18,
                     bottomPadding: 18,
                     hintText: 'Last Name',
-                    controller: widget.lastNameController,
+                    controller: lastNameController,
+                    name: "Last Name",
+                    validation: true,
                   ),
                 ),
               ],
             ),
 
-            SizedBox(height: 40,),
+            SizedBox(height: 20,),
 
             Container(
                 // margin: EdgeInsets.symmetric(horizontal: 30),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text('Gender', style: TextStyle(fontSize: 16),),
+                    Text('Gender', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
                     Row(
                       children: <Widget>[
                         // SizedBox(width: 20,),
                         Radio(
                           activeColor: kPrimaryColor,
                           value: 'male',
-                          groupValue: widget.selectedGender,
+                          groupValue: selectedGender,
                           onChanged: (value) {
                             setState(() {
-                              widget.selectedGender = value;
+                              selectedGender = value;
                             });
                           },
                         ),
@@ -371,10 +324,10 @@ class _PatientDetailsState extends State<PatientDetails> {
                         Radio(
                           activeColor: kPrimaryColor,
                           value: 'female',
-                          groupValue: widget.selectedGender,
+                          groupValue: selectedGender,
                           onChanged: (value) {
                             setState(() {
-                              widget.selectedGender = value;
+                              selectedGender = value;
                             });
                           },
                         ),
@@ -387,9 +340,9 @@ class _PatientDetailsState extends State<PatientDetails> {
                 )
               ),
 
-              SizedBox(height: 30,),
+              SizedBox(height: 20,),
 
-              Text('Date of Birth', style: TextStyle(fontSize: 16),),
+              Text('Date of Birth', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
               SizedBox(height: 20,),
 
               Row(
@@ -399,7 +352,10 @@ class _PatientDetailsState extends State<PatientDetails> {
                     topPaadding: 18,
                     bottomPadding: 18,
                     hintText: 'dd',
-                    controller: widget.birthDateController,
+                    controller: birthDateController,
+                    name: "Date",
+                    validation: true,
+                    type: TextInputType.number,
                   ),
                 ),
                 SizedBox(width: 20,),
@@ -408,7 +364,10 @@ class _PatientDetailsState extends State<PatientDetails> {
                     topPaadding: 18,
                     bottomPadding: 18,
                     hintText: 'mm',
-                    controller: widget.birthMonthController,
+                    controller: birthMonthController,
+                    name: "Month",
+                    validation: true,
+                    type: TextInputType.number
                   ),
                 ),
                 SizedBox(width: 20,),
@@ -417,97 +376,103 @@ class _PatientDetailsState extends State<PatientDetails> {
                     topPaadding: 18,
                     bottomPadding: 18,
                     hintText: 'yyyy',
-                    controller: widget.birthYearController,
+                    controller: birthYearController,
+                    name: "Year",
+                    validation: true,
+                    type: TextInputType.number
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 30,),
+            SizedBox(height: 10,),
             Divider(),
 
-            SizedBox(height: 30,),
+            SizedBox(height: 20,),
 
-            Text('Address', style: TextStyle(fontSize: 16),),
+            Text('Address', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
             SizedBox(height: 20,),
 
             PrimaryTextField(
               topPaadding: 18,
               bottomPadding: 18,
               hintText: 'District',
-              controller: widget.districtController,
+              controller: districtController,
+              name: "District",
+              validation: true,
             ),
-            SizedBox(height: 30,),
+            SizedBox(height: 10,),
             PrimaryTextField(
               topPaadding: 18,
               bottomPadding: 18,
               hintText: 'Postal Code',
-              controller: widget.postalCodeController,
+              controller: postalCodeController,
+              name: "Postal Code",
+              validation: true,
             ),
-            SizedBox(height: 30,),
+            SizedBox(height: 10,),
             PrimaryTextField(
               topPaadding: 18,
               bottomPadding: 18,
               hintText: 'Town',
+              controller: townController,
+              name: "Town",
+              validation: true,
             ),
-            SizedBox(height: 30,),
+            SizedBox(height: 10,),
             PrimaryTextField(
               topPaadding: 18,
               bottomPadding: 18,
               hintText: 'Village',
-              controller: widget.villageController,
+              controller: villageController,
+              name: "Village",
+              validation: true,
             ),
-            SizedBox(height: 30,),
+            SizedBox(height: 10,),
             PrimaryTextField(
               topPaadding: 18,
               bottomPadding: 18,
               hintText: 'Street Name',
-              controller: widget.streetNameController,
+              controller: streetNameController,
+              name: "Street Name",
+              validation: true,
             ),
-            SizedBox(height: 30,),
             Divider(),
-            SizedBox(height: 30,),
+            SizedBox(height: 20,),
             PrimaryTextField(
               topPaadding: 18,
               bottomPadding: 18,
               prefixIcon: Icon(Icons.phone),
               hintText: 'Mobile Phone',
-              controller: widget.mobilePhoneController,
+              controller: mobilePhoneController,
+              name: "Mobile Phone",
+              validation: true,
+              type: TextInputType.number
             ),
-            SizedBox(height: 30,),
+            SizedBox(height: 10,),
             PrimaryTextField(
               topPaadding: 18,
               bottomPadding: 18,
               prefixIcon: Icon(Icons.phone),
               hintText: 'Home Phone (Optional)',
-              controller: widget.homePhoneController,
+              controller: homePhoneController,
+              type: TextInputType.number
             ),
-            SizedBox(height: 30,),
+            SizedBox(height: 10,),
             PrimaryTextField(
               topPaadding: 18,
               bottomPadding: 18,
               prefixIcon: Icon(Icons.email),
               hintText: 'Email Address (Optional)',
-              controller: widget.emailController,
+              controller: emailController
             ),
-            SizedBox(height: 30,),
+            SizedBox(height: 10,),
             PrimaryTextField(
               topPaadding: 18,
               bottomPadding: 18,
               hintText: 'National ID',
-              controller: widget.nidController,
-            ),
-
-            RaisedButton(
-              onPressed: () {
-                // Validate returns true if the form is valid, or false
-                // otherwise.
-                if (widget.formKey.currentState.validate()) {
-                  // If the form is valid, display a Snackbar.
-                  Scaffold.of(context)
-                      .showSnackBar(SnackBar(content: Text('Processing Data')));
-                }
-              },
-              child: Text('Submit'),
+              controller: nidController,
+              name: "National ID",
+              validation: true,
             ),
           ],
         ),
@@ -518,152 +483,146 @@ class _PatientDetailsState extends State<PatientDetails> {
 
 class ContactDetails extends StatefulWidget {
 
-  final contactFirstNameController;
-  final contactLastNameController;
-  final contactRelationshipController;
-  final contactDistrictController;
-  final contactPostalCodeController;
-  final contactTownController;
-  final contactVillageController;
-  final contactStreetNameController;
-  final contactMobilePhoneController;
-  final contactHomePhoneController;
-  final contactEmailController;
-
-  ContactDetails({
-    this.contactFirstNameController,
-    this.contactLastNameController,
-    this.contactRelationshipController,
-    this.contactDistrictController,
-    this.contactPostalCodeController,
-    this.contactTownController,
-    this.contactVillageController,
-    this.contactStreetNameController,
-    this.contactMobilePhoneController,
-    this.contactHomePhoneController,
-    this.contactEmailController
-  });
-
   @override
   _ContactDetailsState createState() => _ContactDetailsState();
 }
 
 class _ContactDetailsState extends State<ContactDetails> {
-  String selectedGender = 'male';
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text('Contact Details', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
-          SizedBox(height: 20,),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: PrimaryTextField(
-                  topPaadding: 18,
-                  bottomPadding: 18,
-                  hintText: "Contact's First Name",
-                  controller: widget.contactFirstNameController,
+      child: Form(
+        key: _contactFormKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text('Contact Details', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
+            SizedBox(height: 20,),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: PrimaryTextField(
+                    topPaadding: 18,
+                    bottomPadding: 18,
+                    hintText: "Contact's First Name",
+                    controller: contactFirstNameController,
+                    name: "Contact's First Name",
+                    validation: true
+                  ),
                 ),
-              ),
-              SizedBox(width: 20,),
-              Expanded(
-                child: PrimaryTextField(
-                  topPaadding: 18,
-                  bottomPadding: 18,
-                  hintText: "Contact's Last Name",
-                  controller: widget.contactLastNameController,
+                SizedBox(width: 20,),
+                Expanded(
+                  child: PrimaryTextField(
+                    topPaadding: 18,
+                    bottomPadding: 18,
+                    hintText: "Contact's Last Name",
+                    controller: contactLastNameController,
+                    name: "Contact's Last Name",
+                    validation: true
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
 
-          SizedBox(height: 30,),
+            SizedBox(height: 10,),
 
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'Relationship with contact',
-            controller: widget.contactRelationshipController,
-          ),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'Relationship with contact',
+              controller: contactRelationshipController,
+              name: "Relationship",
+              validation: true
+            ),
 
 
-          SizedBox(height: 30,),
-          Divider(),
+            Divider(),
 
-          SizedBox(height: 20,),
+            SizedBox(height: 10,),
 
-          Text("Contact's Address", style: TextStyle(fontSize: 16),),
-          SizedBox(height: 20,),
+            Text("Contact's Address", style: TextStyle(fontSize: 16),),
+            SizedBox(height: 20,),
 
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'District',
-            controller: widget.contactDistrictController,
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'Postal Code',
-            controller: widget.contactPostalCodeController,
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'Town',
-            controller: widget.contactTownController,
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'Village',
-            controller: widget.contactVillageController,
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'Street Name',
-            controller: widget.contactStreetNameController,
-          ),
-          
-          SizedBox(height: 30,),
-          Divider(),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'District',
+              controller: contactDistrictController,
+              name: "District",
+              validation: true
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'Postal Code',
+              controller: contactPostalCodeController,
+              name: "Postal Code",
+              validation: true,
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'Town',
+              controller: contactTownController,
+              name: "Town",
+              validation: true
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'Village',
+              controller: contactVillageController,
+              name: "Village",
+              validation: true
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'Street Name',
+              controller: contactStreetNameController,
+              name: "Street Name",
+              validation: true
+            ),
+            
+            Divider(),
 
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            prefixIcon: Icon(Icons.phone),
-            hintText: "Contact's Mobile Phone",
-            controller: widget.contactMobilePhoneController,
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            prefixIcon: Icon(Icons.phone),
-            hintText: "Contact's Home Phone (Optional)",
-            controller: widget.contactHomePhoneController,
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            prefixIcon: Icon(Icons.email),
-            hintText: "Contact's Email Address (Optional)",
-            controller: widget.contactEmailController,
-          ),
-          SizedBox(height: 30,),
-        ],
+            SizedBox(height: 20,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              prefixIcon: Icon(Icons.phone),
+              hintText: "Contact's Mobile Phone",
+              controller: contactMobilePhoneController,
+              name: "Mobile number",
+              validation: true,
+              type: TextInputType.number
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              prefixIcon: Icon(Icons.phone),
+              hintText: "Contact's Home Phone (Optional)",
+              controller: contactHomePhoneController,
+              type: TextInputType.number
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              prefixIcon: Icon(Icons.email),
+              hintText: "Contact's Email Address (Optional)",
+              controller: contactEmailController,
+            ),
+            SizedBox(height: 30,),
+          ],
+        ),
       ),
     );
   }
@@ -740,7 +699,6 @@ class _AddPhotoState extends State<AddPhoto> {
               )
             ),
           ),
-
           
         ],
       ),

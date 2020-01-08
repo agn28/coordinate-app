@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 //urls
 const String apiUrl = 'https://fhirapi.monarko.com';
-const String localUrl = 'http://20e471d0.ngrok.io/api/v1/';
+const String localUrl = 'http://e294ceb5.ngrok.io/api/v1/';
 
 
 const kTextInputColorGrey = Color(0xFFE5E5E5);

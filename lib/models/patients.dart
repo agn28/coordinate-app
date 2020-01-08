@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:nhealth/repositories/local/database_creator.dart';
+import 'package:nhealth/repositories/local/local_patient_repository.dart';
 import '../constants/constants.dart';
 import 'dart:convert';
 
@@ -8,38 +10,6 @@ import './patient.dart';
 class Patients with ChangeNotifier{
   List<Patient> _patients = [];
   Patient _patient;
-
-  // List<Patient> get getPatients {
-  //   return [..._patients];
-  // }
-
-  createPatient(formData) async {
-
-    var data = {
-      "meta": {
-        "performed_by": "9b900fa6-209e-11ea-978f-2e728ce88125",
-      },
-      "body": formData
-
-    };
-
-    print(formData);
-
-    return;
-
-    await http.post(
-      localUrl + 'patients',
-      headers: {
-        'Accept': 'application/json'
-      },
-      body: json.encode(data)
-    ).then((response) => {
-      print('response ' + response.body)
-      
-    }).catchError((error) => {
-      print('error ' + error.toString())
-    });
-  }
 
   getPatientById(id) async {
     print(id);
