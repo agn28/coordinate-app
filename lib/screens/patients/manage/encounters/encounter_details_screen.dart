@@ -5,6 +5,7 @@ import 'package:nhealth/controllers/assessment_controller.dart';
 
 class EncounterDetailsScreen extends CupertinoPageRoute {
   final assessment;
+
   EncounterDetailsScreen(this.assessment)
       : super(builder: (BuildContext context) => new EncounterDetails(assessment));
 
@@ -21,7 +22,6 @@ class EncounterDetails extends StatefulWidget {
 class _EncounterDetailsState extends State<EncounterDetails> {
   @override
   void initState() {
-    // TODO: implement initState
     _getObservations();
     super.initState();
   }

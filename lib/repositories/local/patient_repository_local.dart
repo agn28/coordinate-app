@@ -6,6 +6,7 @@ class PatientReposioryLocal {
   getAllPatients() async {
     final sql = '''SELECT * FROM ${DatabaseCreator.patientTable}''';
     final data = await db.rawQuery(sql);
+    
     return data;
   }
 

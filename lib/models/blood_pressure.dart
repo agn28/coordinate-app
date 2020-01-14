@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nhealth/models/patient.dart';
 
-// import './blood_pressure_item.dart';
-
 class BloodPressureItem with ChangeNotifier {
   final String arm;
   final double  systolic;
@@ -16,21 +14,14 @@ class BloodPressureItem with ChangeNotifier {
     this.pulse
   );
 }
-double test = 1;
 List<BloodPressureItem> _items = [];
 List _bpItems = [];
 
 class BloodPressure {
-  // List<BloodPressureItem> _items = [];
-  // double test = 1;
 
   BloodPressureItem addItem(String arm, double systolic, double diastolic, double pulse ) {
-
-    // print(systolic);
     _items.add(BloodPressureItem(arm, systolic, diastolic, pulse));
     
-    test = test + systolic;
-    print(_items.length);
     return BloodPressureItem(arm, systolic, diastolic, pulse);
   }
 
@@ -38,16 +29,16 @@ class BloodPressure {
     if (items.isEmpty) {
       return 'Error! No data available!';
     }
+
     var data;
     _bpItems = [];
+
     formData['items'].forEach((item) => {
       data = _prepareBloodPressureData(formData, item),
       _bpItems.add(data),
-      //print(_bpItems),
     });
 
     return 'success';
-
   }
 
   _prepareBloodPressureData(formData, item) {

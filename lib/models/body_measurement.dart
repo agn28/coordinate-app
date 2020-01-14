@@ -5,12 +5,8 @@ List _items = [];
 List _bmItems = [];
 
 class BodyMeasurement {
-  // List<BloodPressureItem> _items = [];
-  // double test = 1;
 
   addItem(type, value, unit, comment, device) {
-
-    print(_items);
     _items.removeWhere((item) => item['type'] == type.toLowerCase());
 
     _items.add({
@@ -21,19 +17,19 @@ class BodyMeasurement {
       'device': device
     });
 
-    return;
+    return 'success';
   }
-    // _items.update();
-    // return;
   
   addBmItem() {
     if (items.length < 3) {
       return 'Error! All steps are not completed.';
     }
+
     _bmItems = [];
     _items.forEach((item) => {
       _bmItems.add(_prepareData(item))
     });
+    
     return 'success';
   }
 

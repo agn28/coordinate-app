@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-test/blood_test_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/body-measurements/measurements_screen.dart';
-import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/tobacco_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/questionnaires_screen.dart';
 import './blood-pressure/add_blood_pressure_screen.dart';
 

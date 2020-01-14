@@ -3,8 +3,6 @@ import 'package:nhealth/constants/constants.dart';
 import './repositories/local/database_creator.dart';
 import 'package:provider/provider.dart';
 
-import './models/patients.dart';
-
 import './screens/auth_screen.dart';
 
 void main() async {

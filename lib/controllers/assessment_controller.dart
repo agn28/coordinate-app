@@ -25,15 +25,12 @@ class AssessmentController {
           'meta': parsedData['meta']
         })
       }
-      
     });
     return data;
   }
 
   getObservationsByAssessment() async {
     var observations = await AssessmentRepositoryLocal().getAllObservations();
-    print(observations);
-    return;
     var data = [];
     var parsedData;
 
@@ -46,7 +43,6 @@ class AssessmentController {
           'meta': parsedData['meta']
         })
       }
-      
     });
     return data;
   }
@@ -76,43 +72,4 @@ class AssessmentController {
     return data;
   }
   
-  static addBloodPressure(formData) async {
-    var data;
-
-    print(bloodPressures);
-    // return;
-
-    await formData['items'].forEach((item) => {
-      
-      data = _prepareBloodPressureData(formData, item),
-      bloodPressures.add(data),
-    });
-    print(BloodPressure().items);
-
-  }
-
-  static _prepareBloodPressureData(formData, item) {
-    var data = {
-      "meta": {
-        "collected_by": "8vLsBJkEOGOQyyLXQ2vZzycmqQX2",
-        "start_time": "17 December, 2019 12:00",
-        "end_time": "17 December, 2019 12:05"
-      },
-      "body": {
-        "type": "blood_pressure",
-        "data": {
-          'arm': item.arm,
-          'systolic': item.systolic,
-          'diastolic': item.diastolic,
-          'pulse_rate': item.pulse,
-        },
-        "comment": formData['comment'],
-        'patient_id': Patient().getPatient()['uuid'],
-        'performed_by': formData['performed_by']
-      }
-    };
-
-    return data;
-  }
-
 }

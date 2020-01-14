@@ -9,8 +9,6 @@ import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-test/blood_test_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/body-measurements/measurements_screen.dart';
-import 'package:nhealth/screens/patients/manage/encounters/observations/new_observation_screen.dart';
-import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/tobacco_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/questionnaires_screen.dart';
 
 
@@ -20,24 +18,9 @@ class NewEncounterScreen extends CupertinoPageRoute {
   NewEncounterScreen()
       : super(builder: (BuildContext context) => new NewEncounter());
 
-
-  // OPTIONAL IF YOU WISH TO HAVE SOME EXTRA ANIMATION WHILE ROUTING
-  // @override
-  // Widget buildPage(BuildContext context, Animation<double> animation,
-  //     Animation<double> secondaryAnimation) {
-  //   return new FadeTransition(opacity: animation, child: new NewEncounter());
-  // }
 }
 
-// class SecondPage extends StatefulWidget {
-//   @override
-//   _SecondPageState createState() => new _SecondPageState();
-// }
-
 class NewEncounter extends StatefulWidget {
-
-  // Patient patient;
-  // NewEncounterScreen(this.patient);
 
   @override
   _NewEncounterState createState() => _NewEncounterState();
@@ -46,7 +29,6 @@ class NewEncounter extends StatefulWidget {
 class _NewEncounterState extends State<NewEncounter> {
   String selectedType = 'In-clinic Screening';
   final commentController = TextEditingController();
-  
   
   @override
   void initState() {

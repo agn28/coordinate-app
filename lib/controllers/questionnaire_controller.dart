@@ -12,19 +12,14 @@ var _questionnaires = [];
 class QuestionnaireController {
 
   create(type, answers) {
-    // print(answers);
-
     var questions = Questionnaire().questions.where((qn) => qn['type'] == type).first;
     var data = [];
+    
     questions['items'].forEach((item) => {
       data.add(_prepareData(questions, item, answers))
     });
 
-    print(data);
-
     return;
-    // var data = _prepareData(type, comment);
-    // return AssessmentRepositoryLocal().create(data);
   }
 
   _prepareData(questions, item, answers) {

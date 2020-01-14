@@ -6,8 +6,6 @@ import 'dart:convert';
 class PatientRepository {
 
   static create(data) async {
-    // print(jsonEncode(data));
-    // return;
     await http.post(
       localUrl + 'patients',
       headers: {

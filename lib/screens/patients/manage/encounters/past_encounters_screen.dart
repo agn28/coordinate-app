@@ -162,44 +162,6 @@ class _PastEncountersState extends State<PastEncounters> {
             ),
 
             Column(children: list),
-            
-
-            // Container(
-            //   decoration: BoxDecoration(
-            //     border: Border(
-            //       bottom: BorderSide(width: .5, color: Colors.black38)
-            //     )
-            //   ),
-            //   child: FlatButton(
-            //     onPressed: () => Navigator.of(context).push(EncounterDetailsScreen()),
-            //     child: Column(
-            //       children: <Widget>[
-            //         Container(
-            //           padding: EdgeInsets.only(top: 20, bottom: 20),
-            //           child: Row(
-            //             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            //             children: <Widget>[
-            //               Expanded(
-            //                 child: Text('Jan 2, 2019', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
-            //               ),
-            //               Expanded(
-            //                 child: Text('Home Visit', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
-            //               ),
-            //               Expanded(
-            //                 child: Container(
-            //                   alignment: Alignment.centerRight,
-            //                   child: Icon(Icons.arrow_forward, color: kPrimaryColor,),
-            //                 )
-            //               )
-            //             ],
-            //           )
-            //         )
-            //       ],
-            //     )
-            //   )
-            // ),
-
-            // SizedBox(height: 30,),
 
           ],
         ),

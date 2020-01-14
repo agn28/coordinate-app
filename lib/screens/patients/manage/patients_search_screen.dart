@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:nhealth/models/patient.dart';
-import 'package:nhealth/models/patients.dart';
 import 'package:nhealth/repositories/local/patient_repository_local.dart';
 import 'package:nhealth/screens/patients/manage/patient_records_screen.dart';
 
@@ -28,26 +27,20 @@ class _SearchPatientsState extends State<SearchPatients> {
 
   bool isLoading = true;
   Future getData() async {
-    
     showSearch(context: context, delegate: DataSearch());
-    // var data = jsonDecode(response.body);
-  
-    // print(data['entry']);
-    
   }
 
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
     var patients = PatientController().getAllPatients();
 
     patients.then((data) => {
-      // print(patients),
       isLoading = false,
       showSearch(context: context, delegate: DataSearch(patients: data, isLoading: isLoading))
 
     });
+
+    super.initState();
   }
 
   @override
@@ -77,20 +70,6 @@ class DataSearch extends SearchDelegate<String> {
   final patients;
   bool isLoading;
 
-  // final patients = [
-  //   {
-  //     "name": 'Aklima Khatun',
-  //     "details": '31Y F - 19912312932'
-  //   }, 
-  //   {
-  //     "name": 'Ahnaf Begum',
-  //     "details": '45Y F - 12341245511'
-  //   },
-  //   {
-  //     "name": 'Amir Jahan',
-  //     "details": '18Y F - 42413562436'
-  //   }
-  // ];
   DataSearch({this.patients, this.isLoading});
 
   @override
@@ -123,8 +102,6 @@ class DataSearch extends SearchDelegate<String> {
   @override
   Widget buildSuggestions(BuildContext context) {
     // show when someone searches for something
-    // print(patients);
-    // final suggestionList = query.isEmpty ? recentCities : cities.where((c) => c.startsWith(query)).toList();
     final suggestionList = patients.where((c) => c['data']['name'].toString().startsWith(query)).toList();
 
     return isLoading ? Center(child: CircularProgressIndicator()) : ListView.builder(

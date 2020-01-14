@@ -12,8 +12,7 @@ class PatientController {
     var patients = await PatientReposioryLocal().getAllPatients();
     var data = [];
     var parsedData;
-    print(patients);
-    // return;
+
     await patients.forEach((patient) => {
       parsedData = jsonDecode(patient['data']),
       data.add({
@@ -25,21 +24,17 @@ class PatientController {
 
     return data;
   }
+
   create(formData) {
-
     final data = _prepareData(formData);
-
     var localData = jsonEncode(data);
-    //LocalPatientReposiory.create(localData, 'not synced');
     PatientReposioryLocal().create(localData);
-    //PatientRepository.create(data);
-    return;
 
+    return 'success';
   }
 
   _prepareData(formData) {
     final age = _calculateAge(formData['birth_year'], formData['birth_month'], formData['birth_date']);
-
     formData.remove('birth_date');
     formData.remove('birth_month');
     formData.remove('birth_year');
@@ -50,12 +45,11 @@ class PatientController {
         "performed_by": "9b900fa6-209e-11ea-978f-2e728ce88125",
       },
       "body": formData
-
     };
     return data;
   }
 
-  static _calculateAge(year, month, date) {
+  _calculateAge(year, month, date) {
     final birthDay = DateTime(int.parse(year), int.parse(month), int.parse(date));
     final now = DateTime.now();
     final ageInDays = now.difference(birthDay).inDays;

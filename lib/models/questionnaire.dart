@@ -21,13 +21,11 @@ var _questions = [
 class Questionnaire {
 
   addQuestionnaire(type, answers) {
-
     var questions = Questionnaire().questions.where((qn) => qn['type'] == type).first;
+
     questions['items'].forEach((item) => {
       _qnItems.add(_prepareData(questions, item, answers, type))
     });
-
-    print(_qnItems);
 
     return 'success';
   }
