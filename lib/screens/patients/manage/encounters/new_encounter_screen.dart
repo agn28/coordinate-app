@@ -1,13 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/controllers/assessment_controller.dart';
+import 'package:nhealth/models/blood_pressure.dart';
+import 'package:nhealth/models/blood_test.dart';
+import 'package:nhealth/models/body_measurement.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-test/blood_test_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/body-measurements/measurements_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/new_observation_screen.dart';
-import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/questionnaire_screen.dart';
+import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/tobacco_screen.dart';
+import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/questionnaires_screen.dart';
 
+
+final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
 class NewEncounterScreen extends CupertinoPageRoute {
   NewEncounterScreen()
@@ -27,14 +34,47 @@ class NewEncounterScreen extends CupertinoPageRoute {
 //   _SecondPageState createState() => new _SecondPageState();
 // }
 
-class NewEncounter extends StatelessWidget {
+class NewEncounter extends StatefulWidget {
 
   // Patient patient;
   // NewEncounterScreen(this.patient);
 
   @override
+  _NewEncounterState createState() => _NewEncounterState();
+}
+
+class _NewEncounterState extends State<NewEncounter> {
+  String selectedType = 'In-clinic Screening';
+  final commentController = TextEditingController();
+  
+  
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  _getBpStatus() {
+    return BloodPressure().bpItems.length > 0 ? 'Complete' : 'Incomplete';
+  }
+
+  _getBmStatus() {
+    return BodyMeasurement().bmItems.length >= 3 ? 'Complete' : 'Incomplete';
+  }
+
+  _getBtStatus() {
+    return BloodTest().btItems.length >= 7 ? 'Complete' : 'Incomplete';
+  }
+
+  _changeType(value) {
+    setState(() {
+      selectedType = value;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Create a New Assessment', style: TextStyle(color: Colors.white),),
@@ -72,13 +112,13 @@ class NewEncounter extends StatelessWidget {
                             child: Icon(Icons.perm_identity),
                           ),
                           SizedBox(width: 15,),
-                          Text('Jahanara Begum', style: TextStyle(fontSize: 18))
+                          Text(Patient().getPatient()['data']['name'], style: TextStyle(fontSize: 18))
                         ],
                       ),
                     ),
                   ),
                   Expanded(
-                    child: Text('31Y Female', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
+                    child: Text('${Patient().getPatient()['data']['age']}Y ${Patient().getPatient()['data']['gender'].toUpperCase()}', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
                   ),
                   Expanded(
                     child: Text('PID: N-121933421', style: TextStyle(fontSize: 18))
@@ -108,20 +148,20 @@ class NewEncounter extends StatelessWidget {
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_pressure.png'),
                     text: Text('Blood Pressure', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: 'Incomplete',
+                    status: _getBpStatus(),
                     onTap: () => Navigator.of(context).push(AddBloodPressureScreen()),
                   ),
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/body_measurements.png'),
                     text: Text('Body Measurements', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: 'Incomplete',
+                    status: _getBmStatus(),
                     onTap: () => Navigator.of(context).push(MeasurementsScreen()),
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test.png'),
                     text: Text('Blood Test', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: 'Incomplete',
+                    status: _getBtStatus(),
                     onTap: () => Navigator.of(context).push(BloodTestScreen()),
                   ),
 
@@ -129,7 +169,7 @@ class NewEncounter extends StatelessWidget {
                     icon: Image.asset('assets/images/icons/questionnaire.png'),
                     text: Text('Questionnaire', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
                     status: 'Incomplete',
-                    onTap: () => Navigator.of(context).push(QuestionnaireScreen()),
+                    onTap: () => Navigator.of(context).push(QuestionnairesScreen()),
                   ),
                 ],
               )
@@ -143,7 +183,7 @@ class NewEncounter extends StatelessWidget {
                 keyboardType: TextInputType.multiline,
                 maxLines: 5,
                 style: TextStyle(color: Colors.white, fontSize: 20.0,),
-
+                controller: commentController,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.only(top: 25.0, bottom: 25.0, left: 20, right: 20),
                   filled: true,
@@ -171,16 +211,22 @@ class NewEncounter extends StatelessWidget {
                   Text('Encounter Type', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                   SizedBox(width: 20,),
                   Radio(
-                    value: 'one',
-                    groupValue: 1,
-                    onChanged: (ctx) {},
+                    value: 'In-clinic Screening',
+                    groupValue: selectedType,
+                    activeColor: kPrimaryColor,
+                    onChanged: (value) {
+                      _changeType(value);
+                    },
                   ),
                   Text("In-clininc Screening", style: TextStyle(color: Colors.black)),
 
                   Radio(
-                    value: 'one',
-                    groupValue: 1,
-                    onChanged: (ctx) {},
+                    value: 'Home Visit',
+                    activeColor: kPrimaryColor,
+                    groupValue: selectedType,
+                    onChanged: (value) {
+                      _changeType(value);
+                    },
                   ),
                   Text(
                     "Home Visit",
@@ -227,7 +273,26 @@ class NewEncounter extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4)
                 ),
                 child: FlatButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    var result = AssessmentController().create(selectedType, commentController.text);
+
+                    if (result == 'success') {
+                      _scaffoldKey.currentState.showSnackBar(
+                        SnackBar(
+                          content: Text('Data saved successfully!'),
+                          backgroundColor: Color(0xFF4cAF50),
+                        )
+                      );
+                    } else {
+                      _scaffoldKey.currentState.showSnackBar(
+                        SnackBar(
+                          content: Text(result.toString()),
+                          backgroundColor: kPrimaryRedColor,
+                        )
+                      );
+                    }
+                    
+                  },
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: Text('Save Assessment', style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                 ),
@@ -276,7 +341,10 @@ class EncounnterSteps extends StatelessWidget {
             ),
             Expanded(
               flex: 2,
-              child: Text(status, style: TextStyle(color: kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.w500),),
+              child: Text(status, style: TextStyle(
+                color: status == 'Incomplete' ? kPrimaryRedColor : kPrimaryGreenColor,
+                fontSize: 18,
+                fontWeight: FontWeight.w500),),
             ),
             
             Expanded(

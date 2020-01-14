@@ -7,6 +7,8 @@ Database db;
 
 class DatabaseCreator {
   static const patientTable = 'patients';
+  static const assessmentTable = 'assessments';
+  static const observationTable = 'observations';
 
   static void databaseLog(String functionName, String sql,
       [List<Map<String, dynamic>> selectQueryResult, int insertAndUpdateQueryResult, List<dynamic> params]) {
@@ -25,8 +27,29 @@ class DatabaseCreator {
   Future<void> createPatientsTable(Database db) async {
     final sql = '''CREATE TABLE $patientTable
     (
-      id INTEGER AUTO_INCREMENT PRIMARY KEY,
-      uuid TEXT,
+      uuid TEXT PRIMARY KEY,
+      data TEXT,
+      status TEXT
+    )''';
+
+    await db.execute(sql);
+  }
+
+  Future<void> createAssessmentsTable(Database db) async {
+    final sql = '''CREATE TABLE $assessmentTable
+    (
+      uuid TEXT PRIMARY KEY,
+      data TEXT,
+      status TEXT
+    )''';
+
+    await db.execute(sql);
+  }
+
+  Future<void> createObservationsTable(Database db) async {
+    final sql = '''CREATE TABLE $observationTable
+    (
+      uuid TEXT PRIMARY KEY,
       data TEXT,
       status TEXT
     )''';
@@ -57,5 +80,7 @@ class DatabaseCreator {
 
   Future<void> onCreate(Database db, int version) async {
     await createPatientsTable(db);
+    await createAssessmentsTable(db);
+    await createObservationsTable(db);
   }
 }

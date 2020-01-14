@@ -17,16 +17,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      builder: (ctx) => Patients(),
-        child: MaterialApp(
-        theme: ThemeData(
-          primaryColor: kPrimaryColor,
-          backgroundColor: Colors.white
-        ),
-        home: AuthScreen(),
-      ),
-    );
+    return MaterialApp(
+    theme: ThemeData(
+      primaryColor: kPrimaryColor,
+      backgroundColor: Colors.white
+    ),
+    home: AuthScreen(),
+      );
   }
 }
 

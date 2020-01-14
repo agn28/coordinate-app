@@ -3,26 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/body_measurement.dart';
-import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/new_observation_screen.dart';
+import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/tobacco_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-class MeasurementsScreen extends CupertinoPageRoute {
-  MeasurementsScreen()
-      : super(builder: (BuildContext context) => new Measurements());
+class QuestionnairesScreen extends CupertinoPageRoute {
+  QuestionnairesScreen()
+      : super(builder: (BuildContext context) => new Questionnaires());
 
 }
 
-class Measurements extends StatefulWidget {
+class Questionnaires extends StatefulWidget {
 
   @override
-  _MeasurementsState createState() => _MeasurementsState();
+  _QuestionnairesState createState() => _QuestionnairesState();
 }
 
-class _MeasurementsState extends State<Measurements> {
+class _QuestionnairesState extends State<Questionnaires> {
 
   @override
   void initState() {
@@ -30,7 +30,7 @@ class _MeasurementsState extends State<Measurements> {
   }
 
   _getStatus(type) {
-    return BodyMeasurement().hasItem(type) ? 'Complete' : 'Incmplete';
+    return BodyMeasurement().hasItem(type) ? 'Complete' : 'Incomplete';
   }
 
   @override
@@ -74,13 +74,13 @@ class _MeasurementsState extends State<Measurements> {
                             child: Icon(Icons.perm_identity),
                           ),
                           SizedBox(width: 15,),
-                          Text(Patient().getPatient()['data']['name'], style: TextStyle(fontSize: 18))
+                          Text('Jahanara Begum', style: TextStyle(fontSize: 18))
                         ],
                       ),
                     ),
                   ),
                   Expanded(
-                    child: Text('${Patient().getPatient()['data']['age']}Y ${Patient().getPatient()['data']['gender'].toUpperCase()}', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
+                    child: Text('31Y Female', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
                   ),
                   Expanded(
                     child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
@@ -109,53 +109,39 @@ class _MeasurementsState extends State<Measurements> {
                 children: <Widget>[
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_pressure.png'),
-                    text: Text('Height', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: _getStatus('height'),
+                    text: Text('Tobacco', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                    status: _getStatus('tobacco'),
                     onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AddDialogue(
-                            title: 'Height',
-                            inputText: 'height',
-                          );
-                        } 
-                      );
+                      Navigator.of(context).push(TobaccoScreen());
                     },
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test.png'),
-                    text: Text('Weight', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: _getStatus('weight'),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AddDialogue(
-                            title: 'Weight',
-                            inputText: 'weight',
-                          );
-                        } 
-                      );
-                    },
+                    text: Text('Alcohol', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                    status: _getStatus('alcohol'),
+                    onTap: () {},
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/questionnaire.png'),
-                    text: Text('Waist/Hip', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: _getStatus('waist/hip'),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AddDialogue(
-                            title: 'Waist/Hip',
-                            inputText: 'waist/hip',
-                          );
-                        } 
-                      );
-                    },
+                    text: Text('Diet', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                    status: _getStatus('diet'),
+                    onTap: () {},
+                  ),
+
+                  EncounnterSteps(
+                    icon: Image.asset('assets/images/icons/questionnaire.png'),
+                    text: Text('Current Medication', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                    status: _getStatus('current medication'),
+                    onTap: () {},
+                  ),
+
+                  EncounnterSteps(
+                    icon: Image.asset('assets/images/icons/questionnaire.png'),
+                    text: Text('Medical History', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                    status: _getStatus('medical history'),
+                    onTap: () {},
                   ),
                 ],
               )

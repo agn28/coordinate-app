@@ -1,21 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/new_observation_screen.dart';
+import '../../../../../../models/blood_test.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 
+final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
 class BloodTestScreen extends CupertinoPageRoute {
   BloodTestScreen()
-      : super(builder: (BuildContext context) => new BloodTest());
+      : super(builder: (BuildContext context) => new BloodTests());
 
 }
 
-class BloodTest extends StatelessWidget {
+class BloodTests extends StatelessWidget {
+  _getStatus(type) {
+    return BloodTest().hasItem(type) ? 'Complete' : 'Incmplete';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Blood Tests', style: TextStyle(color: kPrimaryColor),),
@@ -101,16 +109,15 @@ class BloodTest extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   EncounnterSteps(
-                    isCompleted: false,
                     icon: Image.asset('assets/images/icons/blood_test_common.png'),
                     text: Text('Total Cholesterol', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: 'Incomplete',
+                    status: _getStatus('Total Cholesterol'),
                     onTap: () {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AddTestsDialogue(
-                            text: 'Total Cholesterol',
+                            title: 'Total Cholesterol',
                           );
                         } 
                       );
@@ -118,16 +125,15 @@ class BloodTest extends StatelessWidget {
                   ),
 
                   EncounnterSteps(
-                    isCompleted: true,
                     icon: Image.asset('assets/images/icons/blood_test_common.png'),
                     text: Text('HDL', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: 'Completed',
+                    status: _getStatus('HDL'),
                     onTap: () {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AddTestsDialogue(
-                            text: 'HDL',
+                            title: 'HDL',
                           );
                         } 
                       );
@@ -135,16 +141,15 @@ class BloodTest extends StatelessWidget {
                   ),
 
                   EncounnterSteps(
-                    isCompleted: false,
                     icon: Image.asset('assets/images/icons/blood_test_common.png'),
                     text: Text('Triglycerides', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: 'Incomplete',
+                    status: _getStatus('Triglycerides'),
                     onTap: () {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AddTestsDialogue(
-                            text: 'Triglycerides',
+                            title: 'Triglycerides',
                           );
                         } 
                       );
@@ -173,16 +178,15 @@ class BloodTest extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   EncounnterSteps(
-                    isCompleted: true,
                     icon: Image.asset('assets/images/icons/blood_glucose.png'),
                     text: Text('Fasting Blood Glucose', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: 'Completed',
+                    status: _getStatus('Fasting Blood Glucose'),
                     onTap: () {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AddTestsDialogue(
-                            text: 'Faasting Blood Glucose',
+                            title: 'Fasting Blood Glucose',
                           );
                         } 
                       );
@@ -190,16 +194,15 @@ class BloodTest extends StatelessWidget {
                   ),
 
                   EncounnterSteps(
-                    isCompleted: false,
                     icon: Image.asset('assets/images/icons/blood_glucose.png'),
                     text: Text('Random Blood Sugar', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: 'Incomplete',
+                    status: _getStatus('Random Blood Sugar'),
                     onTap: () {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AddTestsDialogue(
-                            text: 'Random Blood Sugar'
+                            title: 'Random Blood Sugar'
                           );
                         } 
                       );
@@ -228,16 +231,15 @@ class BloodTest extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   EncounnterSteps(
-                    isCompleted: true,
                     icon: Image.asset('assets/images/icons/hba1c.png'),
                     text: Text('Hba1c', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: 'Completed',
+                    status: _getStatus('Hba1c'),
                     onTap: () {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AddTestsDialogue(
-                            text: 'Hba1c'
+                            title: 'Hba1c'
                           );
                         } 
                       );
@@ -245,16 +247,15 @@ class BloodTest extends StatelessWidget {
                   ),
 
                   EncounnterSteps(
-                    isCompleted: false,
                     icon: Image.asset('assets/images/icons/ogtt.png'),
                     text: Text('2H OGTT', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: 'Incomplete',
+                    status: _getStatus('2H OGTT'),
                     onTap: () {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AddTestsDialogue(
-                            text: '2H OGTT'
+                            title: '2H OGTT'
                           );
                         } 
                       );
@@ -312,7 +313,26 @@ class BloodTest extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4)
                 ),
                 child: FlatButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    var result = BloodTest().addBtItem();
+                    if (result == 'success') {
+                      _scaffoldKey.currentState.showSnackBar(
+                        SnackBar(
+                          content: Text('Data saved successfully!'),
+                          backgroundColor: Color(0xFF4cAF50),
+                        )
+                      );
+                      await Future.delayed(const Duration(seconds: 1));
+                      Navigator.of(context).pop();
+                    } else {
+                      _scaffoldKey.currentState.showSnackBar(
+                        SnackBar(
+                          content: Text(result.toString()),
+                          backgroundColor: kPrimaryRedColor,
+                        )
+                      );
+                    }
+                  },
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: Text('SAVE', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                 ),
@@ -326,13 +346,12 @@ class BloodTest extends StatelessWidget {
 }
 
 class EncounnterSteps extends StatelessWidget {
-   EncounnterSteps({this.text, this.onTap, this.icon, this.status, this.isCompleted});
+   EncounnterSteps({this.text, this.onTap, this.icon, this.status});
 
    final Text text;
    final Function onTap;
    final Image icon;
    final String status;
-   final bool isCompleted;
 
   @override
   Widget build(BuildContext context) {
@@ -362,7 +381,7 @@ class EncounnterSteps extends StatelessWidget {
             ),
             Expanded(
               flex: 2,
-              child: Text(status, style: TextStyle(color: isCompleted ? kPrimaryGreenColor  : kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.w500),),
+              child: Text(status, style: TextStyle(color: status == 'Complete' ? kPrimaryGreenColor  : kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.w500),),
             ),
             
             Expanded(
@@ -382,9 +401,9 @@ class EncounnterSteps extends StatelessWidget {
 
 class AddTestsDialogue extends StatefulWidget {
   
-  final String text;
+  final String title;
 
-  AddTestsDialogue({this.text});
+  AddTestsDialogue({this.title});
 
   @override
   _AddTestsDialogueState createState() => _AddTestsDialogueState();
@@ -392,18 +411,30 @@ class AddTestsDialogue extends StatefulWidget {
 
 class _AddTestsDialogueState extends State<AddTestsDialogue> {
 
-   String selectedHeightUnit;
+  String selectedUnit;
+  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  final valueController = TextEditingController();
+  final deviceController = TextEditingController();
+  final commentController = TextEditingController();
+
+  _addItem(){
+    BloodTest().addItem(widget.title, valueController.text, selectedUnit, commentController.text, deviceController.text);
+  }
+  _clearDialogForm() {
+    valueController.clear();
+    deviceController.clear();
+    commentController.clear();
+  }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    selectedHeightUnit = 'mg/dL';
+    selectedUnit = 'mg/dL';
   }
 
-  changeArm(val) {
+  _changeUnit(val) {
     setState(() {
-      selectedHeightUnit = val;
+      selectedUnit = val;
     });
   }
 
@@ -417,118 +448,132 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
         padding: EdgeInsets.all(30),
         height: 460.0,
         color: Colors.white,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text('Set ${widget.text}', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
-            SizedBox(height: 20,),
-            Container(
-              // margin: EdgeInsets.symmetric(horizontal: 30),
-              child: Row(
-                children: <Widget>[
-                  // SizedBox(width: 20,),
-                  Container(
-                    width: 150,
-                    child: PrimaryTextField(
-                      hintText: widget.text,
-                      topPaadding: 15,
-                      bottomPadding: 15,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text('Set ${widget.title}', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+              SizedBox(height: 20,),
+              Container(
+                // margin: EdgeInsets.symmetric(horizontal: 30),
+                child: Row(
+                  children: <Widget>[
+                    // SizedBox(width: 20,),
+                    Container(
+                      width: 150,
+                      child: PrimaryTextField(
+                        hintText: widget.title,
+                        topPaadding: 15,
+                        bottomPadding: 15,
+                        controller: valueController,
+                        validation: true,
+                        type: TextInputType.number
+                      ),
                     ),
-                  ),
-                  Radio(
-                    activeColor: kPrimaryColor,
-                    value: 'mg/dL',
-                    groupValue: selectedHeightUnit,
-                    onChanged: (val) {
-                      changeArm(val);
-                    },
-                  ),
-                  Text("mg/dL", style: TextStyle(color: Colors.black)),
+                    Radio(
+                      activeColor: kPrimaryColor,
+                      value: 'mg/dL',
+                      groupValue: selectedUnit,
+                      onChanged: (val) {
+                        _changeUnit(val);
+                      },
+                    ),
+                    Text("mg/dL", style: TextStyle(color: Colors.black)),
 
-                  Radio(
-                    activeColor: kPrimaryColor,
-                    value: 'mmol/L',
-                    groupValue: selectedHeightUnit,
-                    onChanged: (val) {
-                      changeArm(val);
-                    },
-                  ),
-                  Text(
-                    "mmol/L",
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 30,),
-            Container(
-              width: double.infinity,
-              child: PrimaryTextField(
-                hintText: 'Select device',
-                topPaadding: 15,
-                bottomPadding: 15,
-              ),
-            ),
-            SizedBox(height: 30,),
-            Container(
-              width: double.infinity,
-              child: TextField(
-                style: TextStyle(color: Colors.white, fontSize: 20.0,),
-                keyboardType: TextInputType.multiline,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.only(top: 15.0, bottom: 25.0, left: 10, right: 10),
-                  filled: true,
-                  fillColor: kSecondaryTextField,
-                  border: new UnderlineInputBorder(
-                    borderSide: new BorderSide(color: Colors.white),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(4),
-                      topRight: Radius.circular(4),
-                    )
-                  ),
-                
-                  hintText: 'Comments/Notes',
-                  hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                    Radio(
+                      activeColor: kPrimaryColor,
+                      value: 'mmol/L',
+                      groupValue: selectedUnit,
+                      onChanged: (val) {
+                        _changeUnit(val);
+                      },
+                    ),
+                    Text(
+                      "mmol/L",
+                    ),
+                  ],
                 ),
-              )
-            ),
+              ),
+              SizedBox(height: 10,),
+              Container(
+                width: double.infinity,
+                child: PrimaryTextField(
+                  hintText: 'Select device',
+                  topPaadding: 15,
+                  bottomPadding: 15,
+                  controller: deviceController,
+                ),
+              ),
+              SizedBox(height: 10,),
+              Container(
+                width: double.infinity,
+                child: TextFormField(
+                  style: TextStyle(color: Colors.white, fontSize: 20.0,),
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 3,
+                  controller: commentController,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.only(top: 15.0, bottom: 25.0, left: 10, right: 10),
+                    filled: true,
+                    fillColor: kSecondaryTextField,
+                    border: new UnderlineInputBorder(
+                      borderSide: new BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(4),
+                        topRight: Radius.circular(4),
+                      )
+                    ),
+                  
+                    hintText: 'Comments/Notes',
+                    hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                  ),
+                )
+              ),
 
-            Column(
-              // mainAxisAlignment: MainAxisAlignment.start,
-              // crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  alignment: Alignment.bottomRight,
-                  margin: EdgeInsets.only(top: 50),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      Container(
-                        child: GestureDetector(
+              Column(
+                // mainAxisAlignment: MainAxisAlignment.start,
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.bottomRight,
+                    margin: EdgeInsets.only(top: 50),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Container(
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('UNABLE TO PERFORM', style: TextStyle(color: kPrimaryColor, fontSize: 18),)
+                          ),
+                        ),
+                        SizedBox(width: 30,),
+                        GestureDetector(
                           onTap: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text('UNABLE TO PERFORM', style: TextStyle(color: kPrimaryColor, fontSize: 18),)
+                          child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 18),)
                         ),
-                      ),
-                      SizedBox(width: 30,),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 18),)
-                      ),
-                      SizedBox(width: 30,),
-                      GestureDetector(
-                        onTap: () {},
-                        child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 18))
-                      ),
-                    ],
+                        SizedBox(width: 30,),
+                        GestureDetector(
+                          onTap: () {
+                            if (_formKey.currentState.validate()) {
+                              Navigator.of(context).pop();
+                              _addItem();
+                              _clearDialogForm();
+                            }
+                          },
+                          child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 18))
+                        ),
+                      ],
+                    )
                   )
-                )
-              ],
-            )
-          ],
+                ],
+              )
+            ],
+          ),
         )
       )
       

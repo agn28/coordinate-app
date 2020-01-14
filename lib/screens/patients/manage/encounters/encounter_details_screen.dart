@@ -1,14 +1,35 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/controllers/assessment_controller.dart';
 
 class EncounterDetailsScreen extends CupertinoPageRoute {
-  EncounterDetailsScreen()
-      : super(builder: (BuildContext context) => new EncounterDetails());
+  final assessment;
+  EncounterDetailsScreen(this.assessment)
+      : super(builder: (BuildContext context) => new EncounterDetails(assessment));
 
 }
 
-class EncounterDetails extends StatelessWidget {
+class EncounterDetails extends StatefulWidget {
+  final assessment;
+  EncounterDetails(this.assessment);
+
+  @override
+  _EncounterDetailsState createState() => _EncounterDetailsState();
+}
+
+class _EncounterDetailsState extends State<EncounterDetails> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    _getObservations();
+    super.initState();
+  }
+
+  _getObservations() {
+    AssessmentController().getObservationsByAssessment();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

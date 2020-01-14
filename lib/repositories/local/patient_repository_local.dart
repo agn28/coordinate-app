@@ -1,17 +1,16 @@
 import './database_creator.dart';
 import 'package:uuid/uuid.dart';
 
-class LocalPatientReposiory {
+class PatientReposioryLocal {
 
-  static Future<void> getAllPatients() async {
+  getAllPatients() async {
     final sql = '''SELECT * FROM ${DatabaseCreator.patientTable}''';
     final data = await db.rawQuery(sql);
-
-    print(data);
+    return data;
   }
 
-  static Future<void> create(data, status) async {
-    var uuid = Uuid();
+  Future<void> create(data) async {
+    var uuid = Uuid().v4();
 
     final sql = '''INSERT INTO ${DatabaseCreator.patientTable}
     (
@@ -20,7 +19,7 @@ class LocalPatientReposiory {
       status
     )
     VALUES (?,?,?)''';
-    List<dynamic> params = [uuid.v4(), data, status];
+    List<dynamic> params = [uuid, data, 'not synced'];
     final result = await db.rawInsert(sql, params);
     print('result ' + result.toString());
     DatabaseCreator.databaseLog('Add patient', sql, null, result, params);

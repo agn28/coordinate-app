@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/screens/patients/manage/encounters/encounter_details_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-test/blood_test_screen.dart';
@@ -15,7 +16,67 @@ class PastEncountersScreen extends CupertinoPageRoute {
 }
 
 
-class PastEncounters extends StatelessWidget {
+class PastEncounters extends StatefulWidget {
+  @override
+  _PastEncountersState createState() => _PastEncountersState();
+}
+
+class _PastEncountersState extends State<PastEncounters> {
+
+  var _assessments;
+  List<Widget> list = List<Widget>();
+
+  _getData() async {
+    _assessments = await AssessmentController().getAllAssessments();
+    _assessments.forEach((assessment) => {
+      print(assessment),
+      setState(() => {
+        list.add(
+          Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(width: .5, color: Colors.black38)
+              )
+            ),
+            child: FlatButton(
+              onPressed: () => Navigator.of(context).push(EncounterDetailsScreen(assessment)),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(top: 20, bottom: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(assessment['data']['assessment_date'], style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+                        ),
+                        Expanded(
+                          child: Text(assessment['data']['type'], style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+                        ),
+                        Expanded(
+                          child: Container(
+                            alignment: Alignment.centerRight,
+                            child: Icon(Icons.arrow_forward, color: kPrimaryColor,),
+                          )
+                        )
+                      ],
+                    )
+                  )
+                ],
+              )
+            )
+          ),
+        )
+      })
+    });
+  }
+
+  @override
+  void initState() {
+    _getData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,6 +91,7 @@ class PastEncounters extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+
             Container(
               padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
               decoration: BoxDecoration(
@@ -98,78 +160,46 @@ class PastEncounters extends StatelessWidget {
                 ],
               )
             ),
+
+            Column(children: list),
             
-            Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(width: .5, color: Colors.black38)
-                )
-              ),
-              child: FlatButton(
-                onPressed: () => Navigator.of(context).push(EncounterDetailsScreen()),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.only(top: 20, bottom: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          Expanded(
-                            child: Text('Jan 5, 2019', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
-                          ),
-                          Expanded(
-                            child: Text('In-Clinic', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
-                          ),
-                          Expanded(
-                            child: Container(
-                              alignment: Alignment.centerRight,
-                              child: Icon(Icons.arrow_forward, color: kPrimaryColor,),
-                            )
-                          )
-                        ],
-                      )
-                    )
-                  ],
-                )
-              )
-            ),
 
-            Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(width: .5, color: Colors.black38)
-                )
-              ),
-              child: FlatButton(
-                onPressed: () => Navigator.of(context).push(EncounterDetailsScreen()),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.only(top: 20, bottom: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          Expanded(
-                            child: Text('Jan 2, 2019', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
-                          ),
-                          Expanded(
-                            child: Text('Home Visit', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
-                          ),
-                          Expanded(
-                            child: Container(
-                              alignment: Alignment.centerRight,
-                              child: Icon(Icons.arrow_forward, color: kPrimaryColor,),
-                            )
-                          )
-                        ],
-                      )
-                    )
-                  ],
-                )
-              )
-            ),
+            // Container(
+            //   decoration: BoxDecoration(
+            //     border: Border(
+            //       bottom: BorderSide(width: .5, color: Colors.black38)
+            //     )
+            //   ),
+            //   child: FlatButton(
+            //     onPressed: () => Navigator.of(context).push(EncounterDetailsScreen()),
+            //     child: Column(
+            //       children: <Widget>[
+            //         Container(
+            //           padding: EdgeInsets.only(top: 20, bottom: 20),
+            //           child: Row(
+            //             mainAxisAlignment: MainAxisAlignment.spaceAround,
+            //             children: <Widget>[
+            //               Expanded(
+            //                 child: Text('Jan 2, 2019', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+            //               ),
+            //               Expanded(
+            //                 child: Text('Home Visit', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+            //               ),
+            //               Expanded(
+            //                 child: Container(
+            //                   alignment: Alignment.centerRight,
+            //                   child: Icon(Icons.arrow_forward, color: kPrimaryColor,),
+            //                 )
+            //               )
+            //             ],
+            //           )
+            //         )
+            //       ],
+            //     )
+            //   )
+            // ),
 
-            SizedBox(height: 30,),
+            // SizedBox(height: 30,),
 
           ],
         ),

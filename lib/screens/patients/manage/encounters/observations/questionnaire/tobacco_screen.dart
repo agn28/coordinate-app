@@ -1,21 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/controllers/questionnaire_controller.dart';
 import 'package:nhealth/custom-classes/custom_stepper.dart';
+import 'package:nhealth/models/questionnaire.dart';
 
-class QuestionnaireScreen extends CupertinoPageRoute {
-  QuestionnaireScreen()
-      : super(builder: (BuildContext context) => new Questionnaire());
+int selectedOption = -1;
+
+var _questions = Questionnaire().questions.where((qn) => qn['type'] == 'tobacco').first;
+
+int _secondQuestionOption = 0;
+int _firstQuestionOption = 0;
+
+class TobaccoScreen extends CupertinoPageRoute {
+  TobaccoScreen()
+      : super(builder: (BuildContext context) => new Tobacco());
 
 }
 
-class Questionnaire extends StatefulWidget {
+class Tobacco extends StatefulWidget {
  
   @override
-  _QuestionnaireState createState() => _QuestionnaireState();
+  _TobaccoState createState() => _TobaccoState();
 }
 
-class _QuestionnaireState extends State<Questionnaire> {
+class _TobaccoState extends State<Tobacco> {
  int _currentStep = 0; 
 
   @override
@@ -88,6 +97,7 @@ class _QuestionnaireState extends State<Questionnaire> {
                 onPressed: () {
                   setState(() {
                     _currentStep = _currentStep + 1;
+                    print(_questions);
                   });
                 },
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -99,7 +109,16 @@ class _QuestionnaireState extends State<Questionnaire> {
                   ],
                 ),
               ) : FlatButton(
-                onPressed: () {},
+                onPressed: () {
+                  // print(_secondQuestionOption);
+                  QuestionnaireController().create(
+                    'tobacco', 
+                    [
+                      _firstQuestionOption,
+                      _secondQuestionOption,
+                    ]
+                  );
+                },
                 child: Text('COMPLETE', style: TextStyle(fontSize: 20, color: kPrimaryColor))
               )
             ),
@@ -119,13 +138,8 @@ class _QuestionnaireState extends State<Questionnaire> {
       CustomStep(
         title: Text('Thumbprint'),
         content: SecondQuestion(),
-        isActive: _currentStep >= 3,
+        isActive: _currentStep >= 2,
       ),
-      CustomStep(
-        title: Text('Thumbprint'),
-        content: ThirdQuestion(),
-        isActive: _currentStep >= 3,
-      )
     ];
 
     return _steps;
@@ -143,6 +157,14 @@ class FirstQuestion extends StatefulWidget {
 }
 
 class _FirstQuestionState extends State<FirstQuestion> {
+
+  
+
+  _changeOption(value) {
+    setState(() {
+      _firstQuestionOption = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -188,7 +210,7 @@ class _FirstQuestionState extends State<FirstQuestion> {
             ),
             Container(
               margin: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
-              child: Text('Do you currently smoke any tobacco products daily, such as cigarettes, cigars or pipes?',
+              child: Text(_questions['items'][0]['question'],
                 style: TextStyle(fontSize: 18),
               )
             ),
@@ -196,35 +218,28 @@ class _FirstQuestionState extends State<FirstQuestion> {
               margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
               child: Row(
                 children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1),
-                        borderRadius: BorderRadius.circular(3)
-                      ),
-                      child: FlatButton(
-                        onPressed: () {},
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        child: Text('YES',),
-                      ),
-                    )
-                  ),
-                  SizedBox(width: 30,),
-                  Expanded(
-                    child: Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1),
-                        borderRadius: BorderRadius.circular(3)
-                      ),
-                      child: FlatButton(
-                        onPressed: () {},
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        child: Text('No'),
-                      ),
-                    )
-                  )
+                  ..._questions['items'][0]['options'].map((option) => 
+                    Expanded(
+                      child: Container(
+                        height: 60,
+                        margin: EdgeInsets.only(right: 10, left: 10),
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 1, color: _firstQuestionOption == _questions['items'][0]['options'].indexOf(option) ? Color(0xFF01579B) : Colors.black),
+                          borderRadius: BorderRadius.circular(3),
+                          color: _firstQuestionOption == _questions['items'][0]['options'].indexOf(option) ? Color(0xFFE1F5FE) : null
+                        ),
+                        child: FlatButton(
+                          onPressed: () {
+                            _changeOption(_questions['items'][0]['options'].indexOf(option));
+                          },
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          child: Text(option,
+                            style: TextStyle(color: _firstQuestionOption == _questions['items'][0]['options'].indexOf(option) ? kPrimaryColor : null),
+                          ),
+                        ),
+                      )
+                    ),
+                  ).toList()
                 ],
               )
             ),
@@ -245,7 +260,7 @@ class SecondQuestion extends StatefulWidget {
 }
 
 class _SecondQuestionState extends State<SecondQuestion> {
-
+  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -290,7 +305,7 @@ class _SecondQuestionState extends State<SecondQuestion> {
             ),
             Container(
               margin: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
-              child: Text('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ut elit nec mauris hendrerit vestibulum.',
+              child: Text(_questions['items'][1]['question'],
                 style: TextStyle(fontSize: 18),
               )
             ),
@@ -298,39 +313,23 @@ class _SecondQuestionState extends State<SecondQuestion> {
               margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
               child: Column(
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Radio(
-                        activeColor: kPrimaryColor,
-                        value: 1,
-                        groupValue: 1,
-                        onChanged: (val) {},
-                      ),
-                      Text("Never", style: TextStyle(color: Colors.black, fontSize: 18)),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Radio(
-                        activeColor: kPrimaryColor,
-                        value: 2,
-                        groupValue: 1,
-                        onChanged: (val) {},
-                      ),
-                      Text("Past (12 months back)", style: TextStyle(color: Colors.black, fontSize: 18)),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Radio(
-                        activeColor: kPrimaryColor,
-                        value: 3,
-                        groupValue: 1,
-                        onChanged: (val) {},
-                      ),
-                      Text("Current (within 12 months)", style: TextStyle(color: Colors.black, fontSize: 18)),
-                    ],
-                  ),
+                  ..._questions['items'][1]['options'].map((option) => 
+                    Row(
+                      children: <Widget>[
+                        Radio(
+                          activeColor: kPrimaryColor,
+                          value: _questions['items'][1]['options'].indexOf(option),
+                          groupValue: _secondQuestionOption,
+                          onChanged: (val) {
+                            setState(() {
+                              _secondQuestionOption = val;
+                            });
+                          },
+                        ),
+                        Text(option, style: TextStyle(color: Colors.black, fontSize: 18)),
+                      ],
+                    ),
+                  ).toList(),
                 ],
               )
             ),
@@ -345,10 +344,18 @@ class ThirdQuestion extends StatefulWidget {
     Key key,
   }) : super(key: key);
 
+  
+
   @override
   _ThirdQuestionState createState() => _ThirdQuestionState();
 }
 class _ThirdQuestionState extends State<ThirdQuestion> {
+
+  _changeOption(value) {
+    setState(() {
+      selectedOption = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -404,19 +411,19 @@ class _ThirdQuestionState extends State<ThirdQuestion> {
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      CircleOption(value: '0'),
-                      CircleOption(value: '1'),
-                      CircleOption(value: '2'),
-                      CircleOption(value: '3'),
+                      CircleOption(value: 0),
+                      CircleOption(value: 1),
+                      CircleOption(value: 2),
+                      CircleOption(value: 3),
                     ],
                   ),
                   SizedBox(height: 25,),
                   Row(
                     children: <Widget>[
-                      CircleOption(value: '4'),
-                      CircleOption(value: '5'),
-                      CircleOption(value: '6'),
-                      CircleOption(value: '7'),
+                      CircleOption(value: 4),
+                      CircleOption(value: 5),
+                      CircleOption(value: 6),
+                      CircleOption(value: 7),
                     ],
                   ),
                 ],
@@ -428,11 +435,16 @@ class _ThirdQuestionState extends State<ThirdQuestion> {
   }
  }
 
-class CircleOption extends StatelessWidget {
-  String value;
+class CircleOption extends StatefulWidget {
+  int value;
 
   CircleOption({this.value});
 
+  @override
+  _CircleOptionState createState() => _CircleOptionState();
+}
+
+class _CircleOptionState extends State<CircleOption> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -443,9 +455,18 @@ class CircleOption extends StatelessWidget {
           shape: BoxShape.circle,
           border: Border.all(width: .5)
         ),
-        child: CircleAvatar(
-        backgroundColor: Colors.transparent,
-          child: Text(value, style: TextStyle(color: Colors.black),),
+        child: GestureDetector(
+          onTap: () {
+            // _ThirdQuestionState()._changeOption(value);
+            setState(() {
+              selectedOption = widget.value;
+            });
+            print(selectedOption);
+          },
+          child: CircleAvatar(
+            backgroundColor: selectedOption == widget.value ? Color(0xFFE1F5FE) : Colors.transparent,
+            child: Text(widget.value.toString(), style: TextStyle(color: Colors.black),),
+          ),
         )
       ),
     );

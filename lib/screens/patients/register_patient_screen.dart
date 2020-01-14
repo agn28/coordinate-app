@@ -130,7 +130,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
                       if (_contactFormKey.currentState.validate()) {
                         var formData = _prepareFormData();
                         
-                        PatientController.create(formData);
+                        PatientController().create(formData);
                         _currentStep = _currentStep + 1;
                       }
                       // return;
