@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
-import 'package:nhealth/screens/patients/manage/encounters/observations/new_observation_screen.dart';
 import '../../../../../../models/blood_test.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 
@@ -16,9 +15,6 @@ class BloodTestScreen extends CupertinoPageRoute {
 }
 
 class BloodTests extends StatelessWidget {
-  _getStatus(type) {
-    return BloodTest().hasItem(type) ? 'Complete' : 'Incmplete';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,50 +106,17 @@ class BloodTests extends StatelessWidget {
                 children: <Widget>[
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test_common.png'),
-                    text: Text('Total Cholesterol', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: _getStatus('Total Cholesterol'),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AddTestsDialogue(
-                            title: 'Total Cholesterol',
-                          );
-                        } 
-                      );
-                    },
+                    text: 'Total Cholesterol',
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test_common.png'),
-                    text: Text('HDL', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: _getStatus('HDL'),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AddTestsDialogue(
-                            title: 'HDL',
-                          );
-                        } 
-                      );
-                    },
+                    text: 'HDL',
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test_common.png'),
-                    text: Text('Triglycerides', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: _getStatus('Triglycerides'),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AddTestsDialogue(
-                            title: 'Triglycerides',
-                          );
-                        } 
-                      );
-                    },
+                    text: 'Triglycerides',
                   ),
                 ],
               )
@@ -179,34 +142,12 @@ class BloodTests extends StatelessWidget {
                 children: <Widget>[
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_glucose.png'),
-                    text: Text('Fasting Blood Glucose', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: _getStatus('Fasting Blood Glucose'),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AddTestsDialogue(
-                            title: 'Fasting Blood Glucose',
-                          );
-                        } 
-                      );
-                    },
+                    text: 'Fasting Blood Glucose',
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_glucose.png'),
-                    text: Text('Random Blood Sugar', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: _getStatus('Random Blood Sugar'),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AddTestsDialogue(
-                            title: 'Random Blood Sugar'
-                          );
-                        } 
-                      );
-                    },
+                    text: 'Random Blood Sugar',
                   ),
                 ],
               )
@@ -232,47 +173,22 @@ class BloodTests extends StatelessWidget {
                 children: <Widget>[
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/hba1c.png'),
-                    text: Text('Hba1c', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: _getStatus('Hba1c'),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AddTestsDialogue(
-                            title: 'Hba1c'
-                          );
-                        } 
-                      );
-                    },
+                    text: 'Hba1c'
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/ogtt.png'),
-                    text: Text('2H OGTT', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: _getStatus('2H OGTT'),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AddTestsDialogue(
-                            title: '2H OGTT'
-                          );
-                        } 
-                      );
-                    },
+                    text: '2H OGTT',
                   ),
                 ],
               )
             ),
-
-            
 
             SizedBox(height: 30,),
           ],
         ),
       ),
 
-      
       bottomNavigationBar: Container(
         height: 90,
         padding: EdgeInsets.symmetric(horizontal: 20),
@@ -345,18 +261,43 @@ class BloodTests extends StatelessWidget {
   }
 }
 
-class EncounnterSteps extends StatelessWidget {
-   EncounnterSteps({this.text, this.onTap, this.icon, this.status});
+class EncounnterSteps extends StatefulWidget {
+   EncounnterSteps({this.text, this.icon});
 
-   final Text text;
-   final Function onTap;
+   final String text;
    final Image icon;
-   final String status;
+
+  @override
+  _EncounnterStepsState createState() => _EncounnterStepsState();
+}
+
+class _EncounnterStepsState extends State<EncounnterSteps> {
+  String status = 'Incomplete';
+
+  @override
+  void initState() {
+    super.initState();
+    setStatus();
+  }
+
+  setStatus() {
+    status = BloodTest().hasItem(widget.text) ? 'Complete' : 'Incomplete';
+  }
 
   @override
   Widget build(BuildContext context) {
     return FlatButton(
-      onPressed: onTap,
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AddTestsDialogue(
+              parent: this,
+              title: widget.text
+            );
+          } 
+        );
+      },
       child: Container(
         // padding: EdgeInsets.only(left: 20, right: 20),
         width: double.infinity,
@@ -370,13 +311,13 @@ class EncounnterSteps extends StatelessWidget {
           children: <Widget>[
             Expanded(
               flex: 1,
-              child: icon,
+              child: widget.icon,
             ),
             Expanded(
               flex: 5,
               child: Container(
                 padding: EdgeInsets.only(left: 20),
-                child: text,
+                child: Text(widget.text, style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
               )
             ),
             Expanded(
@@ -402,8 +343,9 @@ class EncounnterSteps extends StatelessWidget {
 class AddTestsDialogue extends StatefulWidget {
   
   final String title;
+  _EncounnterStepsState parent;
 
-  AddTestsDialogue({this.title});
+  AddTestsDialogue({this.parent, this.title});
 
   @override
   _AddTestsDialogueState createState() => _AddTestsDialogueState();
@@ -419,6 +361,9 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
 
   _addItem(){
     BloodTest().addItem(widget.title, valueController.text, selectedUnit, commentController.text, deviceController.text);
+    this.widget.parent.setState(() => {
+      this.widget.parent.setStatus()
+    });
   }
   _clearDialogForm() {
     valueController.clear();

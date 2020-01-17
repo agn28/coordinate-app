@@ -55,6 +55,7 @@ class BodyMeasurement {
   }
 
   bool hasItem (type) {
+    print(type);
     return _items.where((item) => item['type'] == type.toLowerCase()).isNotEmpty;
   }
 

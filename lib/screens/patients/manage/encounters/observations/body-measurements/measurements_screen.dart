@@ -19,18 +19,14 @@ class MeasurementsScreen extends CupertinoPageRoute {
 class Measurements extends StatefulWidget {
 
   @override
-  _MeasurementsState createState() => _MeasurementsState();
+  MeasurementsState createState() => MeasurementsState();
 }
 
-class _MeasurementsState extends State<Measurements> {
+class MeasurementsState extends State<Measurements> {
 
   @override
   void initState() {
     super.initState();
-  }
-
-  _getStatus(type) {
-    return BodyMeasurement().hasItem(type) ? 'Complete' : 'Incmplete';
   }
 
   @override
@@ -109,53 +105,17 @@ class _MeasurementsState extends State<Measurements> {
                 children: <Widget>[
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_pressure.png'),
-                    text: Text('Height', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: _getStatus('height'),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AddDialogue(
-                            title: 'Height',
-                            inputText: 'height',
-                          );
-                        } 
-                      );
-                    },
+                    text: 'Height',
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test.png'),
-                    text: Text('Weight', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: _getStatus('weight'),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AddDialogue(
-                            title: 'Weight',
-                            inputText: 'weight',
-                          );
-                        } 
-                      );
-                    },
+                    text: 'Weight',
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/questionnaire.png'),
-                    text: Text('Waist/Hip', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: _getStatus('waist/hip'),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AddDialogue(
-                            title: 'Waist/Hip',
-                            inputText: 'waist/hip',
-                          );
-                        } 
-                      );
-                    },
+                    text: 'Waist/Hip',
                   ),
                 ],
               )
@@ -186,11 +146,18 @@ class _MeasurementsState extends State<Measurements> {
                   borderRadius: BorderRadius.circular(4)
                 ),
                 child: FlatButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SkipAlert();
+                      },
+                    );
+                  },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('Cancel', style: TextStyle(fontSize: 19, color: kPrimaryColor, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text('UNABLE TO PERFORM', style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                 ),
-              )
+              ),
             ),
             SizedBox(width: 20),
             Expanded(
@@ -222,7 +189,7 @@ class _MeasurementsState extends State<Measurements> {
                     }
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('Save Assessment', style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text('SAVE', style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                 ),
               )
             )
@@ -234,27 +201,42 @@ class _MeasurementsState extends State<Measurements> {
 }
 
 class EncounnterSteps extends StatefulWidget {
-   EncounnterSteps({this.text, this.onTap, this.icon, this.status});
+   EncounnterSteps({this.text, this.icon});
 
-   final Text text;
-   final Function onTap;
+   final String text;
    final Image icon;
-   final String status;
 
   @override
-  _EncounnterStepsState createState() => _EncounnterStepsState();
+  EncounnterStepsState createState() => EncounnterStepsState();
 }
 
-class _EncounnterStepsState extends State<EncounnterSteps> {
+class EncounnterStepsState extends State<EncounnterSteps> {
+  String status = 'Incomplete';
+  
   @override
   void initState() {
     super.initState();
+    setStatus();
+  }
+
+  setStatus() {
+    status = BodyMeasurement().hasItem(widget.text) ? 'Complete' : 'Incomplete';
   }
 
   @override
   Widget build(BuildContext context) {
     return FlatButton(
-      onPressed: widget.onTap,
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AddDialogue(
+              parent: this,
+              title: widget.text,
+            );
+          } 
+        );
+      },
       child: Container(
         // padding: EdgeInsets.only(left: 20, right: 20),
         width: double.infinity,
@@ -274,12 +256,12 @@ class _EncounnterStepsState extends State<EncounnterSteps> {
               flex: 5,
               child: Container(
                 padding: EdgeInsets.only(left: 20),
-                child: widget.text,
+                child: Text(widget.text, style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
               )
             ),
             Expanded(
               flex: 2,
-              child: Text(widget.status, style: TextStyle(color: widget.status == 'Complete' ? kPrimaryGreenColor : kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.w500),),
+              child: Text(status, style: TextStyle(color: status == 'Complete' ? kPrimaryGreenColor : kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.w500),),
             ),
             
             Expanded(
@@ -298,10 +280,11 @@ class _EncounnterStepsState extends State<EncounnterSteps> {
 
 
 class AddDialogue extends StatefulWidget {
-  String title;
-  String inputText;
+  EncounnterStepsState parent;
 
-  AddDialogue({this.title, inputText});
+  String title;
+
+  AddDialogue({this.parent, this.title});
 
   @override
   _AddDialogueState createState() => _AddDialogueState();
@@ -318,7 +301,6 @@ class _AddDialogueState extends State<AddDialogue> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     selectedUnit = 1;
   }
@@ -326,7 +308,9 @@ class _AddDialogueState extends State<AddDialogue> {
   _addItem() {
     String unit = _getUnit();
     BodyMeasurement().addItem(widget.title, valueController.text, unit, commentController != null ? commentController.text : "", deviceController.text);
-    _EncounnterStepsState().initState();
+    this.widget.parent.setState(() => {
+      this.widget.parent.setStatus(),
+    });
   }
 
   _getUnit() {

@@ -22,7 +22,6 @@ final commentController = TextEditingController();
 final deviceController = TextEditingController();
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-
 enum Arms {
   LeftArm,
   RughtArm
@@ -489,11 +488,10 @@ class SkipAlert extends StatefulWidget {
 
 class _SkipAlertState extends State<SkipAlert> {
 
-   int selectedReason;
+  int selectedReason;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     selectedReason = 0;
   }
