@@ -16,12 +16,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-    theme: ThemeData(
-      primaryColor: kPrimaryColor,
-      backgroundColor: Colors.white
-    ),
-    home: AuthScreen(),
-      );
+      theme: ThemeData(
+        primaryColor: kPrimaryColor,
+        backgroundColor: Colors.white
+      ),
+      home: AuthScreen(),
+    );
   }
 }
 

@@ -49,10 +49,10 @@ class _PatientRecordsState extends State<PatientRecords> {
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
-        leading: new IconButton(
-          icon: new Icon(Icons.arrow_back, size: 25,),
-          onPressed: () => Navigator.of(context).pushReplacement(HomeScreen()),
-        ),
+        // leading: new IconButton(
+        //   icon: new Icon(Icons.arrow_back, size: 25,),
+        //   onPressed: () => Navigator.of(context).pushReplacement(HomeScreen()),
+        // ),
         actions: <Widget>[
           GestureDetector(
             child: Container(
