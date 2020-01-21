@@ -353,6 +353,7 @@ class _AddDialogueState extends State<AddDialogue> {
               Container(
                 // margin: EdgeInsets.symmetric(horizontal: 30),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     // SizedBox(width: 20,),
                     Container(
@@ -366,41 +367,76 @@ class _AddDialogueState extends State<AddDialogue> {
                         controller: valueController,
                       ),
                     ),
-                    Radio(
-                      activeColor: kPrimaryColor,
-                      value: 1,
-                      groupValue: selectedUnit,
-                      onChanged: (val) {
-                        changeArm(val);
-                      },
-                    ),
-                    Text(widget.title == 'Weight' ? 'kg' : 'cm', style: TextStyle(color: Colors.black)),
-
-                    Radio(
-                      activeColor: kPrimaryColor,
-                      value: 2,
-                      groupValue: selectedUnit,
-                      onChanged: (val) {
-                        changeArm(val);
-                      },
-                    ),
-                    Text(
-                      widget.title == 'Weight' ? 'pound' : 'inch',
+                    Container(
+                      padding: EdgeInsets.only(bottom: 20, left: 10),
+                      child: Row(
+                        children: <Widget>[
+                          Radio(
+                            activeColor: kPrimaryColor,
+                            value: 1,
+                            groupValue: selectedUnit,
+                            onChanged: (val) {
+                              changeArm(val);
+                            },
+                          ),
+                          Text(widget.title == 'Weight' ? 'kg' : 'cm', style: TextStyle(color: Colors.black)),
+                          SizedBox(width: 20,),
+                          Radio(
+                            activeColor: kPrimaryColor,
+                            value: 2,
+                            groupValue: selectedUnit,
+                            onChanged: (val) {
+                              changeArm(val);
+                            },
+                          ),
+                          Text(
+                            widget.title == 'Weight' ? 'pound' : 'inch',
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
               SizedBox(height: 10,),
               Container(
-                width: double.infinity,
-                child: PrimaryTextField(
-                  hintText: 'Select device',
-                  topPaadding: 15,
-                  bottomPadding: 15,
-                  controller: deviceController,
+                color: kSecondaryTextField,
+                child: DropdownButtonFormField(
+                  hint: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                  decoration: InputDecoration(
+                    fillColor: kSecondaryTextField,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                    border: UnderlineInputBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(4),
+                      topRight: Radius.circular(4),
+                    )
+                  ),
+                  ),
+                  items: [
+                    DropdownMenuItem(
+                      child: Text('Select Device', style: TextStyle(fontSize: 20, color: Colors.black45)),
+                      value: 0
+                    ),
+                    DropdownMenuItem(
+                      child: Text('D-23429'),
+                      value: 1
+                    ),
+                    DropdownMenuItem(
+                      child: Text('B-34229'),
+                      value: 2
+                    )
+                  ],
+                  value: selectedDevie,
+                  isExpanded: true,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedDevie = value;
+                    });
+                  },
                 ),
               ),
-              SizedBox(height: 10,),
+              SizedBox(height: 30,),
               Container(
                 width: double.infinity,
                 child: TextField(

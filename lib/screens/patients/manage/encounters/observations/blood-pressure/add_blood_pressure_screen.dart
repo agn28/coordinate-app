@@ -21,6 +21,7 @@ final pulseController = TextEditingController();
 final commentController = TextEditingController();
 final deviceController = TextEditingController();
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+int selectedDevie;
 
 enum Arms {
   LeftArm,
@@ -73,7 +74,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Blood Pressure'),
+        title: Text('Blood Pressure', style: TextStyle(color: Colors.black87),),
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: IconThemeData(color: kPrimaryColor),
@@ -347,7 +348,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                     ),
                   ),
 
-                  SizedBox(height: 60,),
+                  SizedBox(height: 35,),
 
                   Container(
                     // margin: EdgeInsets.symmetric(horizontal: 10),
@@ -378,10 +379,50 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
 
                   SizedBox(height: 30,),
 
-                  PrimaryTextField(
-                    hintText: 'Select a device',
-                    controller: deviceController,
+                  Container(
+                    color: kSecondaryTextField,
+                    child: DropdownButtonFormField(
+                      hint: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: kSecondaryTextField,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          topRight: Radius.circular(4),
+                        )
+                      ),
+                      ),
+                      items: [
+                        DropdownMenuItem(
+                          child: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey)),
+                          value: 0
+                        ),
+                        DropdownMenuItem(
+                          child: Text('D-23429'),
+                          value: 1
+                        ),
+                        DropdownMenuItem(
+                          child: Text('B-34229'),
+                          value: 2
+                        )
+                      ],
+                      value: selectedDevie,
+                      isExpanded: true,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedDevie = value;
+                        });
+                      },
+                    ),
                   ),
+
+                  // PrimaryTextField(
+                  //   hintText: 'Select a device',
+                  //   controller: deviceController,
+                  // ),
 
                   SizedBox(height: 50,),
                   

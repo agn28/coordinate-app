@@ -391,7 +391,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.all(30),
-        height: 460.0,
+        height: 470.0,
         color: Colors.white,
         child: Form(
           key: _formKey,
@@ -406,7 +406,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                   children: <Widget>[
                     // SizedBox(width: 20,),
                     Container(
-                      width: 150,
+                      width: 200,
                       child: PrimaryTextField(
                         hintText: widget.title,
                         topPaadding: 15,
@@ -416,41 +416,76 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                         type: TextInputType.number
                       ),
                     ),
-                    Radio(
-                      activeColor: kPrimaryColor,
-                      value: 'mg/dL',
-                      groupValue: selectedUnit,
-                      onChanged: (val) {
-                        _changeUnit(val);
-                      },
-                    ),
-                    Text("mg/dL", style: TextStyle(color: Colors.black)),
-
-                    Radio(
-                      activeColor: kPrimaryColor,
-                      value: 'mmol/L',
-                      groupValue: selectedUnit,
-                      onChanged: (val) {
-                        _changeUnit(val);
-                      },
-                    ),
-                    Text(
-                      "mmol/L",
-                    ),
+                    Container(
+                      padding: EdgeInsets.only(bottom: 20, left: 10),
+                      child: Row(
+                        children: <Widget>[
+                          Radio(
+                            activeColor: kPrimaryColor,
+                            value: 'mg/dL',
+                            groupValue: selectedUnit,
+                            onChanged: (val) {
+                              _changeUnit(val);
+                            },
+                          ),
+                          Text("mg/dL", style: TextStyle(color: Colors.black)),
+                          SizedBox(width: 20,),
+                          Radio(
+                            activeColor: kPrimaryColor,
+                            value: 'mmol/L',
+                            groupValue: selectedUnit,
+                            onChanged: (val) {
+                              _changeUnit(val);
+                            },
+                          ),
+                          Text(
+                            "mmol/L",
+                          ),
+                        ],
+                      ),
+                    )
                   ],
                 ),
               ),
               SizedBox(height: 10,),
               Container(
-                width: double.infinity,
-                child: PrimaryTextField(
-                  hintText: 'Select device',
-                  topPaadding: 15,
-                  bottomPadding: 15,
-                  controller: deviceController,
+                color: kSecondaryTextField,
+                child: DropdownButtonFormField(
+                  hint: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                  decoration: InputDecoration(
+                    fillColor: kSecondaryTextField,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                    border: UnderlineInputBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(4),
+                      topRight: Radius.circular(4),
+                    )
+                  ),
+                  ),
+                  items: [
+                    DropdownMenuItem(
+                      child: Text('Select Device', style: TextStyle(fontSize: 20, color: Colors.black45)),
+                      value: 0
+                    ),
+                    DropdownMenuItem(
+                      child: Text('D-23429'),
+                      value: 1
+                    ),
+                    DropdownMenuItem(
+                      child: Text('B-34229'),
+                      value: 2
+                    )
+                  ],
+                  value: selectedDevie,
+                  isExpanded: true,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedDevie = value;
+                    });
+                  },
                 ),
               ),
-              SizedBox(height: 10,),
+              SizedBox(height: 40,),
               Container(
                 width: double.infinity,
                 child: TextFormField(
