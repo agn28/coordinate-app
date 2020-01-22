@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/patients/manage/patient_search_new.dart';
 import './patients/manage/patients_search_screen.dart';
 import './patients/register_patient_screen.dart';
 
@@ -81,7 +83,9 @@ class Home extends StatelessWidget {
                   Container(
                     height: 50,
                     child: FlatButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(TestSearchScreen());
+                      },
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.supervisor_account, color: Colors.black54,),
@@ -124,7 +128,9 @@ class Home extends StatelessWidget {
                   Container(
                     height: 50,
                     child: FlatButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+                      },
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.exit_to_app, color: Colors.black54),
@@ -177,7 +183,7 @@ class Home extends StatelessWidget {
                         SizedBox(height: 40,),
 
                         GestureDetector(
-                          onTap: () => Navigator.of(context).push(SearchPatientsScreen()),
+                          onTap: () => Navigator.of(context).push(TestSearchScreen()),
                           child: Container(
                             height: 190,
                             width: double.infinity,
@@ -188,7 +194,7 @@ class Home extends StatelessWidget {
                                 children: <Widget>[
                                   Image.asset('assets/images/icons/manage_patient.png'),
                                   FlatButton(
-                                    onPressed: () => Navigator.of(context).push(SearchPatientsScreen()),
+                                    onPressed: () => Navigator.of(context).push(TestSearchScreen()),
                                     child: Row(
                                       children: <Widget>[
                                         Expanded(

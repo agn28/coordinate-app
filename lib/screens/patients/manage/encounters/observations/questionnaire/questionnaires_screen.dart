@@ -1,20 +1,37 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/models/blood_pressure.dart';
+import 'package:nhealth/models/body_measurement.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
-import '../../../../../../models/blood_test.dart';
+import 'package:nhealth/screens/patients/manage/encounters/observations/new_observation_screen.dart';
+import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/tobacco_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-class BloodTestScreen extends CupertinoPageRoute {
-  BloodTestScreen()
-      : super(builder: (BuildContext context) => new BloodTests());
+class QuestionnairesScreen extends CupertinoPageRoute {
+  QuestionnairesScreen()
+      : super(builder: (BuildContext context) => new Questionnaires());
 
 }
 
-class BloodTests extends StatelessWidget {
+class Questionnaires extends StatefulWidget {
+
+  @override
+  _QuestionnairesState createState() => _QuestionnairesState();
+}
+
+class _QuestionnairesState extends State<Questionnaires> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  _getStatus(type) {
+    return BodyMeasurement().hasItem(type) ? 'Complete' : 'Incomplete';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +39,7 @@ class BloodTests extends StatelessWidget {
       key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Blood Tests', style: TextStyle(color: kPrimaryColor),),
+        title: Text('Body Measurements', style: TextStyle(color: kPrimaryColor),),
         backgroundColor: Colors.white,
         elevation: 0.0,
         iconTheme: IconThemeData(color: kPrimaryColor),
@@ -83,21 +100,7 @@ class BloodTests extends StatelessWidget {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Enter blood test results (where applicable)', style: TextStyle(fontSize: 18),)
-            ),
-
-            Container(
-              height: 90,
-              width: double.infinity,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(left: 40),
-              decoration: BoxDecoration(
-                color: Color(0xFFF9F9F9),
-                border: Border(
-                  bottom: BorderSide(width: .5, color: Color(0x50000000))
-                )
-              ),
-              child: Text('Lipid Profile', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),)
+              child: Text('Complete All Components', style: TextStyle(fontSize: 22),)
             ),
             
             Container(
@@ -105,96 +108,59 @@ class BloodTests extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   EncounnterSteps(
-                    icon: Image.asset('assets/images/icons/blood_test_common.png'),
-                    text: 'Total Cholesterol',
+                    icon: Image.asset('assets/images/icons/blood_pressure.png'),
+                    text: Text('Tobacco', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                    status: _getStatus('tobacco'),
+                    onTap: () {
+                      Navigator.of(context).push(TobaccoScreen());
+                    },
                   ),
 
                   EncounnterSteps(
-                    icon: Image.asset('assets/images/icons/blood_test_common.png'),
-                    text: 'HDL',
+                    icon: Image.asset('assets/images/icons/blood_test.png'),
+                    text: Text('Alcohol', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                    status: _getStatus('alcohol'),
+                    onTap: () {},
                   ),
 
                   EncounnterSteps(
-                    icon: Image.asset('assets/images/icons/blood_test_common.png'),
-                    text: 'Triglycerides',
-                  ),
-                ],
-              )
-            ),
-
-            Container(
-              height: 90,
-              width: double.infinity,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(left: 40),
-              decoration: BoxDecoration(
-                color: Color(0xFFF9F9F9),
-                border: Border(
-                  bottom: BorderSide(width: .5, color: Color(0x50000000))
-                )
-              ),
-              child: Text('Blood', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),)
-            ),
-
-            Container(
-              color: Colors.white,
-              child: Column(
-                children: <Widget>[
-                  EncounnterSteps(
-                    icon: Image.asset('assets/images/icons/blood_glucose.png'),
-                    text: 'Fasting Blood Glucose',
+                    icon: Image.asset('assets/images/icons/questionnaire.png'),
+                    text: Text('Diet', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                    status: _getStatus('diet'),
+                    onTap: () {},
                   ),
 
                   EncounnterSteps(
-                    icon: Image.asset('assets/images/icons/blood_glucose.png'),
-                    text: 'Random Blood Sugar',
-                  ),
-                ],
-              )
-            ),
-
-            Container(
-              height: 90,
-              width: double.infinity,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(left: 40),
-              decoration: BoxDecoration(
-                color: Color(0xFFF9F9F9),
-                border: Border(
-                  bottom: BorderSide(width: .5, color: Color(0x50000000))
-                )
-              ),
-              child: Text('Others', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),)
-            ),
-
-            Container(
-              color: Colors.white,
-              child: Column(
-                children: <Widget>[
-                  EncounnterSteps(
-                    icon: Image.asset('assets/images/icons/hba1c.png'),
-                    text: 'Hba1c'
+                    icon: Image.asset('assets/images/icons/questionnaire.png'),
+                    text: Text('Current Medication', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                    status: _getStatus('current medication'),
+                    onTap: () {},
                   ),
 
                   EncounnterSteps(
-                    icon: Image.asset('assets/images/icons/ogtt.png'),
-                    text: '2H OGTT',
+                    icon: Image.asset('assets/images/icons/questionnaire.png'),
+                    text: Text('Medical History', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                    status: _getStatus('medical history'),
+                    onTap: () {},
                   ),
                 ],
               )
             ),
 
             SizedBox(height: 30,),
+
+            SizedBox(height: 30,),
           ],
         ),
       ),
 
+      
       bottomNavigationBar: Container(
-        height: 90,
+        height: 120,
         padding: EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(width: 2, color: Color(0xFF20000000))
+            top: BorderSide(width: .5, color: Color(0xFF50000000))
           )
         ),
         child: Row(
@@ -206,17 +172,9 @@ class BloodTests extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4)
                 ),
                 child: FlatButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        // return object of type Dialog
-                        return SkipAlert();
-                      },
-                    );
-                  },
+                  onPressed: () {},
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('UNABLE TO PERFORM', style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text('Cancel', style: TextStyle(fontSize: 19, color: kPrimaryColor, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                 ),
               )
             ),
@@ -230,7 +188,7 @@ class BloodTests extends StatelessWidget {
                 ),
                 child: FlatButton(
                   onPressed: () async {
-                    var result = BloodTest().addBtItem();
+                    var result = BodyMeasurement().addBmItem();
                     if (result == 'success') {
                       _scaffoldKey.currentState.showSnackBar(
                         SnackBar(
@@ -250,7 +208,7 @@ class BloodTests extends StatelessWidget {
                     }
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('SAVE', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text('Save Assessment', style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                 ),
               )
             )
@@ -262,46 +220,31 @@ class BloodTests extends StatelessWidget {
 }
 
 class EncounnterSteps extends StatefulWidget {
-   EncounnterSteps({this.text, this.icon});
+   EncounnterSteps({this.text, this.onTap, this.icon, this.status});
 
-   final String text;
+   final Text text;
+   final Function onTap;
    final Image icon;
+   final String status;
 
   @override
   _EncounnterStepsState createState() => _EncounnterStepsState();
 }
 
 class _EncounnterStepsState extends State<EncounnterSteps> {
-  String status = 'Incomplete';
-
   @override
   void initState() {
     super.initState();
-    setStatus();
-  }
-
-  setStatus() {
-    status = BloodTest().hasItem(widget.text) ? 'Complete' : 'Incomplete';
   }
 
   @override
   Widget build(BuildContext context) {
     return FlatButton(
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AddTestsDialogue(
-              parent: this,
-              title: widget.text
-            );
-          } 
-        );
-      },
+      onPressed: widget.onTap,
       child: Container(
         // padding: EdgeInsets.only(left: 20, right: 20),
         width: double.infinity,
-        height: 90,
+        height: 100,
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(width: .5, color: Color(0x40000000))
@@ -317,12 +260,12 @@ class _EncounnterStepsState extends State<EncounnterSteps> {
               flex: 5,
               child: Container(
                 padding: EdgeInsets.only(left: 20),
-                child: Text(widget.text, style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                child: widget.text,
               )
             ),
             Expanded(
               flex: 2,
-              child: Text(status, style: TextStyle(color: status == 'Complete' ? kPrimaryGreenColor  : kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.w500),),
+              child: Text(widget.status, style: TextStyle(color: widget.status == 'Complete' ? kPrimaryGreenColor : kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.w500),),
             ),
             
             Expanded(
@@ -340,44 +283,53 @@ class _EncounnterStepsState extends State<EncounnterSteps> {
 
 
 
-class AddTestsDialogue extends StatefulWidget {
-  
-  final String title;
-  _EncounnterStepsState parent;
+class AddDialogue extends StatefulWidget {
+  String title;
+  String inputText;
 
-  AddTestsDialogue({this.parent, this.title});
+  AddDialogue({this.title, inputText});
 
   @override
-  _AddTestsDialogueState createState() => _AddTestsDialogueState();
+  _AddDialogueState createState() => _AddDialogueState();
 }
 
-class _AddTestsDialogueState extends State<AddTestsDialogue> {
+class _AddDialogueState extends State<AddDialogue> {
 
-  String selectedUnit;
-  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  final valueController = TextEditingController();
-  final deviceController = TextEditingController();
-  final commentController = TextEditingController();
+   int selectedUnit;
+   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
-  _addItem(){
-    BloodTest().addItem(widget.title, valueController.text, selectedUnit, commentController.text, deviceController.text);
-    this.widget.parent.setState(() => {
-      this.widget.parent.setStatus()
-    });
+   final valueController = TextEditingController();
+   final deviceController = TextEditingController();
+   final commentController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    selectedUnit = 1;
   }
+
+  _addItem() {
+    String unit = _getUnit();
+    BodyMeasurement().addItem(widget.title, valueController.text, unit, commentController != null ? commentController.text : "", deviceController.text);
+    _EncounnterStepsState().initState();
+  }
+
+  _getUnit() {
+    if (widget.title == 'Weight') {
+      return selectedUnit == 1 ? 'kg' : 'pound';
+    }
+    return selectedUnit == 1 ? 'cm' : 'inch';
+  }
+
   _clearDialogForm() {
     valueController.clear();
     deviceController.clear();
     commentController.clear();
+    selectedUnit = 1;
   }
 
-  @override
-  void initState() {
-    super.initState();
-    selectedUnit = 'mg/dL';
-  }
-
-  _changeUnit(val) {
+  changeArm(val) {
     setState(() {
       selectedUnit = val;
     });
@@ -391,14 +343,14 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.all(30),
-        height: 470.0,
+        height: 460.0,
         color: Colors.white,
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('Set ${widget.title}', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+              Text('Add ' + widget.title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
               SizedBox(height: 20,),
               Container(
                 // margin: EdgeInsets.symmetric(horizontal: 30),
@@ -406,89 +358,54 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                   children: <Widget>[
                     // SizedBox(width: 20,),
                     Container(
-                      width: 200,
+                      width: 150,
                       child: PrimaryTextField(
                         hintText: widget.title,
                         topPaadding: 15,
                         bottomPadding: 15,
-                        controller: valueController,
                         validation: true,
-                        type: TextInputType.number
+                        type: TextInputType.number,
+                        controller: valueController,
                       ),
                     ),
-                    Container(
-                      padding: EdgeInsets.only(bottom: 20, left: 10),
-                      child: Row(
-                        children: <Widget>[
-                          Radio(
-                            activeColor: kPrimaryColor,
-                            value: 'mg/dL',
-                            groupValue: selectedUnit,
-                            onChanged: (val) {
-                              _changeUnit(val);
-                            },
-                          ),
-                          Text("mg/dL", style: TextStyle(color: Colors.black)),
-                          SizedBox(width: 20,),
-                          Radio(
-                            activeColor: kPrimaryColor,
-                            value: 'mmol/L',
-                            groupValue: selectedUnit,
-                            onChanged: (val) {
-                              _changeUnit(val);
-                            },
-                          ),
-                          Text(
-                            "mmol/L",
-                          ),
-                        ],
-                      ),
-                    )
+                    Radio(
+                      activeColor: kPrimaryColor,
+                      value: 1,
+                      groupValue: selectedUnit,
+                      onChanged: (val) {
+                        changeArm(val);
+                      },
+                    ),
+                    Text(widget.title == 'Weight' ? 'kg' : 'cm', style: TextStyle(color: Colors.black)),
+
+                    Radio(
+                      activeColor: kPrimaryColor,
+                      value: 2,
+                      groupValue: selectedUnit,
+                      onChanged: (val) {
+                        changeArm(val);
+                      },
+                    ),
+                    Text(
+                      widget.title == 'Weight' ? 'pound' : 'inch',
+                    ),
                   ],
                 ),
               ),
               SizedBox(height: 10,),
               Container(
-                color: kSecondaryTextField,
-                child: DropdownButtonFormField(
-                  hint: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey),),
-                  decoration: InputDecoration(
-                    fillColor: kSecondaryTextField,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                    border: UnderlineInputBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(4),
-                      topRight: Radius.circular(4),
-                    )
-                  ),
-                  ),
-                  items: [
-                    DropdownMenuItem(
-                      child: Text('Select Device', style: TextStyle(fontSize: 20, color: Colors.black45)),
-                      value: 0
-                    ),
-                    DropdownMenuItem(
-                      child: Text('D-23429'),
-                      value: 1
-                    ),
-                    DropdownMenuItem(
-                      child: Text('B-34229'),
-                      value: 2
-                    )
-                  ],
-                  value: selectedDevie,
-                  isExpanded: true,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedDevie = value;
-                    });
-                  },
+                width: double.infinity,
+                child: PrimaryTextField(
+                  hintText: 'Select device',
+                  topPaadding: 15,
+                  bottomPadding: 15,
+                  controller: deviceController,
                 ),
               ),
-              SizedBox(height: 40,),
+              SizedBox(height: 10,),
               Container(
                 width: double.infinity,
-                child: TextFormField(
+                child: TextField(
                   style: TextStyle(color: Colors.white, fontSize: 20.0,),
                   keyboardType: TextInputType.multiline,
                   maxLines: 3,
@@ -512,6 +429,8 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
               ),
 
               Column(
+                // mainAxisAlignment: MainAxisAlignment.start,
+                // crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
                     alignment: Alignment.bottomRight,
@@ -558,4 +477,3 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
     );
   }
 }
-

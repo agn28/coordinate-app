@@ -1,0 +1,45 @@
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:nhealth/models/blood_pressure.dart';
+import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/models/questionnaire.dart';
+import 'package:nhealth/repositories/local/assessment_repository_local.dart';
+import '../constants/constants.dart';
+import 'dart:convert';
+
+var _questionnaires = [];
+
+class QuestionnaireController {
+
+  create(type, answers) {
+    var questions = Questionnaire().questions.where((qn) => qn['type'] == type).first;
+    var data = [];
+    
+    questions['items'].forEach((item) => {
+      data.add(_prepareData(questions, item, answers))
+    });
+
+    return;
+  }
+
+  _prepareData(questions, item, answers) {
+    var data = {
+      "meta": {
+        "performed_by": "8vLsBJkEOGOQyyLXQ2vZzycmqQX2",
+        "device_id": "DV-1234"
+      },
+      "body": {
+        "type": "questionnaire",
+        "data": {
+          'question': item['question'],
+          'answer': item['options'][answers[questions['items'].indexOf(item)]]
+        },
+        "patient_id": Patient().getPatient()['uuid'],
+        "assessment_id": "264d9d80-1b17-11ea-9ddd-117747515bf8"
+      }
+    };
+
+    return data;
+  }
+  
+}

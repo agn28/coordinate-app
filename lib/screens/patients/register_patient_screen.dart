@@ -5,9 +5,40 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:nhealth/constants/constants.dart';
-import 'package:nhealth/screens/patients/register_patient_second_screen.dart';
+import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import '../../custom-classes/custom_stepper.dart';
+
+final firstNameController = TextEditingController();
+final lastNameController = TextEditingController();
+// final gender = TextEditingController();
+final birthDateController = TextEditingController();
+final birthMonthController = TextEditingController();
+final birthYearController = TextEditingController();
+final districtController = TextEditingController();
+final postalCodeController = TextEditingController();
+final townController = TextEditingController();
+final villageController = TextEditingController();
+final streetNameController = TextEditingController();
+final mobilePhoneController = TextEditingController();
+final homePhoneController = TextEditingController();
+final emailController = TextEditingController();
+final nidController = TextEditingController();
+
+final contactFirstNameController = TextEditingController();
+final contactLastNameController = TextEditingController();
+final contactRelationshipController = TextEditingController();
+final contactDistrictController = TextEditingController();
+final contactPostalCodeController = TextEditingController();
+final contactTownController = TextEditingController();
+final contactVillageController = TextEditingController();
+final contactStreetNameController = TextEditingController();
+final contactMobilePhoneController = TextEditingController();
+final contactHomePhoneController = TextEditingController();
+final contactEmailController = TextEditingController();
+String selectedGender = 'male';
+final GlobalKey<FormState> _patientFormKey = new GlobalKey<FormState>();
+final GlobalKey<FormState> _contactFormKey = new GlobalKey<FormState>();
 
 class RegisterPatientScreen extends CupertinoPageRoute {
   RegisterPatientScreen()
@@ -24,6 +55,8 @@ class RegisterPatient extends StatefulWidget {
 class _RegisterPatientState extends State<RegisterPatient> {
   
   int _currentStep = 0;
+
+  String nextText = 'NEXT';
   
   @override
   Widget build(BuildContext context) {
@@ -57,6 +90,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
                 onPressed: () {
                   setState(() {
                     _currentStep = _currentStep - 1;
+                    nextText = 'NEXT';
                   });
                 },
                 child: Row(
@@ -87,15 +121,36 @@ class _RegisterPatientState extends State<RegisterPatient> {
             Expanded(
               child: _currentStep < _mySteps().length - 1 ? FlatButton(
                 onPressed: () {
+                  print('firstname' + firstNameController.text);
+                  print('contact email ' + contactEmailController.text);
                   setState(() {
-                    _currentStep = _currentStep + 1;
+                    print('step' + _currentStep.toString());
+                    // print('formData ' + formData.toString());
+                    if (_currentStep == 1) {
+                      if (_contactFormKey.currentState.validate()) {
+                        var formData = _prepareFormData();
+                        
+                        PatientController().create(formData);
+                        _currentStep = _currentStep + 1;
+                      }
+                      // return;
+                    }
+
+                    if (_currentStep < 1) {
+                      
+                      print(_patientFormKey);
+                      if (_patientFormKey.currentState.validate()) {
+                        // If the form is valid, display a Snackbar.
+                        _currentStep = _currentStep + 1;
+                      }
+                    }
                   });
                 },
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    Text('NEXT', style: TextStyle(fontSize: 20)),
+                    Text(nextText, style: TextStyle(fontSize: 20)),
                     Icon(Icons.chevron_right)
                   ],
                 ),
@@ -133,310 +188,458 @@ class _RegisterPatientState extends State<RegisterPatient> {
 
     return _steps;
   }
+
+  _prepareFormData() {
+    return {
+      'name': firstNameController.text + ' ' + lastNameController.text,
+      'gender': selectedGender,
+      'age': 26, //age needs to be calculated
+      'birth_date': birthDateController.text,
+      'birth_month': birthMonthController.text,
+      'birth_year': birthYearController.text,
+      'nid': nidController.text,
+      'registration_data': DateTime.now().toString(),
+      'address': {
+        'district': districtController.text,
+        'postal_code': postalCodeController.text,
+        'town': townController.text,
+        'village': villageController.text,
+        'street_name': streetNameController.text,
+      },
+      'mobile': mobilePhoneController.text,
+      'phone': homePhoneController.text,
+      'email': emailController.text,
+
+      'contact_first_name': contactFirstNameController.text,
+      'contact_last_name': contactLastNameController.text,
+      'contact_relationship': contactRelationshipController.text, //age needs to be calculated
+      'contact_address': {
+        'contact_district': contactDistrictController.text,
+        'contact_postal_code': contactPostalCodeController.text,
+        'contact_town': contactTownController.text,
+        'contact_village': contactVillageController.text,
+        'contact_street_name': contactStreetNameController.text,
+      },
+      'contact_mobile': contactMobilePhoneController.text,
+      'contact_phone': contactHomePhoneController.text,
+      'contact_email': contactEmailController.text,
+      
+    };
+  }
   
 }
 
 class PatientDetails extends StatefulWidget {
-  const PatientDetails({
-    Key key,
-  }) : super(key: key);
+  getData() => createState()._getData();
 
+  // validateForm() {
+  //   if (formKey.currentState.validate()) {
+  //       // If the form is valid, display a Snackbar.
+  //       Scaffold.of(context)
+  //           .showSnackBar(SnackBar(content: Text('Processing Data')));
+  //     }
+  // }
+
+  validateForm() {
+    print('validateform');
+    if (_patientFormKey.currentState.validate()) {
+      // If the form is valid, display a Snackbar.
+      
+    }
+  }
   @override
   _PatientDetailsState createState() => _PatientDetailsState();
 }
 
 class _PatientDetailsState extends State<PatientDetails> {
-  String selectedGender = 'male';
+  
+  // final firstNameController = TextEditingController();
+
+  DateTime selectedDate = DateTime.now();
+
+  Future<Null> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(1920, 8),
+        lastDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day));
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+      });
+  }
+
+  _getData() {
+    // print('hello' + firstNameController.text);
+  }
 
   @override
   Widget build(BuildContext context) {
+    
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text('Patient Details', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
-          SizedBox(height: 20,),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: PrimaryTextField(
-                  topPaadding: 18,
-                  bottomPadding: 18,
-                  hintText: 'First Name',
-                ),
-              ),
-              SizedBox(width: 20,),
-              Expanded(
-                child: PrimaryTextField(
-                  topPaadding: 18,
-                  bottomPadding: 18,
-                  hintText: 'Last Name',
-                ),
-              ),
-            ],
-          ),
-
-          SizedBox(height: 40,),
-
-          Container(
-              // margin: EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text('Gender', style: TextStyle(fontSize: 16),),
-                  Row(
-                    children: <Widget>[
-                      // SizedBox(width: 20,),
-                      Radio(
-                        activeColor: kPrimaryColor,
-                        value: 'male',
-                        groupValue: selectedGender,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedGender = value;
-                          });
-                        },
-                      ),
-                      Text("Male", style: TextStyle(color: Colors.black)),
-
-                      Radio(
-                        activeColor: kPrimaryColor,
-                        value: 'female',
-                        groupValue: selectedGender,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedGender = value;
-                          });
-                        },
-                      ),
-                      Text(
-                        "Female",
-                      ),
-                    ],
-                  ),
-                ],
-              )
-            ),
-
-            SizedBox(height: 30,),
-
-            Text('Date of Birth', style: TextStyle(fontSize: 16),),
+      child: Form(
+        key: _patientFormKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text('Patient Details', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
             SizedBox(height: 20,),
 
             Row(
-            children: <Widget>[
-              Expanded(
-                child: PrimaryTextField(
-                  topPaadding: 18,
-                  bottomPadding: 18,
-                  hintText: 'dd',
+              children: <Widget>[
+                Expanded(
+                  child: PrimaryTextField(
+                    topPaadding: 18,
+                    bottomPadding: 18,
+                    hintText: 'First Name',
+                    controller: firstNameController,
+                    name: "First Name",
+                    validation: true,
+                  ),
                 ),
-              ),
-              SizedBox(width: 20,),
-              Expanded(
-                child: PrimaryTextField(
-                  topPaadding: 18,
-                  bottomPadding: 18,
-                  hintText: 'mm',
+                SizedBox(width: 20,),
+                Expanded(
+                  child: PrimaryTextField(
+                    topPaadding: 18,
+                    bottomPadding: 18,
+                    hintText: 'Last Name',
+                    controller: lastNameController,
+                    name: "Last Name",
+                    validation: true,
+                  ),
                 ),
+              ],
+            ),
+
+            SizedBox(height: 20,),
+
+            Container(
+                // margin: EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('Gender', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                    Row(
+                      children: <Widget>[
+                        // SizedBox(width: 20,),
+                        Radio(
+                          activeColor: kPrimaryColor,
+                          value: 'male',
+                          groupValue: selectedGender,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedGender = value;
+                            });
+                          },
+                        ),
+                        Text("Male", style: TextStyle(color: Colors.black)),
+
+                        Radio(
+                          activeColor: kPrimaryColor,
+                          value: 'female',
+                          groupValue: selectedGender,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedGender = value;
+                            });
+                          },
+                        ),
+                        Text(
+                          "Female",
+                        ),
+                      ],
+                    ),
+                  ],
+                )
               ),
-              SizedBox(width: 20,),
-              Expanded(
-                child: PrimaryTextField(
-                  topPaadding: 18,
-                  bottomPadding: 18,
-                  hintText: 'yyyy',
+
+              SizedBox(height: 20,),
+
+              Text('Date of Birth', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+              SizedBox(height: 20,),
+
+              Row(
+              children: <Widget>[
+                Expanded(
+                  child: PrimaryTextField(
+                    onTap: () {
+                      _selectDate(context);
+                    },
+                    topPaadding: 18,
+                    bottomPadding: 18,
+                    hintText: 'dd',
+                    controller: birthDateController,
+                    name: "Date",
+                    validation: true,
+                    type: TextInputType.number,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 30,),
-          Divider(),
+                SizedBox(width: 20,),
+                Expanded(
+                  child: PrimaryTextField(
+                    topPaadding: 18,
+                    bottomPadding: 18,
+                    hintText: 'mm',
+                    controller: birthMonthController,
+                    name: "Month",
+                    validation: true,
+                    type: TextInputType.number
+                  ),
+                ),
+                SizedBox(width: 20,),
+                Expanded(
+                  child: PrimaryTextField(
+                    topPaadding: 18,
+                    bottomPadding: 18,
+                    hintText: 'yyyy',
+                    controller: birthYearController,
+                    name: "Year",
+                    validation: true,
+                    type: TextInputType.number
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10,),
+            Divider(),
 
-          SizedBox(height: 30,),
+            SizedBox(height: 20,),
 
-          Text('Address', style: TextStyle(fontSize: 16),),
-          SizedBox(height: 20,),
+            Text('Address', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+            SizedBox(height: 20,),
 
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'District',
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'Postal Code',
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'Town',
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'Village',
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'Street Name',
-          ),
-          SizedBox(height: 30,),
-          Divider(),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            prefixIcon: Icon(Icons.phone),
-            hintText: 'Mobile Phone',
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            prefixIcon: Icon(Icons.phone),
-            hintText: 'Home Phone (Optional)',
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            prefixIcon: Icon(Icons.email),
-            hintText: 'Email Address (Optional)',
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'National ID',
-          ),
-        ],
-      ),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'District',
+              controller: districtController,
+              name: "District",
+              validation: true,
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'Postal Code',
+              controller: postalCodeController,
+              name: "Postal Code",
+              validation: true,
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'Town',
+              controller: townController,
+              name: "Town",
+              validation: true,
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'Village',
+              controller: villageController,
+              name: "Village",
+              validation: true,
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'Street Name',
+              controller: streetNameController,
+              name: "Street Name",
+              validation: true,
+            ),
+            Divider(),
+            SizedBox(height: 20,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              prefixIcon: Icon(Icons.phone),
+              hintText: 'Mobile Phone',
+              controller: mobilePhoneController,
+              name: "Mobile Phone",
+              validation: true,
+              type: TextInputType.number
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              prefixIcon: Icon(Icons.phone),
+              hintText: 'Home Phone (Optional)',
+              controller: homePhoneController,
+              type: TextInputType.number
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              prefixIcon: Icon(Icons.email),
+              hintText: 'Email Address (Optional)',
+              controller: emailController
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'National ID',
+              controller: nidController,
+              name: "National ID",
+              validation: true,
+            ),
+          ],
+        ),
+      )
     );
   }
 }
 
 class ContactDetails extends StatefulWidget {
-  const ContactDetails({
-    Key key,
-  }) : super(key: key);
 
   @override
   _ContactDetailsState createState() => _ContactDetailsState();
 }
 
 class _ContactDetailsState extends State<ContactDetails> {
-  String selectedGender = 'male';
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text('Contact Details', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
-          SizedBox(height: 20,),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: PrimaryTextField(
-                  topPaadding: 18,
-                  bottomPadding: 18,
-                  hintText: "Contact's First Name",
+      child: Form(
+        key: _contactFormKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text('Contact Details', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
+            SizedBox(height: 20,),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: PrimaryTextField(
+                    topPaadding: 18,
+                    bottomPadding: 18,
+                    hintText: "Contact's First Name",
+                    controller: contactFirstNameController,
+                    name: "Contact's First Name",
+                    validation: true
+                  ),
                 ),
-              ),
-              SizedBox(width: 20,),
-              Expanded(
-                child: PrimaryTextField(
-                  topPaadding: 18,
-                  bottomPadding: 18,
-                  hintText: "Contact's Last Name",
+                SizedBox(width: 20,),
+                Expanded(
+                  child: PrimaryTextField(
+                    topPaadding: 18,
+                    bottomPadding: 18,
+                    hintText: "Contact's Last Name",
+                    controller: contactLastNameController,
+                    name: "Contact's Last Name",
+                    validation: true
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
 
-          SizedBox(height: 30,),
+            SizedBox(height: 10,),
 
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'Relationship with contact',
-          ),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'Relationship with contact',
+              controller: contactRelationshipController,
+              name: "Relationship",
+              validation: true
+            ),
 
 
-          SizedBox(height: 30,),
-          Divider(),
+            Divider(),
 
-          SizedBox(height: 20,),
+            SizedBox(height: 10,),
 
-          Text("Contact's Address", style: TextStyle(fontSize: 16),),
-          SizedBox(height: 20,),
+            Text("Contact's Address", style: TextStyle(fontSize: 16),),
+            SizedBox(height: 20,),
 
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'District',
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'Postal Code',
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'Town',
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'Village',
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            hintText: 'Street Name',
-          ),
-          
-          SizedBox(height: 30,),
-          Divider(),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'District',
+              controller: contactDistrictController,
+              name: "District",
+              validation: true
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'Postal Code',
+              controller: contactPostalCodeController,
+              name: "Postal Code",
+              validation: true,
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'Town',
+              controller: contactTownController,
+              name: "Town",
+              validation: true
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'Village',
+              controller: contactVillageController,
+              name: "Village",
+              validation: true
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: 'Street Name',
+              controller: contactStreetNameController,
+              name: "Street Name",
+              validation: true
+            ),
+            
+            Divider(),
 
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            prefixIcon: Icon(Icons.phone),
-            hintText: "Contact's Mobile Phone",
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            prefixIcon: Icon(Icons.phone),
-            hintText: "Contact's Home Phone (Optional)",
-          ),
-          SizedBox(height: 30,),
-          PrimaryTextField(
-            topPaadding: 18,
-            bottomPadding: 18,
-            prefixIcon: Icon(Icons.email),
-            hintText: "Contact's Email Address (Optional)",
-          ),
-          SizedBox(height: 30,),
-        ],
+            SizedBox(height: 20,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              prefixIcon: Icon(Icons.phone),
+              hintText: "Contact's Mobile Phone",
+              controller: contactMobilePhoneController,
+              name: "Mobile number",
+              validation: true,
+              type: TextInputType.number
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              prefixIcon: Icon(Icons.phone),
+              hintText: "Contact's Home Phone (Optional)",
+              controller: contactHomePhoneController,
+              type: TextInputType.number
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              prefixIcon: Icon(Icons.email),
+              hintText: "Contact's Email Address (Optional)",
+              controller: contactEmailController,
+            ),
+            SizedBox(height: 30,),
+          ],
+        ),
       ),
     );
   }
@@ -452,7 +655,7 @@ class AddPhoto extends StatefulWidget {
 }
 
 class _AddPhotoState extends State<AddPhoto> {
-  String selectedGender = 'male';
+  // String selectedGender = 'male';
 
   File _image;
 
@@ -513,7 +716,6 @@ class _AddPhotoState extends State<AddPhoto> {
               )
             ),
           ),
-
           
         ],
       ),

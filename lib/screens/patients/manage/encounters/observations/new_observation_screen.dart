@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-test/blood_test_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/body-measurements/measurements_screen.dart';
-import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/questionnaire_screen.dart';
+import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/questionnaires_screen.dart';
 import './blood-pressure/add_blood_pressure_screen.dart';
 
 class NewObservationScreen extends StatelessWidget {
@@ -122,7 +122,7 @@ class NewObservationScreen extends StatelessWidget {
                             height: 60.0,
                             child: RaisedButton(
                               color: Colors.grey,
-                              onPressed: () => Navigator.of(context).push(QuestionnaireScreen()),
+                              onPressed: () => Navigator.of(context).push(QuestionnairesScreen()),
                               child: Text("Questionnaire", style: TextStyle(color: Colors.white, fontSize: 22),),
                             ),
                           ),

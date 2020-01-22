@@ -1,14 +1,49 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/controllers/assessment_controller.dart';
+import 'package:nhealth/models/patient.dart';
 
 class EncounterDetailsScreen extends CupertinoPageRoute {
-  EncounterDetailsScreen()
-      : super(builder: (BuildContext context) => new EncounterDetails());
+  final assessment;
+
+  EncounterDetailsScreen(this.assessment)
+      : super(builder: (BuildContext context) => new EncounterDetails(assessment));
 
 }
 
-class EncounterDetails extends StatelessWidget {
+class EncounterDetails extends StatefulWidget {
+  final assessment;
+  EncounterDetails(this.assessment);
+
+  @override
+  _EncounterDetailsState createState() => _EncounterDetailsState();
+}
+
+class _EncounterDetailsState extends State<EncounterDetails> {
+  var _patient;
+  var _observations;
+  var _bloodPressures;
+  var _bloodTests;
+
+  @override
+  void initState() {
+    super.initState();
+    _getObservations();
+    _patient = Patient().getPatient();
+  }
+
+  _getObservations() async {
+    _observations = await AssessmentController().getObservationsByAssessment(widget.assessment);
+    _bloodPressures = _observations.where((item) => item['data']['type'] == 'blood_pressure');
+    _bloodTests = _observations.where((item) => item['data']['type'] == 'blood_test');
+    print(_observations);
+  }
+
+  _getBloodPressure() {
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,13 +82,13 @@ class EncounterDetails extends StatelessWidget {
                             child: Icon(Icons.perm_identity),
                           ),
                           SizedBox(width: 15,),
-                          Text('Jahanara Begum', style: TextStyle(fontSize: 18))
+                          Text(_patient['data']['name'], style: TextStyle(fontSize: 18))
                         ],
                       ),
                     ),
                   ),
                   Expanded(
-                    child: Text('31Y Female', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
+                    child: Text('${_patient["data"]["age"]}Y ${_patient["data"]["gender"].toUpperCase()}', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
                   ),
                   Expanded(
                     child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))

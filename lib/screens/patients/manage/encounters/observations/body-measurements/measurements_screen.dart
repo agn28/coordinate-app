@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/models/blood_pressure.dart';
+import 'package:nhealth/models/body_measurement.dart';
+import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/new_observation_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 
+final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
 class MeasurementsScreen extends CupertinoPageRoute {
   MeasurementsScreen()
@@ -12,10 +16,23 @@ class MeasurementsScreen extends CupertinoPageRoute {
 
 }
 
-class Measurements extends StatelessWidget {
+class Measurements extends StatefulWidget {
+
+  @override
+  MeasurementsState createState() => MeasurementsState();
+}
+
+class MeasurementsState extends State<Measurements> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Body Measurements', style: TextStyle(color: kPrimaryColor),),
@@ -53,13 +70,13 @@ class Measurements extends StatelessWidget {
                             child: Icon(Icons.perm_identity),
                           ),
                           SizedBox(width: 15,),
-                          Text('Jahanara Begum', style: TextStyle(fontSize: 18))
+                          Text(Patient().getPatient()['data']['name'], style: TextStyle(fontSize: 18))
                         ],
                       ),
                     ),
                   ),
                   Expanded(
-                    child: Text('31Y Female', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
+                    child: Text('${Patient().getPatient()['data']['age']}Y ${Patient().getPatient()['data']['gender'].toUpperCase()}', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
                   ),
                   Expanded(
                     child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
@@ -88,53 +105,17 @@ class Measurements extends StatelessWidget {
                 children: <Widget>[
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_pressure.png'),
-                    text: Text('Height', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: 'Incomplete',
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AddDialogue(
-                            title: 'Add Height',
-                            inputText: 'height',
-                          );
-                        } 
-                      );
-                    },
+                    text: 'Height',
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test.png'),
-                    text: Text('Weight', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: 'Incomplete',
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AddDialogue(
-                            title: 'Add Weight',
-                            inputText: 'weight',
-                          );
-                        } 
-                      );
-                    },
+                    text: 'Weight',
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/questionnaire.png'),
-                    text: Text('Waist/Hip', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: 'Incomplete',
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AddDialogue(
-                            title: 'Add Waist/Hip',
-                            inputText: 'waist/hip',
-                          );
-                        } 
-                      );
-                    },
+                    text: 'Waist/Hip',
                   ),
                 ],
               )
@@ -165,11 +146,18 @@ class Measurements extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4)
                 ),
                 child: FlatButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SkipAlert();
+                      },
+                    );
+                  },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('Cancel', style: TextStyle(fontSize: 19, color: kPrimaryColor, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text('UNABLE TO PERFORM', style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                 ),
-              )
+              ),
             ),
             SizedBox(width: 20),
             Expanded(
@@ -180,9 +168,28 @@ class Measurements extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4)
                 ),
                 child: FlatButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    var result = BodyMeasurement().addBmItem();
+                    if (result == 'success') {
+                      _scaffoldKey.currentState.showSnackBar(
+                        SnackBar(
+                          content: Text('Data saved successfully!'),
+                          backgroundColor: Color(0xFF4cAF50),
+                        )
+                      );
+                      await Future.delayed(const Duration(seconds: 1));
+                      Navigator.of(context).pop();
+                    } else {
+                      _scaffoldKey.currentState.showSnackBar(
+                        SnackBar(
+                          content: Text(result.toString()),
+                          backgroundColor: kPrimaryRedColor,
+                        )
+                      );
+                    }
+                  },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('Save Assessment', style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text('SAVE', style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                 ),
               )
             )
@@ -193,18 +200,43 @@ class Measurements extends StatelessWidget {
   }
 }
 
-class EncounnterSteps extends StatelessWidget {
-   EncounnterSteps({this.text, this.onTap, this.icon, this.status});
+class EncounnterSteps extends StatefulWidget {
+   EncounnterSteps({this.text, this.icon});
 
-   final Text text;
-   final Function onTap;
+   final String text;
    final Image icon;
-   final String status;
+
+  @override
+  EncounnterStepsState createState() => EncounnterStepsState();
+}
+
+class EncounnterStepsState extends State<EncounnterSteps> {
+  String status = 'Incomplete';
+  
+  @override
+  void initState() {
+    super.initState();
+    setStatus();
+  }
+
+  setStatus() {
+    status = BodyMeasurement().hasItem(widget.text) ? 'Complete' : 'Incomplete';
+  }
 
   @override
   Widget build(BuildContext context) {
     return FlatButton(
-      onPressed: onTap,
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AddDialogue(
+              parent: this,
+              title: widget.text,
+            );
+          } 
+        );
+      },
       child: Container(
         // padding: EdgeInsets.only(left: 20, right: 20),
         width: double.infinity,
@@ -218,18 +250,18 @@ class EncounnterSteps extends StatelessWidget {
           children: <Widget>[
             Expanded(
               flex: 1,
-              child: icon,
+              child: widget.icon,
             ),
             Expanded(
               flex: 5,
               child: Container(
                 padding: EdgeInsets.only(left: 20),
-                child: text,
+                child: Text(widget.text, style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
               )
             ),
             Expanded(
               flex: 2,
-              child: Text(status, style: TextStyle(color: kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.w500),),
+              child: Text(status, style: TextStyle(color: status == 'Complete' ? kPrimaryGreenColor : kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.w500),),
             ),
             
             Expanded(
@@ -248,10 +280,11 @@ class EncounnterSteps extends StatelessWidget {
 
 
 class AddDialogue extends StatefulWidget {
-  String title;
-  String inputText;
+  EncounnterStepsState parent;
 
-  AddDialogue({this.title, inputText});
+  String title;
+
+  AddDialogue({this.parent, this.title});
 
   @override
   _AddDialogueState createState() => _AddDialogueState();
@@ -259,18 +292,44 @@ class AddDialogue extends StatefulWidget {
 
 class _AddDialogueState extends State<AddDialogue> {
 
-   String selectedHeightUnit;
+   int selectedUnit;
+   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+
+   final valueController = TextEditingController();
+   final deviceController = TextEditingController();
+   final commentController = TextEditingController();
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    selectedHeightUnit = 'cm';
+    selectedUnit = 1;
+  }
+
+  _addItem() {
+    String unit = _getUnit();
+    BodyMeasurement().addItem(widget.title, valueController.text, unit, commentController != null ? commentController.text : "", deviceController.text);
+    this.widget.parent.setState(() => {
+      this.widget.parent.setStatus(),
+    });
+  }
+
+  _getUnit() {
+    if (widget.title == 'Weight') {
+      return selectedUnit == 1 ? 'kg' : 'pound';
+    }
+    return selectedUnit == 1 ? 'cm' : 'inch';
+  }
+
+  _clearDialogForm() {
+    valueController.clear();
+    deviceController.clear();
+    commentController.clear();
+    selectedUnit = 1;
   }
 
   changeArm(val) {
     setState(() {
-      selectedHeightUnit = val;
+      selectedUnit = val;
     });
   }
 
@@ -284,122 +343,171 @@ class _AddDialogueState extends State<AddDialogue> {
         padding: EdgeInsets.all(30),
         height: 460.0,
         color: Colors.white,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(widget.title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
-            SizedBox(height: 20,),
-            Container(
-              // margin: EdgeInsets.symmetric(horizontal: 30),
-              child: Row(
-                children: <Widget>[
-                  // SizedBox(width: 20,),
-                  Container(
-                    width: 150,
-                    child: PrimaryTextField(
-                      hintText: widget.inputText,
-                      topPaadding: 15,
-                      bottomPadding: 15,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text('Add ' + widget.title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+              SizedBox(height: 20,),
+              Container(
+                // margin: EdgeInsets.symmetric(horizontal: 30),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    // SizedBox(width: 20,),
+                    Container(
+                      width: 150,
+                      child: PrimaryTextField(
+                        hintText: widget.title,
+                        topPaadding: 15,
+                        bottomPadding: 15,
+                        validation: true,
+                        type: TextInputType.number,
+                        controller: valueController,
+                      ),
                     ),
-                  ),
-                  Radio(
-                    activeColor: kPrimaryColor,
-                    value: 'cm',
-                    groupValue: selectedHeightUnit,
-                    onChanged: (val) {
-                      changeArm(val);
-                    },
-                  ),
-                  Text("cm", style: TextStyle(color: Colors.black)),
-
-                  Radio(
-                    activeColor: kPrimaryColor,
-                    value: 'inch',
-                    groupValue: selectedHeightUnit,
-                    onChanged: (val) {
-                      changeArm(val);
-                    },
-                  ),
-                  Text(
-                    "inch",
-                  ),
-                ],
+                    Container(
+                      padding: EdgeInsets.only(bottom: 20, left: 10),
+                      child: Row(
+                        children: <Widget>[
+                          Radio(
+                            activeColor: kPrimaryColor,
+                            value: 1,
+                            groupValue: selectedUnit,
+                            onChanged: (val) {
+                              changeArm(val);
+                            },
+                          ),
+                          Text(widget.title == 'Weight' ? 'kg' : 'cm', style: TextStyle(color: Colors.black)),
+                          SizedBox(width: 20,),
+                          Radio(
+                            activeColor: kPrimaryColor,
+                            value: 2,
+                            groupValue: selectedUnit,
+                            onChanged: (val) {
+                              changeArm(val);
+                            },
+                          ),
+                          Text(
+                            widget.title == 'Weight' ? 'pound' : 'inch',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 30,),
-            Container(
-              width: double.infinity,
-              child: PrimaryTextField(
-                hintText: 'Select device',
-                topPaadding: 15,
-                bottomPadding: 15,
-              ),
-            ),
-            SizedBox(height: 30,),
-            Container(
-              width: double.infinity,
-              child: TextField(
-                style: TextStyle(color: Colors.white, fontSize: 20.0,),
-                keyboardType: TextInputType.multiline,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.only(top: 15.0, bottom: 25.0, left: 10, right: 10),
-                  filled: true,
-                  fillColor: kSecondaryTextField,
-                  border: new UnderlineInputBorder(
-                    borderSide: new BorderSide(color: Colors.white),
+              SizedBox(height: 10,),
+              Container(
+                color: kSecondaryTextField,
+                child: DropdownButtonFormField(
+                  hint: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                  decoration: InputDecoration(
+                    fillColor: kSecondaryTextField,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                    border: UnderlineInputBorder(
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(4),
                       topRight: Radius.circular(4),
                     )
                   ),
-                
-                  hintText: 'Comments/Notes',
-                  hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                  ),
+                  items: [
+                    DropdownMenuItem(
+                      child: Text('Select Device', style: TextStyle(fontSize: 20, color: Colors.black45)),
+                      value: 0
+                    ),
+                    DropdownMenuItem(
+                      child: Text('D-23429'),
+                      value: 1
+                    ),
+                    DropdownMenuItem(
+                      child: Text('B-34229'),
+                      value: 2
+                    )
+                  ],
+                  value: selectedDevie,
+                  isExpanded: true,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedDevie = value;
+                    });
+                  },
                 ),
-              )
-            ),
+              ),
+              SizedBox(height: 30,),
+              Container(
+                width: double.infinity,
+                child: TextField(
+                  style: TextStyle(color: Colors.white, fontSize: 20.0,),
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 3,
+                  controller: commentController,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.only(top: 15.0, bottom: 25.0, left: 10, right: 10),
+                    filled: true,
+                    fillColor: kSecondaryTextField,
+                    border: new UnderlineInputBorder(
+                      borderSide: new BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(4),
+                        topRight: Radius.circular(4),
+                      )
+                    ),
+                  
+                    hintText: 'Comments/Notes',
+                    hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                  ),
+                )
+              ),
 
-            Column(
-              // mainAxisAlignment: MainAxisAlignment.start,
-              // crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  alignment: Alignment.bottomRight,
-                  margin: EdgeInsets.only(top: 50),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      Container(
-                        child: GestureDetector(
+              Column(
+                // mainAxisAlignment: MainAxisAlignment.start,
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.bottomRight,
+                    margin: EdgeInsets.only(top: 50),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Container(
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('UNABLE TO PERFORM', style: TextStyle(color: kPrimaryColor, fontSize: 18),)
+                          ),
+                        ),
+                        SizedBox(width: 30,),
+                        GestureDetector(
                           onTap: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text('UNABLE TO PERFORM', style: TextStyle(color: kPrimaryColor, fontSize: 18),)
+                          child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 18),)
                         ),
-                      ),
-                      SizedBox(width: 30,),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 18),)
-                      ),
-                      SizedBox(width: 30,),
-                      GestureDetector(
-                        onTap: () {},
-                        child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 18))
-                      ),
-                    ],
+                        SizedBox(width: 30,),
+                        GestureDetector(
+                          onTap: () {
+                            if (_formKey.currentState.validate()) {
+                              Navigator.of(context).pop();
+                              _addItem();
+                              _clearDialogForm();
+                            }
+                          },
+                          child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 18))
+                        ),
+                      ],
+                    )
                   )
-                )
-              ],
-            )
-          ],
+                ],
+              )
+            ],
+          ),
         )
       )
       
     );
   }
 }
-

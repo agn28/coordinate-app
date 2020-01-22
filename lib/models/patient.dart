@@ -1,13 +1,11 @@
-class Patient {
-  final String id;
-  final String name;
-  final String details;
-  final String pid;
+var _patient;
 
-  Patient({
-    this.id,
-    this.name,
-    this.details,
-    this.pid
-  });
+class Patient {
+  setPatient(patient) {
+    _patient = patient;
+  }
+
+  getPatient() {
+    return _patient;
+  }
 }

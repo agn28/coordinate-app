@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/patient.dart';
-import 'package:nhealth/models/patients.dart';
 import 'package:nhealth/screens/home_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_list_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.dart';
@@ -29,25 +28,15 @@ class PatientRecords extends StatefulWidget {
 
 class _PatientRecordsState extends State<PatientRecords> {
 
-  Patient _patient;
+  var _patient;
   bool isLoading = false;
   
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-
-  //    Patients().getPatientById(widget.patientId).then((response) => {
-  //     _patient = response,
-
-  //     print(isLoading),
-
-  //     setState(() {
-  //       isLoading = false;
-  //     })
-  //    }); 
-    
-  // }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+     _patient = Patient().getPatient();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,10 +46,10 @@ class _PatientRecordsState extends State<PatientRecords> {
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
-        leading: new IconButton(
-          icon: new Icon(Icons.arrow_back, size: 25,),
-          onPressed: () => Navigator.of(context).pushReplacement(HomeScreen()),
-        ),
+        // leading: new IconButton(
+        //   icon: new Icon(Icons.arrow_back, size: 25,),
+        //   onPressed: () => Navigator.of(context).pushReplacement(HomeScreen()),
+        // ),
         actions: <Widget>[
           GestureDetector(
             child: Container(
@@ -108,13 +97,13 @@ class _PatientRecordsState extends State<PatientRecords> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               SizedBox(height: 20,),
-                              Text('Rokeya Khatun', style: TextStyle(color: Colors.white, fontSize: 21, fontWeight: FontWeight.w600),),
+                              Text(_patient['data']['name'], style: TextStyle(color: Colors.white, fontSize: 21, fontWeight: FontWeight.w600),),
                               SizedBox(height: 15,),
                               Row(
                                 children: <Widget>[
-                                  Text('31Y Female', style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w400),),
+                                  Text('${_patient["data"]["age"]}Y ${_patient["data"]["gender"].toUpperCase()}', style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w400),),
                                   SizedBox(width: 10,),
-                                  Text('NID: 1992121224343', style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w400),),
+                                  Text('NID: ${_patient["data"]["nid"]}', style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w400),),
                                   SizedBox(width: 10,),
                                   Text('PID: N-213452351', style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w400),),
                                 ],
