@@ -363,9 +363,6 @@ class _PatientDetailsState extends State<PatientDetails> {
               children: <Widget>[
                 Expanded(
                   child: PrimaryTextField(
-                    onTap: () {
-                      _selectDate(context);
-                    },
                     topPaadding: 18,
                     bottomPadding: 18,
                     hintText: 'dd',
