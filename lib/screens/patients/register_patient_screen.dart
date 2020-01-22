@@ -255,6 +255,20 @@ class _PatientDetailsState extends State<PatientDetails> {
   
   // final firstNameController = TextEditingController();
 
+  DateTime selectedDate = DateTime.now();
+
+  Future<Null> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(1920, 8),
+        lastDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day));
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+      });
+  }
+
   _getData() {
     // print('hello' + firstNameController.text);
   }
@@ -349,6 +363,9 @@ class _PatientDetailsState extends State<PatientDetails> {
               children: <Widget>[
                 Expanded(
                   child: PrimaryTextField(
+                    onTap: () {
+                      _selectDate(context);
+                    },
                     topPaadding: 18,
                     bottomPadding: 18,
                     hintText: 'dd',

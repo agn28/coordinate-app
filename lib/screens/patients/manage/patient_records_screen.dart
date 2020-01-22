@@ -35,10 +35,7 @@ class _PatientRecordsState extends State<PatientRecords> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
      _patient = Patient().getPatient();
-     print(_patient);
-    
   }
 
   @override

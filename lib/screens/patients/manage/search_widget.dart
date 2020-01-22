@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:nhealth/screens/patients/manage/no_item_found.dart';
 
-
 typedef QueryListItemBuilder<T> = Widget Function(T item);
 typedef OnItemSelected<T> = void Function(T item);
 typedef SelectedItemBuilder<T> = Widget Function(
@@ -145,7 +144,7 @@ class MySingleChoiceSearchState<T> extends State<CustomSearchWidget<T>> {
     textField = widget.textFieldBuilder != null
         ? widget.textFieldBuilder(_controller, _focusNode)
         : Padding(
-            // padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            padding: const EdgeInsets.symmetric(),
             child: TextField(
               controller: _controller,
               focusNode: _focusNode,

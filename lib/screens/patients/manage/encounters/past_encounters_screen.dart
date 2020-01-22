@@ -2,12 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
+import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/patients/manage/encounters/encounter_details_screen.dart';
-import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
-import 'package:nhealth/screens/patients/manage/encounters/observations/blood-test/blood_test_screen.dart';
-import 'package:nhealth/screens/patients/manage/encounters/observations/body-measurements/measurements_screen.dart';
-import 'package:nhealth/screens/patients/manage/encounters/observations/new_observation_screen.dart';
-
 
 class PastEncountersScreen extends CupertinoPageRoute {
   PastEncountersScreen()
@@ -24,6 +20,7 @@ class PastEncounters extends StatefulWidget {
 class _PastEncountersState extends State<PastEncounters> {
 
   var _assessments;
+  var _patient;
   List<Widget> list = List<Widget>();
 
   _getData() async {
@@ -73,8 +70,9 @@ class _PastEncountersState extends State<PastEncounters> {
 
   @override
   void initState() {
-    _getData();
     super.initState();
+    _patient = Patient().getPatient();
+    _getData();
   }
 
   @override
@@ -116,13 +114,13 @@ class _PastEncountersState extends State<PastEncounters> {
                             child: Icon(Icons.perm_identity),
                           ),
                           SizedBox(width: 15,),
-                          Text('Jahanara Begum', style: TextStyle(fontSize: 18))
+                          Text(_patient['data']['name'], style: TextStyle(fontSize: 18))
                         ],
                       ),
                     ),
                   ),
                   Expanded(
-                    child: Text('31Y Female', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
+                    child: Text('${_patient["data"]["age"]}Y ${_patient["data"]["gender"].toUpperCase()}', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
                   ),
                   Expanded(
                     child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))

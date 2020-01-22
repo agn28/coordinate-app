@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/repositories/local/database_creator.dart';
 import 'package:nhealth/repositories/local/patient_repository_local.dart';
 import 'package:nhealth/repositories/patient_repository.dart';
@@ -34,7 +35,7 @@ class PatientController {
   }
 
   _prepareData(formData) {
-    final age = _calculateAge(formData['birth_year'], formData['birth_month'], formData['birth_date']);
+    final age = Helpers().calculateAge(formData['birth_year'], formData['birth_month'], formData['birth_date']);
     formData.remove('birth_date');
     formData.remove('birth_month');
     formData.remove('birth_year');
@@ -49,12 +50,4 @@ class PatientController {
     return data;
   }
 
-  _calculateAge(year, month, date) {
-    final birthDay = DateTime(int.parse(year), int.parse(month), int.parse(date));
-    final now = DateTime.now();
-    final ageInDays = now.difference(birthDay).inDays;
-    final age = (ageInDays/365).floor();
-
-    return age;
-  }
 }

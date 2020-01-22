@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import '../constants/constants.dart';
 
 class PrimaryTextField extends StatefulWidget {
-  PrimaryTextField({this.prefixIcon, this.suffixIcon, this.hintText, this.topPaadding, this.bottomPadding, this.controller, this.name, this.validation, this.type});
+  PrimaryTextField({this.prefixIcon, this.suffixIcon, this.hintText, this.topPaadding, this.bottomPadding, this.controller, this.name, this.validation, this.type, this.onTap});
 
   final Icon prefixIcon;
   final Icon suffixIcon;
@@ -14,6 +14,7 @@ class PrimaryTextField extends StatefulWidget {
   final String name;
   final bool validation;
   final TextInputType type;
+  final Function onTap;
 
   @override
   _PrimaryTextFieldState createState() => _PrimaryTextFieldState();
@@ -25,6 +26,7 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onTap: widget.onTap,
       style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
       controller: widget.controller,
       validator: widget.validation != null && widget.validation ? (value) => _validateInputs(value) : null,

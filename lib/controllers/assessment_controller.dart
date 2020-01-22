@@ -11,6 +11,7 @@ var bloodPressures = [];
 
 class AssessmentController {
 
+  /// Get all the assessments.
   getAllAssessments() async {
     var assessments = await AssessmentRepositoryLocal().getAllAssessments();
     var data = [];
@@ -29,16 +30,18 @@ class AssessmentController {
     return data;
   }
 
-  getObservationsByAssessment() async {
+  /// Get observations under a specific assessment.
+  /// [assessment] object is required as parameter.
+  getObservationsByAssessment(assessment) async {
     var observations = await AssessmentRepositoryLocal().getAllObservations();
     var data = [];
     var parsedData;
 
-    await observations.forEach((assessment) => {
-      parsedData = jsonDecode(assessment['data']),
-      if (parsedData['body']['patient_id'] == Patient().getPatient()['uuid']) {
+    await observations.forEach((item) => {
+      parsedData = jsonDecode(item['data']),
+      if (parsedData['body']['patient_id'] == Patient().getPatient()['uuid'] && parsedData['body']['assessment_id'] == assessment['uuid']) {
         data.add({
-          'uuid': assessment['uuid'],
+          'uuid': item['uuid'],
           'data': parsedData['body'],
           'meta': parsedData['meta']
         })
@@ -47,12 +50,15 @@ class AssessmentController {
     return data;
   }
 
+  /// Create assessment.
+  /// Assessment [type] and [comment] is required as parameter.
   create(type, comment) {
-    print(type);
     var data = _prepareData(type, comment);
     return AssessmentRepositoryLocal().create(data);
   }
 
+  /// Prepare data to create an assessment.
+  /// Assessment [type] and [comment] is required as parameter.
   _prepareData(type, comment) {
     var data = {
       "meta": {

@@ -24,3 +24,6 @@ const kTextGrey = Color(0x65000000);
 const kShapeColorGreen = Color(0xFF98C645);
 const kTableBorderGrey = Color(0x12000000);
 const kBorderGrey = Color(0x54000000);
+
+const kLightBlack = Colors.black87;
+const kWarningColor = Color(0xFFFFF8E1);

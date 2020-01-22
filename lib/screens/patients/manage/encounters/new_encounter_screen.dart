@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
 import 'package:nhealth/models/body_measurement.dart';
@@ -33,18 +34,6 @@ class _NewEncounterState extends State<NewEncounter> {
   @override
   void initState() {
     super.initState();
-  }
-
-  _getBpStatus() {
-    return BloodPressure().bpItems.length > 0 ? 'Complete' : 'Incomplete';
-  }
-
-  _getBmStatus() {
-    return BodyMeasurement().bmItems.length >= 3 ? 'Complete' : 'Incomplete';
-  }
-
-  _getBtStatus() {
-    return BloodTest().btItems.length >= 7 ? 'Complete' : 'Incomplete';
   }
 
   _changeType(value) {
@@ -130,20 +119,20 @@ class _NewEncounterState extends State<NewEncounter> {
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_pressure.png'),
                     text: Text('Blood Pressure', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: _getBpStatus(),
+                    status: Helpers().getBpStatus(),
                     onTap: () => Navigator.of(context).push(AddBloodPressureScreen()),
                   ),
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/body_measurements.png'),
                     text: Text('Body Measurements', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: _getBmStatus(),
+                    status: Helpers().getBmStatus(),
                     onTap: () => Navigator.of(context).push(MeasurementsScreen()),
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test.png'),
                     text: Text('Blood Test', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: _getBtStatus(),
+                    status: Helpers().getBtStatus(),
                     onTap: () => Navigator.of(context).push(BloodTestScreen()),
                   ),
 

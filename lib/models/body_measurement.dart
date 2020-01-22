@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
 
 List _items = [];
@@ -6,11 +7,14 @@ List _bmItems = [];
 
 class BodyMeasurement {
 
+  /// Add blood test item in local variable
+  /// [type], [value], [unit], [comment], [device] are required as parameter
   addItem(type, value, unit, comment, device) {
+    String convertedType = Helpers().getType(type);
     _items.removeWhere((item) => item['type'] == type.toLowerCase());
 
     _items.add({
-      'type': type.toLowerCase(),
+      'type': convertedType,
       'unit': unit,
       'value': value,
       'comment': comment,
@@ -20,6 +24,7 @@ class BodyMeasurement {
     return 'success';
   }
   
+  /// Add Body Measurement item
   addBmItem() {
     if (items.length < 3) {
       return 'Error! All steps are not completed.';
@@ -33,6 +38,7 @@ class BodyMeasurement {
     return 'success';
   }
 
+  /// Prepare body measurement data
   _prepareData(item) {
     var data = {
       "meta": {
@@ -50,15 +56,17 @@ class BodyMeasurement {
     return data;
   }
 
+  /// Get all observations added now.
   get items {
     return [..._items];
   }
 
+  /// Check observation is added or not
   bool hasItem (type) {
-    print(type);
     return _items.where((item) => item['type'] == type.toLowerCase()).isNotEmpty;
   }
 
+  /// Get all Blood Test data.
   List get bmItems {
     return [..._bmItems];
   }

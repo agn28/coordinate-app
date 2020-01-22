@@ -512,8 +512,6 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
               ),
 
               Column(
-                // mainAxisAlignment: MainAxisAlignment.start,
-                // crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
                     alignment: Alignment.bottomRight,

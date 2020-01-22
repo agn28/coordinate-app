@@ -20,6 +20,8 @@ var _questions = [
 
 class Questionnaire {
 
+  /// Add questionnnaire answers
+  /// [type], [comment] are required
   addQuestionnaire(type, answers) {
     var questions = Questionnaire().questions.where((qn) => qn['type'] == type).first;
 
@@ -30,6 +32,7 @@ class Questionnaire {
     return 'success';
   }
 
+  /// Prepare questionnaire data
   _prepareData(questions, item, answers, type) {
     var data = {
       "meta": {
@@ -50,10 +53,12 @@ class Questionnaire {
     return data;
   }
 
+  /// Get all answers
   List get qnItems {
     return [..._qnItems];
   }
 
+  // Get all questions
   List get questions  {
     return [..._questions];
   }

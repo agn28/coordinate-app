@@ -74,7 +74,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Blood Pressure', style: TextStyle(color: Colors.black87),),
+        title: Text('Blood Pressure', style: TextStyle(color: kLightBlack),),
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: IconThemeData(color: kPrimaryColor),
@@ -183,7 +183,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                   SizedBox(height: 30,),
 
                   BloodPressure().items.length > 0 ? Container(
-                    color: Color(0xFFFFF8E1),
+                    color: kWarningColor,
                     height: 80,
                     margin: EdgeInsets.only(bottom: 30),
                     child: Row(
