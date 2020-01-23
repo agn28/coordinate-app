@@ -281,10 +281,12 @@ class EncounnterStepsState extends State<EncounnterSteps> {
 
 class AddDialogue extends StatefulWidget {
   EncounnterStepsState parent;
-
   String title;
 
   AddDialogue({this.parent, this.title});
+
+  List devices = ['D-23429', 'B-94857'];
+  int selectedDevice;
 
   @override
   _AddDialogueState createState() => _AddDialogueState();
@@ -307,7 +309,7 @@ class _AddDialogueState extends State<AddDialogue> {
 
   _addItem() {
     String unit = _getUnit();
-    BodyMeasurement().addItem(widget.title, valueController.text, unit, commentController != null ? commentController.text : "", deviceController.text);
+    BodyMeasurement().addItem(widget.title, valueController.text, unit, commentController != null ? commentController.text : "", devices[selectedDevice]);
     this.widget.parent.setState(() => {
       this.widget.parent.setStatus(),
     });
@@ -414,24 +416,18 @@ class _AddDialogueState extends State<AddDialogue> {
                   ),
                   ),
                   items: [
-                    DropdownMenuItem(
-                      child: Text('Select Device', style: TextStyle(fontSize: 20, color: Colors.black45)),
-                      value: 0
-                    ),
-                    DropdownMenuItem(
-                      child: Text('D-23429'),
-                      value: 1
-                    ),
-                    DropdownMenuItem(
-                      child: Text('B-34229'),
-                      value: 2
-                    )
+                    ...devices.map((item) =>
+                      DropdownMenuItem(
+                        child: Text(item),
+                        value: devices.indexOf(item)
+                      )
+                    ).toList(),
                   ],
-                  value: selectedDevie,
+                  value: selectedDevice,
                   isExpanded: true,
                   onChanged: (value) {
                     setState(() {
-                      selectedDevie = value;
+                      selectedDevice = value;
                     });
                   },
                 ),

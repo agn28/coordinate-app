@@ -244,7 +244,9 @@ class _NewEncounterState extends State<NewEncounter> {
                   borderRadius: BorderRadius.circular(4)
                 ),
                 child: FlatButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    print(AssessmentController().getAllAssessments());
+                    // return;
                     var result = AssessmentController().create(selectedType, commentController.text);
 
                     if (result == 'success') {
@@ -254,6 +256,8 @@ class _NewEncounterState extends State<NewEncounter> {
                           backgroundColor: Color(0xFF4cAF50),
                         )
                       );
+                      await Future.delayed(const Duration(seconds: 1));
+                      Navigator.of(context).pop();
                     } else {
                       _scaffoldKey.currentState.showSnackBar(
                         SnackBar(

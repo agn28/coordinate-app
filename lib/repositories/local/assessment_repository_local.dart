@@ -31,23 +31,29 @@ class AssessmentRepositoryLocal {
     var bloodTests = BloodTest().btItems;
     var bodyMeasurements = BodyMeasurement().bmItems;
 
-    if (bloodPressures.isEmpty || bloodTests.isEmpty || bodyMeasurements.isEmpty) {
+    // print(bodyMeasurements);
+    // return;
+
+    if (bloodPressures.isEmpty && bloodTests.isEmpty && bodyMeasurements.isEmpty) {
       return 'Observations are not completed';
     }
 
     _createAssessment(assessmentId, jsonEncode(data));
 
     bloodPressures.forEach((item) => {
+      print('bp'),
       item['body']['assessment_id'] = assessmentId,
       _createObservations(jsonEncode(item))
     });
 
     bloodTests.forEach((item) => {
+      print('bt'),
       item['body']['assessment_id'] = assessmentId,
       _createObservations(jsonEncode(item))
     });
 
     bodyMeasurements.forEach((item) => {
+      print('bm'),
       item['body']['assessment_id'] = assessmentId,
       _createObservations(jsonEncode(item))
     });
@@ -75,7 +81,8 @@ class AssessmentRepositoryLocal {
   /// Create assessment.
   /// Assessment uuid [id] and [data] are required as paremeter.
   _createAssessment(id, data) async {
-    final sql = '''INSERT IN/// Get all Blood Test data.TO ${DatabaseCreator.assessmentTable}
+    print('ass');
+    final sql = '''INSERT INTO ${DatabaseCreator.assessmentTable}
     (
       uuid,
       data,

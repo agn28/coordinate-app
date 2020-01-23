@@ -25,6 +25,7 @@ class _PastEncountersState extends State<PastEncounters> {
 
   _getData() async {
     _assessments = await AssessmentController().getAllAssessments();
+    print(_assessments);
     _assessments.forEach((assessment) => {
       print(assessment),
       setState(() => {

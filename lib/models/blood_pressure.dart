@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:intl/intl.dart';
 
 class BloodPressureItem with ChangeNotifier {
   final String arm;
@@ -26,6 +27,7 @@ class BloodPressure {
   }
 
   addBloodPressure(formData) {
+    
     if (items.isEmpty) {
       return 'Error! No data available!';
     }
@@ -44,9 +46,9 @@ class BloodPressure {
   _prepareBloodPressureData(formData, item) {
     var data = {
       "meta": {
-        "collected_by": "8vLsBJkEOGOQyyLXQ2vZzycmqQX2",
-        "start_time": "17 December, 2019 12:00",
-        "end_time": "17 December, 2019 12:05"
+        "device_id": formData['device'],
+        'performed_by': formData['performed_by'],
+        "created_at": DateFormat('d MMMM, y').format(DateTime.now())
       },
       "body": {
         "type": "blood_pressure",
@@ -58,7 +60,6 @@ class BloodPressure {
         },
         "comment": formData['comment'],
         'patient_id': Patient().getPatient()['uuid'],
-        'performed_by': formData['performed_by']
       }
     };
 
@@ -71,5 +72,11 @@ class BloodPressure {
 
   List get bpItems {
     return [..._bpItems];
+  }
+
+  /// Clear all items
+  clearItems() {
+    _bpItems = [];
+    _items = [];
   }
 }

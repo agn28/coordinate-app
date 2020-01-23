@@ -1,13 +1,9 @@
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:nhealth/constants/constants.dart';
-import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/patient.dart';
-import 'package:nhealth/screens/patients/manage/encounters/observations/unable_to_perform_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 
 int selectedArm = 0;
@@ -21,7 +17,9 @@ final pulseController = TextEditingController();
 final commentController = TextEditingController();
 final deviceController = TextEditingController();
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-int selectedDevie;
+int selectedDevice = 0;
+
+List devices = ['D-23429', 'B-94857'];
 
 enum Arms {
   LeftArm,
@@ -396,24 +394,18 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                       ),
                       ),
                       items: [
-                        DropdownMenuItem(
-                          child: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey)),
-                          value: 0
-                        ),
-                        DropdownMenuItem(
-                          child: Text('D-23429'),
-                          value: 1
-                        ),
-                        DropdownMenuItem(
-                          child: Text('B-34229'),
-                          value: 2
-                        )
+                        ...devices.map((item) =>
+                          DropdownMenuItem(
+                            child: Text(item),
+                            value: devices.indexOf(item) 
+                          )
+                        ).toList(),
                       ],
-                      value: selectedDevie,
+                      value: selectedDevice,
                       isExpanded: true,
                       onChanged: (value) {
                         setState(() {
-                          selectedDevie = value;
+                          selectedDevice = value;
                         });
                       },
                     ),
@@ -514,7 +506,7 @@ _prepareFormData() {
     'items': _AddBloodPressureState().bpItems,
     'comment': commentController.text,
     'patient_id': Patient().getPatient()['uuid'],
-    'device': deviceController.text,
+    'device': devices[selectedDevice],
     'performed_by': 'Md. Feroj Bepari',
   };
 }

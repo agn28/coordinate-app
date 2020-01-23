@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:nhealth/models/blood_pressure.dart';
+import 'package:nhealth/models/blood_test.dart';
+import 'package:nhealth/models/body_measurement.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/repositories/local/assessment_repository_local.dart';
 import '../constants/constants.dart';
@@ -54,7 +56,14 @@ class AssessmentController {
   /// Assessment [type] and [comment] is required as parameter.
   create(type, comment) {
     var data = _prepareData(type, comment);
-    return AssessmentRepositoryLocal().create(data);
+    var status = AssessmentRepositoryLocal().create(data);
+    if (status == 'success') {
+      BloodPressure().clearItems();
+      BloodTest().clearItems();
+      BodyMeasurement().clearItems();
+    }
+
+    return status;
   }
 
   /// Prepare data to create an assessment.
