@@ -56,7 +56,6 @@ class _EncounterDetailsState extends State<EncounterDetails> {
       pulseRate = pulseRate + item['data']['data']['pulse_rate'],
     
     });
-    // print(_bloodPressures);
 
     double avgSystolic = systolic/_bloodPressures.length;
     double avgDiastolic = diastolic/_bloodPressures.length;
@@ -66,14 +65,9 @@ class _EncounterDetailsState extends State<EncounterDetails> {
   _getBpPerformedBy() {
     return _bloodPressures.length > 0 ? _bloodPressures[0]['meta']['performed_by'] : '';
   }
-  
 
   _getDevice() {
     return _bloodPressures.length > 0 && _bloodPressures[0]['meta']['device_id'] != null ? _bloodPressures[0]['meta']['device_id'] : '';
-  }
-
-  _getTime() {
-    return _bloodPressures.length > 0 && _bloodPressures[0]['data']['device'] != null ? _bloodPressures[0]['data']['device'] : '';
   }
 
   _getType(type) {
@@ -82,7 +76,6 @@ class _EncounterDetailsState extends State<EncounterDetails> {
 
   _getItem() {
     _observations.forEach((item) => {
-      print(item),
       if (item['data']['type'] != 'blood_pressure') {
         setState(() {
           observationItems.add(
@@ -94,7 +87,6 @@ class _EncounterDetailsState extends State<EncounterDetails> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text('Observation', style: TextStyle(fontSize: 20, ),),
-                      // SizedBox(height: 20,),
                       Text(_getType(item['data']['data']['type']), style: TextStyle(fontSize: 35, height: 1.7),),
                       Row(
                         children: <Widget>[

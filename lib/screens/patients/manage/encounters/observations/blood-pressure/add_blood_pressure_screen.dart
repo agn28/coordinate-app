@@ -10,7 +10,6 @@ int selectedArm = 0;
 double systolic;
 double diastolic;
 double pulse;
-
 final systolicController = TextEditingController();
 final diastolicController = TextEditingController();
 final pulseController = TextEditingController();
@@ -18,7 +17,6 @@ final commentController = TextEditingController();
 final deviceController = TextEditingController();
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 int selectedDevice = 0;
-
 List devices = ['D-23429', 'B-94857'];
 
 enum Arms {

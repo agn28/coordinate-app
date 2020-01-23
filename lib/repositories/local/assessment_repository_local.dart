@@ -31,9 +31,6 @@ class AssessmentRepositoryLocal {
     var bloodTests = BloodTest().btItems;
     var bodyMeasurements = BodyMeasurement().bmItems;
 
-    // print(bodyMeasurements);
-    // return;
-
     if (bloodPressures.isEmpty && bloodTests.isEmpty && bodyMeasurements.isEmpty) {
       return 'Observations are not completed';
     }
@@ -41,19 +38,16 @@ class AssessmentRepositoryLocal {
     _createAssessment(assessmentId, jsonEncode(data));
 
     bloodPressures.forEach((item) => {
-      print('bp'),
       item['body']['assessment_id'] = assessmentId,
       _createObservations(jsonEncode(item))
     });
 
     bloodTests.forEach((item) => {
-      print('bt'),
       item['body']['assessment_id'] = assessmentId,
       _createObservations(jsonEncode(item))
     });
 
     bodyMeasurements.forEach((item) => {
-      print('bm'),
       item['body']['assessment_id'] = assessmentId,
       _createObservations(jsonEncode(item))
     });

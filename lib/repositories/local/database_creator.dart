@@ -62,7 +62,7 @@ class DatabaseCreator {
 
     //make sure the folder exists
     if (await Directory(dirname(path)).exists()) {
-      // await deleteDatabase(path);
+      //await deleteDatabase(path);
     } else {
       print('db created');
       await Directory(dirname(path)).create(recursive: true);

@@ -245,8 +245,6 @@ class _NewEncounterState extends State<NewEncounter> {
                 ),
                 child: FlatButton(
                   onPressed: () async {
-                    print(AssessmentController().getAllAssessments());
-                    // return;
                     var result = AssessmentController().create(selectedType, commentController.text);
 
                     if (result == 'success') {
