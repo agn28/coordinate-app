@@ -20,12 +20,15 @@ List _bpItems = [];
 
 class BloodPressure {
 
+  /// Add blood pressure to variable for future use
+  /// [arm], [systolic], [diastolic], [pulse] are required as parameters.
   BloodPressureItem addItem(String arm, double systolic, double diastolic, double pulse ) {
     _items.add(BloodPressureItem(arm, systolic, diastolic, pulse));
     
     return BloodPressureItem(arm, systolic, diastolic, pulse);
   }
 
+  /// Add blood pressures as observation
   addBloodPressure(formData) {
     
     if (items.isEmpty) {
@@ -43,6 +46,7 @@ class BloodPressure {
     return 'success';
   }
 
+  /// Prepare blood pressure data
   _prepareBloodPressureData(formData, item) {
     var data = {
       "meta": {
@@ -66,10 +70,12 @@ class BloodPressure {
     return data;
   }
 
+  /// Get all blood pressure items
   List<BloodPressureItem> get items {
     return [..._items];
   }
 
+  /// Get all blood pressure items as observations
   List get bpItems {
     return [..._bpItems];
   }
