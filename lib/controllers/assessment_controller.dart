@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
 import 'package:nhealth/models/body_measurement.dart';
@@ -58,9 +59,7 @@ class AssessmentController {
     var data = _prepareData(type, comment);
     var status = AssessmentRepositoryLocal().create(data);
     if (status == 'success') {
-      BloodPressure().clearItems();
-      BloodTest().clearItems();
-      BodyMeasurement().clearItems();
+      Helpers().clearObservationItems();
     }
 
     return status;

@@ -75,7 +75,6 @@ class AssessmentRepositoryLocal {
   /// Create assessment.
   /// Assessment uuid [id] and [data] are required as paremeter.
   _createAssessment(id, data) async {
-    print('ass');
     final sql = '''INSERT INTO ${DatabaseCreator.assessmentTable}
     (
       uuid,

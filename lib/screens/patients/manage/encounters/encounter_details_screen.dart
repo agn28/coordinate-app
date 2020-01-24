@@ -35,6 +35,7 @@ class _EncounterDetailsState extends State<EncounterDetails> {
     _patient = Patient().getPatient();
   }
 
+  /// Get all observations by assessment
   _getObservations() async {
     _observations =  await AssessmentController().getObservationsByAssessment(widget.assessment);
     _getItem();
@@ -45,16 +46,14 @@ class _EncounterDetailsState extends State<EncounterDetails> {
    });
   }
 
+  /// Calculate average Blood Pressure
   _getAverageBp() {
-    double systolic = 0.0;
+    double systolic = 0;
     double diastolic = 0;
-    double pulseRate = 0;
 
     _bloodPressures.forEach((item) => {
-      systolic = systolic + item['data']['data']['systolic'],
-      diastolic = diastolic + item['data']['data']['diastolic'],
-      pulseRate = pulseRate + item['data']['data']['pulse_rate'],
-    
+      systolic = systolic + item['data']['data']['systolic'] is double ? item['data']['data']['systolic'] : double.parse(item['data']['data']['systolic']),
+      diastolic = diastolic + item['data']['data']['diastolic'] is double ? item['data']['data']['diastolic'] : double.parse(item['data']['data']['diastolic']),
     });
 
     double avgSystolic = systolic/_bloodPressures.length;
@@ -62,18 +61,22 @@ class _EncounterDetailsState extends State<EncounterDetails> {
     return '${avgDiastolic.toStringAsFixed(0)} / ${avgSystolic.toStringAsFixed(0)}';
   }
 
+  /// Get observation's performed by
   _getBpPerformedBy() {
-    return _bloodPressures.length > 0 ? _bloodPressures[0]['meta']['performed_by'] : '';
+    return _bloodPressures.length > 0 && _bloodPressures[0]['meta']['performed_by'] != null ? _bloodPressures[0]['meta']['performed_by'] : '';
   }
 
+  /// Get the device id of an observation
   _getDevice() {
     return _bloodPressures.length > 0 && _bloodPressures[0]['meta']['device_id'] != null ? _bloodPressures[0]['meta']['device_id'] : '';
   }
 
+  /// Convert [type] to upper case and remove the '_'
   _getType(type) {
     return StringUtils.capitalize(type.replaceAll('_', ' '));
   }
 
+  /// Populate observation widgets form observations list.
   _getItem() {
     _observations.forEach((item) => {
       if (item['data']['type'] != 'blood_pressure') {
@@ -176,7 +179,12 @@ class _EncounterDetailsState extends State<EncounterDetails> {
                     child: Text('${_patient["data"]["age"]}Y ${_patient["data"]["gender"].toUpperCase()}', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
                   ),
                   Expanded(
-                    child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
+                      ],
+                    )
                   )
                 ],
               ),
@@ -203,7 +211,14 @@ class _EncounterDetailsState extends State<EncounterDetails> {
                           child: Text('In-Clinic', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
                         ),
                         Expanded(
-                          child: Text('')
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Icon(Icons.edit, color: kPrimaryColor,),
+                              SizedBox(width: 10),
+                              Text('Edit Encounter', style: TextStyle(color: kPrimaryColor))
+                            ],
+                          )
                         )
                       ],
                     )

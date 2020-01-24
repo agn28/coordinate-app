@@ -28,4 +28,10 @@ class Helpers {
   getBtStatus() {
     return BloodTest().btItems.length >= 7 ? 'Complete' : 'Incomplete';
   }
+
+  clearObservationItems() {
+    BloodPressure().clearItems();
+    BloodTest().clearItems();
+    BodyMeasurement().clearItems();
+  }
 }

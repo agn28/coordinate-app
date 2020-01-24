@@ -153,7 +153,7 @@ class _NewEncounterState extends State<NewEncounter> {
               child: TextField(
                 keyboardType: TextInputType.multiline,
                 maxLines: 5,
-                style: TextStyle(color: Colors.white, fontSize: 20.0,),
+                style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
                 controller: commentController,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.only(top: 25.0, bottom: 25.0, left: 20, right: 20),
