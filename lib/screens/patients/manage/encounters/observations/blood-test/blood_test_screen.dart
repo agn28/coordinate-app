@@ -359,8 +359,11 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
   final deviceController = TextEditingController();
   final commentController = TextEditingController();
 
+  List devices = ['D-23429', 'B-94857'];
+  int selectedDevice = 0;
+
   _addItem(){
-    BloodTest().addItem(widget.title, valueController.text, selectedUnit, commentController.text, deviceController.text);
+    BloodTest().addItem(widget.title, valueController.text, selectedUnit, commentController.text, devices[selectedDevice]);
     this.widget.parent.setState(() => {
       this.widget.parent.setStatus()
     });
@@ -463,24 +466,18 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                   ),
                   ),
                   items: [
-                    DropdownMenuItem(
-                      child: Text('Select Device', style: TextStyle(fontSize: 20, color: Colors.black45)),
-                      value: 0
-                    ),
-                    DropdownMenuItem(
-                      child: Text('D-23429'),
-                      value: 1
-                    ),
-                    DropdownMenuItem(
-                      child: Text('B-34229'),
-                      value: 2
-                    )
+                    ...devices.map((item) =>
+                      DropdownMenuItem(
+                        child: Text(item),
+                        value: devices.indexOf(item)
+                      )
+                    ).toList(),
                   ],
-                  value: selectedDevie,
+                  value: selectedDevice,
                   isExpanded: true,
                   onChanged: (value) {
                     setState(() {
-                      selectedDevie = value;
+                      selectedDevice = value;
                     });
                   },
                 ),

@@ -153,7 +153,7 @@ class _NewEncounterState extends State<NewEncounter> {
               child: TextField(
                 keyboardType: TextInputType.multiline,
                 maxLines: 5,
-                style: TextStyle(color: Colors.white, fontSize: 20.0,),
+                style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
                 controller: commentController,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.only(top: 25.0, bottom: 25.0, left: 20, right: 20),
@@ -244,7 +244,7 @@ class _NewEncounterState extends State<NewEncounter> {
                   borderRadius: BorderRadius.circular(4)
                 ),
                 child: FlatButton(
-                  onPressed: () {
+                  onPressed: () async {
                     var result = AssessmentController().create(selectedType, commentController.text);
 
                     if (result == 'success') {
@@ -254,6 +254,8 @@ class _NewEncounterState extends State<NewEncounter> {
                           backgroundColor: Color(0xFF4cAF50),
                         )
                       );
+                      await Future.delayed(const Duration(seconds: 1));
+                      Navigator.of(context).pop();
                     } else {
                       _scaffoldKey.currentState.showSnackBar(
                         SnackBar(

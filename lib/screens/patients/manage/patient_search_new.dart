@@ -162,6 +162,7 @@ class MyTextField extends StatelessWidget {
       child: TextField(
         controller: controller,
         focusNode: focusNode,
+        autofocus: true,
         style: TextStyle(fontSize: 16, color: Colors.grey[600]),
         decoration: InputDecoration(
           fillColor: Colors.white,

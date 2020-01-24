@@ -31,7 +31,7 @@ class AssessmentRepositoryLocal {
     var bloodTests = BloodTest().btItems;
     var bodyMeasurements = BodyMeasurement().bmItems;
 
-    if (bloodPressures.isEmpty || bloodTests.isEmpty || bodyMeasurements.isEmpty) {
+    if (bloodPressures.isEmpty && bloodTests.isEmpty && bodyMeasurements.isEmpty) {
       return 'Observations are not completed';
     }
 
@@ -75,7 +75,7 @@ class AssessmentRepositoryLocal {
   /// Create assessment.
   /// Assessment uuid [id] and [data] are required as paremeter.
   _createAssessment(id, data) async {
-    final sql = '''INSERT IN/// Get all Blood Test data.TO ${DatabaseCreator.assessmentTable}
+    final sql = '''INSERT INTO ${DatabaseCreator.assessmentTable}
     (
       uuid,
       data,

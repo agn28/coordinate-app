@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:basic_utils/basic_utils.dart';
 
 class EncounterDetailsScreen extends CupertinoPageRoute {
   final assessment;
@@ -23,8 +24,9 @@ class EncounterDetails extends StatefulWidget {
 class _EncounterDetailsState extends State<EncounterDetails> {
   var _patient;
   var _observations;
-  var _bloodPressures;
+  var _bloodPressures = [];
   var _bloodTests;
+   List<Widget> observationItems = List<Widget>();
 
   @override
   void initState() {
@@ -33,15 +35,101 @@ class _EncounterDetailsState extends State<EncounterDetails> {
     _patient = Patient().getPatient();
   }
 
+  /// Get all observations by assessment
   _getObservations() async {
-    _observations = await AssessmentController().getObservationsByAssessment(widget.assessment);
-    _bloodPressures = _observations.where((item) => item['data']['type'] == 'blood_pressure');
-    _bloodTests = _observations.where((item) => item['data']['type'] == 'blood_test');
-    print(_observations);
+    _observations =  await AssessmentController().getObservationsByAssessment(widget.assessment);
+    _getItem();
+
+   setState(() {
+    _bloodPressures =  _observations.where((item) => item['data']['type'] == 'blood_pressure').toList();
+    _bloodTests =  _observations.where((item) => item['data']['type'] == 'blood_test').toList();
+   });
   }
 
-  _getBloodPressure() {
+  /// Calculate average Blood Pressure
+  _getAverageBp() {
+    double systolic = 0;
+    double diastolic = 0;
 
+    _bloodPressures.forEach((item) => {
+      systolic = systolic + item['data']['data']['systolic'] is double ? item['data']['data']['systolic'] : double.parse(item['data']['data']['systolic']),
+      diastolic = diastolic + item['data']['data']['diastolic'] is double ? item['data']['data']['diastolic'] : double.parse(item['data']['data']['diastolic']),
+    });
+
+    double avgSystolic = systolic/_bloodPressures.length;
+    double avgDiastolic = diastolic/_bloodPressures.length;
+    return '${avgDiastolic.toStringAsFixed(0)} / ${avgSystolic.toStringAsFixed(0)}';
+  }
+
+  /// Get observation's performed by
+  _getBpPerformedBy() {
+    return _bloodPressures.length > 0 && _bloodPressures[0]['meta']['performed_by'] != null ? _bloodPressures[0]['meta']['performed_by'] : '';
+  }
+
+  /// Get the device id of an observation
+  _getDevice() {
+    return _bloodPressures.length > 0 && _bloodPressures[0]['meta']['device_id'] != null ? _bloodPressures[0]['meta']['device_id'] : '';
+  }
+
+  /// Convert [type] to upper case and remove the '_'
+  _getType(type) {
+    return StringUtils.capitalize(type.replaceAll('_', ' '));
+  }
+
+  /// Populate observation widgets form observations list.
+  _getItem() {
+    _observations.forEach((item) => {
+      if (item['data']['type'] != 'blood_pressure') {
+        setState(() {
+          observationItems.add(
+            Column(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text('Observation', style: TextStyle(fontSize: 20, ),),
+                      Text(_getType(item['data']['data']['type']), style: TextStyle(fontSize: 35, height: 1.7),),
+                      Row(
+                        children: <Widget>[
+                          Text('Reading: ', style: TextStyle(fontSize: 20, height: 1.6),),
+                          Text(' ${item['data']['data']['value']} ${item['data']['data']['unit']}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, height: 2),),
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Text('Recorded By: ', style: TextStyle(fontSize: 20, height: 1.6),),
+                          Text(' ${item['meta']['performed_by']}', style: TextStyle(fontSize: 20, height: 1.6),),
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Text('Measured Using: ', style: TextStyle(fontSize: 20, height: 2),),
+                          Text(' ${item['meta']['device_id']}', style: TextStyle(fontSize: 20, height: 2),),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 30,),
+
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Divider()
+                    )
+                  ],
+                ),
+
+                SizedBox(height: 30,), 
+              ],
+            )
+          );
+        })
+      }
+      
+    });
   }
 
   @override
@@ -91,7 +179,12 @@ class _EncounterDetailsState extends State<EncounterDetails> {
                     child: Text('${_patient["data"]["age"]}Y ${_patient["data"]["gender"].toUpperCase()}', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
                   ),
                   Expanded(
-                    child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
+                      ],
+                    )
                   )
                 ],
               ),
@@ -118,7 +211,14 @@ class _EncounterDetailsState extends State<EncounterDetails> {
                           child: Text('In-Clinic', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
                         ),
                         Expanded(
-                          child: Text('')
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Icon(Icons.edit, color: kPrimaryColor,),
+                              SizedBox(width: 10),
+                              Text('Edit Encounter', style: TextStyle(color: kPrimaryColor))
+                            ],
+                          )
                         )
                       ],
                     )
@@ -129,7 +229,7 @@ class _EncounterDetailsState extends State<EncounterDetails> {
 
             SizedBox(height: 30,),
             
-            Container(
+            _bloodPressures.length > 0 ? Container(
               padding: EdgeInsets.only(left: 20, right: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,25 +240,24 @@ class _EncounterDetailsState extends State<EncounterDetails> {
                   Row(
                     children: <Widget>[
                       Text('Average Reading: ', style: TextStyle(fontSize: 20, height: 1.6),),
-                      Text(' 139/78 mmHg', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, height: 2),),
+                      Text(_getAverageBp(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, height: 2),),
                     ],
                   ),
                   Row(
                     children: <Widget>[
                       Text('Recorded By: ', style: TextStyle(fontSize: 20, height: 1.6),),
-                      Text(' Malay Islam', style: TextStyle(fontSize: 20, height: 1.6),),
-                      Text(' on Jan 5 2019 at 15:50', style: TextStyle(fontSize: 20, height: 2),),
+                      Text(_getBpPerformedBy(), style: TextStyle(fontSize: 20, height: 1.6),),
                     ],
                   ),
                   Row(
                     children: <Widget>[
                       Text('Measured Using: ', style: TextStyle(fontSize: 20, height: 2),),
-                      Text(' M43KS23', style: TextStyle(fontSize: 20, height: 2),),
+                      Text(_getDevice(), style: TextStyle(fontSize: 20, height: 2),),
                     ],
                   ),
                 ],
               ),
-            ),
+            ) : Container(),
 
             SizedBox(height: 30,),
 
@@ -171,37 +270,7 @@ class _EncounterDetailsState extends State<EncounterDetails> {
             ),
 
             SizedBox(height: 30,), 
-
-            Container(
-              padding: EdgeInsets.only(left: 20, right: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text('Observation', style: TextStyle(fontSize: 20, ),),
-                  // SizedBox(height: 20,),
-                  Text('Fasting Blood Glucose', style: TextStyle(fontSize: 35, height: 1.7),),
-                  Row(
-                    children: <Widget>[
-                      Text('Reading: ', style: TextStyle(fontSize: 20, height: 1.6),),
-                      Text(' 74 mg/dL', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, height: 2),),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Text('Recorded By: ', style: TextStyle(fontSize: 20, height: 1.6),),
-                      Text(' Malay Islam', style: TextStyle(fontSize: 20, height: 1.6),),
-                      Text(' on Jan 5 2019 at 15:50', style: TextStyle(fontSize: 20, height: 2),),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Text('Measured Using: ', style: TextStyle(fontSize: 20, height: 2),),
-                      Text(' M43KS23', style: TextStyle(fontSize: 20, height: 2),),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+            Column(children: observationItems),
 
           ],
         ),

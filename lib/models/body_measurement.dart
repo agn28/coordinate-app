@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:intl/intl.dart';
 
 List _items = [];
 List _bmItems = [];
@@ -26,8 +26,8 @@ class BodyMeasurement {
   
   /// Add Body Measurement item
   addBmItem() {
-    if (items.length < 3) {
-      return 'Error! All steps are not completed.';
+    if (items.length == 0) {
+      return 'Error! Minimum 1 step should be completed';
     }
 
     _bmItems = [];
@@ -42,8 +42,9 @@ class BodyMeasurement {
   _prepareData(item) {
     var data = {
       "meta": {
-        "performed_by": "8vLsBJkEOGOQyyLXQ2vZzycmqQX2",
-        "device_id": "DV-1234"
+        "performed_by": "Md. Feroj Bepari",
+        "device_id": item['device'],
+        "created_at": DateFormat('d MMMM, y').format(DateTime.now())
       },
       "body": {
         "type": "body_measurement",
@@ -69,5 +70,10 @@ class BodyMeasurement {
   /// Get all Blood Test data.
   List get bmItems {
     return [..._bmItems];
+  }
+
+  /// Clear all items
+  clearItems() {
+    _bmItems = [];
   }
 }
