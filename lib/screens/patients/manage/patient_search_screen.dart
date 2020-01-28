@@ -128,11 +128,17 @@ class _PatientSearchState extends State<PatientSearch> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
+                      patients.length == 0 ? Container(
+                        alignment: Alignment.centerLeft,
+                        padding: EdgeInsets.only(top: 15),
+                        child: Text('No patient found', style: TextStyle(color: Colors.white, fontSize: 20),),
+                      ) :
                       Container(
                         alignment: Alignment.centerLeft,
                         padding: EdgeInsets.only(top: 15),
                         child: Text('Pending Recommendations Only', style: TextStyle(color: Colors.white),),
                       ),
+                      patients.length > 0 ?
                       Container(
                          alignment: Alignment.centerLeft,
                          padding: EdgeInsets.only(top: 15),
@@ -145,7 +151,7 @@ class _PatientSearchState extends State<PatientSearch> {
                              ],
                            )
                          ),
-                       ),
+                       ) : Container(),
                     ],
                   )
                 ],

@@ -54,161 +54,178 @@ class _NewEncounterState extends State<NewEncounter> {
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 17, horizontal: 10),
-              decoration: BoxDecoration(
-              color: Colors.white,
-                boxShadow: [BoxShadow(
-                  blurRadius: 20.0,
-                  color: Colors.black,
-                  offset: Offset(0.0, 1.0)
-                )]
-              ),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      child: Row(
-                        children: <Widget>[
-                          Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                              color: kLightPrimaryColor,
-                              shape: BoxShape.circle
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 17, horizontal: 10),
+                decoration: BoxDecoration(
+                color: Colors.white,
+                  boxShadow: [BoxShadow(
+                    blurRadius: 20.0,
+                    color: Colors.black,
+                    offset: Offset(0.0, 1.0)
+                  )]
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              height: 35,
+                              width: 35,
+                              decoration: BoxDecoration(
+                                color: kLightPrimaryColor,
+                                shape: BoxShape.circle
+                              ),
+                              child: Icon(Icons.perm_identity),
                             ),
-                            child: Icon(Icons.perm_identity),
-                          ),
-                          SizedBox(width: 15,),
-                          Text(Patient().getPatient()['data']['name'], style: TextStyle(fontSize: 18))
-                        ],
+                            SizedBox(width: 15,),
+                            Text(Patient().getPatient()['data']['name'], style: TextStyle(fontSize: 18))
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    child: Text('${Patient().getPatient()['data']['age']}Y ${Patient().getPatient()['data']['gender'].toUpperCase()}', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
-                  ),
-                  Expanded(
-                    child: Text('PID: N-121933421', style: TextStyle(fontSize: 18))
-                  )
-                ],
+                    Expanded(
+                      child: Text('${Patient().getPatient()['data']['age']}Y ${Patient().getPatient()['data']['gender'].toUpperCase()}', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
+                    ),
+                    Expanded(
+                      child: Text('PID: N-121933421', style: TextStyle(fontSize: 18))
+                    )
+                  ],
+                ),
               ),
-            ),
 
-            Container(
-              height: 90,
-              width: double.infinity,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(left: 40),
-              decoration: BoxDecoration(
-                color: Color(0xFFF9F9F9),
-                border: Border(
-                  bottom: BorderSide(width: .5, color: Color(0x50000000))
+              Container(
+                height: 90,
+                width: double.infinity,
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(left: 40),
+                decoration: BoxDecoration(
+                  color: Color(0xFFF9F9F9),
+                  border: Border(
+                    bottom: BorderSide(width: .5, color: Color(0x50000000))
+                  )
+                ),
+                child: Text('Complete all the sections that are applicable', style: TextStyle(fontSize: 20),)
+              ),
+              
+              Container(
+                color: Colors.white,
+                child: Column(
+                  children: <Widget>[
+                    EncounnterSteps(
+                      icon: Image.asset('assets/images/icons/blood_pressure.png'),
+                      text: Text('Blood Pressure', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                      status: Helpers().getBpStatus(),
+                      onTap: () { 
+                        FocusScope.of(context).requestFocus(new FocusNode());
+                        Navigator.of(context).push(AddBloodPressureScreen());
+                      }
+                    ),
+                    EncounnterSteps(
+                      icon: Image.asset('assets/images/icons/body_measurements.png'),
+                      text: Text('Body Measurements', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                      status: Helpers().getBmStatus(),
+                      onTap: () { 
+                        FocusScope.of(context).requestFocus(new FocusNode());
+                        Navigator.of(context).push(MeasurementsScreen());
+                      }
+                    ),
+
+                    EncounnterSteps(
+                      icon: Image.asset('assets/images/icons/blood_test.png'),
+                      text: Text('Blood Test', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                      status: Helpers().getBtStatus(),
+                      onTap: () { 
+                        FocusScope.of(context).requestFocus(new FocusNode());
+                        Navigator.of(context).push(BloodTestScreen());
+                      }
+                    ),
+
+                    EncounnterSteps(
+                      icon: Image.asset('assets/images/icons/questionnaire.png'),
+                      text: Text('Questionnaire', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                      status: 'Incomplete',
+                      onTap: () { 
+                        FocusScope.of(context).requestFocus(new FocusNode());
+                        Navigator.of(context).push(QuestionnairesScreen());
+                      }
+                    ),
+                  ],
                 )
               ),
-              child: Text('Complete all the sections that are applicable', style: TextStyle(fontSize: 20),)
-            ),
-            
-            Container(
-              color: Colors.white,
-              child: Column(
-                children: <Widget>[
-                  EncounnterSteps(
-                    icon: Image.asset('assets/images/icons/blood_pressure.png'),
-                    text: Text('Blood Pressure', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: Helpers().getBpStatus(),
-                    onTap: () => Navigator.of(context).push(AddBloodPressureScreen()),
-                  ),
-                  EncounnterSteps(
-                    icon: Image.asset('assets/images/icons/body_measurements.png'),
-                    text: Text('Body Measurements', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: Helpers().getBmStatus(),
-                    onTap: () => Navigator.of(context).push(MeasurementsScreen()),
-                  ),
 
-                  EncounnterSteps(
-                    icon: Image.asset('assets/images/icons/blood_test.png'),
-                    text: Text('Blood Test', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: Helpers().getBtStatus(),
-                    onTap: () => Navigator.of(context).push(BloodTestScreen()),
-                  ),
+              SizedBox(height: 30,),
 
-                  EncounnterSteps(
-                    icon: Image.asset('assets/images/icons/questionnaire.png'),
-                    text: Text('Questionnaire', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: 'Incomplete',
-                    onTap: () => Navigator.of(context).push(QuestionnairesScreen()),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 30),
+                child: TextField(
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 5,
+                  style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
+                  controller: commentController,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.only(top: 25.0, bottom: 25.0, left: 20, right: 20),
+                    filled: true,
+                    fillColor: kSecondaryTextField,
+                    border: new UnderlineInputBorder(
+                      borderSide: new BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(4),
+                        topRight: Radius.circular(4),
+                      )
+                    ),
+                  
+                    hintText: 'Comments/Notes (optional)',
+                    hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                   ),
-                ],
-              )
-            ),
-
-            SizedBox(height: 30,),
-
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              child: TextField(
-                keyboardType: TextInputType.multiline,
-                maxLines: 5,
-                style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
-                controller: commentController,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.only(top: 25.0, bottom: 25.0, left: 20, right: 20),
-                  filled: true,
-                  fillColor: kSecondaryTextField,
-                  border: new UnderlineInputBorder(
-                    borderSide: new BorderSide(color: Colors.white),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(4),
-                      topRight: Radius.circular(4),
-                    )
-                  ),
-                
-                  hintText: 'Comments/Notes (optional)',
-                  hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
-                ),
-              )
-            ),
-
-            SizedBox(height: 30,),
-
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              child: Row(
-                children: <Widget>[
-                  Text('Encounter Type', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
-                  SizedBox(width: 20,),
-                  Radio(
-                    value: 'In-clinic Screening',
-                    groupValue: selectedType,
-                    activeColor: kPrimaryColor,
-                    onChanged: (value) {
-                      _changeType(value);
-                    },
-                  ),
-                  Text("In-clininc Screening", style: TextStyle(color: Colors.black)),
-
-                  Radio(
-                    value: 'Home Visit',
-                    activeColor: kPrimaryColor,
-                    groupValue: selectedType,
-                    onChanged: (value) {
-                      _changeType(value);
-                    },
-                  ),
-                  Text(
-                    "Home Visit",
-                  ),
-                ],
+                )
               ),
-            ),
 
-            SizedBox(height: 30,),
-          ],
+              SizedBox(height: 30,),
+
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 30),
+                child: Row(
+                  children: <Widget>[
+                    Text('Encounter Type', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                    SizedBox(width: 20,),
+                    Radio(
+                      value: 'In-clinic Screening',
+                      groupValue: selectedType,
+                      activeColor: kPrimaryColor,
+                      onChanged: (value) {
+                        _changeType(value);
+                      },
+                    ),
+                    Text("In-clininc Screening", style: TextStyle(color: Colors.black)),
+
+                    Radio(
+                      value: 'Home Visit',
+                      activeColor: kPrimaryColor,
+                      groupValue: selectedType,
+                      onChanged: (value) {
+                        _changeType(value);
+                      },
+                    ),
+                    Text(
+                      "Home Visit",
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 30,),
+            ],
+          ),
         ),
       ),
 

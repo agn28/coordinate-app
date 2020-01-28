@@ -147,28 +147,42 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                     child: DataTable(
                       columns: [
                         DataColumn(
-                          label: Text("NO")
+                          label: Text("No.")
                         ),
                         DataColumn(
-                          label: Text("ARM")
+                          label: Text("Arm")
                         ),
                         DataColumn(
-                          label: Text("SYSTOLIC")
+                          label: Text("systolic")
                         ),
                         DataColumn(
-                          label: Text("DIASTOLIC")
+                          label: Text("Diastolic")
                         ),
                         DataColumn(
-                          label: Text("PULSE")
+                          label: Text("Pulse Rate")
                         )
                       ],
                       rows: BloodPressure().items.map((bp) => DataRow(
                         cells: [
                           DataCell(Text(_getSerial(BloodPressure().items.indexOf(bp)))),
                           DataCell(Text("${bp.arm[0].toUpperCase()}${bp.arm.substring(1)}")),
-                          DataCell(Text(bp.systolic.toString())),
-                          DataCell(Text(bp.diastolic.toString())),
-                          DataCell(Text(bp.pulse.toString()))
+                          DataCell(Text(bp.systolic.toInt().toString())),
+                          DataCell(Text(bp.diastolic.toInt().toString())),
+                          DataCell(
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Text(bp.pulse.toInt().toString()),
+                                Container(
+                                  child: IconButton(
+                                    icon: Icon(Icons.delete),
+                                    color: kPrimaryColor,
+                                    onPressed: () {},
+                                  ),
+                                )
+                              ],
+                            )
+                          ),
                         ]
                       )).toList(),
 
