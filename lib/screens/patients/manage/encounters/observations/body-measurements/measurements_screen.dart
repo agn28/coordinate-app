@@ -104,17 +104,17 @@ class MeasurementsState extends State<Measurements> {
               child: Column(
                 children: <Widget>[
                   EncounnterSteps(
-                    icon: Image.asset('assets/images/icons/blood_pressure.png'),
+                    icon: Image.asset('assets/images/icons/height.png'),
                     text: 'Height',
                   ),
 
                   EncounnterSteps(
-                    icon: Image.asset('assets/images/icons/blood_test.png'),
+                    icon: Image.asset('assets/images/icons/weight.png'),
                     text: 'Weight',
                   ),
 
                   EncounnterSteps(
-                    icon: Image.asset('assets/images/icons/questionnaire.png'),
+                    icon: Image.asset('assets/images/icons/hip.png'),
                     text: 'Waist/Hip',
                   ),
                 ],
@@ -143,6 +143,7 @@ class MeasurementsState extends State<Measurements> {
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
+                  border: Border.all(width: 1, color: Colors.black54),
                   borderRadius: BorderRadius.circular(4)
                 ),
                 child: FlatButton(
@@ -155,7 +156,7 @@ class MeasurementsState extends State<Measurements> {
                     );
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('UNABLE TO PERFORM', style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text('UNABLE TO PERFORM', style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
                 ),
               ),
             ),
@@ -189,7 +190,7 @@ class MeasurementsState extends State<Measurements> {
                     }
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('SAVE', style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text('SAVE', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                 ),
               )
             )
@@ -261,7 +262,7 @@ class EncounnterStepsState extends State<EncounnterSteps> {
             ),
             Expanded(
               flex: 2,
-              child: Text(status, style: TextStyle(color: status == 'Complete' ? kPrimaryGreenColor : kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.w500),),
+              child: Text(status, style: TextStyle(color: status == 'Complete' ? kPrimaryGreenColor : kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.bold),),
             ),
             
             Expanded(
@@ -342,8 +343,8 @@ class _AddDialogueState extends State<AddDialogue> {
       backgroundColor: Colors.transparent,
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.all(30),
-        height: 460.0,
+        padding: EdgeInsets.only(top: 30, left: 30, right: 30),
+        height: 440.0,
         color: Colors.white,
         child: Form(
           key: _formKey,
@@ -436,7 +437,7 @@ class _AddDialogueState extends State<AddDialogue> {
               Container(
                 width: double.infinity,
                 child: TextField(
-                  style: TextStyle(color: Colors.white, fontSize: 20.0,),
+                  style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
                   keyboardType: TextInputType.multiline,
                   maxLines: 3,
                   controller: commentController,
@@ -466,24 +467,15 @@ class _AddDialogueState extends State<AddDialogue> {
                     alignment: Alignment.bottomRight,
                     margin: EdgeInsets.only(top: 50),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
-                        Container(
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text('UNABLE TO PERFORM', style: TextStyle(color: kPrimaryColor, fontSize: 18),)
-                          ),
-                        ),
-                        SizedBox(width: 30,),
                         GestureDetector(
                           onTap: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 18),)
+                          child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
                         ),
-                        SizedBox(width: 30,),
+                        SizedBox(width: 50,),
                         GestureDetector(
                           onTap: () {
                             if (_formKey.currentState.validate()) {
@@ -492,7 +484,7 @@ class _AddDialogueState extends State<AddDialogue> {
                               _clearDialogForm();
                             }
                           },
-                          child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 18))
+                          child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
                         ),
                       ],
                     )

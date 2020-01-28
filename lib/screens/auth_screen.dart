@@ -26,10 +26,10 @@ class AuthScreen extends StatelessWidget {
                   Container(
                     child: Row(
                       children: <Widget>[
-                        Image.asset('assets/images/logo_nhealth_horizontal.png', width: 280,),
+                        Image.asset('assets/images/logo_nhealth_horizontal.png', width: 220,),
                         Container(
                           padding: EdgeInsets.only(top: 30, left: 30),
-                          child: Text('Coordinate', style: TextStyle(color: Colors.white, fontSize: 23, fontWeight: FontWeight.bold, fontFamily: 'Roboto')),
+                          child: Text('Coordinate', style: TextStyle(color: Colors.white, fontSize: 23, fontWeight: FontWeight.w500, fontFamily: 'Roboto')),
                         )
                       ],
                     )
@@ -51,10 +51,10 @@ class AuthScreen extends StatelessWidget {
                       filled: true,
                       fillColor: Color(0xFF004d84),
                       border: new UnderlineInputBorder(
-                        borderSide: new BorderSide(color: Colors.white),
+                        borderSide: new BorderSide(width: 1, color: Colors.white),
                       ),
                       hintText: 'Email Address',
-                      hintStyle: TextStyle(color: Colors.white, fontSize: 18.0),
+                      hintStyle: TextStyle(color: kWhite70, fontSize: 18.0),
                     ),
                   ),
                   // SizedBox(height: 5,),
@@ -77,10 +77,10 @@ class AuthScreen extends StatelessWidget {
                       filled: true,
                       fillColor: Color(0xFF004d84),
                       border: new UnderlineInputBorder(
-                        borderSide: new BorderSide(color: Colors.white),
+                        borderSide: new BorderSide(width: 1, color: Colors.white),
                       ),
                       hintText: 'Password',
-                      hintStyle: TextStyle(color: Colors.white, fontSize: 18.0),
+                      hintStyle: TextStyle(color: kWhite70, fontSize: 18.0),
                     ),
                   ),
                   SizedBox(height: 40,),
@@ -88,19 +88,19 @@ class AuthScreen extends StatelessWidget {
                     onTap: () => Navigator.of(context).pushReplacement( HomeScreen()),
                     child: Container(
                       width: double.infinity,
-                      height: 70.0,
+                      height: 62.0,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: kLightButton,
                         borderRadius: BorderRadius.circular(4)
                       ),
-                      child: Text("LOGIN", style: TextStyle(color: Colors.black, fontSize: 19, fontWeight: FontWeight.bold))
+                      child: Text("LOGIN", style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500))
                     ),
                   ),
                   SizedBox(height: 40,),
                   FlatButton(
                     onPressed: () => Navigator.of(context).push( ForgotPasswordScreen()),
-                    child: Text("Forgot Password?", style: TextStyle(color: Colors.white, fontSize: 19),),
+                    child: Text("Forgot Password?", style: TextStyle(color: Colors.white, fontSize: 19, fontWeight: FontWeight.w400),),
                   ),
                 ],
               ),

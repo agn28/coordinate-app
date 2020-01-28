@@ -30,6 +30,7 @@ class NewEncounter extends StatefulWidget {
 class _NewEncounterState extends State<NewEncounter> {
   String selectedType = 'In-clinic Screening';
   final commentController = TextEditingController();
+  bool _dataSaved = false;
   
   @override
   void initState() {
@@ -109,7 +110,7 @@ class _NewEncounterState extends State<NewEncounter> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Complete all the sections that are applicable', style: TextStyle(fontSize: 22),)
+              child: Text('Complete all the sections that are applicable', style: TextStyle(fontSize: 20),)
             ),
             
             Container(
@@ -226,12 +227,15 @@ class _NewEncounterState extends State<NewEncounter> {
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
+                  border: Border.all(width: 1, color: Colors.black45,),
                   borderRadius: BorderRadius.circular(4)
                 ),
                 child: FlatButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('Cancel', style: TextStyle(fontSize: 19, color: kPrimaryColor, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text('CANCEL', style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
                 ),
               )
             ),
@@ -245,29 +249,88 @@ class _NewEncounterState extends State<NewEncounter> {
                 ),
                 child: FlatButton(
                   onPressed: () async {
-                    var result = AssessmentController().create(selectedType, commentController.text);
+                    await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        // return object of type Dialog
+                        return Dialog(
+                          elevation: 0.0,
+                          backgroundColor: Colors.transparent,
+                          child: Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.only(top: 30, left: 30, right: 30),
+                            height: 200.0,
+                            color: Colors.white,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text('Confirm Save', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                                SizedBox(height: 20,),
+                                Text('You have missing sections for this encounter. Are you sure you want to save?',
+                                  style: TextStyle(fontSize: 18, height: 1.5),
+                                ),
+                                
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: <Widget>[
+                                    Container(
+                                      margin: EdgeInsets.only(top: 30),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: <Widget>[
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                                          ),
+                                          SizedBox(width: 30,),
+                                          GestureDetector(
+                                            onTap: () async {
+                                              var result = AssessmentController().create(selectedType, commentController.text);
 
-                    if (result == 'success') {
-                      _scaffoldKey.currentState.showSnackBar(
-                        SnackBar(
-                          content: Text('Data saved successfully!'),
-                          backgroundColor: Color(0xFF4cAF50),
-                        )
-                      );
+                                              if (result == 'success') {
+                                                _dataSaved = true;
+                                                _scaffoldKey.currentState.showSnackBar(
+                                                  SnackBar(
+                                                    content: Text('Data saved successfully!'),
+                                                    backgroundColor: Color(0xFF4cAF50),
+                                                  )
+                                                );
+                                                Navigator.of(context).pop();
+                                                
+                                              } else {
+                                                Navigator.of(context).pop();
+                                                _scaffoldKey.currentState.showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(result.toString()),
+                                                    backgroundColor: kPrimaryRedColor,
+                                                  )
+                                                );
+                                              }
+                                            },
+                                            child: Text('SAVE', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
+                                          ),
+                                        ],
+                                      )
+                                    )
+                                  ],
+                                )
+                              ],
+                            )
+                          )
+                          
+                        );
+                      },
+                    );
+                    if (_dataSaved) {
                       await Future.delayed(const Duration(seconds: 1));
-                      Navigator.of(context).pop();
-                    } else {
-                      _scaffoldKey.currentState.showSnackBar(
-                        SnackBar(
-                          content: Text(result.toString()),
-                          backgroundColor: kPrimaryRedColor,
-                        )
-                      );
+                      Navigator.pop(context);
                     }
-                    
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('Save Assessment', style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text('SAVE ASSESSMENT', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                 ),
               )
             )
@@ -317,7 +380,7 @@ class EncounnterSteps extends StatelessWidget {
               child: Text(status, style: TextStyle(
                 color: status == 'Incomplete' ? kPrimaryRedColor : kPrimaryGreenColor,
                 fontSize: 18,
-                fontWeight: FontWeight.w500),),
+                fontWeight: FontWeight.bold),),
             ),
             
             Expanded(
@@ -332,3 +395,4 @@ class EncounnterSteps extends StatelessWidget {
     );
   }
 }
+

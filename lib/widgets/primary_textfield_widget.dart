@@ -60,15 +60,16 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
     if (value.isEmpty) {
       String field = widget.name != null ? widget.name : 'This field';
       return '$field is required';
-    }
-    else if (widget.name == 'Date') {
+    } else if (widget.name == 'Date') {
       return _validateDate(value);
-    }
-    else if (widget.name == 'Month') {
+    } else if (widget.name == 'Month') {
       return _validateMonth(value);
-    }
-    else if (widget.name == 'Year') {
+    } else if (widget.name == 'Year') {
       return _validateYear(value);
+    } else if (widget.name == 'National ID') {
+      return _validateNid(value);
+    } else if (widget.name == 'Mobile Phone') {
+      return _validateMobile(value);
     }
     return null;
   }
@@ -83,6 +84,34 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
     }
 
     return <TextInputFormatter>[WhitelistingTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(limit)];
+  }
+
+  _validateMobile(value) {
+    String pattern = r'(^(?:[+0]9)?[0-9]{11}$)';
+
+    if (value.toString().length > 1 && '${value[0]}${value[1]}' == '88') {
+      pattern = r'(^(?:[+0]9)?[0-9]{13}$)';
+    }
+    
+    RegExp regExp = new RegExp(pattern);
+    if (!regExp.hasMatch(value)) {
+      return 'Please enter valid mobile number';
+    }
+
+    return null;
+  }
+
+  _validateNid(value) {
+    int length = value.toString().length;
+    if (length < 10) {
+      return "NID should be minimum 10 digits";
+    } else if (length> 10 && length < 13) {
+      return "NID should be in 10, 13 or 17 digits";
+    } else if (length > 13 && length < 17) {
+      return "NID should be 10, 13 or 17 digits";
+    } else if (length > 17) {
+      return "NID should maximum 17 digits";
+    }
   }
 
   _validateMonth(value) {

@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/patients/manage/patient_search_new.dart';
-import './patients/manage/patients_search_screen.dart';
+import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
 import './patients/register_patient_screen.dart';
 
 
@@ -19,10 +18,16 @@ class Home extends StatelessWidget {
 
     return Scaffold(
       appBar: new AppBar(
-        title: new Text("Home", style: TextStyle(color: Colors.white, fontSize: 23),),
+        title: new Text("Home", style: TextStyle(color: Colors.white, fontSize: 22),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.more_vert, color: Colors.white),
+            onPressed: () {},
+          )
+        ],
       ),
       drawer: Drawer(
         child: Column(
@@ -84,7 +89,7 @@ class Home extends StatelessWidget {
                     height: 50,
                     child: FlatButton(
                       onPressed: () {
-                        Navigator.of(context).push(TestSearchScreen());
+                        Navigator.of(context).push(PatientSearchScreen());
                       },
                       child: Row(
                         children: <Widget>[
@@ -160,16 +165,18 @@ class Home extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: 50, vertical: 30),
+                    margin: EdgeInsets.only(left: 70, top: 30),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         SizedBox(height: 20,),
-                        Text('Welcome', style: TextStyle(color: Colors.white70, fontSize: 23),),
+                        Text('Welcome', style: TextStyle(color: Colors.white70, fontSize: 21),),
                         SizedBox(height: 15,),
-                        Text('Rokeya Khatun', style: TextStyle(color: Colors.white, fontSize: 28),),
-                        SizedBox(height: 50,),
-                        Text('What would you like to do?', style: TextStyle(color: Colors.white, fontSize: 40),)
+                        Text('Rokeya Khatun', style: TextStyle(color: Colors.white, fontSize: 26),),
+                        SizedBox(height: 15,),
+                        Text('Nurse', style: TextStyle(color: Colors.white70, fontSize: 16),),
+                        SizedBox(height: 40,),
+                        Text('What would you like to do?', style: TextStyle(color: Colors.white, fontSize: 36),)
                       ],
                     ),
                   ),
@@ -183,7 +190,7 @@ class Home extends StatelessWidget {
                         SizedBox(height: 40,),
 
                         GestureDetector(
-                          onTap: () => Navigator.of(context).push(TestSearchScreen()),
+                          onTap: () => Navigator.of(context).push(PatientSearchScreen()),
                           child: Container(
                             height: 190,
                             width: double.infinity,
@@ -194,15 +201,19 @@ class Home extends StatelessWidget {
                                 children: <Widget>[
                                   Image.asset('assets/images/icons/manage_patient.png'),
                                   FlatButton(
-                                    onPressed: () => Navigator.of(context).push(TestSearchScreen()),
+                                    onPressed: () => Navigator.of(context).push(PatientSearchScreen()),
                                     child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
                                         Expanded(
-                                          flex: 3,
+                                          flex: 4,
                                           child: Text('Manage  an Existing Patients',textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
                                         ),
                                         Expanded(
-                                          child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 35, ),
+                                          child: Container(
+                                            alignment: Alignment.centerLeft,
+                                            child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
+                                          ),
                                         )
                                       ],
                                     )
@@ -238,7 +249,10 @@ class Home extends StatelessWidget {
                                           child: Text('Register a New Patient',textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
                                         ),
                                         Expanded(
-                                          child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 35, ),
+                                          child: Container(
+                                            alignment: Alignment.centerLeft,
+                                            child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
+                                          ),
                                         )
                                       ],
                                     )

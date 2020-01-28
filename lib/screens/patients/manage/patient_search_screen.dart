@@ -1,28 +1,27 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:nhealth/configs/configs.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/patients/manage/patient_records_screen.dart';
-import 'package:nhealth/screens/patients/manage/search_widget.dart';
+import 'package:nhealth/widgets/search_widget.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 
-class TestSearchScreen extends CupertinoPageRoute {
-  TestSearchScreen()
-      : super(builder: (BuildContext context) => new TestSearch());
+class PatientSearchScreen extends CupertinoPageRoute {
+  PatientSearchScreen()
+      : super(builder: (BuildContext context) => new PatientSearch());
 
 }
 
-class TestSearch extends StatefulWidget {
+class PatientSearch extends StatefulWidget {
   @override
-  _TestSearchState createState() => _TestSearchState();
+  _PatientSearchState createState() => _PatientSearchState();
 }
 
-class _TestSearchState extends State<TestSearch> {
+class _PatientSearchState extends State<PatientSearch> {
 
   List patients = [];
 
@@ -62,7 +61,21 @@ class _TestSearchState extends State<TestSearch> {
               Navigator.of(context).push(RegisterPatientScreen());
             },
           ),
-          FlatButton(
+          Configs().configAvailable('isBarcode') ? FlatButton(
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 5,),
+                Icon(Icons.line_weight, color: Colors.white, size: 20,),
+                SizedBox(height: 5,),
+                Text('Scan Barcode', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14),)
+              ],
+            ),
+            onPressed: () {
+              Navigator.of(context).push(RegisterPatientScreen());
+            },
+          ): Container(),
+
+          Configs().configAvailable('isThumbprint') ? FlatButton(
             child: Column(
               children: <Widget>[
                 SizedBox(height: 5,),
@@ -72,7 +85,7 @@ class _TestSearchState extends State<TestSearch> {
               ],
             ),
             onPressed: () {},
-          )
+          ) : Container()
         ],
       ),
       body: SingleChildScrollView(
@@ -84,39 +97,57 @@ class _TestSearchState extends State<TestSearch> {
               child: Column(
                 children: <Widget>[
                   patients.length > 0 ? CustomSearchWidget(
-                  listContainerHeight: 500,
-                  dataList: patients,
-                  hideSearchBoxWhenItemSelected: false,
-                  queryBuilder: (query, list) {
-                    return patients
-                      .where((item) => item['data']['name']
-                      .toLowerCase()
-                      .contains(query.toLowerCase()))
-                      .toList();
-                  },
-                  popupListItemBuilder: (item) {
-                    print(item);
-                    return PopupListItemWidget(item);
-                  },
-                  selectedItemBuilder: (selectedItem, deleteSelectedItem) {
-                    return SelectedItemWidget(selectedItem, deleteSelectedItem);
-                  },
-                  // widget customization
-                  noItemsFoundWidget: NoItemsFound(),
-                  textFieldBuilder: (controller, focusNode) {
-                    return MyTextField(controller, focusNode);
-                  },
-                  onItemSelected: (item) {
-                    setState(() {
-                      _selectedItem = item;
-                    });
-                  },
-                ) : Container(),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.only(top: 20),
-                  child: Text('Pending Recommendations Only', style: TextStyle(color: Colors.white),),
-                ),
+                    listContainerHeight: 500,
+                    dataList: patients,
+                    hideSearchBoxWhenItemSelected: false,
+                    queryBuilder: (query, list) {
+                      return patients
+                        .where((item) => item['data']['name']
+                        .toLowerCase()
+                        .contains(query.toLowerCase()))
+                        .toList();
+                    },
+                    popupListItemBuilder: (item) {
+                      print(item);
+                      return PopupListItemWidget(item);
+                    },
+                    selectedItemBuilder: (selectedItem, deleteSelectedItem) {
+                      return SelectedItemWidget(selectedItem, deleteSelectedItem);
+                    },
+                    // widget customization
+                    noItemsFoundWidget: NoItemsFound(),
+                    textFieldBuilder: (controller, focusNode) {
+                      return MyTextField(controller, focusNode);
+                    },
+                    onItemSelected: (item) {
+                      setState(() {
+                        _selectedItem = item;
+                      });
+                    },
+                  ) : Container(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        padding: EdgeInsets.only(top: 15),
+                        child: Text('Pending Recommendations Only', style: TextStyle(color: Colors.white),),
+                      ),
+                      Container(
+                         alignment: Alignment.centerLeft,
+                         padding: EdgeInsets.only(top: 15),
+                         child: GestureDetector(
+                           child: Row(
+                             children: <Widget>[
+                               Icon(Icons.filter_list, color: Colors.white,),
+                               SizedBox(width: 10),
+                               Text('Filters', style: TextStyle(color: Colors.white),)
+                             ],
+                           )
+                         ),
+                       ),
+                    ],
+                  )
                 ],
               )
             ),
@@ -232,11 +263,10 @@ class PopupListItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print('hello');
         Patient().setPatient(item);
           Navigator.of(context).push(PatientRecordsScreen());
       },
-          child: Container(
+      child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
         child: Row(
           children: <Widget>[

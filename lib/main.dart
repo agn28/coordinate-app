@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:nhealth/constants/constants.dart';
 import './repositories/local/database_creator.dart';
-import 'package:provider/provider.dart';
-
 import './screens/auth_screen.dart';
 
 void main() async {

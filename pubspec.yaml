@@ -71,6 +71,10 @@ flutter:
    - assets/images/icons/fruit.png
    - assets/images/icons/vegetables.png
    - assets/images/icons/activity.png
+   - assets/images/icons/height.png
+   - assets/images/icons/weight.png
+   - assets/images/icons/hip.png
+   - assets/images/icons/home.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

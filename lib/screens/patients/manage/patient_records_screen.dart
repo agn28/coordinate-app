@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/patient.dart';
-import 'package:nhealth/screens/home_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_list_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/past_encounters_screen.dart';
@@ -18,16 +17,11 @@ class PatientRecordsScreen extends CupertinoPageRoute {
 }
 
 class PatientRecords extends StatefulWidget {
-  
-  // final String patientId;
-  // PatientRecordsScreen(this.patientId);
-
   @override
   _PatientRecordsState createState() => _PatientRecordsState();
 }
 
 class _PatientRecordsState extends State<PatientRecords> {
-
   var _patient;
   bool isLoading = false;
   
@@ -42,14 +36,10 @@ class _PatientRecordsState extends State<PatientRecords> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text('Patient Overview', style: TextStyle(color: Colors.white, fontSize: 23),),
+        title: new Text('Patient Overview', style: TextStyle(color: Colors.white, fontSize: 22),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
-        // leading: new IconButton(
-        //   icon: new Icon(Icons.arrow_back, size: 25,),
-        //   onPressed: () => Navigator.of(context).pushReplacement(HomeScreen()),
-        // ),
         actions: <Widget>[
           GestureDetector(
             child: Container(
@@ -101,11 +91,11 @@ class _PatientRecordsState extends State<PatientRecords> {
                               SizedBox(height: 15,),
                               Row(
                                 children: <Widget>[
-                                  Text('${_patient["data"]["age"]}Y ${_patient["data"]["gender"].toUpperCase()}', style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w400),),
+                                  Text('${_patient["data"]["age"]}Y ${_patient["data"]["gender"].toUpperCase()}', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400),),
                                   SizedBox(width: 10,),
-                                  Text('NID: ${_patient["data"]["nid"]}', style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w400),),
+                                  Text('NID: ${_patient["data"]["nid"]}', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400),),
                                   SizedBox(width: 10,),
-                                  Text('PID: N-213452351', style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w400),),
+                                  Text('PID: N-213452351', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400),),
                                 ],
                               ),
                               SizedBox(height: 20,),
@@ -150,7 +140,7 @@ class _PatientRecordsState extends State<PatientRecords> {
                                           child: Text('Encounters', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                                         ),
                                         Expanded(
-                                          child: Text('Last encounter on Jan 5, 2019', style: TextStyle(fontSize: 16), textAlign: TextAlign.right,)
+                                          child: Text('Last encounter on Jan 27, 2020', style: TextStyle(fontSize: 16), textAlign: TextAlign.right,)
                                         )
                                       ],
                                     ),
@@ -162,14 +152,14 @@ class _PatientRecordsState extends State<PatientRecords> {
                                       padding: EdgeInsets.only(bottom: 17, top: 17),
                                       decoration: BoxDecoration(
                                         border: Border(
-                                          bottom: BorderSide(width: .5, color: Colors.black38)
+                                          bottom: BorderSide(width: .5, color: Colors.black12)
                                         )
                                       ),
                                       child: Row(
                                         children: <Widget>[
                                           Icon(Icons.add, color: kPrimaryColor, size: 30,),
                                           SizedBox(width: 20),
-                                          Text('Create a New Assessment', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500, color: kPrimaryColor), textAlign: TextAlign.right,)
+                                          Text('Create a New Encounter', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500, color: kPrimaryColor), textAlign: TextAlign.right,)
                                         ],
                                       ),
                                     ),
@@ -185,7 +175,7 @@ class _PatientRecordsState extends State<PatientRecords> {
                                         children: <Widget>[
                                           Icon(Icons.visibility, color: kPrimaryColor, size: 30,),
                                           SizedBox(width: 20),
-                                          Text('View Past Assessments', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500, color: kPrimaryColor), textAlign: TextAlign.right,)
+                                          Text('View Past Encounters', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500, color: kPrimaryColor), textAlign: TextAlign.right,)
                                         ],
                                       ),
                                     ),
@@ -220,7 +210,7 @@ class _PatientRecordsState extends State<PatientRecords> {
                                     child: Row(
                                       children: <Widget>[
                                         Expanded(
-                                          child: Text('Health Assessments', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                                          child: Text('Assessments', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                                         ),
                                         Expanded(
                                           child: Text('Last encounter on Jan 5, 2019', style: TextStyle(fontSize: 16), textAlign: TextAlign.right,)
@@ -233,11 +223,16 @@ class _PatientRecordsState extends State<PatientRecords> {
                                     child: Container(
                                       margin: EdgeInsets.symmetric(horizontal: 10),
                                       padding: EdgeInsets.only(bottom: 17, top: 17),
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(width: .5, color: Colors.black12)
+                                        )
+                                      ),
                                       child: Row(
                                         children: <Widget>[
                                           Icon(Icons.add, color: kPrimaryColor, size: 30,),
                                           SizedBox(width: 20),
-                                          Text('Create a New Health Report', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500, color: kPrimaryColor), textAlign: TextAlign.right,)
+                                          Text('Create a New Health Assessment', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500, color: kPrimaryColor), textAlign: TextAlign.right,)
                                         ],
                                       ),
                                     ),
@@ -252,7 +247,7 @@ class _PatientRecordsState extends State<PatientRecords> {
                                         children: <Widget>[
                                           Icon(Icons.visibility, color: kPrimaryColor, size: 30,),
                                           SizedBox(width: 20),
-                                          Text('View Past Health Reports', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500, color: kPrimaryColor), textAlign: TextAlign.right,)
+                                          Text('View Past Health Assessments', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500, color: kPrimaryColor), textAlign: TextAlign.right,)
                                         ],
                                       ),
                                     ),

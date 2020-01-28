@@ -75,5 +75,6 @@ class BodyMeasurement {
   /// Clear all items
   clearItems() {
     _bmItems = [];
+    _items = [];
   }
 }

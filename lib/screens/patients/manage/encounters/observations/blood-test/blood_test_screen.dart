@@ -190,7 +190,7 @@ class BloodTests extends StatelessWidget {
       ),
 
       bottomNavigationBar: Container(
-        height: 90,
+        height: 100,
         padding: EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
           border: Border(
@@ -203,6 +203,7 @@ class BloodTests extends StatelessWidget {
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
+                  border: Border.all(width: 1, color: Colors.black54),
                   borderRadius: BorderRadius.circular(4)
                 ),
                 child: FlatButton(
@@ -216,7 +217,7 @@ class BloodTests extends StatelessWidget {
                     );
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('UNABLE TO PERFORM', style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text('UNABLE TO PERFORM', style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
                 ),
               )
             ),
@@ -322,7 +323,7 @@ class _EncounnterStepsState extends State<EncounnterSteps> {
             ),
             Expanded(
               flex: 2,
-              child: Text(status, style: TextStyle(color: status == 'Complete' ? kPrimaryGreenColor  : kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.w500),),
+              child: Text(status, style: TextStyle(color: status == 'Complete' ? kPrimaryGreenColor  : kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.bold),),
             ),
             
             Expanded(
@@ -393,8 +394,8 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
       backgroundColor: Colors.transparent,
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.all(30),
-        height: 470.0,
+        padding: EdgeInsets.only(top: 30, left: 30, right: 30),
+        height: 450.0,
         color: Colors.white,
         child: Form(
           key: _formKey,
@@ -521,7 +522,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                             onTap: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text('UNABLE TO PERFORM', style: TextStyle(color: kPrimaryColor, fontSize: 18),)
+                            child: Text('UNABLE TO PERFORM', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
                           ),
                         ),
                         SizedBox(width: 30,),
@@ -529,7 +530,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                           onTap: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 18),)
+                          child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
                         ),
                         SizedBox(width: 30,),
                         GestureDetector(
@@ -540,7 +541,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                               _clearDialogForm();
                             }
                           },
-                          child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 18))
+                          child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
                         ),
                       ],
                     )

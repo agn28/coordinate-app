@@ -1,10 +1,5 @@
-import 'dart:io';
-import 'package:http/http.dart' as http;
 import 'package:nhealth/helpers/helpers.dart';
-import 'package:nhealth/repositories/local/database_creator.dart';
 import 'package:nhealth/repositories/local/patient_repository_local.dart';
-import 'package:nhealth/repositories/patient_repository.dart';
-import '../constants/constants.dart';
 import 'dart:convert';
 
 class PatientController {
@@ -26,10 +21,9 @@ class PatientController {
     return data;
   }
 
-  create(formData) {
+  create(formData) async {
     final data = _prepareData(formData);
-    var localData = jsonEncode(data);
-    PatientReposioryLocal().create(localData);
+    await PatientReposioryLocal().create(data);
 
     return 'success';
   }
