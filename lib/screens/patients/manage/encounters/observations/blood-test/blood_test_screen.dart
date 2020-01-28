@@ -487,7 +487,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
               Container(
                 width: double.infinity,
                 child: TextFormField(
-                  style: TextStyle(color: Colors.white, fontSize: 20.0,),
+                  style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
                   keyboardType: TextInputType.multiline,
                   maxLines: 3,
                   controller: commentController,
