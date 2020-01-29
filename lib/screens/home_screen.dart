@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
+import 'package:nhealth/screens/settings/settings_screen.dart';
+import 'package:nhealth/screens/work-list/work_list_search_screen.dart';
 import './patients/register_patient_screen.dart';
 
 
@@ -99,6 +101,21 @@ class Home extends StatelessWidget {
                         ],
                       )
                     )
+                  ),
+                  Container(
+                    height: 50,
+                    child: FlatButton(
+                      onPressed: () {
+                        Navigator.of(context).push(WorkListSearchScreen());
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.list, color: Colors.black54,),
+                          SizedBox(width: 20,),
+                          Text('Work List',style: TextStyle( fontSize: 18,fontWeight: FontWeight.w400))
+                        ],
+                      )
+                    )
                   )
                 ],
               )
@@ -120,7 +137,7 @@ class Home extends StatelessWidget {
                   Container(
                     height: 50,
                     child: FlatButton(
-                      onPressed: () {},
+                      onPressed: () => Navigator.of(context).push(SettingsScreen()),
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.settings, color: Colors.black54),
@@ -140,9 +157,18 @@ class Home extends StatelessWidget {
                         children: <Widget>[
                           Icon(Icons.exit_to_app, color: Colors.black54),
                           SizedBox(width: 20,),
-                          Text('Logout',style: TextStyle( fontSize: 18, fontWeight: FontWeight.w400))
+                          Text('Logout', style: TextStyle( fontSize: 18, fontWeight: FontWeight.w400))
                         ],
                       )
+                    )
+                  ),
+                  Container(
+                    height: 50,
+                    margin: EdgeInsets.only(left: 18),
+                    child: Row(
+                      children: <Widget>[
+                        Text('Version 0.0.01 (beta)', style: TextStyle( fontSize: 18, fontWeight: FontWeight.w400)),
+                      ],
                     )
                   )
                 ],
@@ -156,7 +182,12 @@ class Home extends StatelessWidget {
           children: <Widget>[
             Container(
               height: 360,
-              color: kPrimaryColor,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/images/bg_home.png"),
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
             Container(
               color: Colors.transparent,

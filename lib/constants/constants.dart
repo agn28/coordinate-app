@@ -21,6 +21,8 @@ const kLightButton = Color(0xFFE1F5FE);
 const kErroText = Color(0xFFFFB8B8);
 const kSecondaryTextField = Color(0xFFE8E8E8);
 
+const kBackgroundGrey = Color(0xFFF9F9F9);
+
 const kTextGrey = Color(0x65000000);
 const kShapeColorGreen = Color(0xFF98C645);
 const kTableBorderGrey = Color(0x12000000);

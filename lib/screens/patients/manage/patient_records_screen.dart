@@ -165,7 +165,6 @@ class _PatientRecordsState extends State<PatientRecords> {
                                     ),
                                   ),
 
-
                                   FlatButton(
                                     onPressed: () => Navigator.of(context).push(PastEncountersScreen()),
                                     child: Container(
@@ -263,67 +262,248 @@ class _PatientRecordsState extends State<PatientRecords> {
 
                           Container(
                             // height: 190,
-                            width: double.infinity,
                             decoration: BoxDecoration(
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black12,
-                                  blurRadius: 5,
-                                  offset: Offset(0.0, 1.0,)
+                                  blurRadius: 5.0,
+                                  offset: Offset(0.0, 1.0)
                                 ),
                               ]
                             ),
                             child: Card(
                               elevation: 0,
-                              child: FlatButton(
-                                onPressed: () => Navigator.of(context).push(CarePlanListScreen()),
-                                child: Column(
+                              child: Column(
                                 // mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Container(
-                                    padding: EdgeInsets.symmetric(vertical: 25, horizontal: 30),
+                                    padding: EdgeInsets.symmetric(vertical: 30, horizontal: 30),
                                     child: Row(
                                       children: <Widget>[
                                         Expanded(
-                                          flex: 2,
-                                          child: Row(
-                                            children: <Widget>[
-                                              Image.asset('assets/images/care_plan.png'),
-                                              SizedBox(width: 20,),
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: <Widget>[
-                                                  Text('Care Plan', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
-                                                  SizedBox(height: 10,),
-                                                  Row(
-                                                    children: <Widget>[
-                                                      Image.asset('assets/images/dot_red.png'),
-                                                      SizedBox(width: 7,),
-                                                      Text('3 Actions Pending', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),)
-                                                    ],
-                                                  ),
-                                                  
-                                                ],
-                                              )
-                                            ],
-                                          ),
+                                          child: Text('Care Plan Overview', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                                         ),
                                         Expanded(
-                                          child: Container(
-                                            alignment: Alignment.topRight,
-                                            child: Icon(Icons.chevron_right, size: 40, color: kPrimaryColor,),
-                                          )
+                                          child: Text('Last modified on Jan 5, 2019', style: TextStyle(fontSize: 16), textAlign: TextAlign.right,)
                                         )
                                       ],
                                     ),
-                                  ),  
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.symmetric(horizontal: 30),
+                                    child: Text('Hypertension, high Blood Pressure', style: TextStyle( fontSize: 16),),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(top: 20),
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(width: .5, color: Colors.black12),
+                                        top: BorderSide(width: .5, color: Colors.black12)
+                                      )
+                                    ),
+                                    child: FlatButton(
+                                      onPressed: () {},
+                                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      child: Container(
+                                        padding: EdgeInsets.only(left: 10, top: 20, bottom: 20, right: 10),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Text('Napa 12 mg', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400,), textAlign: TextAlign.right,),
+                                            Container(
+                                              child: Icon(Icons.arrow_forward, color: kPrimaryColor,),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(width: .5, color: Colors.black12),
+                                      )
+                                    ),
+                                    child: FlatButton(
+                                      onPressed: () {},
+                                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      child: Container(
+                                        padding: EdgeInsets.only(left: 10, top: 20, bottom: 20, right: 10),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Text('Metfornim 50 mg', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400,), textAlign: TextAlign.right,),
+                                            Container(
+                                              child: Icon(Icons.arrow_forward, color: kPrimaryColor,),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(width: .5, color: Colors.black12),
+                                      )
+                                    ),
+                                    child: FlatButton(
+                                      onPressed: () {},
+                                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      child: Container(
+                                        padding: EdgeInsets.only(left: 10, top: 20, bottom: 20, right: 10),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Text('Improve blood pressure control', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400,)),
+                                                SizedBox(height: 15,),
+                                                Text('Intervention: Counselling about reduced salt intake', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400,)),
+                                                SizedBox(height: 15,),
+                                                Text('Completed on Jan 10 2019', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: kPrimaryGreenColor)),
+                                              ],
+                                            ),
+                                            Container(
+                                              child: Icon(Icons.arrow_forward, color: kPrimaryColor,),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(width: .5, color: Colors.black12),
+                                      )
+                                    ),
+                                    child: FlatButton(
+                                      onPressed: () {},
+                                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      child: Container(
+                                        padding: EdgeInsets.only(left: 10, top: 20, bottom: 20, right: 10),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Text('Decrease cholesterol levels', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400,)),
+                                                SizedBox(height: 15,),
+                                                Text('Intervention: Counselling about lipid lowering diet', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400,)),
+                                                SizedBox(height: 15,),
+                                                Text('Pending', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: kPrimaryRedColor)),
+                                              ],
+                                            ),
+                                            Container(
+                                              child: Icon(Icons.arrow_forward, color: kPrimaryColor,),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  Container(
+                                    margin: EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 30),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text('Followup after 3 months', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500,)),
+                                        SizedBox(height: 30,),
+                                        Container(
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                            color: kPrimaryColor,
+                                            borderRadius: BorderRadius.circular(4)
+                                          ),
+                                          child: FlatButton(
+                                            onPressed: () async {
+                                            },
+                                            padding: EdgeInsets.symmetric(vertical: 20),
+                                            child: Text('VIEW CARE PLAN DETAILS', style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
 
                                 ],
                               )
-                              )
                             ),
                           ),
-                          SizedBox(height: 30,)
+
+                          SizedBox(height: 50,)
+
+                          // Container(
+                          //   // height: 190,
+                          //   width: double.infinity,
+                          //   decoration: BoxDecoration(
+                          //     boxShadow: [
+                          //       BoxShadow(
+                          //         color: Colors.black12,
+                          //         blurRadius: 5,
+                          //         offset: Offset(0.0, 1.0,)
+                          //       ),
+                          //     ]
+                          //   ),
+                          //   child: Card(
+                          //     elevation: 0,
+                          //     child: FlatButton(
+                          //       onPressed: () => Navigator.of(context).push(CarePlanListScreen()),
+                          //       child: Column(
+                          //       // mainAxisAlignment: MainAxisAlignment.center,
+                          //       children: <Widget>[
+                          //         Container(
+                          //           padding: EdgeInsets.symmetric(vertical: 25, horizontal: 30),
+                          //           child: Row(
+                          //             children: <Widget>[
+                          //               Expanded(
+                          //                 flex: 2,
+                          //                 child: Row(
+                          //                   children: <Widget>[
+                          //                     Image.asset('assets/images/care_plan.png'),
+                          //                     SizedBox(width: 20,),
+                          //                     Column(
+                          //                       crossAxisAlignment: CrossAxisAlignment.start,
+                          //                       children: <Widget>[
+                          //                         Text('Care Plan', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
+                          //                         SizedBox(height: 10,),
+                          //                         Row(
+                          //                           children: <Widget>[
+                          //                             Image.asset('assets/images/dot_red.png'),
+                          //                             SizedBox(width: 7,),
+                          //                             Text('3 Actions Pending', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),)
+                          //                           ],
+                          //                         ),
+                                                  
+                          //                       ],
+                          //                     )
+                          //                   ],
+                          //                 ),
+                          //               ),
+                          //               Expanded(
+                          //                 child: Container(
+                          //                   alignment: Alignment.topRight,
+                          //                   child: Icon(Icons.chevron_right, size: 40, color: kPrimaryColor,),
+                          //                 )
+                          //               )
+                          //             ],
+                          //           ),
+                          //         ),  
+
+                          //       ],
+                          //     )
+                          //     )
+                          //   ),
+                          // ),
+                          // SizedBox(height: 30,)
                         ],
                       ),
                     ),

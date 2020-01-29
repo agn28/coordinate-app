@@ -75,6 +75,9 @@ flutter:
    - assets/images/icons/weight.png
    - assets/images/icons/hip.png
    - assets/images/icons/home.png
+   - assets/images/bg_home.png
+   - assets/images/work_list_1.png
+   - assets/images/work_list_2.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
