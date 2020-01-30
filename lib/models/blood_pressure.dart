@@ -82,7 +82,6 @@ class BloodPressure {
 
   /// Remove an item by index
   removeItem(index) {
-    print(index);
     _items.removeAt(index);
   }
 

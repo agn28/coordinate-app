@@ -202,10 +202,7 @@ class PopupListItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        // Patient().setPatient(item);
-        // Navigator.of(context).push(PatientRecordsScreen());
-      },
+      onTap: () {},
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
         margin: const EdgeInsets.only(bottom: 20),

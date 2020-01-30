@@ -166,28 +166,15 @@ class _RegisterPatientState extends State<RegisterPatient> {
             Expanded(
               child: _currentStep < _mySteps().length - 1 ? FlatButton(
                 onPressed: () {
-                  print(_currentStep);
-                  // print('contact email ' + contactEmailController.text);
                   setState(() {
-                    // print('step' + _currentStep.toString());
-                    // print('formData ' + formData.toString());
-                    if (_currentStep == 2) {
-                      // var formData = _prepareFormData();
-                      // PatientController().create(formData);
-                      // _clearForm();
-                    }
-                    
                     if (_currentStep == 1) {
                       if (_contactFormKey.currentState.validate()) {
                         _currentStep = _currentStep + 1;
                         nextText = 'FINISH';
                       }
-                      // return;
                     }
-
                     if (_currentStep < 1) {
                       
-                      // print(_patientFormKey);
                       if (_patientFormKey.currentState.validate()) {
                         // If the form is valid, display a Snackbar.
                         _currentStep = _currentStep + 1;
@@ -284,48 +271,14 @@ class _RegisterPatientState extends State<RegisterPatient> {
 }
 
 class PatientDetails extends StatefulWidget {
-  getData() => createState()._getData();
 
-  // validateForm() {
-  //   if (formKey.currentState.validate()) {
-  //       // If the form is valid, display a Snackbar.
-  //       Scaffold.of(context)
-  //           .showSnackBar(SnackBar(content: Text('Processing Data')));
-  //     }
-  // }
-
-  validateForm() {
-    print('validateform');
-    if (_patientFormKey.currentState.validate()) {
-      // If the form is valid, display a Snackbar.
-      
-    }
-  }
   @override
   _PatientDetailsState createState() => _PatientDetailsState();
 }
 
 class _PatientDetailsState extends State<PatientDetails> {
   
-  // final firstNameController = TextEditingController();
-
   DateTime selectedDate = DateTime.now();
-
-  Future<Null> _selectDate(BuildContext context) async {
-    final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(1920, 8),
-        lastDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day));
-    if (picked != null && picked != selectedDate)
-      setState(() {
-        selectedDate = picked;
-      });
-  }
-
-  _getData() {
-    // print('hello' + firstNameController.text);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -802,9 +755,7 @@ class _AddPhotoState extends State<AddPhoto> {
           
           GestureDetector(
             onTap: () async {
-              // print('registraion');
               var formData = _RegisterPatientState()._prepareFormData();
-              print(formData);
               await PatientController().create(formData);
               _RegisterPatientState()._clearForm();
               Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen());

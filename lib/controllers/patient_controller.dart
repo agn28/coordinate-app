@@ -4,6 +4,7 @@ import 'dart:convert';
 
 class PatientController {
 
+  /// Get all the patients
   getAllPatients() async {
     var patients = await PatientReposioryLocal().getAllPatients();
     var data = [];
@@ -21,6 +22,8 @@ class PatientController {
     return data;
   }
 
+  /// Create a new patient
+  /// [formData] is required as parameter.
   create(formData) async {
     final data = _prepareData(formData);
     await PatientReposioryLocal().create(data);
@@ -28,6 +31,7 @@ class PatientController {
     return 'success';
   }
 
+  /// Prepare data to create a new patient.
   _prepareData(formData) {
     final age = Helpers().calculateAge(formData['birth_year'], formData['birth_month'], formData['birth_date']);
     String birthDate = formData['birth_year'] + '-' + formData['birth_month'] + '-' + formData['birth_date'];

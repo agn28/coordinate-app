@@ -50,8 +50,6 @@ class ForgotPassword extends StatelessWidget {
                   bottomPadding: 20,
                   hintText: 'Email Address',
                 ),
-                // SizedBox(height: 5,),
-                // Text('Please input a valid email address', style: TextStyle(color: kErroText, fontSize: 16)),
                 SizedBox(height: 40,),
                 PrimaryButton(
                   text: Text('REQUEST PASSWORD RESET', style: TextStyle(color: Colors.white, fontSize: 16)),

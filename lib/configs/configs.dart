@@ -5,6 +5,8 @@ var _configs = {
 
 class Configs {
 
+  /// Check config is available or not
+  /// [key] is required as parameter
   configAvailable(key) {
     return _configs[key];
   }

@@ -156,13 +156,9 @@ class _PatientSearchState extends State<PatientSearch> {
                          padding: EdgeInsets.only(top: 15),
                          child: GestureDetector(
                            onTap: () async {
-                            // var _assessments = await  AssessmentController().getAllAssessmentsByPatient();
-                            // print(_assessments);
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                // return object of type Dialog
-                                print(patients);
                                 return FiltersDialog(parent: this,);
                               },
                             );
@@ -227,7 +223,6 @@ class _DiseasesDialogState extends State<DiseasesDialog> {
 
   _updateCheckBox(value, index) {
     if (value == true && _selectedItem.length == 3) {
-      print('You cannot select more than three diseases');
       return Toast.show("You cannot select more than three diseases", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM, backgroundRadius: 5);
     }
 
@@ -248,7 +243,6 @@ class _DiseasesDialogState extends State<DiseasesDialog> {
         color: Colors.white,
         child: Form(
           child: ListView(
-            // crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               SizedBox(height: 30,),
               Container(
@@ -311,7 +305,6 @@ class _DiseasesDialogState extends State<DiseasesDialog> {
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
                       height: 50,
-                      // margin: EdgeInsets.symmetric(horizontal: 10),
                       child: Row(
                         children: <Widget>[
                           SizedBox(width: 10,),
@@ -322,7 +315,6 @@ class _DiseasesDialogState extends State<DiseasesDialog> {
                               _updateCheckBox(value, index);
                             },
                           ),
-                          // SizedBox(width: 1,),
                           Text(StringUtils.capitalize(_diseases[index]), style: TextStyle(fontSize: 17),)
                         ],
                       )
@@ -353,8 +345,6 @@ class _DiseasesDialogState extends State<DiseasesDialog> {
                         FlatButton(
                           onPressed: () {
                             Navigator.of(context).pop();
-                            print(selectedDiseases);
-                            // _FiltersDialogState()._getSelectedDiseaseText();
                             selectedDiseases = _selectedItem;
                             this.widget.parent.setState(() {
                               this.widget.parent.getSelectedDiseaseText();
@@ -391,23 +381,11 @@ class _FiltersDialogState extends State<FiltersDialog> {
   final format = DateFormat("yyyy-MM-dd");
   String _selectedDiseaseText = '';
 
-  String _value = '';
-
   @override
   void initState() {
     super.initState();
 
     getSelectedDiseaseText();
-  }
-
-  Future _selectDate() async {
-    DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: new DateTime.now(),
-        firstDate: new DateTime(2016),
-        lastDate: new DateTime(2019)
-    );
-    if(picked != null) setState(() => _value = picked.toString());
   }
 
   getSelectedDiseaseText() {
@@ -426,18 +404,13 @@ class _FiltersDialogState extends State<FiltersDialog> {
     await this.widget.parent.getPatients();
     var birthDate = '';
     if (birthDateController.text != '' && birthMonthController.text != '' && birthYearController.text != '') {
-      print('hea;sld');
-      print(birthDateController.text);
       birthDate = birthYearController.text + '-' + birthMonthController.text + '-' + birthDateController.text;
-      print(birthDate);
     }
 
     if (birthDate != '') {
       this.widget.parent.setState(() {
         patients = patients.where((item) => item['data']['birth_date'] == birthDate).toList();
-
       });
-      // print(patients);
     }
 
     if (lastVisitDateController.text != '') {
@@ -456,11 +429,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
       this.widget.parent.setState(() => {
         patients = filteredPatients
       });
-
-      print(filteredPatients);
-      
     }
-    print(lastVisitDateController.text);
   }
 
   clearFilters() {

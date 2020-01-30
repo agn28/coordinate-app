@@ -89,20 +89,6 @@ class _SettingsState extends State<Settings> {
                   ],
                 ),
               ),
-              // Container(
-              //   width: double.infinity,
-              //   margin: EdgeInsets.symmetric(horizontal: 30),
-              //   decoration: BoxDecoration(
-              //     color: kPrimaryColor,
-              //     borderRadius: BorderRadius.circular(4)
-              //   ),
-              //   child: FlatButton(
-              //     onPressed: () async {
-              //     },
-              //     padding: EdgeInsets.symmetric(vertical: 20),
-              //     child: Text('SAVE SETTINGS', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
-              //   ),
-              // )
             ],
           ),
           

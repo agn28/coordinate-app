@@ -36,8 +36,6 @@ class PatientReposioryLocal {
       'meta': data['meta']
     };
 
-    print('patient ' + patient.toString());
-    
     await Patient().setPatient(patient);
     DatabaseCreator.databaseLog('Add patient', sql, null, result, params);
   }
