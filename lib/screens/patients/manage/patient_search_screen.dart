@@ -1,14 +1,27 @@
+import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'package:intl/intl.dart';
+
 import 'package:nhealth/configs/configs.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/patients/manage/patient_records_screen.dart';
+import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/widgets/search_widget.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
+
+
+final birthDateController = TextEditingController();
+final birthmonthController = TextEditingController();
+final birthYearController = TextEditingController();
+List patients = [];
 
 class PatientSearchScreen extends CupertinoPageRoute {
   PatientSearchScreen()
@@ -23,9 +36,7 @@ class PatientSearch extends StatefulWidget {
 
 class _PatientSearchState extends State<PatientSearch> {
 
-  List patients = [];
-
-  _getPatients() async {
+  getPatients() async {
     var data = await PatientController().getAllPatients();
     setState(() {
       patients =  data;
@@ -35,7 +46,7 @@ class _PatientSearchState extends State<PatientSearch> {
   @override
   initState() {
     super.initState();
-    _getPatients();
+    getPatients();
   }
   LeaderBoard _selectedItem;
 
@@ -43,6 +54,7 @@ class _PatientSearchState extends State<PatientSearch> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("Patients"),
@@ -96,12 +108,12 @@ class _PatientSearchState extends State<PatientSearch> {
               color: kPrimaryColor,
               child: Column(
                 children: <Widget>[
-                  patients.length > 0 ? CustomSearchWidget(
+                  CustomSearchWidget(
                     listContainerHeight: 500,
-                    dataList: patients,
+                    dataList: [...patients],
                     hideSearchBoxWhenItemSelected: false,
                     queryBuilder: (query, list) {
-                      return patients
+                      return [...patients]
                         .where((item) => item['data']['name']
                         .toLowerCase()
                         .contains(query.toLowerCase()))
@@ -115,7 +127,7 @@ class _PatientSearchState extends State<PatientSearch> {
                       return SelectedItemWidget(selectedItem, deleteSelectedItem);
                     },
                     // widget customization
-                    noItemsFoundWidget: NoItemsFound(),
+                    // noItemsFoundWidget: NoItemsFound(),
                     textFieldBuilder: (controller, focusNode) {
                       return MyTextField(controller, focusNode);
                     },
@@ -124,7 +136,7 @@ class _PatientSearchState extends State<PatientSearch> {
                         _selectedItem = item;
                       });
                     },
-                  ) : Container(),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -138,11 +150,23 @@ class _PatientSearchState extends State<PatientSearch> {
                         padding: EdgeInsets.only(top: 15),
                         child: Text('Pending Recommendations Only', style: TextStyle(color: Colors.white),),
                       ),
-                      patients.length > 0 ?
+                      
                       Container(
                          alignment: Alignment.centerLeft,
                          padding: EdgeInsets.only(top: 15),
                          child: GestureDetector(
+                           onTap: () async {
+                            // var _assessments = await  AssessmentController().getAllAssessmentsByPatient();
+                            // print(_assessments);
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                // return object of type Dialog
+                                print(patients);
+                                return FiltersDialog(parent: this,);
+                              },
+                            );
+                           },
                            child: Row(
                              children: <Widget>[
                                Icon(Icons.filter_list, color: Colors.white,),
@@ -151,7 +175,7 @@ class _PatientSearchState extends State<PatientSearch> {
                              ],
                            )
                          ),
-                       ) : Container(),
+                       ),
                     ],
                   )
                 ],
@@ -163,6 +187,489 @@ class _PatientSearchState extends State<PatientSearch> {
       ),
     );
   }
+}
+
+class DiseasesDialog extends StatefulWidget {
+  _FiltersDialogState parent;
+
+  DiseasesDialog({this.parent});
+
+  @override
+  _DiseasesDialogState createState() => _DiseasesDialogState();
+}
+
+var selectedDiseases = [];
+final lastVisitDateController = TextEditingController();
+class _DiseasesDialogState extends State<DiseasesDialog> {
+
+  List _allDiseases = ['lupus', 'diabetes', 'bronchitis', 'hypertension', 'cancer', 'Ciliac', 'Scleroderma', 'Abulia', 'Agraphia', 'Chorea', 'Coma' ];
+  List _diseases = [];
+  var _checkValue = {};
+
+  var _selectedItem = selectedDiseases;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _diseases = _allDiseases;
+    });
+    _preapareCheckboxValue();
+    
+  }
+  _preapareCheckboxValue() {
+    _diseases.forEach((item) => {
+      selectedDiseases.indexOf(item) == -1 ? _checkValue[item] = false : _checkValue[item] = true
+    });
+
+    print(_checkValue);
+  }
+
+  _updateCheckBox(value, index) {
+    if (value == true && _selectedItem.length == 3) {
+      print('You cannot select more than three diseases');
+      return Toast.show("You cannot select more than three diseases", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+    }
+
+    setState(() {
+      value ? _selectedItem.add(_diseases[index]) : _selectedItem.removeAt(_selectedItem.indexOf(_diseases[index]));
+      _checkValue[_diseases[index]] = value;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      elevation: 0.0,
+      backgroundColor: Colors.transparent,
+      child: Container(
+        width: double.infinity,
+        height: 630.0,
+        color: Colors.white,
+        child: Form(
+          child: ListView(
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(height: 30,),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 25),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text('Select Diagnosed Diseases', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 30,),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 25),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('Select upto three diseases', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),),
+                    SizedBox(height: 20,),
+                    
+                    TextField(
+                      
+                      style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
+                      onChanged: (value) => {
+                        setState(() {
+                          _diseases = _allDiseases
+                            .where((item) => item
+                            .toLowerCase()
+                            .contains(value.toLowerCase()))
+                            .toList();
+                        })
+                      },
+                      decoration: InputDecoration(
+                        counterText: ' ',
+                        contentPadding: EdgeInsets.only(top: 18, bottom: 18, left: 10, right: 10),
+                        prefixIcon: Icon(Icons.search),
+                        filled: true,
+                        fillColor: kSecondaryTextField,
+                        border: new UnderlineInputBorder(
+                          borderSide: new BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(4),
+                            topRight: Radius.circular(4),
+                          )
+                        ),
+                        hintText: 'Search',
+                        hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                      )
+                    )
+                  ],
+                )
+              ),
+
+              Container(
+                height: 340,
+                child: ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  itemCount: _diseases.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      height: 50,
+                      // margin: EdgeInsets.symmetric(horizontal: 10),
+                      child: Row(
+                        children: <Widget>[
+                          SizedBox(width: 10,),
+                          Checkbox(
+                            activeColor: kPrimaryColor,
+                            value: _checkValue[_diseases[index]],
+                            onChanged: (value) {
+                              _updateCheckBox(value, index);
+                            },
+                          ),
+                          // SizedBox(width: 1,),
+                          Text(StringUtils.capitalize(_diseases[index]), style: TextStyle(fontSize: 17),)
+                        ],
+                      )
+                    );
+                  },
+                )
+              ),
+              
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.bottomRight,
+                    margin: EdgeInsets.only(top: 30),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        FlatButton(
+                          onPressed: () {
+                            setState(() {
+                              _selectedItem = [];
+                            });
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16),)
+                        ),
+                        SizedBox(width: 30,),
+                        FlatButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            print(selectedDiseases);
+                            // _FiltersDialogState()._getSelectedDiseaseText();
+                            selectedDiseases = _selectedItem;
+                            this.widget.parent.setState(() {
+                              this.widget.parent.getSelectedDiseaseText();
+                            });
+                          },
+                          child: Text('APPLY', style: TextStyle(color: kPrimaryColor, fontSize: 16))
+                        ),
+                      ],
+                    )
+                  )
+                ],
+              )
+            ],
+          )
+        ),
+      )
+      
+    );
+  }
+}
+
+
+class FiltersDialog extends StatefulWidget {
+  
+  _PatientSearchState parent;
+  FiltersDialog({this.parent});
+
+  @override
+  _FiltersDialogState createState() => _FiltersDialogState();
+}
+
+class _FiltersDialogState extends State<FiltersDialog> {
+
+  final format = DateFormat("yyyy-MM-dd");
+  String _selectedDiseaseText = '';
+
+  String _value = '';
+
+  @override
+  void initState() {
+    super.initState();
+
+    getSelectedDiseaseText();
+  }
+
+  Future _selectDate() async {
+    DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: new DateTime.now(),
+        firstDate: new DateTime(2016),
+        lastDate: new DateTime(2019)
+    );
+    if(picked != null) setState(() => _value = picked.toString());
+  }
+
+  getSelectedDiseaseText() {
+    if (selectedDiseases.length > 0) {
+      setState(() {
+        _selectedDiseaseText = selectedDiseases.join(', ');
+      });
+    } else {
+      setState(() {
+        _selectedDiseaseText = 'Select Diagnosed Disease(s)';
+      });
+    }
+  }
+
+  applyFilter() async {
+    await this.widget.parent.getPatients();
+    var birthDate = '';
+    if (birthDateController.text != '' && birthMonthController.text != '' && birthYearController.text != '') {
+      print('hea;sld');
+      print(birthDateController.text);
+      birthDate = birthYearController.text + '-' + birthMonthController.text + '-' + birthDateController.text;
+      print(birthDate);
+    }
+
+    if (birthDate != '') {
+      this.widget.parent.setState(() {
+        patients = patients.where((item) => item['data']['birth_date'] == birthDate).toList();
+
+      });
+      // print(patients);
+    }
+
+    if (lastVisitDateController.text != '') {
+      var assessments = await AssessmentController().getAllAssessments();
+
+      var filteredAssessments = assessments.where((item) => item['data']['assessment_date'] == lastVisitDateController.text).toList();
+      var filteredPatients = [];
+      patients.forEach((patient) { 
+        filteredAssessments.forEach((assessment) {
+          if (assessment['data']['patient_id'] == patient['uuid']) {
+            filteredPatients.add(patient);
+          } 
+        });
+      });
+
+      this.widget.parent.setState(() => {
+        patients = filteredPatients
+      });
+
+      print(filteredPatients);
+      
+    }
+    print(lastVisitDateController.text);
+  }
+
+  clearFilters() {
+    setState(() {
+      birthDateController.clear();
+      birthMonthController.clear();
+      birthYearController.clear();
+      lastVisitDateController.clear();
+      selectedDiseases = [];
+    });
+
+    this.widget.parent.getPatients();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      elevation: 0.0,
+      backgroundColor: Colors.transparent,
+      child: Container(
+        width: double.infinity,
+        height: 530.0,
+        color: Colors.white,
+        child: Form(
+          child: ListView(
+            children: <Widget>[
+              SizedBox(height: 30,),
+              GestureDetector(
+                onTap: () {
+                  clearFilters();
+                  Navigator.of(context).pop();
+                },
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 25),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text('Filters', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                      Text('CLEAR FILTERS', style: TextStyle(fontSize: 15, color: kPrimaryColor, fontWeight: FontWeight.w500),),
+                    ],
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 30,),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 25),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('Date of Birth', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),),
+                    SizedBox(height: 20,),
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: PrimaryTextField(
+                            topPaadding: 18,
+                            bottomPadding: 18,
+                            hintText: 'dd',
+                            controller: birthDateController,
+                            name: "Date",
+                            validation: true,
+                            type: TextInputType.number,
+                          ),
+                        ),
+                        SizedBox(width: 20,),
+                        Expanded(
+                          child: PrimaryTextField(
+                            topPaadding: 18,
+                            bottomPadding: 18,
+                            hintText: 'mm',
+                            controller: birthMonthController,
+                            name: "Month",
+                            validation: true,
+                            type: TextInputType.number
+                          ),
+                        ),
+                        SizedBox(width: 20,),
+                        Expanded(
+                          child: PrimaryTextField(
+                            topPaadding: 18,
+                            bottomPadding: 18,
+                            hintText: 'yyyy',
+                            controller: birthYearController,
+                            name: "Year",
+                            validation: true,
+                            type: TextInputType.number
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+              ),
+              
+              Divider(),
+
+              SizedBox(height: 10,),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 25),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('Diagnosed Diseases', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),),
+                    SizedBox(height: 20,),
+                    Container(
+                      child: Container(
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: kSecondaryTextField,
+                          borderRadius: BorderRadius.circular(3)
+                        ),
+                        child: FlatButton(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(_selectedDiseaseText, style: TextStyle(fontSize: 16, color: Colors.black54),),
+                              Icon(Icons.arrow_drop_down)
+                            ],
+                          ),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                // return object of type Dialog
+                                return DiseasesDialog(parent: this,);
+                              },
+                            );
+                          },
+                        )
+                      )
+                    ),
+                  ],
+                )
+              ),
+              SizedBox(height: 20,),
+              
+              Divider(),
+
+              SizedBox(height: 20,),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 25),
+                child: DateTimeField(
+                  format: format,
+                  controller: lastVisitDateController,
+                  decoration: InputDecoration(
+                    hintText: 'Last Visit Date',
+                    hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                    contentPadding: EdgeInsets.only(top: 18, bottom: 18),
+                    prefixIcon: Icon(Icons.date_range),
+                    filled: true,
+                    fillColor: kSecondaryTextField,
+                    border: new UnderlineInputBorder(
+                      borderSide: new BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(4),
+                        topRight: Radius.circular(4),
+                      )
+                    ),
+                  ),
+                  
+                  onShowPicker: (context, currentValue) {
+                    return showDatePicker(
+                        context: context,
+                        firstDate: DateTime(1900),
+                        initialDate: currentValue ?? DateTime.now(),
+                        lastDate: DateTime(2100));
+                  },
+                ),
+              ),
+            
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.bottomRight,
+                    margin: EdgeInsets.only(top: 30),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        FlatButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16),)
+                        ),
+                        SizedBox(width: 30,),
+                        FlatButton(
+                          onPressed: () {
+                            applyFilter();
+                            Navigator.of(context).pop();
+                            // print(patients);
+                          },
+                          child: Text('APPLY', style: TextStyle(color: kPrimaryColor, fontSize: 16))
+                        ),
+                      ],
+                    )
+                  )
+                ],
+              )
+            ],
+          )
+        ),
+      )
+      
+    );
+  }
+
+
 }
 
 class LeaderBoard {
@@ -236,29 +743,6 @@ class MyTextField extends StatelessWidget {
   }
 }
 
-class NoItemsFound extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Icon(
-          Icons.folder_open,
-          size: 24,
-          color: Colors.grey[900].withOpacity(0.7),
-        ),
-        const SizedBox(width: 10),
-        Text(
-          "No Items Found",
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.grey[900].withOpacity(0.7),
-          ),
-        ),
-      ],
-    );
-  }
-}
 
 class PopupListItemWidget extends StatelessWidget {
   const PopupListItemWidget(this.item);

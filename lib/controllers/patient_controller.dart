@@ -30,10 +30,12 @@ class PatientController {
 
   _prepareData(formData) {
     final age = Helpers().calculateAge(formData['birth_year'], formData['birth_month'], formData['birth_date']);
+    String birthDate = formData['birth_year'] + '-' + formData['birth_month'] + '-' + formData['birth_date'];
     formData.remove('birth_date');
     formData.remove('birth_month');
     formData.remove('birth_year');
     formData['age'] = age;
+    formData['birth_date'] = birthDate;
     
     var data = {
       "meta": {
