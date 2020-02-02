@@ -5,8 +5,13 @@ class Assessment {
   /// Set assessment for edit
   selectAssessment(assessment) {
     _selectedAssessment = assessment;
-    print(_selectedAssessment);
   }
+
+  /// Get selected assessment for edit
+  getSelectedAssessment() {
+    return _selectedAssessment;
+  }
+
 
   /// Clear selected asessment
   clearItem() {

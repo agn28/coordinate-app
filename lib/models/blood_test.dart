@@ -29,11 +29,33 @@ class BloodTest {
     if (items.length == 0) {
       return 'Error! Minimum 1 step should be completed.';
     }
-    _btItems = [];
-    _items.forEach((item) => {
-      _btItems.add(_prepareData(item))
-    });
+
+    // print(_btItems);
+    // return;
+    for (var item in _items) {
+      bool updated = false;
+      for (var bt in _btItems) {
+        if (bt['body']['data']['type'] == item['type']) {
+          _btItems[_btItems.indexOf(bt)]['body']['data'] = item;
+          updated = true;
+          break;
+        }
+      }
+
+      if(!updated) {
+        print('hello');
+        _btItems.add(_prepareData(item));
+      }
+      
+    }
+
     return 'success';
+  }
+  /// Add body measurement item for edit
+  /// body measurement [observation] is required as parameter
+  addBtItemsForEdit(observation) {
+    _btItems.add(observation);
+    _items.add(observation['body']['data']);
   }
 
   /// Prepare observation data.
@@ -48,7 +70,6 @@ class BloodTest {
         "type": "blood_test",
         "data": item,
         "patient_id": Patient().getPatient()['uuid'],
-        "assessment_id": "264d9d80-1b17-11ea-9ddd-117747515bf8"
       }
     };
 
@@ -73,5 +94,6 @@ class BloodTest {
   /// Clear all items
   clearItems() {
     _btItems = [];
+    _items = [];
   }
 }

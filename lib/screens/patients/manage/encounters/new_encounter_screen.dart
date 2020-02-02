@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/helpers/helpers.dart';
+import 'package:nhealth/models/assessment.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
 import 'package:nhealth/models/body_measurement.dart';
@@ -34,6 +35,12 @@ class _NewEncounterState extends State<NewEncounter> {
   @override
   void initState() {
     super.initState();
+    if (Assessment().getSelectedAssessment() != {}) {
+      setState(() {
+        commentController.text = Assessment().getSelectedAssessment()['data'] != null ? Assessment().getSelectedAssessment()['data']['comment'] : '';
+        selectedType = Assessment().getSelectedAssessment()['data'] != null ? Assessment().getSelectedAssessment()['data']['type'] : 'In-clinic Screening';
+      });
+    }
   }
 
   _changeType(value) {
@@ -245,7 +252,13 @@ class _NewEncounterState extends State<NewEncounter> {
                 ),
                 child: FlatButton(
                   onPressed: () async {
-                    var result = AssessmentController().create(selectedType, commentController.text);
+                    var result = '';
+                    if (Assessment().getSelectedAssessment() == {}) {
+                      result = AssessmentController().create(selectedType, commentController.text);
+                    } else {
+                      print('update');
+                      result = AssessmentController().update(selectedType, commentController.text);
+                    }
 
                     if (result == 'success') {
                       _scaffoldKey.currentState.showSnackBar(
@@ -267,7 +280,8 @@ class _NewEncounterState extends State<NewEncounter> {
                     
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('Save Assessment', style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text(Assessment().getSelectedAssessment() != {} ? 'Update Assessment' : 'Save Assssment',
+                   style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                 ),
               )
             )

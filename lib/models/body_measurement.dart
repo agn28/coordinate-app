@@ -60,11 +60,7 @@ class BodyMeasurement {
   /// Add body measurement item for edit
   /// body measurement [observation] is required as parameter
   addBmItemsForEdit(observation) {
-    print(observation);
-
-    _bmItems = [];
     _bmItems.add(observation);
-    _items = [];
     _items.add(observation['body']['data']);
   }
 

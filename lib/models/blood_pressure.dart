@@ -46,6 +46,14 @@ class BloodPressure {
     return 'success';
   }
 
+  /// Add body measurement item for edit
+  /// body measurement [observation] is required as parameter
+  addBpItemsForEdit(observation) {
+    _bpItems.add(observation);
+    _items.add(BloodPressureItem(observation['body']['data']['arm'], observation['body']['data']['systolic'], observation['body']['data']['diastolic'], observation['body']['data']['pulse_rate']));
+    // _items.add(observation['body']['data']);
+  }
+
   /// Prepare blood pressure data
   _prepareBloodPressureData(formData, item) {
     var data = {

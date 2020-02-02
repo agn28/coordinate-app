@@ -464,7 +464,6 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                 ),
                 child: FlatButton(
                   onPressed: () async {
-                    print('hello');
                     var formData = _prepareFormData();
                     var result = BloodPressure().addBloodPressure(formData);
                     if (result.toString() == 'success') {
