@@ -1,12 +1,8 @@
-import 'dart:io';
-import 'package:http/http.dart' as http;
 import 'package:nhealth/helpers/helpers.dart';
-import 'package:nhealth/models/blood_pressure.dart';
-import 'package:nhealth/models/blood_test.dart';
+import 'package:nhealth/models/assessment.dart';
 import 'package:nhealth/models/body_measurement.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/repositories/local/assessment_repository_local.dart';
-import '../constants/constants.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
 
@@ -45,7 +41,7 @@ class AssessmentController {
       if (parsedData['body']['patient_id'] == Patient().getPatient()['uuid'] && parsedData['body']['assessment_id'] == assessment['uuid']) {
         data.add({
           'uuid': item['uuid'],
-          'data': parsedData['body'],
+          'body': parsedData['body'],
           'meta': parsedData['meta']
         })
       }
@@ -84,6 +80,16 @@ class AssessmentController {
     };
 
     return data;
+  }
+
+  edit(assessment, observations) {
+    Assessment().selectAssessment(assessment);
+    observations.forEach((item) => {
+      print(item),
+      if (item['body']['type'] == 'body_measurement') {
+        BodyMeasurement().addBmItemsForEdit(item)
+      }
+    });
   }
   
 }

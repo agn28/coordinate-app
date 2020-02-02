@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/home_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_list_screen.dart';
@@ -156,8 +157,12 @@ class _PatientRecordsState extends State<PatientRecords> {
                                     ),
                                   ),
                                   FlatButton(
-                                    onPressed: () => Navigator.of(context).push(new NewEncounterScreen()),
-                                      child: Container(
+                                    onPressed: () {
+                                      Helpers().clearObservationItems();
+                                      Helpers().clearAssessment();
+                                      Navigator.of(context).push(NewEncounterScreen());
+                                    },
+                                    child: Container(
                                       margin: EdgeInsets.symmetric(horizontal: 10),
                                       padding: EdgeInsets.only(bottom: 17, top: 17),
                                       decoration: BoxDecoration(

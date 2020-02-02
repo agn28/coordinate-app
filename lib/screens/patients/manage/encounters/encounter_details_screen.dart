@@ -4,6 +4,7 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:basic_utils/basic_utils.dart';
+import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.dart';
 
 class EncounterDetailsScreen extends CupertinoPageRoute {
   final assessment;
@@ -41,8 +42,8 @@ class _EncounterDetailsState extends State<EncounterDetails> {
     _getItem();
 
    setState(() {
-    _bloodPressures =  _observations.where((item) => item['data']['type'] == 'blood_pressure').toList();
-    _bloodTests =  _observations.where((item) => item['data']['type'] == 'blood_test').toList();
+    _bloodPressures =  _observations.where((item) => item['body']['type'] == 'blood_pressure').toList();
+    _bloodTests =  _observations.where((item) => item['body']['type'] == 'blood_test').toList();
    });
   }
 
@@ -52,8 +53,8 @@ class _EncounterDetailsState extends State<EncounterDetails> {
     double diastolic = 0;
 
     _bloodPressures.forEach((item) => {
-      systolic = systolic + item['data']['data']['systolic'] is double ? item['data']['data']['systolic'] : double.parse(item['data']['data']['systolic']),
-      diastolic = diastolic + item['data']['data']['diastolic'] is double ? item['data']['data']['diastolic'] : double.parse(item['data']['data']['diastolic']),
+      systolic = systolic + item['body']['data']['systolic'] is double ? item['body']['data']['systolic'] : double.parse(item['body']['data']['systolic']),
+      diastolic = diastolic + item['body']['data']['diastolic'] is double ? item['body']['data']['diastolic'] : double.parse(item['body']['data']['diastolic']),
     });
 
     double avgSystolic = systolic/_bloodPressures.length;
@@ -79,7 +80,7 @@ class _EncounterDetailsState extends State<EncounterDetails> {
   /// Populate observation widgets form observations list.
   _getItem() {
     _observations.forEach((item) => {
-      if (item['data']['type'] != 'blood_pressure') {
+      if (item['body']['type'] != 'blood_pressure') {
         setState(() {
           observationItems.add(
             Column(
@@ -90,11 +91,11 @@ class _EncounterDetailsState extends State<EncounterDetails> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text('Observation', style: TextStyle(fontSize: 20, ),),
-                      Text(_getType(item['data']['data']['type']), style: TextStyle(fontSize: 35, height: 1.7),),
+                      Text(_getType(item['body']['data']['type']), style: TextStyle(fontSize: 35, height: 1.7),),
                       Row(
                         children: <Widget>[
                           Text('Reading: ', style: TextStyle(fontSize: 20, height: 1.6),),
-                          Text(' ${item['data']['data']['value']} ${item['data']['data']['unit']}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, height: 2),),
+                          Text(' ${item['body']['data']['value']} ${item['body']['data']['unit']}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, height: 2),),
                         ],
                       ),
                       Row(
@@ -211,13 +212,19 @@ class _EncounterDetailsState extends State<EncounterDetails> {
                           child: Text('In-Clinic', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
                         ),
                         Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              Icon(Icons.edit, color: kPrimaryColor,),
-                              SizedBox(width: 10),
-                              Text('Edit Encounter', style: TextStyle(color: kPrimaryColor))
-                            ],
+                          child: GestureDetector(
+                            onTap: () {
+                              AssessmentController().edit(widget.assessment, _observations);
+                              Navigator.of(context).push(NewEncounterScreen());
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Icon(Icons.edit, color: kPrimaryColor,),
+                                SizedBox(width: 10),
+                                Text('Edit Encounter', style: TextStyle(color: kPrimaryColor))
+                              ],
+                            ),
                           )
                         )
                       ],
