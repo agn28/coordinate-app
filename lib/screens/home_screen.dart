@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/patients/manage/patient_search_new.dart';
-import './patients/manage/patients_search_screen.dart';
+import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
+import 'package:nhealth/screens/settings/settings_screen.dart';
+import 'package:nhealth/screens/work-list/work_list_search_screen.dart';
 import './patients/register_patient_screen.dart';
 
 
@@ -19,10 +20,16 @@ class Home extends StatelessWidget {
 
     return Scaffold(
       appBar: new AppBar(
-        title: new Text("Home", style: TextStyle(color: Colors.white, fontSize: 23),),
+        title: new Text("Home", style: TextStyle(color: Colors.white, fontSize: 22),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.more_vert, color: Colors.white),
+            onPressed: () {},
+          )
+        ],
       ),
       drawer: Drawer(
         child: Column(
@@ -84,13 +91,28 @@ class Home extends StatelessWidget {
                     height: 50,
                     child: FlatButton(
                       onPressed: () {
-                        Navigator.of(context).push(TestSearchScreen());
+                        Navigator.of(context).push(PatientSearchScreen());
                       },
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.supervisor_account, color: Colors.black54,),
                           SizedBox(width: 20,),
                           Text('Patients',style: TextStyle( fontSize: 18,fontWeight: FontWeight.w400))
+                        ],
+                      )
+                    )
+                  ),
+                  Container(
+                    height: 50,
+                    child: FlatButton(
+                      onPressed: () {
+                        Navigator.of(context).push(WorkListSearchScreen());
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.list, color: Colors.black54,),
+                          SizedBox(width: 20,),
+                          Text('Work List',style: TextStyle( fontSize: 18,fontWeight: FontWeight.w400))
                         ],
                       )
                     )
@@ -115,7 +137,7 @@ class Home extends StatelessWidget {
                   Container(
                     height: 50,
                     child: FlatButton(
-                      onPressed: () {},
+                      onPressed: () => Navigator.of(context).push(SettingsScreen()),
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.settings, color: Colors.black54),
@@ -135,9 +157,18 @@ class Home extends StatelessWidget {
                         children: <Widget>[
                           Icon(Icons.exit_to_app, color: Colors.black54),
                           SizedBox(width: 20,),
-                          Text('Logout',style: TextStyle( fontSize: 18, fontWeight: FontWeight.w400))
+                          Text('Logout', style: TextStyle( fontSize: 18, fontWeight: FontWeight.w400))
                         ],
                       )
+                    )
+                  ),
+                  Container(
+                    height: 50,
+                    margin: EdgeInsets.only(left: 18),
+                    child: Row(
+                      children: <Widget>[
+                        Text('Version 0.0.01 (beta)', style: TextStyle( fontSize: 18, fontWeight: FontWeight.w400)),
+                      ],
                     )
                   )
                 ],
@@ -151,7 +182,12 @@ class Home extends StatelessWidget {
           children: <Widget>[
             Container(
               height: 360,
-              color: kPrimaryColor,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/images/bg_home.png"),
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
             Container(
               color: Colors.transparent,
@@ -160,16 +196,18 @@ class Home extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: 50, vertical: 30),
+                    margin: EdgeInsets.only(left: 70, top: 30),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         SizedBox(height: 20,),
-                        Text('Welcome', style: TextStyle(color: Colors.white70, fontSize: 23),),
+                        Text('Welcome', style: TextStyle(color: Colors.white70, fontSize: 21),),
                         SizedBox(height: 15,),
-                        Text('Rokeya Khatun', style: TextStyle(color: Colors.white, fontSize: 28),),
-                        SizedBox(height: 50,),
-                        Text('What would you like to do?', style: TextStyle(color: Colors.white, fontSize: 40),)
+                        Text('Rokeya Khatun', style: TextStyle(color: Colors.white, fontSize: 26),),
+                        SizedBox(height: 15,),
+                        Text('Nurse', style: TextStyle(color: Colors.white70, fontSize: 16),),
+                        SizedBox(height: 40,),
+                        Text('What would you like to do?', style: TextStyle(color: Colors.white, fontSize: 36),)
                       ],
                     ),
                   ),
@@ -183,7 +221,7 @@ class Home extends StatelessWidget {
                         SizedBox(height: 40,),
 
                         GestureDetector(
-                          onTap: () => Navigator.of(context).push(TestSearchScreen()),
+                          onTap: () => Navigator.of(context).push(PatientSearchScreen()),
                           child: Container(
                             height: 190,
                             width: double.infinity,
@@ -194,15 +232,19 @@ class Home extends StatelessWidget {
                                 children: <Widget>[
                                   Image.asset('assets/images/icons/manage_patient.png'),
                                   FlatButton(
-                                    onPressed: () => Navigator.of(context).push(TestSearchScreen()),
+                                    onPressed: () => Navigator.of(context).push(PatientSearchScreen()),
                                     child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
                                         Expanded(
-                                          flex: 3,
+                                          flex: 4,
                                           child: Text('Manage  an Existing Patients',textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
                                         ),
                                         Expanded(
-                                          child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 35, ),
+                                          child: Container(
+                                            alignment: Alignment.centerLeft,
+                                            child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
+                                          ),
                                         )
                                       ],
                                     )
@@ -238,7 +280,10 @@ class Home extends StatelessWidget {
                                           child: Text('Register a New Patient',textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
                                         ),
                                         Expanded(
-                                          child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 35, ),
+                                          child: Container(
+                                            alignment: Alignment.centerLeft,
+                                            child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
+                                          ),
                                         )
                                       ],
                                     )

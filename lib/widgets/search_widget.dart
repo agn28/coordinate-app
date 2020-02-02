@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:nhealth/screens/patients/manage/no_item_found.dart';
+import './no_item_found.dart';
 
 typedef QueryListItemBuilder<T> = Widget Function(T item);
 typedef OnItemSelected<T> = void Function(T item);

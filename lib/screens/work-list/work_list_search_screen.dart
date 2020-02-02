@@ -1,30 +1,26 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:nhealth/models/patient.dart';
-import 'package:nhealth/screens/patients/manage/patient_records_screen.dart';
-import 'package:nhealth/screens/patients/manage/search_widget.dart';
-import 'package:nhealth/screens/patients/register_patient_screen.dart';
+import 'package:nhealth/widgets/search_widget.dart';
 
-class TestSearchScreen extends CupertinoPageRoute {
-  TestSearchScreen()
-      : super(builder: (BuildContext context) => new TestSearch());
+class WorkListSearchScreen extends CupertinoPageRoute {
+  WorkListSearchScreen()
+      : super(builder: (BuildContext context) => new WorkListSearch());
 
 }
 
-class TestSearch extends StatefulWidget {
+class WorkListSearch extends StatefulWidget {
   @override
-  _TestSearchState createState() => _TestSearchState();
+  _WorkListSearchState createState() => _WorkListSearchState();
 }
 
-class _TestSearchState extends State<TestSearch> {
+class _WorkListSearchState extends State<WorkListSearch> {
 
   List patients = [];
+  List workList = [1, 2];
 
   _getPatients() async {
     var data = await PatientController().getAllPatients();
@@ -46,34 +42,8 @@ class _TestSearchState extends State<TestSearch> {
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Patients"),
+        title: const Text("Work List"),
         elevation: 0,
-        actions: <Widget>[
-          FlatButton(
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: 5,),
-                Icon(Icons.person_add, color: Colors.white, size: 20,),
-                SizedBox(height: 5,),
-                Text('New Patient', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14),)
-              ],
-            ),
-            onPressed: () {
-              Navigator.of(context).push(RegisterPatientScreen());
-            },
-          ),
-          FlatButton(
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: 5,),
-                Icon(Icons.fingerprint, color: Colors.white, size: 20,),
-                SizedBox(height: 5,),
-                Text('Use Thumbprint', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),)
-              ],
-            ),
-            onPressed: () {},
-          )
-        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -83,40 +53,41 @@ class _TestSearchState extends State<TestSearch> {
               color: kPrimaryColor,
               child: Column(
                 children: <Widget>[
-                  patients.length > 0 ? CustomSearchWidget(
-                  listContainerHeight: 500,
-                  dataList: patients,
-                  hideSearchBoxWhenItemSelected: false,
-                  queryBuilder: (query, list) {
-                    return patients
-                      .where((item) => item['data']['name']
-                      .toLowerCase()
-                      .contains(query.toLowerCase()))
-                      .toList();
-                  },
-                  popupListItemBuilder: (item) {
-                    print(item);
-                    return PopupListItemWidget(item);
-                  },
-                  selectedItemBuilder: (selectedItem, deleteSelectedItem) {
-                    return SelectedItemWidget(selectedItem, deleteSelectedItem);
-                  },
-                  // widget customization
-                  noItemsFoundWidget: NoItemsFound(),
-                  textFieldBuilder: (controller, focusNode) {
-                    return MyTextField(controller, focusNode);
-                  },
-                  onItemSelected: (item) {
-                    setState(() {
-                      _selectedItem = item;
-                    });
-                  },
-                ) : Container(),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.only(top: 20),
-                  child: Text('Pending Recommendations Only', style: TextStyle(color: Colors.white),),
-                ),
+                  workList.length > 0 ? CustomSearchWidget(
+                    listContainerHeight: 500,
+                    dataList: patients,
+                    hideSearchBoxWhenItemSelected: false,
+                    queryBuilder: (query, list) {
+                      return patients
+                        .toList();
+                    },
+                    popupListItemBuilder: (item) {
+                      return PopupListItemWidget(item);
+                    },
+                    selectedItemBuilder: (selectedItem, deleteSelectedItem) {
+                      return SelectedItemWidget(selectedItem, deleteSelectedItem);
+                    },
+                    // widget customization
+                    noItemsFoundWidget: NoItemsFound(),
+                    textFieldBuilder: (controller, focusNode) {
+                      return MyTextField(controller, focusNode);
+                    },
+                    onItemSelected: (item) {
+                      setState(() {
+                        _selectedItem = item;
+                      });
+                    },
+                  ) : Container(),
+                  workList.length == 0 ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        padding: EdgeInsets.only(top: 15),
+                        child: Text('No item found', style: TextStyle(color: Colors.white, fontSize: 20),),
+                      )
+                    ],
+                  ) : Container()
                 ],
               )
             ),
@@ -231,29 +202,44 @@ class PopupListItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        print('hello');
-        Patient().setPatient(item);
-          Navigator.of(context).push(PatientRecordsScreen());
-      },
-          child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+      onTap: () {},
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
+        margin: const EdgeInsets.only(bottom: 20),
+        decoration: BoxDecoration(
+          color: kBackgroundGrey,
+          borderRadius: BorderRadius.circular(3)
+        ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Expanded(
-              child: Text(item['data']['name'],
-                style: TextStyle(color: Colors.black87, fontSize: 18),
+            Container(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.topCenter,
+                    child: CircleAvatar(
+                      child: Image.asset('assets/images/work_list_1.png', )
+                    ),
+                  ),
+                  SizedBox(width: 20,),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text('Nurul begum', style: TextStyle(fontSize: 18),),
+                      SizedBox(height: 12,),
+                      Text('45Y F - 1992121324283', style: TextStyle(fontSize: 16),),
+                      SizedBox(height: 12,),
+                      Text('Counselling about reduced salt intake', style: TextStyle(fontSize: 15, color: kTextGrey),),
+                      SizedBox(height: 12,),
+                      Text('Within 1 month of recommendation of goal', style: TextStyle(fontSize: 15, color: kTextGrey),),
+                    ],
+                  )
+                ],
               ),
             ),
-            Expanded(
-              child: Text(item['data']['age'].toString() + 'Y ' + '${item['data']['gender'][0].toUpperCase()}' + ' - ' + item['data']['nid'].toString(), 
-              style: TextStyle(
-                  color: Colors.black38,
-                  fontWeight: FontWeight.w400
-                ), 
-                textAlign: TextAlign.right,
-              ),
-            ),
+            Icon(Icons.arrow_forward, color: kPrimaryColor,)
           ],
         ),
       ),
