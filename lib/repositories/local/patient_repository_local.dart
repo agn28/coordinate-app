@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:nhealth/models/patient.dart';
+
 import './database_creator.dart';
 import 'package:uuid/uuid.dart';
 
@@ -23,8 +27,16 @@ class PatientReposioryLocal {
       status
     )
     VALUES (?,?,?)''';
-    List<dynamic> params = [uuid, data, 'not synced'];
+    List<dynamic> params = [uuid, jsonEncode(data), 'not synced'];
     final result = await db.rawInsert(sql, params);
+
+    var patient = {
+      'uuid': uuid,
+      'data': data['body'],
+      'meta': data['meta']
+    };
+
+    await Patient().setPatient(patient);
     DatabaseCreator.databaseLog('Add patient', sql, null, result, params);
   }
 

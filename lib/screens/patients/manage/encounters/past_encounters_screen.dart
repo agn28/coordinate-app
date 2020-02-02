@@ -24,7 +24,7 @@ class _PastEncountersState extends State<PastEncounters> {
   List<Widget> list = List<Widget>();
 
   _getData() async {
-    _assessments = await AssessmentController().getAllAssessments();
+    _assessments = await AssessmentController().getAllAssessmentsByPatient();
     _assessments.forEach((assessment) => {
       setState(() => {
         list.add(

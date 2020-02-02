@@ -32,7 +32,7 @@ class AssessmentRepositoryLocal {
     var bodyMeasurements = BodyMeasurement().bmItems;
 
     if (bloodPressures.isEmpty && bloodTests.isEmpty && bodyMeasurements.isEmpty) {
-      return 'Observations are not completed';
+      return 'No observations added';
     }
 
     _createAssessment(assessmentId, jsonEncode(data));

@@ -73,5 +73,6 @@ class BloodTest {
   /// Clear all items
   clearItems() {
     _btItems = [];
+    _items = [];
   }
 }
