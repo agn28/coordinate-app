@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/helpers/helpers.dart';
+import 'package:nhealth/models/assessment.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
 import 'package:nhealth/models/body_measurement.dart';
@@ -31,10 +32,16 @@ class _NewEncounterState extends State<NewEncounter> {
   String selectedType = 'In-clinic Screening';
   final commentController = TextEditingController();
   bool _dataSaved = false;
-  
+
   @override
   void initState() {
     super.initState();
+    if (Assessment().getSelectedAssessment() != {}) {
+      setState(() {
+        commentController.text = Assessment().getSelectedAssessment()['data'] != null ? Assessment().getSelectedAssessment()['data']['comment'] : '';
+        selectedType = Assessment().getSelectedAssessment()['data'] != null ? Assessment().getSelectedAssessment()['data']['type'] : 'In-clinic Screening';
+      });
+    }
   }
 
   _changeType(value) {
@@ -116,7 +123,7 @@ class _NewEncounterState extends State<NewEncounter> {
                 ),
                 child: Text('Complete all the sections that are applicable', style: TextStyle(fontSize: 20),)
               ),
-              
+
               Container(
                 color: Colors.white,
                 child: Column(
@@ -125,7 +132,7 @@ class _NewEncounterState extends State<NewEncounter> {
                       icon: Image.asset('assets/images/icons/blood_pressure.png'),
                       text: Text('Blood Pressure', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
                       status: Helpers().getBpStatus(),
-                      onTap: () { 
+                      onTap: () {
                         FocusScope.of(context).requestFocus(new FocusNode());
                         Navigator.of(context).push(AddBloodPressureScreen());
                       }
@@ -134,7 +141,7 @@ class _NewEncounterState extends State<NewEncounter> {
                       icon: Image.asset('assets/images/icons/body_measurements.png'),
                       text: Text('Body Measurements', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
                       status: Helpers().getBmStatus(),
-                      onTap: () { 
+                      onTap: () {
                         FocusScope.of(context).requestFocus(new FocusNode());
                         Navigator.of(context).push(MeasurementsScreen());
                       }
@@ -144,7 +151,7 @@ class _NewEncounterState extends State<NewEncounter> {
                       icon: Image.asset('assets/images/icons/blood_test.png'),
                       text: Text('Blood Test', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
                       status: Helpers().getBtStatus(),
-                      onTap: () { 
+                      onTap: () {
                         FocusScope.of(context).requestFocus(new FocusNode());
                         Navigator.of(context).push(BloodTestScreen());
                       }
@@ -154,7 +161,7 @@ class _NewEncounterState extends State<NewEncounter> {
                       icon: Image.asset('assets/images/icons/questionnaire.png'),
                       text: Text('Questionnaire', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
                       status: 'Incomplete',
-                      onTap: () { 
+                      onTap: () {
                         FocusScope.of(context).requestFocus(new FocusNode());
                         Navigator.of(context).push(QuestionnairesScreen());
                       }
@@ -183,7 +190,7 @@ class _NewEncounterState extends State<NewEncounter> {
                         topRight: Radius.circular(4),
                       )
                     ),
-                  
+
                     hintText: 'Comments/Notes (optional)',
                     hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                   ),
@@ -286,7 +293,7 @@ class _NewEncounterState extends State<NewEncounter> {
                                 Text('You have missing sections for this encounter. Are you sure you want to save?',
                                   style: TextStyle(fontSize: 18, height: 1.5),
                                 ),
-                                
+
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -305,7 +312,13 @@ class _NewEncounterState extends State<NewEncounter> {
                                           SizedBox(width: 30,),
                                           GestureDetector(
                                             onTap: () async {
-                                              var result = AssessmentController().create(selectedType, commentController.text);
+                                              var result = '';
+                                              if (Assessment().getSelectedAssessment() == {}) {
+                                                result = AssessmentController().create(selectedType, commentController.text);
+                                              } else {
+                                                print('update');
+                                                result = AssessmentController().update(selectedType, commentController.text);
+                                              }
 
                                               if (result == 'success') {
                                                 _dataSaved = true;
@@ -316,7 +329,7 @@ class _NewEncounterState extends State<NewEncounter> {
                                                   )
                                                 );
                                                 Navigator.of(context).pop();
-                                                
+
                                               } else {
                                                 Navigator.of(context).pop();
                                                 _scaffoldKey.currentState.showSnackBar(
@@ -337,7 +350,7 @@ class _NewEncounterState extends State<NewEncounter> {
                               ],
                             )
                           )
-                          
+
                         );
                       },
                     );
@@ -347,7 +360,7 @@ class _NewEncounterState extends State<NewEncounter> {
                     }
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('SAVE ASSESSMENT', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text(Assessment().getSelectedAssessment() != {} ? 'Update Assessment' : 'Save Assssment',
                 ),
               )
             )

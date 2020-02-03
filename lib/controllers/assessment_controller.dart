@@ -1,5 +1,7 @@
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/assessment.dart';
+import 'package:nhealth/models/blood_pressure.dart';
+import 'package:nhealth/models/blood_test.dart';
 import 'package:nhealth/models/body_measurement.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/repositories/local/assessment_repository_local.dart';
@@ -58,7 +60,13 @@ class AssessmentController {
       if (parsedData['body']['patient_id'] == Patient().getPatient()['uuid'] && parsedData['body']['assessment_id'] == assessment['uuid']) {
         data.add({
           'uuid': item['uuid'],
-          'body': parsedData['body'],
+          'body': {
+            'type': parsedData['body']['type'],
+            'data': parsedData['body']['data'],
+            'comment': parsedData['body']['comment'],
+            'patient_id': parsedData['body']['patient_id'],
+            'assessment_id': parsedData['body']['assessment_id'],
+          },
           'meta': parsedData['meta']
         })
       }
@@ -77,6 +85,33 @@ class AssessmentController {
     }
 
     return status;
+  }
+
+  update(type, comment) {
+    var data = _prepareUpdateData(type, comment);
+    var status = AssessmentRepositoryLocal().update(data);
+    if (status == 'success') {
+      Helpers().clearObservationItems();
+    }
+
+    return status;
+  }
+
+  /// Prepare data to create an assessment.
+  /// Assessment [type] and [comment] is required as parameter.
+  _prepareUpdateData(type, comment) {
+    var data = {
+      "meta": Assessment().getSelectedAssessment()['meta'],
+      "body": {
+        "type": type,
+        "comment": comment,
+        "performed_by": Assessment().getSelectedAssessment()['data']['performed_by'],
+        "assessment_date": Assessment().getSelectedAssessment()['data']['assessment_date'],
+        "patient_id": Assessment().getSelectedAssessment()['data']['patient_id']
+      }
+    };
+
+    return data;
   }
 
   /// Prepare data to create an assessment.
@@ -102,10 +137,14 @@ class AssessmentController {
 
   edit(assessment, observations) {
     Assessment().selectAssessment(assessment);
+    Helpers().clearObservationItems();
     observations.forEach((item) => {
-      print(item),
       if (item['body']['type'] == 'body_measurement') {
-        BodyMeasurement().addBmItemsForEdit(item)
+        BodyMeasurement().addBmItemsForEdit(item),
+      } else if (item['body']['type'] == 'blood_test') {
+        BloodTest().addBtItemsForEdit(item)
+      } else if (item['body']['type'] == 'blood_pressure') {
+        BloodPressure().addBpItemsForEdit(item),
       }
     });
   }
