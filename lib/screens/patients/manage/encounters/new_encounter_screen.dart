@@ -316,7 +316,6 @@ class _NewEncounterState extends State<NewEncounter> {
                                               if (Assessment().getSelectedAssessment() == {}) {
                                                 result = AssessmentController().create(selectedType, commentController.text);
                                               } else {
-                                                print('update');
                                                 result = AssessmentController().update(selectedType, commentController.text);
                                               }
 
@@ -363,7 +362,7 @@ class _NewEncounterState extends State<NewEncounter> {
                   child: Text(Assessment().getSelectedAssessment() != {} ? 'Update Assessment' : 'Save Assssment',
                 ),
               )
-            )
+            ))
           ],
         )
       )
