@@ -40,12 +40,20 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
   List<BloodPressureItem> bpItems = BloodPressure().items;
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   var _patient;
+  var _bloodPressures;
 
   @override
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
     selectedArm = 0;
+    getBloodPressures();
+  }
+
+  getBloodPressures() {
+    setState(() {
+      _bloodPressures = BloodPressure().items;
+    });
   }
 
   _changeArm(int val) {
@@ -125,14 +133,14 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
               height: 90,
               width: double.infinity,
               alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(left: 40),
+              padding: EdgeInsets.symmetric(horizontal: 40),
               decoration: BoxDecoration(
                 color: Color(0xFFF4F4F4),
                 border: Border(
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Take 3 Blood Pressure measurements, each 1 min apart', style: TextStyle(fontSize: 19),)
+              child: Text('Take at least 2 blood pressure measurements, each 1 min apart', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500),)
             ),
             Container(
               alignment: Alignment.topLeft,
@@ -147,28 +155,45 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                     child: DataTable(
                       columns: [
                         DataColumn(
-                          label: Text("NO")
+                          label: Text("No.")
                         ),
                         DataColumn(
-                          label: Text("ARM")
+                          label: Text("Arm")
                         ),
                         DataColumn(
-                          label: Text("SYSTOLIC")
+                          label: Text("systolic")
                         ),
                         DataColumn(
-                          label: Text("DIASTOLIC")
+                          label: Text("Diastolic")
                         ),
                         DataColumn(
-                          label: Text("PULSE")
+                          label: Text("Pulse Rate")
                         )
                       ],
-                      rows: BloodPressure().items.map((bp) => DataRow(
+                      rows: _bloodPressures.map<DataRow>((bp) => DataRow(
                         cells: [
-                          DataCell(Text(_getSerial(BloodPressure().items.indexOf(bp)))),
+                          DataCell(Text(_getSerial(_bloodPressures.indexOf(bp)))),
                           DataCell(Text("${bp.arm[0].toUpperCase()}${bp.arm.substring(1)}")),
-                          DataCell(Text(bp.systolic.toString())),
-                          DataCell(Text(bp.diastolic.toString())),
-                          DataCell(Text(bp.pulse.toString()))
+                          DataCell(Text(bp.systolic.toInt().toString())),
+                          DataCell(Text(bp.diastolic.toInt().toString())),
+                          DataCell(
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Text(bp.pulse.toInt().toString()),
+                                Container(
+                                  child: IconButton(
+                                    icon: Icon(Icons.delete),
+                                    color: kPrimaryColor,
+                                    onPressed: () {
+                                      BloodPressure().removeItem(_bloodPressures.indexOf(bp));
+                                      getBloodPressures();
+                                    },
+                                  ),
+                                )
+                              ],
+                            )
+                          ),
                         ]
                       )).toList(),
 
@@ -213,8 +238,8 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                               backgroundColor: Colors.transparent,
                               child: Container(
                                 width: double.infinity,
-                                padding: EdgeInsets.all(30),
-                                height: 460.0,
+                                padding: EdgeInsets.only(top:30, left: 30),
+                                height: 390.0,
                                 color: Colors.white,
                                 child: Form(
                                   key: _formKey,
@@ -254,11 +279,14 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                       ),
                                       SizedBox(height: 10,),
                                       Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: <Widget>[
                                           Expanded(
                                             flex: 2,
                                             child: PrimaryTextField(
                                               hintText: 'Systolic',
+                                              topPaadding: 20,
+                                              bottomPadding: 20,
                                               controller: systolicController,
                                               name:'Systolic',
                                               validation: true,
@@ -266,12 +294,17 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                             ),
                                           ),
                                           SizedBox(width: 20,),
-                                          Text('/', style: TextStyle(fontSize: 20),),
+                                          Container(
+                                            alignment: Alignment.center,
+                                            child: Text('/', style: TextStyle(fontSize: 20, height: 0),),
+                                          ),
                                           SizedBox(width: 20,),
                                           Expanded(
                                             flex: 2,
                                             child: PrimaryTextField(
                                               hintText: 'Diastolic',
+                                              topPaadding: 20,
+                                              bottomPadding: 20,
                                               controller: diastolicController,
                                               name:'Diastolic',
                                               validation: true,
@@ -289,6 +322,8 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                         width: 140,
                                         child: PrimaryTextField(
                                           hintText: 'Pulse Rate',
+                                          topPaadding: 20,
+                                          bottomPadding: 20,
                                           controller: pulseController,
                                           name:'Pulse Rate',
                                           validation: true,
@@ -301,7 +336,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                         children: <Widget>[
                                           Container(
                                             alignment: Alignment.bottomRight,
-                                            margin: EdgeInsets.only(top: 30),
+                                            margin: EdgeInsets.only(top: 20),
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.end,
                                               children: <Widget>[
@@ -310,9 +345,9 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                                     Navigator.of(context).pop();
                                                     _clearDialogForm();
                                                   },
-                                                  child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 18),)
+                                                  child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
                                                 ),
-                                                SizedBox(width: 30,),
+                                                SizedBox(width: 20,),
                                                 FlatButton(
                                                   onPressed: () {
                                                     if (_formKey.currentState.validate()) {
@@ -320,10 +355,11 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                                       setState(() {
                                                         BloodPressure().addItem(selectedArm == 0 ? 'left' : 'right' , double.parse(systolicController.text), double.parse(diastolicController.text), double.parse(pulseController.text));
                                                       });
+                                                      getBloodPressures();
                                                       _clearDialogForm();
                                                     }
                                                   },
-                                                  child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 18))
+                                                  child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
                                                 ),
                                               ],
                                             )
@@ -437,6 +473,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
+                  border: Border.all(width: 1, color: Colors.black54),
                   borderRadius: BorderRadius.circular(4)
                 ),
                 child: FlatButton(
@@ -450,7 +487,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                     );
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('UNABLE TO PERFORM', style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text('UNABLE TO PERFORM', style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
                 ),
               )
             ),

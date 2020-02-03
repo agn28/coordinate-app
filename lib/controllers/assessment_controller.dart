@@ -13,7 +13,7 @@ var bloodPressures = [];
 class AssessmentController {
 
   /// Get all the assessments.
-  getAllAssessments() async {
+  getAllAssessmentsByPatient() async {
     var assessments = await AssessmentRepositoryLocal().getAllAssessments();
     var data = [];
     var parsedData;
@@ -27,6 +27,23 @@ class AssessmentController {
           'meta': parsedData['meta']
         })
       }
+    });
+    return data;
+  }
+
+  /// Get all the assessments.
+  getAllAssessments() async {
+    var assessments = await AssessmentRepositoryLocal().getAllAssessments();
+    var data = [];
+    var parsedData;
+
+    await assessments.forEach((assessment) => {
+      parsedData = jsonDecode(assessment['data']),
+      data.add({
+        'uuid': assessment['uuid'],
+        'data': parsedData['body'],
+        'meta': parsedData['meta']
+      })
     });
     return data;
   }
@@ -60,6 +77,7 @@ class AssessmentController {
   /// Create assessment.
   /// Assessment [type] and [comment] is required as parameter.
   create(type, comment) {
+
     var data = _prepareData(type, comment);
     var status = AssessmentRepositoryLocal().create(data);
     if (status == 'success') {
@@ -109,7 +127,7 @@ class AssessmentController {
         "type": type,
         "comment": comment,
         "performed_by": "Feroj Bepari",
-        "assessment_date": DateFormat('d MMMM, y').format(DateTime.now()),
+        "assessment_date": DateFormat('y-MM-dd').format(DateTime.now()),
         "patient_id": Patient().getPatient()['uuid']
       }
     };

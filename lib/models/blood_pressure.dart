@@ -88,6 +88,11 @@ class BloodPressure {
     return [..._bpItems];
   }
 
+  /// Remove an item by index
+  removeItem(index) {
+    _items.removeAt(index);
+  }
+
   /// Clear all items
   clearItems() {
     _bpItems = [];

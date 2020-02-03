@@ -1,11 +1,14 @@
+import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nhealth/configs/configs.dart';
 import 'dart:async';
 import 'dart:io';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
+import 'package:nhealth/screens/patients/register_patient_success_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import '../../custom-classes/custom_stepper.dart';
 
@@ -36,9 +39,19 @@ final contactStreetNameController = TextEditingController();
 final contactMobilePhoneController = TextEditingController();
 final contactHomePhoneController = TextEditingController();
 final contactEmailController = TextEditingController();
-String selectedGender = 'male';
 final GlobalKey<FormState> _patientFormKey = new GlobalKey<FormState>();
 final GlobalKey<FormState> _contactFormKey = new GlobalKey<FormState>();
+String selectedGender = 'male';
+List relationships = [
+  'father',
+  'mother',
+  'sister',
+  'brother',
+  'spouse',
+  'uncle',
+  'aunt'
+];
+int selectedRelation;
 
 class RegisterPatientScreen extends CupertinoPageRoute {
   RegisterPatientScreen()
@@ -57,6 +70,38 @@ class _RegisterPatientState extends State<RegisterPatient> {
   int _currentStep = 0;
 
   String nextText = 'NEXT';
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  _clearForm() {
+    firstNameController.clear();
+    lastNameController .clear();
+    birthDateController.clear();
+    birthMonthController.clear();
+    birthYearController.clear();
+    districtController.clear();
+    postalCodeController.clear();
+    townController.clear();
+    villageController.clear();
+    streetNameController.clear();
+    mobilePhoneController.clear();
+    homePhoneController.clear();
+    emailController.clear();
+    nidController.clear();   contactFirstNameController.clear();
+    contactLastNameController.clear();
+    contactRelationshipController.clear();
+    contactDistrictController.clear();
+    contactPostalCodeController.clear();
+    contactTownController.clear();
+    contactVillageController.clear();
+    contactStreetNameController.clear();
+    contactMobilePhoneController.clear();
+    contactHomePhoneController.clear();
+    contactEmailController.clear();
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -72,9 +117,9 @@ class _RegisterPatientState extends State<RegisterPatient> {
         return Row();
       },
         onStepTapped: (step) {
-          setState(() {
-            this._currentStep = step;
-          });
+          // setState(() {
+          //   this._currentStep = step;
+          // });
         },
         steps: _mySteps(),
         currentStep: this._currentStep,
@@ -121,24 +166,15 @@ class _RegisterPatientState extends State<RegisterPatient> {
             Expanded(
               child: _currentStep < _mySteps().length - 1 ? FlatButton(
                 onPressed: () {
-                  print('firstname' + firstNameController.text);
-                  print('contact email ' + contactEmailController.text);
                   setState(() {
-                    print('step' + _currentStep.toString());
-                    // print('formData ' + formData.toString());
                     if (_currentStep == 1) {
                       if (_contactFormKey.currentState.validate()) {
-                        var formData = _prepareFormData();
-                        
-                        PatientController().create(formData);
                         _currentStep = _currentStep + 1;
+                        nextText = 'FINISH';
                       }
-                      // return;
                     }
-
                     if (_currentStep < 1) {
                       
-                      print(_patientFormKey);
                       if (_patientFormKey.currentState.validate()) {
                         // If the form is valid, display a Snackbar.
                         _currentStep = _currentStep + 1;
@@ -154,7 +190,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
                     Icon(Icons.chevron_right)
                   ],
                 ),
-              ) : Text('')
+              ) : Container()
             ),
           ],
         )
@@ -179,13 +215,18 @@ class _RegisterPatientState extends State<RegisterPatient> {
         content: AddPhoto(),
         isActive: _currentStep >= 2,
       ),
-      CustomStep(
-        title: Text('Thumbprint'),
-        content: Text(''),
-        isActive: _currentStep >= 3,
-      )
     ];
 
+    if (Configs().configAvailable('isThumbprint')) {
+      _steps.add(
+        CustomStep(
+          title: Text('Thumbprint'),
+          content: Text(''),
+          isActive: _currentStep >= 3,
+        )
+      );
+    }
+      
     return _steps;
   }
 
@@ -212,7 +253,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
 
       'contact_first_name': contactFirstNameController.text,
       'contact_last_name': contactLastNameController.text,
-      'contact_relationship': contactRelationshipController.text, //age needs to be calculated
+      'contact_relationship': selectedRelation != null ? relationships[selectedRelation] : '', //age needs to be calculated
       'contact_address': {
         'contact_district': contactDistrictController.text,
         'contact_postal_code': contactPostalCodeController.text,
@@ -230,48 +271,14 @@ class _RegisterPatientState extends State<RegisterPatient> {
 }
 
 class PatientDetails extends StatefulWidget {
-  getData() => createState()._getData();
 
-  // validateForm() {
-  //   if (formKey.currentState.validate()) {
-  //       // If the form is valid, display a Snackbar.
-  //       Scaffold.of(context)
-  //           .showSnackBar(SnackBar(content: Text('Processing Data')));
-  //     }
-  // }
-
-  validateForm() {
-    print('validateform');
-    if (_patientFormKey.currentState.validate()) {
-      // If the form is valid, display a Snackbar.
-      
-    }
-  }
   @override
   _PatientDetailsState createState() => _PatientDetailsState();
 }
 
 class _PatientDetailsState extends State<PatientDetails> {
   
-  // final firstNameController = TextEditingController();
-
   DateTime selectedDate = DateTime.now();
-
-  Future<Null> _selectDate(BuildContext context) async {
-    final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(1920, 8),
-        lastDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day));
-    if (picked != null && picked != selectedDate)
-      setState(() {
-        selectedDate = picked;
-      });
-  }
-
-  _getData() {
-    // print('hello' + firstNameController.text);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -422,6 +429,7 @@ class _PatientDetailsState extends State<PatientDetails> {
               controller: postalCodeController,
               name: "Postal Code",
               validation: true,
+              type: TextInputType.number
             ),
             SizedBox(height: 10,),
             PrimaryTextField(
@@ -542,19 +550,47 @@ class _ContactDetailsState extends State<ContactDetails> {
 
             SizedBox(height: 10,),
 
-            PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
-              hintText: 'Relationship with contact',
-              controller: contactRelationshipController,
-              name: "Relationship",
-              validation: true
+            Container(
+              child: DropdownButtonFormField(
+                hint: Text('Relationship with contact', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                validator: (value) {
+                  if (value == null) {
+                    return 'Relationship is required';
+                  }
+                },
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: kSecondaryTextField,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  border: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(4),
+                    topRight: Radius.circular(4),
+                  )
+                ),
+                ),
+                items: [
+                  ...relationships.map((item) =>
+                    DropdownMenuItem(
+                      child: Text(StringUtils.capitalize(item)),
+                      value: relationships.indexOf(item) 
+                    )
+                  ).toList(),
+                ],
+                value: selectedRelation,
+                isExpanded: true,
+                onChanged: (value) {
+                  setState(() {
+                    selectedRelation = value;
+                  });
+                },
+              ),
             ),
 
-
+            SizedBox(height: 20,),
             Divider(),
-
-            SizedBox(height: 10,),
+            SizedBox(height: 15,),
 
             Text("Contact's Address", style: TextStyle(fontSize: 16),),
             SizedBox(height: 20,),
@@ -575,6 +611,7 @@ class _ContactDetailsState extends State<ContactDetails> {
               controller: contactPostalCodeController,
               name: "Postal Code",
               validation: true,
+              type: TextInputType.number,
             ),
             SizedBox(height: 10,),
             PrimaryTextField(
@@ -613,7 +650,7 @@ class _ContactDetailsState extends State<ContactDetails> {
               prefixIcon: Icon(Icons.phone),
               hintText: "Contact's Mobile Phone",
               controller: contactMobilePhoneController,
-              name: "Mobile number",
+              name: "Mobile Phone",
               validation: true,
               type: TextInputType.number
             ),
@@ -713,7 +750,27 @@ class _AddPhotoState extends State<AddPhoto> {
               )
             ),
           ),
+
+          SizedBox(height: 70,),
           
+          GestureDetector(
+            onTap: () async {
+              var formData = _RegisterPatientState()._prepareFormData();
+              await PatientController().create(formData);
+              _RegisterPatientState()._clearForm();
+              Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen());
+            },
+            child: Container(
+              width: double.infinity,
+              height: 62.0,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: kPrimaryColor,
+                borderRadius: BorderRadius.circular(4)
+              ),
+              child: Text("COMPLETE REGISTRATION", style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w400))
+            ),
+          ),
         ],
       ),
     );

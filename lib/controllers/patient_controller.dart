@@ -1,14 +1,10 @@
-import 'dart:io';
-import 'package:http/http.dart' as http;
 import 'package:nhealth/helpers/helpers.dart';
-import 'package:nhealth/repositories/local/database_creator.dart';
 import 'package:nhealth/repositories/local/patient_repository_local.dart';
-import 'package:nhealth/repositories/patient_repository.dart';
-import '../constants/constants.dart';
 import 'dart:convert';
 
 class PatientController {
 
+  /// Get all the patients
   getAllPatients() async {
     var patients = await PatientReposioryLocal().getAllPatients();
     var data = [];
@@ -26,20 +22,24 @@ class PatientController {
     return data;
   }
 
-  create(formData) {
+  /// Create a new patient
+  /// [formData] is required as parameter.
+  create(formData) async {
     final data = _prepareData(formData);
-    var localData = jsonEncode(data);
-    PatientReposioryLocal().create(localData);
+    await PatientReposioryLocal().create(data);
 
     return 'success';
   }
 
+  /// Prepare data to create a new patient.
   _prepareData(formData) {
     final age = Helpers().calculateAge(formData['birth_year'], formData['birth_month'], formData['birth_date']);
+    String birthDate = formData['birth_year'] + '-' + formData['birth_month'] + '-' + formData['birth_date'];
     formData.remove('birth_date');
     formData.remove('birth_month');
     formData.remove('birth_year');
     formData['age'] = age;
+    formData['birth_date'] = birthDate;
     
     var data = {
       "meta": {

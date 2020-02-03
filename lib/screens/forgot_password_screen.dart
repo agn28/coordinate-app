@@ -16,7 +16,7 @@ class ForgotPassword extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Forgot Password', style: TextStyle(color: Colors.white, fontSize: 24),),
+        title: Text('Forgot Password', style: TextStyle(color: Colors.white, fontSize: 22),),
         backgroundColor: kPrimaryColor,
         iconTheme: IconThemeData(color: Colors.white,),
       ),
@@ -35,24 +35,24 @@ class ForgotPassword extends StatelessWidget {
                 SizedBox(height: 40,),
                 Container(
                   child: Text('Enter your email address and submit a password reset request to your administrator',
-                    style: TextStyle(fontSize: 22,),
+                    style: TextStyle(fontSize: 20,),
                     textAlign: TextAlign.center,
                   )
                 ),
-                SizedBox(height: 60,),
+                SizedBox(height: 30,),
                 PrimaryTextField(
-                  prefixIcon: new Icon(
+                  prefixIcon: Icon(
                     Icons.email,
                     color: Colors.black45,
                     size: 30,
                   ),
+                  topPaadding: 20,
+                  bottomPadding: 20,
                   hintText: 'Email Address',
                 ),
-                // SizedBox(height: 5,),
-                // Text('Please input a valid email address', style: TextStyle(color: kErroText, fontSize: 16)),
                 SizedBox(height: 40,),
                 PrimaryButton(
-                  text: Text('REQUEST PASSWORD RESET', style: TextStyle(color: Colors.white, fontSize: 18)),
+                  text: Text('REQUEST PASSWORD RESET', style: TextStyle(color: Colors.white, fontSize: 16)),
                   onTap: () {},
                 ),
 
