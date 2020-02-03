@@ -40,12 +40,20 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
   List<BloodPressureItem> bpItems = BloodPressure().items;
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   var _patient;
+  var _bloodPressures;
 
   @override
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
     selectedArm = 0;
+    getBloodPressures();
+  }
+
+  getBloodPressures() {
+    setState(() {
+      _bloodPressures = BloodPressure().items;
+    });
   }
 
   _changeArm(int val) {
@@ -162,9 +170,9 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                           label: Text("Pulse Rate")
                         )
                       ],
-                      rows: BloodPressure().items.map((bp) => DataRow(
+                      rows: _bloodPressures.map<DataRow>((bp) => DataRow(
                         cells: [
-                          DataCell(Text(_getSerial(BloodPressure().items.indexOf(bp)))),
+                          DataCell(Text(_getSerial(_bloodPressures.indexOf(bp)))),
                           DataCell(Text("${bp.arm[0].toUpperCase()}${bp.arm.substring(1)}")),
                           DataCell(Text(bp.systolic.toInt().toString())),
                           DataCell(Text(bp.diastolic.toInt().toString())),
@@ -177,7 +185,10 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                   child: IconButton(
                                     icon: Icon(Icons.delete),
                                     color: kPrimaryColor,
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      BloodPressure().removeItem(_bloodPressures.indexOf(bp));
+                                      getBloodPressures();
+                                    },
                                   ),
                                 )
                               ],
@@ -344,6 +355,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                                       setState(() {
                                                         BloodPressure().addItem(selectedArm == 0 ? 'left' : 'right' , double.parse(systolicController.text), double.parse(diastolicController.text), double.parse(pulseController.text));
                                                       });
+                                                      getBloodPressures();
                                                       _clearDialogForm();
                                                     }
                                                   },
