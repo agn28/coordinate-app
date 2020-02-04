@@ -140,9 +140,9 @@ class _PatientRecordsState extends State<PatientRecords> {
                                         Expanded(
                                           child: Text('Encounters', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                                         ),
-                                        Expanded(
-                                          child: Text('Last encounter on Jan 27, 2020', style: TextStyle(fontSize: 16), textAlign: TextAlign.right,)
-                                        )
+                                        // Expanded(
+                                        //   child: Text('Last encounter on Jan 27, 2020', style: TextStyle(fontSize: 16), textAlign: TextAlign.right,)
+                                        // )
                                       ],
                                     ),
                                   ),
@@ -216,9 +216,9 @@ class _PatientRecordsState extends State<PatientRecords> {
                                         Expanded(
                                           child: Text('Assessments', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                                         ),
-                                        Expanded(
-                                          child: Text('Last encounter on Jan 5, 2019', style: TextStyle(fontSize: 16), textAlign: TextAlign.right,)
-                                        )
+                                        // Expanded(
+                                        //   child: Text('Last encounter on Jan 5, 2019', style: TextStyle(fontSize: 16), textAlign: TextAlign.right,)
+                                        // )
                                       ],
                                     ),
                                   ),

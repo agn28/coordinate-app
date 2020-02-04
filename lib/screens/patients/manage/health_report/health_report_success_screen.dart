@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/screens/home_screen.dart';
+import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
 
 class HealthReportSuccessScreen extends CupertinoPageRoute {
   HealthReportSuccessScreen()
@@ -59,106 +61,116 @@ class HealthReportSuccess extends StatelessWidget {
                   ),
                   SizedBox(height: 20,),
 
-                  Container(
-                    // height: 190,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 5,
-                          offset: Offset(0.0, 1.0,)
-                        ),
-                      ]
-                    ),
-                    child: Card(
-                      elevation: 0,
-                      child: Column(
-                        // mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.symmetric(vertical: 25, horizontal: 30),
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                  child: Row(
-                                    children: <Widget>[
-                                      Image.asset('assets/images/care_plan.png'),
-                                      SizedBox(width: 20,),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text('Patients', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
-                                          
-                                        ],
-                                      )
-                                    ],
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(PatientSearchScreen());
+                    },
+                    child: Container(
+                      // height: 190,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 5,
+                            offset: Offset(0.0, 1.0,)
+                          ),
+                        ]
+                      ),
+                      child: Card(
+                        elevation: 0,
+                        child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 25, horizontal: 30),
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    child: Row(
+                                      children: <Widget>[
+                                        Image.asset('assets/images/care_plan.png'),
+                                        SizedBox(width: 20,),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text('Patients', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
+                                            
+                                          ],
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    alignment: Alignment.topRight,
-                                    child: Icon(Icons.chevron_right, size: 40, color: kPrimaryColor,),
+                                  Expanded(
+                                    child: Container(
+                                      alignment: Alignment.topRight,
+                                      child: Icon(Icons.chevron_right, size: 40, color: kPrimaryColor,),
+                                    )
                                   )
-                                )
-                              ],
-                            ),
-                          ),  
+                                ],
+                              ),
+                            ),  
 
-                        ],
-                      )
+                          ],
+                        )
+                      ),
                     ),
                   ),
 
                   SizedBox(height: 20,),
 
-                  Container(
-                    // height: 190,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 5,
-                          offset: Offset(0.0, 1.0,)
-                        ),
-                      ]
-                    ),
-                    child: Card(
-                      elevation: 0,
-                      child: Column(
-                        // mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.symmetric(vertical: 25, horizontal: 30),
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                  child: Row(
-                                    children: <Widget>[
-                                      Image.asset('assets/images/care_plan.png'),
-                                      SizedBox(width: 20,),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text('Go to Home', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
-                                        ],
-                                      )
-                                    ],
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(HomeScreen());
+                    },
+                    child: Container(
+                      // height: 190,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 5,
+                            offset: Offset(0.0, 1.0,)
+                          ),
+                        ]
+                      ),
+                      child: Card(
+                        elevation: 0,
+                        child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 25, horizontal: 30),
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    child: Row(
+                                      children: <Widget>[
+                                        Image.asset('assets/images/care_plan.png'),
+                                        SizedBox(width: 20,),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text('Go to Home', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
+                                          ],
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    alignment: Alignment.topRight,
-                                    child: Icon(Icons.chevron_right, size: 40, color: kPrimaryColor,),
+                                  Expanded(
+                                    child: Container(
+                                      alignment: Alignment.topRight,
+                                      child: Icon(Icons.chevron_right, size: 40, color: kPrimaryColor,),
+                                    )
                                   )
-                                )
-                              ],
-                            ),
-                          ),  
+                                ],
+                              ),
+                            ),  
 
-                        ],
-                      )
+                          ],
+                        )
+                      ),
                     ),
                   ),
                   SizedBox(height: 30,),
