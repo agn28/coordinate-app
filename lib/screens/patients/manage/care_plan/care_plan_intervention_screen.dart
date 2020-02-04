@@ -4,18 +4,18 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/widgets/primary_button_widget.dart';
 
-class CarePlanGenerateScreen extends CupertinoPageRoute {
-  CarePlanGenerateScreen()
-      : super(builder: (BuildContext context) => new CarePlanGenerate());
+class CarePlanInterventionScreen extends CupertinoPageRoute {
+  CarePlanInterventionScreen()
+      : super(builder: (BuildContext context) => CarePlanIntervention());
 
 }
 
-class CarePlanGenerate extends StatefulWidget {
+class CarePlanIntervention extends StatefulWidget {
   @override
-  _CarePlanGenerateState createState() => _CarePlanGenerateState();
+  _CarePlanInterventionState createState() => _CarePlanInterventionState();
 }
 
-class _CarePlanGenerateState extends State<CarePlanGenerate> {
+class _CarePlanInterventionState extends State<CarePlanIntervention> {
 
   bool smoking = true;
 
@@ -24,7 +24,7 @@ class _CarePlanGenerateState extends State<CarePlanGenerate> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Health Report', style: TextStyle(color: Colors.white),),
+        title: Text('Intervention', style: TextStyle(color: Colors.white),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),

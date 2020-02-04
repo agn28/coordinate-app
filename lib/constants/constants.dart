@@ -22,6 +22,7 @@ const kErroText = Color(0xFFFFB8B8);
 const kSecondaryTextField = Color(0xFFE8E8E8);
 
 const kBackgroundGrey = Color(0xFFF9F9F9);
+const kPrimaryOrangeColor = Color(0xFFD43900);
 
 const kTextGrey = Color(0x65000000);
 const kShapeColorGreen = Color(0xFF98C645);

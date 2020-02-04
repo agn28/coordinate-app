@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/screens/patients/manage/care_plan/care_plan_details_screen.dart';
+import 'package:nhealth/screens/patients/manage/care_plan/care_plan_intervention_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_list_screen.dart';
+import 'package:nhealth/screens/patients/manage/care_plan/care_plan_medication_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/past_encounters_screen.dart';
 import 'package:nhealth/screens/patients/manage/health_report/create_health_report_screen.dart';
@@ -308,7 +311,9 @@ class _PatientRecordsState extends State<PatientRecords> {
                                       )
                                     ),
                                     child: FlatButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.of(context).push(CarePlanMedicationScreen());
+                                      },
                                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                       child: Container(
                                         padding: EdgeInsets.only(left: 10, top: 20, bottom: 20, right: 10),
@@ -332,7 +337,9 @@ class _PatientRecordsState extends State<PatientRecords> {
                                       )
                                     ),
                                     child: FlatButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.of(context).push(CarePlanMedicationScreen());
+                                      },
                                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                       child: Container(
                                         padding: EdgeInsets.only(left: 10, top: 20, bottom: 20, right: 10),
@@ -356,7 +363,9 @@ class _PatientRecordsState extends State<PatientRecords> {
                                       )
                                     ),
                                     child: FlatButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.of(context).push(CarePlanInterventionScreen());
+                                      },
                                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                       child: Container(
                                         padding: EdgeInsets.only(left: 10, top: 20, bottom: 20, right: 10),
@@ -389,7 +398,9 @@ class _PatientRecordsState extends State<PatientRecords> {
                                       )
                                     ),
                                     child: FlatButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.of(context).push(CarePlanInterventionScreen());
+                                      },
                                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                       child: Container(
                                         padding: EdgeInsets.only(left: 10, top: 20, bottom: 20, right: 10),
@@ -429,7 +440,8 @@ class _PatientRecordsState extends State<PatientRecords> {
                                             borderRadius: BorderRadius.circular(4)
                                           ),
                                           child: FlatButton(
-                                            onPressed: () async {
+                                            onPressed: () {
+                                              Navigator.of(context).push(CarePlanDetailsScreen());
                                             },
                                             padding: EdgeInsets.symmetric(vertical: 20),
                                             child: Text('VIEW CARE PLAN DETAILS', style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),

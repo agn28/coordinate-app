@@ -4,18 +4,18 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/widgets/primary_button_widget.dart';
 
-class CarePlanGenerateScreen extends CupertinoPageRoute {
-  CarePlanGenerateScreen()
-      : super(builder: (BuildContext context) => new CarePlanGenerate());
+class CarePlanMedicationScreen extends CupertinoPageRoute {
+  CarePlanMedicationScreen()
+      : super(builder: (BuildContext context) => CarePlanMedication());
 
 }
 
-class CarePlanGenerate extends StatefulWidget {
+class CarePlanMedication extends StatefulWidget {
   @override
-  _CarePlanGenerateState createState() => _CarePlanGenerateState();
+  _CarePlanMedicationState createState() => _CarePlanMedicationState();
 }
 
-class _CarePlanGenerateState extends State<CarePlanGenerate> {
+class _CarePlanMedicationState extends State<CarePlanMedication> {
 
   bool smoking = true;
 
@@ -24,7 +24,7 @@ class _CarePlanGenerateState extends State<CarePlanGenerate> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Health Report', style: TextStyle(color: Colors.white),),
+        title: Text('Medication', style: TextStyle(color: Colors.white),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -90,7 +90,7 @@ class _CarePlanGenerateState extends State<CarePlanGenerate> {
                       });
                     },
                   ),
-                  Text('Smoking cessation advise provided to patient', style: TextStyle(fontSize: 16),)
+                  Text('Napa 12 mg started', style: TextStyle(fontSize: 16),)
                 ],
               ),
             ),
