@@ -1119,48 +1119,6 @@ class CreateHealthReport extends StatelessWidget {
           ],
         ),
       ),
-      // bottomNavigationBar: Container(
-      //   height: 120,
-      //   padding: EdgeInsets.symmetric(horizontal: 25),
-      //   decoration: BoxDecoration(
-      //     border: Border(
-      //       top: BorderSide(width: .5, color: Color(0xFF50000000))
-      //     )
-      //   ),
-      //   child: Row(
-      //     children: <Widget>[
-      //       Expanded(
-      //         child: Container(
-      //           width: double.infinity,
-      //           decoration: BoxDecoration(
-      //             borderRadius: BorderRadius.circular(4),
-      //             border: Border.all(width: 1, color: kBorderGrey)
-      //           ),
-      //           child: FlatButton(
-      //             onPressed: () => Navigator.pop(context),
-      //             padding: EdgeInsets.symmetric(vertical: 20),
-      //             child: Text('Cancel', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
-      //           ),
-      //         )
-      //       ),
-      //       SizedBox(width: 20),
-      //       Expanded(
-      //         child: Container(
-      //           width: double.infinity,
-      //           decoration: BoxDecoration(
-      //             color: kPrimaryColor,
-      //             borderRadius: BorderRadius.circular(4)
-      //           ),
-      //           child: FlatButton(
-      //             onPressed: () => Navigator.of(context).push(HealthReportSuccessScreen()),
-      //             padding: EdgeInsets.symmetric(vertical: 20),
-      //             child: Text('SUBMIT FOR CONFIRMATION', style: TextStyle(fontSize: 17, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
-      //           ),
-      //         )
-      //       )
-      //     ],
-      //   )
-      // )
     );
   }
 }
