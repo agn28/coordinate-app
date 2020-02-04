@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/screens/home_screen.dart';
+import 'package:nhealth/screens/patients/manage/patient_records_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
 
 class HealthReportSuccessScreen extends CupertinoPageRoute {
@@ -50,7 +51,9 @@ class HealthReportSuccess extends StatelessWidget {
                   ),
                   SizedBox(height: 20,),
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(PatientRecordsScreen());
+                    },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
