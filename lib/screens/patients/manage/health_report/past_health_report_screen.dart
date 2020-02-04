@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/patients/manage/encounters/encounter_details_screen.dart';
+import 'package:nhealth/screens/patients/manage/health_report/health_report_details_screen.dart';
 import 'package:nhealth/screens/patients/manage/health_report/health_report_screen.dart';
 
 class PastHealthReportScreen extends CupertinoPageRoute {
@@ -16,7 +18,7 @@ class PastHealthReport extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Health Report', style: TextStyle(color: Colors.white),),
+        title: Text('Past Health Assessments', style: TextStyle(color: Colors.white),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -49,13 +51,13 @@ class PastHealthReport extends StatelessWidget {
                             child: Icon(Icons.perm_identity),
                           ),
                           SizedBox(width: 15,),
-                          Text('Jahanara Begum', style: TextStyle(fontSize: 18))
+                          Text(Patient().getPatient()['data']['name'], style: TextStyle(fontSize: 18))
                         ],
                       ),
                     ),
                   ),
                   Expanded(
-                    child: Text('31Y Female', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
+                    child: Text('${Patient().getPatient()['data']['age']}Y ${Patient().getPatient()['data']['gender'].toUpperCase()}', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
                   ),
                   Expanded(
                     child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
@@ -101,7 +103,7 @@ class PastHealthReport extends StatelessWidget {
                 )
               ),
               child: FlatButton(
-                onPressed: () => Navigator.of(context).push(HealthReportScreen()),
+                onPressed: () => Navigator.of(context).push(HealthReportDetailsScreen()),
                 child: Column(
                   children: <Widget>[
                     Container(
@@ -136,7 +138,7 @@ class PastHealthReport extends StatelessWidget {
                 )
               ),
               child: FlatButton(
-                onPressed: () => Navigator.of(context).push(HealthReportScreen()),
+                onPressed: () => Navigator.of(context).push(HealthReportDetailsScreen()),
                 child: Column(
                   children: <Widget>[
                     Container(
