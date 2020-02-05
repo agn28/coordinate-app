@@ -30,10 +30,22 @@ class BodyMeasurement {
       return 'Error! Minimum 1 step should be completed';
     }
 
-    _bmItems = [];
-    _items.forEach((item) => {
-      _bmItems.add(_prepareData(item))
-    });
+    for (var item in _items) {
+      bool updated = false;
+      for (var bt in _bmItems) {
+        if (bt['body']['data']['type'] == item['type']) {
+          _bmItems[_bmItems.indexOf(bt)]['body']['data'] = item;
+          updated = true;
+          break;
+        }
+      }
+
+      if(!updated) {
+        print('hello');
+        _bmItems.add(_prepareData(item));
+      }
+      
+    }
     
     return 'success';
   }

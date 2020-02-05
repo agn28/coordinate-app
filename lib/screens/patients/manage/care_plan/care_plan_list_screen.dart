@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_generate_screen.dart';
-import 'package:nhealth/screens/patients/manage/encounters/encounter_details_screen.dart';
-import 'package:nhealth/screens/patients/manage/health_report/health_report_screen.dart';
 import 'package:nhealth/widgets/primary_button_widget.dart';
 
 class CarePlanListScreen extends CupertinoPageRoute {

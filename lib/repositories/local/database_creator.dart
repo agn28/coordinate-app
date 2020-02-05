@@ -71,7 +71,6 @@ class DatabaseCreator {
   }
 
   Future<void> initDatabase() async {
-    print('hello');
     final path = await getDatabasePath('coordinate_db');
     db = await openDatabase(path, version: 1, onCreate: onCreate);
     print(db);

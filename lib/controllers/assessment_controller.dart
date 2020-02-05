@@ -18,14 +18,14 @@ class AssessmentController {
     var data = [];
     var parsedData;
 
-    await assessments.forEach((assessment) => {
-      parsedData = jsonDecode(assessment['data']),
+    await assessments.forEach((assessment) {
+      parsedData = jsonDecode(assessment['data']);
       if (parsedData['body']['patient_id'] == Patient().getPatient()['uuid']) {
         data.add({
           'uuid': assessment['uuid'],
           'data': parsedData['body'],
           'meta': parsedData['meta']
-        })
+        });
       }
     });
     return data;
@@ -37,13 +37,13 @@ class AssessmentController {
     var data = [];
     var parsedData;
 
-    await assessments.forEach((assessment) => {
-      parsedData = jsonDecode(assessment['data']),
+    await assessments.forEach((assessment) {
+      parsedData = jsonDecode(assessment['data']);
       data.add({
         'uuid': assessment['uuid'],
         'data': parsedData['body'],
         'meta': parsedData['meta']
-      })
+      });
     });
     return data;
   }
@@ -55,8 +55,11 @@ class AssessmentController {
     var data = [];
     var parsedData;
 
-    await observations.forEach((item) => {
-      parsedData = jsonDecode(item['data']),
+    print(observations);
+
+    await observations.forEach((item) {
+      parsedData = jsonDecode(item['data']);
+      // // print(assessment),
       if (parsedData['body']['patient_id'] == Patient().getPatient()['uuid'] && parsedData['body']['assessment_id'] == assessment['uuid']) {
         data.add({
           'uuid': item['uuid'],
@@ -68,7 +71,7 @@ class AssessmentController {
             'assessment_id': parsedData['body']['assessment_id'],
           },
           'meta': parsedData['meta']
-        })
+        });
       }
     });
     return data;
@@ -138,13 +141,13 @@ class AssessmentController {
   edit(assessment, observations) {
     Assessment().selectAssessment(assessment);
     Helpers().clearObservationItems();
-    observations.forEach((item) => {
+    observations.forEach((item) {
       if (item['body']['type'] == 'body_measurement') {
-        BodyMeasurement().addBmItemsForEdit(item),
+        BodyMeasurement().addBmItemsForEdit(item);
       } else if (item['body']['type'] == 'blood_test') {
-        BloodTest().addBtItemsForEdit(item)
+        BloodTest().addBtItemsForEdit(item);
       } else if (item['body']['type'] == 'blood_pressure') {
-        BloodPressure().addBpItemsForEdit(item),
+        BloodPressure().addBpItemsForEdit(item);
       }
     });
   }
