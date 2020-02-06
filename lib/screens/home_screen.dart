@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_search_screen_new.dart';
 import 'package:nhealth/screens/settings/settings_screen.dart';
-import 'package:nhealth/screens/work-list/work_list_search_screen.dart';
 import 'package:nhealth/screens/work-list/work_list_search_screen_new.dart';
 import './patients/register_patient_screen.dart';
 
@@ -169,7 +167,7 @@ class Home extends StatelessWidget {
                     margin: EdgeInsets.only(left: 18),
                     child: Row(
                       children: <Widget>[
-                        Text('Version 0.0.01 (beta)', style: TextStyle( fontSize: 18, fontWeight: FontWeight.w400)),
+                        Text('Version 0.0.1 (beta)', style: TextStyle( fontSize: 18, fontWeight: FontWeight.w400)),
                       ],
                     )
                   )

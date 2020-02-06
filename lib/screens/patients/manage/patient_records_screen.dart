@@ -103,7 +103,7 @@ class _PatientRecordsState extends State<PatientRecords> {
                                 ],
                               ),
                               SizedBox(height: 20,),
-                              Text('Registered on Jan 5, 2019', style: TextStyle(color: Colors.white70, fontSize: 17, fontWeight: FontWeight.w400),),
+                              Text('Registered on Jan 5, 2020', style: TextStyle(color: Colors.white70, fontSize: 17, fontWeight: FontWeight.w400),),
                               // Text('Registered on Jan 5, 2019', style: TextStyle(color: Colors.white70, fontSize: 17, fontWeight: FontWeight.w400),),
                             ],
                           ),

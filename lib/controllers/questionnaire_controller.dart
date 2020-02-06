@@ -7,8 +7,8 @@ class QuestionnaireController {
     var questions = Questionnaire().questions.where((qn) => qn['type'] == type).first;
     var data = [];
     
-    questions['items'].forEach((item) => {
-      data.add(_prepareData(questions, item, answers))
+    questions['items'].forEach((item) {
+      data.add(_prepareData(questions, item, answers));
     });
 
     return;

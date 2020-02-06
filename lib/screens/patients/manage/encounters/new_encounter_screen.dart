@@ -4,26 +4,27 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/assessment.dart';
-import 'package:nhealth/models/blood_pressure.dart';
-import 'package:nhealth/models/blood_test.dart';
-import 'package:nhealth/models/body_measurement.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-test/blood_test_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/body-measurements/measurements_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/questionnaires_screen.dart';
+import 'package:nhealth/screens/patients/manage/encounters/encounter_details_screen.dart';
 
 
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
 class NewEncounterScreen extends CupertinoPageRoute {
-  NewEncounterScreen()
-      : super(builder: (BuildContext context) => new NewEncounter());
+
+  EncounterDetailsState encounterDetailsState;
+  NewEncounterScreen({this.encounterDetailsState})
+      : super(builder: (BuildContext context) => new NewEncounter(encounterDetailsState: encounterDetailsState));
 
 }
 
 class NewEncounter extends StatefulWidget {
-
+  EncounterDetailsState encounterDetailsState;
+  NewEncounter({this.encounterDetailsState});
   @override
   _NewEncounterState createState() => _NewEncounterState();
 }
@@ -313,10 +314,10 @@ class _NewEncounterState extends State<NewEncounter> {
                                           GestureDetector(
                                             onTap: () async {
                                               var result = '';
-                                              if (Assessment().getSelectedAssessment() == {}) {
-                                                result = AssessmentController().create(selectedType, commentController.text);
+                                              if (Assessment().getSelectedAssessment().isEmpty) {
+                                                result = await AssessmentController().create(selectedType, commentController.text);
                                               } else {
-                                                result = AssessmentController().update(selectedType, commentController.text);
+                                                result = await AssessmentController().update(selectedType, commentController.text);
                                               }
 
                                               if (result == 'success') {
@@ -327,8 +328,15 @@ class _NewEncounterState extends State<NewEncounter> {
                                                     backgroundColor: Color(0xFF4cAF50),
                                                   )
                                                 );
+                                                print('asdasljda');
                                                 Navigator.of(context).pop();
 
+                                                if (widget.encounterDetailsState != null) {
+                                                  widget.encounterDetailsState.setState(() async {
+                                                    await widget.encounterDetailsState.getObservations();
+                                                  });
+                                                }
+                                                
                                               } else {
                                                 Navigator.of(context).pop();
                                                 _scaffoldKey.currentState.showSnackBar(
@@ -359,7 +367,8 @@ class _NewEncounterState extends State<NewEncounter> {
                     }
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text(Assessment().getSelectedAssessment() != {} ? 'Update Assessment' : 'Save Assssment',
+                  child: Text(Assessment().getSelectedAssessment().isNotEmpty ? 'Update Assessment' : 'Save Assssment',
+                  style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500)
                 ),
               )
             ))

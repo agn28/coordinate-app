@@ -19,25 +19,25 @@ class EncounterDetails extends StatefulWidget {
   EncounterDetails(this.assessment);
 
   @override
-  _EncounterDetailsState createState() => _EncounterDetailsState();
+  EncounterDetailsState createState() => EncounterDetailsState();
 }
 
-class _EncounterDetailsState extends State<EncounterDetails> {
+class EncounterDetailsState extends State<EncounterDetails> {
   var _patient;
   var _observations;
   var _bloodPressures = [];
-  var _bloodTests;
+  var _bloodTests = [];
    List<Widget> observationItems = List<Widget>();
 
   @override
   void initState() {
     super.initState();
-    _getObservations();
+    getObservations();
     _patient = Patient().getPatient();
   }
 
   /// Get all observations by assessment
-  _getObservations() async {
+  getObservations() async {
     _observations =  await AssessmentController().getObservationsByAssessment(widget.assessment);
     _getItem();
 
@@ -52,9 +52,9 @@ class _EncounterDetailsState extends State<EncounterDetails> {
     double systolic = 0;
     double diastolic = 0;
 
-    _bloodPressures.forEach((item) => {
-      systolic = systolic + item['body']['data']['systolic'] is double ? item['body']['data']['systolic'] : double.parse(item['body']['data']['systolic']),
-      diastolic = diastolic + item['body']['data']['diastolic'] is double ? item['body']['data']['diastolic'] : double.parse(item['body']['data']['diastolic']),
+    _bloodPressures.forEach((item) {
+      systolic = systolic + item['body']['data']['systolic'] is double ? item['body']['data']['systolic'] : double.parse(item['body']['data']['systolic']);
+      diastolic = diastolic + item['body']['data']['diastolic'] is double ? item['body']['data']['diastolic'] : double.parse(item['body']['data']['diastolic']);
     });
 
     double avgSystolic = systolic/_bloodPressures.length;
@@ -79,7 +79,8 @@ class _EncounterDetailsState extends State<EncounterDetails> {
 
   /// Populate observation widgets form observations list.
   _getItem() {
-    _observations.forEach((item) => {
+    observationItems = [];
+    _observations.forEach((item) {
       if (item['body']['type'] != 'blood_pressure') {
         setState(() {
           observationItems.add(
@@ -127,7 +128,7 @@ class _EncounterDetailsState extends State<EncounterDetails> {
               ],
             )
           );
-        })
+        });
       }
       
     });
@@ -215,7 +216,7 @@ class _EncounterDetailsState extends State<EncounterDetails> {
                           child: GestureDetector(
                             onTap: () {
                               AssessmentController().edit(widget.assessment, _observations);
-                              Navigator.of(context).push(NewEncounterScreen());
+                              Navigator.of(context).push(NewEncounterScreen(encounterDetailsState: this));
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,

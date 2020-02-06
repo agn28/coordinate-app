@@ -12,7 +12,7 @@ class AssessmentRepositoryLocal {
   getAllAssessments() async {
     final sqlAssessments = '''SELECT * FROM ${DatabaseCreator.assessmentTable}''';
     var assessments = await db.rawQuery(sqlAssessments);
-    
+    // print(assessments);
     return assessments;
   }
 
@@ -21,12 +21,14 @@ class AssessmentRepositoryLocal {
     final sqlObservations = '''SELECT * FROM ${DatabaseCreator.observationTable}''';
     final observations = await db.rawQuery(sqlObservations);
 
+    print(observations.length);
     return observations;
   }
 
   /// Create an assessment with observations.
   /// observations [data] is required as parameter.
   create(data) {
+    print('create');
     var assessmentId = Uuid().v4();
     var bloodPressures = BloodPressure().bpItems;
     var bloodTests = BloodTest().btItems;
@@ -38,19 +40,19 @@ class AssessmentRepositoryLocal {
 
     _createAssessment(assessmentId, jsonEncode(data));
 
-    bloodPressures.forEach((item) => {
-      item['body']['assessment_id'] = assessmentId,
-      _createObservations(jsonEncode(item))
+    bloodPressures.forEach((item) {
+      item['body']['assessment_id'] = assessmentId;
+      _createObservations(item);
     });
 
-    bloodTests.forEach((item) => {
-      item['body']['assessment_id'] = assessmentId,
-      _createObservations(jsonEncode(item))
+    bloodTests.forEach((item) {
+      item['body']['assessment_id'] = assessmentId;
+      _createObservations(item);
     });
 
-    bodyMeasurements.forEach((item) => {
-      item['body']['assessment_id'] = assessmentId,
-      _createObservations(jsonEncode(item))
+    bodyMeasurements.forEach((item) {
+      item['body']['assessment_id'] = assessmentId;
+      _createObservations(item);
     });
 
     return 'success';
@@ -70,21 +72,21 @@ class AssessmentRepositoryLocal {
 
    _updateAssessment(assessmentId, jsonEncode(data));
 
-    // bloodPressures.forEach((item) => {
-      
-    //   _updateObservations(item)
-    // });
-
-    bloodTests.forEach((item) => {
-      print('potrewporip'),
-      print(item),
-      item['uuid'] != null ? _updateObservations(item) : _createObservations(item)
-      // _updateObservations(item)
+    bloodPressures.forEach((item) {
+      item['body']['assessment_id'] = assessmentId;
+      item['uuid'] != null ? _updateObservations(item) : _createObservations(item);
     });
 
-    // bodyMeasurements.forEach((item) => {
-    //   _updateObservations(item)
-    // });
+    bloodTests.forEach((item) {
+      item['body']['assessment_id'] = assessmentId;
+      item['uuid'] != null ? _updateObservations(item) : _createObservations(item);
+    });
+
+
+    bodyMeasurements.forEach((item) {
+      item['body']['assessment_id'] = assessmentId;
+      item['uuid'] != null ? _updateObservations(item) : _createObservations(item);
+    });
 
     return 'success';
     
@@ -114,7 +116,7 @@ class AssessmentRepositoryLocal {
       status
     )
     VALUES (?,?,?)''';
-    List<dynamic> params = [id, data, 'not synced'];
+    List<dynamic> params = [id, jsonEncode(data), 'not synced'];
     final result = await db.rawInsert(sql, params);
     DatabaseCreator.databaseLog('Add observation', sql, null, result, params);
   }

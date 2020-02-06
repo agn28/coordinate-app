@@ -365,8 +365,8 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
 
   _addItem(){
     BloodTest().addItem(widget.title, valueController.text, selectedUnit, commentController.text, devices[selectedDevice]);
-    this.widget.parent.setState(() => {
-      this.widget.parent.setStatus()
+    this.widget.parent.setState(() {
+      this.widget.parent.setStatus();
     });
   }
   _clearDialogForm() {

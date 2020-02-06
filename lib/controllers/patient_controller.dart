@@ -10,13 +10,13 @@ class PatientController {
     var data = [];
     var parsedData;
 
-    await patients.forEach((patient) => {
-      parsedData = jsonDecode(patient['data']),
+    await patients.forEach((patient) {
+      parsedData = jsonDecode(patient['data']);
       data.add({
         'uuid': patient['uuid'],
         'data': parsedData['body'],
         'meta': parsedData['meta']
-      }),
+      });
     });
 
     return data;

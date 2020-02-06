@@ -125,6 +125,9 @@ class _CarePlanInterventionState extends State<CarePlanIntervention> {
             Container(
               margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
               child: PrimaryButton(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
                 text: Text('MARK AS COMPLETE', style: TextStyle(color: Colors.white, fontSize: 16),),
               ),
             ),

@@ -2,10 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/patient.dart';
-import 'package:nhealth/screens/patients/manage/care_plan/care_plan_generate_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_intervention_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_medication_screen.dart';
-import 'package:nhealth/widgets/primary_button_widget.dart';
 
 class CarePlanDetailsScreen extends CupertinoPageRoute {
   CarePlanDetailsScreen()

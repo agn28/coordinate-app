@@ -1,5 +1,5 @@
-List _languages = ['en', 'bn'];
-var _selectedlanguage = 'en';
+List _languages = ['English', 'Bengali'];
+var _selectedlanguage = 'English';
 
 class Language {
 

@@ -38,9 +38,9 @@ class BloodPressure {
     var data;
     _bpItems = [];
 
-    formData['items'].forEach((item) => {
-      data = _prepareBloodPressureData(formData, item),
-      _bpItems.add(data),
+    formData['items'].forEach((item) {
+      data = _prepareBloodPressureData(formData, item);
+      _bpItems.add(data);
     });
 
     return 'success';
