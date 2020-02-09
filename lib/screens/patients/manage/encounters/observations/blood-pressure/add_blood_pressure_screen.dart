@@ -1,3 +1,4 @@
+import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -6,7 +7,7 @@ import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 
-int selectedArm = 0;
+String selectedArm = 'left';
 double systolic;
 double diastolic;
 double pulse;
@@ -18,11 +19,16 @@ final deviceController = TextEditingController();
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 int selectedDevice = 0;
 List devices = ['D-23429', 'B-94857'];
+List rightArmReason = [
+  'left arm is missing',
+  'participants hand is broken into pieces',
+  'other'
+];
 
-enum Arms {
-  LeftArm,
-  RughtArm
-}
+final otherReasonController = TextEditingController();
+
+String selectedRightArmReason = rightArmReason[0];
+
 
 class AddBloodPressureScreen extends CupertinoPageRoute {
   AddBloodPressureScreen()
@@ -37,7 +43,7 @@ class AddBloodPressure extends StatefulWidget {
 }
 
 class _AddBloodPressureState extends State<AddBloodPressure> {
-  List<BloodPressureItem> bpItems = BloodPressure().items;
+  List bpItems = BloodPressure().items;
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   var _patient;
   var _bloodPressures;
@@ -46,7 +52,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
-    selectedArm = 0;
+    selectedArm = 'left';
     getBloodPressures();
   }
 
@@ -56,7 +62,8 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
     });
   }
 
-  _changeArm(int val) {
+  _changeArm(val) {
+    print(val);
     setState(() {
       selectedArm = val;
     });
@@ -66,7 +73,8 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
     systolicController.clear();
     diastolicController.clear();
     pulseController.clear();
-    selectedArm = 0;
+    selectedArm = 'left';
+    selectedRightArmReason = rightArmReason[0];
   }
   String _getSerial(serial) {
     return (serial + 1).toString();
@@ -76,6 +84,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Blood Pressure', style: TextStyle(color: kLightBlack),),
@@ -173,14 +182,14 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                       rows: _bloodPressures.map<DataRow>((bp) => DataRow(
                         cells: [
                           DataCell(Text(_getSerial(_bloodPressures.indexOf(bp)))),
-                          DataCell(Text("${bp.arm[0].toUpperCase()}${bp.arm.substring(1)}")),
-                          DataCell(Text(bp.systolic.toInt().toString())),
-                          DataCell(Text(bp.diastolic.toInt().toString())),
+                          DataCell(Text("${bp['arm'][0].toUpperCase()}${bp['arm'].substring(1)}")),
+                          DataCell(Text(bp['systolic'].toInt().toString())),
+                          DataCell(Text(bp['diastolic'].toInt().toString())),
                           DataCell(
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Text(bp.pulse.toInt().toString()),
+                                Text(bp['pulse_rate'].toInt().toString()),
                                 Container(
                                   child: IconButton(
                                     icon: Icon(Icons.delete),
@@ -233,144 +242,244 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                           context: context,
                           builder: (BuildContext context) {
                             // return object of type Dialog
-                            return Dialog(
-                              elevation: 0.0,
-                              backgroundColor: Colors.transparent,
-                              child: Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.only(top:30, left: 30),
-                                height: 390.0,
-                                color: Colors.white,
-                                child: Form(
-                                  key: _formKey,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text('Add BP Measurement', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
-                                      SizedBox(height: 20,),
-                                      Container(
-                                        // margin: EdgeInsets.symmetric(horizontal: 30),
-                                        child: Row(
-                                          children: <Widget>[
-                                            // SizedBox(width: 20,),
-                                            Radio(
-                                              activeColor: kPrimaryColor,
-                                              value: 0,
-                                              groupValue: selectedArm,
-                                              onChanged: (val) {
-                                                _changeArm(val);
-                                              },
-                                            ),
-                                            Text("Left Arm", style: TextStyle(color: Colors.black)),
-
-                                            Radio(
-                                              activeColor: kPrimaryColor,
-                                              value: 1,
-                                              groupValue: selectedArm,
-                                              onChanged: (val) {
-                                                _changeArm(val);
-                                              },
-                                            ),
-                                            Text(
-                                              "Right Arm",
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(height: 10,),
-                                      Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: <Widget>[
-                                          Expanded(
-                                            flex: 2,
-                                            child: PrimaryTextField(
-                                              hintText: 'Systolic',
-                                              topPaadding: 20,
-                                              bottomPadding: 20,
-                                              controller: systolicController,
-                                              name:'Systolic',
-                                              validation: true,
-                                              type: TextInputType.number
-                                            ),
-                                          ),
-                                          SizedBox(width: 20,),
-                                          Container(
-                                            alignment: Alignment.center,
-                                            child: Text('/', style: TextStyle(fontSize: 20, height: 0),),
-                                          ),
-                                          SizedBox(width: 20,),
-                                          Expanded(
-                                            flex: 2,
-                                            child: PrimaryTextField(
-                                              hintText: 'Diastolic',
-                                              topPaadding: 20,
-                                              bottomPadding: 20,
-                                              controller: diastolicController,
-                                              name:'Diastolic',
-                                              validation: true,
-                                              type: TextInputType.number
-                                            ),
-                                          ),
-                                          Expanded(
-                                            flex: 2,
-                                            child: Text(''),
-                                          )
-                                        ],
-                                      ),
-                                      SizedBox(height: 10,),
-                                      Container(
-                                        width: 140,
-                                        child: PrimaryTextField(
-                                          hintText: 'Pulse Rate',
-                                          topPaadding: 20,
-                                          bottomPadding: 20,
-                                          controller: pulseController,
-                                          name:'Pulse Rate',
-                                          validation: true,
-                                          type: TextInputType.number
-                                        ),
-                                      ),
-
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: <Widget>[
-                                          Container(
-                                            alignment: Alignment.bottomRight,
-                                            margin: EdgeInsets.only(top: 20),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.end,
+                            return StatefulBuilder(
+                              builder: (context, setState) {
+                                return Dialog(
+                                  elevation: 0.0,
+                                  backgroundColor: Colors.transparent,
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      // mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        Container(
+                                          width: double.infinity,
+                                          alignment: Alignment.center,
+                                          padding: EdgeInsets.only(top:30),
+                                          color: Colors.white,
+                                          child: Form(
+                                            key: _formKey,
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: <Widget>[
-                                                FlatButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                    _clearDialogForm();
-                                                  },
-                                                  child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                                                Container(
+                                                  padding: EdgeInsets.only(left: 25),
+                                                  child: Text('Add BP Measurement', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                                                 ),
-                                                SizedBox(width: 20,),
-                                                FlatButton(
-                                                  onPressed: () {
-                                                    if (_formKey.currentState.validate()) {
-                                                      Navigator.of(context).pop();
-                                                      setState(() {
-                                                        BloodPressure().addItem(selectedArm == 0 ? 'left' : 'right' , double.parse(systolicController.text), double.parse(diastolicController.text), double.parse(pulseController.text));
-                                                      });
-                                                      getBloodPressures();
-                                                      _clearDialogForm();
-                                                    }
-                                                  },
-                                                  child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
+                                                SizedBox(height: 20,),
+                                                Container(
+                                                  // margin: EdgeInsets.symmetric(horizontal: 30),
+                                                  padding: EdgeInsets.only(left: 10),
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      // SizedBox(width: 20,),
+                                                      Radio(
+                                                        activeColor: kPrimaryColor,
+                                                        value: 'left',
+                                                        groupValue: selectedArm,
+                                                        onChanged: (val) {
+                                                          setState(() {
+                                                            selectedArm = val;
+                                                          });
+                                                        },
+                                                      ),
+                                                      Text("Left Arm", style: TextStyle(fontSize: 15),),
+
+                                                      Radio(
+                                                        activeColor: kPrimaryColor,
+                                                        value: 'right',
+                                                        groupValue: selectedArm,
+                                                        onChanged: (val) {
+                                                          setState(() {
+                                                            selectedArm = val;
+                                                          });
+                                                        },
+                                                      ),
+                                                      Text(
+                                                        "Right Arm",
+                                                        style: TextStyle(fontSize: 15),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
+                                                SizedBox(height: 20,),
+                                                selectedArm == 'right' ? Column(
+                                                  children: <Widget>[
+                                                    Container(
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: <Widget>[
+                                                          Container(
+                                                            padding: EdgeInsets.only(left: 25),
+                                                            child: Text('Reason for using right arm', style: TextStyle(fontSize: 19),),
+                                                          ),
+                                                          SizedBox(height: 10,),
+                                                          ...rightArmReason.map((item) {
+                                                            return Row(
+                                                              children: <Widget>[
+                                                                SizedBox(width: 10,),
+                                                                Radio(
+                                                                  activeColor: kPrimaryColor,
+                                                                  value: item,
+                                                                  groupValue: selectedRightArmReason,
+                                                                  onChanged: (val) {
+                                                                    print(val);
+                                                                    setState(() {
+                                                                      selectedRightArmReason = val;
+                                                                    });
+                                                                  },
+                                                                ),
+                                                                Text(
+                                                                  StringUtils.capitalize(item),
+                                                                  style: TextStyle(fontSize: 15),
+                                                                ),
+                                                              ],
+                                                            );
+                                                          }).toList(),
+                                                        ],
+                                                      ),
+                                                    ),
+
+
+                                                    selectedRightArmReason == 'other' ? Column(
+                                                      children: <Widget>[
+                                                        Container(
+                                                          padding: EdgeInsets.only(left: 25, right: 25),
+                                                          child: TextField(
+                                                            
+                                                            keyboardType: TextInputType.multiline,
+                                                            maxLines: 2,
+                                                            style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
+                                                            controller: otherReasonController,
+
+                                                            decoration: InputDecoration(
+                                                              contentPadding: const EdgeInsets.only(top: 15.0, bottom: 15.0, left: 20, right: 20),
+                                                              filled: true,
+                                                              fillColor: kSecondaryTextField,
+                                                              border: new UnderlineInputBorder(
+                                                                borderSide: new BorderSide(color: Colors.white),
+                                                                borderRadius: BorderRadius.only(
+                                                                  topLeft: Radius.circular(4),
+                                                                  topRight: Radius.circular(4),
+                                                                )
+                                                              ),
+                                                            
+                                                              hintText: 'State a reason',
+                                                              hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                                                            ),
+                                                          )
+                                                        ),
+                                                        
+                                                      ],
+                                                    ) : Container(),
+                                                    SizedBox(height: 15,),
+                                                    Divider(),
+                                                    SizedBox(height: 15,),
+                                                  ],
+                                                ) : Container(),
+                                                Container(
+                                                  padding: EdgeInsets.only(left: 25),
+                                                  child: Row(
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: <Widget>[
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: PrimaryTextField(
+                                                          hintText: 'Systolic',
+                                                          topPaadding: 20,
+                                                          bottomPadding: 20,
+                                                          controller: systolicController,
+                                                          name:'Systolic',
+                                                          validation: true,
+                                                          type: TextInputType.number
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 20,),
+                                                      Container(
+                                                        alignment: Alignment.center,
+                                                        child: Text('/', style: TextStyle(fontSize: 20, height: 0),),
+                                                      ),
+                                                      SizedBox(width: 20,),
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: PrimaryTextField(
+                                                          hintText: 'Diastolic',
+                                                          topPaadding: 20,
+                                                          bottomPadding: 20,
+                                                          controller: diastolicController,
+                                                          name:'Diastolic',
+                                                          validation: true,
+                                                          type: TextInputType.number
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Text(''),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                                SizedBox(height: 10,),
+                                                Container(
+                                                  padding: EdgeInsets.only(left: 25),
+                                                  width: 175,
+                                                  child: PrimaryTextField(
+                                                    hintText: 'Pulse Rate',
+                                                    topPaadding: 20,
+                                                    bottomPadding: 20,
+                                                    controller: pulseController,
+                                                    name:'Pulse Rate',
+                                                    validation: true,
+                                                    type: TextInputType.number
+                                                  ),
+                                                ),
+
+                                                Column(
+                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  children: <Widget>[
+                                                    Container(
+                                                      alignment: Alignment.bottomRight,
+                                                      margin: EdgeInsets.only(top: 20),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                        children: <Widget>[
+                                                          FlatButton(
+                                                            onPressed: () {
+                                                              Navigator.of(context).pop();
+                                                              _clearDialogForm();
+                                                            },
+                                                            child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                                                          ),
+                                                          SizedBox(width: 20,),
+                                                          FlatButton(
+                                                            onPressed: () {
+                                                              if (_formKey.currentState.validate()) {
+                                                                Navigator.of(context).pop();
+                                                                var reason = selectedRightArmReason == 'other' ? otherReasonController.text : selectedRightArmReason;
+                                                                setState(() {
+                                                                  BloodPressure().addItem(selectedArm, double.parse(systolicController.text), double.parse(diastolicController.text), double.parse(pulseController.text), reason);
+                                                                });
+                                                                getBloodPressures();
+                                                                _clearDialogForm();
+                                                              }
+                                                            },
+                                                            child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
+                                                          ),
+                                                        ],
+                                                      )
+                                                    )
+                                                  ],
+                                                )
                                               ],
                                             )
-                                          )
-                                        ],
-                                      )
-                                    ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   )
-                                ),
-                              )
-                              
+                                  
+                                );
+                              },
                             );
                           },
                         );

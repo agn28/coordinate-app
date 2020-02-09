@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:nhealth/models/assessment.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
@@ -46,5 +47,9 @@ class Helpers {
   /// Clear all added assessment items from local variable.
   clearAssessment() {
     Assessment().clearItem();
+  }
+
+  converDate(date) {
+    return date != null ? DateFormat("MMMM d, y").format(DateTime.parse(date)) : '';
   }
 }

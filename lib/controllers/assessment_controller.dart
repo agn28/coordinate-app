@@ -124,7 +124,8 @@ class AssessmentController {
       "meta": {
         "collected_by": "8vLsBJkEOGOQyyLXQ2vZzycmqQX2",
         "start_time": "17 December, 2019 12:00",
-        "end_time": "17 December, 2019 12:05"
+        "end_time": "17 December, 2019 12:05",
+        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
       },
       "body": {
         "type": type,
