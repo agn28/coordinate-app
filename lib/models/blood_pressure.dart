@@ -15,17 +15,36 @@ class BloodPressureItem with ChangeNotifier {
     this.pulse
   );
 }
-List<BloodPressureItem> _items = [];
+List _items = [];
 List _bpItems = [];
 
 class BloodPressure {
 
   /// Add blood pressure to variable for future use
   /// [arm], [systolic], [diastolic], [pulse] are required as parameters.
-  BloodPressureItem addItem(String arm, double systolic, double diastolic, double pulse ) {
-    _items.add(BloodPressureItem(arm, systolic, diastolic, pulse));
+  addItem(String arm, double systolic, double diastolic, double pulse, String rightArmReason ) {
     
-    return BloodPressureItem(arm, systolic, diastolic, pulse);
+    if (arm == 'right') {
+      _items.add({
+        'arm': arm,
+        'systolic': systolic,
+        'diastolic': diastolic,
+        'pulse_rate': pulse,
+        'reason': rightArmReason
+      });
+    } else {
+      _items.add({
+        'arm': arm,
+        'systolic': systolic,
+        'diastolic': diastolic,
+        'pulse_rate': pulse,
+      });
+    }
+
+    print(items);
+
+    
+    return 'success';
   }
 
   /// Add blood pressures as observation
@@ -50,7 +69,7 @@ class BloodPressure {
   /// body measurement [observation] is required as parameter
   addBpItemsForEdit(observation) {
     _bpItems.add(observation);
-    _items.add(BloodPressureItem(observation['body']['data']['arm'], observation['body']['data']['systolic'], observation['body']['data']['diastolic'], observation['body']['data']['pulse_rate']));
+    _items.add(observation['body']['data']);
     // _items.add(observation['body']['data']);
   }
 
@@ -60,16 +79,11 @@ class BloodPressure {
       "meta": {
         "device_id": formData['device'],
         'performed_by': formData['performed_by'],
-        "created_at": DateFormat('d MMMM, y').format(DateTime.now())
+        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
       },
       "body": {
         "type": "blood_pressure",
-        "data": {
-          'arm': item.arm,
-          'systolic': item.systolic,
-          'diastolic': item.diastolic,
-          'pulse_rate': item.pulse,
-        },
+        "data": item,
         "comment": formData['comment'],
         'patient_id': Patient().getPatient()['uuid'],
       }
@@ -79,7 +93,7 @@ class BloodPressure {
   }
 
   /// Get all blood pressure items
-  List<BloodPressureItem> get items {
+  List get items {
     return [..._items];
   }
 

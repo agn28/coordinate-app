@@ -41,7 +41,6 @@ class BodyMeasurement {
       }
 
       if(!updated) {
-        print('hello');
         _bmItems.add(_prepareData(item));
       }
       
@@ -56,7 +55,7 @@ class BodyMeasurement {
       "meta": {
         "performed_by": "Md. Feroj Bepari",
         "device_id": item['device'],
-        "created_at": DateFormat('d MMMM, y').format(DateTime.now())
+        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
       },
       "body": {
         "type": "body_measurement",

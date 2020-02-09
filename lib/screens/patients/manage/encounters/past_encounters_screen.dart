@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/patients/manage/encounters/encounter_details_screen.dart';
 
@@ -44,7 +45,7 @@ class _PastEncountersState extends State<PastEncounters> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
                         Expanded(
-                          child: Text(assessment['data']['assessment_date'], style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+                          child: Text(Helpers().converDate(assessment['data']['assessment_date']), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
                         ),
                         Expanded(
                           child: Text(assessment['data']['type'], style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),

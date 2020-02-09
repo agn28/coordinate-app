@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
@@ -103,7 +104,7 @@ class _PatientRecordsState extends State<PatientRecords> {
                                 ],
                               ),
                               SizedBox(height: 20,),
-                              Text('Registered on Jan 5, 2020', style: TextStyle(color: Colors.white70, fontSize: 17, fontWeight: FontWeight.w400),),
+                              Text('Registered on ${Helpers().converDate(_patient["meta"]["created_at"])}', style: TextStyle(color: Colors.white70, fontSize: 17, fontWeight: FontWeight.w400),),
                               // Text('Registered on Jan 5, 2019', style: TextStyle(color: Colors.white70, fontSize: 17, fontWeight: FontWeight.w400),),
                             ],
                           ),
