@@ -2,12 +2,14 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:nhealth/configs/configs.dart';
 import 'dart:async';
 import 'dart:io';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
+import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/patients/register_patient_success_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import '../../custom-classes/custom_stepper.dart';
@@ -41,6 +43,7 @@ final contactHomePhoneController = TextEditingController();
 final contactEmailController = TextEditingController();
 final GlobalKey<FormState> _patientFormKey = new GlobalKey<FormState>();
 final GlobalKey<FormState> _contactFormKey = new GlobalKey<FormState>();
+bool isEditState = false;
 String selectedGender = 'male';
 List relationships = [
   'father',
@@ -54,13 +57,16 @@ List relationships = [
 int selectedRelation;
 
 class RegisterPatientScreen extends CupertinoPageRoute {
-  RegisterPatientScreen()
-      : super(builder: (BuildContext context) => new RegisterPatient());
+  bool isEdit = false;
+  RegisterPatientScreen({this.isEdit})
+      : super(builder: (BuildContext context) => new RegisterPatient(isEdit: isEdit,));
 
 }
 
 
 class RegisterPatient extends StatefulWidget {
+  final isEdit;
+  RegisterPatient({this.isEdit});
   @override
   _RegisterPatientState createState() => _RegisterPatientState();
 }
@@ -74,6 +80,49 @@ class _RegisterPatientState extends State<RegisterPatient> {
   @override
   void initState() {
     super.initState();
+    _prepareState();
+  }
+
+  _prepareState() {
+    isEditState = widget.isEdit;
+
+    if (isEditState != null) {
+      _fillFormData();
+    } else {
+      _clearForm();
+    }
+  }
+
+  _fillFormData() {
+    var patient = Patient().getPatient();
+    print(patient);
+    firstNameController.text = patient['data']['first_name'];
+    lastNameController.text = patient['data']['last_name'];
+    birthDateController.text = DateFormat('d').format(DateTime.parse(patient['data']['birth_date']));
+    birthMonthController.text = DateFormat('MM').format(DateTime.parse(patient['data']['birth_date']));
+    birthYearController.text = DateFormat('y').format(DateTime.parse(patient['data']['birth_date']));
+    districtController.text = patient['data']['address']['district'];
+    postalCodeController.text = patient['data']['address']['postal_code'];
+    townController.text = patient['data']['address']['town'];
+    villageController.text = patient['data']['address']['village'];
+    streetNameController.text = patient['data']['address']['street_name'];
+    mobilePhoneController.text = patient['data']['mobile'];
+    homePhoneController.text = patient['data']['phone'];
+    emailController.text = patient['data']['email'];
+    nidController.text = patient['data']['nid'];   
+    contactFirstNameController.text = patient['data']['contact_first_name'];
+    contactLastNameController.text = patient['data']['contact_last_name'];
+    contactRelationshipController.text = patient['data']['contact_relationship'];
+    contactDistrictController.text = patient['data']['contact_address']['contact_district'];
+    contactPostalCodeController.text = patient['data']['contact_address']['contact_postal_code'];
+    contactTownController.text = patient['data']['contact_address']['contact_town'];
+    contactVillageController.text = patient['data']['contact_address']['contact_village'];
+    contactStreetNameController.text = patient['data']['contact_address']['contact_street_name'];
+    contactMobilePhoneController.text = patient['data']['contact_mobile'];
+    contactHomePhoneController.text = patient['data']['contact_phone'];
+    contactEmailController.text = patient['data']['contact_email'];
+    selectedRelation = relationships.indexOf(patient['data']['contact_relationship']);
+
   }
 
   _clearForm() {
@@ -232,14 +281,15 @@ class _RegisterPatientState extends State<RegisterPatient> {
 
   _prepareFormData() {
     return {
-      'name': firstNameController.text + ' ' + lastNameController.text,
+      'first_name': firstNameController.text,
+      'last_name': lastNameController.text,
       'gender': selectedGender,
       'age': 26, //age needs to be calculated
       'birth_date': birthDateController.text,
       'birth_month': birthMonthController.text,
       'birth_year': birthYearController.text,
       'nid': nidController.text,
-      'registration_data': DateTime.now().toString(),
+      'registration_date': DateFormat('y-MM-dd').format(DateTime.now()),
       'address': {
         'district': districtController.text,
         'postal_code': postalCodeController.text,
@@ -756,9 +806,11 @@ class _AddPhotoState extends State<AddPhoto> {
           GestureDetector(
             onTap: () async {
               var formData = _RegisterPatientState()._prepareFormData();
-              await PatientController().create(formData);
-              _RegisterPatientState()._clearForm();
-              Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen());
+              var response = isEditState != null ? await PatientController().update(formData) : await PatientController().create(formData);
+              if (response == 'success') {
+                _RegisterPatientState()._clearForm();
+                Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen());
+              }
             },
             child: Container(
               width: double.infinity,
@@ -768,7 +820,7 @@ class _AddPhotoState extends State<AddPhoto> {
                 color: kPrimaryColor,
                 borderRadius: BorderRadius.circular(4)
               ),
-              child: Text("COMPLETE REGISTRATION", style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w400))
+              child: Text("${isEditState != null ? 'UPDATE PATIENT' : 'COMPLETE REGISTRATION'}", style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w400))
             ),
           ),
         ],

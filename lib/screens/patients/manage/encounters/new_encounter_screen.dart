@@ -96,13 +96,13 @@ class _NewEncounterState extends State<NewEncounter> {
                               child: Icon(Icons.perm_identity),
                             ),
                             SizedBox(width: 15,),
-                            Text(Patient().getPatient()['data']['name'], style: TextStyle(fontSize: 18))
+                            Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 18))
                           ],
                         ),
                       ),
                     ),
                     Expanded(
-                      child: Text('${Patient().getPatient()['data']['age']}Y ${Patient().getPatient()['data']['gender'].toUpperCase()}', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
+                      child: Text(Helpers().getPatientAgeAndGender(Patient().getPatient()), style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
                     ),
                     Expanded(
                       child: Text('PID: N-121933421', style: TextStyle(fontSize: 18))

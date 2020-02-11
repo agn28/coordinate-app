@@ -1,3 +1,4 @@
+import 'package:basic_utils/basic_utils.dart';
 import 'package:intl/intl.dart';
 import 'package:nhealth/models/assessment.dart';
 import 'package:nhealth/models/blood_pressure.dart';
@@ -51,5 +52,13 @@ class Helpers {
 
   converDate(date) {
     return date != null ? DateFormat("MMMM d, y").format(DateTime.parse(date)) : '';
+  }
+
+  getPatientName(patient) {
+    return '${patient['data']['first_name']} ${patient['data']['last_name']}';
+  }
+
+  getPatientAgeAndGender(patient) {
+    return '${patient["data"]["age"]}Y ${StringUtils.capitalize(patient["data"]["gender"])}';
   }
 }

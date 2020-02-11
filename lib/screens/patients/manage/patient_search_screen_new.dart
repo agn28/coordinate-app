@@ -14,7 +14,6 @@ import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/patients/manage/patient_records_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
-import 'package:nhealth/widgets/search_widget.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 
 
@@ -54,12 +53,17 @@ class _PatientSearchState extends State<PatientSearch> {
   }
 
   search(query) {
+    var modifiedPatients = [...allPatients].map((item)  {
+      item['data']['name'] = '${item['data']['first_name']} ${item['data']['last_name']}' ;
+      return item;
+    }).toList();
+
     setState(() {
-      patients = [...allPatients]
-          .where((item) => item['data']['name']
-          .toLowerCase()
-          .contains(query.toLowerCase()))
-          .toList();
+      patients = modifiedPatients
+        .where((item) => item['data']['name']
+        .toLowerCase()
+        .contains(query.toLowerCase()))
+        .toList();
     });
   }
 
@@ -237,7 +241,7 @@ class _PatientSearchState extends State<PatientSearch> {
                 child: Row(
                   children: <Widget>[
                     Expanded(
-                      child: Text(item['data']['name'],
+                      child: Text(item['data']['first_name'] + ' ' + item['data']['last_name'],
                         style: TextStyle(color: Colors.black87, fontSize: 18),
                       ),
                     ),
