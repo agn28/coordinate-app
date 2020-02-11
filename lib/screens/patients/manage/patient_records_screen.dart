@@ -12,6 +12,7 @@ import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.
 import 'package:nhealth/screens/patients/manage/encounters/past_encounters_screen.dart';
 import 'package:nhealth/screens/patients/manage/health_report/create_health_report_screen.dart';
 import 'package:nhealth/screens/patients/manage/health_report/past_health_report_screen.dart';
+import 'package:nhealth/screens/patients/register_patient_screen.dart';
 
 
 class PatientRecordsScreen extends CupertinoPageRoute {
@@ -47,6 +48,9 @@ class _PatientRecordsState extends State<PatientRecords> {
         iconTheme: IconThemeData(color: Colors.white),
         actions: <Widget>[
           GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(RegisterPatientScreen(isEdit: true));
+            },
             child: Container(
               margin: EdgeInsets.only(right: 30),
               child: Row(
@@ -92,11 +96,11 @@ class _PatientRecordsState extends State<PatientRecords> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               SizedBox(height: 20,),
-                              Text(_patient['data']['name'], style: TextStyle(color: Colors.white, fontSize: 21, fontWeight: FontWeight.w600),),
+                              Text(Helpers().getPatientName(_patient), style: TextStyle(color: Colors.white, fontSize: 21, fontWeight: FontWeight.w600),),
                               SizedBox(height: 15,),
                               Row(
                                 children: <Widget>[
-                                  Text('${_patient["data"]["age"]}Y ${_patient["data"]["gender"].toUpperCase()}', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400),),
+                                  Text(Helpers().getPatientAgeAndGender(_patient), style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400),),
                                   SizedBox(width: 10,),
                                   Text('NID: ${_patient["data"]["nid"]}', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400),),
                                   SizedBox(width: 10,),

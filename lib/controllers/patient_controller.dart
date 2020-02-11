@@ -32,6 +32,15 @@ class PatientController {
     return 'success';
   }
 
+  /// Create a new patient
+  /// [formData] is required as parameter.
+  update(formData) async {
+    final data = _prepareData(formData);
+    await PatientReposioryLocal().update(data);
+
+    return 'success';
+  }
+
   /// Prepare data to create a new patient.
   _prepareData(formData) {
     final age = Helpers().calculateAge(formData['birth_year'], formData['birth_month'], formData['birth_date']);

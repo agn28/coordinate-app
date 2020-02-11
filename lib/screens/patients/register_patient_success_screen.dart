@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/home_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.dart';
+import 'package:nhealth/screens/patients/manage/patient_records_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 
 
@@ -54,14 +56,14 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                   ),
                   SizedBox(height: 20,),
                   Container(
-                    child: Text(Patient().getPatient()['data']['name'], style: TextStyle(fontSize: 22),),
+                    child: Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 22),),
                   ),
                   SizedBox(height: 20,),
                   Container(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text('${Patient().getPatient()['data']['age']}Y ${Patient().getPatient()['data']['gender'].toUpperCase()}', style: TextStyle(fontSize: 18),),
+                        Text(Helpers().getPatientAgeAndGender(Patient().getPatient()), style: TextStyle(fontSize: 18),),
                         SizedBox(width: 30,),
                         Text('PID: N-1213244232', style: TextStyle(fontSize: 18),),
                       ],
@@ -86,7 +88,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                   SizedBox(height: 20,),
                   GestureDetector(
                     onTap: () {
-                      // Navigator.of(context).pushReplacement( RegisterPatientSuccessScreen());
+                      Navigator.of(context).pushReplacement(PatientRecordsScreen());
                     },
                     child: Container(
                       margin: EdgeInsets.symmetric(horizontal: 50),
