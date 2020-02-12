@@ -6,7 +6,7 @@ class PatientRepository {
 
   static create(data) async {
     await http.post(
-      localUrl + 'patients',
+      apiUrl + 'patients',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
