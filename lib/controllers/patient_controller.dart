@@ -3,6 +3,8 @@ import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/repositories/local/patient_repository_local.dart';
 import 'dart:convert';
 
+import 'package:nhealth/repositories/patient_repository.dart';
+
 class PatientController {
 
   /// Get all the patients
@@ -27,9 +29,10 @@ class PatientController {
   /// [formData] is required as parameter.
   create(formData) async {
     final data = _prepareData(formData);
-    await PatientReposioryLocal().create(data);
+    // await PatientReposioryLocal().create(data);
+    await PatientRepository().create(data);
 
-    return 'success';
+    return ;
   }
 
   /// Create a new patient

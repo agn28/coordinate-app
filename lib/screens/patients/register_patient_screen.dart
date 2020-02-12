@@ -289,6 +289,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
       'birth_month': birthMonthController.text,
       'birth_year': birthYearController.text,
       'nid': nidController.text,
+      'pid': 'PA-19284921',
       'registration_date': DateFormat('y-MM-dd').format(DateTime.now()),
       'address': {
         'district': districtController.text,
@@ -300,21 +301,22 @@ class _RegisterPatientState extends State<RegisterPatient> {
       'mobile': mobilePhoneController.text,
       'phone': homePhoneController.text,
       'email': emailController.text,
-
-      'contact_first_name': contactFirstNameController.text,
-      'contact_last_name': contactLastNameController.text,
-      'contact_relationship': selectedRelation != null ? relationships[selectedRelation] : '', //age needs to be calculated
-      'contact_address': {
-        'contact_district': contactDistrictController.text,
-        'contact_postal_code': contactPostalCodeController.text,
-        'contact_town': contactTownController.text,
-        'contact_village': contactVillageController.text,
-        'contact_street_name': contactStreetNameController.text,
+      'contact': {
+        'first_name': contactFirstNameController.text,
+        'last_name': contactLastNameController.text,
+        'relationship': selectedRelation != null ? relationships[selectedRelation] : '', 
+        'address': {
+          'district': contactDistrictController.text,
+          'postal_code': contactPostalCodeController.text,
+          'town': contactTownController.text,
+          'village': contactVillageController.text,
+          'street_name': contactStreetNameController.text,
+        },
+        'mobile': contactMobilePhoneController.text,
+        'phone': contactHomePhoneController.text,
+        'email': contactEmailController.text,
       },
-      'contact_mobile': contactMobilePhoneController.text,
-      'contact_phone': contactHomePhoneController.text,
-      'contact_email': contactEmailController.text,
-      
+
     };
   }
   

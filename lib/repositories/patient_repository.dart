@@ -4,7 +4,7 @@ import 'dart:convert';
 
 class PatientRepository {
 
-  static create(data) async {
+  create(data) async {
     await http.post(
       apiUrl + 'patients',
       headers: {
