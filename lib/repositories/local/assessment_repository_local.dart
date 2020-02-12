@@ -2,7 +2,10 @@ import 'package:nhealth/models/assessment.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
 import 'package:nhealth/models/body_measurement.dart';
+import 'package:nhealth/models/observation_concepts.dart';
+import 'package:nhealth/repositories/local/concept_manager_repository_local.dart';
 import 'package:nhealth/repositories/local/database_creator.dart';
+import 'package:nhealth/repositories/local/observation_concepts_repository_local.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:convert';
 
@@ -40,23 +43,42 @@ class AssessmentRepositoryLocal {
 
     _createAssessment(assessmentId, jsonEncode(data));
 
-    bloodPressures.forEach((item) {
+    bloodPressures.forEach((item,) async {
+      var codings = await _getCodings(item);
+      item['body']['data']['codings'] = codings;
       item['body']['assessment_id'] = assessmentId;
-      _createObservations(item);
+      await _createObservations(item);
     });
 
-    bloodTests.forEach((item) {
+    bloodTests.forEach((item) async {
+      var codings = await _getCodings(item);
+      item['body']['data']['codings'] = codings;
       item['body']['assessment_id'] = assessmentId;
-      _createObservations(item);
+      await _createObservations(item);
     });
 
-    bodyMeasurements.forEach((item) {
+    bodyMeasurements.forEach((item) async {
+      var codings = await _getCodings(item);
+      item['body']['data']['codings'] = codings;
       item['body']['assessment_id'] = assessmentId;
-      _createObservations(item);
+      await _createObservations(item);
     });
 
     return 'success';
     
+  }
+
+  _getCodings(item) async {
+    var type = item['body']['type'] == 'blood_pressure' ? item['body']['type'] : item['body']['data']['type'];
+    var observationConcept = await ObservationConceptsRepositoryLocal().getConceptByObservation(type);
+      if (observationConcept != null && observationConcept['concept_id'] != '' ) {
+        var concept = await ConceptManagerRepositoryLocal().getConceptById(observationConcept['concept_id']);
+        if (concept != null) {
+          return jsonDecode(concept['codings']);
+        }
+      } 
+
+      return {};
   }
 
   update(data) async {

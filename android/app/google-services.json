@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "838998568138",
+    "firebase_url": "https://concept-manager-dev.firebaseio.com",
+    "project_id": "concept-manager-dev",
+    "storage_bucket": "concept-manager-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:838998568138:android:c684243b4bf9251529d833",
+        "android_client_info": {
+          "package_name": "com.example.nhealth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "838998568138-rdf3o0vgcblvbil2pmdpgd1rpkruj04m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCF3w4P98Qld67--TMK_vLXoL_4C38BOFc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "838998568138-rdf3o0vgcblvbil2pmdpgd1rpkruj04m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
