@@ -100,8 +100,7 @@ class AuthScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 40,),
                   FlatButton(
-                    // onPressed: () => Navigator.of(context).push( ForgotPasswordScreen()),
-                    onPressed: () => ConceptManager().sync(),
+                    onPressed: () => Navigator.of(context).push( ForgotPasswordScreen()),
                     child: Text("Forgot Password?", style: TextStyle(color: Colors.white, fontSize: 19, fontWeight: FontWeight.w400),),
                   ),
                 ],
