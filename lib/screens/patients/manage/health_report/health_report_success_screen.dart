@@ -124,7 +124,7 @@ class HealthReportSuccess extends StatelessWidget {
 
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(HomeScreen());
+                      Navigator.push(context, MaterialPageRoute(builder: (ctx) => HomeScreen()));
                     },
                     child: Container(
                       // height: 190,

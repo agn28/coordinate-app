@@ -1,10 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:nhealth/concept-manager/concept_manager.dart';
+import 'package:nhealth/controllers/auth_controller.dart';
+import 'package:nhealth/custom-classes/custom_toast.dart';
+import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/screens/forgot_password_screen.dart';
 import '../constants/constants.dart';
 import 'home_screen.dart';
 
-class AuthScreen extends StatelessWidget {
+class AuthScreen extends StatefulWidget {
+  @override
+  _AuthScreenState createState() => _AuthScreenState();
+}
+
+class _AuthScreenState extends State<AuthScreen> {
+
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  bool _emailAutoValidate = false;
+  bool _passwordAutoValidate = false;
+  
+
+  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,53 +57,98 @@ class AuthScreen extends StatelessWidget {
                     child: Text('Login to Continue', style: TextStyle(color: Colors.white, fontSize: 35)),
                   ),
                   SizedBox(height: 60,),
-                  TextField(
-                    style: TextStyle(color: Colors.white, fontSize: 19.0,),
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(vertical: 22.0, horizontal: 20.0),
-                      prefixIcon: new Icon(
-                        Icons.email,
-                        color: Color(0xFF8fb1c9),
-                        size: 30,
-                      ),
-                      filled: true,
-                      fillColor: Color(0xFF004d84),
-                      border: new UnderlineInputBorder(
-                        borderSide: new BorderSide(width: 1, color: Colors.white),
-                      ),
-                      hintText: 'Email Address',
-                      hintStyle: TextStyle(color: kWhite70, fontSize: 18.0),
-                    ),
-                  ),
-                  // SizedBox(height: 5,),
-                  // Text('Please input a valid email address', style: TextStyle(color: kErroText, fontSize: 16)),
-                  SizedBox(height: 40,),
-                  TextField(
-                    obscureText: true,
-                    style: TextStyle(color: Colors.white, fontSize: 19.0),
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(vertical: 22.0, horizontal: 20.0),
-                      prefixIcon: new Icon(
-                        Icons.vpn_key,
-                        color: Color(0xFF8fb1c9),
-                        size: 30,
-                      ),
-                      suffixIcon: Icon(
-                        Icons.visibility,
-                        color: Color(0xFF8fb1c9)
-                      ),
-                      filled: true,
-                      fillColor: Color(0xFF004d84),
-                      border: new UnderlineInputBorder(
-                        borderSide: new BorderSide(width: 1, color: Colors.white),
-                      ),
-                      hintText: 'Password',
-                      hintStyle: TextStyle(color: kWhite70, fontSize: 18.0),
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: <Widget>[
+                        TextFormField(
+                          style: TextStyle(color: Colors.white, fontSize: 19.0,),
+                          controller: emailController,
+                          autovalidate: _emailAutoValidate,
+                          onChanged: (value) {
+                              setState(() => _emailAutoValidate = true);
+                          },
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Email is required';
+                            } else if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
+                              return 'This is not a valid email address';
+                            }
+
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            errorStyle: TextStyle(fontSize: 16.0, color: Color(0xFFFFB8B8)),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 22.0, horizontal: 20.0),
+                            prefixIcon: new Icon(
+                              Icons.email,
+                              color: Color(0xFF8fb1c9),
+                              size: 30,
+                            ),
+                            filled: true,
+                            fillColor: Color(0xFF004d84),
+                            border: new UnderlineInputBorder(
+                              borderSide: new BorderSide(width: 1, color: Colors.white),
+                            ),
+                            hintText: 'Email Address',
+                            hintStyle: TextStyle(color: kWhite70, fontSize: 18.0),
+                          ),
+                        ),
+                        // SizedBox(height: 5,),
+                        // Text('Please input a valid email address', style: TextStyle(color: kErroText, fontSize: 16)),
+                        SizedBox(height: 40,),
+                        TextFormField(
+                          obscureText: true,
+                          controller: passwordController,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Password is required';
+                            }
+                            return null;
+                          },
+                          autovalidate: _passwordAutoValidate,
+                          onChanged: (value) {
+                              setState(() => _passwordAutoValidate = true);
+                          },
+                          style: TextStyle(color: Colors.white, fontSize: 19.0),
+                          decoration: InputDecoration(
+                            errorStyle: TextStyle(fontSize: 16.0, color: Color(0xFFFFB8B8)),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 22.0, horizontal: 20.0),
+                            prefixIcon: new Icon(
+                              Icons.vpn_key,
+                              color: Color(0xFF8fb1c9),
+                              size: 30,
+                            ),
+                            suffixIcon: Icon(
+                              Icons.visibility,
+                              color: Color(0xFF8fb1c9)
+                            ),
+                            filled: true,
+                            fillColor: Color(0xFF004d84),
+                            border: new UnderlineInputBorder(
+                              borderSide: new BorderSide(width: 1, color: Colors.white),
+                            ),
+                            hintText: 'Password',
+                            hintStyle: TextStyle(color: kWhite70, fontSize: 18.0),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(height: 40,),
                   GestureDetector(
-                    onTap: () => Navigator.of(context).pushReplacement( HomeScreen()),
+                    onTap: () async {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      if (_formKey.currentState.validate()) {
+                        var response = await AuthController().login(emailController.text, passwordController.text);
+                        if (response == 'error') {
+                          return Toast.show('Username or password is not correct', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+                        }
+
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => HomeScreen()));
+                      }
+                      
+                    },
                     child: Container(
                       width: double.infinity,
                       height: 62.0,

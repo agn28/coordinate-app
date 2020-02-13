@@ -110,18 +110,18 @@ class _RegisterPatientState extends State<RegisterPatient> {
     homePhoneController.text = patient['data']['phone'];
     emailController.text = patient['data']['email'];
     nidController.text = patient['data']['nid'];   
-    contactFirstNameController.text = patient['data']['contact_first_name'];
-    contactLastNameController.text = patient['data']['contact_last_name'];
-    contactRelationshipController.text = patient['data']['contact_relationship'];
-    contactDistrictController.text = patient['data']['contact_address']['contact_district'];
-    contactPostalCodeController.text = patient['data']['contact_address']['contact_postal_code'];
-    contactTownController.text = patient['data']['contact_address']['contact_town'];
-    contactVillageController.text = patient['data']['contact_address']['contact_village'];
-    contactStreetNameController.text = patient['data']['contact_address']['contact_street_name'];
-    contactMobilePhoneController.text = patient['data']['contact_mobile'];
-    contactHomePhoneController.text = patient['data']['contact_phone'];
-    contactEmailController.text = patient['data']['contact_email'];
-    selectedRelation = relationships.indexOf(patient['data']['contact_relationship']);
+    contactFirstNameController.text = patient['data']['contact']['first_name'];
+    contactLastNameController.text = patient['data']['contact']['last_name'];
+    contactRelationshipController.text = patient['data']['contact']['relationship'];
+    contactDistrictController.text = patient['data']['contact']['address']['district'];
+    contactPostalCodeController.text = patient['data']['contact']['address']['postal_code'];
+    contactTownController.text = patient['data']['contact']['address']['town'];
+    contactVillageController.text = patient['data']['contact']['address']['village'];
+    contactStreetNameController.text = patient['data']['contact']['address']['street_name'];
+    contactMobilePhoneController.text = patient['data']['contact']['mobile'];
+    contactHomePhoneController.text = patient['data']['contact']['phone'];
+    contactEmailController.text = patient['data']['contact']['email'];
+    selectedRelation = relationships.indexOf(patient['data']['contact']['relationship']);
 
   }
 
