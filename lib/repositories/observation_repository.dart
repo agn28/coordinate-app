@@ -2,12 +2,12 @@ import 'package:http/http.dart' as http;
 import '../constants/constants.dart';
 import 'dart:convert';
 
-class PatientRepository {
+class ObservationRepository {
 
   create(data) async {
-
+    
     await http.post(
-      apiUrl + 'patients',
+      apiUrl + 'observations',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'

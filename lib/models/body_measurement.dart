@@ -16,7 +16,7 @@ class BodyMeasurement {
     _items.add({
       'type': convertedType,
       'unit': unit,
-      'value': value,
+      'value': int.parse(value),
       'comment': comment,
       'device': device
     });

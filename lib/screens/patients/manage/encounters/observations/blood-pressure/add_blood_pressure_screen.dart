@@ -458,7 +458,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                                                 Navigator.of(context).pop();
                                                                 var reason = selectedRightArmReason == 'other' ? otherReasonController.text : selectedRightArmReason;
                                                                 setState(() {
-                                                                  BloodPressure().addItem(selectedArm, double.parse(systolicController.text), double.parse(diastolicController.text), double.parse(pulseController.text), reason);
+                                                                  BloodPressure().addItem(selectedArm, int.parse(systolicController.text), int.parse(diastolicController.text), int.parse(pulseController.text), reason);
                                                                 });
                                                                 getBloodPressures();
                                                                 _clearDialogForm();

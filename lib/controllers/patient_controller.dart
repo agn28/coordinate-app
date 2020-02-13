@@ -3,6 +3,8 @@ import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/repositories/local/patient_repository_local.dart';
 import 'dart:convert';
 
+import 'package:nhealth/repositories/patient_repository.dart';
+
 class PatientController {
 
   /// Get all the patients

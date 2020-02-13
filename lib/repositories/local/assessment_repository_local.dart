@@ -2,10 +2,11 @@ import 'package:nhealth/models/assessment.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
 import 'package:nhealth/models/body_measurement.dart';
-import 'package:nhealth/models/observation_concepts.dart';
+import 'package:nhealth/repositories/assessment_repository.dart';
 import 'package:nhealth/repositories/local/concept_manager_repository_local.dart';
 import 'package:nhealth/repositories/local/database_creator.dart';
 import 'package:nhealth/repositories/local/observation_concepts_repository_local.dart';
+import 'package:nhealth/repositories/observation_repository.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:convert';
 
@@ -24,14 +25,12 @@ class AssessmentRepositoryLocal {
     final sqlObservations = '''SELECT * FROM ${DatabaseCreator.observationTable}''';
     final observations = await db.rawQuery(sqlObservations);
 
-    print(observations.length);
     return observations;
   }
 
   /// Create an assessment with observations.
   /// observations [data] is required as parameter.
   create(data) {
-    print('create');
     var assessmentId = Uuid().v4();
     var bloodPressures = BloodPressure().bpItems;
     var bloodTests = BloodTest().btItems;
@@ -41,7 +40,7 @@ class AssessmentRepositoryLocal {
       return 'No observations added';
     }
 
-    _createAssessment(assessmentId, jsonEncode(data));
+    _createAssessment(assessmentId, data);
 
     bloodPressures.forEach((item,) async {
       var codings = await _getCodings(item);
@@ -141,6 +140,15 @@ class AssessmentRepositoryLocal {
     List<dynamic> params = [id, jsonEncode(data), 'not synced'];
     final result = await db.rawInsert(sql, params);
     DatabaseCreator.databaseLog('Add observation', sql, null, result, params);
+
+    print('observation controller');
+    Map<String, dynamic> apiData = {
+      'id': id
+    };
+
+    apiData.addAll(data);
+
+    ObservationRepository().create(apiData);
   }
 
   /// Create assessment.
@@ -153,9 +161,17 @@ class AssessmentRepositoryLocal {
       status
     )
     VALUES (?,?,?)''';
-    List<dynamic> params = [id, data, 'not synced'];
+    List<dynamic> params = [id, jsonEncode(data), 'not synced'];
     final result = await db.rawInsert(sql, params);
     DatabaseCreator.databaseLog('Add assessment', sql, null, result, params);
+
+    Map<String, dynamic> apiData = {
+      'id': id
+    };
+
+    apiData.addAll(data);
+
+    AssessmentRepository().create(apiData);
   }
 
   /// Create assessment.

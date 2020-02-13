@@ -22,7 +22,7 @@ class BloodPressure {
 
   /// Add blood pressure to variable for future use
   /// [arm], [systolic], [diastolic], [pulse] are required as parameters.
-  addItem(String arm, double systolic, double diastolic, double pulse, String rightArmReason ) {
+  addItem(String arm, int systolic, int diastolic, int pulse, String rightArmReason ) {
     
     if (arm == 'right') {
       _items.add({
