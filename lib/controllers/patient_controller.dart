@@ -29,10 +29,9 @@ class PatientController {
   /// [formData] is required as parameter.
   create(formData) async {
     final data = _prepareData(formData);
-    // await PatientReposioryLocal().create(data);
-    await PatientRepository().create(data);
+    await PatientReposioryLocal().create(data);
 
-    return ;
+    return 'success';
   }
 
   /// Create a new patient

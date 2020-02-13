@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/repositories/patient_repository.dart';
 
 import './database_creator.dart';
 import 'package:uuid/uuid.dart';
@@ -35,6 +36,10 @@ class PatientReposioryLocal {
       'data': data['body'],
       'meta': data['meta']
     };
+
+    data['id'] = uuid;
+
+    PatientRepository().create(data);
 
     await Patient().setPatient(patient);
     DatabaseCreator.databaseLog('Add patient', sql, null, result, params);
