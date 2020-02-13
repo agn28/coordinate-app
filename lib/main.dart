@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/concept-manager/concept_manager.dart';
 
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/observation_concepts.dart';
 import 'package:nhealth/repositories/local/observation_concepts_repository_local.dart';
+import 'package:nhealth/screens/home_screen.dart';
 import './repositories/local/database_creator.dart';
 import './screens/auth_screen.dart';
 
@@ -31,7 +33,31 @@ class MyApp extends StatelessWidget {
         primaryColor: kPrimaryColor,
         backgroundColor: Colors.white
       ),
-      home: AuthScreen(),
+      home: CheckAuth(),
+    );
+  }
+
+  Future checkUserAndNavigate(BuildContext context) async {
+    var auth = await Auth().getAuth();
+    print(auth['status']);
+    return  false;    
+  }
+}
+
+class CheckAuth extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    Auth().getStorageAuth().then((success) {
+      print(success);
+      if (success['status']) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => HomeScreen()));
+      } else {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+      }
+    });
+
+    return Center(
+      child: CircularProgressIndicator(),
     );
   }
 }

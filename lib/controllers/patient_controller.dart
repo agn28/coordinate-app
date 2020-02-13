@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:nhealth/helpers/helpers.dart';
+import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/repositories/local/patient_repository_local.dart';
 import 'dart:convert';
 
@@ -31,7 +32,7 @@ class PatientController {
     final data = _prepareData(formData);
     await PatientReposioryLocal().create(data);
 
-    return 'success';
+    return ;
   }
 
   /// Create a new patient
@@ -55,7 +56,7 @@ class PatientController {
     
     var data = {
       "meta": {
-        "performed_by": "9b900fa6-209e-11ea-978f-2e728ce88125",
+        "performed_by": Auth().getAuth()['uid'],
         "created_at": DateFormat('y-MM-dd').format(DateTime.now())
       },
       "body": formData

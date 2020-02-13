@@ -218,7 +218,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                   SizedBox(height: 20,),
 
                   GestureDetector(
-                    onTap: () => Navigator.of(context).pushReplacement(HomeScreen()),
+                    onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => HomeScreen())),
                     child: Container(
                       // height: 190,
                       width: double.infinity,

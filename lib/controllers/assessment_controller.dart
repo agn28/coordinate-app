@@ -1,5 +1,6 @@
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/assessment.dart';
+import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
 import 'package:nhealth/models/body_measurement.dart';
@@ -122,7 +123,7 @@ class AssessmentController {
   _prepareData(type, comment) {
     var data = {
       "meta": {
-        "collected_by": "8vLsBJkEOGOQyyLXQ2vZzycmqQX2",
+        "collected_by": Auth().getAuth()['uid'],
         "start_time": "17 December, 2019 12:00",
         "end_time": "17 December, 2019 12:05",
         "created_at": DateFormat('y-MM-dd').format(DateTime.now())
@@ -130,7 +131,7 @@ class AssessmentController {
       "body": {
         "type": type,
         "comment": comment,
-        "performed_by": "Feroj Bepari",
+        "performed_by": Auth().getAuth()['name'],
         "assessment_date": DateFormat('y-MM-dd').format(DateTime.now()),
         "patient_id": Patient().getPatient()['uuid']
       }

@@ -2,19 +2,33 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_search_screen_new.dart';
 import 'package:nhealth/screens/settings/settings_screen.dart';
 import 'package:nhealth/screens/work-list/work_list_search_screen_new.dart';
 import './patients/register_patient_screen.dart';
 
 
-class HomeScreen extends CupertinoPageRoute {
-  HomeScreen()
-      : super(builder: (BuildContext context) => new Home());
-
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeState createState() => _HomeState();
 }
-class Home extends StatelessWidget {
+
+class _HomeState extends State<HomeScreen> {
+  String userName = '';
+  @override
+  initState() {
+    super.initState();
+    _getAuthData();
+  }
+
+  _getAuthData() {
+    setState(() {
+      userName = Auth().getAuth()['name'];
+    });
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -51,8 +65,8 @@ class Home extends StatelessWidget {
                     child: Icon(Icons.perm_identity, size: 40, color: Colors.black54,),
                   ),
                   SizedBox(height: 30,),
-                  Text('Rokeya Khatun', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
-                  Text('Nurse', style: TextStyle(fontSize: 17, height: 1.8),),
+                  Text(userName, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
+                  // Text('Nurse', style: TextStyle(fontSize: 17, height: 1.8),),
                   GestureDetector(
                     onTap: () {},
                     child: Text('Go to Profile', style: TextStyle(fontSize: 17, height: 2.5, color: kPrimaryColor),),
@@ -150,8 +164,9 @@ class Home extends StatelessWidget {
                   Container(
                     height: 50,
                     child: FlatButton(
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+                      onPressed: () async {
+                        await Auth().logout();
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
                       },
                       child: Row(
                         children: <Widget>[
@@ -203,9 +218,9 @@ class Home extends StatelessWidget {
                         SizedBox(height: 20,),
                         Text('Welcome', style: TextStyle(color: Colors.white70, fontSize: 21),),
                         SizedBox(height: 15,),
-                        Text('Rokeya Khatun', style: TextStyle(color: Colors.white, fontSize: 26),),
-                        SizedBox(height: 15,),
-                        Text('Nurse', style: TextStyle(color: Colors.white70, fontSize: 16),),
+                        Text(userName, style: TextStyle(color: Colors.white, fontSize: 26),),
+                        // SizedBox(height: 15,),
+                        // Text('Nurse', style: TextStyle(color: Colors.white70, fontSize: 16),),
                         SizedBox(height: 40,),
                         Text('What would you like to do?', style: TextStyle(color: Colors.white, fontSize: 36),)
                       ],
