@@ -8,22 +8,18 @@ var localAuth = {};
 class Auth {
   setAuth(auth) async {
     final prefs = await SharedPreferences.getInstance();
-    print(jsonEncode(auth));
     localAuth = auth;
     await prefs.setString('auth', jsonEncode(auth));
 
   }
 
   getAuth() {
-    print(localAuth);
     return localAuth;
   }
 
   getStorageAuth() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print('auth');
     var auth = prefs.getString('auth');
-    print(auth);
 
     if (auth == null) {
       return {

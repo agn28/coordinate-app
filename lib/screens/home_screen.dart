@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_search_screen_new.dart';
 import 'package:nhealth/screens/settings/settings_screen.dart';
 import 'package:nhealth/screens/work-list/work_list_search_screen_new.dart';
 import './patients/register_patient_screen.dart';
+import 'package:nhealth/app_localizations.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -27,6 +27,7 @@ class _HomeState extends State<HomeScreen> {
   _getAuthData() {
     setState(() {
       userName = Auth().getAuth()['name'];
+      userName = "Hello";
     });
   }
   @override
@@ -34,7 +35,7 @@ class _HomeState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: new AppBar(
-        title: new Text("Home", style: TextStyle(color: Colors.white, fontSize: 22),),
+        title: new Text(AppLocalizations.of(context).translate('home'), style: TextStyle(color: Colors.white, fontSize: 22),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -69,7 +70,7 @@ class _HomeState extends State<HomeScreen> {
                   // Text('Nurse', style: TextStyle(fontSize: 17, height: 1.8),),
                   GestureDetector(
                     onTap: () {},
-                    child: Text('Go to Profile', style: TextStyle(fontSize: 17, height: 2.5, color: kPrimaryColor),),
+                    child: Text(AppLocalizations.of(context).translate('gotoProfile'), style: TextStyle(fontSize: 17, height: 2.5, color: kPrimaryColor),),
                   )
                 ],
               )
@@ -96,7 +97,7 @@ class _HomeState extends State<HomeScreen> {
                         children: <Widget>[
                           Icon(Icons.home, color: kPrimaryColor,),
                           SizedBox(width: 20,),
-                          Text('Home',style: TextStyle( fontSize: 18,fontWeight: FontWeight.w500, color: kPrimaryColor))
+                          Text(AppLocalizations.of(context).translate('home'),style: TextStyle( fontSize: 18,fontWeight: FontWeight.w500, color: kPrimaryColor))
                         ],
                       )
                     )
@@ -111,7 +112,7 @@ class _HomeState extends State<HomeScreen> {
                         children: <Widget>[
                           Icon(Icons.supervisor_account, color: Colors.black54,),
                           SizedBox(width: 20,),
-                          Text('Patients',style: TextStyle( fontSize: 18,fontWeight: FontWeight.w400))
+                          Text(AppLocalizations.of(context).translate('patients'),style: TextStyle( fontSize: 18,fontWeight: FontWeight.w400))
                         ],
                       )
                     )
@@ -126,7 +127,7 @@ class _HomeState extends State<HomeScreen> {
                         children: <Widget>[
                           Icon(Icons.list, color: Colors.black54,),
                           SizedBox(width: 20,),
-                          Text('Work List',style: TextStyle( fontSize: 18,fontWeight: FontWeight.w400))
+                          Text(AppLocalizations.of(context).translate('workList'),style: TextStyle( fontSize: 18,fontWeight: FontWeight.w400))
                         ],
                       )
                     )
@@ -156,7 +157,7 @@ class _HomeState extends State<HomeScreen> {
                         children: <Widget>[
                           Icon(Icons.settings, color: Colors.black54),
                           SizedBox(width: 20,),
-                          Text('Settings',style: TextStyle( fontSize: 18, fontWeight: FontWeight.w400))
+                          Text(AppLocalizations.of(context).translate('settings'),style: TextStyle( fontSize: 18, fontWeight: FontWeight.w400))
                         ],
                       )
                     )
@@ -172,7 +173,7 @@ class _HomeState extends State<HomeScreen> {
                         children: <Widget>[
                           Icon(Icons.exit_to_app, color: Colors.black54),
                           SizedBox(width: 20,),
-                          Text('Logout', style: TextStyle( fontSize: 18, fontWeight: FontWeight.w400))
+                          Text(AppLocalizations.of(context).translate('logout'), style: TextStyle( fontSize: 18, fontWeight: FontWeight.w400))
                         ],
                       )
                     )
@@ -216,13 +217,13 @@ class _HomeState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         SizedBox(height: 20,),
-                        Text('Welcome', style: TextStyle(color: Colors.white70, fontSize: 21),),
+                        Text(AppLocalizations.of(context).translate('welcome'), style: TextStyle(color: Colors.white70, fontSize: 21),),
                         SizedBox(height: 15,),
                         Text(userName, style: TextStyle(color: Colors.white, fontSize: 26),),
                         // SizedBox(height: 15,),
                         // Text('Nurse', style: TextStyle(color: Colors.white70, fontSize: 16),),
                         SizedBox(height: 40,),
-                        Text('What would you like to do?', style: TextStyle(color: Colors.white, fontSize: 36),)
+                        Text(AppLocalizations.of(context).translate('homeIntro'), style: TextStyle(color: Colors.white, fontSize: 36),)
                       ],
                     ),
                   ),
@@ -248,7 +249,6 @@ class _HomeState extends State<HomeScreen> {
                                   Image.asset('assets/images/icons/manage_patient.png'),
                                   FlatButton(
                                     onPressed: () {
-                                      print('hello');
                                       // Navigator.of(context).push(PatientSearchScreenNew());
                                     },
                                     child: Row(
@@ -256,7 +256,7 @@ class _HomeState extends State<HomeScreen> {
                                       children: <Widget>[
                                         Expanded(
                                           flex: 4,
-                                          child: Text('Manage an Existing Patients',textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
+                                          child: Text(AppLocalizations.of(context).translate('manageExistingPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
                                         ),
                                         Expanded(
                                           child: Container(
@@ -295,7 +295,7 @@ class _HomeState extends State<HomeScreen> {
                                       children: <Widget>[
                                         Expanded(
                                           flex: 3,
-                                          child: Text('Register a New Patient',textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
+                                          child: Text(AppLocalizations.of(context).translate('registerNewPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
                                         ),
                                         Expanded(
                                           child: Container(

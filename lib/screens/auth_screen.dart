@@ -6,6 +6,7 @@ import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/screens/forgot_password_screen.dart';
 import '../constants/constants.dart';
 import 'home_screen.dart';
+import 'package:nhealth/app_localizations.dart';
 
 class AuthScreen extends StatefulWidget {
   @override
@@ -54,7 +55,8 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                   SizedBox(height: 70,),
                   Container(
-                    child: Text('Login to Continue', style: TextStyle(color: Colors.white, fontSize: 35)),
+                    child: Text('Welcome', style: TextStyle(color: Colors.white, fontSize: 35)),
+                    // child: Text(AppLocalizations.of(context).translate('welcome'), style: TextStyle(color: Colors.white, fontSize: 35)),
                   ),
                   SizedBox(height: 60,),
                   Form(
