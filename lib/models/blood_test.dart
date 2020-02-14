@@ -16,7 +16,7 @@ class BloodTest {
     _items.add({
       'type': convertedType,
       'unit': unit,
-      'value': int.parse(value),
+      'value': double.parse(value),
       'comment': comment,
       'device': device
     });

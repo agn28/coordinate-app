@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 //urls
-const String apiUrl = 'http://2fc08fe9.ngrok.io/api/v1/';
+const String apiUrl = 'http://983fe7f9.ngrok.io/api/v1/';
 
 const kTextInputColorGrey = Color(0xFFE5E5E5);
 const kPrimaryColor = Color(0xFF01579B);

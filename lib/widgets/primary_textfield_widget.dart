@@ -83,7 +83,7 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
       limit = 4;
     }
 
-    return <TextInputFormatter>[WhitelistingTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(limit)];
+    return <TextInputFormatter>[LengthLimitingTextInputFormatter(limit)];
   }
 
   _validateMobile(value) {

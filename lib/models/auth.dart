@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 var localAuth = {};
@@ -8,14 +9,12 @@ var localAuth = {};
 class Auth {
   setAuth(auth) async {
     final prefs = await SharedPreferences.getInstance();
-    print(jsonEncode(auth));
     localAuth = auth;
     await prefs.setString('auth', jsonEncode(auth));
 
   }
 
   getAuth() {
-    print(localAuth);
     return localAuth;
   }
 
@@ -23,7 +22,6 @@ class Auth {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     print('auth');
     var auth = prefs.getString('auth');
-    print(auth);
 
     if (auth == null) {
       return {
@@ -32,8 +30,11 @@ class Auth {
     }
 
     var authData = jsonDecode(auth);
-    
 
+    print(authData['expirationTime']);
+    // print(DateTime.parse('Fri, 14 Feb 2020 09:35:32'));
+    localAuth = authData;
+    
     return {
       'status': true,
       'id': authData['uid'],

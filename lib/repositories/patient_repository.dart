@@ -8,7 +8,8 @@ class PatientRepository {
   create(data) async {
     print('patient created');
     print(data);
-    var token = Auth().getAuth()['accessToken'] ;
+    var authData = await Auth().getStorageAuth() ;
+    var token = authData['accessToken'];
     await http.post(
       apiUrl + 'patients',
       headers: {
