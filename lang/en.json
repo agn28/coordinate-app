@@ -1,0 +1,13 @@
+{
+  "welcome": "Welcome",
+  "home": "Home",
+  "homeIntro": "What would you like to do?",
+  "manageExistingPatient": "Manage an Existing Patients",
+  "registerNewPatient": "Register a New Patient",
+  
+  "gotoProfile": "Go to Profile",
+  "patients": "Patients",
+  "workList": "Work List",
+  "settings": "Settings",
+  "logout": "Logout"
+}

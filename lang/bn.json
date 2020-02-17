@@ -1,0 +1,13 @@
+{
+  "welcome": "স্বাগতম",
+  "home": "হোম",
+  "homeIntro": "আপনি কি করতে চান?",
+  "manageExistingPatient": "বিদ্যমান রোগীদের পরিচালনা করুন",
+  "registerNewPatient": "নতুন রোগী নিবন্ধন করুন",
+
+  "gotoProfile": "প্রোফাইলে যান",
+  "patients": "রোগী",
+  "workList": "ওয়ার্ক লিস্ট",
+  "settings": "সেটিংস",
+  "logout": "লগাউট"
+}
