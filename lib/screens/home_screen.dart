@@ -24,10 +24,10 @@ class _HomeState extends State<HomeScreen> {
     _getAuthData();
   }
 
-  _getAuthData() {
+  _getAuthData() async {
+    var data = await Auth().getStorageAuth();
     setState(() {
-      userName = Auth().getAuth()['name'];
-      userName = "Hello";
+      userName = data['name'];
     });
   }
   @override

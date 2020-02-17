@@ -32,7 +32,7 @@ class PatientController {
     final data = _prepareData(formData);
     await PatientReposioryLocal().create(data);
 
-    return ;
+    return 'success';
   }
 
   /// Create a new patient

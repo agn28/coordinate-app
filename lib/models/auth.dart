@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 var localAuth = {};
@@ -28,8 +29,11 @@ class Auth {
     }
 
     var authData = jsonDecode(auth);
-    
 
+    print(authData['expirationTime']);
+    // print(DateTime.parse('Fri, 14 Feb 2020 09:35:32'));
+    localAuth = authData;
+    
     return {
       'status': true,
       'id': authData['uid'],

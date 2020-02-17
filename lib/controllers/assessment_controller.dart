@@ -107,7 +107,7 @@ class AssessmentController {
     var data = {
       "meta": Assessment().getSelectedAssessment()['meta'],
       "body": {
-        "type": type,
+        "type": type == 'In-clinic Screening' ? 'in-clinic' : 'visit',
         "comment": comment,
         "performed_by": Assessment().getSelectedAssessment()['data']['performed_by'],
         "assessment_date": Assessment().getSelectedAssessment()['data']['assessment_date'],
@@ -129,7 +129,7 @@ class AssessmentController {
         "created_at": DateFormat('y-MM-dd').format(DateTime.now())
       },
       "body": {
-        "type": type,
+        "type": type == 'In-clinic Screening' ? 'in-clinic' : 'visit',
         "comment": comment,
         "performed_by": Auth().getAuth()['name'],
         "assessment_date": DateFormat('y-MM-dd').format(DateTime.now()),
