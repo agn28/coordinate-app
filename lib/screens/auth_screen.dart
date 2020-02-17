@@ -30,7 +30,9 @@ class _AuthScreenState extends State<AuthScreen> {
       backgroundColor: kPrimaryColor,
       resizeToAvoidBottomInset: false,
 
-      body: Column(
+      body:  Stack(
+      children: <Widget>[
+        Column(
         // mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
