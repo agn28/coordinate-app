@@ -4,6 +4,7 @@ import 'package:nhealth/models/assessment.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
 import 'package:nhealth/models/body_measurement.dart';
+import 'package:nhealth/models/questionnaire.dart';
 
 class Helpers {
 
@@ -43,6 +44,7 @@ class Helpers {
     BloodPressure().clearItems();
     BloodTest().clearItems();
     BodyMeasurement().clearItems();
+    Questionnaire().clearItems();
   }
 
   /// Clear all added assessment items from local variable.

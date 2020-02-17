@@ -15,7 +15,6 @@ class AuthController {
     var response = await AuthRepository().login(email, password);
 
     if (response['errors'] == null) {
-      print(response);
       if (response['message'] != null) {
         return 'error';
       }

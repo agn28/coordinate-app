@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/custom-classes/custom_stepper.dart';
+import 'package:nhealth/helpers/helpers.dart';
+import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/questionnaires_screen.dart';
@@ -408,7 +410,6 @@ class _MedicationListState extends State<MedicationList> {
       selectedDiseases.indexOf(item) == -1 ? _checkValue[item] = false : _checkValue[item] = true;
     });
 
-    print(_checkValue);
   }
 
   _updateCheckBox(value, index) {
@@ -541,13 +542,13 @@ _getPatientDetails() {
                   child: Icon(Icons.perm_identity),
                 ),
                 SizedBox(width: 15,),
-                Text('Jahanara', style: TextStyle(fontSize: 18))
+                Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 18))
               ],
             ),
           ),
         ),
         Expanded(
-          child: Text('31Y Female', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
+          child: Text(Helpers().getPatientAgeAndGender(Patient().getPatient()), style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
         ),
         Expanded(
           child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))

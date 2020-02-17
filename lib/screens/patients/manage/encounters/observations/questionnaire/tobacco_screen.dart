@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/custom-classes/custom_stepper.dart';
+import 'package:nhealth/helpers/helpers.dart';
+import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/questionnaires_screen.dart';
 
@@ -111,7 +113,6 @@ class _TobaccoState extends State<Tobacco> {
                 onPressed: () {
                   setState(() {
                     _currentStep = _currentStep + 1;
-                    print(_questions);
                   });
                 },
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -124,8 +125,6 @@ class _TobaccoState extends State<Tobacco> {
                 ),
               ) : FlatButton(
                 onPressed: () async {
-                  // print(_secondQuestionOption);
-                  
                   var answers = [];
                   answers.add(_questions['items'][0]['options'][_firstQuestionOption]);
                   answers.add(_questions['items'][1]['options'][_secondQuestionOption]);
@@ -498,11 +497,9 @@ class _CircleOptionState extends State<CircleOption> {
         ),
         child: GestureDetector(
           onTap: () {
-            // _ThirdQuestionState()._changeOption(value);
             setState(() {
               selectedOption = widget.value;
             });
-            print(selectedOption);
           },
           child: CircleAvatar(
             backgroundColor: selectedOption == widget.value ? Color(0xFFE1F5FE) : Colors.transparent,
@@ -539,13 +536,13 @@ _getPatientDetails() {
                   child: Icon(Icons.perm_identity),
                 ),
                 SizedBox(width: 15,),
-                Text('Jahanara', style: TextStyle(fontSize: 18))
+                Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 18))
               ],
             ),
           ),
         ),
         Expanded(
-          child: Text('31Y Female', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
+          child: Text(Helpers().getPatientAgeAndGender(Patient().getPatient()), style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
         ),
         Expanded(
           child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))

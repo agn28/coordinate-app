@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/body_measurement.dart';
+import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/alcohol_screen.dart';
@@ -78,13 +80,13 @@ class _QuestionnairesState extends State<Questionnaires> {
                             child: Icon(Icons.perm_identity),
                           ),
                           SizedBox(width: 15,),
-                          Text('Jahanara Begum', style: TextStyle(fontSize: 18))
+                          Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 18))
                         ],
                       ),
                     ),
                   ),
                   Expanded(
-                    child: Text('31Y Female', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
+                    child: Text(Helpers().getPatientAgeAndGender(Patient().getPatient()), style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
                   ),
                   Expanded(
                     child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
@@ -212,8 +214,8 @@ class _QuestionnairesState extends State<Questionnaires> {
                   borderRadius: BorderRadius.circular(4)
                 ),
                 child: FlatButton(
-                  onPressed: () async {
-                    
+                  onPressed: () {
+                    Navigator.of(context).pop();
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: Text('SAVE', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
@@ -245,6 +247,7 @@ class EncounnterStepsState extends State<EncounnterSteps> {
   @override
   void initState() {
     super.initState();
+    setStatus();
   }
 
   setStatus() {
@@ -255,7 +258,6 @@ class EncounnterStepsState extends State<EncounnterSteps> {
   Widget build(BuildContext context) {
     return FlatButton(
       onPressed: () {
-        print(widget.text);
         if (widget.text.toString() == 'Tobacco') {
           Navigator.of(context).push(TobaccoScreen(parent: this));
         } else if (widget.text.toString() == 'Alcohol') {

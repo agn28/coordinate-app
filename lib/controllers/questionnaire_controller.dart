@@ -6,7 +6,6 @@ class QuestionnaireController {
   create(type, answers) {
     var questions = Questionnaire().questions[type];
     var data = [];
-    print(answers);
     return;
     
     questions['items'].forEach((item) {

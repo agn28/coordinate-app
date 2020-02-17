@@ -36,19 +36,12 @@ class MyApp extends StatelessWidget {
       home: CheckAuth(),
     );
   }
-
-  Future checkUserAndNavigate(BuildContext context) async {
-    var auth = await Auth().getAuth();
-    print(auth['status']);
-    return  false;    
-  }
 }
 
 class CheckAuth extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Auth().getStorageAuth().then((success) {
-      print(success);
       if (success['status']) {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => HomeScreen()));
       } else {

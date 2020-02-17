@@ -41,9 +41,6 @@ class BloodPressure {
       });
     }
 
-    print(items);
-
-    
     return 'success';
   }
 

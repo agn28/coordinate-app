@@ -64,7 +64,6 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
   }
 
   _changeArm(val) {
-    print(val);
     setState(() {
       selectedArm = val;
     });
@@ -324,7 +323,6 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                                                   value: item,
                                                                   groupValue: selectedRightArmReason,
                                                                   onChanged: (val) {
-                                                                    print(val);
                                                                     setState(() {
                                                                       selectedRightArmReason = val;
                                                                     });

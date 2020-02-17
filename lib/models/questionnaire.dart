@@ -138,7 +138,6 @@ class Questionnaire {
   addQuestionnaire(type, answers) {
     var questions = Questionnaire().questions[type];
     var data = [];
-    print(answers);
     return;
 
     questions['items'].forEach((item) {
@@ -163,8 +162,6 @@ class Questionnaire {
       _questionnaireItems.add(_prepareTobaccoData(questions, answers, type));
     }
 
-    print(jsonEncode(_questionnaireItems));
-
     return 'success';
   }
 
@@ -183,8 +180,6 @@ class Questionnaire {
       _questionnaireItems.add(_preparePhysicalActivityData(questions, answers, type));
     }
     
-    print(jsonEncode(_questionnaireItems));
-
     return 'success';
   }
 
@@ -203,32 +198,24 @@ class Questionnaire {
       _questionnaireItems.add(_prepareMedicalHistoryData(questions, answers, type));
     }
     
-    // print(_questionnaireItems);
-    print(jsonEncode(_questionnaireItems));
-
     return 'success';
   }
 
   addCurrentMedication(type, answers) {
     var questions = Questionnaire().questions[type];
     var updated = false;
-    print(answers);
-    return;
 
     for (var qn in _questionnaireItems) {
       if (qn['body']['data']['type'] == type) {
-        _questionnaireItems[_questionnaireItems.indexOf(qn)] = _prepareMedicalHistoryData(questions, answers, type);
+        _questionnaireItems[_questionnaireItems.indexOf(qn)] = _prepareCurrentMedicationData(questions, answers, type);
         updated = true;
       }
     }
 
     if (!updated) {
-      _questionnaireItems.add(_prepareMedicalHistoryData(questions, answers, type));
+      _questionnaireItems.add(_prepareCurrentMedicationData(questions, answers, type));
     }
     
-    // print(_questionnaireItems);
-    print(jsonEncode(_questionnaireItems));
-
     return 'success';
   }
 
@@ -247,8 +234,6 @@ class Questionnaire {
       _questionnaireItems.add(_prepareDietData(questions, answers, type));
     }
     
-    print(jsonEncode(_questionnaireItems));
-
     return 'success';
   }
 
@@ -266,11 +251,29 @@ class Questionnaire {
       answers.length == 1 ? _questionnaireItems.add(_prepareNonAlcoholData(questions, answers, type)) : _questionnaireItems.add(_prepareAlcoholData(questions, answers, type));
     }
     
-
-    
-    print(jsonEncode(_questionnaireItems));
-
     return 'success';
+  }
+
+  /// Prepare questionnaire data
+  _prepareCurrentMedicationData(questions, answers, type) {
+    var data = {
+      "meta": {
+        "performed_by": Auth().getAuth()['uid'],
+        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
+      },
+      "body": {
+        "type": "survey",
+        "data": {
+          'type': type,
+          'medications': answers[0],
+          'as_prescribed': answers[1],
+          'problems_by_taking_medicines': answers[2],
+        },
+        "patient_id": Patient().getPatient()['uuid'],
+      }
+    };
+
+    return data;
   }
 
   _prepareNonAlcoholData(questions, answers, type) {
@@ -438,7 +441,11 @@ class Questionnaire {
 
   /// Get all answers
   List get qnItems {
-    return [..._qnItems];
+    return [..._questionnaireItems];
+  }
+
+  clearItems() {
+    _questionnaireItems = [];
   }
 
   // Get all questions

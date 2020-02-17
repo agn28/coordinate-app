@@ -249,8 +249,7 @@ class _HomeState extends State<HomeScreen> {
                                   Image.asset('assets/images/icons/manage_patient.png'),
                                   FlatButton(
                                     onPressed: () {
-                                      print('hello');
-                                      // Navigator.of(context).push(PatientSearchScreenNew());
+                                      Navigator.of(context).push(PatientSearchScreenNew());
                                     },
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,

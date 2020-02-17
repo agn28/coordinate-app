@@ -328,7 +328,6 @@ class _NewEncounterState extends State<NewEncounter> {
                                                     backgroundColor: Color(0xFF4cAF50),
                                                   )
                                                 );
-                                                print('asdasljda');
                                                 Navigator.of(context).pop();
 
                                                 if (widget.encounterDetailsState != null) {

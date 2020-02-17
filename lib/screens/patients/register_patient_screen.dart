@@ -95,7 +95,6 @@ class _RegisterPatientState extends State<RegisterPatient> {
 
   _fillFormData() {
     var patient = Patient().getPatient();
-    print(patient);
     firstNameController.text = patient['data']['first_name'];
     lastNameController.text = patient['data']['last_name'];
     birthDateController.text = DateFormat('d').format(DateTime.parse(patient['data']['birth_date']));
