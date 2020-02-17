@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
-import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/body_measurement.dart';
+import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
-import 'package:nhealth/screens/patients/manage/encounters/observations/new_observation_screen.dart';
+import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/alcohol_screen.dart';
+import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/current_medication_screen.dart';
+import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/diet_screen.dart';
+import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/medical_history_screen.dart';
+import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/physical_activity_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/tobacco_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 
@@ -39,7 +43,7 @@ class _QuestionnairesState extends State<Questionnaires> {
       key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Body Measurements', style: TextStyle(color: kPrimaryColor),),
+        title: Text('Questionnaire', style: TextStyle(color: kPrimaryColor),),
         backgroundColor: Colors.white,
         elevation: 0.0,
         iconTheme: IconThemeData(color: kPrimaryColor),
@@ -100,7 +104,7 @@ class _QuestionnairesState extends State<Questionnaires> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Complete All Components', style: TextStyle(fontSize: 22),)
+              child: Text('Complete all the sections that are applicable', style: TextStyle(fontSize: 22),)
             ),
             
             Container(
@@ -109,39 +113,51 @@ class _QuestionnairesState extends State<Questionnaires> {
                 children: <Widget>[
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_pressure.png'),
-                    text: Text('Tobacco', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: _getStatus('tobacco'),
+                    text: 'Tobacco',
+                    // goTo: TobaccoScreen(),
                     onTap: () {
-                      Navigator.of(context).push(TobaccoScreen());
+                      // Navigator.of(context).push(TobaccoScreen(parent: ));
                     },
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test.png'),
-                    text: Text('Alcohol', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: _getStatus('alcohol'),
-                    onTap: () {},
+                    text: 'Alcohol',
+                    onTap: () {
+                      Navigator.of(context).push(AlcoholScreen());
+                    },
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/questionnaire.png'),
-                    text: Text('Diet', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: _getStatus('diet'),
-                    onTap: () {},
+                    text: 'Diet',
+                    onTap: () {
+                      Navigator.of(context).push(DietScreen());
+                    },
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/questionnaire.png'),
-                    text: Text('Current Medication', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: _getStatus('current medication'),
-                    onTap: () {},
+                    text: 'Physical Activity',
+                    onTap: () {
+                      Navigator.of(context).push(PhysicalActivityScreen());
+                    },
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/questionnaire.png'),
-                    text: Text('Medical History', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                    status: _getStatus('medical history'),
-                    onTap: () {},
+                    text: 'Current Medication',
+                    onTap: () {
+                      Navigator.of(context).push(CurrentMedicationScreen());
+                    },
+                  ),
+
+                  EncounnterSteps(
+                    icon: Image.asset('assets/images/icons/questionnaire.png'),
+                    text: 'Medical History',
+                    onTap: () {
+                      Navigator.of(context).push(MedicalHistoryScreen());
+                    },
                   ),
                 ],
               )
@@ -169,12 +185,21 @@ class _QuestionnairesState extends State<Questionnaires> {
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
+                  border: Border.all(width: 1, color: Colors.black54),
                   borderRadius: BorderRadius.circular(4)
                 ),
                 child: FlatButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        // return object of type Dialog
+                        return SkipAlert();
+                      },
+                    );
+                  },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('Cancel', style: TextStyle(fontSize: 19, color: kPrimaryColor, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text('UNABLE TO PERFORM', style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
                 ),
               )
             ),
@@ -188,27 +213,10 @@ class _QuestionnairesState extends State<Questionnaires> {
                 ),
                 child: FlatButton(
                   onPressed: () async {
-                    var result = BodyMeasurement().addBmItem();
-                    if (result == 'success') {
-                      _scaffoldKey.currentState.showSnackBar(
-                        SnackBar(
-                          content: Text('Data saved successfully!'),
-                          backgroundColor: Color(0xFF4cAF50),
-                        )
-                      );
-                      await Future.delayed(const Duration(seconds: 1));
-                      Navigator.of(context).pop();
-                    } else {
-                      _scaffoldKey.currentState.showSnackBar(
-                        SnackBar(
-                          content: Text(result.toString()),
-                          backgroundColor: kPrimaryRedColor,
-                        )
-                      );
-                    }
+                    
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('Save Assessment', style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text('SAVE', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                 ),
               )
             )
@@ -220,34 +228,55 @@ class _QuestionnairesState extends State<Questionnaires> {
 }
 
 class EncounnterSteps extends StatefulWidget {
-   EncounnterSteps({this.text, this.onTap, this.icon, this.status});
+   EncounnterSteps({this.text, this.onTap, this.icon});
 
-   final Text text;
-   final Function onTap;
-   final Image icon;
-   final String status;
+  final String text;
+  final Function onTap;
+  final Image icon;
+  
 
   @override
-  _EncounnterStepsState createState() => _EncounnterStepsState();
+  EncounnterStepsState createState() => EncounnterStepsState();
 }
 
-class _EncounnterStepsState extends State<EncounnterSteps> {
+class EncounnterStepsState extends State<EncounnterSteps> {
+  String status = 'Incomplete';
+
   @override
   void initState() {
     super.initState();
   }
 
+  setStatus() {
+    status = Questionnaire().isCompleted(widget.text) ? 'Complete' : 'Incomplete';
+  }
+
   @override
   Widget build(BuildContext context) {
     return FlatButton(
-      onPressed: widget.onTap,
+      onPressed: () {
+        print(widget.text);
+        if (widget.text.toString() == 'Tobacco') {
+          Navigator.of(context).push(TobaccoScreen(parent: this));
+        } else if (widget.text.toString() == 'Alcohol') {
+          Navigator.of(context).push(AlcoholScreen(parent: this));
+        } else if (widget.text.toString() == 'Diet') {
+          Navigator.of(context).push(DietScreen(parent: this));
+        } else if (widget.text.toString() == 'Physical Activity') {
+          Navigator.of(context).push(PhysicalActivityScreen(parent: this));
+        } else if (widget.text.toString() == 'Medical History') {
+          Navigator.of(context).push(MedicalHistoryScreen(parent: this));
+        } else if (widget.text.toString() == 'Current Medication') {
+          Navigator.of(context).push(CurrentMedicationScreen(parent: this));
+        } 
+      },
       child: Container(
         // padding: EdgeInsets.only(left: 20, right: 20),
         width: double.infinity,
         height: 100,
         decoration: BoxDecoration(
           border: Border(
-            bottom: BorderSide(width: .5, color: Color(0x40000000))
+            bottom: BorderSide(width: .5, color: kBorderLight)
           )
         ),
         child: Row(
@@ -260,12 +289,12 @@ class _EncounnterStepsState extends State<EncounnterSteps> {
               flex: 5,
               child: Container(
                 padding: EdgeInsets.only(left: 20),
-                child: widget.text,
+                child: Text(widget.text, style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
               )
             ),
             Expanded(
               flex: 2,
-              child: Text(widget.status, style: TextStyle(color: widget.status == 'Complete' ? kPrimaryGreenColor : kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.w500),),
+              child: Text(status, style: TextStyle(color: status == 'Complete' ? kPrimaryGreenColor : kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.w500),),
             ),
             
             Expanded(
@@ -312,7 +341,7 @@ class _AddDialogueState extends State<AddDialogue> {
   _addItem() {
     String unit = _getUnit();
     BodyMeasurement().addItem(widget.title, valueController.text, unit, commentController != null ? commentController.text : "", deviceController.text);
-    _EncounnterStepsState().initState();
+    EncounnterStepsState().initState();
   }
 
   _getUnit() {

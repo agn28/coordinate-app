@@ -86,6 +86,7 @@ flutter:
    - assets/images/icons/icon_fruits.png
    - assets/images/icons/icon_physical-activity.png
    - assets/images/icons/icon_smoker.png
+   - assets/medications.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
