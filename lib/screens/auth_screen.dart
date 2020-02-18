@@ -6,6 +6,7 @@ import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/screens/forgot_password_screen.dart';
 import '../constants/constants.dart';
 import 'home_screen.dart';
+import 'package:nhealth/app_localizations.dart';
 
 class AuthScreen extends StatefulWidget {
   @override
@@ -19,7 +20,7 @@ class _AuthScreenState extends State<AuthScreen> {
   bool _emailAutoValidate = false;
   bool _passwordAutoValidate = false;
   bool isLoading = false;
-  
+
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
@@ -29,54 +30,55 @@ class _AuthScreenState extends State<AuthScreen> {
       backgroundColor: kPrimaryColor,
       resizeToAvoidBottomInset: false,
 
-      body: Stack(
-        children: <Widget>[ 
-          Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                child: Container(
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.symmetric(horizontal: 60),
-                  width: double.infinity,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(height: 100,),
-                      Container(
-                        child: Row(
-                          children: <Widget>[
-                            Image.asset('assets/images/logo_nhealth_horizontal.png', width: 220,),
-                            Container(
-                              padding: EdgeInsets.only(top: 30, left: 30),
-                              child: Text('Coordinate', style: TextStyle(color: Colors.white, fontSize: 23, fontWeight: FontWeight.w500, fontFamily: 'Roboto')),
-                            )
-                          ],
+      body:  Stack(
+      children: <Widget>[
+        Column(
+        // mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Expanded(
+            child: Container(
+              alignment: Alignment.center,
+              margin: EdgeInsets.symmetric(horizontal: 60),
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(height: 100,),
+                  Container(
+                    child: Row(
+                      children: <Widget>[
+                        Image.asset('assets/images/logo_nhealth_horizontal.png', width: 220,),
+                        Container(
+                          padding: EdgeInsets.only(top: 30, left: 30),
+                          child: Text('Coordinate', style: TextStyle(color: Colors.white, fontSize: 23, fontWeight: FontWeight.w500, fontFamily: 'Roboto')),
                         )
-                      ),
-                      SizedBox(height: 70,),
-                      Container(
-                        child: Text('Login to Continue', style: TextStyle(color: Colors.white, fontSize: 35)),
-                      ),
-                      SizedBox(height: 60,),
-                      Form(
-                        key: _formKey,
-                        child: Column(
-                          children: <Widget>[
-                            TextFormField(
-                              style: TextStyle(color: Colors.white, fontSize: 19.0,),
-                              controller: emailController,
-                              autovalidate: _emailAutoValidate,
-                              onChanged: (value) {
-                                  setState(() => _emailAutoValidate = true);
-                              },
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Email is required';
-                                } else if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
-                                  return 'This is not a valid email address';
-                                }
+                      ],
+                    )
+                  ),
+                  SizedBox(height: 70,),
+                  Container(
+                    child: Text('Welcome', style: TextStyle(color: Colors.white, fontSize: 35)),
+                    // child: Text(AppLocalizations.of(context).translate('welcome'), style: TextStyle(color: Colors.white, fontSize: 35)),
+                  ),
+                  SizedBox(height: 60,),
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: <Widget>[
+                        TextFormField(
+                          style: TextStyle(color: Colors.white, fontSize: 19.0,),
+                          controller: emailController,
+                          autovalidate: _emailAutoValidate,
+                          onChanged: (value) {
+                              setState(() => _emailAutoValidate = true);
+                          },
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Email is required';
+                            } else if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
+                              return 'This is not a valid email address';
+                            }
 
                                 return null;
                               },
@@ -158,7 +160,7 @@ class _AuthScreenState extends State<AuthScreen> {
                             });
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => HomeScreen()));
                           }
-                          
+
                         },
                         child: Container(
                           width: double.infinity,

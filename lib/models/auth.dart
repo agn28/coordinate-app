@@ -20,7 +20,6 @@ class Auth {
 
   getStorageAuth() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print('auth');
     var auth = prefs.getString('auth');
 
     if (auth == null) {

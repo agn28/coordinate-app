@@ -2,8 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/language.dart';
-import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
-
+import 'package:nhealth/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -22,7 +23,6 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   String selectedType = 'In-clinic Screening';
   final commentController = TextEditingController();
-  bool _dataSaved = false;
   var _languages = [];
   String _selectedLanguage = '';
   
@@ -39,8 +39,17 @@ class _SettingsState extends State<Settings> {
     });
   }
 
-  _changeType(value) {
+  _changeType (value) async {
     Language().changeLanguage(value);
+    Map langMapp = {
+      "English": Locale('en', 'EN'),
+      "Bengali": Locale('bn', 'BN')
+    };
+
+    MyApp.setLocale(context, langMapp[value]);
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('locale', value);
 
     setState(() {
       _selectedLanguage = value;
@@ -78,8 +87,8 @@ class _SettingsState extends State<Settings> {
                           value: item,
                           groupValue: _selectedLanguage,
                           activeColor: kPrimaryColor,
-                          onChanged: (value) {
-                            _changeType(value);
+                          onChanged: (value) async {
+                            await _changeType(value);
                           },
                         ),
                         Text(item, style: TextStyle(color: Colors.black)),
