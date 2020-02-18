@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,39 +8,49 @@ import 'package:nhealth/custom-classes/custom_stepper.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
+import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/questionnaires_screen.dart';
 
 int selectedOption = -1;
 var _questions = {};
-int _secondQuestionOption = 1;
-int _firstQuestionOption = 1;
+int _secondQuestionOption = 0;
+int _selectedOption = 1;
+List allMedications = [];
+final problemController = TextEditingController();
+final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-class TobaccoScreen extends CupertinoPageRoute {
-  
-  EncounnterStepsState parent;
-  TobaccoScreen({this.parent})
-      : super(builder: (BuildContext context) => new Tobacco(parent: parent,));
+class CurrentMedicationScreen extends CupertinoPageRoute {
+  final EncounnterStepsState parent;
+  CurrentMedicationScreen({this.parent})
+      : super(builder: (BuildContext context) => new CurrentMedication(parent: parent));
 
 }
 
-class Tobacco extends StatefulWidget {
-  EncounnterStepsState parent;
-  Tobacco({this.parent});
+class CurrentMedication extends StatefulWidget {
+  final EncounnterStepsState parent;
+  CurrentMedication({this.parent});
   @override
-  _TobaccoState createState() => _TobaccoState();
+  _CurrentMedicationState createState() => _CurrentMedicationState();
 }
 
-class _TobaccoState extends State<Tobacco> {
+class _CurrentMedicationState extends State<CurrentMedication> {
  int _currentStep = 0; 
 
  @override
  void initState() {
     super.initState();
     setState(() {
-      _questions = Questionnaire().questions['tobacco'];
-      _firstQuestionOption = 1;
-      _secondQuestionOption = 1;
+      _questions = Questionnaire().questions['current_medication'];
+      _selectedOption = 1;
+    });
+    getMedications();
+  }
+
+  getMedications() async {
+    var data = await DefaultAssetBundle.of(context).loadString('assets/medications.json');
+    setState(() {
+      allMedications = json.decode(data);
     });
   }
 
@@ -126,9 +138,10 @@ class _TobaccoState extends State<Tobacco> {
               ) : FlatButton(
                 onPressed: () async {
                   var answers = [];
-                  answers.add(_questions['items'][0]['options'][_firstQuestionOption]);
+                  answers.add(_selectedItem);
                   answers.add(_questions['items'][1]['options'][_secondQuestionOption]);
-                  var result = Questionnaire().addTobacco('tobacco', answers);
+                  answers.add(problemController.text);
+                  var result = Questionnaire().addCurrentMedication('current_medication', answers);
                   if (result == 'success') {
                     _scaffoldKey.currentState.showSnackBar(
                       SnackBar(
@@ -149,6 +162,7 @@ class _TobaccoState extends State<Tobacco> {
                       )
                     );
                   }
+                  
                 },
                 child: Text('COMPLETE', style: TextStyle(fontSize: 20, color: kPrimaryColor))
               )
@@ -167,8 +181,13 @@ class _TobaccoState extends State<Tobacco> {
         isActive: _currentStep >= 2,
       ),
       CustomStep(
-        title: Text('Thumbprint'),
+        title: Text('Photo'),
         content: SecondQuestion(),
+        isActive: _currentStep >= 2,
+      ),
+      CustomStep(
+        title: Text('Photo'),
+        content: ThirdQuestion(),
         isActive: _currentStep >= 2,
       ),
     ];
@@ -191,7 +210,7 @@ class _FirstQuestionState extends State<FirstQuestion> {
 
   _changeOption(value) {
     setState(() {
-      _firstQuestionOption = value;
+      _selectedOption = value;
     });
   }
 
@@ -213,73 +232,27 @@ class _FirstQuestionState extends State<FirstQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Tobacco', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text('Current Medication', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
-              height: 90,
-              width: double.infinity,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              decoration: BoxDecoration(
-                color: Color(0xFFF4F4F4),
-                border: Border(
-                  bottom: BorderSide(width: .5, color: Color(0x50000000))
-                )
-              ),
-              child: Row(
-                children: <Widget>[
-                  Icon(Icons.error_outline, color: Color(0x87000000), size: 40,),
-                  SizedBox(width: 10,),
-                  Expanded(
-                    child: Text('Now I am going to ask you some questions about tobacco use.', style: TextStyle(fontSize: 19),),
-                  )
-                ],
-              )
-            ),
-            Container(
               margin: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
               child: Text(_questions['items'][0]['question'],
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: 18, height: 1.7),
               )
             ),
             Container(
               margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-              child: Row(
-                children: <Widget>[
-                  ..._questions['items'][0]['options'].map((option) => 
-                    Expanded(
-                      child: Container(
-                        height: 60,
-                        margin: EdgeInsets.only(right: 10, left: 10),
-                        decoration: BoxDecoration(
-                          border: Border.all(width: 1, color: _firstQuestionOption == _questions['items'][0]['options'].indexOf(option) ? Color(0xFF01579B) : Colors.black),
-                          borderRadius: BorderRadius.circular(3),
-                          color: _firstQuestionOption == _questions['items'][0]['options'].indexOf(option) ? Color(0xFFE1F5FE) : null
-                        ),
-                        child: FlatButton(
-                          onPressed: () {
-                            _changeOption(_questions['items'][0]['options'].indexOf(option));
-                          },
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          child: Text(StringUtils.capitalize(option),
-                            style: TextStyle(color: _firstQuestionOption == _questions['items'][0]['options'].indexOf(option) ? kPrimaryColor : null),
-                          ),
-                        ),
-                      )
-                    ),
-                  ).toList()
-                ],
-              )
+              child: MedicationList()
             ),
+            SizedBox(height: 10,),
           ],
         ),
     );
   }
  }
 
-
-class SecondQuestion extends StatefulWidget {
+ class SecondQuestion extends StatefulWidget {
   const SecondQuestion({
     Key key,
   }) : super(key: key);
@@ -290,12 +263,6 @@ class SecondQuestion extends StatefulWidget {
 
 class _SecondQuestionState extends State<SecondQuestion> {
   
-  _changeOption(value) {
-    setState(() {
-      _secondQuestionOption = value;
-    });
-  }
-  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -314,62 +281,36 @@ class _SecondQuestionState extends State<SecondQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Tobacco', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text('Current Medication', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
-              height: 90,
-              width: double.infinity,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              decoration: BoxDecoration(
-                color: Color(0xFFF4F4F4),
-                border: Border(
-                  bottom: BorderSide(width: .5, color: Color(0x50000000))
-                )
-              ),
-              child: Row(
-                children: <Widget>[
-                  Icon(Icons.error_outline, color: Color(0x87000000), size: 40,),
-                  SizedBox(width: 10,),
-                  Expanded(
-                    child: Text('Integer non leo mattis nulla efficitur pharetra. In tortor purus, rutrum sit amet sollicitudin ac.', style: TextStyle(fontSize: 19),),
-                  )
-                ],
-              )
-            ),
-            Container(
               margin: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
               child: Text(_questions['items'][1]['question'],
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: 18, height: 1.7),
               )
             ),
             Container(
               margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-              child: Row(
+              child: Column(
                 children: <Widget>[
-                  ..._questions['items'][0]['options'].map((option) => 
-                    Expanded(
-                      child: Container(
-                        height: 60,
-                        margin: EdgeInsets.only(right: 10, left: 10),
-                        decoration: BoxDecoration(
-                          border: Border.all(width: 1, color: _secondQuestionOption == _questions['items'][0]['options'].indexOf(option) ? Color(0xFF01579B) : Colors.black),
-                          borderRadius: BorderRadius.circular(3),
-                          color: _secondQuestionOption == _questions['items'][0]['options'].indexOf(option) ? Color(0xFFE1F5FE) : null
-                        ),
-                        child: FlatButton(
-                          onPressed: () {
-                            _changeOption(_questions['items'][0]['options'].indexOf(option));
+                  ..._questions['items'][1]['options'].map((option) => 
+                    Row(
+                      children: <Widget>[
+                        Radio(
+                          activeColor: kPrimaryColor,
+                          value: _questions['items'][1]['options'].indexOf(option),
+                          groupValue: _secondQuestionOption,
+                          onChanged: (val) {
+                            setState(() {
+                              _secondQuestionOption = val;
+                            });
                           },
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          child: Text(StringUtils.capitalize(option),
-                            style: TextStyle(color: _secondQuestionOption == _questions['items'][0]['options'].indexOf(option) ? kPrimaryColor : null),
-                          ),
                         ),
-                      )
+                        Text(StringUtils.capitalize(option), style: TextStyle(color: Colors.black, fontSize: 18)),
+                      ],
                     ),
-                  ).toList()
+                  ).toList(),
                 ],
               )
             ),
@@ -379,24 +320,15 @@ class _SecondQuestionState extends State<SecondQuestion> {
   }
  }
 
-class ThirdQuestion extends StatefulWidget {
-  const ThirdQuestion({
-    Key key,
-  }) : super(key: key);
 
-  
+ class ThirdQuestion extends StatefulWidget {
 
   @override
   _ThirdQuestionState createState() => _ThirdQuestionState();
 }
+
 class _ThirdQuestionState extends State<ThirdQuestion> {
-
-  _changeOption(value) {
-    setState(() {
-      selectedOption = value;
-    });
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -415,59 +347,24 @@ class _ThirdQuestionState extends State<ThirdQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Tobacco', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text('Current Medication', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
-              height: 90,
-              width: double.infinity,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              decoration: BoxDecoration(
-                color: Color(0xFFF4F4F4),
-                border: Border(
-                  bottom: BorderSide(width: .5, color: Color(0x50000000))
-                )
-              ),
-              child: Row(
-                children: <Widget>[
-                  Icon(Icons.error_outline, color: Color(0x87000000), size: 40,),
-                  SizedBox(width: 10,),
-                  Expanded(
-                    child: Text('Integer non leo mattis nulla efficitur pharetra. In tortor purus, rutrum sit amet sollicitudin ac.', style: TextStyle(fontSize: 19),),
-                  )
-                ],
-              )
-            ),
-            Container(
               margin: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
-              child: Text('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ut elit nec mauris hendrerit vestibulum.',
-                style: TextStyle(fontSize: 18),
+              child: Text(_questions['items'][2]['question'],
+                style: TextStyle(fontSize: 18, height: 1.7),
               )
             ),
             Container(
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 120),
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      CircleOption(value: 0),
-                      CircleOption(value: 1),
-                      CircleOption(value: 2),
-                      CircleOption(value: 3),
-                    ],
-                  ),
-                  SizedBox(height: 25,),
-                  Row(
-                    children: <Widget>[
-                      CircleOption(value: 4),
-                      CircleOption(value: 5),
-                      CircleOption(value: 6),
-                      CircleOption(value: 7),
-                    ],
-                  ),
-                ],
-              ),
+              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+              width: 250,
+              child: PrimaryTextField(
+                topPaadding: 15,
+                bottomPadding: 15,
+                hintText: 'Write your problem',
+                controller: problemController,
+              )
             ),
           ],
         ),
@@ -475,41 +372,150 @@ class _ThirdQuestionState extends State<ThirdQuestion> {
   }
  }
 
-class CircleOption extends StatefulWidget {
-  int value;
 
-  CircleOption({this.value});
+
+ class MedicationList extends StatefulWidget {
+
 
   @override
-  _CircleOptionState createState() => _CircleOptionState();
+  _MedicationListState createState() => _MedicationListState();
 }
 
-class _CircleOptionState extends State<CircleOption> {
+var selectedDiseases = [];
+final lastVisitDateController = TextEditingController();
+var _selectedItem = [];
+class _MedicationListState extends State<MedicationList> {
+
+  List _allDiseases = ['lupus', 'diabetes', 'bronchitis', 'hypertension', 'cancer', 'Ciliac', 'Scleroderma', 'Abulia', 'Agraphia', 'Chorea', 'Coma' ];
+  List _medications = [];
+  var _checkValue = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _preparedata();
+    
+  }
+
+  _preparedata() async {
+    var data = await DefaultAssetBundle.of(context).loadString('assets/medications.json');
+    setState(() {
+      allMedications = json.decode(data);
+      _medications = allMedications;
+    });
+    _preapareCheckboxValue();
+  }
+  _preapareCheckboxValue() {
+    _medications.forEach((item) {
+      selectedDiseases.indexOf(item) == -1 ? _checkValue[item] = false : _checkValue[item] = true;
+    });
+
+  }
+
+  _updateCheckBox(value, index) {
+    // if (value == true && _selectedItem.length == 3) {
+    //   return Toast.show("You cannot select more than three diseases", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+    // }
+
+    setState(() {
+      value ? _selectedItem.add(_medications[index]) : _selectedItem.removeAt(_selectedItem.indexOf(_medications[index]));
+      _checkValue[_medications[index]] = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        height: 60,
-        width: 60,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(width: .5)
-        ),
-        child: GestureDetector(
-          onTap: () {
-            setState(() {
-              selectedOption = widget.value;
-            });
-          },
-          child: CircleAvatar(
-            backgroundColor: selectedOption == widget.value ? Color(0xFFE1F5FE) : Colors.transparent,
-            child: Text(widget.value.toString(), style: TextStyle(color: Colors.black),),
-          ),
+    return Container(
+      width: double.infinity,
+      height: 520.0,
+      color: Color(0x07000000),
+      padding: EdgeInsets.all(10),
+      child: Form(
+        child: Column(
+          children: <Widget>[
+            SizedBox(height: 10,),
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text('Select Medications', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                ],
+              ),
+            ),
+
+            SizedBox(height: 20,),
+            Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  
+                  TextField(
+                    
+                    style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
+                    onChanged: (value) => {
+                      setState(() {
+                        _medications = allMedications
+                          .where((item) => item
+                          .toLowerCase()
+                          .contains(value.toLowerCase()))
+                          .toList();
+                      })
+                    },
+                    decoration: InputDecoration(
+                      counterText: ' ',
+                      contentPadding: EdgeInsets.only(top: 18, bottom: 18,),
+                      prefixIcon: Icon(Icons.search),
+                      filled: true,
+                      fillColor: kSecondaryTextField,
+                      border: new UnderlineInputBorder(
+                        borderSide: new BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          topRight: Radius.circular(4),
+                        )
+                      ),
+                      hintText: 'Search',
+                      hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                    )
+                  )
+                ],
+              )
+            ),
+
+            Container(
+              height: 340,
+              child: ListView.builder(
+                scrollDirection: Axis.vertical,
+                itemCount: _medications.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    height: 50,
+                    child: Row(
+                      children: <Widget>[
+                        SizedBox(width: 10,),
+                        Checkbox(
+                          activeColor: kPrimaryColor,
+                          value: _checkValue[_medications[index]],
+                          onChanged: (value) {
+                            _updateCheckBox(value, index);
+                          },
+                        ),
+                        Text(StringUtils.capitalize(_medications[index]), style: TextStyle(fontSize: 17),)
+                      ],
+                    )
+                  );
+                },
+              )
+            ),
+            
+          ],
         )
       ),
     );
   }
 }
+
+
 
 _getPatientDetails() {
   return Container(

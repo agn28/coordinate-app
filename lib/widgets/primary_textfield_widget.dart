@@ -131,7 +131,6 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
   }
 
   _validateDate(value) {
-    print('validate');
     if (int.parse(value) > 31) {
       return "Date should be under 31";
     }

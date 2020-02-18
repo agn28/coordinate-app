@@ -14,29 +14,28 @@ int _secondQuestionOption = 1;
 int _firstQuestionOption = 1;
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-class TobaccoScreen extends CupertinoPageRoute {
-  
-  EncounnterStepsState parent;
-  TobaccoScreen({this.parent})
-      : super(builder: (BuildContext context) => new Tobacco(parent: parent,));
+class PhysicalActivityScreen extends CupertinoPageRoute {
+  final EncounnterStepsState parent;
+  PhysicalActivityScreen({this.parent})
+      : super(builder: (BuildContext context) => new PhysicalActivity(parent: parent));
 
 }
 
-class Tobacco extends StatefulWidget {
-  EncounnterStepsState parent;
-  Tobacco({this.parent});
+class PhysicalActivity extends StatefulWidget {
+  final EncounnterStepsState parent;
+  PhysicalActivity({this.parent});
   @override
-  _TobaccoState createState() => _TobaccoState();
+  _PhysicalActivityState createState() => _PhysicalActivityState();
 }
 
-class _TobaccoState extends State<Tobacco> {
+class _PhysicalActivityState extends State<PhysicalActivity> {
  int _currentStep = 0; 
 
  @override
  void initState() {
     super.initState();
     setState(() {
-      _questions = Questionnaire().questions['tobacco'];
+      _questions = Questionnaire().questions['physical_activity'];
       _firstQuestionOption = 1;
       _secondQuestionOption = 1;
     });
@@ -128,7 +127,7 @@ class _TobaccoState extends State<Tobacco> {
                   var answers = [];
                   answers.add(_questions['items'][0]['options'][_firstQuestionOption]);
                   answers.add(_questions['items'][1]['options'][_secondQuestionOption]);
-                  var result = Questionnaire().addTobacco('tobacco', answers);
+                  var result = Questionnaire().addPhysicalActivity('physical_activity', answers);
                   if (result == 'success') {
                     _scaffoldKey.currentState.showSnackBar(
                       SnackBar(
@@ -189,6 +188,8 @@ class FirstQuestion extends StatefulWidget {
 
 class _FirstQuestionState extends State<FirstQuestion> {
 
+  
+
   _changeOption(value) {
     setState(() {
       _firstQuestionOption = value;
@@ -213,7 +214,7 @@ class _FirstQuestionState extends State<FirstQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Tobacco', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text('Physical Activity', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
@@ -232,7 +233,7 @@ class _FirstQuestionState extends State<FirstQuestion> {
                   Icon(Icons.error_outline, color: Color(0x87000000), size: 40,),
                   SizedBox(width: 10,),
                   Expanded(
-                    child: Text('Now I am going to ask you some questions about tobacco use.', style: TextStyle(fontSize: 19),),
+                    child: Text('Now I am going to ask you some questions about your physical activity.', style: TextStyle(fontSize: 19),),
                   )
                 ],
               )
@@ -240,7 +241,7 @@ class _FirstQuestionState extends State<FirstQuestion> {
             Container(
               margin: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
               child: Text(_questions['items'][0]['question'],
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: 18, height: 1.7),
               )
             ),
             Container(
@@ -290,12 +291,6 @@ class SecondQuestion extends StatefulWidget {
 
 class _SecondQuestionState extends State<SecondQuestion> {
   
-  _changeOption(value) {
-    setState(() {
-      _secondQuestionOption = value;
-    });
-  }
-  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -314,202 +309,44 @@ class _SecondQuestionState extends State<SecondQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Tobacco', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text('Physical Activity', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
-              height: 90,
-              width: double.infinity,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              decoration: BoxDecoration(
-                color: Color(0xFFF4F4F4),
-                border: Border(
-                  bottom: BorderSide(width: .5, color: Color(0x50000000))
-                )
-              ),
-              child: Row(
-                children: <Widget>[
-                  Icon(Icons.error_outline, color: Color(0x87000000), size: 40,),
-                  SizedBox(width: 10,),
-                  Expanded(
-                    child: Text('Integer non leo mattis nulla efficitur pharetra. In tortor purus, rutrum sit amet sollicitudin ac.', style: TextStyle(fontSize: 19),),
-                  )
-                ],
-              )
-            ),
-            Container(
               margin: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
               child: Text(_questions['items'][1]['question'],
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: 18, height: 1.7),
               )
             ),
             Container(
               margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-              child: Row(
-                children: <Widget>[
-                  ..._questions['items'][0]['options'].map((option) => 
-                    Expanded(
-                      child: Container(
-                        height: 60,
-                        margin: EdgeInsets.only(right: 10, left: 10),
-                        decoration: BoxDecoration(
-                          border: Border.all(width: 1, color: _secondQuestionOption == _questions['items'][0]['options'].indexOf(option) ? Color(0xFF01579B) : Colors.black),
-                          borderRadius: BorderRadius.circular(3),
-                          color: _secondQuestionOption == _questions['items'][0]['options'].indexOf(option) ? Color(0xFFE1F5FE) : null
-                        ),
-                        child: FlatButton(
-                          onPressed: () {
-                            _changeOption(_questions['items'][0]['options'].indexOf(option));
-                          },
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          child: Text(StringUtils.capitalize(option),
-                            style: TextStyle(color: _secondQuestionOption == _questions['items'][0]['options'].indexOf(option) ? kPrimaryColor : null),
-                          ),
-                        ),
-                      )
-                    ),
-                  ).toList()
-                ],
-              )
-            ),
-          ],
-        ),
-    );
-  }
- }
-
-class ThirdQuestion extends StatefulWidget {
-  const ThirdQuestion({
-    Key key,
-  }) : super(key: key);
-
-  
-
-  @override
-  _ThirdQuestionState createState() => _ThirdQuestionState();
-}
-class _ThirdQuestionState extends State<ThirdQuestion> {
-
-  _changeOption(value) {
-    setState(() {
-      selectedOption = value;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _getPatientDetails(),
-            Container(
-              height: 70,
-              width: double.infinity,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              decoration: BoxDecoration(
-                color: Color(0xFFF0F0F0),
-                border: Border(
-                  bottom: BorderSide(width: .5, color: Color(0x50000000))
-                )
-              ),
-              child: Text('Tobacco', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
-            ),
-
-            Container(
-              height: 90,
-              width: double.infinity,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              decoration: BoxDecoration(
-                color: Color(0xFFF4F4F4),
-                border: Border(
-                  bottom: BorderSide(width: .5, color: Color(0x50000000))
-                )
-              ),
-              child: Row(
-                children: <Widget>[
-                  Icon(Icons.error_outline, color: Color(0x87000000), size: 40,),
-                  SizedBox(width: 10,),
-                  Expanded(
-                    child: Text('Integer non leo mattis nulla efficitur pharetra. In tortor purus, rutrum sit amet sollicitudin ac.', style: TextStyle(fontSize: 19),),
-                  )
-                ],
-              )
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
-              child: Text('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ut elit nec mauris hendrerit vestibulum.',
-                style: TextStyle(fontSize: 18),
-              )
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 120),
               child: Column(
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      CircleOption(value: 0),
-                      CircleOption(value: 1),
-                      CircleOption(value: 2),
-                      CircleOption(value: 3),
-                    ],
-                  ),
-                  SizedBox(height: 25,),
-                  Row(
-                    children: <Widget>[
-                      CircleOption(value: 4),
-                      CircleOption(value: 5),
-                      CircleOption(value: 6),
-                      CircleOption(value: 7),
-                    ],
-                  ),
+                  ..._questions['items'][1]['options'].map((option) => 
+                    Row(
+                      children: <Widget>[
+                        Radio(
+                          activeColor: kPrimaryColor,
+                          value: _questions['items'][1]['options'].indexOf(option),
+                          groupValue: _secondQuestionOption,
+                          onChanged: (val) {
+                            setState(() {
+                              _secondQuestionOption = val;
+                            });
+                          },
+                        ),
+                        Text(StringUtils.capitalize(option), style: TextStyle(color: Colors.black, fontSize: 18)),
+                      ],
+                    ),
+                  ).toList(),
                 ],
-              ),
+              )
             ),
           ],
         ),
     );
   }
  }
-
-class CircleOption extends StatefulWidget {
-  int value;
-
-  CircleOption({this.value});
-
-  @override
-  _CircleOptionState createState() => _CircleOptionState();
-}
-
-class _CircleOptionState extends State<CircleOption> {
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        height: 60,
-        width: 60,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(width: .5)
-        ),
-        child: GestureDetector(
-          onTap: () {
-            setState(() {
-              selectedOption = widget.value;
-            });
-          },
-          child: CircleAvatar(
-            backgroundColor: selectedOption == widget.value ? Color(0xFFE1F5FE) : Colors.transparent,
-            child: Text(widget.value.toString(), style: TextStyle(color: Colors.black),),
-          ),
-        )
-      ),
-    );
-  }
-}
 
 _getPatientDetails() {
   return Container(

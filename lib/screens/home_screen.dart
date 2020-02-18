@@ -250,6 +250,7 @@ class _HomeState extends State<HomeScreen> {
                                   FlatButton(
                                     onPressed: () {
                                       // Navigator.of(context).push(PatientSearchScreenNew());
+                                      Navigator.of(context).push(PatientSearchScreenNew());
                                     },
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,

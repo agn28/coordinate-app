@@ -4,8 +4,9 @@ import 'package:nhealth/models/questionnaire.dart';
 class QuestionnaireController {
 
   create(type, answers) {
-    var questions = Questionnaire().questions.where((qn) => qn['type'] == type).first;
+    var questions = Questionnaire().questions[type];
     var data = [];
+    return;
     
     questions['items'].forEach((item) {
       data.add(_prepareData(questions, item, answers));
@@ -24,7 +25,7 @@ class QuestionnaireController {
         "type": "questionnaire",
         "data": {
           'question': item['question'],
-          'answer': item['options'][answers[questions['items'].indexOf(item)]]
+          'answer': answers[questions['items'].indexOf(item)]
         },
         "patient_id": Patient().getPatient()['uuid'],
         "assessment_id": "264d9d80-1b17-11ea-9ddd-117747515bf8"

@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/helpers/helpers.dart';
+import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import '../../../../../../models/blood_test.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
@@ -57,13 +59,13 @@ class BloodTests extends StatelessWidget {
                             child: Icon(Icons.perm_identity),
                           ),
                           SizedBox(width: 15,),
-                          Text('Jahanara Begum', style: TextStyle(fontSize: 18))
+                          Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 18))
                         ],
                       ),
                     ),
                   ),
                   Expanded(
-                    child: Text('31Y Female', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
+                    child: Text(Helpers().getPatientAgeAndGender(Patient().getPatient()), style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
                   ),
                   Expanded(
                     child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))

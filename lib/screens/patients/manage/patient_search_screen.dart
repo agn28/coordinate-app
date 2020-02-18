@@ -120,7 +120,6 @@ class _PatientSearchState extends State<PatientSearch> {
                         .toList();
                     },
                     popupListItemBuilder: (item) {
-                      print(item);
                       return PopupListItemWidget(item);
                     },
                     selectedItemBuilder: (selectedItem, deleteSelectedItem) {
@@ -218,7 +217,6 @@ class _DiseasesDialogState extends State<DiseasesDialog> {
       selectedDiseases.indexOf(item) == -1 ? _checkValue[item] = false : _checkValue[item] = true
     });
 
-    print(_checkValue);
   }
 
   _updateCheckBox(value, index) {
@@ -621,7 +619,6 @@ class _FiltersDialogState extends State<FiltersDialog> {
                           onPressed: () {
                             applyFilter();
                             Navigator.of(context).pop();
-                            // print(patients);
                           },
                           child: Text('APPLY', style: TextStyle(color: kPrimaryColor, fontSize: 16))
                         ),

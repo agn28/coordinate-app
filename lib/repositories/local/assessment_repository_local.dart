@@ -2,6 +2,7 @@ import 'package:nhealth/models/assessment.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
 import 'package:nhealth/models/body_measurement.dart';
+import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/repositories/assessment_repository.dart';
 import 'package:nhealth/repositories/local/concept_manager_repository_local.dart';
 import 'package:nhealth/repositories/local/database_creator.dart';
@@ -16,7 +17,6 @@ class AssessmentRepositoryLocal {
   getAllAssessments() async {
     final sqlAssessments = '''SELECT * FROM ${DatabaseCreator.assessmentTable}''';
     var assessments = await db.rawQuery(sqlAssessments);
-    // print(assessments);
     return assessments;
   }
 
@@ -35,6 +35,7 @@ class AssessmentRepositoryLocal {
     var bloodPressures = BloodPressure().bpItems;
     var bloodTests = BloodTest().btItems;
     var bodyMeasurements = BodyMeasurement().bmItems;
+    var questionnaires = Questionnaire().qnItems;
 
     if (bloodPressures.isEmpty && bloodTests.isEmpty && bodyMeasurements.isEmpty) {
       return 'No observations added';
@@ -59,6 +60,11 @@ class AssessmentRepositoryLocal {
     bodyMeasurements.forEach((item) async {
       var codings = await _getCodings(item);
       item['body']['data']['codings'] = codings;
+      item['body']['assessment_id'] = assessmentId;
+      await _createObservations(item);
+    });
+
+    questionnaires.forEach((item) async {
       item['body']['assessment_id'] = assessmentId;
       await _createObservations(item);
     });
