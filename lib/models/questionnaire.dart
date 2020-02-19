@@ -264,7 +264,7 @@ class Questionnaire {
       "body": {
         "type": "survey",
         "data": {
-          'type': type,
+          'name': type,
           'medications': answers[0],
           'as_prescribed': answers[1],
           'problems_by_taking_medicines': answers[2],
@@ -285,7 +285,7 @@ class Questionnaire {
       "body": {
         "type": "survey",
         "data": {
-          'type': type,
+          'name': type,
           'last_30_days': answers[0],
         },
         "patient_id": Patient().getPatient()['uuid'],
@@ -304,7 +304,7 @@ class Questionnaire {
       "body": {
         "type": "survey",
         "data": {
-          'type': type,
+          'name': type,
           'last_30_days': answers[0],
           'days': int.parse(answers[1]),
           'units_per_day': int.parse(answers[2]),
@@ -325,7 +325,7 @@ class Questionnaire {
       "body": {
         "type": "survey",
         "data": {
-          'type': type,
+          'name': type,
           'last_12_months': answers[0],
           'secondhand_smoke': answers[1]
         },
@@ -346,7 +346,7 @@ class Questionnaire {
       "body": {
         "type": "survey",
         "data": {
-          'type': type,
+          'name': type,
           'fruits_vegitables_daily': answers[0],
           'processed_foods': answers[1],
           'sugary_drinks': answers[2],
@@ -369,7 +369,7 @@ class Questionnaire {
       "body": {
         "type": "survey",
         "data": {
-          'type': type,
+          'name': type,
           'physical_activity': answers[0],
           'sitting_more_than_5_hours': answers[1]
         },
@@ -390,7 +390,7 @@ class Questionnaire {
       "body": {
         "type": "survey",
         "data": {
-          'type': type,
+          'name': type,
           'heart_disease': answers[0],
           'stroke': answers[1],
           'high_blood_pressure': answers[2],
@@ -418,7 +418,7 @@ class Questionnaire {
       "body": {
         "type": "survey",
         "data": {
-          'type': type,
+          'name': type,
           'question': item['question'],
           'answer': answers[questions['items'].indexOf(item)]
         },
@@ -432,7 +432,7 @@ class Questionnaire {
   isCompleted(type) {
     type = type.replaceAll(' ', '_').toLowerCase();
     for(var item in _questionnaireItems) {
-      if (item['body']['data']['type'] == type) {
+      if (item['body']['data']['name'] == type) {
         return true;
       }
     }

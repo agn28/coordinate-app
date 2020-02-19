@@ -105,16 +105,19 @@ class MeasurementsState extends State<Measurements> {
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/height.png'),
                     text: 'Height',
+                    name: 'height'
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/weight.png'),
                     text: 'Weight',
+                    name: 'weight'
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/hip.png'),
                     text: 'Waist/Hip',
+                    name: 'waist/hip'
                   ),
                 ],
               )
@@ -201,10 +204,11 @@ class MeasurementsState extends State<Measurements> {
 }
 
 class EncounnterSteps extends StatefulWidget {
-   EncounnterSteps({this.text, this.icon});
+   EncounnterSteps({this.text, this.icon, this.name});
 
    final String text;
    final Image icon;
+   final String name;
 
   @override
   EncounnterStepsState createState() => EncounnterStepsState();
@@ -220,7 +224,7 @@ class EncounnterStepsState extends State<EncounnterSteps> {
   }
 
   setStatus() {
-    status = BodyMeasurement().hasItem(widget.text) ? 'Complete' : 'Incomplete';
+    status = BodyMeasurement().hasItem(widget.name) ? 'Complete' : 'Incomplete';
   }
 
   @override
@@ -233,6 +237,7 @@ class EncounnterStepsState extends State<EncounnterSteps> {
             return AddDialogue(
               parent: this,
               title: widget.text,
+              name: widget.name
             );
           } 
         );
@@ -282,8 +287,9 @@ class EncounnterStepsState extends State<EncounnterSteps> {
 class AddDialogue extends StatefulWidget {
   EncounnterStepsState parent;
   String title;
+  String name;
 
-  AddDialogue({this.parent, this.title});
+  AddDialogue({this.parent, this.title, this.name});
 
   List devices = ['D-23429', 'B-94857'];
   int selectedDevice;
@@ -309,7 +315,7 @@ class _AddDialogueState extends State<AddDialogue> {
 
   _addItem() {
     String unit = _getUnit();
-    BodyMeasurement().addItem(widget.title, valueController.text, unit, commentController != null ? commentController.text : "", devices[selectedDevice]);
+    BodyMeasurement().addItem(widget.name, valueController.text, unit, commentController != null ? commentController.text : "", devices[selectedDevice]);
     this.widget.parent.setState(() => {
       this.widget.parent.setStatus(),
     });

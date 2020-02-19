@@ -4,22 +4,44 @@ import 'package:intl/intl.dart';
 
 List _items = [];
 List _btItems = [];
+var bloodTestMap = {
+  'tg': 'Triglycerides',
+  'total_cholesterol': 'Total Cholesterol',
+  'blood_glucose': 'Fasting Blood Glucose',
+  'blood_sugar': 'Random Blood Sugar',
+  'a1c': 'Hba1c'
+};
 
 class BloodTest {
 
   /// Add blood test item in local variable.
   /// [type], [value], [unit], [comment], [device] are required as parameter.
-  addItem(type, value, unit, comment, device) {
-    String convertedType = Helpers().getType(type);
-    _items.removeWhere((item) => item['type'] == convertedType);
+  addItem(name, value, unit, comment, device) {
+    // String convertedType = Helpers().getType(type);
+    _items.removeWhere((item) => item['name'] == name);
 
-    _items.add({
-      'type': convertedType,
-      'unit': unit,
-      'value': double.parse(value),
-      'comment': comment,
-      'device': device
-    });
+    if (name == 'blood_glucose' || name == 'blood_sugar') {
+      _items.add({
+        'name': name,
+        'unit': unit,
+        'value': double.parse(value),
+        'comment': comment,
+        'device': device,
+        'type': 'fasting'
+      });
+    } else {
+      _items.add({
+        'name': name,
+        'unit': unit,
+        'value': double.parse(value),
+        'comment': comment,
+        'device': device
+      });
+    }
+
+    
+
+    print(_items);
 
     return;
   }
@@ -35,7 +57,7 @@ class BloodTest {
     for (var item in _items) {
       bool updated = false;
       for (var bt in _btItems) {
-        if (bt['body']['data']['type'] == item['type']) {
+        if (bt['body']['data']['name'] == item['name']) {
           _btItems[_btItems.indexOf(bt)]['body']['data'] = item;
           updated = true;
           break;
@@ -80,10 +102,14 @@ class BloodTest {
   get items {
     return [..._items];
   }
+  
+  getMap() {
+    return bloodTestMap;
+  }
 
   /// Check observation is added or not.
-  bool hasItem (type) {
-    return _items.where((item) => item['type'] == Helpers().getType(type)).isNotEmpty;
+  bool hasItem (name) {
+    return _items.where((item) => item['name'] == Helpers().getType(name)).isNotEmpty;
   }
 
   /// Get all Blood Test data.

@@ -109,16 +109,19 @@ class BloodTests extends StatelessWidget {
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test_common.png'),
                     text: 'Total Cholesterol',
+                    name: 'total_cholesterol'
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test_common.png'),
                     text: 'HDL',
+                    name: 'hdl'
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test_common.png'),
                     text: 'Triglycerides',
+                    name: 'tg'
                   ),
                 ],
               )
@@ -145,11 +148,13 @@ class BloodTests extends StatelessWidget {
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_glucose.png'),
                     text: 'Fasting Blood Glucose',
+                    name: 'blood_glucose'
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_glucose.png'),
                     text: 'Random Blood Sugar',
+                    name: 'blood_sugar'
                   ),
                 ],
               )
@@ -175,12 +180,14 @@ class BloodTests extends StatelessWidget {
                 children: <Widget>[
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/hba1c.png'),
-                    text: 'Hba1c'
+                    text: 'Hba1c',
+                    name: 'a1c'
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/ogtt.png'),
                     text: '2H OGTT',
+                    name: '2h_ogtt'
                   ),
                 ],
               )
@@ -265,10 +272,11 @@ class BloodTests extends StatelessWidget {
 }
 
 class EncounnterSteps extends StatefulWidget {
-   EncounnterSteps({this.text, this.icon});
+   EncounnterSteps({this.text, this.icon, this.name});
 
    final String text;
    final Image icon;
+   final String name;
 
   @override
   _EncounnterStepsState createState() => _EncounnterStepsState();
@@ -284,7 +292,7 @@ class _EncounnterStepsState extends State<EncounnterSteps> {
   }
 
   setStatus() {
-    status = BloodTest().hasItem(widget.text) ? 'Complete' : 'Incomplete';
+    status = BloodTest().hasItem(widget.name) ? 'Complete' : 'Incomplete';
   }
 
   @override
@@ -296,7 +304,8 @@ class _EncounnterStepsState extends State<EncounnterSteps> {
           builder: (BuildContext context) {
             return AddTestsDialogue(
               parent: this,
-              title: widget.text
+              title: widget.text,
+              name: widget.name
             );
           } 
         );
@@ -346,9 +355,10 @@ class _EncounnterStepsState extends State<EncounnterSteps> {
 class AddTestsDialogue extends StatefulWidget {
   
   final String title;
+  final String name;
   _EncounnterStepsState parent;
 
-  AddTestsDialogue({this.parent, this.title});
+  AddTestsDialogue({this.parent, this.title, this.name});
 
   @override
   _AddTestsDialogueState createState() => _AddTestsDialogueState();
@@ -366,7 +376,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
   int selectedDevice = 0;
 
   _addItem(){
-    BloodTest().addItem(widget.title, valueController.text, selectedUnit, commentController.text, devices[selectedDevice]);
+    BloodTest().addItem(widget.name, valueController.text, selectedUnit, commentController.text, devices[selectedDevice]);
     this.widget.parent.setState(() {
       this.widget.parent.setStatus();
     });

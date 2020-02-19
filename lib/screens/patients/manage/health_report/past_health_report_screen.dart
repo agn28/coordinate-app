@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
-import 'package:nhealth/screens/patients/manage/encounters/encounter_details_screen.dart';
+import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/manage/health_report/health_report_details_screen.dart';
-import 'package:nhealth/screens/patients/manage/health_report/health_report_screen.dart';
 
 class PastHealthReportScreen extends CupertinoPageRoute {
   PastHealthReportScreen()
@@ -13,7 +14,93 @@ class PastHealthReportScreen extends CupertinoPageRoute {
 
 }
 
-class PastHealthReport extends StatelessWidget {
+class PastHealthReport extends StatefulWidget {
+
+  @override
+  _PastHealthReportState createState() => _PastHealthReportState();
+}
+
+class _PastHealthReportState extends State<PastHealthReport> {
+
+  var reports = [];
+  var fetchedReports = [];
+  bool isLoading = false;
+  List<Widget> list = List<Widget>();
+
+  @override
+  void initState() {
+    super.initState();
+    _getList();
+  }
+
+  _getList() async {
+    setState(() {
+      isLoading = true;
+    });
+    var response = await HealthReportController().getReports();
+    
+
+    if(response != null && response['message'] == 'Unauthorized') {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    }
+
+    reports = response['data'];
+
+    reports.forEach((item){
+      setState(() {
+        print(item['report_date']);
+        var date = '';
+        if(item['report_date'] != null && item['report_date']['_seconds'] != null) {
+          var parseddate = DateTime.fromMillisecondsSinceEpoch(item['report_date']['_seconds'] * 1000);
+          date = DateFormat('MMMM d, yyyy').format(parseddate);
+          print(date);
+        }
+        list.add(
+          Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(width: .5, color: Colors.black38)
+              )
+            ),
+            child: FlatButton(
+              onPressed: () {
+                Navigator.of(context).push(HealthReportDetailsScreen(reports: item['result']));
+              },
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(top: 20, bottom: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(date, style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+                        ),
+                        Expanded(
+                          child: Text('', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+                        ),
+                        Expanded(
+                          child: Container(
+                            alignment: Alignment.centerRight,
+                            child: Icon(Icons.arrow_forward, color: kPrimaryColor,),
+                          )
+                        )
+                      ],
+                    )
+                  )
+                ],
+              )
+            )
+          ),
+        );
+      });
+    });
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,150 +112,92 @@ class PastHealthReport extends StatelessWidget {
         iconTheme: IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: <Widget>[
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border(
-                  bottom: BorderSide(width: 1, color: Colors.black38)
-                )
-              ),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      child: Row(
-                        children: <Widget>[
-                          Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                              color: kLightPrimaryColor,
-                              shape: BoxShape.circle
-                            ),
-                            child: Icon(Icons.perm_identity),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border(
+                      bottom: BorderSide(width: 1, color: Colors.black38)
+                    )
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                height: 35,
+                                width: 35,
+                                decoration: BoxDecoration(
+                                  color: kLightPrimaryColor,
+                                  shape: BoxShape.circle
+                                ),
+                                child: Icon(Icons.perm_identity),
+                              ),
+                              SizedBox(width: 15,),
+                              Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 18))
+                            ],
                           ),
-                          SizedBox(width: 15,),
-                          Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 18))
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(Helpers().getPatientAgeAndGender(Patient().getPatient()), style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
-                  ),
-                  Expanded(
-                    child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
-                  )
-                ],
-              ),
-            ),
-            
-            Container(
-              color: Colors.white,
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(width: .5, color: Colors.black38)
+                      Expanded(
+                        child: Text(Helpers().getPatientAgeAndGender(Patient().getPatient()), style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
+                      ),
+                      Expanded(
+                        child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
                       )
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        Expanded(
-                          child: Text('Date', style: TextStyle(fontSize: 17),),
+                    ],
+                  ),
+                ),
+                
+                Container(
+                  color: Colors.white,
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(width: .5, color: Colors.black38)
+                          )
                         ),
-                        Expanded(
-                          child: Text('Type', style: TextStyle(fontSize: 17,),),
-                        ),
-                        Expanded(
-                          child: Text('')
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            Expanded(
+                              child: Text('Date', style: TextStyle(fontSize: 17),),
+                            ),
+                            Expanded(
+                              child: Text('')
+                            )
+                          ],
                         )
-                      ],
-                    )
+                      )
+                    ],
                   )
-                ],
-              )
+                ),
+                
+                Column(children: list),
+
+                SizedBox(height: 30,),
+
+              ],
             ),
             
-            Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(width: .5, color: Colors.black38)
-                )
+            isLoading ? Container(
+              height: MediaQuery.of(context).size.height,
+              width: double.infinity,
+              color: Color(0x90FFFFFF),
+              child: Center(
+                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),backgroundColor: Color(0x30FFFFFF),)
               ),
-              child: FlatButton(
-                onPressed: () => Navigator.of(context).push(HealthReportDetailsScreen()),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.only(top: 20, bottom: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          Expanded(
-                            child: Text('Jan 5, 2019', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
-                          ),
-                          Expanded(
-                            child: Text('Pending Recommendation', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: kPrimaryRedColor),),
-                          ),
-                          Expanded(
-                            child: Container(
-                              alignment: Alignment.centerRight,
-                              child: Icon(Icons.arrow_forward, color: kPrimaryColor,),
-                            )
-                          )
-                        ],
-                      )
-                    )
-                  ],
-                )
-              )
-            ),
-
-            Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(width: .5, color: Colors.black38)
-                )
-              ),
-              child: FlatButton(
-                onPressed: () => Navigator.of(context).push(HealthReportDetailsScreen()),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.only(top: 20, bottom: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          Expanded(
-                            child: Text('Jan 2, 2019', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
-                          ),
-                          Expanded(
-                            child: Text('', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
-                          ),
-                          Expanded(
-                            child: Container(
-                              alignment: Alignment.centerRight,
-                              child: Icon(Icons.arrow_forward, color: kPrimaryColor,),
-                            )
-                          )
-                        ],
-                      )
-                    )
-                  ],
-                )
-              )
-            ),
-
-            SizedBox(height: 30,),
-
+            ) : Container(),
           ],
         ),
       ),

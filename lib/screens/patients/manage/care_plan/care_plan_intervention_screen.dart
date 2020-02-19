@@ -1,17 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/controllers/care_plan_controller.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/widgets/primary_button_widget.dart';
 
 class CarePlanInterventionScreen extends CupertinoPageRoute {
-  CarePlanInterventionScreen()
-      : super(builder: (BuildContext context) => CarePlanIntervention());
+  var carePlan;
+  CarePlanInterventionScreen({this.carePlan})
+      : super(builder: (BuildContext context) => CarePlanIntervention(carePlan: carePlan));
 
 }
 
 class CarePlanIntervention extends StatefulWidget {
+  var carePlan;
+  CarePlanIntervention({this.carePlan});
   @override
   _CarePlanInterventionState createState() => _CarePlanInterventionState();
 }
@@ -126,7 +130,8 @@ class _CarePlanInterventionState extends State<CarePlanIntervention> {
             Container(
               margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
               child: PrimaryButton(
-                onTap: () {
+                onTap: () async {
+                  var result = await CarePlanController().update(widget.carePlan);
                   Navigator.of(context).pop();
                 },
                 text: Text('MARK AS COMPLETE', style: TextStyle(color: Colors.white, fontSize: 16),),

@@ -1,3 +1,4 @@
+import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
@@ -45,10 +46,10 @@ class _PastEncountersState extends State<PastEncounters> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
                         Expanded(
-                          child: Text(Helpers().converDate(assessment['data']['assessment_date']), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+                          child: Text(Helpers().convertDate(assessment['data']['assessment_date']), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
                         ),
                         Expanded(
-                          child: Text(assessment['data']['type'], style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+                          child: Text(StringUtils.capitalize(assessment['data']['type']), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
                         ),
                         Expanded(
                           child: Container(

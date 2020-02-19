@@ -2,8 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/controllers/care_plan_controller.dart';
 import 'package:nhealth/helpers/helpers.dart';
+import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_details_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_intervention_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_list_screen.dart';
@@ -30,12 +33,33 @@ class PatientRecords extends StatefulWidget {
 class _PatientRecordsState extends State<PatientRecords> {
   var _patient;
   bool isLoading = false;
+  var carePlans = [];
   
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
      _patient = Patient().getPatient();
+     _getCarePlan();
+  }
+
+  _getCarePlan() async {
+    setState(() {
+      isLoading = true;
+    });
+    var data = await CarePlanController().getCarePlan();
+
+    if (data != null && data['message'] == 'Unauthorized') {
+      Auth().logout();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    }
+
+    setState(() {
+      carePlans = data['data'];
+      isLoading = false;
+    });
+    print('careplan');
+    print(data);
   }
 
   @override
@@ -108,7 +132,7 @@ class _PatientRecordsState extends State<PatientRecords> {
                                 ],
                               ),
                               SizedBox(height: 20,),
-                              Text('Registered on ${Helpers().converDate(_patient["meta"]["created_at"])}', style: TextStyle(color: Colors.white70, fontSize: 17, fontWeight: FontWeight.w400),),
+                              Text('Registered on ${Helpers().convertDate(_patient["meta"]["created_at"])}', style: TextStyle(color: Colors.white70, fontSize: 17, fontWeight: FontWeight.w400),),
                               // Text('Registered on Jan 5, 2019', style: TextStyle(color: Colors.white70, fontSize: 17, fontWeight: FontWeight.w400),),
                             ],
                           ),
@@ -446,7 +470,7 @@ class _PatientRecordsState extends State<PatientRecords> {
                                           ),
                                           child: FlatButton(
                                             onPressed: () {
-                                              Navigator.of(context).push(CarePlanDetailsScreen());
+                                              Navigator.of(context).push(CarePlanDetailsScreen(carePlans: carePlans));
                                             },
                                             padding: EdgeInsets.symmetric(vertical: 20),
                                             child: Text('VIEW CARE PLAN DETAILS', style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
@@ -467,6 +491,14 @@ class _PatientRecordsState extends State<PatientRecords> {
                   ],
                 ),
               ),
+              isLoading ? Container(
+                height: MediaQuery.of(context).size.height,
+                width: double.infinity,
+                color: Color(0x90FFFFFF),
+                child: Center(
+                  child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),backgroundColor: Color(0x30FFFFFF),)
+                ),
+              ) : Container(),
             ],
           ),
         ),

@@ -11,20 +11,23 @@ import 'package:nhealth/screens/patients/manage/health_report/health_report_succ
 import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
 
 
-class CreateHealthReportScreen extends CupertinoPageRoute {
-  CreateHealthReportScreen()
-      : super(builder: (BuildContext context) => new CreateHealthReport());
-
-}
-
-class CreateHealthReport extends StatefulWidget {
-  @override
-  _CreateHealthReportState createState() => _CreateHealthReportState();
-}
-
-class _CreateHealthReportState extends State<CreateHealthReport> {
-
+class HealthReportDetailsScreenOld extends CupertinoPageRoute {
   var reports;
+  HealthReportDetailsScreenOld({this.reports})
+      : super(builder: (BuildContext context) => new HealthReportDetails(reports: reports));
+
+}
+
+class HealthReportDetails extends StatefulWidget {
+  var reports;
+  HealthReportDetails({this.reports});
+  @override
+  _HealthReportDetailsState createState() => _HealthReportDetailsState();
+}
+
+class _HealthReportDetailsState extends State<HealthReportDetails> {
+
+  // var reports;
   bool isLoading = false;
   bool canEdit = false;
   final commentsController = TextEditingController();
@@ -32,22 +35,22 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
   @override
   void initState() {
     super.initState();
-    getReports();
+    // getReports();
   }
 
   getReports() async {
     isLoading = true;
     var data = await HealthReportController().getReport();
     
-    if (data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    } else {
-      setState(() {
-        isLoading = false;
-        reports = data;
-      });
-    }
+    // if (data['message'] == 'Unauthorized') {
+    //   Auth().logout();
+    //   Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    // } else {
+    //   setState(() {
+    //     isLoading = false;
+    //     reports = data;
+    //   });
+    // }
 
   }
 
@@ -65,7 +68,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
         physics: isLoading ? NeverScrollableScrollPhysics() : null,
         child: Stack(
           children: <Widget>[
-            reports != null ? Column(
+            widget.reports != null ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Container(
@@ -182,10 +185,8 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  reports['assessments']['lifestyle']['components']['smoking'] != null ?
                                   Expanded(
-                                    child:  
-                                    Container(
+                                    child: Container(
                                       height: 230,
                                       padding: EdgeInsets.only(top: 15, left: 15, right: 15, bottom: 10),
                                       decoration: BoxDecoration(
@@ -209,24 +210,22 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                           SizedBox(height: 10,),
                                           Text('Tobacco Use', style: TextStyle(color: Colors.black87, fontSize: 19, fontWeight: FontWeight.w500),),
                                           SizedBox(height: 20,),
-                                          Text('${reports['assessments']['lifestyle']['components']['smoking']['eval']}',
+                                          Text('${widget.reports['assessments']['lifestyle']['components']['smoking']['eval']}',
                                             style: TextStyle(
-                                              color: ColorUtils.statusColor[reports['assessments']['lifestyle']['components']['smoking']['tfl']] ?? Colors.black,
+                                              color: ColorUtils.statusColor[widget.reports['assessments']['lifestyle']['components']['smoking']['tfl']] ?? Colors.black,
                                               fontSize: 19,
                                               fontWeight: FontWeight.w500
                                             ),
                                           ),
                                           SizedBox(height: 20,),
-                                          Text('${reports['assessments']['lifestyle']['components']['smoking']['message']}', style: TextStyle(fontSize: 14, height: 1.3),)
+                                          Text('${widget.reports['assessments']['lifestyle']['components']['smoking']['message']}', style: TextStyle(fontSize: 14, height: 1.3),)
                                         ],
                                       ),
                                     ),
-                                  ) : Container(),
+                                  ),
                                   SizedBox(width: 20,),
-                                  reports['assessments']['lifestyle']['components']['alcohol'] != null ? 
                                   Expanded(
-                                    child: 
-                                    Container(
+                                    child: Container(
                                       // height: 220,
                                       padding: EdgeInsets.only(top: 15, left: 15, right: 15, bottom: 10),
                                       decoration: BoxDecoration(
@@ -250,24 +249,23 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                           SizedBox(height: 10,),
                                           Text('Alcohol Consumption', style: TextStyle(color: Colors.black87, fontSize: 19, fontWeight: FontWeight.w500),),
                                           SizedBox(height: 20,),
-                                          Text('${reports['assessments']['lifestyle']['components']['alcohol']['eval']}',
+                                          Text('${widget.reports['assessments']['lifestyle']['components']['alcohol']['eval']}',
                                             style: TextStyle(
-                                              color: ColorUtils.statusColor[reports['assessments']['lifestyle']['components']['alcohol']['tfl']] ?? Colors.black,
+                                              color: ColorUtils.statusColor[widget.reports['assessments']['lifestyle']['components']['alcohol']['tfl']] ?? Colors.black,
                                               fontSize: 19,
                                               fontWeight: FontWeight.w500
                                             ),
                                           ),
                                           SizedBox(height: 20,),
-                                          Text('${reports['assessments']['lifestyle']['components']['alcohol']['message']}', style: TextStyle(fontSize: 14, height: 1.3),)
+                                          Text('${widget.reports['assessments']['lifestyle']['components']['alcohol']['message']}', style: TextStyle(fontSize: 14, height: 1.3),)
                                         ],
                                       ),
                                     ),
-                                  ) : Container(),
+                                  ),
                                 ],
                               ),
                             ),
                             SizedBox(height: 20,),
-                            reports['assessments']['lifestyle']['components']['diet'] != null && reports['assessments']['lifestyle']['components']['diet']['components']['fruit_vegetable'] != null ?
                             Container(
                               child: Row(
                                 children: <Widget>[
@@ -296,15 +294,15 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                           SizedBox(height: 10,),
                                           Text('Fruits and vegetables intake', style: TextStyle(color: Colors.black87, fontSize: 19, fontWeight: FontWeight.w500),),
                                           SizedBox(height: 20,),
-                                          Text('${reports['assessments']['lifestyle']['components']['diet']['components']['fruit_vegetable']['eval']}',
+                                          Text('${widget.reports['assessments']['lifestyle']['components']['diet']['components']['fruit_vegetable']['eval']}',
                                             style: TextStyle(
-                                              color: ColorUtils.statusColor[reports['assessments']['lifestyle']['components']['diet']['components']['fruit_vegetable']['tfl']] ?? Colors.black, 
+                                              color: ColorUtils.statusColor[widget.reports['assessments']['lifestyle']['components']['diet']['components']['fruit_vegetable']['tfl']] ?? Colors.black, 
                                               fontSize: 19, 
                                               fontWeight: FontWeight.w500
                                             ),
                                           ),
                                           SizedBox(height: 20,),
-                                          Text('${reports['assessments']['lifestyle']['components']['diet']['components']['fruit_vegetable']['message']}', style: TextStyle(fontSize: 14,),)
+                                          Text('${widget.reports['assessments']['lifestyle']['components']['diet']['components']['fruit_vegetable']['message']}', style: TextStyle(fontSize: 14,),)
                                         ],
                                       ),
                                     ),
@@ -335,23 +333,22 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                           SizedBox(height: 10,),
                                           Text('Physical Activity', style: TextStyle(color: Colors.black87, fontSize: 19, fontWeight: FontWeight.w500),),
                                           SizedBox(height: 20,),
-                                          Text('${reports['assessments']['lifestyle']['components']['physical_activity']['eval']}', 
+                                          Text('${widget.reports['assessments']['lifestyle']['components']['physical_activity']['eval']}', 
                                             style: TextStyle(
-                                              color: ColorUtils.statusColor[reports['assessments']['lifestyle']['components']['physical_activity']['tfl']] ?? Colors.black, 
+                                              color: ColorUtils.statusColor[widget.reports['assessments']['lifestyle']['components']['physical_activity']['tfl']] ?? Colors.black, 
                                               fontSize: 19, 
                                               fontWeight: FontWeight.w500
                                             ),
                                           ),
                                           SizedBox(height: 20,),
-                                          Text('${reports['assessments']['lifestyle']['components']['physical_activity']['message']}', style: TextStyle(fontSize: 14,),)
+                                          Text('${widget.reports['assessments']['lifestyle']['components']['physical_activity']['message']}', style: TextStyle(fontSize: 14,),)
                                         ],
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
-                            ) : 
-                            Container(),
+                            ),
                           ],
                         )
                       ),
@@ -372,7 +369,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                             Text('Body Composition', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500)),
                             SizedBox(height: 30,),
 
-                            reports['assessments']['body_composition']['components']['body_fat'] != null ?
+                            widget.reports['assessments']['body_composition']['components']['body_fat'] != null ?
                             Container(
                               // alignment: Alignment.topCenter,
                               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -403,14 +400,14 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: <Widget>[
-                                              Text('${reports['assessments']['body_composition']['components']['body_fat']['value']} ${reports['assessments']['body_composition']['components']['body_fat']['eval']}',
+                                              Text('${widget.reports['assessments']['body_composition']['components']['body_fat']['value']} ${widget.reports['assessments']['body_composition']['components']['body_fat']['eval']}',
                                                 style: TextStyle(
                                                     fontSize: 18,
-                                                    color: ColorUtils.statusColor[reports['assessments']['body_composition']['components']['body_fat']['tfl']],
+                                                    color: ColorUtils.statusColor[widget.reports['assessments']['body_composition']['components']['body_fat']['tfl']],
                                                   ),
                                                 ),
                                               SizedBox(height: 15,),
-                                              Text('${reports['assessments']['body_composition']['components']['body_fat']['target']}',
+                                              Text('${widget.reports['assessments']['body_composition']['components']['body_fat']['target']}',
                                                 style: TextStyle(
                                                   fontSize: 14,
                                                   color: kTextGrey
@@ -436,7 +433,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                                     height: 14,
                                                     width: 57,
                                                   ),
-                                                  reports['assessments']['body_composition']['components']['body_fat']['tfl'] == 'GREEN' ? 
+                                                  widget.reports['assessments']['body_composition']['components']['body_fat']['tfl'] == 'GREEN' ? 
                                                   Container(
                                                     child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryGreenColor,),
                                                   ) :
@@ -451,7 +448,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                                     height: 14,
                                                     width: 57,
                                                   ),
-                                                  reports['assessments']['body_composition']['components']['body_fat']['tfl'] == 'AMBER' ? 
+                                                  widget.reports['assessments']['body_composition']['components']['body_fat']['tfl'] == 'AMBER' ? 
                                                   Container(
                                                     child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryAmberColor,),
                                                   ) :
@@ -465,7 +462,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                                     height: 14,
                                                     width: 57,
                                                   ),
-                                                  reports['assessments']['body_composition']['components']['body_fat']['tfl'] == 'RED' ? 
+                                                  widget.reports['assessments']['body_composition']['components']['body_fat']['tfl'] == 'RED' ? 
                                                   Container(
                                                     child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryRedColor,),
                                                   ) :
@@ -485,7 +482,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                             ) : 
                             Container(),
 
-                            reports['assessments']['body_composition']['components']['hip_circ'] != null ? 
+                            widget.reports['assessments']['body_composition']['components']['hip_circ'] != null ? 
                             Container(
                               // alignment: Alignment.topCenter,
                               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -517,14 +514,14 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: <Widget>[
-                                              Text('${reports['assessments']['body_composition']['components']['hip_circ']['value']} ${reports['assessments']['body_composition']['components']['hip_circ']['eval']}',
+                                              Text('${widget.reports['assessments']['body_composition']['components']['hip_circ']['value']} ${widget.reports['assessments']['body_composition']['components']['hip_circ']['eval']}',
                                                 style: TextStyle(
                                                   fontSize: 18,
-                                                  color: ColorUtils.statusColor[reports['assessments']['body_composition']['components']['hip_circ']['tfl']] ?? Colors.black
+                                                  color: ColorUtils.statusColor[widget.reports['assessments']['body_composition']['components']['hip_circ']['tfl']] ?? Colors.black
                                                 ),
                                               ),
                                               SizedBox(height: 15,),
-                                              Text('${reports['assessments']['body_composition']['components']['hip_circ']['target']}',
+                                              Text('${widget.reports['assessments']['body_composition']['components']['hip_circ']['target']}',
                                                 style: TextStyle(
                                                   fontSize: 14,
                                                   color: kTextGrey
@@ -550,7 +547,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                                     height: 14,
                                                     width: 57,
                                                   ),
-                                                  reports['assessments']['body_composition']['components']['hip_circ']['tfl'] == 'GREEN' ? 
+                                                  widget.reports['assessments']['body_composition']['components']['hip_circ']['tfl'] == 'GREEN' ? 
                                                   Container(
                                                     child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryGreenColor,),
                                                   ) :
@@ -565,7 +562,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                                     height: 14,
                                                     width: 57,
                                                   ),
-                                                  reports['assessments']['body_composition']['components']['hip_circ']['tfl'] == 'AMBER' ? 
+                                                  widget.reports['assessments']['body_composition']['components']['hip_circ']['tfl'] == 'AMBER' ? 
                                                   Container(
                                                     child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryAmberColor,),
                                                   ) :
@@ -579,7 +576,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                                     height: 14,
                                                     width: 57,
                                                   ),
-                                                  reports['assessments']['body_composition']['components']['hip_circ']['tfl'] == 'RED' ? 
+                                                  widget.reports['assessments']['body_composition']['components']['hip_circ']['tfl'] == 'RED' ? 
                                                   Container(
                                                     child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryRedColor,),
                                                   ) :
@@ -599,7 +596,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                             ) : 
                             Container(),
 
-                            reports['assessments']['body_composition']['components']['bmi'] != null ? 
+                            widget.reports['assessments']['body_composition']['components']['bmi'] != null ? 
                             Container(
                               // alignment: Alignment.topCenter,
                               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -631,15 +628,15 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: <Widget>[
-                                              Text('${reports['assessments']['body_composition']['components']['bmi']['value']} ${reports['assessments']['body_composition']['components']['bmi']['eval']}',
+                                              Text('${widget.reports['assessments']['body_composition']['components']['bmi']['value']} ${widget.reports['assessments']['body_composition']['components']['bmi']['eval']}',
                                                 style: TextStyle(
                                                   fontSize: 18,
-                                                  color: ColorUtils.statusColor[reports['assessments']['body_composition']['components']['bmi']['tfl']] ?? Colors.black,
+                                                  color: ColorUtils.statusColor[widget.reports['assessments']['body_composition']['components']['bmi']['tfl']] ?? Colors.black,
 
                                                 ),
                                               ),
                                               SizedBox(height: 15,),
-                                              Text('${reports['assessments']['body_composition']['components']['bmi']['target']}',
+                                              Text('${widget.reports['assessments']['body_composition']['components']['bmi']['target']}',
                                                 style: TextStyle(
                                                   fontSize: 14,
                                                   color: kTextGrey
@@ -665,7 +662,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                                     height: 14,
                                                     width: 57,
                                                   ),
-                                                  reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'GREEN' ? 
+                                                  widget.reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'GREEN' ? 
                                                   Container(
                                                     child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryGreenColor,),
                                                   ) :
@@ -680,7 +677,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                                     height: 14,
                                                     width: 57,
                                                   ),
-                                                  reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'AMBER' ? 
+                                                  widget.reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'AMBER' ? 
                                                   Container(
                                                     child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryAmberColor,),
                                                   ) :
@@ -694,7 +691,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                                     height: 14,
                                                     width: 57,
                                                   ),
-                                                  reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'RED' ? 
+                                                  widget.reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'RED' ? 
                                                   Container(
                                                     child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryRedColor,),
                                                   ) :
@@ -725,7 +722,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                         )
                       ),
 
-                      reports['assessments']['blood_pressure'] != null ?
+                      widget.reports['assessments']['blood_pressure'] != null ?
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 25, vertical: 35),
                         width: double.infinity,
@@ -754,14 +751,14 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Text('${reports['assessments']['blood_pressure']['value']}   ${reports['assessments']['blood_pressure']['eval']}',
+                                    Text('${widget.reports['assessments']['blood_pressure']['value']}   ${widget.reports['assessments']['blood_pressure']['eval']}',
                                       style: TextStyle(
                                         fontSize: 18,
-                                        color: ColorUtils.statusColor[reports['assessments']['blood_pressure']['tfl']] ?? Colors.black
+                                        color: ColorUtils.statusColor[widget.reports['assessments']['blood_pressure']['tfl']] ?? Colors.black
                                       ),
                                     ),
                                     SizedBox(height: 15,),
-                                    Text('${reports['assessments']['blood_pressure']['target']}', style: TextStyle(fontSize: 14, color: kTextGrey,),)
+                                    Text('${widget.reports['assessments']['blood_pressure']['target']}', style: TextStyle(fontSize: 14, color: kTextGrey,),)
                                   ]
                                 ),
                                 SizedBox(width: 30,),
@@ -780,7 +777,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                             height: 14,
                                             width: 57,
                                           ),
-                                          reports['assessments']['blood_pressure']['tfl'] == 'GREEN' ?
+                                          widget.reports['assessments']['blood_pressure']['tfl'] == 'GREEN' ?
                                           Container(
                                             child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryGreenColor,),
                                           ) : 
@@ -795,7 +792,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                             height: 14,
                                             width: 57,
                                           ),
-                                          reports['assessments']['blood_pressure']['tfl'] == 'AMBER' ?
+                                          widget.reports['assessments']['blood_pressure']['tfl'] == 'AMBER' ?
                                           Container(
                                             child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryAmberColor,),
                                           ) : 
@@ -809,7 +806,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                             height: 14,
                                             width: 57,
                                           ),
-                                          reports['assessments']['blood_pressure']['tfl'] == 'RED' ?
+                                          widget.reports['assessments']['blood_pressure']['tfl'] == 'RED' ?
                                           Container(
                                             child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryRedColor,),
                                           ) : 
@@ -824,14 +821,14 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                             ),
                             SizedBox(height: 25,),
 
-                            Text("${reports['assessments']['blood_pressure']['message']}", style: TextStyle(fontSize: 18, height: 1.5),),
+                            Text("${widget.reports['assessments']['blood_pressure']['message']}", style: TextStyle(fontSize: 18, height: 1.5),),
                             
                           ],
                         )
                       ) : 
                       Container(),
 
-                      reports['assessments']['diabetes'] != null ?
+                      widget.reports['assessments']['diabetes'] != null ?
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 25, vertical: 35),
                         width: double.infinity,
@@ -860,14 +857,14 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Text('${reports['assessments']['diabetes']['value']}   ${reports['assessments']['diabetes']['eval']}',
+                                    Text('${widget.reports['assessments']['diabetes']['value']}   ${widget.reports['assessments']['diabetes']['eval']}',
                                       style: TextStyle(
                                         fontSize: 18,
-                                        color: ColorUtils.statusColor[reports['assessments']['diabetes']['tfl']] ?? Colors.black
+                                        color: ColorUtils.statusColor[widget.reports['assessments']['diabetes']['tfl']] ?? Colors.black
                                       ),
                                     ),
                                     SizedBox(height: 15,),
-                                    Text('${reports['assessments']['diabetes']['target']}', style: TextStyle(fontSize: 14, color: kTextGrey,),)
+                                    Text('${widget.reports['assessments']['diabetes']['target']}', style: TextStyle(fontSize: 14, color: kTextGrey,),)
                                   ]
                                 ),
                                 SizedBox(width: 30,),
@@ -886,7 +883,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                             height: 14,
                                             width: 57,
                                           ),
-                                          reports['assessments']['diabetes']['tfl'] == 'GREEN' ?
+                                          widget.reports['assessments']['diabetes']['tfl'] == 'GREEN' ?
                                           Container(
                                             child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryGreenColor,),
                                           ) : 
@@ -901,7 +898,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                             height: 14,
                                             width: 57,
                                           ),
-                                          reports['assessments']['diabetes']['tfl'] == 'AMBER' ?
+                                          widget.reports['assessments']['diabetes']['tfl'] == 'AMBER' ?
                                           Container(
                                             child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryAmberColor,),
                                           ) : 
@@ -915,7 +912,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                             height: 14,
                                             width: 57,
                                           ),
-                                          reports['assessments']['diabetes']['tfl'] == 'RED' ?
+                                          widget.reports['assessments']['diabetes']['tfl'] == 'RED' ?
                                           Container(
                                             child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryRedColor,),
                                           ) : 
@@ -930,14 +927,14 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                             ),
                             SizedBox(height: 25,),
 
-                            Text("${reports['assessments']['diabetes']['message']}", style: TextStyle(fontSize: 18, height: 1.5),),
+                            Text("${widget.reports['assessments']['diabetes']['message']}", style: TextStyle(fontSize: 18, height: 1.5),),
                             
                           ],
                         )
                       ) : 
                       Container(),
 
-                      reports['assessments']['cholesterol']['components']['total_cholesterol'] != null ?
+                      widget.reports['assessments']['cholesterol']['components']['total_cholesterol'] != null ?
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 25, vertical: 35),
                         width: double.infinity,
@@ -966,14 +963,14 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Text('${reports['assessments']['cholesterol']['components']['total_cholesterol']['value']}   ${reports['assessments']['cholesterol']['components']['total_cholesterol']['eval']}',
+                                    Text('${widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['value']}   ${widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['eval']}',
                                       style: TextStyle(
                                         fontSize: 18,
-                                        color: ColorUtils.statusColor[reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl']] ?? Colors.black
+                                        color: ColorUtils.statusColor[widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl']] ?? Colors.black
                                       ),
                                     ),
                                     SizedBox(height: 15,),
-                                    Text('${reports['assessments']['diabetes']['target']}', style: TextStyle(fontSize: 14, color: kTextGrey,),)
+                                    Text('${widget.reports['assessments']['diabetes']['target']}', style: TextStyle(fontSize: 14, color: kTextGrey,),)
                                   ]
                                 ),
                                 SizedBox(width: 30,),
@@ -992,7 +989,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                             height: 14,
                                             width: 57,
                                           ),
-                                          reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'GREEN' ?
+                                          widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'GREEN' ?
                                           Container(
                                             child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryGreenColor,),
                                           ) : 
@@ -1007,7 +1004,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                             height: 14,
                                             width: 57,
                                           ),
-                                          reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'AMBER' ?
+                                          widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'AMBER' ?
                                           Container(
                                             child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryAmberColor,),
                                           ) : 
@@ -1021,7 +1018,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                             height: 14,
                                             width: 57,
                                           ),
-                                          reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'RED' ?
+                                          widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'RED' ?
                                           Container(
                                             child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryRedColor,),
                                           ) : 
@@ -1036,14 +1033,14 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                             ),
                             SizedBox(height: 25,),
 
-                            Text("${reports['assessments']['cholesterol']['components']['total_cholesterol']['message']}", style: TextStyle(fontSize: 18, height: 1.5),),
+                            Text("${widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['message']}", style: TextStyle(fontSize: 18, height: 1.5),),
                             
                           ],
                         )
                       ) : 
                       Container(),
 
-                      reports['assessments']['cvd'] != null ?
+                      widget.reports['assessments']['cvd'] != null ?
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 25, vertical: 35),
                         width: double.infinity,
@@ -1072,14 +1069,14 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Text('${reports['assessments']['cvd']['value']}   ${reports['assessments']['cvd']['eval']}',
+                                    Text('${widget.reports['assessments']['cvd']['value']}   ${widget.reports['assessments']['cvd']['eval']}',
                                       style: TextStyle(
                                         fontSize: 18,
-                                        color: ColorUtils.statusColor[reports['assessments']['cvd']['tfl']] ?? Colors.black
+                                        color: ColorUtils.statusColor[widget.reports['assessments']['cvd']['tfl']] ?? Colors.black
                                       ),
                                     ),
                                     SizedBox(height: 15,),
-                                    Text('${reports['assessments']['cvd']['target']}', style: TextStyle(fontSize: 14, color: kTextGrey,),)
+                                    Text('${widget.reports['assessments']['cvd']['target']}', style: TextStyle(fontSize: 14, color: kTextGrey,),)
                                   ]
                                 ),
                                 SizedBox(width: 30,),
@@ -1098,7 +1095,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                             height: 14,
                                             width: 57,
                                           ),
-                                          reports['assessments']['cvd']['tfl'] == 'GREEN' ?
+                                          widget.reports['assessments']['cvd']['tfl'] == 'GREEN' ?
                                           Container(
                                             child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryGreenColor,),
                                           ) : 
@@ -1113,7 +1110,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                             height: 14,
                                             width: 57,
                                           ),
-                                          reports['assessments']['cvd']['tfl'] == 'AMBER' ?
+                                          widget.reports['assessments']['cvd']['tfl'] == 'AMBER' ?
                                           Container(
                                             child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryAmberColor,),
                                           ) : 
@@ -1127,7 +1124,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                             height: 14,
                                             width: 57,
                                           ),
-                                          reports['assessments']['cvd']['tfl'] == 'RED' ?
+                                          widget.reports['assessments']['cvd']['tfl'] == 'RED' ?
                                           Container(
                                             child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryRedColor,),
                                           ) : 
@@ -1142,7 +1139,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                             ),
                             SizedBox(height: 25,),
 
-                            Text("${reports['assessments']['cvd']['message']}", style: TextStyle(fontSize: 18, height: 1.5),),
+                            Text("${widget.reports['assessments']['cvd']['message']}", style: TextStyle(fontSize: 18, height: 1.5),),
                             
                           ],
                         )
@@ -1260,7 +1257,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                 setState(() {
                                   isLoading = true;
                                 });
-                                var response = await HealthReportController().confirmAssessment(reports, commentsController.text);
+                                var response = await HealthReportController().confirmAssessment(widget.reports, commentsController.text);
                                 if (response == 'success') {
                                   setState(() {
                                     isLoading = false;
@@ -1287,7 +1284,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                 setState(() {
                                   isLoading = true;
                                 });
-                                var response = await HealthReportController().confirmAssessment(reports, commentsController.text);
+                                var response = await HealthReportController().confirmAssessment(widget.reports, commentsController.text);
                                 if (response == 'success') {
                                   setState(() {
                                     isLoading = false;
@@ -1322,7 +1319,6 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
           ) : Container(),
           ],
         )),
-    
     );
   }
 }
