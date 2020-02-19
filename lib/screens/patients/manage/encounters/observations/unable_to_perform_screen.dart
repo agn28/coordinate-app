@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:nhealth/app_localizations.dart';
 
 class UnableToPerformScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Observations'),
+        title: Text(AppLocalizations.of(context).translate('observations')),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -19,7 +20,7 @@ class UnableToPerformScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   SizedBox(height: 40,),
-                  Text('Enter reason for inablity to perform', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                  Text(AppLocalizations.of(context).translate('enterReason'), style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                   SizedBox(height: 50,),
                   SizedBox(height: 50,),
                   
@@ -30,7 +31,7 @@ class UnableToPerformScreen extends StatelessWidget {
                       height: 60.0,
                       child: RaisedButton(
                         onPressed: () {},
-                        child: Text("Patient Refused", style: TextStyle(color: Colors.white, fontSize: 22),),
+                        child: Text(AppLocalizations.of(context).translate('patientRefused'), style: TextStyle(color: Colors.white, fontSize: 22),),
                       ),
                     ),
                   ),
@@ -44,7 +45,7 @@ class UnableToPerformScreen extends StatelessWidget {
                       child: RaisedButton(
                         color: Colors.grey,
                         onPressed: () {},
-                        child: Text("Patient unable", style: TextStyle(color: Colors.white, fontSize: 22),),
+                        child: Text(AppLocalizations.of(context).translate('patientUnable'), style: TextStyle(color: Colors.white, fontSize: 22),),
                       ),
                     ),
                   ),
@@ -58,7 +59,7 @@ class UnableToPerformScreen extends StatelessWidget {
                       child: RaisedButton(
                         color: Colors.grey,
                         onPressed: () {},
-                        child: Text("Instrument Error", style: TextStyle(color: Colors.white, fontSize: 22),),
+                        child: Text(AppLocalizations.of(context).translate('instrumentError'), style: TextStyle(color: Colors.white, fontSize: 22),),
                       ),
                     ),
                   ),
@@ -72,7 +73,7 @@ class UnableToPerformScreen extends StatelessWidget {
                       child: RaisedButton(
                         color: Colors.grey,
                         onPressed: () {},
-                        child: Text("Instrument Unavailable", style: TextStyle(color: Colors.white, fontSize: 22),),
+                        child: Text(AppLocalizations.of(context).translate('instrumentUnavailable'), style: TextStyle(color: Colors.white, fontSize: 22),),
                       ),
                     ),
                   ),
@@ -85,7 +86,7 @@ class UnableToPerformScreen extends StatelessWidget {
                       height: 60.0,
                       child: RaisedButton(
                         onPressed: () {},
-                        child: Text("Done", style: TextStyle(color: Colors.white, fontSize: 22),),
+                        child: Text(AppLocalizations.of(context).translate('done'), style: TextStyle(color: Colors.white, fontSize: 22),),
                       ),
                     ),
                   ),

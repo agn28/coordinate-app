@@ -6,6 +6,7 @@ import 'package:nhealth/models/body_measurement.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
+import 'package:nhealth/app_localizations.dart';
 
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -34,7 +35,7 @@ class MeasurementsState extends State<Measurements> {
       key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Body Measurements', style: TextStyle(color: kPrimaryColor),),
+        title: Text(AppLocalizations.of(context).translate('bodyMeasurements'), style: TextStyle(color: kPrimaryColor),),
         backgroundColor: Colors.white,
         elevation: 0.0,
         iconTheme: IconThemeData(color: kPrimaryColor),
@@ -95,7 +96,7 @@ class MeasurementsState extends State<Measurements> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Complete All Components', style: TextStyle(fontSize: 22),)
+              child: Text(AppLocalizations.of(context).translate('completeComponents'), style: TextStyle(fontSize: 22),)
             ),
             
             Container(
@@ -104,17 +105,17 @@ class MeasurementsState extends State<Measurements> {
                 children: <Widget>[
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/height.png'),
-                    text: 'Height',
+                    text: AppLocalizations.of(context).translate('height'),
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/weight.png'),
-                    text: 'Weight',
+                    text: AppLocalizations.of(context).translate('weight'),
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/hip.png'),
-                    text: 'Waist/Hip',
+                    text: AppLocalizations.of(context).translate('waist'),
                   ),
                 ],
               )
@@ -155,7 +156,7 @@ class MeasurementsState extends State<Measurements> {
                     );
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('UNABLE TO PERFORM', style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
+                  child: Text(AppLocalizations.of(context).translate('unablePerform'), style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
                 ),
               ),
             ),
@@ -173,7 +174,7 @@ class MeasurementsState extends State<Measurements> {
                     if (result == 'success') {
                       _scaffoldKey.currentState.showSnackBar(
                         SnackBar(
-                          content: Text('Data saved successfully!'),
+                          content: Text(AppLocalizations.of(context).translate('dataSaved')),
                           backgroundColor: Color(0xFF4cAF50),
                         )
                       );
@@ -189,7 +190,7 @@ class MeasurementsState extends State<Measurements> {
                     }
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('SAVE', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text(AppLocalizations.of(context).translate('save'), style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                 ),
               )
             )
@@ -381,7 +382,7 @@ class _AddDialogueState extends State<AddDialogue> {
                               changeArm(val);
                             },
                           ),
-                          Text(widget.title == 'Weight' ? 'kg' : 'cm', style: TextStyle(color: Colors.black)),
+                          Text(widget.title == 'Weight' ? AppLocalizations.of(context).translate('kg') : AppLocalizations.of(context).translate('cm'), style: TextStyle(color: Colors.black)),
                           SizedBox(width: 20,),
                           Radio(
                             activeColor: kPrimaryColor,
@@ -392,7 +393,7 @@ class _AddDialogueState extends State<AddDialogue> {
                             },
                           ),
                           Text(
-                            widget.title == 'Weight' ? 'pound' : 'inch',
+                            widget.title == 'Weight' ? AppLocalizations.of(context).translate('pound') : AppLocalizations.of(context).translate('inch'),
                           ),
                         ],
                       ),
@@ -404,7 +405,7 @@ class _AddDialogueState extends State<AddDialogue> {
               Container(
                 color: kSecondaryTextField,
                 child: DropdownButtonFormField(
-                  hint: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                  hint: Text(AppLocalizations.of(context).translate('selectDevice'), style: TextStyle(fontSize: 20, color: kTextGrey),),
                   decoration: InputDecoration(
                     fillColor: kSecondaryTextField,
                     contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
@@ -452,7 +453,7 @@ class _AddDialogueState extends State<AddDialogue> {
                       )
                     ),
                   
-                    hintText: 'Comments/Notes',
+                    hintText: AppLocalizations.of(context).translate('comment'),
                     hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                   ),
                 )
@@ -472,7 +473,7 @@ class _AddDialogueState extends State<AddDialogue> {
                           onTap: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                          child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
                         ),
                         SizedBox(width: 50,),
                         GestureDetector(
@@ -483,7 +484,7 @@ class _AddDialogueState extends State<AddDialogue> {
                               _clearDialogForm();
                             }
                           },
-                          child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
+                          child: Text(AppLocalizations.of(context).translate('add'), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
                         ),
                       ],
                     )

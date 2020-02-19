@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/helpers/helpers.dart';
@@ -57,7 +58,7 @@ class _NewEncounterState extends State<NewEncounter> {
       key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Create a New Assessment', style: TextStyle(color: Colors.white),),
+        title: Text(AppLocalizations.of(context).translate('createNewAssessment'), style: TextStyle(color: Colors.white),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -122,7 +123,7 @@ class _NewEncounterState extends State<NewEncounter> {
                     bottom: BorderSide(width: .5, color: Color(0x50000000))
                   )
                 ),
-                child: Text('Complete all the sections that are applicable', style: TextStyle(fontSize: 20),)
+                child: Text(AppLocalizations.of(context).translate('completeAllSections'), style: TextStyle(fontSize: 20),)
               ),
 
               Container(
@@ -192,7 +193,7 @@ class _NewEncounterState extends State<NewEncounter> {
                       )
                     ),
 
-                    hintText: 'Comments/Notes (optional)',
+                    hintText: AppLocalizations.of(context).translate('comments'),
                     hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                   ),
                 )
@@ -214,7 +215,7 @@ class _NewEncounterState extends State<NewEncounter> {
                         _changeType(value);
                       },
                     ),
-                    Text("In-clininc Screening", style: TextStyle(color: Colors.black)),
+                    Text(AppLocalizations.of(context).translate("clinincScreening"), style: TextStyle(color: Colors.black)),
 
                     Radio(
                       value: 'Home Visit',
@@ -260,7 +261,7 @@ class _NewEncounterState extends State<NewEncounter> {
                     Navigator.of(context).pop();
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('CANCEL', style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
+                  child: Text(AppLocalizations.of(context).translate("cancel"), style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
                 ),
               )
             ),
@@ -289,9 +290,9 @@ class _NewEncounterState extends State<NewEncounter> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text('Confirm Save', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                                Text(AppLocalizations.of(context).translate('confirmSave'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                                 SizedBox(height: 20,),
-                                Text('You have missing sections for this encounter. Are you sure you want to save?',
+                                Text(AppLocalizations.of(context).translate('missingSections'),
                                   style: TextStyle(fontSize: 18, height: 1.5),
                                 ),
 
@@ -308,7 +309,7 @@ class _NewEncounterState extends State<NewEncounter> {
                                             onTap: () {
                                               Navigator.of(context).pop();
                                             },
-                                            child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                                            child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
                                           ),
                                           SizedBox(width: 30,),
                                           GestureDetector(
@@ -324,7 +325,7 @@ class _NewEncounterState extends State<NewEncounter> {
                                                 _dataSaved = true;
                                                 _scaffoldKey.currentState.showSnackBar(
                                                   SnackBar(
-                                                    content: Text('Data saved successfully!'),
+                                                    content: Text(AppLocalizations.of(context).translate('dataSaved')),
                                                     backgroundColor: Color(0xFF4cAF50),
                                                   )
                                                 );
@@ -347,7 +348,7 @@ class _NewEncounterState extends State<NewEncounter> {
                                                 );
                                               }
                                             },
-                                            child: Text('SAVE', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
+                                            child: Text(AppLocalizations.of(context).translate('save'), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
                                           ),
                                         ],
                                       )
@@ -367,7 +368,7 @@ class _NewEncounterState extends State<NewEncounter> {
                     }
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text(Assessment().getSelectedAssessment().isNotEmpty ? 'Update Assessment' : 'Save Assssment',
+                  child: Text(Assessment().getSelectedAssessment().isNotEmpty ? AppLocalizations.of(context).translate('updateAssessment') : AppLocalizations.of(context).translate('saveAssssment'),
                   style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500)
                 ),
               )
@@ -416,7 +417,7 @@ class EncounnterSteps extends StatelessWidget {
             Expanded(
               flex: 2,
               child: Text(status, style: TextStyle(
-                color: status == 'Incomplete' ? kPrimaryRedColor : kPrimaryGreenColor,
+                color: status == AppLocalizations.of(context).translate('incomplete') ? kPrimaryRedColor : kPrimaryGreenColor,
                 fontSize: 18,
                 fontWeight: FontWeight.bold),),
             ),

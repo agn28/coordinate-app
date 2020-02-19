@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/helpers/helpers.dart';
@@ -80,7 +81,7 @@ class _PastEncountersState extends State<PastEncounters> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Past Assessments', style: TextStyle(color: Colors.white),),
+        title: Text(AppLocalizations.of(context).translate('pastAssessments'), style: TextStyle(color: Colors.white),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -144,10 +145,10 @@ class _PastEncountersState extends State<PastEncounters> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
                         Expanded(
-                          child: Text('Date', style: TextStyle(fontSize: 17),),
+                          child: Text(AppLocalizations.of(context).translate('dateEncounter'), style: TextStyle(fontSize: 17),),
                         ),
                         Expanded(
-                          child: Text('Type', style: TextStyle(fontSize: 17,),),
+                          child: Text(AppLocalizations.of(context).translate('type'), style: TextStyle(fontSize: 17,),),
                         ),
                         Expanded(
                           child: Text('')

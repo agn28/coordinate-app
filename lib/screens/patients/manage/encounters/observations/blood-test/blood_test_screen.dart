@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nhealth/app_localizations.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
@@ -22,7 +23,7 @@ class BloodTests extends StatelessWidget {
       key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Blood Tests', style: TextStyle(color: kPrimaryColor),),
+        title: Text(AppLocalizations.of(context).translate('bloodTests'), style: TextStyle(color: kPrimaryColor),),
         backgroundColor: Colors.white,
         elevation: 0.0,
         iconTheme: IconThemeData(color: kPrimaryColor),
@@ -83,7 +84,7 @@ class BloodTests extends StatelessWidget {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Enter blood test results (where applicable)', style: TextStyle(fontSize: 18),)
+              child: Text(AppLocalizations.of(context).translate('enterBloodTest'), style: TextStyle(fontSize: 18),)
             ),
 
             Container(
@@ -97,7 +98,7 @@ class BloodTests extends StatelessWidget {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Lipid Profile', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate('lipidProfile'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),)
             ),
             
             Container(
@@ -106,17 +107,17 @@ class BloodTests extends StatelessWidget {
                 children: <Widget>[
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test_common.png'),
-                    text: 'Total Cholesterol',
+                    text: AppLocalizations.of(context).translate('totalCholesterol'),
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test_common.png'),
-                    text: 'HDL',
+                    text: AppLocalizations.of(context).translate('hdl'),
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test_common.png'),
-                    text: 'Triglycerides',
+                    text: AppLocalizations.of(context).translate('triglycerides'),
                   ),
                 ],
               )
@@ -133,7 +134,7 @@ class BloodTests extends StatelessWidget {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Blood', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate('blood'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),)
             ),
 
             Container(
@@ -142,12 +143,12 @@ class BloodTests extends StatelessWidget {
                 children: <Widget>[
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_glucose.png'),
-                    text: 'Fasting Blood Glucose',
+                    text: AppLocalizations.of(context).translate('fastingBloodGlucose'),
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_glucose.png'),
-                    text: 'Random Blood Sugar',
+                    text: AppLocalizations.of(context).translate('randomBloodSugar'),
                   ),
                 ],
               )
@@ -164,7 +165,7 @@ class BloodTests extends StatelessWidget {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Others', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate('others'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),)
             ),
 
             Container(
@@ -173,12 +174,12 @@ class BloodTests extends StatelessWidget {
                 children: <Widget>[
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/hba1c.png'),
-                    text: 'Hba1c'
+                    text: AppLocalizations.of(context).translate('hba1c')
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/ogtt.png'),
-                    text: '2H OGTT',
+                    text: AppLocalizations.of(context).translate('hogtt'),
                   ),
                 ],
               )
@@ -217,7 +218,7 @@ class BloodTests extends StatelessWidget {
                     );
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('UNABLE TO PERFORM', style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
+                  child: Text(AppLocalizations.of(context).translate('unablePerform'), style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
                 ),
               )
             ),
@@ -235,7 +236,7 @@ class BloodTests extends StatelessWidget {
                     if (result == 'success') {
                       _scaffoldKey.currentState.showSnackBar(
                         SnackBar(
-                          content: Text('Data saved successfully!'),
+                          content: Text(AppLocalizations.of(context).translate('dataSaved')),
                           backgroundColor: Color(0xFF4cAF50),
                         )
                       );
@@ -251,7 +252,7 @@ class BloodTests extends StatelessWidget {
                     }
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('SAVE', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text(AppLocalizations.of(context).translate('save'), style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                 ),
               )
             )
@@ -432,7 +433,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                               _changeUnit(val);
                             },
                           ),
-                          Text("mg/dL", style: TextStyle(color: Colors.black)),
+                          Text(AppLocalizations.of(context).translate("mg/dL"), style: TextStyle(color: Colors.black)),
                           SizedBox(width: 20,),
                           Radio(
                             activeColor: kPrimaryColor,
@@ -443,7 +444,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                             },
                           ),
                           Text(
-                            "mmol/L",
+                            AppLocalizations.of(context).translate("mmol/L"),
                           ),
                         ],
                       ),
@@ -455,7 +456,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
               Container(
                 color: kSecondaryTextField,
                 child: DropdownButtonFormField(
-                  hint: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                  hint: Text(AppLocalizations.of(context).translate('selectDevice'), style: TextStyle(fontSize: 20, color: kTextGrey),),
                   decoration: InputDecoration(
                     fillColor: kSecondaryTextField,
                     contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
@@ -503,7 +504,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                       )
                     ),
                   
-                    hintText: 'Comments/Notes',
+                    hintText: AppLocalizations.of(context).translate('comments'),
                     hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                   ),
                 )
@@ -522,7 +523,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                             onTap: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text('UNABLE TO PERFORM', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                            child: Text(AppLocalizations.of(context).translate('unablePerform'), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
                           ),
                         ),
                         SizedBox(width: 30,),
@@ -530,7 +531,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                           onTap: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                          child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
                         ),
                         SizedBox(width: 30,),
                         GestureDetector(
@@ -541,7 +542,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                               _clearDialogForm();
                             }
                           },
-                          child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
+                          child: Text(AppLocalizations.of(context).translate('add'), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
                         ),
                       ],
                     )

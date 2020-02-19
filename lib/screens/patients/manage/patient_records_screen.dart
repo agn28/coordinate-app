@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
@@ -42,7 +43,7 @@ class _PatientRecordsState extends State<PatientRecords> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text('Patient Overview', style: TextStyle(color: Colors.white, fontSize: 22),),
+        title: new Text(AppLocalizations.of(context).translate('patientOverview'), style: TextStyle(color: Colors.white, fontSize: 22),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -57,7 +58,7 @@ class _PatientRecordsState extends State<PatientRecords> {
                 children: <Widget>[
                   Icon(Icons.edit, color: Colors.white,),
                   SizedBox(width: 10),
-                  Text('View/Edit Patient Details', style: TextStyle(color: Colors.white))
+                  Text(AppLocalizations.of(context).translate('viewOrEditPatient'), style: TextStyle(color: Colors.white))
                 ],
               )
             )
@@ -102,13 +103,13 @@ class _PatientRecordsState extends State<PatientRecords> {
                                 children: <Widget>[
                                   Text(Helpers().getPatientAgeAndGender(_patient), style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400),),
                                   SizedBox(width: 10,),
-                                  Text('NID: ${_patient["data"]["nid"]}', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400),),
+                                  Text('${AppLocalizations.of(context).translate('nid')}: ${_patient["data"]["nid"]}', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400),),
                                   SizedBox(width: 10,),
                                   Text('PID: N-213452351', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400),),
                                 ],
                               ),
                               SizedBox(height: 20,),
-                              Text('Registered on ${Helpers().converDate(_patient["meta"]["created_at"])}', style: TextStyle(color: Colors.white70, fontSize: 17, fontWeight: FontWeight.w400),),
+                              Text('${AppLocalizations.of(context).translate('registeredOn')} ${Helpers().converDate(_patient["meta"]["created_at"])}', style: TextStyle(color: Colors.white70, fontSize: 17, fontWeight: FontWeight.w400),),
                               // Text('Registered on Jan 5, 2019', style: TextStyle(color: Colors.white70, fontSize: 17, fontWeight: FontWeight.w400),),
                             ],
                           ),
@@ -146,7 +147,7 @@ class _PatientRecordsState extends State<PatientRecords> {
                                     child: Row(
                                       children: <Widget>[
                                         Expanded(
-                                          child: Text('Encounters', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                                          child: Text(AppLocalizations.of(context).translate('encounters'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                                         ),
                                         // Expanded(
                                         //   child: Text('Last encounter on Jan 27, 2020', style: TextStyle(fontSize: 16), textAlign: TextAlign.right,)
@@ -222,7 +223,7 @@ class _PatientRecordsState extends State<PatientRecords> {
                                     child: Row(
                                       children: <Widget>[
                                         Expanded(
-                                          child: Text('Assessments', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                                          child: Text(AppLocalizations.of(context).translate('assessments'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                                         ),
                                         // Expanded(
                                         //   child: Text('Last encounter on Jan 5, 2019', style: TextStyle(fontSize: 16), textAlign: TextAlign.right,)
@@ -244,7 +245,7 @@ class _PatientRecordsState extends State<PatientRecords> {
                                         children: <Widget>[
                                           Icon(Icons.add, color: kPrimaryColor, size: 30,),
                                           SizedBox(width: 20),
-                                          Text('Create a New Health Assessment', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500, color: kPrimaryColor), textAlign: TextAlign.right,)
+                                          Text(AppLocalizations.of(context).translate('newHealthAssessment'), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500, color: kPrimaryColor), textAlign: TextAlign.right,)
                                         ],
                                       ),
                                     ),
@@ -259,7 +260,7 @@ class _PatientRecordsState extends State<PatientRecords> {
                                         children: <Widget>[
                                           Icon(Icons.visibility, color: kPrimaryColor, size: 30,),
                                           SizedBox(width: 20),
-                                          Text('View Past Health Assessments', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500, color: kPrimaryColor), textAlign: TextAlign.right,)
+                                          Text(AppLocalizations.of(context).translate('pastHealthAssessments'), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500, color: kPrimaryColor), textAlign: TextAlign.right,)
                                         ],
                                       ),
                                     ),
@@ -295,7 +296,7 @@ class _PatientRecordsState extends State<PatientRecords> {
                                     child: Row(
                                       children: <Widget>[
                                         Expanded(
-                                          child: Text('Care Plan Overview', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                                          child: Text(AppLocalizations.of(context).translate('carePlan'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                                         ),
                                         Expanded(
                                           child: Text('Last modified on Jan 5, 2019', style: TextStyle(fontSize: 16), textAlign: TextAlign.right,)
@@ -449,7 +450,7 @@ class _PatientRecordsState extends State<PatientRecords> {
                                               Navigator.of(context).push(CarePlanDetailsScreen());
                                             },
                                             padding: EdgeInsets.symmetric(vertical: 20),
-                                            child: Text('VIEW CARE PLAN DETAILS', style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                                            child: Text(AppLocalizations.of(context).translate('carePlaneDetails'), style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                                           ),
                                         )
                                       ],

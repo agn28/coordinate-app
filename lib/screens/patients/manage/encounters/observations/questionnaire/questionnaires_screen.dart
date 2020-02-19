@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/body_measurement.dart';
@@ -39,7 +40,7 @@ class _QuestionnairesState extends State<Questionnaires> {
       key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Body Measurements', style: TextStyle(color: kPrimaryColor),),
+        title: Text(AppLocalizations.of(context).translate('bodyMeasurements'), style: TextStyle(color: kPrimaryColor),),
         backgroundColor: Colors.white,
         elevation: 0.0,
         iconTheme: IconThemeData(color: kPrimaryColor),
@@ -100,7 +101,7 @@ class _QuestionnairesState extends State<Questionnaires> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Complete All Components', style: TextStyle(fontSize: 22),)
+              child: Text(AppLocalizations.of(context).translate('completeComponents'), style: TextStyle(fontSize: 22),)
             ),
             
             Container(
@@ -109,7 +110,7 @@ class _QuestionnairesState extends State<Questionnaires> {
                 children: <Widget>[
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_pressure.png'),
-                    text: Text('Tobacco', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                    text: Text(AppLocalizations.of(context).translate('tobacco'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
                     status: _getStatus('tobacco'),
                     onTap: () {
                       Navigator.of(context).push(TobaccoScreen());
@@ -118,28 +119,28 @@ class _QuestionnairesState extends State<Questionnaires> {
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test.png'),
-                    text: Text('Alcohol', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                    text: Text(AppLocalizations.of(context).translate('alcohol'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
                     status: _getStatus('alcohol'),
                     onTap: () {},
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/questionnaire.png'),
-                    text: Text('Diet', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                    text: Text(AppLocalizations.of(context).translate('diet'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
                     status: _getStatus('diet'),
                     onTap: () {},
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/questionnaire.png'),
-                    text: Text('Current Medication', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                    text: Text(AppLocalizations.of(context).translate('currentMedication'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
                     status: _getStatus('current medication'),
                     onTap: () {},
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/questionnaire.png'),
-                    text: Text('Medical History', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                    text: Text(AppLocalizations.of(context).translate('medicalHistory'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
                     status: _getStatus('medical history'),
                     onTap: () {},
                   ),
@@ -174,7 +175,7 @@ class _QuestionnairesState extends State<Questionnaires> {
                 child: FlatButton(
                   onPressed: () {},
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('Cancel', style: TextStyle(fontSize: 19, color: kPrimaryColor, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(fontSize: 19, color: kPrimaryColor, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                 ),
               )
             ),
@@ -192,7 +193,7 @@ class _QuestionnairesState extends State<Questionnaires> {
                     if (result == 'success') {
                       _scaffoldKey.currentState.showSnackBar(
                         SnackBar(
-                          content: Text('Data saved successfully!'),
+                          content: Text(AppLocalizations.of(context).translate('dataSaved')),
                           backgroundColor: Color(0xFF4cAF50),
                         )
                       );
@@ -208,7 +209,7 @@ class _QuestionnairesState extends State<Questionnaires> {
                     }
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('Save Assessment', style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text(AppLocalizations.of(context).translate('saveAssessment'), style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                 ),
               )
             )
@@ -350,7 +351,7 @@ class _AddDialogueState extends State<AddDialogue> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('Add ' + widget.title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+              Text(AppLocalizations.of(context).translate('add') + widget.title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
               SizedBox(height: 20,),
               Container(
                 // margin: EdgeInsets.symmetric(horizontal: 30),
@@ -396,7 +397,7 @@ class _AddDialogueState extends State<AddDialogue> {
               Container(
                 width: double.infinity,
                 child: PrimaryTextField(
-                  hintText: 'Select device',
+                  hintText: AppLocalizations.of(context).translate('selectDevice'),
                   topPaadding: 15,
                   bottomPadding: 15,
                   controller: deviceController,
@@ -422,7 +423,7 @@ class _AddDialogueState extends State<AddDialogue> {
                       )
                     ),
                   
-                    hintText: 'Comments/Notes',
+                    hintText: AppLocalizations.of(context).translate('comment'),
                     hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                   ),
                 )
@@ -443,7 +444,7 @@ class _AddDialogueState extends State<AddDialogue> {
                             onTap: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text('UNABLE TO PERFORM', style: TextStyle(color: kPrimaryColor, fontSize: 18),)
+                            child: Text(AppLocalizations.of(context).translate('unablePerform'), style: TextStyle(color: kPrimaryColor, fontSize: 18),)
                           ),
                         ),
                         SizedBox(width: 30,),
@@ -451,7 +452,7 @@ class _AddDialogueState extends State<AddDialogue> {
                           onTap: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 18),)
+                          child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: kPrimaryColor, fontSize: 18),)
                         ),
                         SizedBox(width: 30,),
                         GestureDetector(
@@ -462,7 +463,7 @@ class _AddDialogueState extends State<AddDialogue> {
                               _clearDialogForm();
                             }
                           },
-                          child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 18))
+                          child: Text(AppLocalizations.of(context).translate('add'), style: TextStyle(color: kPrimaryColor, fontSize: 18))
                         ),
                       ],
                     )

@@ -1,6 +1,7 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nhealth/app_localizations.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/helpers/helpers.dart';
@@ -88,7 +89,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
       resizeToAvoidBottomPadding: false,
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Blood Pressure', style: TextStyle(color: kLightBlack),),
+        title: Text(AppLocalizations.of(context).translate('bloodPressure'), style: TextStyle(color: kLightBlack),),
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: IconThemeData(color: kPrimaryColor),
@@ -150,7 +151,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Take at least 2 blood pressure measurements, each 1 min apart', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate('twoBloodPressure'), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500),)
             ),
             Container(
               alignment: Alignment.topLeft,
@@ -165,19 +166,19 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                     child: DataTable(
                       columns: [
                         DataColumn(
-                          label: Text("No.")
+                          label: Text(AppLocalizations.of(context).translate('no'))
                         ),
                         DataColumn(
-                          label: Text("Arm")
+                          label: Text(AppLocalizations.of(context).translate('arm'))
                         ),
                         DataColumn(
-                          label: Text("systolic")
+                          label: Text(AppLocalizations.of(context).translate('systolic'))
                         ),
                         DataColumn(
-                          label: Text("Diastolic")
+                          label: Text(AppLocalizations.of(context).translate('diastolic'))
                         ),
                         DataColumn(
-                          label: Text("Pulse Rate")
+                          label: Text(AppLocalizations.of(context).translate('pulseRate'))
                         )
                       ],
                       rows: _bloodPressures.map<DataRow>((bp) => DataRow(
@@ -225,7 +226,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                         ),
                         Expanded(
                           flex: 7,
-                          child: Text("Measurement added. Participant must rest for one or two minutes before taking the next BP measurement."),
+                          child: Text(AppLocalizations.of(context).translate('measurementAdded')),
                         )
                       ],
                     )
@@ -265,7 +266,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                               children: <Widget>[
                                                 Container(
                                                   padding: EdgeInsets.only(left: 25),
-                                                  child: Text('Add BP Measurement', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                                                  child: Text(AppLocalizations.of(context).translate('bpMeasurement'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                                                 ),
                                                 SizedBox(height: 20,),
                                                 Container(
@@ -284,7 +285,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                                           });
                                                         },
                                                       ),
-                                                      Text("Left Arm", style: TextStyle(fontSize: 15),),
+                                                      Text(AppLocalizations.of(context).translate('leftArm'), style: TextStyle(fontSize: 15),),
 
                                                       Radio(
                                                         activeColor: kPrimaryColor,
@@ -297,7 +298,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                                         },
                                                       ),
                                                       Text(
-                                                        "Right Arm",
+                                                        AppLocalizations.of(context).translate('rightArm'),
                                                         style: TextStyle(fontSize: 15),
                                                       ),
                                                     ],
@@ -312,7 +313,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                                         children: <Widget>[
                                                           Container(
                                                             padding: EdgeInsets.only(left: 25),
-                                                            child: Text('Reason for using right arm', style: TextStyle(fontSize: 19),),
+                                                            child: Text(AppLocalizations.of(context).translate('usingRightArm'), style: TextStyle(fontSize: 19),),
                                                           ),
                                                           SizedBox(height: 10,),
                                                           ...rightArmReason.map((item) {
@@ -365,7 +366,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                                                 )
                                                               ),
                                                             
-                                                              hintText: 'State a reason',
+                                                              hintText: AppLocalizations.of(context).translate('stateReason'),
                                                               hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                                                             ),
                                                           )
@@ -386,11 +387,11 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                                       Expanded(
                                                         flex: 2,
                                                         child: PrimaryTextField(
-                                                          hintText: 'Systolic',
+                                                          hintText: AppLocalizations.of(context).translate('systolic'),
                                                           topPaadding: 20,
                                                           bottomPadding: 20,
                                                           controller: systolicController,
-                                                          name:'Systolic',
+                                                          name:AppLocalizations.of(context).translate('systolic'),
                                                           validation: true,
                                                           type: TextInputType.number
                                                         ),
@@ -404,11 +405,11 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                                       Expanded(
                                                         flex: 2,
                                                         child: PrimaryTextField(
-                                                          hintText: 'Diastolic',
+                                                          hintText: AppLocalizations.of(context).translate('diastolic'),
                                                           topPaadding: 20,
                                                           bottomPadding: 20,
                                                           controller: diastolicController,
-                                                          name:'Diastolic',
+                                                          name:AppLocalizations.of(context).translate('diastolic'),
                                                           validation: true,
                                                           type: TextInputType.number
                                                         ),
@@ -425,11 +426,11 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                                   padding: EdgeInsets.only(left: 25),
                                                   width: 175,
                                                   child: PrimaryTextField(
-                                                    hintText: 'Pulse Rate',
+                                                    hintText: AppLocalizations.of(context).translate('pulseRate'),
                                                     topPaadding: 20,
                                                     bottomPadding: 20,
                                                     controller: pulseController,
-                                                    name:'Pulse Rate',
+                                                    name:AppLocalizations.of(context).translate('pulseRate'),
                                                     validation: true,
                                                     type: TextInputType.number
                                                   ),
@@ -449,7 +450,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                                               Navigator.of(context).pop();
                                                               _clearDialogForm();
                                                             },
-                                                            child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                                                            child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
                                                           ),
                                                           SizedBox(width: 20,),
                                                           FlatButton(
@@ -464,7 +465,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                                                 _clearDialogForm();
                                                               }
                                                             },
-                                                            child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
+                                                            child: Text(AppLocalizations.of(context).translate('add'), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
                                                           ),
                                                         ],
                                                       )
@@ -486,7 +487,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                         );
                       },
                       padding: EdgeInsets.symmetric(vertical: 17),
-                      child: Text('+ ADD A BP MEASUREMENT', style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w600), textAlign: TextAlign.center,),
+                      child: Text(AppLocalizations.of(context).translate('addBpMeasurement'), style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w600), textAlign: TextAlign.center,),
                     ),
                   ),
 
@@ -513,7 +514,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                           )
                         ),
                       
-                        hintText: 'Comments/Notes (optional)',
+                        hintText: AppLocalizations.of(context).translate('comments'),
                         hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                       ),
                     )
@@ -524,7 +525,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                   Container(
                     color: kSecondaryTextField,
                     child: DropdownButtonFormField(
-                      hint: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                      hint: Text(AppLocalizations.of(context).translate('selectDevice'), style: TextStyle(fontSize: 20, color: kTextGrey),),
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: kSecondaryTextField,
@@ -597,7 +598,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                     );
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('UNABLE TO PERFORM', style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
+                  child: Text(AppLocalizations.of(context).translate('unablePerform'), style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
                 ),
               )
             ),
@@ -616,7 +617,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                     if (result.toString() == 'success') {
                       _scaffoldKey.currentState.showSnackBar(
                         SnackBar(
-                          content: Text('Data saved successfully!'),
+                          content: Text(AppLocalizations.of(context).translate('dataSaved')),
                           backgroundColor: Color(0xFF4cAF50),
                         )
                       );
@@ -693,7 +694,7 @@ class _SkipAlertState extends State<SkipAlert> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text('Reason for Skipping', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+            Text(AppLocalizations.of(context).translate('reasonSkipping'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
             SizedBox(height: 20,),
               // margin: EdgeInsets.symmetric(horizontal: 30),
             Row(
@@ -707,7 +708,7 @@ class _SkipAlertState extends State<SkipAlert> {
                     changeArm(val);
                   },
                 ),
-                Text("Patient Refused", style: TextStyle(color: Colors.black)),
+                Text(AppLocalizations.of(context).translate('patientRefused'), style: TextStyle(color: Colors.black)),
               ],
             ),
             Row(
@@ -721,7 +722,7 @@ class _SkipAlertState extends State<SkipAlert> {
                     changeArm(val);
                   },
                 ),
-                Text("Patient Unable", style: TextStyle(color: Colors.black)),
+                Text(AppLocalizations.of(context).translate('patientUnable'), style: TextStyle(color: Colors.black)),
               ],
             ),
             Row(
@@ -735,7 +736,7 @@ class _SkipAlertState extends State<SkipAlert> {
                     changeArm(val);
                   },
                 ),
-                Text("Instrument Error", style: TextStyle(color: Colors.black)),
+                Text(AppLocalizations.of(context).translate('instrumentError'), style: TextStyle(color: Colors.black)),
               ],
             ),
             Row(
@@ -749,7 +750,7 @@ class _SkipAlertState extends State<SkipAlert> {
                     changeArm(val);
                   },
                 ),
-                Text("Instrument Unavailable", style: TextStyle(color: Colors.black)),
+                Text(AppLocalizations.of(context).translate('instrumentUnavailable'), style: TextStyle(color: Colors.black)),
               ],
             ),
             Row(
@@ -763,7 +764,7 @@ class _SkipAlertState extends State<SkipAlert> {
                     changeArm(val);
                   },
                 ),
-                Text("Other", style: TextStyle(color: Colors.black)),
+                Text(AppLocalizations.of(context).translate('other'), style: TextStyle(color: Colors.black)),
               ],
             ),
             SizedBox(height: 30,),
@@ -781,12 +782,12 @@ class _SkipAlertState extends State<SkipAlert> {
                         onTap: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 18),)
+                        child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: kPrimaryColor, fontSize: 18),)
                       ),
                       SizedBox(width: 30,),
                       GestureDetector(
                         onTap: () {},
-                        child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 18))
+                        child: Text(AppLocalizations.of(context).translate('add'), style: TextStyle(color: kPrimaryColor, fontSize: 18))
                       ),
                     ],
                   )

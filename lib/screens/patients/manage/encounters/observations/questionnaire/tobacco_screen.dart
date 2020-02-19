@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/questionnaire_controller.dart';
 import 'package:nhealth/custom-classes/custom_stepper.dart';
@@ -31,7 +32,7 @@ class _TobaccoState extends State<Tobacco> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Questionnaire', style: TextStyle(color: kPrimaryColor)),
+        title: Text(AppLocalizations.of(context).translate('questionnaire'), style: TextStyle(color: kPrimaryColor)),
         backgroundColor: Colors.white,
         elevation: 0.0,
         bottomOpacity: 0.0,
@@ -71,7 +72,7 @@ class _TobaccoState extends State<Tobacco> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Icon(Icons.chevron_left),
-                    Text('BACK', style: TextStyle(fontSize: 20)),
+                    Text(AppLocalizations.of(context).translate('back'), style: TextStyle(fontSize: 20)),
                   ],
                 ),
               ) : Text('')
@@ -119,7 +120,7 @@ class _TobaccoState extends State<Tobacco> {
                     ]
                   );
                 },
-                child: Text('COMPLETE', style: TextStyle(fontSize: 20, color: kPrimaryColor))
+                child: Text(AppLocalizations.of(context).translate('complete'), style: TextStyle(fontSize: 20, color: kPrimaryColor))
               )
             ),
           ],
@@ -131,12 +132,12 @@ class _TobaccoState extends State<Tobacco> {
   List<CustomStep> _mySteps() {
     List<CustomStep> _steps = [
       CustomStep(
-        title: Text('Photo'),
+        title: Text(AppLocalizations.of(context).translate('photo')),
         content: FirstQuestion(),
         isActive: _currentStep >= 2,
       ),
       CustomStep(
-        title: Text('Thumbprint'),
+        title: Text(AppLocalizations.of(context).translate('thumbprint')),
         content: SecondQuestion(),
         isActive: _currentStep >= 2,
       ),
@@ -184,7 +185,7 @@ class _FirstQuestionState extends State<FirstQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Tobacco', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate('tobacco'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
@@ -203,7 +204,7 @@ class _FirstQuestionState extends State<FirstQuestion> {
                   Icon(Icons.error_outline, color: Color(0x87000000), size: 40,),
                   SizedBox(width: 10,),
                   Expanded(
-                    child: Text('Now I am going to ask you some questions about tobacco use.', style: TextStyle(fontSize: 19),),
+                    child: Text(AppLocalizations.of(context).translate('questionsAboutTobacco'), style: TextStyle(fontSize: 19),),
                   )
                 ],
               )
@@ -279,7 +280,7 @@ class _SecondQuestionState extends State<SecondQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Tobacco', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate('tobacco'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
@@ -375,7 +376,7 @@ class _ThirdQuestionState extends State<ThirdQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Tobacco', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate('tobacco'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
