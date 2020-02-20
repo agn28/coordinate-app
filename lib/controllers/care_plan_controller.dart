@@ -18,9 +18,14 @@ class CarePlanController {
     return carePlan;
   }
 
-  update(data) async {
-    var response = await CarePlanRepository().update(data);
-    return 'success';
+  update(data, comment) async {
+    var response = await CarePlanRepository().update(data, comment);
+
+    if (response['error'] == false) {
+      return 'success';
+    }
+
+    return 'error';
   }
 
   getReports() async {

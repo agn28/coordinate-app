@@ -23,17 +23,19 @@ class HealthReportController {
   }
 
   getLastReport() async {
-    var reports = await HealthReportRepository().getLastReport();
-    return reports;
+    var response = await HealthReportRepository().getLastReport();
+
+    return response;
   }
 
   confirmAssessment(reports, comments) async {
     var data = _prepareConfirmData(reports, comments);
     var response = await HealthReportRepository().create(data);
+    print(data);
 
     if (response == null) {
       return 'Server error';
-    } else if (response['errors'] != null && response['errors'].isNotEmpty) {
+    } else if (response['error'] == true) {
       return 'Error! Data not Saved';
     } else {
       return 'success';
@@ -58,7 +60,6 @@ class HealthReportController {
   _prepareReviewData(reports, comments) {
     var id = Uuid().v4();
     var patietnId = Patient().getPatient()['uuid'];
-    patietnId = 'cef20c27-8082-4776-8d39-c18e0cbfab55';
 
     var data = {
       "id": id,
@@ -70,7 +71,7 @@ class HealthReportController {
       "body": {
         "patient_id": patietnId,
         "comment": comments,
-        "results": reports
+        "result": reports
       }
     };
 
@@ -80,7 +81,6 @@ class HealthReportController {
   _prepareConfirmData(reports, comments) {
     var id = Uuid().v4();
     var patietnId = Patient().getPatient()['uuid'];
-    patietnId = 'cef20c27-8082-4776-8d39-c18e0cbfab55';
 
     var data = {
       "id": id,
@@ -91,7 +91,7 @@ class HealthReportController {
       "body": {
         "patient_id": patietnId,
         "comment": comments,
-        "results": reports
+        "result": reports
       }
     };
 

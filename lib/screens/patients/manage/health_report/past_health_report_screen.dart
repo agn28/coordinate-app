@@ -46,55 +46,57 @@ class _PastHealthReportState extends State<PastHealthReport> {
 
     reports = response['data'];
 
-    reports.forEach((item){
-      setState(() {
-        print(item['report_date']);
-        var date = '';
-        if(item['report_date'] != null && item['report_date']['_seconds'] != null) {
-          var parseddate = DateTime.fromMillisecondsSinceEpoch(item['report_date']['_seconds'] * 1000);
-          date = DateFormat('MMMM d, yyyy').format(parseddate);
-          print(date);
-        }
-        list.add(
-          Container(
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(width: .5, color: Colors.black38)
+    if (reports != null) {
+      reports.forEach((item){
+        setState(() {
+          print(item['report_date']);
+          var date = '';
+          if(item['report_date'] != null && item['report_date']['_seconds'] != null) {
+            var parseddate = DateTime.fromMillisecondsSinceEpoch(item['report_date']['_seconds'] * 1000);
+            date = DateFormat('MMMM d, yyyy').format(parseddate);
+            print(date);
+          }
+          list.add(
+            Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(width: .5, color: Colors.black38)
+                )
+              ),
+              child: FlatButton(
+                onPressed: () {
+                  Navigator.of(context).push(HealthReportDetailsScreen(reports: item['result']));
+                },
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.only(top: 20, bottom: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(date, style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+                          ),
+                          Expanded(
+                            child: Text('', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+                          ),
+                          Expanded(
+                            child: Container(
+                              alignment: Alignment.centerRight,
+                              child: Icon(Icons.arrow_forward, color: kPrimaryColor,),
+                            )
+                          )
+                        ],
+                      )
+                    )
+                  ],
+                )
               )
             ),
-            child: FlatButton(
-              onPressed: () {
-                Navigator.of(context).push(HealthReportDetailsScreen(reports: item['result']));
-              },
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(top: 20, bottom: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(date, style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
-                        ),
-                        Expanded(
-                          child: Text('', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
-                        ),
-                        Expanded(
-                          child: Container(
-                            alignment: Alignment.centerRight,
-                            child: Icon(Icons.arrow_forward, color: kPrimaryColor,),
-                          )
-                        )
-                      ],
-                    )
-                  )
-                ],
-              )
-            )
-          ),
-        );
+          );
+        });
       });
-    });
+    }
 
     setState(() {
       isLoading = false;
@@ -171,7 +173,7 @@ class _PastHealthReportState extends State<PastHealthReport> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: <Widget>[
                             Expanded(
-                              child: Text('Date', style: TextStyle(fontSize: 17),),
+                              child: Text(reports == null ? 'No data found' : 'Date', style: TextStyle(fontSize: 17),),
                             ),
                             Expanded(
                               child: Text('')

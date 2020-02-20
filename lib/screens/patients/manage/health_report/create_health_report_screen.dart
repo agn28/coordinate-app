@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
+import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
@@ -26,6 +27,8 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
 
   var reports;
   bool isLoading = false;
+  bool confirmLoading = false;
+  bool reviewLoading = false;
   bool canEdit = false;
   final commentsController = TextEditingController();
 
@@ -1258,18 +1261,23 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                             child: FlatButton(
                               onPressed: () async {
                                 setState(() {
-                                  isLoading = true;
+                                  confirmLoading = true;
                                 });
                                 var response = await HealthReportController().confirmAssessment(reports, commentsController.text);
                                 if (response == 'success') {
                                   setState(() {
-                                    isLoading = false;
+                                    confirmLoading = false;
                                   });
                                   Navigator.of(context).push(HealthReportSuccessScreen());
+                                } else {
+                                  setState(() {
+                                    confirmLoading = false;
+                                  });
+                                  Toast.show('Invalid data', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
                                 }
                               },
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              child: Text('CONFIRM ASSESSMENT', style: TextStyle(fontSize: 14, color: Colors.white),)
+                              child: confirmLoading ? CircularProgressIndicator() : Text('CONFIRM ASSESSMENT', style: TextStyle(fontSize: 14, color: Colors.white),),
                             ),
                           ),
 
@@ -1285,18 +1293,23 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                             child: FlatButton(
                               onPressed: () async {
                                 setState(() {
-                                  isLoading = true;
+                                  reviewLoading = true;
                                 });
                                 var response = await HealthReportController().confirmAssessment(reports, commentsController.text);
                                 if (response == 'success') {
                                   setState(() {
-                                    isLoading = false;
+                                    reviewLoading = false;
                                   });
                                   Navigator.of(context).push(HealthReportSuccessScreen());
+                                } else {
+                                  setState(() {
+                                    reviewLoading = false;
+                                  });
+                                  Toast.show('Invalid data', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
                                 }
                               },
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              child: Text('SEND FOR DOCTOR REVIEW', style: TextStyle(fontSize: 14, color: Colors.white),)
+                              child: reviewLoading ? CircularProgressIndicator() : Text('SEND FOR DOCTOR REVIEW', style: TextStyle(fontSize: 14, color: Colors.white),)
                             ),
                           ),
                         ],

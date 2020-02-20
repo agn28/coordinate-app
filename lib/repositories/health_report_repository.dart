@@ -11,7 +11,7 @@ class HealthReportRepository {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     var patientID = Patient().getPatient()['uuid'];
-    patientID = '2bbb97c5-b350-40ef-a1d1-1c5175075c03';
+    print(patientID);
     return await http.post(
       apiUrl + 'health-reports/generate/' + patientID,
       headers: {
@@ -31,7 +31,6 @@ class HealthReportRepository {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     var patientID = Patient().getPatient()['uuid'];
-    patientID = '4f77559c-2bec-40a1-b66f-edc401b9a2e9';
     return await http.get(
       apiUrl + 'health-reports/patient/' + patientID + '?filter=last' ,
       headers: {
@@ -51,15 +50,15 @@ class HealthReportRepository {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     var patientID = Patient().getPatient()['uuid'];
-    patientID = '2bbb97c5-b350-40ef-a1d1-1c5175075c03';
     return await http.get(
-      apiUrl + 'health-reports/' + patientID,
+      apiUrl + 'health-reports/patient/' + patientID,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
       },
     ).then((response) {
+      print(response.body);
       return json.decode(response.body);
       
     }).catchError((error) {

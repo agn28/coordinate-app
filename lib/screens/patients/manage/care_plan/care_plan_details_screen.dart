@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
+import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
@@ -38,7 +39,12 @@ class _CarePlanDetailsState extends State<CarePlanDetails> {
     isLoading = true;
     var data = await HealthReportController().getLastReport();
     
-    if (data['message'] == 'Unauthorized') {
+    if (data['error'] == true) {
+      setState(() {
+        isLoading = false;
+      });
+      Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+    } else if (data['message'] == 'Unauthorized') {
       Auth().logout();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
     } else {
@@ -133,6 +139,7 @@ class _CarePlanDetailsState extends State<CarePlanDetails> {
                     children: <Widget>[
                       Text('Summary', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 21)),
                       SizedBox(height: 20,),
+                      reports != null ?
                       Container(
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -375,7 +382,7 @@ class _CarePlanDetailsState extends State<CarePlanDetails> {
                             )
                           ],
                         ),
-                      ),
+                      ) : Container(),
                     ],
                   )
                 ),
@@ -394,78 +401,7 @@ class _CarePlanDetailsState extends State<CarePlanDetails> {
                       SizedBox(height: 20,),
 
                       ...widget.carePlans.map<Widget>((item) => 
-                        Container(
-                          padding: EdgeInsets.symmetric(vertical: 25),
-                          margin: EdgeInsets.only(bottom: 25),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: kBackgroundGrey,
-                            borderRadius: BorderRadius.circular(3)                     
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              item['body']['goal'] != null ?
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 25,),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text('Goal', style: TextStyle(color: kTextGrey),),
-                                    SizedBox(height: 10,),
-                                    Text(item['body']['goal']['title'], style: TextStyle(fontSize: 19),),
-                                  ],
-                                )
-                              ) : Container(),
-                              SizedBox(height: 30,),
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 25,),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text('Intervention', style: TextStyle(color: kTextGrey),),
-                                    SizedBox(height: 10,),
-                                    Text(item['body']['title'], style: TextStyle(fontSize: 19),),
-                                  ],
-                                )
-                              ),
-
-                              // SizedBox(height: 30,),
-                              // Container(
-                              //   padding: EdgeInsets.symmetric(horizontal: 25,),
-                              //   child: Column(
-                              //     crossAxisAlignment: CrossAxisAlignment.start,
-                              //     children: <Widget>[
-                              //       Text('When', style: TextStyle(color: kTextGrey),),
-                              //       SizedBox(height: 10,),
-                              //       Text('Within 1 month of recommendation of goal', style: TextStyle(fontSize: 19),),
-                              //     ],
-                              //   )
-                              // ),
-                              SizedBox(height: 20,),
-                              Divider(),
-                              SizedBox(height: 15,),
-                              GestureDetector(
-                                onTap: () {
-                                  if (item['body']['status'] == null) {
-                                    Navigator.of(context).push(CarePlanInterventionScreen(carePlan: item));
-                                  }
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 25,),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Text('${item['body']['status'] != null ? item['body']['status'].toUpperCase() : 'Pending'}', style: TextStyle(color: item['body']['status'] != null ? kPrimaryGreenColor : kPrimaryRedColor, fontSize: 19),),
-                                      Icon(Icons.arrow_forward, color: kPrimaryColor,)
-                                    ],
-                                  )
-                                ),
-                              ),
-                            ],
-                          )
-                        ),
+                        Interventions(carePlan: item),
                       ).toList(),
                       SizedBox(height: 25,),
 
@@ -542,79 +478,79 @@ class _CarePlanDetailsState extends State<CarePlanDetails> {
                   )
                 ),
 
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(color: kBorderLight)
-                    )
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text('Medications', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 21)),
-                      SizedBox(height: 20,),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(CarePlanMedicationScreen());
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 25,),
-                          height: 70,
-                          decoration: BoxDecoration(
-                            color: kBackgroundGrey
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text('Napa 12 mg', style: TextStyle(fontSize: 19),),
-                              Icon(Icons.arrow_forward, color: kPrimaryColor,)
-                            ],
-                          )
-                        ),
-                      ),
-                      SizedBox(height: 20,),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(CarePlanMedicationScreen());
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 25,),
-                          height: 70,
-                          decoration: BoxDecoration(
-                            color: kBackgroundGrey
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text('Metfornim 50 mg', style: TextStyle(fontSize: 19),),
-                              Icon(Icons.arrow_forward, color: kPrimaryColor,)
-                            ],
-                          )
-                        ),
-                      ),
-                    ]
-                  )
-                ),
+                // Container(
+                //   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                //   width: double.infinity,
+                //   decoration: BoxDecoration(
+                //     border: Border(
+                //       bottom: BorderSide(color: kBorderLight)
+                //     )
+                //   ),
+                //   child: Column(
+                //     crossAxisAlignment: CrossAxisAlignment.start,
+                //     children: <Widget>[
+                //       Text('Medications', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 21)),
+                //       SizedBox(height: 20,),
+                //       GestureDetector(
+                //         onTap: () {
+                //           Navigator.of(context).push(CarePlanMedicationScreen());
+                //         },
+                //         child: Container(
+                //           padding: EdgeInsets.symmetric(horizontal: 25,),
+                //           height: 70,
+                //           decoration: BoxDecoration(
+                //             color: kBackgroundGrey
+                //           ),
+                //           child: Row(
+                //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //             children: <Widget>[
+                //               Text('Napa 12 mg', style: TextStyle(fontSize: 19),),
+                //               Icon(Icons.arrow_forward, color: kPrimaryColor,)
+                //             ],
+                //           )
+                //         ),
+                //       ),
+                //       SizedBox(height: 20,),
+                //       GestureDetector(
+                //         onTap: () {
+                //           Navigator.of(context).push(CarePlanMedicationScreen());
+                //         },
+                //         child: Container(
+                //           padding: EdgeInsets.symmetric(horizontal: 25,),
+                //           height: 70,
+                //           decoration: BoxDecoration(
+                //             color: kBackgroundGrey
+                //           ),
+                //           child: Row(
+                //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //             children: <Widget>[
+                //               Text('Metfornim 50 mg', style: TextStyle(fontSize: 19),),
+                //               Icon(Icons.arrow_forward, color: kPrimaryColor,)
+                //             ],
+                //           )
+                //         ),
+                //       ),
+                //     ]
+                //   )
+                // ),
 
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(color: kBorderLight)
-                    )
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text('Followup', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 21)),
-                      SizedBox(height: 20,),
-                      Text('After 3 months', style: TextStyle(fontSize: 19),)
-                    ]
-                  )
-                ),
+                // Container(
+                //   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                //   width: double.infinity,
+                //   decoration: BoxDecoration(
+                //     border: Border(
+                //       bottom: BorderSide(color: kBorderLight)
+                //     )
+                //   ),
+                //   child: Column(
+                //     crossAxisAlignment: CrossAxisAlignment.start,
+                //     children: <Widget>[
+                //       Text('Followup', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 21)),
+                //       SizedBox(height: 20,),
+                //       Text('After 3 months', style: TextStyle(fontSize: 19),)
+                //     ]
+                //   )
+                // ),
 
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -647,6 +583,118 @@ class _CarePlanDetailsState extends State<CarePlanDetails> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class Interventions extends StatefulWidget {
+  var carePlan;
+  Interventions({this.carePlan});
+
+  @override
+  InterventionsState createState() => InterventionsState();
+}
+
+class InterventionsState extends State<Interventions> {
+  var status;
+
+  @override
+  void initState() {
+    super.initState();
+    getStatus();
+  }
+
+  getStatus() {
+    setState(() {
+      status = widget.carePlan['body']['status'];
+      print(status);
+    });
+  }
+
+  setStatus() {
+    setState(() {
+      status = 'completed';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(top: 25),
+      margin: EdgeInsets.only(bottom: 25),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: kBackgroundGrey,
+        borderRadius: BorderRadius.circular(3)                     
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          widget.carePlan['body']['goal'] != null ?
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 25,),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text('Goal', style: TextStyle(color: kTextGrey),),
+                SizedBox(height: 10,),
+                Text(widget.carePlan['body']['goal']['title'], style: TextStyle(fontSize: 19),),
+              ],
+            )
+          ) : Container(),
+          SizedBox(height: 30,),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 25,),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text('Intervention', style: TextStyle(color: kTextGrey),),
+                SizedBox(height: 10,),
+                Text(widget.carePlan['body']['title'], style: TextStyle(fontSize: 19),),
+              ],
+            )
+          ),
+
+          // SizedBox(height: 30,),
+          // Container(
+          //   padding: EdgeInsets.symmetric(horizontal: 25,),
+          //   child: Column(
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     children: <Widget>[
+          //       Text('When', style: TextStyle(color: kTextGrey),),
+          //       SizedBox(height: 10,),
+          //       Text('Within 1 month of recommendation of goal', style: TextStyle(fontSize: 19),),
+          //     ],
+          //   )
+          // ),
+          SizedBox(height: 20,),
+          GestureDetector(
+            onTap: () {
+              if (widget.carePlan['body']['status'] == null) {
+                Navigator.of(context).push(CarePlanInterventionScreen(carePlan: widget.carePlan, parent: this));
+              }
+            },
+            child: Container(
+              height: 60,
+              decoration: BoxDecoration(
+                // color: Colors.red,
+                border: Border(
+                  top: BorderSide(color: kBorderLighter)
+                )
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 25,),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text('${status != null ? status[0].toUpperCase() + status.substring(1) : 'Pending'}', style: TextStyle(color: status != null ? kPrimaryGreenColor : kPrimaryRedColor, fontSize: 19, height: .5),),
+                  Icon(Icons.arrow_forward, color: kPrimaryColor,)
+                ],
+              )
+            ),
+          ),
+        ],
+      )
     );
   }
 }

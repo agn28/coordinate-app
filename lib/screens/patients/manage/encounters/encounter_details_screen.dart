@@ -51,12 +51,13 @@ class EncounterDetailsState extends State<EncounterDetails> {
 
   /// Calculate average Blood Pressure
   _getAverageBp() {
-    double systolic = 0;
-    double diastolic = 0;
+    int systolic = 0;
+    int diastolic = 0;
 
     _bloodPressures.forEach((item) {
-      systolic = systolic + item['body']['data']['systolic'] is double ? item['body']['data']['systolic'] : double.parse(item['body']['data']['systolic']);
-      diastolic = diastolic + item['body']['data']['diastolic'] is double ? item['body']['data']['diastolic'] : double.parse(item['body']['data']['diastolic']);
+      print(item['body']['data']['systolic']);
+      systolic = systolic + item['body']['data']['systolic'];
+      diastolic = diastolic + item['body']['data']['diastolic'];
     });
 
     double avgSystolic = systolic/_bloodPressures.length;
