@@ -16,6 +16,8 @@ import 'package:nhealth/screens/patients/manage/patient_records_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 
+import '../../../app_localizations.dart';
+
 
 final birthDateController = TextEditingController();
 final birthmonthController = TextEditingController();
@@ -77,7 +79,7 @@ class _PatientSearchState extends State<PatientSearch> {
       resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Patients"),
+        title: Text(AppLocalizations.of(context).translate('patients')),
         elevation: 0,
         actions: <Widget>[
           FlatButton(
@@ -86,7 +88,7 @@ class _PatientSearchState extends State<PatientSearch> {
                 SizedBox(height: 5,),
                 Icon(Icons.person_add, color: Colors.white, size: 20,),
                 SizedBox(height: 5,),
-                Text('New Patient', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14),)
+                Text(AppLocalizations.of(context).translate('newPatient'), style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14),)
               ],
             ),
             onPressed: () {
@@ -99,7 +101,7 @@ class _PatientSearchState extends State<PatientSearch> {
                 SizedBox(height: 5,),
                 Icon(Icons.line_weight, color: Colors.white, size: 20,),
                 SizedBox(height: 5,),
-                Text('Scan Barcode', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14),)
+                Text(AppLocalizations.of(context).translate('scanBarcode'), style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14),)
               ],
             ),
             onPressed: () {
@@ -113,7 +115,7 @@ class _PatientSearchState extends State<PatientSearch> {
                 SizedBox(height: 5,),
                 Icon(Icons.fingerprint, color: Colors.white, size: 20,),
                 SizedBox(height: 5,),
-                Text('Use Thumbprint', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),)
+                Text(AppLocalizations.of(context).translate('useThumbprint'), style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),)
               ],
             ),
             onPressed: () {},
@@ -198,7 +200,7 @@ class _PatientSearchState extends State<PatientSearch> {
                                 },
                               ),
                             ),
-                            Text('Pending Recommendations Only', style: TextStyle(color: Colors.white),)
+                            Text(AppLocalizations.of(context).translate('pendingRecommendation'), style: TextStyle(color: Colors.white),)
                           ],
                         ),
                       ),
@@ -219,7 +221,7 @@ class _PatientSearchState extends State<PatientSearch> {
                             children: <Widget>[
                               Icon(Icons.filter_list, color: Colors.white,),
                               SizedBox(width: 10),
-                              Text('Filters', style: TextStyle(color: Colors.white),)
+                              Text(AppLocalizations.of(context).translate('filters'), style: TextStyle(color: Colors.white),)
                             ],
                           )
                         ),
@@ -262,7 +264,7 @@ class _PatientSearchState extends State<PatientSearch> {
             patients.length == 0 ? Container(
               alignment: Alignment.centerLeft,
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              child: Text('No patient found', style: TextStyle(color: Colors.black87, fontSize: 20),),
+              child: Text(AppLocalizations.of(context).translate('noPatientFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
             ) : Container()
           ],
         ),
@@ -380,7 +382,7 @@ class _DiseasesDialogState extends State<DiseasesDialog> {
 
   _updateCheckBox(value, index) {
     if (value == true && _selectedItem.length == 3) {
-      return Toast.show("You cannot select more than three diseases", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+      return Toast.show(AppLocalizations.of(context).translate('notMoreThanThree'), context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM, backgroundRadius: 5);
     }
 
     setState(() {
@@ -407,7 +409,7 @@ class _DiseasesDialogState extends State<DiseasesDialog> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text('Select Diagnosed Diseases', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                    Text(AppLocalizations.of(context).translate('selectDiseases'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                   ],
                 ),
               ),
@@ -418,7 +420,7 @@ class _DiseasesDialogState extends State<DiseasesDialog> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text('Select upto three diseases', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),),
+                    Text(AppLocalizations.of(context).translate('selectThreeDiseases'), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),),
                     SizedBox(height: 20,),
                     
                     TextField(
@@ -496,7 +498,7 @@ class _DiseasesDialogState extends State<DiseasesDialog> {
                             });
                             Navigator.of(context).pop();
                           },
-                          child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16),)
+                          child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: kPrimaryColor, fontSize: 16),)
                         ),
                         SizedBox(width: 30,),
                         FlatButton(
@@ -507,7 +509,7 @@ class _DiseasesDialogState extends State<DiseasesDialog> {
                               this.widget.parent.getSelectedDiseaseText();
                             });
                           },
-                          child: Text('APPLY', style: TextStyle(color: kPrimaryColor, fontSize: 16))
+                          child: Text(AppLocalizations.of(context).translate('apply'), style: TextStyle(color: kPrimaryColor, fontSize: 16))
                         ),
                       ],
                     )
@@ -624,8 +626,8 @@ class _FiltersDialogState extends State<FiltersDialog> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text('Filters', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
-                      Text('CLEAR FILTERS', style: TextStyle(fontSize: 15, color: kPrimaryColor, fontWeight: FontWeight.w500),),
+                      Text(AppLocalizations.of(context).translate('filters'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                      Text(AppLocalizations.of(context).translate('clearFilter'), style: TextStyle(fontSize: 15, color: kPrimaryColor, fontWeight: FontWeight.w500),),
                     ],
                   ),
                 ),
@@ -690,7 +692,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text('Diagnosed Diseases', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),),
+                    Text(AppLocalizations.of(context).translate('diagnosedDiseases'), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),),
                     SizedBox(height: 20,),
                     Container(
                       child: Container(
@@ -771,7 +773,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16),)
+                          child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: kPrimaryColor, fontSize: 16),)
                         ),
                         SizedBox(width: 30,),
                         FlatButton(
@@ -779,7 +781,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
                             applyFilter();
                             Navigator.of(context).pop();
                           },
-                          child: Text('APPLY', style: TextStyle(color: kPrimaryColor, fontSize: 16))
+                          child: Text(AppLocalizations.of(context).translate('apply'), style: TextStyle(color: kPrimaryColor, fontSize: 16))
                         ),
                       ],
                     )
@@ -855,7 +857,7 @@ class MyTextField extends StatelessWidget {
             icon: Icon(Icons.cancel, color: kTextGrey, size: 25,)
           ),
           border: InputBorder.none,
-          hintText: "Search here...",
+          hintText: "AppLocalizations.of(context).translate('searchHere')",
           contentPadding: const EdgeInsets.only(
             left: 16,
             right: 20,

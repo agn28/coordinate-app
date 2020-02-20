@@ -6,6 +6,7 @@ import 'package:nhealth/models/body_measurement.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
+import 'package:nhealth/app_localizations.dart';
 
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -34,7 +35,7 @@ class MeasurementsState extends State<Measurements> {
       key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Body Measurements', style: TextStyle(color: kPrimaryColor),),
+        title: Text(AppLocalizations.of(context).translate('bodyMeasurements'), style: TextStyle(color: kPrimaryColor),),
         backgroundColor: Colors.white,
         elevation: 0.0,
         iconTheme: IconThemeData(color: kPrimaryColor),
@@ -95,7 +96,7 @@ class MeasurementsState extends State<Measurements> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Complete All Components', style: TextStyle(fontSize: 22),)
+              child: Text(AppLocalizations.of(context).translate('completeComponents'), style: TextStyle(fontSize: 22),)
             ),
             
             Container(
@@ -104,19 +105,19 @@ class MeasurementsState extends State<Measurements> {
                 children: <Widget>[
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/height.png'),
-                    text: 'Height',
+                    text: AppLocalizations.of(context).translate('height'),
                     name: 'height'
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/weight.png'),
-                    text: 'Weight',
+                    text: AppLocalizations.of(context).translate('weight'),
                     name: 'weight'
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/hip.png'),
-                    text: 'Waist/Hip',
+                    text: AppLocalizations.of(context).translate('waist'),
                     name: 'waist/hip'
                   ),
                 ],
@@ -158,7 +159,7 @@ class MeasurementsState extends State<Measurements> {
                     );
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('UNABLE TO PERFORM', style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
+                  child: Text(AppLocalizations.of(context).translate('unablePerform'), style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
                 ),
               ),
             ),
@@ -176,7 +177,7 @@ class MeasurementsState extends State<Measurements> {
                     if (result == 'success') {
                       _scaffoldKey.currentState.showSnackBar(
                         SnackBar(
-                          content: Text('Data saved successfully!'),
+                          content: Text(AppLocalizations.of(context).translate('dataSaved')),
                           backgroundColor: Color(0xFF4cAF50),
                         )
                       );
@@ -192,7 +193,7 @@ class MeasurementsState extends State<Measurements> {
                     }
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('SAVE', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text(AppLocalizations.of(context).translate('save'), style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                 ),
               )
             )
@@ -458,7 +459,7 @@ class _AddDialogueState extends State<AddDialogue> {
                           topRight: Radius.circular(4),
                         )
                       ),
-                    
+
                       hintText: 'Comments/Notes',
                       hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                     ),

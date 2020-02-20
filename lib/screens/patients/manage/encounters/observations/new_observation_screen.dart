@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-test/blood_test_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/body-measurements/measurements_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/questionnaires_screen.dart';
@@ -9,7 +10,7 @@ class NewObservationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Observations'),
+        title: Text(AppLocalizations.of(context).translate('observations')),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -23,7 +24,7 @@ class NewObservationScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   SizedBox(height: 40,),
-                  Text('Enter Observations (Tap to enter)', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                  Text(AppLocalizations.of(context).translate('enterObservations'), style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                   SizedBox(height: 10,),
                   Text('Select encounter type', style: TextStyle(fontSize: 20)),
                   SizedBox(height: 50,),
@@ -40,7 +41,7 @@ class NewObservationScreen extends StatelessWidget {
                               color: Colors.grey,
                               onPressed: () => Navigator.of(context).push(AddBloodPressureScreen()
                               ),
-                              child: Text("Blood Pressure", style: TextStyle(color: Colors.white, fontSize: 22),),
+                              child: Text(AppLocalizations.of(context).translate('bloodPressure'), style: TextStyle(color: Colors.white, fontSize: 22),),
                             ),
                           ),
                         ),
@@ -68,7 +69,7 @@ class NewObservationScreen extends StatelessWidget {
                               color: Colors.grey,
                               onPressed: () => Navigator.of(context).push(MeasurementsScreen()
                               ),
-                              child: Text("Body Measurements", style: TextStyle(color: Colors.white, fontSize: 22),),
+                              child: Text(AppLocalizations.of(context).translate('bodyMeasurements'), style: TextStyle(color: Colors.white, fontSize: 22),),
                             ),
                           ),
                         ),
@@ -96,7 +97,7 @@ class NewObservationScreen extends StatelessWidget {
                               color: Colors.grey,
                               onPressed: () => Navigator.of(context).push(BloodTestScreen()
                               ),
-                              child: Text("Blood Tests", style: TextStyle(color: Colors.white, fontSize: 22),),
+                              child: Text(AppLocalizations.of(context).translate('bloodTests'), style: TextStyle(color: Colors.white, fontSize: 22),),
                             ),
                           ),
                         ),
@@ -123,7 +124,7 @@ class NewObservationScreen extends StatelessWidget {
                             child: RaisedButton(
                               color: Colors.grey,
                               onPressed: () => Navigator.of(context).push(QuestionnairesScreen()),
-                              child: Text("Questionnaire", style: TextStyle(color: Colors.white, fontSize: 22),),
+                              child: Text(AppLocalizations.of(context).translate('questionnaire'), style: TextStyle(color: Colors.white, fontSize: 22),),
                             ),
                           ),
                         ),
@@ -145,7 +146,7 @@ class NewObservationScreen extends StatelessWidget {
                       decoration: InputDecoration(
                         fillColor: Color(0xFFeff0f1),
                         filled: true,
-                        hintText: 'Comments/Notes (Optional)',
+                        hintText: AppLocalizations.of(context).translate('comments'),
                       ),
                       keyboardType: TextInputType.multiline,
                       maxLines: 3,
@@ -161,7 +162,7 @@ class NewObservationScreen extends StatelessWidget {
                       height: 60.0,
                       child: RaisedButton(
                         onPressed: () {},
-                        child: Text("Done", style: TextStyle(color: Colors.white, fontSize: 22),),
+                        child: Text(AppLocalizations.of(context).translate('done'), style: TextStyle(color: Colors.white, fontSize: 22),),
                       ),
                     ),
                   ),

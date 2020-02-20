@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/language.dart';
 import 'package:nhealth/main.dart';
@@ -62,7 +63,7 @@ class _SettingsState extends State<Settings> {
       key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Settings', style: TextStyle(color: Colors.white),),
+        title: Text(AppLocalizations.of(context).translate('settings'), style: TextStyle(color: Colors.white),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -78,7 +79,7 @@ class _SettingsState extends State<Settings> {
                 margin: EdgeInsets.only(top: 20, left: 30, right: 30, bottom: 100),
                 child: Row(
                   children: <Widget>[
-                    Text('Language:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
+                    Text(AppLocalizations.of(context).translate('language'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
                     SizedBox(width: 20,),
                     ..._languages.map((item) => 
                     Row(

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/body_measurement.dart';
@@ -235,7 +236,7 @@ class EncounnterSteps extends StatefulWidget {
   final String text;
   final Function onTap;
   final Image icon;
-  
+
 
   @override
   EncounnterStepsState createState() => EncounnterStepsState();
@@ -270,7 +271,7 @@ class EncounnterStepsState extends State<EncounnterSteps> {
           Navigator.of(context).push(MedicalHistoryScreen(parent: this));
         } else if (widget.text.toString() == 'Current Medication') {
           Navigator.of(context).push(CurrentMedicationScreen(parent: this));
-        } 
+        }
       },
       child: Container(
         // padding: EdgeInsets.only(left: 20, right: 20),
@@ -381,7 +382,7 @@ class _AddDialogueState extends State<AddDialogue> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('Add ' + widget.title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+              Text(AppLocalizations.of(context).translate('add') + widget.title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
               SizedBox(height: 20,),
               Container(
                 // margin: EdgeInsets.symmetric(horizontal: 30),
@@ -427,7 +428,7 @@ class _AddDialogueState extends State<AddDialogue> {
               Container(
                 width: double.infinity,
                 child: PrimaryTextField(
-                  hintText: 'Select device',
+                  hintText: AppLocalizations.of(context).translate('selectDevice'),
                   topPaadding: 15,
                   bottomPadding: 15,
                   controller: deviceController,
@@ -453,7 +454,7 @@ class _AddDialogueState extends State<AddDialogue> {
                       )
                     ),
                   
-                    hintText: 'Comments/Notes',
+                    hintText: AppLocalizations.of(context).translate('comment'),
                     hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                   ),
                 )
@@ -474,7 +475,7 @@ class _AddDialogueState extends State<AddDialogue> {
                             onTap: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text('UNABLE TO PERFORM', style: TextStyle(color: kPrimaryColor, fontSize: 18),)
+                            child: Text(AppLocalizations.of(context).translate('unablePerform'), style: TextStyle(color: kPrimaryColor, fontSize: 18),)
                           ),
                         ),
                         SizedBox(width: 30,),
@@ -482,7 +483,7 @@ class _AddDialogueState extends State<AddDialogue> {
                           onTap: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 18),)
+                          child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: kPrimaryColor, fontSize: 18),)
                         ),
                         SizedBox(width: 30,),
                         GestureDetector(
@@ -493,7 +494,7 @@ class _AddDialogueState extends State<AddDialogue> {
                               _clearDialogForm();
                             }
                           },
-                          child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 18))
+                          child: Text(AppLocalizations.of(context).translate('add'), style: TextStyle(color: kPrimaryColor, fontSize: 18))
                         ),
                       ],
                     )

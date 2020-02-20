@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
@@ -26,7 +27,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Patient Registration Complete'),
+        title: Text(AppLocalizations.of(context).translate('patientRegComplete')),
         automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
@@ -51,7 +52,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                         child: Icon(Icons.done, size: 40, color: Colors.white,)
                       ),
                       SizedBox(width: 15,),
-                      Text('Patient Registered', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500)),
+                      Text(AppLocalizations.of(context).translate('patientRegistered'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500)),
                     ],
                   ),
                   SizedBox(height: 20,),
@@ -82,7 +83,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                         color: kPrimaryColor,
                         borderRadius: BorderRadius.circular(4)
                       ),
-                      child: Text("PRINT PATIENT CARD", style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w400))
+                      child: Text(AppLocalizations.of(context).translate('patientCard'), style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w400))
                     ),
                   ),
                   SizedBox(height: 20,),
@@ -98,7 +99,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                         border: Border.all(width: 1, color: Colors.black54),
                         borderRadius: BorderRadius.circular(4)
                       ),
-                      child: Text("PATIENT OVERVIEW", style: TextStyle(color: Colors.black87, fontSize: 15, fontWeight: FontWeight.w400))
+                      child: Text(AppLocalizations.of(context).translate('patientOverview'), style: TextStyle(color: Colors.black87, fontSize: 15, fontWeight: FontWeight.w400))
                     ),
                   ),
 
@@ -136,9 +137,9 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            Text('Screen Patient', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
+                                            Text(AppLocalizations.of(context).translate('screenPatient'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
                                             SizedBox(height: 10,),
-                                            Text('Creates a new assessment for the patient', style: TextStyle(color: kTextGrey, fontSize: 14,),),
+                                            Text(AppLocalizations.of(context).translate('newAssessment'), style: TextStyle(color: kTextGrey, fontSize: 14,),),
                                           ],
                                         )
                                       ],
@@ -194,7 +195,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            Text('Register a New Patient', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
+                                            Text(AppLocalizations.of(context).translate('registerNewPatient'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
                                           ],
                                         )
                                       ],
@@ -248,7 +249,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            Text('Go to Home', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
+                                            Text(AppLocalizations.of(context).translate('goHome'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
                                           ],
                                         )
                                       ],

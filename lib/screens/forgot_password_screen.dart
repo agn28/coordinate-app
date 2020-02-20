@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nhealth/app_localizations.dart';
 import '../constants/constants.dart';
 import '../widgets/primary_button_widget.dart';
 import '../widgets/primary_textfield_widget.dart';
@@ -15,7 +16,7 @@ class ForgotPassword extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Forgot Password', style: TextStyle(color: Colors.white, fontSize: 22),),
+        title: Text(AppLocalizations.of(context).translate('forgotPassword'), style: TextStyle(color: Colors.white, fontSize: 22),),
         backgroundColor: kPrimaryColor,
         iconTheme: IconThemeData(color: Colors.white,),
       ),
@@ -33,7 +34,7 @@ class ForgotPassword extends StatelessWidget {
               children: <Widget>[
                 SizedBox(height: 40,),
                 Container(
-                  child: Text('Enter your email address and submit a password reset request to your administrator',
+                  child: Text(AppLocalizations.of(context).translate('resetRequest'),
                     style: TextStyle(fontSize: 20,),
                     textAlign: TextAlign.center,
                   )
@@ -47,18 +48,18 @@ class ForgotPassword extends StatelessWidget {
                   ),
                   topPaadding: 20,
                   bottomPadding: 20,
-                  hintText: 'Email Address',
+                  hintText: AppLocalizations.of(context).translate('emailAddress'),
                 ),
                 SizedBox(height: 40,),
                 PrimaryButton(
-                  text: Text('REQUEST PASSWORD RESET', style: TextStyle(color: Colors.white, fontSize: 16)),
+                  text: Text(AppLocalizations.of(context).translate('passwordReset'), style: TextStyle(color: Colors.white, fontSize: 16)),
                   onTap: () {},
                 ),
 
                 SizedBox(height: 40,),
                 FlatButton(
                   onPressed: () {},
-                  child: Text("Forgot Password?", style: TextStyle(color: Colors.white, fontSize: 19),),
+                  child: Text(AppLocalizations.of(context).translate('forgotPass'), style: TextStyle(color: Colors.white, fontSize: 19),),
                 ),
               ],
             ),
