@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/helpers/helpers.dart';
+import 'package:nhealth/models/blood_test.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:basic_utils/basic_utils.dart';
 import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.dart';
@@ -50,12 +51,13 @@ class EncounterDetailsState extends State<EncounterDetails> {
 
   /// Calculate average Blood Pressure
   _getAverageBp() {
-    double systolic = 0;
-    double diastolic = 0;
+    int systolic = 0;
+    int diastolic = 0;
 
     _bloodPressures.forEach((item) {
-      systolic = systolic + item['body']['data']['systolic'] is double ? item['body']['data']['systolic'] : double.parse(item['body']['data']['systolic']);
-      diastolic = diastolic + item['body']['data']['diastolic'] is double ? item['body']['data']['diastolic'] : double.parse(item['body']['data']['diastolic']);
+      print(item['body']['data']['systolic']);
+      systolic = systolic + item['body']['data']['systolic'];
+      diastolic = diastolic + item['body']['data']['diastolic'];
     });
 
     double avgSystolic = systolic/_bloodPressures.length;
@@ -74,15 +76,18 @@ class EncounterDetailsState extends State<EncounterDetails> {
   }
 
   /// Convert [type] to upper case and remove the '_'
-  _getType(type) {
-    return StringUtils.capitalize(type.replaceAll('_', ' '));
+  _getType(obs) {
+    if (obs['type'] == 'blood_test' && BloodTest().getMap()[obs['data']['name']] != null) {
+      return BloodTest().getMap()[obs['data']['name']];
+    }
+    return StringUtils.capitalize(obs['data']['name'].replaceAll('_', ' '));
   }
 
   /// Populate observation widgets form observations list.
   _getItem() {
     observationItems = [];
     _observations.forEach((item) {
-      if (item['body']['type'] != 'blood_pressure') {
+      if (item['body']['type'] != 'blood_pressure' && item['body']['type'] != 'survey') {
         setState(() {
           observationItems.add(
             Column(
@@ -93,7 +98,7 @@ class EncounterDetailsState extends State<EncounterDetails> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text('Observation', style: TextStyle(fontSize: 20, ),),
-                      Text(_getType(item['body']['data']['type']), style: TextStyle(fontSize: 35, height: 1.7),),
+                      Text(_getType(item['body']), style: TextStyle(fontSize: 35, height: 1.7),),
                       Row(
                         children: <Widget>[
                           Text('Reading: ', style: TextStyle(fontSize: 20, height: 1.6),),

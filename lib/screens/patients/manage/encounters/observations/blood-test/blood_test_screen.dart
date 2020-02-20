@@ -109,16 +109,19 @@ class BloodTests extends StatelessWidget {
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test_common.png'),
                     text: 'Total Cholesterol',
+                    name: 'total_cholesterol'
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test_common.png'),
                     text: 'HDL',
+                    name: 'hdl'
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test_common.png'),
                     text: 'Triglycerides',
+                    name: 'tg'
                   ),
                 ],
               )
@@ -145,11 +148,13 @@ class BloodTests extends StatelessWidget {
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_glucose.png'),
                     text: 'Fasting Blood Glucose',
+                    name: 'blood_glucose'
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_glucose.png'),
                     text: 'Random Blood Sugar',
+                    name: 'blood_sugar'
                   ),
                 ],
               )
@@ -175,12 +180,14 @@ class BloodTests extends StatelessWidget {
                 children: <Widget>[
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/hba1c.png'),
-                    text: 'Hba1c'
+                    text: 'Hba1c',
+                    name: 'a1c'
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/ogtt.png'),
                     text: '2H OGTT',
+                    name: '2h_ogtt'
                   ),
                 ],
               )
@@ -265,10 +272,11 @@ class BloodTests extends StatelessWidget {
 }
 
 class EncounnterSteps extends StatefulWidget {
-   EncounnterSteps({this.text, this.icon});
+   EncounnterSteps({this.text, this.icon, this.name});
 
    final String text;
    final Image icon;
+   final String name;
 
   @override
   _EncounnterStepsState createState() => _EncounnterStepsState();
@@ -284,7 +292,7 @@ class _EncounnterStepsState extends State<EncounnterSteps> {
   }
 
   setStatus() {
-    status = BloodTest().hasItem(widget.text) ? 'Complete' : 'Incomplete';
+    status = BloodTest().hasItem(widget.name) ? 'Complete' : 'Incomplete';
   }
 
   @override
@@ -296,7 +304,8 @@ class _EncounnterStepsState extends State<EncounnterSteps> {
           builder: (BuildContext context) {
             return AddTestsDialogue(
               parent: this,
-              title: widget.text
+              title: widget.text,
+              name: widget.name
             );
           } 
         );
@@ -346,9 +355,10 @@ class _EncounnterStepsState extends State<EncounnterSteps> {
 class AddTestsDialogue extends StatefulWidget {
   
   final String title;
+  final String name;
   _EncounnterStepsState parent;
 
-  AddTestsDialogue({this.parent, this.title});
+  AddTestsDialogue({this.parent, this.title, this.name});
 
   @override
   _AddTestsDialogueState createState() => _AddTestsDialogueState();
@@ -366,7 +376,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
   int selectedDevice = 0;
 
   _addItem(){
-    BloodTest().addItem(widget.title, valueController.text, selectedUnit, commentController.text, devices[selectedDevice]);
+    BloodTest().addItem(widget.name, valueController.text, selectedUnit, commentController.text, devices[selectedDevice]);
     this.widget.parent.setState(() {
       this.widget.parent.setStatus();
     });
@@ -394,165 +404,167 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
     return Dialog(
       elevation: 0.0,
       backgroundColor: Colors.transparent,
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.only(top: 30, left: 30, right: 30),
-        height: 450.0,
-        color: Colors.white,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text('Set ${widget.title}', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
-              SizedBox(height: 20,),
-              Container(
-                // margin: EdgeInsets.symmetric(horizontal: 30),
-                child: Row(
-                  children: <Widget>[
-                    // SizedBox(width: 20,),
-                    Container(
-                      width: 200,
-                      child: PrimaryTextField(
-                        hintText: widget.title,
-                        topPaadding: 15,
-                        bottomPadding: 15,
-                        controller: valueController,
-                        validation: true,
-                        type: TextInputType.number
+      child: SingleChildScrollView(
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.only(top: 30, left: 30, right: 30),
+          height: 500.0,
+          color: Colors.white,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text('Set ${widget.title}', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                SizedBox(height: 20,),
+                Container(
+                  // margin: EdgeInsets.symmetric(horizontal: 30),
+                  child: Row(
+                    children: <Widget>[
+                      // SizedBox(width: 20,),
+                      Container(
+                        width: 200,
+                        child: PrimaryTextField(
+                          hintText: widget.title,
+                          topPaadding: 15,
+                          bottomPadding: 15,
+                          controller: valueController,
+                          validation: true,
+                          type: TextInputType.number
+                        ),
                       ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(bottom: 20, left: 10),
-                      child: Row(
-                        children: <Widget>[
-                          Radio(
-                            activeColor: kPrimaryColor,
-                            value: 'mg/dL',
-                            groupValue: selectedUnit,
-                            onChanged: (val) {
-                              _changeUnit(val);
-                            },
-                          ),
-                          Text("mg/dL", style: TextStyle(color: Colors.black)),
-                          SizedBox(width: 20,),
-                          Radio(
-                            activeColor: kPrimaryColor,
-                            value: 'mmol/L',
-                            groupValue: selectedUnit,
-                            onChanged: (val) {
-                              _changeUnit(val);
-                            },
-                          ),
-                          Text(
-                            "mmol/L",
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(height: 10,),
-              Container(
-                color: kSecondaryTextField,
-                child: DropdownButtonFormField(
-                  hint: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey),),
-                  decoration: InputDecoration(
-                    fillColor: kSecondaryTextField,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                    border: UnderlineInputBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(4),
-                      topRight: Radius.circular(4),
-                    )
-                  ),
-                  ),
-                  items: [
-                    ...devices.map((item) =>
-                      DropdownMenuItem(
-                        child: Text(item),
-                        value: devices.indexOf(item)
+                      Container(
+                        padding: EdgeInsets.only(bottom: 20, left: 10),
+                        child: Row(
+                          children: <Widget>[
+                            Radio(
+                              activeColor: kPrimaryColor,
+                              value: 'mg/dL',
+                              groupValue: selectedUnit,
+                              onChanged: (val) {
+                                _changeUnit(val);
+                              },
+                            ),
+                            Text("mg/dL", style: TextStyle(color: Colors.black)),
+                            SizedBox(width: 20,),
+                            Radio(
+                              activeColor: kPrimaryColor,
+                              value: 'mmol/L',
+                              groupValue: selectedUnit,
+                              onChanged: (val) {
+                                _changeUnit(val);
+                              },
+                            ),
+                            Text(
+                              "mmol/L",
+                            ),
+                          ],
+                        ),
                       )
-                    ).toList(),
-                  ],
-                  value: selectedDevice,
-                  isExpanded: true,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedDevice = value;
-                    });
-                  },
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: 40,),
-              Container(
-                width: double.infinity,
-                child: TextFormField(
-                  style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
-                  keyboardType: TextInputType.multiline,
-                  maxLines: 3,
-                  controller: commentController,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.only(top: 15.0, bottom: 25.0, left: 10, right: 10),
-                    filled: true,
-                    fillColor: kSecondaryTextField,
-                    border: new UnderlineInputBorder(
-                      borderSide: new BorderSide(color: Colors.white),
+                SizedBox(height: 10,),
+                Container(
+                  color: kSecondaryTextField,
+                  child: DropdownButtonFormField(
+                    hint: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                    decoration: InputDecoration(
+                      fillColor: kSecondaryTextField,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                      border: UnderlineInputBorder(
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(4),
                         topRight: Radius.circular(4),
                       )
                     ),
-                  
-                    hintText: 'Comments/Notes',
-                    hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                    ),
+                    items: [
+                      ...devices.map((item) =>
+                        DropdownMenuItem(
+                          child: Text(item),
+                          value: devices.indexOf(item)
+                        )
+                      ).toList(),
+                    ],
+                    value: selectedDevice,
+                    isExpanded: true,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedDevice = value;
+                      });
+                    },
                   ),
-                )
-              ),
+                ),
+                SizedBox(height: 40,),
+                Container(
+                  width: double.infinity,
+                  child: TextFormField(
+                    style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 3,
+                    controller: commentController,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(top: 15.0, bottom: 25.0, left: 10, right: 10),
+                      filled: true,
+                      fillColor: kSecondaryTextField,
+                      border: new UnderlineInputBorder(
+                        borderSide: new BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          topRight: Radius.circular(4),
+                        )
+                      ),
+                    
+                      hintText: 'Comments/Notes',
+                      hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                    ),
+                  )
+                ),
 
-              Column(
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.bottomRight,
-                    margin: EdgeInsets.only(top: 50),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        Container(
-                          child: GestureDetector(
+                Column(
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.bottomRight,
+                      margin: EdgeInsets.only(top: 50),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          Container(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('UNABLE TO PERFORM', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                            ),
+                          ),
+                          SizedBox(width: 30,),
+                          GestureDetector(
                             onTap: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text('UNABLE TO PERFORM', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                            child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
                           ),
-                        ),
-                        SizedBox(width: 30,),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
-                        ),
-                        SizedBox(width: 30,),
-                        GestureDetector(
-                          onTap: () {
-                            if (_formKey.currentState.validate()) {
-                              Navigator.of(context).pop();
-                              _addItem();
-                              _clearDialogForm();
-                            }
-                          },
-                          child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
-                        ),
-                      ],
+                          SizedBox(width: 30,),
+                          GestureDetector(
+                            onTap: () {
+                              if (_formKey.currentState.validate()) {
+                                Navigator.of(context).pop();
+                                _addItem();
+                                _clearDialogForm();
+                              }
+                            },
+                            child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
+                          ),
+                        ],
+                      )
                     )
-                  )
-                ],
-              )
-            ],
-          ),
-        )
+                  ],
+                )
+              ],
+            ),
+          )
+        ),
       )
       
     );

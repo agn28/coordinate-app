@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/helpers/helpers.dart';
+import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/home_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_records_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
+import 'package:nhealth/screens/patients/manage/patient_search_screen_new.dart';
 
 class HealthReportSuccessScreen extends CupertinoPageRoute {
   HealthReportSuccessScreen()
@@ -31,20 +34,20 @@ class HealthReportSuccess extends StatelessWidget {
                     height: 100,
                     width: 100,
                     decoration: BoxDecoration(
-                      color: kPrimaryGreenColor,
+                      color: kSuccessColor,
                       shape: BoxShape.circle
                     ),
                     child: Icon(Icons.done, size: 80, color: Colors.white,)
                   ),
                   SizedBox(height: 30,),
-                  Text('Health Report Created', style: TextStyle(fontSize: 24)),
+                  Text('Health Assessment Created', style: TextStyle(fontSize: 24)),
                   SizedBox(height: 40,),
-                  Text('Jahanara Begum', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500,)),
+                  Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500,)),
                   SizedBox(height: 15,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text('31Y Female', style: TextStyle(fontSize: 16,)),
+                      Text(Helpers().getPatientAgeAndGender(Patient().getPatient()), style: TextStyle(fontSize: 16,)),
                       SizedBox(width: 30,),
                       Text('PID: N-121233333', style: TextStyle(fontSize: 16,)),
                     ],
@@ -66,7 +69,7 @@ class HealthReportSuccess extends StatelessWidget {
 
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(PatientSearchScreen());
+                      Navigator.of(context).push(PatientSearchScreenNew());
                     },
                     child: Container(
                       // height: 190,

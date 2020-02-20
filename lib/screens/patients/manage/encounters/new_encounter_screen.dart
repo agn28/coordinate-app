@@ -284,7 +284,7 @@ class _NewEncounterState extends State<NewEncounter> {
                           child: Container(
                             width: double.infinity,
                             padding: EdgeInsets.only(top: 30, left: 30, right: 30),
-                            height: 200.0,
+                            height: 230.0,
                             color: Colors.white,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,

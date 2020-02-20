@@ -28,7 +28,11 @@ void main() async {
 
   runApp(MyApp());
 
+  print('beforecodings');
+  print(DatabaseCreator().dBCreatedStatus());
+
   if (DatabaseCreator().dBCreatedStatus()) {
+    print('codings');
     await ObservationConcepts().getItems().forEach((item) {
       ObservationConceptsRepositoryLocal().create(item);
     });

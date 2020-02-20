@@ -52,7 +52,7 @@ class Helpers {
     Assessment().clearItem();
   }
 
-  converDate(date) {
+  convertDate(date) {
     return date != null ? DateFormat("MMMM d, y").format(DateTime.parse(date)) : '';
   }
 

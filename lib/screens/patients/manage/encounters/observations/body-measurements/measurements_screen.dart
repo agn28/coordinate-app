@@ -105,16 +105,19 @@ class MeasurementsState extends State<Measurements> {
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/height.png'),
                     text: 'Height',
+                    name: 'height'
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/weight.png'),
                     text: 'Weight',
+                    name: 'weight'
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/hip.png'),
                     text: 'Waist/Hip',
+                    name: 'waist/hip'
                   ),
                 ],
               )
@@ -201,10 +204,11 @@ class MeasurementsState extends State<Measurements> {
 }
 
 class EncounnterSteps extends StatefulWidget {
-   EncounnterSteps({this.text, this.icon});
+   EncounnterSteps({this.text, this.icon, this.name});
 
    final String text;
    final Image icon;
+   final String name;
 
   @override
   EncounnterStepsState createState() => EncounnterStepsState();
@@ -220,7 +224,7 @@ class EncounnterStepsState extends State<EncounnterSteps> {
   }
 
   setStatus() {
-    status = BodyMeasurement().hasItem(widget.text) ? 'Complete' : 'Incomplete';
+    status = BodyMeasurement().hasItem(widget.name) ? 'Complete' : 'Incomplete';
   }
 
   @override
@@ -233,6 +237,7 @@ class EncounnterStepsState extends State<EncounnterSteps> {
             return AddDialogue(
               parent: this,
               title: widget.text,
+              name: widget.name
             );
           } 
         );
@@ -282,8 +287,9 @@ class EncounnterStepsState extends State<EncounnterSteps> {
 class AddDialogue extends StatefulWidget {
   EncounnterStepsState parent;
   String title;
+  String name;
 
-  AddDialogue({this.parent, this.title});
+  AddDialogue({this.parent, this.title, this.name});
 
   List devices = ['D-23429', 'B-94857'];
   int selectedDevice;
@@ -309,7 +315,7 @@ class _AddDialogueState extends State<AddDialogue> {
 
   _addItem() {
     String unit = _getUnit();
-    BodyMeasurement().addItem(widget.title, valueController.text, unit, commentController != null ? commentController.text : "", devices[selectedDevice]);
+    BodyMeasurement().addItem(widget.name, valueController.text, unit, commentController != null ? commentController.text : "", devices[selectedDevice]);
     this.widget.parent.setState(() => {
       this.widget.parent.setStatus(),
     });
@@ -340,159 +346,161 @@ class _AddDialogueState extends State<AddDialogue> {
     return Dialog(
       elevation: 0.0,
       backgroundColor: Colors.transparent,
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.only(top: 30, left: 30, right: 30),
-        height: 440.0,
-        color: Colors.white,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text('Add ' + widget.title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
-              SizedBox(height: 20,),
-              Container(
-                // margin: EdgeInsets.symmetric(horizontal: 30),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    // SizedBox(width: 20,),
-                    Container(
-                      width: 150,
-                      child: PrimaryTextField(
-                        hintText: widget.title,
-                        topPaadding: 15,
-                        bottomPadding: 15,
-                        validation: true,
-                        type: TextInputType.number,
-                        controller: valueController,
+      child: SingleChildScrollView(
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.only(top: 30, left: 30, right: 30),
+          height: 500.0,
+          color: Colors.white,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text('Add ' + widget.title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                SizedBox(height: 20,),
+                Container(
+                  // margin: EdgeInsets.symmetric(horizontal: 30),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      // SizedBox(width: 20,),
+                      Container(
+                        width: 150,
+                        child: PrimaryTextField(
+                          hintText: widget.title,
+                          topPaadding: 15,
+                          bottomPadding: 15,
+                          validation: true,
+                          type: TextInputType.number,
+                          controller: valueController,
+                        ),
                       ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(bottom: 20, left: 10),
-                      child: Row(
-                        children: <Widget>[
-                          Radio(
-                            activeColor: kPrimaryColor,
-                            value: 1,
-                            groupValue: selectedUnit,
-                            onChanged: (val) {
-                              changeArm(val);
-                            },
-                          ),
-                          Text(widget.title == 'Weight' ? 'kg' : 'cm', style: TextStyle(color: Colors.black)),
-                          SizedBox(width: 20,),
-                          Radio(
-                            activeColor: kPrimaryColor,
-                            value: 2,
-                            groupValue: selectedUnit,
-                            onChanged: (val) {
-                              changeArm(val);
-                            },
-                          ),
-                          Text(
-                            widget.title == 'Weight' ? 'pound' : 'inch',
-                          ),
-                        ],
+                      Container(
+                        padding: EdgeInsets.only(bottom: 20, left: 10),
+                        child: Row(
+                          children: <Widget>[
+                            Radio(
+                              activeColor: kPrimaryColor,
+                              value: 1,
+                              groupValue: selectedUnit,
+                              onChanged: (val) {
+                                changeArm(val);
+                              },
+                            ),
+                            Text(widget.title == 'Weight' ? 'kg' : 'cm', style: TextStyle(color: Colors.black)),
+                            SizedBox(width: 20,),
+                            Radio(
+                              activeColor: kPrimaryColor,
+                              value: 2,
+                              groupValue: selectedUnit,
+                              onChanged: (val) {
+                                changeArm(val);
+                              },
+                            ),
+                            Text(
+                              widget.title == 'Weight' ? 'pound' : 'inch',
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10,),
-              Container(
-                color: kSecondaryTextField,
-                child: DropdownButtonFormField(
-                  hint: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey),),
-                  decoration: InputDecoration(
-                    fillColor: kSecondaryTextField,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                    border: UnderlineInputBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(4),
-                      topRight: Radius.circular(4),
-                    )
+                    ],
                   ),
-                  ),
-                  items: [
-                    ...devices.map((item) =>
-                      DropdownMenuItem(
-                        child: Text(item),
-                        value: devices.indexOf(item)
-                      )
-                    ).toList(),
-                  ],
-                  value: selectedDevice,
-                  isExpanded: true,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedDevice = value;
-                    });
-                  },
                 ),
-              ),
-              SizedBox(height: 30,),
-              Container(
-                width: double.infinity,
-                child: TextField(
-                  style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
-                  keyboardType: TextInputType.multiline,
-                  maxLines: 3,
-                  controller: commentController,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.only(top: 15.0, bottom: 25.0, left: 10, right: 10),
-                    filled: true,
-                    fillColor: kSecondaryTextField,
-                    border: new UnderlineInputBorder(
-                      borderSide: new BorderSide(color: Colors.white),
+                SizedBox(height: 10,),
+                Container(
+                  color: kSecondaryTextField,
+                  child: DropdownButtonFormField(
+                    hint: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                    decoration: InputDecoration(
+                      fillColor: kSecondaryTextField,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                      border: UnderlineInputBorder(
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(4),
                         topRight: Radius.circular(4),
                       )
                     ),
-                  
-                    hintText: 'Comments/Notes',
-                    hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                    ),
+                    items: [
+                      ...devices.map((item) =>
+                        DropdownMenuItem(
+                          child: Text(item),
+                          value: devices.indexOf(item)
+                        )
+                      ).toList(),
+                    ],
+                    value: selectedDevice,
+                    isExpanded: true,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedDevice = value;
+                      });
+                    },
                   ),
-                )
-              ),
-
-              Column(
-                // mainAxisAlignment: MainAxisAlignment.start,
-                // crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.bottomRight,
-                    margin: EdgeInsets.only(top: 50),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
-                        ),
-                        SizedBox(width: 50,),
-                        GestureDetector(
-                          onTap: () {
-                            if (_formKey.currentState.validate()) {
-                              Navigator.of(context).pop();
-                              _addItem();
-                              _clearDialogForm();
-                            }
-                          },
-                          child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
-                        ),
-                      ],
-                    )
+                ),
+                SizedBox(height: 30,),
+                Container(
+                  width: double.infinity,
+                  child: TextField(
+                    style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 3,
+                    controller: commentController,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(top: 15.0, bottom: 25.0, left: 10, right: 10),
+                      filled: true,
+                      fillColor: kSecondaryTextField,
+                      border: new UnderlineInputBorder(
+                        borderSide: new BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          topRight: Radius.circular(4),
+                        )
+                      ),
+                    
+                      hintText: 'Comments/Notes',
+                      hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                    ),
                   )
-                ],
-              )
-            ],
-          ),
-        )
+                ),
+
+                Column(
+                  // mainAxisAlignment: MainAxisAlignment.start,
+                  // crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.bottomRight,
+                      margin: EdgeInsets.only(top: 50),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                          ),
+                          SizedBox(width: 50,),
+                          GestureDetector(
+                            onTap: () {
+                              if (_formKey.currentState.validate()) {
+                                Navigator.of(context).pop();
+                                _addItem();
+                                _clearDialogForm();
+                              }
+                            },
+                            child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
+                          ),
+                        ],
+                      )
+                    )
+                  ],
+                )
+              ],
+            ),
+          )
+        ),
       )
       
     );

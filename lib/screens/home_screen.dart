@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/controllers/care_plan_controller.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_search_screen_new.dart';
@@ -23,6 +24,7 @@ class _HomeState extends State<HomeScreen> {
     super.initState();
     _getAuthData();
   }
+  
 
   _getAuthData() async {
     var data = await Auth().getStorageAuth();

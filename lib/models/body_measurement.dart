@@ -9,12 +9,12 @@ class BodyMeasurement {
 
   /// Add blood test item in local variable
   /// [type], [value], [unit], [comment], [device] are required as parameter
-  addItem(type, value, unit, comment, device) {
-    String convertedType = Helpers().getType(type);
-    _items.removeWhere((item) => item['type'] == type.toLowerCase());
+  addItem(name, value, unit, comment, device) {
+    // String convertedType = Helpers().getType(name);
+    _items.removeWhere((item) => item['type'] == name.toLowerCase());
 
     _items.add({
-      'type': convertedType,
+      'name': name,
       'unit': unit,
       'value': int.parse(value),
       'comment': comment,
@@ -33,7 +33,7 @@ class BodyMeasurement {
     for (var item in _items) {
       bool updated = false;
       for (var bt in _bmItems) {
-        if (bt['body']['data']['type'] == item['type']) {
+        if (bt['body']['data']['name'] == item['name']) {
           _bmItems[_bmItems.indexOf(bt)]['body']['data'] = item;
           updated = true;
           break;
@@ -82,7 +82,7 @@ class BodyMeasurement {
 
   /// Check observation is added or not
   bool hasItem (type) {
-    return _items.where((item) => item['type'] == type.toLowerCase()).isNotEmpty;
+    return _items.where((item) => item['name'] == type.toLowerCase()).isNotEmpty;
   }
 
   /// Get all Blood Test data.
