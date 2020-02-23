@@ -31,6 +31,7 @@ class MeasurementsState extends State<Measurements> {
 
   @override
   Widget build(BuildContext context) {
+    print(MediaQuery.of(context).size.width);
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.white,

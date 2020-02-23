@@ -367,7 +367,7 @@ class _NewEncounterState extends State<NewEncounter> {
                     }
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text(Assessment().getSelectedAssessment().isNotEmpty ? AppLocalizations.of(context).translate('updateAssessment') : AppLocalizations.of(context).translate('saveAssssment'),
+                  child: Text(Assessment().getSelectedAssessment().isNotEmpty ? AppLocalizations.of(context).translate('updateAssessment') : AppLocalizations.of(context).translate('saveAssessment'),
                   style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500)
                 ),
               )
@@ -416,7 +416,7 @@ class EncounnterSteps extends StatelessWidget {
             Expanded(
               flex: 2,
               child: Text(status, style: TextStyle(
-                color: status == AppLocalizations.of(context).translate('incomplete') ? kPrimaryRedColor : kPrimaryGreenColor,
+                color: status == 'Incomplete' ? kPrimaryRedColor : kPrimaryGreenColor,
                 fontSize: 18,
                 fontWeight: FontWeight.bold),),
             ),
