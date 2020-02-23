@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nhealth/app_localizations.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/helpers/helpers.dart';
@@ -24,7 +25,7 @@ class BloodTests extends StatelessWidget {
       key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Blood Tests', style: TextStyle(color: kPrimaryColor),),
+        title: Text(AppLocalizations.of(context).translate('bloodTests'), style: TextStyle(color: kPrimaryColor),),
         backgroundColor: Colors.white,
         elevation: 0.0,
         iconTheme: IconThemeData(color: kPrimaryColor),
@@ -85,7 +86,7 @@ class BloodTests extends StatelessWidget {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Enter blood test results (where applicable)', style: TextStyle(fontSize: 18),)
+              child: Text(AppLocalizations.of(context).translate('enterBloodTest'), style: TextStyle(fontSize: 18),)
             ),
 
             Container(
@@ -99,7 +100,7 @@ class BloodTests extends StatelessWidget {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Lipid Profile', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate('lipidProfile'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),)
             ),
             
             Container(
@@ -108,19 +109,19 @@ class BloodTests extends StatelessWidget {
                 children: <Widget>[
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test_common.png'),
-                    text: 'Total Cholesterol',
+                    text: AppLocalizations.of(context).translate('totalCholesterol'),
                     name: 'total_cholesterol'
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test_common.png'),
-                    text: 'HDL',
+                    text: AppLocalizations.of(context).translate('hdl'),
                     name: 'hdl'
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test_common.png'),
-                    text: 'Triglycerides',
+                    text: AppLocalizations.of(context).translate('triglycerides'),
                     name: 'tg'
                   ),
                 ],
@@ -138,7 +139,7 @@ class BloodTests extends StatelessWidget {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Blood', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate('blood'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),)
             ),
 
             Container(
@@ -147,13 +148,13 @@ class BloodTests extends StatelessWidget {
                 children: <Widget>[
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_glucose.png'),
-                    text: 'Fasting Blood Glucose',
+                    text: AppLocalizations.of(context).translate('fastingBloodGlucose'),
                     name: 'blood_glucose'
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_glucose.png'),
-                    text: 'Random Blood Sugar',
+                    text: AppLocalizations.of(context).translate('randomBloodSugar'),
                     name: 'blood_sugar'
                   ),
                 ],
@@ -171,7 +172,7 @@ class BloodTests extends StatelessWidget {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Others', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate('others'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),)
             ),
 
             Container(
@@ -180,13 +181,13 @@ class BloodTests extends StatelessWidget {
                 children: <Widget>[
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/hba1c.png'),
-                    text: 'Hba1c',
+                    text: AppLocalizations.of(context).translate('hba1c'),
                     name: 'a1c'
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/ogtt.png'),
-                    text: '2H OGTT',
+                    text: AppLocalizations.of(context).translate('hogtt'),
                     name: '2h_ogtt'
                   ),
                 ],
@@ -226,7 +227,7 @@ class BloodTests extends StatelessWidget {
                     );
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('UNABLE TO PERFORM', style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
+                  child: Text(AppLocalizations.of(context).translate('unablePerform'), style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
                 ),
               )
             ),
@@ -244,7 +245,7 @@ class BloodTests extends StatelessWidget {
                     if (result == 'success') {
                       _scaffoldKey.currentState.showSnackBar(
                         SnackBar(
-                          content: Text('Data saved successfully!'),
+                          content: Text(AppLocalizations.of(context).translate('dataSaved')),
                           backgroundColor: Color(0xFF4cAF50),
                         )
                       );
@@ -260,7 +261,7 @@ class BloodTests extends StatelessWidget {
                     }
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('SAVE', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text(AppLocalizations.of(context).translate('save'), style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                 ),
               )
             )
@@ -515,7 +516,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                           topRight: Radius.circular(4),
                         )
                       ),
-                    
+
                       hintText: 'Comments/Notes',
                       hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                     ),

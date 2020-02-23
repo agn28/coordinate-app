@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/unable_to_perform_screen.dart';
 
 class WeightScreen extends StatelessWidget {
@@ -6,7 +7,7 @@ class WeightScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Observations'),
+        title: Text(AppLocalizations.of(context).translate('observations')),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -20,7 +21,7 @@ class WeightScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   SizedBox(height: 40,),
-                  Text('Take Patient Weight Measurement', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                  Text(AppLocalizations.of(context).translate('weightMeasurement'), style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                   SizedBox(height: 50,),
                   Row(
                     children: <Widget>[
@@ -33,7 +34,7 @@ class WeightScreen extends StatelessWidget {
                             ),
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
-                              hintText: "Weight",
+                              hintText: AppLocalizations.of(context).translate('weight'),
                               contentPadding: EdgeInsets.symmetric(horizontal: 18, vertical: 15,)
                             ),
                           ),
@@ -47,7 +48,7 @@ class WeightScreen extends StatelessWidget {
                             ),
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
-                              hintText: "cm",
+                              hintText: AppLocalizations.of(context).translate('cm'),
                               contentPadding: EdgeInsets.symmetric(horizontal: 18, vertical: 15,)
                             ),
                           ),
@@ -62,20 +63,20 @@ class WeightScreen extends StatelessWidget {
                       style: TextStyle(fontSize: 20, color: Colors.black87,),
                       items: [
                         DropdownMenuItem<String>(
-                          child: Text('Item 1'),
+                          child: Text(AppLocalizations.of(context).translate('item1')),
                           value: 'one',
                         ),
                         DropdownMenuItem<String>(
-                          child: Text('Item 2'),
+                          child: Text(AppLocalizations.of(context).translate('item2')),
                           value: 'two',
                         ),
                         DropdownMenuItem<String>(
-                          child: Text('Item 3'),
+                          child: Text(AppLocalizations.of(context).translate('item3')),
                           value: 'three',
                         ),
                       ],
                       onChanged: (String value) {},
-                      hint: Text('Select a Device'),
+                      hint: Text(AppLocalizations.of(context).translate('selectDevice')),
                     ),
                   ),
                   SizedBox(height: 60,),
@@ -87,7 +88,7 @@ class WeightScreen extends StatelessWidget {
                       decoration: InputDecoration(
                         fillColor: Color(0xFFeff0f1),
                         filled: true,
-                        hintText: 'Comments/Notes (Optional)',
+                        hintText: AppLocalizations.of(context).translate('comments'),
                       ),
                       keyboardType: TextInputType.multiline,
                       maxLines: 3,
@@ -103,7 +104,7 @@ class WeightScreen extends StatelessWidget {
                       height: 60.0,
                       child: RaisedButton(
                         onPressed: () {},
-                        child: Text("Done", style: TextStyle(color: Colors.white, fontSize: 22),),
+                        child: Text(AppLocalizations.of(context).translate('done'), style: TextStyle(color: Colors.white, fontSize: 22),),
                       ),
                     ),
                   ),
@@ -117,7 +118,7 @@ class WeightScreen extends StatelessWidget {
                         onPressed: () => Navigator.push(context, 
                             MaterialPageRoute(builder: (ctx) => UnableToPerformScreen())
                         ),
-                        child: Text("Unable to Perform", style: TextStyle(color: Colors.white, fontSize: 22),),
+                        child: Text(AppLocalizations.of(context).translate('unablePerform'), style: TextStyle(color: Colors.white, fontSize: 22),),
                       ),
                     ),
                   ),

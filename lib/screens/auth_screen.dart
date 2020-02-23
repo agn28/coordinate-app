@@ -51,14 +51,14 @@ class _AuthScreenState extends State<AuthScreen> {
                         Image.asset('assets/images/logo_nhealth_horizontal.png', width: 220,),
                         Container(
                           padding: EdgeInsets.only(top: 30, left: 30),
-                          child: Text('Coordinate', style: TextStyle(color: Colors.white, fontSize: 23, fontWeight: FontWeight.w500, fontFamily: 'Roboto')),
+                          child: Text(AppLocalizations.of(context).translate('coordinate'), style: TextStyle(color: Colors.white, fontSize: 23, fontWeight: FontWeight.w500, fontFamily: 'Roboto')),
                         )
                       ],
                     )
                   ),
                   SizedBox(height: 70,),
                   Container(
-                    child: Text('Welcome', style: TextStyle(color: Colors.white, fontSize: 35)),
+                    child: Text(AppLocalizations.of(context).translate('welcome'), style: TextStyle(color: Colors.white, fontSize: 35)),
                     // child: Text(AppLocalizations.of(context).translate('welcome'), style: TextStyle(color: Colors.white, fontSize: 35)),
                   ),
                   SizedBox(height: 60,),
@@ -95,7 +95,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                 border: new UnderlineInputBorder(
                                   borderSide: new BorderSide(width: 1, color: Colors.white),
                                 ),
-                                hintText: 'Email Address',
+                                hintText: AppLocalizations.of(context).translate('emailAddress'),
                                 hintStyle: TextStyle(color: kWhite70, fontSize: 18.0),
                               ),
                             ),
@@ -133,7 +133,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                 border: new UnderlineInputBorder(
                                   borderSide: new BorderSide(width: 1, color: Colors.white),
                                 ),
-                                hintText: 'Password',
+                                hintText: AppLocalizations.of(context).translate('password'),
                                 hintStyle: TextStyle(color: kWhite70, fontSize: 18.0),
                               ),
                             ),
@@ -153,7 +153,7 @@ class _AuthScreenState extends State<AuthScreen> {
                               setState(() {
                                 isLoading = false;
                               });
-                              return Toast.show('Username or password is not correct', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+                              return Toast.show(AppLocalizations.of(context).translate('usernameOrPassword'), context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
                             }
                             setState(() {
                               isLoading = false;
@@ -170,13 +170,13 @@ class _AuthScreenState extends State<AuthScreen> {
                             color: kLightButton,
                             borderRadius: BorderRadius.circular(4)
                           ),
-                          child: Text("LOGIN", style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500))
+                          child: Text(AppLocalizations.of(context).translate('login'), style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500))
                         ),
                       ),
                       SizedBox(height: 40,),
                       FlatButton(
                         onPressed: () => Navigator.of(context).push( ForgotPasswordScreen()),
-                        child: Text("Forgot Password?", style: TextStyle(color: Colors.white, fontSize: 19, fontWeight: FontWeight.w400),),
+                        child: Text(AppLocalizations.of(context).translate('forgotPass'), style: TextStyle(color: Colors.white, fontSize: 19, fontWeight: FontWeight.w400),),
                       ),
                     ],
                   ),

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/helpers/helpers.dart';
@@ -97,23 +98,23 @@ class EncounterDetailsState extends State<EncounterDetails> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('Observation', style: TextStyle(fontSize: 20, ),),
+                      Text(AppLocalizations.of(context).translate('observation'), style: TextStyle(fontSize: 20, ),),
                       Text(_getType(item['body']), style: TextStyle(fontSize: 35, height: 1.7),),
                       Row(
                         children: <Widget>[
-                          Text('Reading: ', style: TextStyle(fontSize: 20, height: 1.6),),
+                          Text(AppLocalizations.of(context).translate('reading'), style: TextStyle(fontSize: 20, height: 1.6),),
                           Text(' ${item['body']['data']['value']} ${item['body']['data']['unit']}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, height: 2),),
                         ],
                       ),
                       Row(
                         children: <Widget>[
-                          Text('Recorded By: ', style: TextStyle(fontSize: 20, height: 1.6),),
+                          Text(AppLocalizations.of(context).translate('recordedBy'), style: TextStyle(fontSize: 20, height: 1.6),),
                           Text(' ${item['meta']['performed_by']}', style: TextStyle(fontSize: 20, height: 1.6),),
                         ],
                       ),
                       Row(
                         children: <Widget>[
-                          Text('Measured Using: ', style: TextStyle(fontSize: 20, height: 2),),
+                          Text(AppLocalizations.of(context).translate('measuredUsing'), style: TextStyle(fontSize: 20, height: 2),),
                           Text(' ${item['meta']['device_id']}', style: TextStyle(fontSize: 20, height: 2),),
                         ],
                       ),
@@ -145,7 +146,7 @@ class EncounterDetailsState extends State<EncounterDetails> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Assessment Details', style: TextStyle(color: Colors.white),),
+        title: Text(AppLocalizations.of(context).translate('assessmentDetails'), style: TextStyle(color: Colors.white),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -216,7 +217,7 @@ class EncounterDetailsState extends State<EncounterDetails> {
                           child: Text('Jan 5, 2019', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
                         ),
                         Expanded(
-                          child: Text('In-Clinic', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+                          child: Text(AppLocalizations.of(context).translate('inClinic'), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
                         ),
                         Expanded(
                           child: GestureDetector(
@@ -248,24 +249,24 @@ class EncounterDetailsState extends State<EncounterDetails> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('Observation', style: TextStyle(fontSize: 20, ),),
+                  Text(AppLocalizations.of(context).translate('observation'), style: TextStyle(fontSize: 20, ),),
                   // SizedBox(height: 20,),
-                  Text('Blood Pressure', style: TextStyle(fontSize: 35, height: 1.7),),
+                  Text(AppLocalizations.of(context).translate('bloodPressure'), style: TextStyle(fontSize: 35, height: 1.7),),
                   Row(
                     children: <Widget>[
-                      Text('Average Reading: ', style: TextStyle(fontSize: 20, height: 1.6),),
+                      Text(AppLocalizations.of(context).translate('averageReading'), style: TextStyle(fontSize: 20, height: 1.6),),
                       Text(_getAverageBp(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, height: 2),),
                     ],
                   ),
                   Row(
                     children: <Widget>[
-                      Text('Recorded By: ', style: TextStyle(fontSize: 20, height: 1.6),),
+                      Text(AppLocalizations.of(context).translate('recordedBy'), style: TextStyle(fontSize: 20, height: 1.6),),
                       Text(_getBpPerformedBy(), style: TextStyle(fontSize: 20, height: 1.6),),
                     ],
                   ),
                   Row(
                     children: <Widget>[
-                      Text('Measured Using: ', style: TextStyle(fontSize: 20, height: 2),),
+                      Text(AppLocalizations.of(context).translate('measuredUsing'), style: TextStyle(fontSize: 20, height: 2),),
                       Text(_getDevice(), style: TextStyle(fontSize: 20, height: 2),),
                     ],
                   ),

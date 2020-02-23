@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/widgets/search_widget.dart';
+import 'package:nhealth/app_localizations.dart';
 
 final searchController = TextEditingController();
 List allWorklist = [];
@@ -55,7 +57,7 @@ class _WorkListSearchState extends State<WorkListSearch> {
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Work List"),
+        title: Text(AppLocalizations.of(context).translate('workList')),
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -101,7 +103,7 @@ class _WorkListSearchState extends State<WorkListSearch> {
                           icon: Icon(Icons.cancel, color: kTextGrey, size: 25,)
                         ),
                         border: InputBorder.none,
-                        hintText: "Search here...",
+                        hintText: AppLocalizations.of(context).translate('searchHere'),
                         contentPadding: const EdgeInsets.only(
                           left: 16,
                           right: 20,
@@ -162,7 +164,7 @@ class _WorkListSearchState extends State<WorkListSearch> {
             worklist.length == 0 ? Container(
               alignment: Alignment.centerLeft,
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              child: Text('No worklist found', style: TextStyle(color: Colors.black87, fontSize: 20),),
+              child: Text(AppLocalizations.of(context).translate('worklistFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
             ) : Container()
           ],
         ),
@@ -229,7 +231,7 @@ class MyTextField extends StatelessWidget {
             icon: Icon(Icons.cancel, color: kTextGrey, size: 25,)
           ),
           border: InputBorder.none,
-          hintText: "Search here...",
+          hintText: AppLocalizations.of(context).translate('searchHere'),
           contentPadding: const EdgeInsets.only(
             left: 16,
             right: 20,
@@ -255,7 +257,7 @@ class NoItemsFound extends StatelessWidget {
         ),
         const SizedBox(width: 10),
         Text(
-          "No Items Found",
+          AppLocalizations.of(context).translate('noItems'),
           style: TextStyle(
             fontSize: 16,
             color: Colors.grey[900].withOpacity(0.7),
