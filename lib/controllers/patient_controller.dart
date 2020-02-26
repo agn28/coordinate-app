@@ -56,8 +56,8 @@ class PatientController {
     
     var data = {
       "meta": {
-        "performed_by": Auth().getAuth()['uid'],
-        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
+        "collected_by": Auth().getAuth()['uid'],
+        "created_at": DateTime.now().toString()
       },
       "body": formData
     };

@@ -26,11 +26,8 @@ List rightArmReason = [
   'participants hand is broken into pieces',
   'other'
 ];
-
 final otherReasonController = TextEditingController();
-
 String selectedRightArmReason = rightArmReason[0];
-
 
 class AddBloodPressureScreen extends CupertinoPageRoute {
   AddBloodPressureScreen()
@@ -50,6 +47,11 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
   var _patient;
   var _bloodPressures;
 
+  goBack() {
+    print('hello');
+    Navigator.of(context).pop();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -59,14 +61,15 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
   }
 
   getBloodPressures() {
+    print('blood pressure');
+    print(BloodPressure().items);
     setState(() {
-      _bloodPressures = BloodPressure().items;
-    });
-  }
-
-  _changeArm(val) {
-    setState(() {
-      selectedArm = val;
+      if (BloodPressure().items.length > 0 && BloodPressure().items[0]['skip'] != null && BloodPressure().items[0]['skip'] == true ) {
+        _bloodPressures = [];
+      } else {
+        _bloodPressures = BloodPressure().items;
+      }
+      
     });
   }
 
@@ -591,7 +594,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                       context: context,
                       builder: (BuildContext context) {
                         // return object of type Dialog
-                        return SkipAlert();
+                        return SkipAlert(parent: this);
                       },
                     );
                   },
@@ -629,8 +632,6 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                         )
                       );
                     }
-                    
-                    
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: Text('SAVE', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
@@ -656,25 +657,34 @@ _prepareFormData() {
 
 
 class SkipAlert extends StatefulWidget {
-  SkipAlert();
+  _AddBloodPressureState parent;
+  SkipAlert({this.parent});
 
   @override
   _SkipAlertState createState() => _SkipAlertState();
 }
 
 class _SkipAlertState extends State<SkipAlert> {
-
-  int selectedReason;
+  final GlobalKey<FormState> _skipForm = new GlobalKey<FormState>();
+  String selectedReason = 'patient refused';
+  bool isOther = false;
+  final skipReasonController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    selectedReason = 0;
+    isOther = false;
+    selectedReason = 'patient refused';
   }
 
-  changeArm(int val) {
-    
+
+
+  changeReason(val) {
     setState(() {
+      if (val == 'others') 
+        isOther = true;
+      else
+        isOther = false;
       selectedReason = val;
     });
   }
@@ -684,115 +694,156 @@ class _SkipAlertState extends State<SkipAlert> {
     return Dialog(
       elevation: 0.0,
       backgroundColor: Colors.transparent,
-      child: Container(
+      child: SingleChildScrollView(
+        child: Container(
         width: double.infinity,
         padding: EdgeInsets.all(30),
-        height: 460.0,
         color: Colors.white,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(AppLocalizations.of(context).translate('reasonSkipping'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
-            SizedBox(height: 20,),
-              // margin: EdgeInsets.symmetric(horizontal: 30),
-            Row(
-              children: <Widget>[
-                // SizedBox(width: 20,),
-                Radio(
-                  activeColor: kPrimaryColor,
-                  value: 0,
-                  groupValue: selectedReason,
-                  onChanged: (val) {
-                    changeArm(val);
-                  },
-                ),
-                Text(AppLocalizations.of(context).translate('patientRefused'), style: TextStyle(color: Colors.black)),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                // SizedBox(width: 20,),
-                Radio(
-                  activeColor: kPrimaryColor,
-                  value: 1,
-                  groupValue: selectedReason,
-                  onChanged: (val) {
-                    changeArm(val);
-                  },
-                ),
-                Text(AppLocalizations.of(context).translate('patientUnable'), style: TextStyle(color: Colors.black)),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                // SizedBox(width: 20,),
-                Radio(
-                  activeColor: kPrimaryColor,
-                  value: 2,
-                  groupValue: selectedReason,
-                  onChanged: (val) {
-                    changeArm(val);
-                  },
-                ),
-                Text(AppLocalizations.of(context).translate('instrumentError'), style: TextStyle(color: Colors.black)),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                // SizedBox(width: 20,),
-                Radio(
-                  activeColor: kPrimaryColor,
-                  value: 3,
-                  groupValue: selectedReason,
-                  onChanged: (val) {
-                    changeArm(val);
-                  },
-                ),
-                Text(AppLocalizations.of(context).translate('instrumentUnavailable'), style: TextStyle(color: Colors.black)),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                // SizedBox(width: 20,),
-                Radio(
-                  activeColor: kPrimaryColor,
-                  value: 4,
-                  groupValue: selectedReason,
-                  onChanged: (val) {
-                    changeArm(val);
-                  },
-                ),
-                Text(AppLocalizations.of(context).translate('other'), style: TextStyle(color: Colors.black)),
-              ],
-            ),
-            SizedBox(height: 30,),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(AppLocalizations.of(context).translate('reasonSkipping'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+              SizedBox(height: 20,),
+                // margin: EdgeInsets.symmetric(horizontal: 30),
+              Row(
+                children: <Widget>[
+                  // SizedBox(width: 20,),
+                  Radio(
+                    activeColor: kPrimaryColor,
+                    value: 'patient refused',
+                    groupValue: selectedReason,
+                    onChanged: (val) {
+                      changeReason(val);
+                    },
+                  ),
+                  Text(AppLocalizations.of(context).translate('patientRefused'), style: TextStyle(color: Colors.black)),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  // SizedBox(width: 20,),
+                  Radio(
+                    activeColor: kPrimaryColor,
+                    value: 'patient unable',
+                    groupValue: selectedReason,
+                    onChanged: (val) {
+                      changeReason(val);
+                    },
+                  ),
+                  Text(AppLocalizations.of(context).translate('patientUnable'), style: TextStyle(color: Colors.black)),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  // SizedBox(width: 20,),
+                  Radio(
+                    activeColor: kPrimaryColor,
+                    value: 'instrument error',
+                    groupValue: selectedReason,
+                    onChanged: (val) {
+                      changeReason(val);
+                    },
+                  ),
+                  Text(AppLocalizations.of(context).translate('instrumentError'), style: TextStyle(color: Colors.black)),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  // SizedBox(width: 20,),
+                  Radio(
+                    activeColor: kPrimaryColor,
+                    value: 'instrument unavailable',
+                    groupValue: selectedReason,
+                    onChanged: (val) {
+                      changeReason(val);
+                    },
+                  ),
+                  Text(AppLocalizations.of(context).translate('instrumentUnavailable'), style: TextStyle(color: Colors.black)),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  // SizedBox(width: 20,),
+                  Radio(
+                    activeColor: kPrimaryColor,
+                    value: 'others',
+                    groupValue: selectedReason,
+                    onChanged: (val) {
+                      changeReason(val);
+                    },
+                  ),
+                  Text(AppLocalizations.of(context).translate('others'), style: TextStyle(color: Colors.black)),
+                ],
+              ),
 
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Container(
-                  alignment: Alignment.bottomRight,
-                  margin: EdgeInsets.only(top: 50),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: kPrimaryColor, fontSize: 18),)
-                      ),
-                      SizedBox(width: 30,),
-                      GestureDetector(
-                        onTap: () {},
-                        child: Text(AppLocalizations.of(context).translate('add'), style: TextStyle(color: kPrimaryColor, fontSize: 18))
-                      ),
-                    ],
+              isOther ? Container(
+                margin: EdgeInsets.only(top: 10),
+                child: Form(
+                  key: _skipForm,
+                  child: PrimaryTextField(
+                    hintText: 'Other reason',
+                    controller: skipReasonController,
+                    topPaadding: 15,
+                    bottomPadding: 15,
+                    validation: true,
+                  ),
+                ),
+              ) : Container(),
+              SizedBox(height: 10,),
+
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.bottomRight,
+                    margin: EdgeInsets.only(top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: kPrimaryColor, fontSize: 18),)
+                        ),
+                        SizedBox(width: 30,),
+                        GestureDetector(
+                          onTap: () async {
+                            var reason = selectedReason;
+                            if (reason == 'others') {
+                              if (_skipForm.currentState.validate()) {
+                                reason = skipReasonController.text;
+                                var response = BloodPressure().addSkip(reason);
+                                var formData = _prepareFormData();
+                                BloodPressure().addBloodPressure(formData);
+
+                                if (response == 'success') {
+                                  Navigator.of(context).pop();
+                                  await Future.delayed(const Duration(seconds: 1));
+                                  widget.parent.goBack();
+                                } 
+                              }
+                            } else {
+                              var response = BloodPressure().addSkip(reason);
+                              var formData = _prepareFormData();
+                              BloodPressure().addBloodPressure(formData);
+
+                              if (response == 'success') {
+                                Navigator.pop(context);
+                                await Future.delayed(const Duration(seconds: 1));
+                                widget.parent.goBack();
+                              } 
+                            }
+                          },
+                          child: Text(AppLocalizations.of(context).translate('add'), style: TextStyle(color: kPrimaryColor, fontSize: 18))
+                        ),
+                      ],
+                    )
                   )
-                )
-              ],
-            )
-          ],
+                ],
+              )
+            ],
+          ),
         )
       )
       

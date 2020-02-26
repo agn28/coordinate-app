@@ -126,12 +126,12 @@ class AssessmentController {
         "collected_by": Auth().getAuth()['uid'],
         "start_time": "17 December, 2019 12:00",
         "end_time": "17 December, 2019 12:05",
-        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
+        "created_at": DateTime.now().toString()
       },
       "body": {
         "type": type == 'In-clinic Screening' ? 'in-clinic' : 'visit',
         "comment": comment,
-        "performed_by": Auth().getAuth()['name'],
+        "performed_by": Auth().getAuth()['uid'],
         "assessment_date": DateFormat('y-MM-dd').format(DateTime.now()),
         "patient_id": Patient().getPatient()['uuid']
       }

@@ -26,17 +26,42 @@ class Helpers {
 
   /// Find if any blood pressure is added
   getBpStatus() {
-    return BloodPressure().bpItems.length > 0 ? 'Complete' : 'Incomplete';
+    var data = BloodPressure().bpItems;
+    if (data.length > 0) {
+      if (data[0]['body']['data']['skip'] != null && data[0]['body']['data']['skip'] == true) {
+        return 'Skipped';
+      }
+      return 'Complete';
+    }
+    return 'Incomplete';
   }
 
   /// Find if any body measurement is added
   getBmStatus() {
-    return BodyMeasurement().bmItems.length >= 3 ? 'Complete' : 'Incomplete';
+    var data = BodyMeasurement().bmItems;
+
+    if (data.length >= 3) {
+      return 'Complete';
+    } else if (data.length > 0) {
+      if (data[0]['body']['data']['skip'] != null && data[0]['body']['data']['skip'] == true) {
+        return 'Skipped';
+      }
+    }
+    return 'Incomplete';
   }
 
   /// Find if any blood test is added
   getBtStatus() {
-    return BloodTest().btItems.length >= 7 ? 'Complete' : 'Incomplete';
+    var data = BloodTest().btItems;
+
+    if (data.length >= 7) {
+      return 'Complete';
+    } else if (data.length > 0) {
+      if (data[0]['body']['data']['skip'] != null && data[0]['body']['data']['skip'] == true) {
+        return 'Skipped';
+      }
+    }
+    return 'Incomplete';
   }
 
   /// Clear all added observations items from local variable.

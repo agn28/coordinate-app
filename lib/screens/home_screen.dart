@@ -219,13 +219,13 @@ class _HomeState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         SizedBox(height: 20,),
-                        Text(AppLocalizations.of(context).translate('welcome'), style: TextStyle(color: Colors.white70, fontSize: 21),),
+                        Text(AppLocalizations.of(context).translate('welcome'), style: TextStyle(color: Colors.white70, fontSize: 18),),
                         SizedBox(height: 15,),
-                        Text(userName, style: TextStyle(color: Colors.white, fontSize: 26),),
+                        Text(userName, style: TextStyle(color: Colors.white, fontSize: 24),),
                         // SizedBox(height: 15,),
                         // Text('Nurse', style: TextStyle(color: Colors.white70, fontSize: 16),),
                         SizedBox(height: 40,),
-                        Text(AppLocalizations.of(context).translate('homeIntro'), style: TextStyle(color: Colors.white, fontSize: 36),)
+                        Text(AppLocalizations.of(context).translate('homeIntro'), style: TextStyle(color: Colors.white, fontSize: 34),)
                       ],
                     ),
                   ),
@@ -236,10 +236,15 @@ class _HomeState extends State<HomeScreen> {
                     child: Column(
                       children: <Widget>[
                         
-                        SizedBox(height: 40,),
+                        SizedBox(height: 60,),
 
                         GestureDetector(
-                          onTap: () => Navigator.of(context).push(PatientSearchScreenNew()),
+                          
+                          onTap: () async {
+                            // await Auth().isExpired();
+                            // return;
+                            Navigator.of(context).push(PatientSearchScreenNew());
+                          },
                           child: Container(
                             height: 190,
                             width: double.infinity,
@@ -249,26 +254,15 @@ class _HomeState extends State<HomeScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Image.asset('assets/images/icons/manage_patient.png'),
-                                  FlatButton(
-                                    onPressed: () {
-                                      // Navigator.of(context).push(PatientSearchScreenNew());
-                                      Navigator.of(context).push(PatientSearchScreenNew());
-                                    },
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Expanded(
-                                          flex: 4,
-                                          child: Text(AppLocalizations.of(context).translate('manageExistingPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
-                                        ),
-                                        Expanded(
-                                          child: Container(
-                                            alignment: Alignment.centerLeft,
-                                            child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
-                                          ),
-                                        )
-                                      ],
-                                    )
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(AppLocalizations.of(context).translate('manageExistingPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
+                                      Container(
+                                        alignment: Alignment.center,
+                                        child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
+                                      )
+                                    ],
                                   ),
                                 ],
                               )
@@ -288,26 +282,17 @@ class _HomeState extends State<HomeScreen> {
                               elevation: 2,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                // crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   Image.asset('assets/images/icons/register_patient.png'),
-                                  FlatButton(
-                                    onPressed: () => Navigator.of(context).push(RegisterPatientScreen()),
-                                    child: Row(
-
-                                      children: <Widget>[
-                                        Expanded(
-                                          flex: 3,
-                                          child: Text(AppLocalizations.of(context).translate('registerNewPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
-                                        ),
-                                        Expanded(
-                                          child: Container(
-                                            alignment: Alignment.centerLeft,
-                                            child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
-                                          ),
-                                        )
-                                      ],
-                                    )
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(AppLocalizations.of(context).translate('registerNewPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
+                                      )
+                                    ],
                                   ),
                                 ],
                               ),

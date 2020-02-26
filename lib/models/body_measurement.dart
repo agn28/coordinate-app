@@ -1,4 +1,5 @@
 import 'package:nhealth/helpers/helpers.dart';
+import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:intl/intl.dart';
 
@@ -12,6 +13,11 @@ class BodyMeasurement {
   addItem(name, value, unit, comment, device) {
     // String convertedType = Helpers().getType(name);
     _items.removeWhere((item) => item['type'] == name.toLowerCase());
+    
+    if (_items.isNotEmpty && _items[0]['skip'] == true) {
+      _items = [];
+      _bmItems = [];
+    }
 
     _items.add({
       'name': name,
@@ -20,6 +26,17 @@ class BodyMeasurement {
       'comment': comment,
       'device': device
     });
+
+    return 'success';
+  }
+
+  addSkip(reason) {
+    _items = [];
+    _bmItems = [];
+    _items.add({
+        'skip': true,
+        'reason': reason 
+      });
 
     return 'success';
   }
@@ -53,9 +70,9 @@ class BodyMeasurement {
   _prepareData(item) {
     var data = {
       "meta": {
-        "performed_by": "Md. Feroj Bepari",
+        "collected_by": Auth().getAuth()['uid'],
         "device_id": item['device'],
-        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
+        "created_at": DateTime.now().toString()
       },
       "body": {
         "type": "body_measurement",

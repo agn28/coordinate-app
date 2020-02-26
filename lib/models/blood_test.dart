@@ -1,4 +1,5 @@
 import 'package:nhealth/helpers/helpers.dart';
+import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:intl/intl.dart';
 
@@ -20,6 +21,11 @@ class BloodTest {
     // String convertedType = Helpers().getType(type);
     _items.removeWhere((item) => item['name'] == name);
 
+    if (_items.isNotEmpty && _items[0]['skip'] == true) {
+      _items = [];
+      _btItems = [];
+    }
+
     if (name == 'blood_glucose' || name == 'blood_sugar') {
       _items.add({
         'name': name,
@@ -39,11 +45,18 @@ class BloodTest {
       });
     }
 
-    
-
-    print(_items);
-
     return;
+  }
+
+  addSkip(reason) {
+    _items = [];
+    _btItems = [];
+    _items.add({
+      'skip': true,
+      'reason': reason 
+    });
+
+    return 'success';
   }
   
   /// Add observation item.
@@ -84,9 +97,9 @@ class BloodTest {
   _prepareData(item) {
     var data = {
       "meta": {
-        "performed_by": "Md. Feroj Bepari",
+        "collected_by": Auth().getAuth()['uid'],
         "device_id": item["device"],
-        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
+        "created_at": DateTime.now().toString()
       },
       "body": {
         "type": "blood_test",

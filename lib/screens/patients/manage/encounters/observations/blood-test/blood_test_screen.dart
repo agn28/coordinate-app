@@ -5,19 +5,29 @@ import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
-import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import '../../../../../../models/blood_test.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+bool isOther = false;
+final otherReasonController = TextEditingController();
 
 class BloodTestScreen extends CupertinoPageRoute {
   BloodTestScreen()
       : super(builder: (BuildContext context) => new BloodTests());
-
 }
 
-class BloodTests extends StatelessWidget {
+class BloodTests extends StatefulWidget {
+
+  @override
+  _BloodTestsState createState() => _BloodTestsState();
+}
+
+class _BloodTestsState extends State<BloodTests> {
+
+  goBack() {
+    Navigator.of(context).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -222,7 +232,7 @@ class BloodTests extends StatelessWidget {
                       context: context,
                       builder: (BuildContext context) {
                         // return object of type Dialog
-                        return SkipAlert();
+                        return SkipAlert(parent: this);
                       },
                     );
                   },
@@ -571,4 +581,197 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
     );
   }
 }
+
+class SkipAlert extends StatefulWidget {
+  _BloodTestsState parent;
+  SkipAlert({this.parent});
+
+  @override
+  _SkipAlertState createState() => _SkipAlertState();
+}
+
+class _SkipAlertState extends State<SkipAlert> {
+
+  final GlobalKey<FormState> _skipForm = new GlobalKey<FormState>();
+
+  String selectedReason = 'patient refused';
+  bool isOther = false;
+  final skipReasonController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    isOther = false;
+    selectedReason = 'patient refused';
+  }
+
+  changeReason(val) {
+    setState(() {
+      if (val == 'others') 
+        isOther = true;
+      else
+        isOther = false;
+      selectedReason = val;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      elevation: 0.0,
+      backgroundColor: Colors.transparent,
+      child: SingleChildScrollView(
+        child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(30),
+        color: Colors.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(AppLocalizations.of(context).translate('reasonSkipping'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+              SizedBox(height: 20,),
+                // margin: EdgeInsets.symmetric(horizontal: 30),
+              Row(
+                children: <Widget>[
+                  // SizedBox(width: 20,),
+                  Radio(
+                    activeColor: kPrimaryColor,
+                    value: 'patient refused',
+                    groupValue: selectedReason,
+                    onChanged: (val) {
+                      changeReason(val);
+                    },
+                  ),
+                  Text(AppLocalizations.of(context).translate('patientRefused'), style: TextStyle(color: Colors.black)),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  // SizedBox(width: 20,),
+                  Radio(
+                    activeColor: kPrimaryColor,
+                    value: 'patient unable',
+                    groupValue: selectedReason,
+                    onChanged: (val) {
+                      changeReason(val);
+                    },
+                  ),
+                  Text(AppLocalizations.of(context).translate('patientUnable'), style: TextStyle(color: Colors.black)),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  // SizedBox(width: 20,),
+                  Radio(
+                    activeColor: kPrimaryColor,
+                    value: 'instrument error',
+                    groupValue: selectedReason,
+                    onChanged: (val) {
+                      changeReason(val);
+                    },
+                  ),
+                  Text(AppLocalizations.of(context).translate('instrumentError'), style: TextStyle(color: Colors.black)),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  // SizedBox(width: 20,),
+                  Radio(
+                    activeColor: kPrimaryColor,
+                    value: 'instrument unavailable',
+                    groupValue: selectedReason,
+                    onChanged: (val) {
+                      changeReason(val);
+                    },
+                  ),
+                  Text(AppLocalizations.of(context).translate('instrumentUnavailable'), style: TextStyle(color: Colors.black)),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  // SizedBox(width: 20,),
+                  Radio(
+                    activeColor: kPrimaryColor,
+                    value: 'others',
+                    groupValue: selectedReason,
+                    onChanged: (val) {
+                      changeReason(val);
+                    },
+                  ),
+                  Text(AppLocalizations.of(context).translate('others'), style: TextStyle(color: Colors.black)),
+                ],
+              ),
+
+              isOther ? Container(
+                margin: EdgeInsets.only(top: 10),
+                child: Form(
+                  key: _skipForm,
+                  child: PrimaryTextField(
+                    hintText: 'Other reason',
+                    controller: otherReasonController,
+                    topPaadding: 15,
+                    bottomPadding: 15,
+                  ),
+                ),
+              ) : Container(),
+              SizedBox(height: 10,),
+
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.bottomRight,
+                    margin: EdgeInsets.only(top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: kPrimaryColor, fontSize: 18),)
+                        ),
+                        SizedBox(width: 30,),
+                        GestureDetector(
+                          onTap: () async {
+                            var reason = selectedReason;
+                            if (reason == 'others') {
+                              if (_skipForm.currentState.validate()) {
+                                reason = skipReasonController.text;
+                                var response = BloodTest().addSkip(reason);
+                                BloodTest().addBtItem();
+
+                                if (response == 'success') {
+                                  Navigator.of(context).pop();
+                                  await Future.delayed(const Duration(seconds: 1));
+                                  widget.parent.goBack();
+                                } 
+                              }
+                            } else {
+                              var response = BloodTest().addSkip(reason);
+                                BloodTest().addBtItem();
+
+                              if (response == 'success') {
+                                Navigator.pop(context);
+                                await Future.delayed(const Duration(seconds: 1));
+                                widget.parent.goBack();
+                              } 
+                            }
+                          },
+                          child: Text(AppLocalizations.of(context).translate('add'), style: TextStyle(color: kPrimaryColor, fontSize: 18))
+                        ),
+                      ],
+                    )
+                  )
+                ],
+              )
+            ],
+          ),
+        )
+      )
+      
+    );
+  }
+}
+
 

@@ -1,6 +1,5 @@
 
 import 'dart:convert';
-
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,9 +29,13 @@ class Auth {
 
     var authData = jsonDecode(auth);
 
-    print(authData['expirationTime']);
     // print(DateTime.parse('Fri, 14 Feb 2020 09:35:32'));
     localAuth = authData;
+    if (isExpired()) {
+      return {
+        'status': false
+      };
+    }
     
     return {
       'status': true,
@@ -42,6 +45,14 @@ class Auth {
       'accessToken': authData['accessToken'],
       'expirationTime': authData['expirationTime']
     };
+  }
+
+  isExpired() {
+
+    if (localAuth != {} && localAuth['expirationTime'] != null) {
+      return DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).isBefore(DateTime.now());
+    }
+    return true;
   }
 
   logout() async {

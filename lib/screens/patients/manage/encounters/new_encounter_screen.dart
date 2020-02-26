@@ -416,7 +416,7 @@ class EncounnterSteps extends StatelessWidget {
             Expanded(
               flex: 2,
               child: Text(status, style: TextStyle(
-                color: status == 'Incomplete' ? kPrimaryRedColor : kPrimaryGreenColor,
+                color: status == 'Complete' ? kPrimaryGreenColor : kPrimaryRedColor,
                 fontSize: 18,
                 fontWeight: FontWeight.bold),),
             ),

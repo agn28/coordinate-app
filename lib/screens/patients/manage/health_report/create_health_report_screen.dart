@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
+import 'package:nhealth/controllers/observation_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
@@ -32,6 +33,8 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
   bool reviewLoading = false;
   bool canEdit = false;
   final commentsController = TextEditingController();
+  var medications = [];
+  var conditions = [];
 
   @override
   void initState() {
@@ -42,6 +45,28 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
   getReports() async {
     isLoading = true;
     var data = await HealthReportController().getReport();
+    var fetchedSurveys = await ObservationController().getLiveSurveysByPatient();
+
+    if(fetchedSurveys.isNotEmpty) {
+      fetchedSurveys.forEach((item) {
+        if (item['data']['name'] == 'medical_history') {
+          print(item['data'].keys.toList());
+          item['data'].keys.toList().forEach((key) {
+            if (item['data'][key] == 'yes') {
+              setState(() {
+                var text = key.replaceAll('_', ' ');
+                conditions.add(text[0].toUpperCase() + text.substring(1));
+              });
+            }
+          });
+        }
+        if (item['data']['name'] == 'current_medication' && item['data']['medications'].isNotEmpty) {
+          setState(() {
+            medications = item['data']['medications'];
+          });
+        }
+      });
+    }
 
     if (data['message'] == 'Unauthorized') {
       Auth().logout();
@@ -137,7 +162,9 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                               ],
                             ),
                             SizedBox(height: 15,),
-                            Text(AppLocalizations.of(context).translate('diabetes'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                            ...conditions.map((item) {
+                              return Text(item, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, height: 1.5));
+                            }).toList(),
 
                           ],
                         )
@@ -164,7 +191,9 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                               ],
                             ),
                             SizedBox(height: 15,),
-                            Text('Metfornin 50mg', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                            ...medications.map((item) {
+                              return Text(item, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, height: 1.5));
+                            }).toList()
                           ],
                         )
                       ),
