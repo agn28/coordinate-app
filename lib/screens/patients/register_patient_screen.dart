@@ -85,12 +85,11 @@ class _RegisterPatientState extends State<RegisterPatient> {
   void initState() {
     super.initState();
     _prepareState();
-    _getCarePlan();
+    _checkAuth();
   }
 
-  _getCarePlan() async {
-    var data = await CarePlanController().getCarePlan();
-    if (data != null && data['message'] == 'Unauthorized') {
+  _checkAuth() {
+    if (Auth().isExpired()) {
       Auth().logout();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
     } 

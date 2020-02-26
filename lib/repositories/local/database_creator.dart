@@ -107,6 +107,7 @@ class DatabaseCreator {
   }
 
   Future<void> onCreate(Database db, int version) async {
+    isDbCreated = true;
     await createPatientsTable(db);
     await createAssessmentsTable(db);
     await createObservationsTable(db);

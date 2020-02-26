@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:intl/intl.dart';
 
@@ -23,6 +24,9 @@ class BloodPressure {
   /// Add blood pressure to variable for future use
   /// [arm], [systolic], [diastolic], [pulse] are required as parameters.
   addItem(String arm, int systolic, int diastolic, int pulse, String rightArmReason ) {
+    if (_items.isNotEmpty && _items[0]['skip'] == true) {
+      _items = [];
+    }
     
     if (arm == 'right') {
       _items.add({
@@ -41,6 +45,16 @@ class BloodPressure {
       });
     }
 
+    return 'success';
+  }
+
+  addSkip(reason) {
+    _items = [];
+    _bpItems = [];
+    _items.add({
+      'skip': true,
+      'reason': reason
+    });
     return 'success';
   }
 
@@ -75,8 +89,8 @@ class BloodPressure {
     var data = {
       "meta": {
         "device_id": formData['device'],
-        'performed_by': formData['performed_by'],
-        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
+        "collected_by": Auth().getAuth()['uid'],
+        "created_at": DateTime.now().toString()
       },
       "body": {
         "type": "blood_pressure",
