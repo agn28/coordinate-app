@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
@@ -66,7 +68,7 @@ class MeasurementsState extends State<Measurements> {
                     child: Container(
                       child: Row(
                         children: <Widget>[
-                          Container(
+                          Patient().getPatient()['data']['avatar'] == null ? Container(
                             height: 35,
                             width: 35,
                             decoration: BoxDecoration(
@@ -74,6 +76,14 @@ class MeasurementsState extends State<Measurements> {
                               shape: BoxShape.circle
                             ),
                             child: Icon(Icons.perm_identity),
+                          ) :
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: Image.file(
+                              File(Patient().getPatient()['data']['avatar']),
+                              height: 35.0,
+                              width: 35.0,
+                            ),
                           ),
                           SizedBox(width: 15,),
                           Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 18))

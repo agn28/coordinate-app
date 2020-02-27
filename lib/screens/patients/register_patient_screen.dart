@@ -7,6 +7,7 @@ import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/configs/configs.dart';
 import 'dart:async';
 import 'dart:io';
+import 'package:image_cropper/image_cropper.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/care_plan_controller.dart';
@@ -169,20 +170,25 @@ class _RegisterPatientState extends State<RegisterPatient> {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).translate('registerNewPatient')),
       ),
-      body: CustomStepper(
-        physics: ClampingScrollPhysics(),
-        type: CustomStepperType.horizontal,
-        
-        controlsBuilder: (BuildContext context, {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
-        return Row();
-      },
-        onStepTapped: (step) {
-          // setState(() {
-          //   this._currentStep = step;
-          // });
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(new FocusNode());
         },
-        steps: _mySteps(),
-        currentStep: this._currentStep,
+        child: CustomStepper(
+          physics: ClampingScrollPhysics(),
+          type: CustomStepperType.horizontal,
+          
+          controlsBuilder: (BuildContext context, {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
+          return Row();
+        },
+          onStepTapped: (step) {
+            // setState(() {
+            //   this._currentStep = step;
+            // });
+          },
+          steps: _mySteps(),
+          currentStep: this._currentStep,
+        ),
       ),
       bottomNavigationBar: Container(
         color: kBottomNavigationGrey,
@@ -295,6 +301,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
       'first_name': firstNameController.text,
       'last_name': lastNameController.text,
       'gender': selectedGender,
+      'avatar': _image != null ? _image.path : '',
       'age': 26, //age needs to be calculated
       'birth_date': birthDateController.text,
       'birth_month': birthMonthController.text,
@@ -751,16 +758,56 @@ class AddPhoto extends StatefulWidget {
   _AddPhotoState createState() => _AddPhotoState();
 }
 
+File _image;
 class _AddPhotoState extends State<AddPhoto> {
-  // String selectedGender = 'male';
-
-  File _image;
+  bool firstTime = true;
+  @override
+  initState() {
+    super.initState();
+    _image = null;
+  }
 
   Future getImageFromCam() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
-    setState(() {
-      _image = image;
-    });
+    _image = await ImagePicker.pickImage(source: ImageSource.camera);
+    // setState(() {
+    //   _image = image;
+    // });
+
+    await cropImage();
+    print(_image);
+  }
+
+  cropImage() async {
+    File croppedImage = await ImageCropper.cropImage(
+      sourcePath: _image.path,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+      ],
+      androidUiSettings: AndroidUiSettings(
+        toolbarTitle: 'Cropper',
+        toolbarColor: kPrimaryColor,
+        toolbarWidgetColor: Colors.white,
+        initAspectRatio: CropAspectRatioPreset.square,
+        lockAspectRatio: true,
+      ),
+      
+      iosUiSettings: IOSUiSettings(
+        minimumAspectRatio: 1.0,
+      )
+    );
+    if (croppedImage != null) {
+      _image.delete();
+      setState(() {
+        _image = croppedImage;
+      });
+    } else if (firstTime) {
+      _image.delete();
+      setState(() {
+        firstTime = false;
+        _image = null;
+      });
+    }
+    
   }
 
   @override
@@ -774,44 +821,61 @@ class _AddPhotoState extends State<AddPhoto> {
           Text(AppLocalizations.of(context).translate('takePhoto'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
           SizedBox(height: 30,),
 
-          GestureDetector(
-            onTap: getImageFromCam,
-            child: Container(
-              height: 240,
-              width: 240,
-              // alignment: Alignment.topCenter,
-              decoration: BoxDecoration(
-                border: Border.all(width: 1, color: kTableBorderGrey)
+          Container(
+            height: 200,
+            // width: 200,
+            // alignment: Alignment.topCenter,
+            decoration: BoxDecoration(
+              border: Border.all(width: 1, color: kTableBorderGrey)
+            ),
+            child: _image == null ? 
+            GestureDetector(
+              onTap: getImageFromCam,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                child: Column(
+                  // crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(Icons.camera_alt, size: 90, color: kPrimaryColor,),
+                    Text(AppLocalizations.of(context).translate('addPhoto'), style: TextStyle(color: kPrimaryColor, fontSize: 20, height: 2))
+                  ],
+                ),
               ),
-              child: _image == null ? Column(
-                // crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(Icons.camera_alt, size: 90, color: kPrimaryColor,),
-                  Text(AppLocalizations.of(context).translate('addPhoto'), style: TextStyle(color: kPrimaryColor, fontSize: 20, height: 2))
-                ],
-              ) : Container(
-                child: Stack(
-                children: <Widget>[
-                  Image.file(_image, fit: BoxFit.fill),
-                  Positioned(
-                    bottom: 0,
-                    left: 70,
+            ) : Container(
+              child: Stack(
+              children: <Widget>[
+                Image.file(_image, fit: BoxFit.contain),
+                Positioned(
+                  bottom: 0,
+                  left: 30,
+                  child: GestureDetector(
+                    onTap: () {
+                      print(_image);
+                      setState(() {
+                        _image.delete();
+                        _image = null;
+                        firstTime = true;
+                      });
+                    },
                     child: CircleAvatar(
                       child: Icon(Icons.delete),
                     ),
                   ),
-                  Positioned(
-                    bottom: 0,
-                    right: 70,
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 30,
+                  child: GestureDetector(
+                    onTap: () => cropImage(),
                     child: CircleAvatar(
                       child: Icon(Icons.edit),
                     ),
-                  )
-                ],
-              ),
-              )
+                  ),
+                )
+              ],
             ),
+            )
           ),
 
           SizedBox(height: 70,),

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -111,6 +113,7 @@ class _PatientRecordsState extends State<PatientRecords> {
                       margin: EdgeInsets.symmetric(horizontal: 50, vertical: 30),
                       child: Row(
                         children: <Widget>[
+                          Patient().getPatient()['data']['avatar'] == null ? 
                           Container(
                             height: 60,
                             width: 60,
@@ -118,6 +121,14 @@ class _PatientRecordsState extends State<PatientRecords> {
                             decoration: BoxDecoration(
                               color: kLightButton,
                               shape: BoxShape.circle
+                            ),
+                          ) :
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: Image.file(
+                              File(Patient().getPatient()['data']['avatar']),
+                              height: 60.0,
+                              width: 60.0,
                             ),
                           ),
                           SizedBox(width: 20,),
