@@ -109,7 +109,7 @@ class EncounterDetailsState extends State<EncounterDetails> {
                       Row(
                         children: <Widget>[
                           Text(AppLocalizations.of(context).translate('recordedBy'), style: TextStyle(fontSize: 20, height: 1.6),),
-                          Text(' ${item['meta']['performed_by']}', style: TextStyle(fontSize: 20, height: 1.6),),
+                          Text(' ${item['meta']['performed_by'] ?? ''} ', style: TextStyle(fontSize: 20, height: 1.6),),
                         ],
                       ),
                       Row(

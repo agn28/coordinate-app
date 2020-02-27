@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -106,7 +108,7 @@ class _PastEncountersState extends State<PastEncounters> {
                     child: Container(
                       child: Row(
                         children: <Widget>[
-                          Container(
+                          Patient().getPatient()['data']['avatar'] == null ? Container(
                             height: 35,
                             width: 35,
                             decoration: BoxDecoration(
@@ -114,6 +116,14 @@ class _PastEncountersState extends State<PastEncounters> {
                               shape: BoxShape.circle
                             ),
                             child: Icon(Icons.perm_identity),
+                          ) :
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: Image.file(
+                              File(Patient().getPatient()['data']['avatar']),
+                              height: 35.0,
+                              width: 35.0,
+                            ),
                           ),
                           SizedBox(width: 15,),
                           Text(Helpers().getPatientName(_patient), style: TextStyle(fontSize: 18))
