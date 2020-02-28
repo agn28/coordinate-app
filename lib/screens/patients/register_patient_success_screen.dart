@@ -242,6 +242,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                               child: Row(
                                 children: <Widget>[
                                   Expanded(
+                                    flex: 4,
                                     child: Row(
                                       children: <Widget>[
                                         Image.asset('assets/images/icons/home.png'),

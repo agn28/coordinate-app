@@ -56,8 +56,6 @@ class AssessmentController {
     var data = [];
     var parsedData;
 
-    print(observations);
-
     await observations.forEach((item) {
       parsedData = jsonDecode(item['data']);
       // // print(assessment),

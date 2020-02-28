@@ -53,8 +53,6 @@ class _CarePlanDetailsState extends State<CarePlanDetails> {
         reports = data['data'];
       });
     }
-    print('sadljaslkd');
-    // print(result'body']['assessments']);
 
   }
 
@@ -607,7 +605,6 @@ class InterventionsState extends State<Interventions> {
   getStatus() {
     setState(() {
       status = widget.carePlan['body']['status'];
-      print(status);
     });
   }
 

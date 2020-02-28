@@ -7,7 +7,6 @@ class PatientRepository {
 
   create(data) async {
     print('patient created');
-    print(data);
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     await http.post(

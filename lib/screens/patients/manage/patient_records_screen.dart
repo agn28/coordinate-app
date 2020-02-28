@@ -1,8 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/care_plan_controller.dart';
@@ -12,8 +10,6 @@ import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_details_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_intervention_screen.dart';
-import 'package:nhealth/screens/patients/manage/care_plan/care_plan_list_screen.dart';
-import 'package:nhealth/screens/patients/manage/care_plan/care_plan_medication_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/past_encounters_screen.dart';
 import 'package:nhealth/screens/patients/manage/health_report/create_health_report_screen.dart';
@@ -24,8 +20,6 @@ import 'package:nhealth/screens/patients/register_patient_screen.dart';
 class PatientRecordsScreen extends CupertinoPageRoute {
   PatientRecordsScreen()
       : super(builder: (BuildContext context) => new PatientRecords());
-
-
 }
 
 class PatientRecords extends StatefulWidget {
@@ -478,7 +472,6 @@ class _OverviewInterventionState extends State<OverviewIntervention> {
   getStatus() {
     setState(() {
       status = widget.carePlan['body']['status'];
-      print(status);
     });
   }
 

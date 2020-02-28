@@ -51,12 +51,10 @@ class _PastHealthReportState extends State<PastHealthReport> {
     if (reports != null) {
       reports.forEach((item){
         setState(() {
-          print(item['report_date']);
           var date = '';
           if(item['report_date'] != null && item['report_date']['_seconds'] != null) {
             var parseddate = DateTime.fromMillisecondsSinceEpoch(item['report_date']['_seconds'] * 1000);
             date = DateFormat('MMMM d, yyyy').format(parseddate);
-            print(date);
           }
           list.add(
             Container(

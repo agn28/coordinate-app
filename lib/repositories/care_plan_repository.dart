@@ -20,7 +20,6 @@ class CarePlanRepository {
         'Authorization': 'Bearer ' + token
       },
     ).then((response) {
-      print(response.body);
       return json.decode(response.body);
       
     }).catchError((error) {
@@ -68,8 +67,6 @@ class CarePlanRepository {
   }
 
   update(data, comment) async {
-    print('update');
-    print(data);
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     print(apiUrl);

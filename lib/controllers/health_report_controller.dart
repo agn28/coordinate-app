@@ -31,7 +31,6 @@ class HealthReportController {
   confirmAssessment(reports, comments) async {
     var data = _prepareConfirmData(reports, comments);
     var response = await HealthReportRepository().create(data);
-    print(data);
 
     if (response == null) {
       return 'Server error';

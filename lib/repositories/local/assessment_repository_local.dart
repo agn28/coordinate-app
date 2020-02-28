@@ -97,7 +97,7 @@ class AssessmentRepositoryLocal {
       return 'Observations are not completed';
     }
 
-   _updateAssessment(assessmentId, jsonEncode(data));
+   _updateAssessment(assessmentId, data);
 
     bloodPressures.forEach((item) {
       item['body']['assessment_id'] = assessmentId;
@@ -130,6 +130,13 @@ class AssessmentRepositoryLocal {
     List<dynamic> params = [jsonEncode(data), id];
     final result = await db.rawUpdate(sql, params);
     DatabaseCreator.databaseLog('Add observation', sql, null, result, params);
+
+    Map<String, dynamic> apiData = {
+      'id': id
+    };
+
+    apiData.addAll(data);
+    ObservationRepository().update(id, apiData);
   }
 
   ///Create observations.
@@ -187,9 +194,16 @@ class AssessmentRepositoryLocal {
     final sql = '''UPDATE ${DatabaseCreator.assessmentTable} SET
       data = ?
       WHERE uuid = ?''';
-    List<dynamic> params = [data, id];
+    List<dynamic> params = [jsonEncode(data), id];
     final result = await db.rawUpdate(sql, params);
     DatabaseCreator.databaseLog('Update assessment', sql, null, result, params);
+
+    Map<String, dynamic> apiData = {
+      'id': id
+    };
+
+    apiData.addAll(data);
+    AssessmentRepository().update(id, apiData);
   }
   
 }
