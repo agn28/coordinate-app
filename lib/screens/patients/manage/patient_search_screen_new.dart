@@ -48,7 +48,6 @@ class _PatientSearchState extends State<PatientSearch> {
 
   getPatients() async {
     var data = await PatientController().getAllPatients();
-    print(data);
     setState(() {
       allPatients = data;
       patients = allPatients;

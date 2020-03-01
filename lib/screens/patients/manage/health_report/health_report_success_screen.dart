@@ -93,6 +93,7 @@ class HealthReportSuccess extends StatelessWidget {
                               child: Row(
                                 children: <Widget>[
                                   Expanded(
+                                    flex: 4,
                                     child: Row(
                                       children: <Widget>[
                                         Image.asset('assets/images/care_plan.png'),
@@ -151,6 +152,7 @@ class HealthReportSuccess extends StatelessWidget {
                               child: Row(
                                 children: <Widget>[
                                   Expanded(
+                                    flex: 4,
                                     child: Row(
                                       children: <Widget>[
                                         Image.asset('assets/images/care_plan.png'),

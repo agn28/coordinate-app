@@ -63,8 +63,6 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
   }
 
   getBloodPressures() {
-    print('blood pressure');
-    print(BloodPressure().items);
     setState(() {
       if (BloodPressure().items.length > 0 && BloodPressure().items[0]['skip'] != null && BloodPressure().items[0]['skip'] == true ) {
         _bloodPressures = [];

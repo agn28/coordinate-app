@@ -774,7 +774,6 @@ class _AddPhotoState extends State<AddPhoto> {
     // });
 
     await cropImage();
-    print(_image);
   }
 
   cropImage() async {
@@ -851,7 +850,6 @@ class _AddPhotoState extends State<AddPhoto> {
                   left: 30,
                   child: GestureDetector(
                     onTap: () {
-                      print(_image);
                       setState(() {
                         _image.delete();
                         _image = null;

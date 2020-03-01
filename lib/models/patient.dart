@@ -6,7 +6,6 @@ class Patient {
   }
 
   getPatient() {
-    print(_patient);
     return _patient;
   }
 }

@@ -35,9 +35,6 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
   @override
   void initState() {
     super.initState();
-    // getReports();
-    print('reports');
-    print(widget.reports);
   }
 
   getReports() async {
