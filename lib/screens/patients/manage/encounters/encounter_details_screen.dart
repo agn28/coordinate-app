@@ -214,10 +214,10 @@ class EncounterDetailsState extends State<EncounterDetails> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
                         Expanded(
-                          child: Text('Jan 5, 2019', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+                          child: Text(Helpers().convertDate(widget.assessment['data']['assessment_date']), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
                         ),
                         Expanded(
-                          child: Text(AppLocalizations.of(context).translate('inClinic'), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+                          child: Text(StringUtils.capitalize(widget.assessment['data']['type']), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
                         ),
                         Expanded(
                           child: GestureDetector(

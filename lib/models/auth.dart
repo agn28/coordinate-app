@@ -21,6 +21,8 @@ class Auth {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var auth = prefs.getString('auth');
 
+    // print(jsonDecode(auth)['expirationTime']);
+
     if (auth == null) {
       return {
         'status': false
@@ -42,6 +44,7 @@ class Auth {
       'id': authData['uid'],
       'name': authData['name'],
       'email': authData['email'],
+      'role': authData['role'],
       'accessToken': authData['accessToken'],
       'expirationTime': authData['expirationTime']
     };
@@ -50,9 +53,8 @@ class Auth {
   isExpired() {
 
     if (localAuth != {} && localAuth['expirationTime'] != null) {
-      return DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).isBefore(DateTime.now());
-    }
-    return true;
+      return DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now());
+    } else return true;
   }
 
   logout() async {

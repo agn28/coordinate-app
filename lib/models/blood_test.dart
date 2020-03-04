@@ -78,7 +78,6 @@ class BloodTest {
       }
 
       if(!updated) {
-        print('hello');
         _btItems.add(_prepareData(item));
       }
       
@@ -121,8 +120,14 @@ class BloodTest {
   }
 
   /// Check observation is added or not.
-  bool hasItem (name) {
+  bool hasItem(name) {
     return _items.where((item) => item['name'] == Helpers().getType(name)).isNotEmpty;
+  }
+
+  getItem(name) {
+    var data = _items.where((item) => item['name'] == Helpers().getType(name));
+
+    return data.isNotEmpty ? data.first : {};
   }
 
   /// Get all Blood Test data.

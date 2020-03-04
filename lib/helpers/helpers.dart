@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:basic_utils/basic_utils.dart';
 import 'package:intl/intl.dart';
 import 'package:nhealth/models/assessment.dart';
@@ -62,6 +64,31 @@ class Helpers {
       }
     }
     return 'Incomplete';
+  }
+
+  getQnStatus() {
+    var data = Questionnaire().qnItems;
+
+    if (data.length >= 6) {
+      return 'Complete';
+    } else if (data.length > 0) {
+      if (data[0]['body']['data']['skip'] != null && data[0]['body']['data']['skip'] == true) {
+        return 'Skipped';
+      }
+    }
+    return 'Incomplete';
+  }
+
+  isInternetAvailable() async{
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        return true;
+      }
+    } on SocketException catch (_) {
+      return false;
+    }
+    
   }
 
   /// Clear all added observations items from local variable.

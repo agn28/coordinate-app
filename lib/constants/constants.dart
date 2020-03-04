@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 //urls
-const String apiUrl = 'http://35.185.186.78/api/v1/';
+// const String apiUrl = 'http://35.185.186.78/api/v1/';
+const String apiUrl = 'https://coordinate-api.monarko.com/api/v1/';
 
 const kTextInputColorGrey = Color(0xFFE5E5E5);
 const kPrimaryColor = Color(0xFF01579B);
@@ -36,6 +37,8 @@ class ColorUtils {
   static var statusColor = {
     'AMBER': Color(0xFFD43900),
     'GREEN': Color(0xFF2E7D32),
-    'RED': Color(0xFFD92647)
+    'BLUE': Color(0xFF2E7D32),
+    'RED': Color(0xFFD92647),
+    'DEEP-RED': Color(0xFFD92647)
   };
 }

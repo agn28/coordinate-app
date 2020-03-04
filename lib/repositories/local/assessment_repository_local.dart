@@ -92,16 +92,28 @@ class AssessmentRepositoryLocal {
     var bloodPressures = BloodPressure().bpItems;
     var bloodTests = BloodTest().btItems;
     var bodyMeasurements = BodyMeasurement().bmItems;
+    var questionnaires = Questionnaire().qnItems;
 
     if (bloodPressures.isEmpty && bloodTests.isEmpty && bodyMeasurements.isEmpty) {
       return 'Observations are not completed';
     }
 
-   _updateAssessment(assessmentId, data);
+    _updateAssessment(assessmentId, data);
 
+    await BloodPressure().deleteIds.forEach((item) {
+      _deleteObservations(item);
+    });
+    BloodPressure().removeDeleteIds();
+
+    // return 'success';
     bloodPressures.forEach((item) {
       item['body']['assessment_id'] = assessmentId;
-      item['uuid'] != null ? _updateObservations(item) : _createObservations(item);
+      if (item['body']['data']['id'] == null) {
+        _createObservations(item);
+      } else {
+      }
+      // item['body']['assessment_id'] = assessmentId;
+      // item['uuid'] != null ? _updateObservations(item) : _createObservations(item);
     });
 
     bloodTests.forEach((item) {
@@ -109,11 +121,15 @@ class AssessmentRepositoryLocal {
       item['uuid'] != null ? _updateObservations(item) : _createObservations(item);
     });
 
-
     bodyMeasurements.forEach((item) {
       item['body']['assessment_id'] = assessmentId;
       item['uuid'] != null ? _updateObservations(item) : _createObservations(item);
     });
+
+    // questionnaires.forEach((item) async {
+    //   item['body']['assessment_id'] = assessmentId;
+    //   await _createObservations(item);
+    // });
 
     return 'success';
     
@@ -139,6 +155,21 @@ class AssessmentRepositoryLocal {
     ObservationRepository().update(id, apiData);
   }
 
+  ///Update observations.
+  /// Observations [data] is required as parameter
+  _deleteObservations(id) async {
+    // final sql = '''DELETE FROM ${DatabaseCreator.observationTable}
+    // WHERE uuid = ?''';
+    // List<dynamic> params = [id];
+
+    final sql = '''SELECT * FROM ${DatabaseCreator.observationTable} WHERE uuid = $id''';
+    final observations = await db.rawQuery('DELETE FROM ${DatabaseCreator.observationTable} WHERE uuid = ?', [id]);
+    // final result = await db.rawDelete(sql, params);
+    // DatabaseCreator.databaseLog('Delete observation', sql, null, result, params);
+
+    ObservationRepository().delete(id);
+  }
+
   ///Create observations.
   /// Observations [data] is required as parameter
   _createObservations(data) async {
@@ -154,7 +185,6 @@ class AssessmentRepositoryLocal {
     final result = await db.rawInsert(sql, params);
     DatabaseCreator.databaseLog('Add observation', sql, null, result, params);
 
-    print('observation controller');
     Map<String, dynamic> apiData = {
       'id': id
     };

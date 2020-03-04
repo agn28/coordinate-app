@@ -38,6 +38,7 @@ class _CarePlanDetailsState extends State<CarePlanDetails> {
   getReports() async {
     isLoading = true;
     var data = await HealthReportController().getLastReport();
+    print(data);
     
     if (data['error'] == true) {
       setState(() {
@@ -610,6 +611,7 @@ class InterventionsState extends State<Interventions> {
 
   setStatus() {
     setState(() {
+      widget.carePlan['body']['status'] = 'completed';
       status = 'completed';
     });
   }

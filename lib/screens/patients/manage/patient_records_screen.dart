@@ -34,17 +34,26 @@ class _PatientRecordsState extends State<PatientRecords> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
      _patient = Patient().getPatient();
+     _checkAuth();
      _getCarePlan();
+  }
+
+  _checkAuth() {
+    if (Auth().isExpired()) {
+      Auth().logout();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    }
   }
 
   _getCarePlan() async {
     setState(() {
       isLoading = true;
     });
+    
     var data = await CarePlanController().getCarePlan();
+    
     if (data != null && data['message'] == 'Unauthorized') {
       setState(() {
         isLoading = false;
@@ -477,6 +486,7 @@ class _OverviewInterventionState extends State<OverviewIntervention> {
 
   setStatus() {
     setState(() {
+      widget.carePlan['body']['status'] = 'completed';
       status = 'completed';
     });
   }
@@ -501,15 +511,17 @@ class _OverviewInterventionState extends State<OverviewIntervention> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(widget.carePlan['body']['goal']['title'], style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400,)),
-                  SizedBox(height: 15,),
-                  Text('Intervention: ${widget.carePlan['body']['title']}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400,)),
-                  SizedBox(height: 15,),
-                  Text('${status != null ? status[0].toUpperCase() + status.substring(1) : 'Pending'}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: status != null ? kPrimaryGreenColor : kPrimaryRedColor)),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(widget.carePlan['body']['goal']['title'], style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400,)),
+                    SizedBox(height: 15,),
+                    Text('Intervention: ${widget.carePlan['body']['title']}', overflow: TextOverflow.fade, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400,)),
+                    SizedBox(height: 15,),
+                    Text('${status != null ? status[0].toUpperCase() + status.substring(1) : 'Pending'}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: status != null ? kPrimaryGreenColor : kPrimaryRedColor)),
+                  ],
+                ),
               ),
               Container(
                 child: Icon(Icons.arrow_forward, color: kPrimaryColor,),

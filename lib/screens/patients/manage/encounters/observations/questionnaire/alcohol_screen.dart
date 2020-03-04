@@ -2,7 +2,6 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/constants/constants.dart';
-import 'package:nhealth/controllers/questionnaire_controller.dart';
 import 'package:nhealth/custom-classes/custom_stepper.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
@@ -243,7 +242,7 @@ class _FirstQuestionState extends State<FirstQuestion> {
                   Icon(Icons.error_outline, color: Color(0x87000000), size: 40,),
                   SizedBox(width: 10,),
                   Expanded(
-                    child: Text('Now I am going to ask you some questions about tobacco use.', style: TextStyle(fontSize: 19),),
+                    child: Text('Now I am going to ask you some questions about alcohol use.', style: TextStyle(fontSize: 19),),
                   )
                 ],
               )

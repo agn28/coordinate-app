@@ -323,42 +323,49 @@ class AddDialogue extends StatefulWidget {
 
 class _AddDialogueState extends State<AddDialogue> {
 
-   int selectedUnit;
+   String selectedUnit;
    final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
    final valueController = TextEditingController();
    final deviceController = TextEditingController();
    final commentController = TextEditingController();
 
+   _getItem() {
+    var item = BodyMeasurement().getItem(widget.name);
+    print(item);
+    if (item.isNotEmpty) {
+      setState(() {
+        valueController.text = item['value'].toString();
+        commentController.text = item['comment'];
+        selectedUnit = item['unit'];
+      });
+    }
+
+    print(selectedUnit);
+  }
+
   @override
   void initState() {
     super.initState();
-    selectedUnit = 1;
+    selectedUnit = widget.name == 'weight' ? 'kg' : 'cm';
+    _getItem();
   }
 
   _addItem() {
-    String unit = _getUnit();
-    BodyMeasurement().addItem(widget.name, valueController.text, unit, commentController != null ? commentController.text : "", devices[selectedDevice]);
+    BodyMeasurement().addItem(widget.name, valueController.text, selectedUnit, commentController != null ? commentController.text : "", devices[selectedDevice]);
     this.widget.parent.setState(() => {
       this.widget.parent.setStatus(),
     });
-  }
-
-  _getUnit() {
-    if (widget.title == 'Weight') {
-      return selectedUnit == 1 ? 'kg' : 'pound';
-    }
-    return selectedUnit == 1 ? 'cm' : 'inch';
   }
 
   _clearDialogForm() {
     valueController.clear();
     deviceController.clear();
     commentController.clear();
-    selectedUnit = 1;
+    selectedUnit = 'cm';
   }
 
-  changeArm(val) {
+  _changeUnit(val) {
     setState(() {
       selectedUnit = val;
     });
@@ -401,31 +408,53 @@ class _AddDialogueState extends State<AddDialogue> {
                       ),
                       Container(
                         padding: EdgeInsets.only(bottom: 20, left: 10),
-                        child: Row(
+                        child: widget.name == 'weight' ?
+                        Row(
                           children: <Widget>[
                             Radio(
                               activeColor: kPrimaryColor,
-                              value: 1,
+                              value: 'kg',
                               groupValue: selectedUnit,
                               onChanged: (val) {
-                                changeArm(val);
+                                _changeUnit(val);
                               },
                             ),
-                            Text(widget.title == 'Weight' ? 'kg' : 'cm', style: TextStyle(color: Colors.black)),
+                            Text('kg', style: TextStyle(color: Colors.black)),
                             SizedBox(width: 20,),
                             Radio(
                               activeColor: kPrimaryColor,
-                              value: 2,
+                              value: 'pound',
                               groupValue: selectedUnit,
                               onChanged: (val) {
-                                changeArm(val);
+                                _changeUnit(val);
                               },
                             ),
-                            Text(
-                              widget.title == 'Weight' ? 'pound' : 'inch',
-                            ),
+                            Text('pound',),
                           ],
-                        ),
+                        ) :
+                        Row(
+                          children: <Widget>[
+                            Radio(
+                              activeColor: kPrimaryColor,
+                              value: 'cm',
+                              groupValue: selectedUnit,
+                              onChanged: (val) {
+                                _changeUnit(val);
+                              },
+                            ),
+                            Text('cm', style: TextStyle(color: Colors.black)),
+                            SizedBox(width: 20,),
+                            Radio(
+                              activeColor: kPrimaryColor,
+                              value: 'inch',
+                              groupValue: selectedUnit,
+                              onChanged: (val) {
+                                _changeUnit(val);
+                              },
+                            ),
+                            Text('inch',),
+                          ],
+                        )
                       ),
                     ],
                   ),

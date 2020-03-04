@@ -7,6 +7,7 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/assessment.dart';
+import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-test/blood_test_screen.dart';
@@ -40,10 +41,13 @@ class _NewEncounterState extends State<NewEncounter> {
   @override
   void initState() {
     super.initState();
+    BloodPressure().removeDeleteIds();
     if (Assessment().getSelectedAssessment() != {}) {
       setState(() {
         commentController.text = Assessment().getSelectedAssessment()['data'] != null ? Assessment().getSelectedAssessment()['data']['comment'] : '';
-        selectedType = Assessment().getSelectedAssessment()['data'] != null ? Assessment().getSelectedAssessment()['data']['type'] : 'In-clinic Screening';
+        var type = Assessment().getSelectedAssessment()['data'] != null ? Assessment().getSelectedAssessment()['data']['type'] : 'in-clinic';
+        print(type);
+        selectedType = type == 'in-clinic' ? 'In-clinic Screening' : 'Home Visit';
       });
     }
   }
@@ -172,7 +176,7 @@ class _NewEncounterState extends State<NewEncounter> {
                     EncounnterSteps(
                       icon: Image.asset('assets/images/icons/questionnaire.png'),
                       text: Text('Questionnaire', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                      status: 'Incomplete',
+                      status: Helpers().getQnStatus(),
                       onTap: () {
                         FocusScope.of(context).requestFocus(new FocusNode());
                         Navigator.of(context).push(QuestionnairesScreen());

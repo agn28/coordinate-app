@@ -12,7 +12,7 @@ class BodyMeasurement {
   /// [type], [value], [unit], [comment], [device] are required as parameter
   addItem(name, value, unit, comment, device) {
     // String convertedType = Helpers().getType(name);
-    _items.removeWhere((item) => item['type'] == name.toLowerCase());
+    _items.removeWhere((item) => item['name'] == name.toLowerCase());
     
     if (_items.isNotEmpty && _items[0]['skip'] == true) {
       _items = [];
@@ -100,6 +100,12 @@ class BodyMeasurement {
   /// Check observation is added or not
   bool hasItem (type) {
     return _items.where((item) => item['name'] == type.toLowerCase()).isNotEmpty;
+  }
+
+  getItem(name) {
+    var data = _items.where((item) => item['name'] == Helpers().getType(name));
+
+    return data.isNotEmpty ? data.first : {};
   }
 
   /// Get all Blood Test data.

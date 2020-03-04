@@ -389,12 +389,25 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
 
   String selectedUnit;
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  var controllers;
+  
   final valueController = TextEditingController();
   final deviceController = TextEditingController();
   final commentController = TextEditingController();
 
   List devices = ['D-23429', 'B-94857'];
   int selectedDevice = 0;
+
+  _getItem() {
+    var item = BloodTest().getItem(widget.name);
+    if (item.isNotEmpty) {
+      setState(() {
+        valueController.text = item['value'].toString();
+        commentController.text = item['comment'];
+        selectedUnit = item['unit'];
+      });
+    }
+  }
 
   _addItem(){
     BloodTest().addItem(widget.name, valueController.text, selectedUnit, commentController.text, devices[selectedDevice]);
@@ -411,7 +424,8 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
   @override
   void initState() {
     super.initState();
-    selectedUnit = 'mg/dL';
+    selectedUnit = 'mmol/L';
+    _getItem();
     if (widget.name == 'a1c') {
       selectedUnit = '%';
     }
@@ -464,16 +478,6 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                           children: <Widget>[
                             Radio(
                               activeColor: kPrimaryColor,
-                              value: 'mg/dL',
-                              groupValue: selectedUnit,
-                              onChanged: (val) {
-                                _changeUnit(val);
-                              },
-                            ),
-                            Text("mg/dL", style: TextStyle(color: Colors.black)),
-                            SizedBox(width: 20,),
-                            Radio(
-                              activeColor: kPrimaryColor,
                               value: 'mmol/L',
                               groupValue: selectedUnit,
                               onChanged: (val) {
@@ -483,6 +487,16 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                             Text(
                               "mmol/L",
                             ),
+                            Radio(
+                              activeColor: kPrimaryColor,
+                              value: 'mg/dL',
+                              groupValue: selectedUnit,
+                              onChanged: (val) {
+                                _changeUnit(val);
+                              },
+                            ),
+                            Text("mg/dL", style: TextStyle(color: Colors.black)),
+                            SizedBox(width: 20,),
                           ],
                         ) : 
                         Row(

@@ -60,6 +60,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
     _patient = Patient().getPatient();
     selectedArm = 'left';
     getBloodPressures();
+    print(BloodPressure().bpItems);
   }
 
   getBloodPressures() {
@@ -69,6 +70,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
       } else {
         _bloodPressures = BloodPressure().items;
       }
+    print(_bloodPressures);
       
     });
   }
@@ -88,7 +90,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomPadding: true,
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).translate('bloodPressure'), style: TextStyle(color: kLightBlack),),

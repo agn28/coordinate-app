@@ -24,5 +24,24 @@ class PatientRepository {
       print('error ' + error.toString());
     });
   }
+
+  update(data) async {
+    var authData = await Auth().getStorageAuth() ;
+    var token = authData['accessToken'];
+    await http.put(
+      apiUrl + 'patients/' + data['id'],
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: json.encode(data)
+    ).then((response) {
+      print('response ' + response.body);
+      
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
+  }
   
 }

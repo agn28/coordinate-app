@@ -18,6 +18,7 @@ class BloodPressureItem with ChangeNotifier {
 }
 List _items = [];
 List _bpItems = [];
+List _bpDeleteIds = [];
 
 class BloodPressure {
 
@@ -80,7 +81,11 @@ class BloodPressure {
   /// body measurement [observation] is required as parameter
   addBpItemsForEdit(observation) {
     _bpItems.add(observation);
-    _items.add(observation['body']['data']);
+    Map<String, dynamic> data = {
+      'id': observation['uuid']
+    };
+    data.addAll(observation['body']['data']);
+    _items.add(data);
     // _items.add(observation['body']['data']);
   }
 
@@ -115,7 +120,16 @@ class BloodPressure {
 
   /// Remove an item by index
   removeItem(index) {
+    _bpDeleteIds.add(_items[index]['id']);
     _items.removeAt(index);
+  }
+
+  get deleteIds {
+    return _bpDeleteIds;
+  }
+
+  removeDeleteIds() {
+    _bpDeleteIds = [];
   }
 
   /// Clear all items

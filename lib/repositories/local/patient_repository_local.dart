@@ -60,6 +60,10 @@ class PatientReposioryLocal {
       'meta': data['meta']
     };
 
+    data['id'] = uuid;
+
+    PatientRepository().update(data);
+
     await Patient().setPatient(patient);
     DatabaseCreator.databaseLog('Update patient', sql, null, result, params);
   }

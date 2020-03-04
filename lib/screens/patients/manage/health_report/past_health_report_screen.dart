@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
+import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
@@ -40,6 +41,10 @@ class _PastHealthReportState extends State<PastHealthReport> {
       isLoading = true;
     });
     var response = await HealthReportController().getReports();
+
+    if (response['error']) {
+      return Toast.show('Server Error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+    }
     
 
     if(response != null && response['message'] == 'Unauthorized') {
@@ -47,6 +52,7 @@ class _PastHealthReportState extends State<PastHealthReport> {
     }
 
     reports = response['data'];
+    print(reports);
 
     if (reports != null) {
       reports.forEach((item){
