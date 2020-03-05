@@ -9,85 +9,19 @@ import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/repositories/local/assessment_repository_local.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:nhealth/repositories/worklist_repository.dart';
 
 var bloodPressures = [];
 
-class AssessmentController {
-
-  /// Get all the assessments.
-  getAllAssessmentsByPatient() async {
-    var assessments = await AssessmentRepositoryLocal().getAllAssessments();
-    var data = [];
-    var parsedData;
-
-    await assessments.forEach((assessment) {
-      parsedData = jsonDecode(assessment['data']);
-      if (parsedData['body']['patient_id'] == Patient().getPatient()['uuid']) {
-        data.add({
-          'uuid': assessment['uuid'],
-          'data': parsedData['body'],
-          'meta': parsedData['meta']
-        });
-      }
-    });
-    return data;
-  }
-
-  /// Get all the assessments.
-  getAllAssessments() async {
-    var assessments = await AssessmentRepositoryLocal().getAllAssessments();
-    var data = [];
-    var parsedData;
-
-    await assessments.forEach((assessment) {
-      parsedData = jsonDecode(assessment['data']);
-      data.add({
-        'uuid': assessment['uuid'],
-        'data': parsedData['body'],
-        'meta': parsedData['meta']
-      });
-    });
-    return data;
-  }
-
-  /// Get observations under a specific assessment.
-  /// [assessment] object is required as parameter.
-  getObservationsByAssessment(assessment) async {
-    var observations = await AssessmentRepositoryLocal().getAllObservations();
-    var data = [];
-    var parsedData;
-
-    await observations.forEach((item) {
-      parsedData = jsonDecode(item['data']);
-      // // print(assessment),
-      if (parsedData['body']['patient_id'] == Patient().getPatient()['uuid'] && parsedData['body']['assessment_id'] == assessment['uuid']) {
-        data.add({
-          'uuid': item['uuid'],
-          'body': {
-            'type': parsedData['body']['type'],
-            'data': parsedData['body']['data'],
-            'comment': parsedData['body']['comment'],
-            'patient_id': parsedData['body']['patient_id'],
-            'assessment_id': parsedData['body']['assessment_id'],
-          },
-          'meta': parsedData['meta']
-        });
-      }
-    });
-    return data;
-  }
+class WorklistController {
 
   /// Create assessment.
   /// Assessment [type] and [comment] is required as parameter.
-  create(type, comment) {
+  getWorklist() async {
 
-    var data = _prepareData(type, comment);
-    var status = AssessmentRepositoryLocal().create(data);
-    if (status == 'success') {
-      Helpers().clearObservationItems();
-    }
+    var response = await WorklistRepository().getWorklist();
 
-    return status;
+    return response;
   }
 
   update(type, comment) {

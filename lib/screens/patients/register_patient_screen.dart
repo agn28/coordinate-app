@@ -108,8 +108,13 @@ class _RegisterPatientState extends State<RegisterPatient> {
 
   _fillFormData() {
     var patient = Patient().getPatient();
+    print(_image);
+    // print(patient);
     firstNameController.text = patient['data']['first_name'];
     lastNameController.text = patient['data']['last_name'];
+    setState(() {
+      _image = File(patient['data']['avatar']);
+    });
     birthDateController.text = DateFormat('d').format(DateTime.parse(patient['data']['birth_date']));
     birthMonthController.text = DateFormat('MM').format(DateTime.parse(patient['data']['birth_date']));
     birthYearController.text = DateFormat('y').format(DateTime.parse(patient['data']['birth_date']));
@@ -162,6 +167,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     contactMobilePhoneController.clear();
     contactHomePhoneController.clear();
     contactEmailController.clear();
+    _image = null;
   }
   
   @override
@@ -554,7 +560,7 @@ class _PatientDetailsState extends State<PatientDetails> {
               topPaadding: 18,
               bottomPadding: 18,
               prefixIcon: Icon(Icons.email),
-              hintText: AppLocalizations.of(context).translate('emailAddress'),
+              hintText: AppLocalizations.of(context).translate('emailAddressOptional'),
               controller: emailController
             ),
             SizedBox(height: 10,),
@@ -764,7 +770,7 @@ class _AddPhotoState extends State<AddPhoto> {
   @override
   initState() {
     super.initState();
-    _image = null;
+    // _image = null;
   }
 
   Future getImageFromCam() async {
@@ -884,7 +890,7 @@ class _AddPhotoState extends State<AddPhoto> {
               var response = isEditState != null ? await PatientController().update(formData) : await PatientController().create(formData);
               if (response == 'success') {
                 _RegisterPatientState()._clearForm();
-                Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen());
+                Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen(isEditState: isEditState));
               }
             },
             child: Container(

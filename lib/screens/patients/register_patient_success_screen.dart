@@ -11,17 +11,28 @@ import 'package:nhealth/screens/patients/register_patient_screen.dart';
 
 
 class RegisterPatientSuccessScreen extends CupertinoPageRoute {
-  RegisterPatientSuccessScreen()
-      : super(builder: (BuildContext context) => new RegisterPatientSuccess());
+  bool isEditState;
+  RegisterPatientSuccessScreen({this.isEditState})
+      : super(builder: (BuildContext context) => new RegisterPatientSuccess(isEditState: isEditState));
 
 }
 
 class RegisterPatientSuccess extends StatefulWidget {
+  bool isEditState;
+  RegisterPatientSuccess({this.isEditState});
   @override
   _RegisterPatientSuccessState createState() => _RegisterPatientSuccessState();
 }
 
 class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print('isedit');
+    print(widget.isEditState);
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -52,7 +63,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                         child: Icon(Icons.done, size: 40, color: Colors.white,)
                       ),
                       SizedBox(width: 15,),
-                      Text(AppLocalizations.of(context).translate('patientRegistered'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500)),
+                      Text(widget.isEditState != null && widget.isEditState ? AppLocalizations.of(context).translate('patientUpdated') : AppLocalizations.of(context).translate('patientRegistered'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500)),
                     ],
                   ),
                   SizedBox(height: 20,),

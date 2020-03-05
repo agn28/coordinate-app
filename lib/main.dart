@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nhealth/concept-manager/concept_manager.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:nhealth/models/language.dart';
 import 'app_localizations.dart';
 
 import 'package:nhealth/constants/constants.dart';
@@ -22,6 +23,7 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   var locale = prefs.getString('locale');
   Map langMapp = {"English": Locale('en', 'EN'), "Bengali": Locale('bn', 'BN')};
+  Language().changeLanguage(locale);
   if (locale != null) {
     appLocale = langMapp[locale];
   }
@@ -62,48 +64,52 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme:
-          ThemeData(primaryColor: kPrimaryColor, backgroundColor: Colors.white),
-      // List all of the app's supported locales here
-      supportedLocales: [
-        Locale('en', 'EN'),
-        Locale('bn', 'BN'),
-      ],
-      locale: appLocale,
-      // These delegates make sure that the localization data for the proper language is loaded
-      localizationsDelegates: [
-        // A class which loads the translations from JSON files
-        AppLocalizations.delegate,
-        // Built-in localization of basic text for Material widgets
-        GlobalMaterialLocalizations.delegate,
-        // Built-in localization for text direction LTR/RTL
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      // Returns a locale which will be used by the app
-      localeResolutionCallback: (locale, supportedLocales) {
-        // var t = Locale('bn', 'BN');
-        // Check if the current device locale is supported
-        for (var supportedLocale in supportedLocales) {
-          if (supportedLocale.languageCode == locale.languageCode &&
-              supportedLocale.countryCode == locale.countryCode) {
-            return supportedLocale;
-          }
-        }
-        // If the locale of the device is not supported, use the first one
-        // from the list (English, in this case).
-        return supportedLocales.first;
-      },
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
 
-      home: CheckAuth(),
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: MaterialApp(
+        theme:
+            ThemeData(primaryColor: kPrimaryColor, backgroundColor: Colors.white),
+        // List all of the app's supported locales here
+        supportedLocales: [
+          Locale('en', 'EN'),
+          Locale('bn', 'BN'),
+        ],
+        locale: appLocale,
+        // These delegates make sure that the localization data for the proper language is loaded
+        localizationsDelegates: [
+          // A class which loads the translations from JSON files
+          AppLocalizations.delegate,
+          // Built-in localization of basic text for Material widgets
+          GlobalMaterialLocalizations.delegate,
+          // Built-in localization for text direction LTR/RTL
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        // Returns a locale which will be used by the app
+        localeResolutionCallback: (locale, supportedLocales) {
+          // var t = Locale('bn', 'BN');
+          // Check if the current device locale is supported
+          for (var supportedLocale in supportedLocales) {
+            if (supportedLocale.languageCode == locale.languageCode &&
+                supportedLocale.countryCode == locale.countryCode) {
+              return supportedLocale;
+            }
+          }
+          // If the locale of the device is not supported, use the first one
+          // from the list (English, in this case).
+          return supportedLocales.first;
+        },
+
+        home: CheckAuth(),
+      ),
     );
   }
 
-  Future checkUserAndNavigate(BuildContext context) async {
-    var auth = await Auth().getAuth();
-    print(auth['status']);
-    return  false;    
-  }
 }
 
 class CheckAuth extends StatelessWidget {

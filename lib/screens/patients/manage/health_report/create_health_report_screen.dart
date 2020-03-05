@@ -46,7 +46,18 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
 
   getReports() async {
     isLoading = true;
+    if (Auth().isExpired()) {
+      Auth().logout();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    }
     var data = await HealthReportController().getReport();
+    print(data);
+
+    if (data['error'] != null && data['error']) {
+      return Toast.show('Server Error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+    }
+    print('hi');
+    print(data);
     var fetchedSurveys = await ObservationController().getLiveSurveysByPatient();
 
     if(fetchedSurveys.isNotEmpty) {
@@ -479,7 +490,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                                     height: 14,
                                                     width: 57,
                                                   ),
-                                                  reports['assessments']['body_composition']['components']['body_fat']['tfl'] == 'GREEN' ?
+                                                  reports['assessments']['body_composition']['components']['body_fat']['tfl'] == 'GREEN' || reports['assessments']['body_composition']['components']['body_fat']['tfl'] == 'BLUE' ?
                                                   Container(
                                                     child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryGreenColor,),
                                                   ) :
@@ -852,7 +863,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                             height: 14,
                                             width: 57,
                                           ),
-                                          reports['assessments']['blood_pressure']['tfl'] == 'RED' ?
+                                          reports['assessments']['blood_pressure']['tfl'] == 'RED' ||  reports['assessments']['blood_pressure']['tfl'] == 'DEEP-RED' ?
                                           Container(
                                             child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryRedColor,),
                                           ) :
@@ -1335,7 +1346,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                 setState(() {
                                   reviewLoading = true;
                                 });
-                                var response = await HealthReportController().confirmAssessment(reports, commentsController.text);
+                                var response = await HealthReportController().sendForReview(reports, commentsController.text);
                                 if (response == 'success') {
                                   setState(() {
                                     reviewLoading = false;

@@ -52,5 +52,21 @@ class ObservationRepository {
       print('error ' + error.toString());
     });
   }
+
+  delete(id) async {
+    
+    await http.delete(
+      apiUrl + 'observations/' + id,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    ).then((response) {
+      print('response ' + response.body);
+      
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
+  }
   
 }

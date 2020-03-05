@@ -1,8 +1,8 @@
+import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:nhealth/constants/constants.dart';
-import 'package:nhealth/controllers/care_plan_controller.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_search_screen_new.dart';
@@ -19,6 +19,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeState extends State<HomeScreen> {
   String userName = '';
+  String role = '';
   @override
   initState() {
     super.initState();
@@ -28,8 +29,14 @@ class _HomeState extends State<HomeScreen> {
 
   _getAuthData() async {
     var data = await Auth().getStorageAuth();
+    print(data);
+    if (!data['status']) {
+      await Auth().logout();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    }
     setState(() {
       userName = data['name'];
+      role = data['role'];
     });
   }
   @override
@@ -69,7 +76,7 @@ class _HomeState extends State<HomeScreen> {
                   ),
                   SizedBox(height: 30,),
                   Text(userName, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
-                  // Text('Nurse', style: TextStyle(fontSize: 17, height: 1.8),),
+                  Text(role != null ? StringUtils.capitalize(role) : '', style: TextStyle(fontSize: 17, height: 1.8),),
                   GestureDetector(
                     onTap: () {},
                     child: Text(AppLocalizations.of(context).translate('gotoProfile'), style: TextStyle(fontSize: 17, height: 2.5, color: kPrimaryColor),),
@@ -222,8 +229,8 @@ class _HomeState extends State<HomeScreen> {
                         Text(AppLocalizations.of(context).translate('welcome'), style: TextStyle(color: Colors.white70, fontSize: 18),),
                         SizedBox(height: 15,),
                         Text(userName, style: TextStyle(color: Colors.white, fontSize: 24),),
-                        // SizedBox(height: 15,),
-                        // Text('Nurse', style: TextStyle(color: Colors.white70, fontSize: 16),),
+                        SizedBox(height: 15,),
+                        Text(role != null ? StringUtils.capitalize(role) : '', style: TextStyle(color: Colors.white70, fontSize: 16),),
                         SizedBox(height: 40,),
                         Text(AppLocalizations.of(context).translate('homeIntro'), style: TextStyle(color: Colors.white, fontSize: 34),)
                       ],

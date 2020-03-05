@@ -1,10 +1,17 @@
+import 'dart:io';
+
+import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:nhealth/controllers/worklist_controller.dart';
+import 'package:nhealth/custom-classes/custom_toast.dart';
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/widgets/search_widget.dart';
 import 'package:nhealth/app_localizations.dart';
 
@@ -26,23 +33,63 @@ class WorkListSearch extends StatefulWidget {
 class _WorkListSearchState extends State<WorkListSearch> {
 
   List patients = [];
+  bool isLoading = true;
 
   /// Get all the worklist
   _getWorklist() async {
+
+    var data = await WorklistController().getWorklist();
+
+    if (data['error'] != null && data['error']) {
+      return Toast.show('Server Error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+    }
+
     setState(() {
-      allWorklist = ['Rokeya Khatun', 'Zahid Hasan'];
+      allWorklist = data['data'];
       worklist = allWorklist;
+      isLoading = false;
     });
   }
 
   search(query) {
+
+    print(query);
+
+    var modifiedWorklist = [...allWorklist].map((item)  {
+      print(item);
+      item['patient']['name'] = '${item['patient']['first_name']} ${item['patient']['last_name']}' ;
+      return item;
+    }).toList();
+
+    print('hi');
+    print(modifiedWorklist);
+
     setState(() {
-      worklist = [...allWorklist]
-      .where((item) => item
+      worklist = modifiedWorklist
+      .where((item) => item['patient']['name']
       .toLowerCase()
       .contains(query.toLowerCase()))
       .toList();
     });
+  }
+
+  _getDuration(item) {
+    print(item['body']['goal']);
+    item['body']['goal']['start'] = '2020-01-05';
+    item['body']['goal']['end'] = '2020-02-06';
+
+    if (item['body']['goal'] != null && item['body']['goal']['start'] != null && item['body']['goal']['end'] != null) {
+      var start = DateTime.parse(item['body']['goal']['start']);
+      var end = DateTime.parse(item['body']['goal']['end']).difference(DateTime.parse(item['body']['goal']['start'])).inDays;
+
+      int result = (end / 30).round();
+      if (result > 1) {
+        return 'Within ${result.toString()} months of recommendation of goal';
+      }
+      print(start);
+      print(result);
+    }
+    return '';
   }
 
   @override
@@ -61,111 +108,124 @@ class _WorkListSearchState extends State<WorkListSearch> {
         elevation: 0,
       ),
       body: SingleChildScrollView(
-        child: Column(
+        child: Stack(
           children: <Widget>[
-            Container(
-              // padding: EdgeInsets.symmetric(vertical: 20),
-              color: kPrimaryColor,
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(left: 15, right: 15, top: 20),
-                    child: TextField(
-                      controller: searchController,
-                      onChanged: (query) {
-                        search(query);
-                      },
-                      // focusNode: focusNode,
-                      autofocus: true,
-                      style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        filled: true,
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0x4437474F),
-                          ),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(5)
-                          )
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Theme.of(context).primaryColor),
-                        ),
-                        prefixIcon: Icon(Icons.search),
-                        suffixIcon: IconButton(
-                          onPressed: () { 
-                            setState(() {
-                              searchController.text = '';
-                              worklist = allWorklist;
-                            });
+            !isLoading ? Column(
+              children: <Widget>[
+                Container(
+                  // padding: EdgeInsets.symmetric(vertical: 20),
+                  color: kPrimaryColor,
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.only(left: 15, right: 15, top: 20),
+                        child: TextField(
+                          controller: searchController,
+                          onChanged: (query) {
+                            search(query);
                           },
-                          icon: Icon(Icons.cancel, color: kTextGrey, size: 25,)
-                        ),
-                        border: InputBorder.none,
-                        hintText: AppLocalizations.of(context).translate('searchHere'),
-                        contentPadding: const EdgeInsets.only(
-                          left: 16,
-                          right: 20,
-                          top: 14,
-                          bottom: 14,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 8,)
-                ],
-              )
-            ),
-            SizedBox(height: 20,),
-            ...worklist.map((item) => GestureDetector(
-              onTap: () {},
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
-                margin: const EdgeInsets.only(bottom: 20, left: 15, right: 15),
-                decoration: BoxDecoration(
-                  color: kBackgroundGrey,
-                  borderRadius: BorderRadius.circular(3)
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            alignment: Alignment.topCenter,
-                            child: CircleAvatar(
-                              child: Image.asset('assets/images/work_list_${worklist.indexOf(item) + 1}.png', )
+                          // focusNode: focusNode,
+                          autofocus: true,
+                          style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            filled: true,
+                            enabledBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0x4437474F),
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(5)
+                              )
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                            ),
+                            prefixIcon: Icon(Icons.search),
+                            suffixIcon: IconButton(
+                              onPressed: () { 
+                                setState(() {
+                                  searchController.text = '';
+                                  worklist = allWorklist;
+                                });
+                              },
+                              icon: Icon(Icons.cancel, color: kTextGrey, size: 25,)
+                            ),
+                            border: InputBorder.none,
+                            hintText: AppLocalizations.of(context).translate('searchHere'),
+                            contentPadding: const EdgeInsets.only(
+                              left: 16,
+                              right: 20,
+                              top: 14,
+                              bottom: 14,
                             ),
                           ),
-                          SizedBox(width: 20,),
-                          Column(
+                        ),
+                      ),
+                      SizedBox(height: 8,)
+                    ],
+                  )
+                ),
+                SizedBox(height: 20,),
+                ...worklist.map((item) => GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
+                    margin: const EdgeInsets.only(bottom: 20, left: 15, right: 15),
+                    decoration: BoxDecoration(
+                      color: kBackgroundGrey,
+                      borderRadius: BorderRadius.circular(3)
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(item, style: TextStyle(fontSize: 18),),
-                              SizedBox(height: 12,),
-                              Text('45Y F - 1992121324283', style: TextStyle(fontSize: 16),),
-                              SizedBox(height: 12,),
-                              Text('Counselling about reduced salt intake', style: TextStyle(fontSize: 15, color: kTextGrey),),
-                              SizedBox(height: 12,),
-                              Text('Within 1 month of recommendation of goal', style: TextStyle(fontSize: 15, color: kTextGrey),),
+                              Container(
+                                alignment: Alignment.topCenter,
+                                child: CircleAvatar(
+                                  child: Image.file(File(item['patient']['avatar']) )
+                                ),
+                              ),
+                              SizedBox(width: 20,),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(item['patient'] != null ? item['patient']['first_name'] + ' ' + item['patient']['last_name'] : '', style: TextStyle(fontSize: 18),),
+                                  // SizedBox(height: 12,),
+                                  Text(item['patient'] != null ? item['patient']['age'].toString() + 'Y ' + ' - ' + StringUtils.capitalize(item['patient']['gender']) : '', style: TextStyle(fontSize: 15),),
+                                  SizedBox(height: 12,),
+                                  Text(item['body']['title'], style: TextStyle(fontSize: 15, color: kTextGrey),),
+                                  SizedBox(height: 12,),
+                                  Text(_getDuration(item), style: TextStyle(fontSize: 15, color: kTextGrey),),
+                                ],
+                              )
                             ],
-                          )
-                        ],
-                      ),
+                          ),
+                        ),
+                        Icon(Icons.arrow_forward, color: kPrimaryColor,)
+                      ],
                     ),
-                    Icon(Icons.arrow_forward, color: kPrimaryColor,)
-                  ],
-                ),
+                  ),
+                )).toList(),
+                worklist.length == 0 ? Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  child: Text(AppLocalizations.of(context).translate('worklistFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
+                ) : Container()
+              ],
+            )
+          
+            : Container(
+              height: MediaQuery.of(context).size.height,
+              width: double.infinity,
+              color: Color(0x90FFFFFF),
+              child: Center(
+                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),backgroundColor: Color(0x30FFFFFF),)
               ),
-            )).toList(),
-            worklist.length == 0 ? Container(
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              child: Text(AppLocalizations.of(context).translate('worklistFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
-            ) : Container()
+            ),
           ],
         ),
       ),

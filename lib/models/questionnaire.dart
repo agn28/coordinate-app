@@ -147,6 +147,11 @@ class Questionnaire {
     return 'success';
   }
 
+  addQnItemsForEdit(observation) {
+    _questionnaireItems.add(observation);
+    _qnItems.add(observation['body']['data']);
+  }
+
   addTobacco(type, answers) {
     var questions = Questionnaire().questions[type];
     var updated = false;
