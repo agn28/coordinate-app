@@ -126,14 +126,20 @@ class _PatientRecordsState extends State<PatientRecords> {
                               shape: BoxShape.circle
                             ),
                           ) :
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: Image.file(
-                              File(Patient().getPatient()['data']['avatar']),
-                              height: 60.0,
-                              width: 60.0,
-                            ),
+                          CircleAvatar(
+                            backgroundColor: kPrimaryRedColor,
+                            radius: 30,
+                            backgroundImage: FileImage(File(Patient().getPatient()['data']['avatar'])),
                           ),
+                          // ClipRRect(
+                          //   borderRadius: BorderRadius.circular(100),
+                          //   child: Image.file(
+                          //     File(Patient().getPatient()['data']['avatar']),
+                          //     height: 60.0,
+                          //     width: 60.0,
+                          //     fit: BoxFit.fitWidth,
+                          //   ),
+                          // ),
                           SizedBox(width: 20,),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -405,8 +411,7 @@ class _PatientRecordsState extends State<PatientRecords> {
                                   // ),
 
                                   ...carePlans.map<Widget>((item) =>
-                                    OverviewIntervention(carePlan: item),
-
+                                    item['body']['goal'] != null ? OverviewIntervention(carePlan: item) : Container(),
                                   ).toList(),
 
                                   Container(
