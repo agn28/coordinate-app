@@ -12,6 +12,7 @@ class CarePlanRepository {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     var patientID = Patient().getPatient()['uuid'];
+    print(patientID);
     return await http.get(
       apiUrl + 'care-plans/patient/' + patientID,
       headers: {
@@ -80,6 +81,7 @@ class CarePlanRepository {
         "completed_at": DateFormat('y-MM-d').format(DateTime.now())
       })
     ).then((response) {
+      print(response.body);
       return json.decode(response.body);
       
     }).catchError((error) {

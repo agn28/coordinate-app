@@ -53,6 +53,7 @@ class _PatientRecordsState extends State<PatientRecords> {
     });
     
     var data = await CarePlanController().getCarePlan();
+    print(data);
     
     if (data != null && data['message'] == 'Unauthorized') {
       setState(() {
@@ -127,7 +128,6 @@ class _PatientRecordsState extends State<PatientRecords> {
                             ),
                           ) :
                           CircleAvatar(
-                            backgroundColor: kPrimaryRedColor,
                             radius: 30,
                             backgroundImage: FileImage(File(Patient().getPatient()['data']['avatar'])),
                           ),

@@ -25,6 +25,24 @@ class PatientRepository {
     });
   }
 
+  getPatients() async {
+    var authData = await Auth().getStorageAuth() ;
+    var token = authData['accessToken'];
+    return http.get(
+      apiUrl + 'patients',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    ).then((response) {
+      return json.decode(response.body);
+      
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
+  }
+
   update(data) async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];

@@ -6,7 +6,6 @@ import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/home_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_records_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
-import 'package:nhealth/screens/patients/manage/patient_search_screen_new.dart';
 
 class HealthReportSuccessScreen extends CupertinoPageRoute {
   HealthReportSuccessScreen()
@@ -69,7 +68,7 @@ class HealthReportSuccess extends StatelessWidget {
 
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(PatientSearchScreenNew());
+                      Navigator.of(context).push(PatientSearchScreen());
                     },
                     child: Container(
                       // height: 190,

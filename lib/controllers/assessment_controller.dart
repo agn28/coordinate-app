@@ -6,6 +6,7 @@ import 'package:nhealth/models/blood_test.dart';
 import 'package:nhealth/models/body_measurement.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
+import 'package:nhealth/repositories/assessment_repository.dart';
 import 'package:nhealth/repositories/local/assessment_repository_local.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -30,6 +31,26 @@ class AssessmentController {
         });
       }
     });
+    return data;
+  }
+
+  getLiveAllAssessmentsByPatient() async {
+    var assessments = await AssessmentRepository().getAllAssessments();
+    var data = [];
+
+    if (assessments['error'] != null && !assessments['error']) {
+      await assessments['data'].forEach((assessment) {
+      if (assessment['body']['patient_id'] == Patient().getPatient()['uuid']) {
+        data.add({
+          'uuid': assessment['id'],
+          'data': assessment['body'],
+          'meta': assessment['meta']
+        });
+      }
+    });
+    }
+
+    
     return data;
   }
 
@@ -74,6 +95,37 @@ class AssessmentController {
         });
       }
     });
+    return data;
+  }
+
+  /// Get observations under a specific assessment.
+  /// [assessment] object is required as parameter.
+  getLiveObservationsByAssessment(assessment) async {
+    var response = await AssessmentRepository().getAllObservations();
+    var data = [];
+    var parsedData;
+    print(response);
+    // return;
+
+    if (response['error'] != null && !response['error']) {
+      await response['data'].forEach((item) {
+      // parsedData = jsonDecode(item['data']);
+      // // print(assessment),
+      if (item['body']['patient_id'] == Patient().getPatient()['uuid'] && item['body']['assessment_id'] == assessment['uuid']) {
+        data.add({
+          'uuid': item['id'],
+          'body': {
+            'type': item['body']['type'],
+            'data': item['body']['data'],
+            'comment': item['body']['comment'],
+            'patient_id': item['body']['patient_id'],
+            'assessment_id': item['body']['assessment_id'],
+          },
+          'meta': item['meta']
+        });
+      }
+    });
+    }
     return data;
   }
 

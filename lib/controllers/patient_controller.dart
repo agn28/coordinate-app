@@ -26,6 +26,21 @@ class PatientController {
     return data;
   }
 
+  getAllLivePatients() async {
+    var response = await PatientRepository().getPatients();
+
+    // await patients.forEach((patient) {
+    //   parsedData = jsonDecode(patient['data']);
+    //   data.add({
+    //     'uuid': patient['uuid'],
+    //     'data': parsedData['body'],
+    //     'meta': parsedData['meta']
+    //   });
+    // });
+
+    return response;
+  }
+
   /// Create a new patient
   /// [formData] is required as parameter.
   create(formData) async {

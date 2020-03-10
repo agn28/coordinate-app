@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/patients/manage/patient_search_screen_new.dart';
+import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
 import 'package:nhealth/screens/settings/settings_screen.dart';
-import 'package:nhealth/screens/work-list/work_list_search_screen_new.dart';
+import 'package:nhealth/screens/work-list/work_list_search_screen.dart';
 import './patients/register_patient_screen.dart';
 import 'package:nhealth/app_localizations.dart';
 
@@ -115,7 +115,7 @@ class _HomeState extends State<HomeScreen> {
                     height: 50,
                     child: FlatButton(
                       onPressed: () {
-                        Navigator.of(context).push(PatientSearchScreenNew());
+                        Navigator.of(context).push(PatientSearchScreen());
                       },
                       child: Row(
                         children: <Widget>[
@@ -130,7 +130,7 @@ class _HomeState extends State<HomeScreen> {
                     height: 50,
                     child: FlatButton(
                       onPressed: () {
-                        Navigator.of(context).push(WorkListSearchScreenNew());
+                        Navigator.of(context).push(WorkListSearchScreen());
                       },
                       child: Row(
                         children: <Widget>[
@@ -250,7 +250,7 @@ class _HomeState extends State<HomeScreen> {
                           onTap: () async {
                             // await Auth().isExpired();
                             // return;
-                            Navigator.of(context).push(PatientSearchScreenNew());
+                            Navigator.of(context).push(PatientSearchScreen());
                           },
                           child: Container(
                             height: 190,
