@@ -1,10 +1,19 @@
+import 'dart:io';
+
+import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
-import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:nhealth/widgets/search_widget.dart';
+import 'package:nhealth/controllers/worklist_controller.dart';
+import 'package:nhealth/custom-classes/custom_toast.dart';
+import 'package:nhealth/screens/work-list/work_list_details.dart';
+
+final searchController = TextEditingController();
+List allWorklist = [];
+List worklist = [];
 
 class WorkListSearchScreen extends CupertinoPageRoute {
   WorkListSearchScreen()
@@ -20,21 +29,77 @@ class WorkListSearch extends StatefulWidget {
 class _WorkListSearchState extends State<WorkListSearch> {
 
   List patients = [];
-  List workList = [1, 2];
+  bool isLoading = true;
 
-  _getPatients() async {
-    var data = await PatientController().getAllPatients();
+  /// Get all the worklist
+  _getWorklist() async {
+
+    var data = await WorklistController().getWorklist();
+    print(data['data']);
+
+    if (data['error'] != null && data['error']) {
+      return Toast.show('Server Error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+    }
+
     setState(() {
-      patients =  data;
+      allWorklist = data['data'];
+      worklist = allWorklist;
+      isLoading = false;
     });
+  }
+
+  update(carePlan) {
+    var index = worklist.indexOf(carePlan);
+    
+    if(index > -1) {
+      setState(() {
+        worklist.removeAt(index);
+      });
+    }
+  }
+
+  search(query) {
+
+    var modifiedWorklist = [...allWorklist].map((item)  {
+      item['patient']['name'] = '${item['patient']['first_name']} ${item['patient']['last_name']}' ;
+      return item;
+    }).toList();
+
+    setState(() {
+      worklist = modifiedWorklist
+      .where((item) => item['patient']['name']
+      .toLowerCase()
+      .contains(query.toLowerCase()))
+      .toList();
+    });
+  }
+
+  _getDuration(item) {
+    // print(item['body']['goal']);
+    item['body']['goal']['start'] = '2020-01-05';
+    item['body']['goal']['end'] = '2020-02-06';
+
+    if (item['body']['goal'] != null && item['body']['goal']['start'] != null && item['body']['goal']['end'] != null) {
+      var start = DateTime.parse(item['body']['goal']['start']);
+      var end = DateTime.parse(item['body']['goal']['end']).difference(DateTime.parse(item['body']['goal']['start'])).inDays;
+
+      int result = (end / 30).round();
+      if (result > 1) {
+        return 'Within ${result.toString()} months of recommendation of goal';
+      }
+      // print(start);
+      // print(result);
+    }
+    return '';
   }
 
   @override
   initState() {
     super.initState();
-    _getPatients();
+    allWorklist = [];
+    worklist = [];
+    _getWorklist();
   }
-  LeaderBoard _selectedItem;
 
   @override
   Widget build(BuildContext context) {
@@ -42,56 +107,133 @@ class _WorkListSearchState extends State<WorkListSearch> {
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Work List"),
+        title: Text(AppLocalizations.of(context).translate('workList')),
         elevation: 0,
       ),
       body: SingleChildScrollView(
-        child: Column(
+        child: Stack(
           children: <Widget>[
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-              color: kPrimaryColor,
-              child: Column(
-                children: <Widget>[
-                  workList.length > 0 ? CustomSearchWidget(
-                    listContainerHeight: 500,
-                    dataList: patients,
-                    hideSearchBoxWhenItemSelected: false,
-                    queryBuilder: (query, list) {
-                      return patients
-                        .toList();
-                    },
-                    popupListItemBuilder: (item) {
-                      return PopupListItemWidget(item);
-                    },
-                    selectedItemBuilder: (selectedItem, deleteSelectedItem) {
-                      return SelectedItemWidget(selectedItem, deleteSelectedItem);
-                    },
-                    // widget customization
-                    noItemsFoundWidget: NoItemsFound(),
-                    textFieldBuilder: (controller, focusNode) {
-                      return MyTextField(controller, focusNode);
-                    },
-                    onItemSelected: (item) {
-                      setState(() {
-                        _selectedItem = item;
-                      });
-                    },
-                  ) : Container(),
-                  workList.length == 0 ? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            !isLoading ? Column(
+              children: <Widget>[
+                Container(
+                  // padding: EdgeInsets.symmetric(vertical: 20),
+                  color: kPrimaryColor,
+                  child: Column(
                     children: <Widget>[
                       Container(
-                        alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.only(top: 15),
-                        child: Text('No item found', style: TextStyle(color: Colors.white, fontSize: 20),),
-                      )
+                        padding: EdgeInsets.only(left: 15, right: 15, top: 20),
+                        child: TextField(
+                          controller: searchController,
+                          onChanged: (query) {
+                            search(query);
+                          },
+                          // focusNode: focusNode,
+                          autofocus: true,
+                          style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            filled: true,
+                            enabledBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0x4437474F),
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(5)
+                              )
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                            ),
+                            prefixIcon: Icon(Icons.search),
+                            suffixIcon: IconButton(
+                              onPressed: () { 
+                                setState(() {
+                                  searchController.text = '';
+                                  worklist = allWorklist;
+                                });
+                              },
+                              icon: Icon(Icons.cancel, color: kTextGrey, size: 25,)
+                            ),
+                            border: InputBorder.none,
+                            hintText: AppLocalizations.of(context).translate('searchHere'),
+                            contentPadding: const EdgeInsets.only(
+                              left: 16,
+                              right: 20,
+                              top: 14,
+                              bottom: 14,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 8,)
                     ],
-                  ) : Container()
-                ],
-              )
+                  )
+                ),
+                SizedBox(height: 20,),
+                ...worklist.map((item) => 
+                item['body']['status'] != 'completed' ?
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(WorkListDetailsScreen(carePlan: item, parent: this));
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
+                    margin: const EdgeInsets.only(bottom: 20, left: 15, right: 15),
+                    decoration: BoxDecoration(
+                      color: kBackgroundGrey,
+                      borderRadius: BorderRadius.circular(3)
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        item['patient']['avatar'] != null ?
+                        CircleAvatar(
+                          backgroundColor: kPrimaryRedColor,
+                          radius: 20,
+                          backgroundImage: FileImage(File(item['patient']['avatar'])),
+                        ) : Container(),
+
+                        SizedBox(width: 20,),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(item['patient'] != null ? item['patient']['first_name'] + ' ' + item['patient']['last_name'] : '', style: TextStyle(fontSize: 18),),
+                              // SizedBox(height: 12,),
+                              Text(item['patient'] != null ? item['patient']['age'].toString() + 'Y ' + ' - ' + StringUtils.capitalize(item['patient']['gender']) : '', style: TextStyle(fontSize: 15),),
+                              SizedBox(height: 12,),
+                              Text(item['body']['title'], style: TextStyle(fontSize: 15, color: kTextGrey),),
+                              SizedBox(height: 12,),
+                              Text(_getDuration(item), style: TextStyle(fontSize: 15, color: kTextGrey),),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top: 35),
+                          child: Icon(Icons.arrow_forward, color: kPrimaryColor,),
+                        )
+                      ],
+                    ),
+                  ),
+                ) : Container()).toList(),
+
+                worklist.length == 0 ? Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  child: Text(AppLocalizations.of(context).translate('worklistFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
+                ) : Container()
+              ],
+            )
+          
+            : Container(
+              height: MediaQuery.of(context).size.height,
+              width: double.infinity,
+              color: Color(0x90FFFFFF),
+              child: Center(
+                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),backgroundColor: Color(0x30FFFFFF),)
+              ),
             ),
-            Text(''),
           ],
         ),
       ),
@@ -157,7 +299,7 @@ class MyTextField extends StatelessWidget {
             icon: Icon(Icons.cancel, color: kTextGrey, size: 25,)
           ),
           border: InputBorder.none,
-          hintText: "Search here...",
+          hintText: AppLocalizations.of(context).translate('searchHere'),
           contentPadding: const EdgeInsets.only(
             left: 16,
             right: 20,
@@ -183,7 +325,7 @@ class NoItemsFound extends StatelessWidget {
         ),
         const SizedBox(width: 10),
         Text(
-          "No Items Found",
+          AppLocalizations.of(context).translate('noItems'),
           style: TextStyle(
             fontSize: 16,
             color: Colors.grey[900].withOpacity(0.7),

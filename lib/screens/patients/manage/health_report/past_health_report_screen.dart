@@ -7,6 +7,7 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/helpers/helpers.dart';
+import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/manage/health_report/health_report_details_screen.dart';
@@ -40,6 +41,10 @@ class _PastHealthReportState extends State<PastHealthReport> {
     setState(() {
       isLoading = true;
     });
+    if (Auth().isExpired()) {
+      Auth().logout();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    }
     var response = await HealthReportController().getReports();
 
     if (response['error']) {

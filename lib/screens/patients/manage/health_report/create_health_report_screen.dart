@@ -51,13 +51,10 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
     }
     var data = await HealthReportController().getReport();
-    print(data);
 
     if (data['error'] != null && data['error']) {
       return Toast.show('Server Error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
     }
-    print('hi');
-    print(data);
     var fetchedSurveys = await ObservationController().getLiveSurveysByPatient();
 
     if(fetchedSurveys.isNotEmpty) {

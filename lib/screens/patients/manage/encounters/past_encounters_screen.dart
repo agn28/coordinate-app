@@ -7,7 +7,9 @@ import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/helpers/helpers.dart';
+import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/encounter_details_screen.dart';
 
 class PastEncountersScreen extends CupertinoPageRoute {
@@ -26,10 +28,25 @@ class _PastEncountersState extends State<PastEncounters> {
 
   var _assessments;
   var _patient;
+  bool isLoading = true;
   List<Widget> list = List<Widget>();
 
+  _checkAuth() {
+    if (Auth().isExpired()) {
+      Auth().logout();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    }
+  }
+
   _getData() async {
-    _assessments = await AssessmentController().getAllAssessmentsByPatient();
+    _checkAuth();
+    // _assessments = await AssessmentController().getAllAssessmentsByPatient();
+    _assessments = await AssessmentController().getLiveAllAssessmentsByPatient();
+
+    setState(() {
+      isLoading = false;
+    });
+    // _assessments = await AssessmentController().getAllAssessmentsByPatient();
     _assessments.forEach((assessment) => {
       setState(() => {
         list.add(
@@ -89,92 +106,104 @@ class _PastEncountersState extends State<PastEncounters> {
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
+      body: Stack(
+        children: <Widget>[
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
 
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border(
-                  bottom: BorderSide(width: 1, color: Colors.black38)
-                )
-              ),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      child: Row(
-                        children: <Widget>[
-                          Patient().getPatient()['data']['avatar'] == null ? Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                              color: kLightPrimaryColor,
-                              shape: BoxShape.circle
-                            ),
-                            child: Icon(Icons.perm_identity),
-                          ) :
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: Image.file(
-                              File(Patient().getPatient()['data']['avatar']),
-                              height: 35.0,
-                              width: 35.0,
-                            ),
-                          ),
-                          SizedBox(width: 15,),
-                          Text(Helpers().getPatientName(_patient), style: TextStyle(fontSize: 18))
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(Helpers().getPatientAgeAndGender(_patient), style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
-                  ),
-                  Expanded(
-                    child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
-                  )
-                ],
-              ),
-            ),
-
-            Container(
-              color: Colors.white,
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(width: .5, color: Colors.black38)
-                      )
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(AppLocalizations.of(context).translate('dateEncounter'), style: TextStyle(fontSize: 17),),
-                        ),
-                        Expanded(
-                          child: Text(AppLocalizations.of(context).translate('type'), style: TextStyle(fontSize: 17,),),
-                        ),
-                        Expanded(
-                          child: Text('')
-                        )
-                      ],
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border(
+                      bottom: BorderSide(width: 1, color: Colors.black38)
                     )
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          child: Row(
+                            children: <Widget>[
+                              Patient().getPatient()['data']['avatar'] == null ? Container(
+                                height: 35,
+                                width: 35,
+                                decoration: BoxDecoration(
+                                  color: kLightPrimaryColor,
+                                  shape: BoxShape.circle
+                                ),
+                                child: Icon(Icons.perm_identity),
+                              ) :
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: Image.file(
+                                  File(Patient().getPatient()['data']['avatar']),
+                                  height: 35.0,
+                                  width: 35.0,
+                                ),
+                              ),
+                              SizedBox(width: 15,),
+                              Text(Helpers().getPatientName(_patient), style: TextStyle(fontSize: 18))
+                            ],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(Helpers().getPatientAgeAndGender(_patient), style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
+                      ),
+                      Expanded(
+                        child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
+                      )
+                    ],
+                  ),
+                ),
+
+                Container(
+                  color: Colors.white,
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(width: .5, color: Colors.black38)
+                          )
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(AppLocalizations.of(context).translate('dateEncounter'), style: TextStyle(fontSize: 17),),
+                            ),
+                            Expanded(
+                              child: Text(AppLocalizations.of(context).translate('type'), style: TextStyle(fontSize: 17,),),
+                            ),
+                            Expanded(
+                              child: Text('')
+                            )
+                          ],
+                        )
+                      )
+                    ],
                   )
-                ],
-              )
+                ),
+
+                Column(children: list),
+
+              ],
             ),
-
-            Column(children: list),
-
-          ],
-        ),
+          ),
+          isLoading ? Container(
+              height: double.infinity,
+              width: double.infinity,
+              color: Color(0x20FFFFFF),
+              child: Center(
+                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),backgroundColor: Color(0x30FFFFFF),)
+              ),
+            ) : Container(),
+        ],
       ),
     );
   }

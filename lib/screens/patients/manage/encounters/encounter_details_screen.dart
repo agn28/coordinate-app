@@ -30,6 +30,7 @@ class EncounterDetailsState extends State<EncounterDetails> {
   var _observations;
   var _bloodPressures = [];
   var _bloodTests = [];
+  bool isLoading = true;
    List<Widget> observationItems = List<Widget>();
 
   @override
@@ -41,10 +42,12 @@ class EncounterDetailsState extends State<EncounterDetails> {
 
   /// Get all observations by assessment
   getObservations() async {
-    _observations =  await AssessmentController().getObservationsByAssessment(widget.assessment);
+    // _observations =  await AssessmentController().getObservationsByAssessment(widget.assessment);
+    _observations =  await AssessmentController().getLiveObservationsByAssessment(widget.assessment);
     _getItem();
 
    setState(() {
+     isLoading = false;
     _bloodPressures =  _observations.where((item) => item['body']['type'] == 'blood_pressure').toList();
     _bloodTests =  _observations.where((item) => item['body']['type'] == 'blood_test').toList();
    });
@@ -151,144 +154,156 @@ class EncounterDetailsState extends State<EncounterDetails> {
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border(
-                  bottom: BorderSide(width: 1, color: Colors.black38)
-                )
-              ),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      child: Row(
-                        children: <Widget>[
-                          Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                              color: kLightPrimaryColor,
-                              shape: BoxShape.circle
-                            ),
-                            child: Icon(Icons.perm_identity),
+      body: Stack(
+        children: <Widget>[
+          !isLoading ? SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border(
+                      bottom: BorderSide(width: 1, color: Colors.black38)
+                    )
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                height: 35,
+                                width: 35,
+                                decoration: BoxDecoration(
+                                  color: kLightPrimaryColor,
+                                  shape: BoxShape.circle
+                                ),
+                                child: Icon(Icons.perm_identity),
+                              ),
+                              SizedBox(width: 15,),
+                              Text(Helpers().getPatientName(_patient), style: TextStyle(fontSize: 18))
+                            ],
                           ),
-                          SizedBox(width: 15,),
-                          Text(Helpers().getPatientName(_patient), style: TextStyle(fontSize: 18))
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(Helpers().getPatientAgeAndGender(_patient), style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
+                      ),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
+                          ],
+                        )
+                      )
+                    ],
+                  ),
+                ),
+
+                Container(
+                  color: Colors.white,
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 30),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(width: .5, color: Colors.black38)
+                          )
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(Helpers().convertDate(widget.assessment['data']['assessment_date']), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+                            ),
+                            Expanded(
+                              child: Text(StringUtils.capitalize(widget.assessment['data']['type']), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+                            ),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  AssessmentController().edit(widget.assessment, _observations);
+                                  Navigator.of(context).push(NewEncounterScreen(encounterDetailsState: this));
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: <Widget>[
+                                    Icon(Icons.edit, color: kPrimaryColor,),
+                                    SizedBox(width: 10),
+                                    Text('Edit Encounter', style: TextStyle(color: kPrimaryColor))
+                                  ],
+                                ),
+                              )
+                            )
+                          ],
+                        )
+                      )
+                    ],
+                  )
+                ),
+
+                SizedBox(height: 30,),
+                
+                _bloodPressures.length > 0 ? Container(
+                  padding: EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(AppLocalizations.of(context).translate('observation'), style: TextStyle(fontSize: 20, ),),
+                      // SizedBox(height: 20,),
+                      Text(AppLocalizations.of(context).translate('bloodPressure'), style: TextStyle(fontSize: 35, height: 1.7),),
+                      Row(
+                        children: <Widget>[
+                          Text(AppLocalizations.of(context).translate('averageReading'), style: TextStyle(fontSize: 20, height: 1.6),),
+                          Text(_getAverageBp(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, height: 2),),
                         ],
                       ),
-                    ),
+                      Row(
+                        children: <Widget>[
+                          Text(AppLocalizations.of(context).translate('recordedBy'), style: TextStyle(fontSize: 20, height: 1.6),),
+                          Text(_getBpPerformedBy(), style: TextStyle(fontSize: 20, height: 1.6),),
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Text(AppLocalizations.of(context).translate('measuredUsing'), style: TextStyle(fontSize: 20, height: 2),),
+                          Text(_getDevice(), style: TextStyle(fontSize: 20, height: 2),),
+                        ],
+                      ),
+                    ],
                   ),
-                  Expanded(
-                    child: Text(Helpers().getPatientAgeAndGender(_patient), style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
-                  ),
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
-                      ],
+                ) : Container(),
+
+                SizedBox(height: 30,),
+
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Divider()
                     )
-                  )
-                ],
-              ),
-            ),
+                  ],
+                ),
 
-            Container(
-              color: Colors.white,
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 30),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(width: .5, color: Colors.black38)
-                      )
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(Helpers().convertDate(widget.assessment['data']['assessment_date']), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
-                        ),
-                        Expanded(
-                          child: Text(StringUtils.capitalize(widget.assessment['data']['type']), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
-                        ),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              AssessmentController().edit(widget.assessment, _observations);
-                              Navigator.of(context).push(NewEncounterScreen(encounterDetailsState: this));
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                Icon(Icons.edit, color: kPrimaryColor,),
-                                SizedBox(width: 10),
-                                Text('Edit Encounter', style: TextStyle(color: kPrimaryColor))
-                              ],
-                            ),
-                          )
-                        )
-                      ],
-                    )
-                  )
-                ],
-              )
-            ),
+                SizedBox(height: 30,), 
+                Column(children: observationItems),
 
-            SizedBox(height: 30,),
-            
-            _bloodPressures.length > 0 ? Container(
-              padding: EdgeInsets.only(left: 20, right: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(AppLocalizations.of(context).translate('observation'), style: TextStyle(fontSize: 20, ),),
-                  // SizedBox(height: 20,),
-                  Text(AppLocalizations.of(context).translate('bloodPressure'), style: TextStyle(fontSize: 35, height: 1.7),),
-                  Row(
-                    children: <Widget>[
-                      Text(AppLocalizations.of(context).translate('averageReading'), style: TextStyle(fontSize: 20, height: 1.6),),
-                      Text(_getAverageBp(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, height: 2),),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Text(AppLocalizations.of(context).translate('recordedBy'), style: TextStyle(fontSize: 20, height: 1.6),),
-                      Text(_getBpPerformedBy(), style: TextStyle(fontSize: 20, height: 1.6),),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Text(AppLocalizations.of(context).translate('measuredUsing'), style: TextStyle(fontSize: 20, height: 2),),
-                      Text(_getDevice(), style: TextStyle(fontSize: 20, height: 2),),
-                    ],
-                  ),
-                ],
-              ),
-            ) : Container(),
-
-            SizedBox(height: 30,),
-
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: Divider()
-                )
               ],
             ),
-
-            SizedBox(height: 30,), 
-            Column(children: observationItems),
-
-          ],
-        ),
+          )
+          : Container(
+            height: double.infinity,
+            width: double.infinity,
+            color: Color(0x20FFFFFF),
+            child: Center(
+              child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),backgroundColor: Color(0x30FFFFFF),)
+            ),
+          ),
+        ],
       ),
     );
   }

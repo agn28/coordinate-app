@@ -39,6 +39,10 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
 
   getReports() async {
     isLoading = true;
+    if (Auth().isExpired()) {
+      Auth().logout();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    }
     var data = await HealthReportController().getReport();
     
     // if (data['message'] == 'Unauthorized') {

@@ -53,6 +53,7 @@ class _PatientRecordsState extends State<PatientRecords> {
     });
     
     var data = await CarePlanController().getCarePlan();
+    print(data);
     
     if (data != null && data['message'] == 'Unauthorized') {
       setState(() {
@@ -126,14 +127,19 @@ class _PatientRecordsState extends State<PatientRecords> {
                               shape: BoxShape.circle
                             ),
                           ) :
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: Image.file(
-                              File(Patient().getPatient()['data']['avatar']),
-                              height: 60.0,
-                              width: 60.0,
-                            ),
+                          CircleAvatar(
+                            radius: 30,
+                            backgroundImage: FileImage(File(Patient().getPatient()['data']['avatar'])),
                           ),
+                          // ClipRRect(
+                          //   borderRadius: BorderRadius.circular(100),
+                          //   child: Image.file(
+                          //     File(Patient().getPatient()['data']['avatar']),
+                          //     height: 60.0,
+                          //     width: 60.0,
+                          //     fit: BoxFit.fitWidth,
+                          //   ),
+                          // ),
                           SizedBox(width: 20,),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -405,8 +411,7 @@ class _PatientRecordsState extends State<PatientRecords> {
                                   // ),
 
                                   ...carePlans.map<Widget>((item) =>
-                                    OverviewIntervention(carePlan: item),
-
+                                    item['body']['goal'] != null ? OverviewIntervention(carePlan: item) : Container(),
                                   ).toList(),
 
                                   Container(

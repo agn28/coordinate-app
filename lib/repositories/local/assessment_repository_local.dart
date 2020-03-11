@@ -126,10 +126,10 @@ class AssessmentRepositoryLocal {
       item['uuid'] != null ? _updateObservations(item) : _createObservations(item);
     });
 
-    // questionnaires.forEach((item) async {
-    //   item['body']['assessment_id'] = assessmentId;
-    //   await _createObservations(item);
-    // });
+    questionnaires.forEach((item) async {
+      item['body']['assessment_id'] = assessmentId;
+      item['uuid'] != null ? _updateObservations(item) : _createObservations(item);
+    });
 
     return 'success';
     

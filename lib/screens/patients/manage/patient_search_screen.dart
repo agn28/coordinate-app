@@ -11,17 +11,23 @@ import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
+import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_records_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
-import 'package:nhealth/widgets/search_widget.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
+
+import '../../../app_localizations.dart';
 
 
 final birthDateController = TextEditingController();
 final birthmonthController = TextEditingController();
 final birthYearController = TextEditingController();
 List patients = [];
+List allPatients = [];
+final searchController = TextEditingController();
+bool isPendingRecommendation = false;
 
 class PatientSearchScreen extends CupertinoPageRoute {
   PatientSearchScreen()
@@ -35,19 +41,75 @@ class PatientSearch extends StatefulWidget {
 }
 
 class _PatientSearchState extends State<PatientSearch> {
-
-  getPatients() async {
-    var data = await PatientController().getAllPatients();
-    setState(() {
-      patients =  data;
-    });
-  }
-
+  bool isLoading = false;
   @override
   initState() {
     super.initState();
-    getPatients();
+    // getPatients();
+    isLoading = true;
+    getLivePatients();
   }
+
+  getPatients() async {
+    
+    var data = await PatientController().getAllPatients();
+
+    setState(() {
+      allPatients = data;
+      patients = allPatients;
+    });
+  }
+
+  getLivePatients() async {
+    
+    if (Auth().isExpired()) {
+      Auth().logout();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    var data = await PatientController().getAllLivePatients();
+
+    if (data['message'] == 'Unauthorized') {
+      Auth().logout();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    }
+
+    var parsedPatients = [];
+
+    for(var item in data['data']) {
+      parsedPatients.add({
+        'uuid': item['id'],
+        'data': item['body'],
+        'meta': item['meta']
+      });
+    }
+
+    setState(() {
+      allPatients = parsedPatients;
+      patients = allPatients;
+      isLoading = false;
+    });
+  }
+
+  search(query) {
+    var modifiedPatients = [...allPatients].map((item)  {
+      item['data']['name'] = '${item['data']['first_name']} ${item['data']['last_name']}' ;
+      return item;
+    }).toList();
+
+    setState(() {
+      patients = modifiedPatients
+        .where((item) => item['data']['name']
+        .toLowerCase()
+        .contains(query.toLowerCase()))
+        .toList();
+    });
+  }
+
   LeaderBoard _selectedItem;
 
   @override
@@ -57,7 +119,7 @@ class _PatientSearchState extends State<PatientSearch> {
       resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Patients"),
+        title: Text(AppLocalizations.of(context).translate('patients')),
         elevation: 0,
         actions: <Widget>[
           FlatButton(
@@ -66,7 +128,7 @@ class _PatientSearchState extends State<PatientSearch> {
                 SizedBox(height: 5,),
                 Icon(Icons.person_add, color: Colors.white, size: 20,),
                 SizedBox(height: 5,),
-                Text('New Patient', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14),)
+                Text(AppLocalizations.of(context).translate('newPatient'), style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14),)
               ],
             ),
             onPressed: () {
@@ -79,7 +141,7 @@ class _PatientSearchState extends State<PatientSearch> {
                 SizedBox(height: 5,),
                 Icon(Icons.line_weight, color: Colors.white, size: 20,),
                 SizedBox(height: 5,),
-                Text('Scan Barcode', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14),)
+                Text(AppLocalizations.of(context).translate('scanBarcode'), style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14),)
               ],
             ),
             onPressed: () {
@@ -93,96 +155,246 @@ class _PatientSearchState extends State<PatientSearch> {
                 SizedBox(height: 5,),
                 Icon(Icons.fingerprint, color: Colors.white, size: 20,),
                 SizedBox(height: 5,),
-                Text('Use Thumbprint', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),)
+                Text(AppLocalizations.of(context).translate('useThumbprint'), style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),)
               ],
             ),
             onPressed: () {},
           ) : Container()
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-              color: kPrimaryColor,
-              child: Column(
-                children: <Widget>[
-                  CustomSearchWidget(
-                    listContainerHeight: 500,
-                    dataList: [...patients],
-                    hideSearchBoxWhenItemSelected: false,
-                    queryBuilder: (query, list) {
-                      return [...patients]
-                        .where((item) => item['data']['name']
-                        .toLowerCase()
-                        .contains(query.toLowerCase()))
-                        .toList();
-                    },
-                    popupListItemBuilder: (item) {
-                      return PopupListItemWidget(item);
-                    },
-                    selectedItemBuilder: (selectedItem, deleteSelectedItem) {
-                      return SelectedItemWidget(selectedItem, deleteSelectedItem);
-                    },
-                    // widget customization
-                    // noItemsFoundWidget: NoItemsFound(),
-                    textFieldBuilder: (controller, focusNode) {
-                      return MyTextField(controller, focusNode);
-                    },
-                    onItemSelected: (item) {
-                      setState(() {
-                        _selectedItem = item;
-                      });
-                    },
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Stack(
+        children: <Widget>[
+          !isLoading ? SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Container(
+                  // padding: EdgeInsets.symmetric(vertical: 20),
+                  color: kPrimaryColor,
+                  child: Column(
                     children: <Widget>[
-                      patients.length == 0 ? Container(
-                        alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.only(top: 15),
-                        child: Text('No patient found', style: TextStyle(color: Colors.white, fontSize: 20),),
-                      ) :
                       Container(
-                        alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.only(top: 15),
-                        child: Text('Pending Recommendations Only', style: TextStyle(color: Colors.white),),
-                      ),
-                      
-                      Container(
-                         alignment: Alignment.centerLeft,
-                         padding: EdgeInsets.only(top: 15),
-                         child: GestureDetector(
-                           onTap: () async {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return FiltersDialog(parent: this,);
+                        padding: EdgeInsets.only(left: 15, right: 15, top: 20),
+                        child: TextField(
+                          controller: searchController,
+                          onChanged: (query) {
+                            search(query);
+                          },
+                          // focusNode: focusNode,
+                          autofocus: true,
+                          style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            filled: true,
+                            enabledBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0x4437474F),
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(5)
+                              )
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                            ),
+                            prefixIcon: Icon(Icons.search),
+                            suffixIcon: IconButton(
+                              onPressed: () { 
+                                setState(() {
+                                  searchController.text = '';
+                                  patients = allPatients;
+                                });
                               },
-                            );
-                           },
-                           child: Row(
-                             children: <Widget>[
-                               Icon(Icons.filter_list, color: Colors.white,),
-                               SizedBox(width: 10),
-                               Text('Filters', style: TextStyle(color: Colors.white),)
-                             ],
-                           )
-                         ),
-                       ),
+                              icon: Icon(Icons.cancel, color: kTextGrey, size: 25,)
+                            ),
+                            border: InputBorder.none,
+                            hintText: "Search here...",
+                            contentPadding: const EdgeInsets.only(
+                              left: 16,
+                              right: 20,
+                              top: 14,
+                              bottom: 14,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 5,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            padding: EdgeInsets.only(left: 2),
+                            child: Row(
+                              children: <Widget>[
+                                Theme(
+                                  data: Theme.of(context).copyWith(
+                                    unselectedWidgetColor: Colors.white
+                                  ),
+                                  child: Checkbox(
+                                    materialTapTargetSize: null,
+                                    activeColor: Colors.white,
+                                    checkColor: kPrimaryColor,
+                                    value: isPendingRecommendation,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        isPendingRecommendation = value;
+                                      });
+                                    },
+                                  ),
+                                ),
+                                Text(AppLocalizations.of(context).translate('pendingRecommendation'), style: TextStyle(color: Colors.white),)
+                              ],
+                            ),
+                          ),
+                          
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            padding: EdgeInsets.only(right: 15),
+                            child: GestureDetector(
+                              onTap: () async {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return FiltersDialog(parent: this,);
+                                },
+                              );
+                              },
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(Icons.filter_list, color: Colors.white,),
+                                  SizedBox(width: 10),
+                                  Text(AppLocalizations.of(context).translate('filters'), style: TextStyle(color: Colors.white),)
+                                ],
+                              )
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8,)
                     ],
                   )
-                ],
-              )
+                ),
+                SizedBox(height: 20,),
+                ...patients.map((item) => GestureDetector(
+                  onTap: () {
+                    Patient().setPatient(item);
+                      Navigator.of(context).push(PatientRecordsScreen());
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    height: 50,
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(item['data']['first_name'] + ' ' + item['data']['last_name'],
+                            style: TextStyle(color: Colors.black87, fontSize: 18),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(item['data']['age'].toString() + 'Y ' + '${item['data']['gender'][0].toUpperCase()}' + ' - ' + item['data']['nid'].toString(), 
+                          style: TextStyle(
+                              color: Colors.black38,
+                              fontWeight: FontWeight.w400
+                            ), 
+                            textAlign: TextAlign.right,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )).toList(),
+                patients.length == 0 ? Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  child: Text(AppLocalizations.of(context).translate('noPatientFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
+                ) : Container()
+              ],
             ),
-            Text(''),
-          ],
-        ),
+          ) : Container(
+            height: double.infinity,
+            width: double.infinity,
+            color: Color(0x20FFFFFF),
+            child: Center(
+              child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),backgroundColor: Color(0x30FFFFFF),)
+            ),
+          ),
+        ],
       ),
     );
   }
 }
+
+// Column(
+//   children: <Widget>[
+//     CustomSearchWidget(
+//       listContainerHeight: 500,
+//       dataList: [...patients],
+//       hideSearchBoxWhenItemSelected: false,
+//       queryBuilder: (query, list) {
+//         return [...patients]
+//           .where((item) => item['data']['name']
+//           .toLowerCase()
+//           .contains(query.toLowerCase()))
+//           .toList();
+//       },
+//       popupListItemBuilder: (item) {
+//         print(item);
+//         return PopupListItemWidget(item);
+//       },
+//       selectedItemBuilder: (selectedItem, deleteSelectedItem) {
+//         return SelectedItemWidget(selectedItem, deleteSelectedItem);
+//       },
+//       // widget customization
+//       // noItemsFoundWidget: NoItemsFound(),
+//       textFieldBuilder: (controller, focusNode) {
+//         return MyTextField(controller, focusNode);
+//       },
+//       onItemSelected: (item) {
+//         setState(() {
+//           _selectedItem = item;
+//         });
+//       },
+//     ),
+//     Row(
+//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//       children: <Widget>[
+//         patients.length == 0 ? Container(
+//           alignment: Alignment.centerLeft,
+//           padding: EdgeInsets.only(top: 15),
+//           child: Text('No patient found', style: TextStyle(color: Colors.white, fontSize: 20),),
+//         ) :
+//         Container(
+//           alignment: Alignment.centerLeft,
+//           padding: EdgeInsets.only(top: 15),
+//           child: Text('Pending Recommendations Only', style: TextStyle(color: Colors.white),),
+//         ),
+        
+//         Container(
+//             alignment: Alignment.centerLeft,
+//             padding: EdgeInsets.only(top: 15),
+//             child: GestureDetector(
+//               onTap: () async {
+//               showDialog(
+//                 context: context,
+//                 builder: (BuildContext context) {
+//                   return FiltersDialog(parent: this,);
+//                 },
+//               );
+//               },
+//               child: Row(
+//                 children: <Widget>[
+//                   Icon(Icons.filter_list, color: Colors.white,),
+//                   SizedBox(width: 10),
+//                   Text('Filters', style: TextStyle(color: Colors.white),)
+//                 ],
+//               )
+//             ),
+//           ),
+//       ],
+//     )
+//   ],
+// )
+
 
 class DiseasesDialog extends StatefulWidget {
   _FiltersDialogState parent;
@@ -221,7 +433,7 @@ class _DiseasesDialogState extends State<DiseasesDialog> {
 
   _updateCheckBox(value, index) {
     if (value == true && _selectedItem.length == 3) {
-      return Toast.show("You cannot select more than three diseases", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+      return Toast.show(AppLocalizations.of(context).translate('notMoreThanThree'), context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM, backgroundRadius: 5);
     }
 
     setState(() {
@@ -248,7 +460,7 @@ class _DiseasesDialogState extends State<DiseasesDialog> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text('Select Diagnosed Diseases', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                    Text(AppLocalizations.of(context).translate('selectDiseases'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                   ],
                 ),
               ),
@@ -259,7 +471,7 @@ class _DiseasesDialogState extends State<DiseasesDialog> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text('Select upto three diseases', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),),
+                    Text(AppLocalizations.of(context).translate('selectThreeDiseases'), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),),
                     SizedBox(height: 20,),
                     
                     TextField(
@@ -337,7 +549,7 @@ class _DiseasesDialogState extends State<DiseasesDialog> {
                             });
                             Navigator.of(context).pop();
                           },
-                          child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16),)
+                          child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: kPrimaryColor, fontSize: 16),)
                         ),
                         SizedBox(width: 30,),
                         FlatButton(
@@ -348,7 +560,7 @@ class _DiseasesDialogState extends State<DiseasesDialog> {
                               this.widget.parent.getSelectedDiseaseText();
                             });
                           },
-                          child: Text('APPLY', style: TextStyle(color: kPrimaryColor, fontSize: 16))
+                          child: Text(AppLocalizations.of(context).translate('apply'), style: TextStyle(color: kPrimaryColor, fontSize: 16))
                         ),
                       ],
                     )
@@ -465,8 +677,8 @@ class _FiltersDialogState extends State<FiltersDialog> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text('Filters', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
-                      Text('CLEAR FILTERS', style: TextStyle(fontSize: 15, color: kPrimaryColor, fontWeight: FontWeight.w500),),
+                      Text(AppLocalizations.of(context).translate('filters'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                      Text(AppLocalizations.of(context).translate('clearFilter'), style: TextStyle(fontSize: 15, color: kPrimaryColor, fontWeight: FontWeight.w500),),
                     ],
                   ),
                 ),
@@ -531,7 +743,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text('Diagnosed Diseases', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),),
+                    Text(AppLocalizations.of(context).translate('diagnosedDiseases'), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),),
                     SizedBox(height: 20,),
                     Container(
                       child: Container(
@@ -612,7 +824,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16),)
+                          child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: kPrimaryColor, fontSize: 16),)
                         ),
                         SizedBox(width: 30,),
                         FlatButton(
@@ -620,7 +832,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
                             applyFilter();
                             Navigator.of(context).pop();
                           },
-                          child: Text('APPLY', style: TextStyle(color: kPrimaryColor, fontSize: 16))
+                          child: Text(AppLocalizations.of(context).translate('apply'), style: TextStyle(color: kPrimaryColor, fontSize: 16))
                         ),
                       ],
                     )
@@ -696,7 +908,7 @@ class MyTextField extends StatelessWidget {
             icon: Icon(Icons.cancel, color: kTextGrey, size: 25,)
           ),
           border: InputBorder.none,
-          hintText: "Search here...",
+          hintText: "AppLocalizations.of(context).translate('searchHere')",
           contentPadding: const EdgeInsets.only(
             left: 16,
             right: 20,
