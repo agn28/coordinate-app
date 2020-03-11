@@ -27,6 +27,21 @@ class BloodTests extends StatefulWidget {
 
 class _BloodTestsState extends State<BloodTests> {
 
+  bool avatarExists = false;
+
+  @override
+  initState() {
+    super.initState();
+    _checkAvatar();
+  }
+
+  _checkAvatar() async {
+    var data = await File(Patient().getPatient()['data']['avatar']).exists();
+    setState(() {
+      avatarExists = data;
+    });
+  }
+
   goBack() {
     Navigator.of(context).pop();
   }
@@ -62,7 +77,8 @@ class _BloodTestsState extends State<BloodTests> {
                     child: Container(
                       child: Row(
                         children: <Widget>[
-                          Patient().getPatient()['data']['avatar'] == null ? Container(
+                          Patient().getPatient()['data']['avatar'] == null || !avatarExists ?
+                          Container(
                             height: 35,
                             width: 35,
                             decoration: BoxDecoration(
@@ -71,13 +87,9 @@ class _BloodTestsState extends State<BloodTests> {
                             ),
                             child: Icon(Icons.perm_identity),
                           ) :
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: Image.file(
-                              File(Patient().getPatient()['data']['avatar']),
-                              height: 35.0,
-                              width: 35.0,
-                            ),
+                          CircleAvatar(
+                            radius: 17,
+                            backgroundImage: FileImage(File(Patient().getPatient()['data']['avatar'])),
                           ),
                           SizedBox(width: 15,),
                           Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 18))

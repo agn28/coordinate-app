@@ -10,10 +10,8 @@ import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
-import 'package:nhealth/repositories/health_report_repository.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/manage/health_report/health_report_success_screen.dart';
-import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
 
 
 class CreateHealthReportScreen extends CupertinoPageRoute {
@@ -37,11 +35,19 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
   final commentsController = TextEditingController();
   var medications = [];
   var conditions = [];
-
+  bool avatarExists = false;
   @override
   void initState() {
     super.initState();
+    _checkAvatar();
     getReports();
+  }
+
+  _checkAvatar() async {
+    var data = await File(Patient().getPatient()['data']['avatar']).exists();
+    setState(() {
+      avatarExists = data;
+    });
   }
 
   getReports() async {
@@ -60,7 +66,6 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
     if(fetchedSurveys.isNotEmpty) {
       fetchedSurveys.forEach((item) {
         if (item['data']['name'] == 'medical_history') {
-          print(item['data'].keys.toList());
           item['data'].keys.toList().forEach((key) {
             if (item['data'][key] == 'yes') {
               setState(() {
@@ -88,6 +93,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
       });
     }
 
+    
   }
 
   @override
@@ -121,23 +127,20 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                         child: Container(
                           child: Row(
                             children: <Widget>[
-                              Patient().getPatient()['data']['avatar'] == null ? Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                              color: kLightPrimaryColor,
-                              shape: BoxShape.circle
-                            ),
-                            child: Icon(Icons.perm_identity),
-                          ) :
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: Image.file(
-                              File(Patient().getPatient()['data']['avatar']),
-                              height: 35.0,
-                              width: 35.0,
-                            ),
-                          ),
+                              Patient().getPatient()['data']['avatar'] == null || !avatarExists ?
+                              Container(
+                                height: 35,
+                                width: 35,
+                                decoration: BoxDecoration(
+                                  color: kLightPrimaryColor,
+                                  shape: BoxShape.circle
+                                ),
+                                child: Icon(Icons.perm_identity),
+                              ) :
+                              CircleAvatar(
+                                radius: 17,
+                                backgroundImage: FileImage(File(Patient().getPatient()['data']['avatar'])),
+                              ),
                               SizedBox(width: 15,),
                               Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 18))
                             ],
@@ -423,119 +426,6 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                             Text(AppLocalizations.of(context).translate('bodyComposition'), style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500)),
                             SizedBox(height: 30,),
 
-                            reports['assessments']['body_composition']['components']['body_fat'] != null ?
-                            Container(
-                              // alignment: Alignment.topCenter,
-                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                              decoration: BoxDecoration(
-                                color: kBackgroundGrey,
-                                borderRadius: BorderRadius.circular(3)
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Row(
-                                    // crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Text('Fat', style: TextStyle(fontSize: 18, height: 1.4, fontWeight: FontWeight.w500),),
-                                      canEdit ? GestureDetector(
-                                        child: Icon(Icons.edit, color: kPrimaryColor,),
-                                        onTap: () {}
-                                      ) : Container(),
-                                    ],
-                                  ),
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Container(
-                                          margin: EdgeInsets.only(top: 15),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text('${reports['assessments']['body_composition']['components']['body_fat']['value']} ${reports['assessments']['body_composition']['components']['body_fat']['eval']}',
-                                                style: TextStyle(
-                                                    fontSize: 18,
-                                                    color: ColorUtils.statusColor[reports['assessments']['body_composition']['components']['body_fat']['tfl']],
-                                                  ),
-                                                ),
-                                              SizedBox(height: 15,),
-                                              Text('${reports['assessments']['body_composition']['components']['body_fat']['target']}',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: kTextGrey
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          margin: EdgeInsets.only(top: 20),
-                                          child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: <Widget>[
-                                                  Container(
-                                                    margin: EdgeInsets.only(right: 10),
-                                                    color: kPrimaryGreenColor,
-                                                    height: 14,
-                                                    width: 57,
-                                                  ),
-                                                  reports['assessments']['body_composition']['components']['body_fat']['tfl'] == 'GREEN' || reports['assessments']['body_composition']['components']['body_fat']['tfl'] == 'BLUE' ?
-                                                  Container(
-                                                    child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryGreenColor,),
-                                                  ) :
-                                                  Container()
-                                                ],
-                                              ),
-                                              Column(
-                                                children: <Widget>[
-                                                  Container(
-                                                    margin: EdgeInsets.only(right: 10),
-                                                    color: kPrimaryAmberColor,
-                                                    height: 14,
-                                                    width: 57,
-                                                  ),
-                                                  reports['assessments']['body_composition']['components']['body_fat']['tfl'] == 'AMBER' ?
-                                                  Container(
-                                                    child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryAmberColor,),
-                                                  ) :
-                                                  Container()
-                                                ],
-                                              ),
-                                              Column(
-                                                children: <Widget>[
-                                                  Container(
-                                                    color: kPrimaryRedColor,
-                                                    height: 14,
-                                                    width: 57,
-                                                  ),
-                                                  reports['assessments']['body_composition']['components']['body_fat']['tfl'] == 'RED' ?
-                                                  Container(
-                                                    child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryRedColor,),
-                                                  ) :
-                                                  Container()
-                                                ],
-                                              ),
-
-                                            ],
-                                          ),
-                                        )
-                                      )
-                                    ],
-                                  ),
-
-                                ],
-                              ),
-                            ) :
-                            Container(),
-
                             reports['assessments']['body_composition']['components']['hip_circ'] != null ?
                             Container(
                               // alignment: Alignment.topCenter,
@@ -702,7 +592,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                       ),
                                       Expanded(
                                         child: Container(
-                                          margin: EdgeInsets.only(top: 20),
+                                          margin: EdgeInsets.only(top: 10),
                                           child: Row(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: <Widget>[
@@ -712,15 +602,32 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                                 children: <Widget>[
                                                   Container(
                                                     margin: EdgeInsets.only(right: 10),
-                                                    color: kPrimaryGreenColor,
+                                                    color: kPrimaryBlueColor,
                                                     height: 14,
-                                                    width: 57,
+                                                    width: 40,
+                                                  ),
+                                                  reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'BLUE' ?
+                                                  Container(
+                                                    child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryBlueColor,),
+                                                  ) :
+                                                  Container(),
+                                                ],
+                                              ),
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Container(
+                                                    margin: EdgeInsets.only(right: 10),
+                                                    color: kGreenColor,
+                                                    height: 14,
+                                                    width: 40,
                                                   ),
                                                   reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'GREEN' ?
                                                   Container(
-                                                    child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryGreenColor,),
+                                                    child: Icon(Icons.arrow_drop_up, size: 40, color: kGreenColor,),
                                                   ) :
-                                                  Container()
+                                                  Container(),
                                                 ],
                                               ),
                                               Column(
@@ -729,33 +636,52 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                                     margin: EdgeInsets.only(right: 10),
                                                     color: kPrimaryAmberColor,
                                                     height: 14,
-                                                    width: 57,
+                                                    width: 40,
                                                   ),
                                                   reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'AMBER' ?
                                                   Container(
                                                     child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryAmberColor,),
                                                   ) :
-                                                  Container()
+                                                  Container(),
                                                 ],
                                               ),
                                               Column(
                                                 children: <Widget>[
                                                   Container(
-                                                    color: kPrimaryRedColor,
+                                                    color: kRedColor,
                                                     height: 14,
-                                                    width: 57,
+                                                    width: 40,
+                                                    margin: EdgeInsets.only(right: 10),
                                                   ),
-                                                  reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'RED' ?
+                                                  reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'RED' ||  reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'DEEP-RED' ?
                                                   Container(
-                                                    child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryRedColor,),
+                                                    child: Icon(Icons.arrow_drop_up, size: 40, color: kRedColor,),
                                                   ) :
-                                                  Container()
+                                                  Container(),
+                                                ],
+                                              ),
+
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Container(
+                                                    margin: EdgeInsets.only(right: 10),
+                                                    color: kPrimaryDeepRedColor,
+                                                    height: 14,
+                                                    width: 40,
+                                                  ),
+                                                  reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'DEEP-RED' ?
+                                                  Container(
+                                                    child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryDeepRedColor,),
+                                                  ) :
+                                                  Container(),
                                                 ],
                                               ),
 
                                             ],
                                           ),
-                                        )
+                                        ),
                                       )
                                     ],
                                   ),
@@ -827,13 +753,30 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                         children: <Widget>[
                                           Container(
                                             margin: EdgeInsets.only(right: 10),
-                                            color: kPrimaryGreenColor,
+                                            color: kPrimaryBlueColor,
                                             height: 14,
-                                            width: 57,
+                                            width: 40,
+                                          ),
+                                          reports['assessments']['blood_pressure']['tfl'] == 'BLUE' ?
+                                          Container(
+                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryBlueColor,),
+                                          ) :
+                                          Container(),
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          Container(
+                                            margin: EdgeInsets.only(right: 10),
+                                            color: kGreenColor,
+                                            height: 14,
+                                            width: 40,
                                           ),
                                           reports['assessments']['blood_pressure']['tfl'] == 'GREEN' ?
                                           Container(
-                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryGreenColor,),
+                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kGreenColor,),
                                           ) :
                                           Container(),
                                         ],
@@ -844,7 +787,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                             margin: EdgeInsets.only(right: 10),
                                             color: kPrimaryAmberColor,
                                             height: 14,
-                                            width: 57,
+                                            width: 40,
                                           ),
                                           reports['assessments']['blood_pressure']['tfl'] == 'AMBER' ?
                                           Container(
@@ -856,13 +799,32 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                       Column(
                                         children: <Widget>[
                                           Container(
-                                            color: kPrimaryRedColor,
+                                            color: kRedColor,
                                             height: 14,
-                                            width: 57,
+                                            width: 40,
+                                            margin: EdgeInsets.only(right: 10),
                                           ),
                                           reports['assessments']['blood_pressure']['tfl'] == 'RED' ||  reports['assessments']['blood_pressure']['tfl'] == 'DEEP-RED' ?
                                           Container(
-                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryRedColor,),
+                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kRedColor,),
+                                          ) :
+                                          Container(),
+                                        ],
+                                      ),
+
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          Container(
+                                            margin: EdgeInsets.only(right: 10),
+                                            color: kPrimaryDeepRedColor,
+                                            height: 14,
+                                            width: 40,
+                                          ),
+                                          reports['assessments']['blood_pressure']['tfl'] == 'DEEP-RED' ?
+                                          Container(
+                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryDeepRedColor,),
                                           ) :
                                           Container(),
                                         ],
@@ -933,13 +895,30 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                         children: <Widget>[
                                           Container(
                                             margin: EdgeInsets.only(right: 10),
-                                            color: kPrimaryGreenColor,
+                                            color: kPrimaryBlueColor,
                                             height: 14,
-                                            width: 57,
+                                            width: 40,
+                                          ),
+                                          reports['assessments']['diabetes']['tfl'] == 'BLUE' ?
+                                          Container(
+                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryBlueColor,),
+                                          ) :
+                                          Container(),
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          Container(
+                                            margin: EdgeInsets.only(right: 10),
+                                            color: kGreenColor,
+                                            height: 14,
+                                            width: 40,
                                           ),
                                           reports['assessments']['diabetes']['tfl'] == 'GREEN' ?
                                           Container(
-                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryGreenColor,),
+                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kGreenColor,),
                                           ) :
                                           Container(),
                                         ],
@@ -950,7 +929,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                             margin: EdgeInsets.only(right: 10),
                                             color: kPrimaryAmberColor,
                                             height: 14,
-                                            width: 57,
+                                            width: 40,
                                           ),
                                           reports['assessments']['diabetes']['tfl'] == 'AMBER' ?
                                           Container(
@@ -962,13 +941,32 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                       Column(
                                         children: <Widget>[
                                           Container(
-                                            color: kPrimaryRedColor,
+                                            color: kRedColor,
                                             height: 14,
-                                            width: 57,
+                                            width: 40,
+                                            margin: EdgeInsets.only(right: 10),
                                           ),
-                                          reports['assessments']['diabetes']['tfl'] == 'RED' ?
+                                          reports['assessments']['diabetes']['tfl'] == 'RED' ||  reports['assessments']['blood_pressure']['tfl'] == 'DEEP-RED' ?
                                           Container(
-                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryRedColor,),
+                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kRedColor,),
+                                          ) :
+                                          Container(),
+                                        ],
+                                      ),
+
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          Container(
+                                            margin: EdgeInsets.only(right: 10),
+                                            color: kPrimaryDeepRedColor,
+                                            height: 14,
+                                            width: 40,
+                                          ),
+                                          reports['assessments']['diabetes']['tfl'] == 'DEEP-RED' ?
+                                          Container(
+                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryDeepRedColor,),
                                           ) :
                                           Container(),
                                         ],
@@ -977,6 +975,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                     ],
                                   ),
                                 ),
+                              
                               ],
                             ),
                             SizedBox(height: 25,),
@@ -1024,7 +1023,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                       ),
                                     ),
                                     SizedBox(height: 15,),
-                                    Text('${reports['assessments']['diabetes']['target']}', style: TextStyle(fontSize: 14, color: kTextGrey,),)
+                                    Text('${reports['assessments']['cholesterol']['components']['total_cholesterol']['target']}', style: TextStyle(fontSize: 14, color: kTextGrey,),)
                                   ]
                                 ),
                                 SizedBox(width: 30,),
@@ -1039,13 +1038,30 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                         children: <Widget>[
                                           Container(
                                             margin: EdgeInsets.only(right: 10),
-                                            color: kPrimaryGreenColor,
+                                            color: kPrimaryBlueColor,
                                             height: 14,
-                                            width: 57,
+                                            width: 40,
+                                          ),
+                                          reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'BLUE' ?
+                                          Container(
+                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryBlueColor,),
+                                          ) :
+                                          Container(),
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          Container(
+                                            margin: EdgeInsets.only(right: 10),
+                                            color: kGreenColor,
+                                            height: 14,
+                                            width: 40,
                                           ),
                                           reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'GREEN' ?
                                           Container(
-                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryGreenColor,),
+                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kGreenColor,),
                                           ) :
                                           Container(),
                                         ],
@@ -1056,7 +1072,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                             margin: EdgeInsets.only(right: 10),
                                             color: kPrimaryAmberColor,
                                             height: 14,
-                                            width: 57,
+                                            width: 40,
                                           ),
                                           reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'AMBER' ?
                                           Container(
@@ -1068,13 +1084,32 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                       Column(
                                         children: <Widget>[
                                           Container(
-                                            color: kPrimaryRedColor,
+                                            color: kRedColor,
                                             height: 14,
-                                            width: 57,
+                                            width: 40,
+                                            margin: EdgeInsets.only(right: 10),
                                           ),
-                                          reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'RED' ?
+                                          reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'RED' ||  reports['assessments']['blood_pressure']['tfl'] == 'DEEP-RED' ?
                                           Container(
-                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryRedColor,),
+                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kRedColor,),
+                                          ) :
+                                          Container(),
+                                        ],
+                                      ),
+
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          Container(
+                                            margin: EdgeInsets.only(right: 10),
+                                            color: kPrimaryDeepRedColor,
+                                            height: 14,
+                                            width: 40,
+                                          ),
+                                          reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'DEEP-RED' ?
+                                          Container(
+                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryDeepRedColor,),
                                           ) :
                                           Container(),
                                         ],
@@ -1083,6 +1118,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                     ],
                                   ),
                                 ),
+                              
                               ],
                             ),
                             SizedBox(height: 25,),
@@ -1145,13 +1181,30 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                         children: <Widget>[
                                           Container(
                                             margin: EdgeInsets.only(right: 10),
-                                            color: kPrimaryGreenColor,
+                                            color: kPrimaryBlueColor,
                                             height: 14,
-                                            width: 57,
+                                            width: 40,
+                                          ),
+                                          reports['assessments']['cvd']['tfl'] == 'BLUE' ?
+                                          Container(
+                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryBlueColor,),
+                                          ) :
+                                          Container(),
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          Container(
+                                            margin: EdgeInsets.only(right: 10),
+                                            color: kGreenColor,
+                                            height: 14,
+                                            width: 40,
                                           ),
                                           reports['assessments']['cvd']['tfl'] == 'GREEN' ?
                                           Container(
-                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryGreenColor,),
+                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kGreenColor,),
                                           ) :
                                           Container(),
                                         ],
@@ -1162,7 +1215,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                             margin: EdgeInsets.only(right: 10),
                                             color: kPrimaryAmberColor,
                                             height: 14,
-                                            width: 57,
+                                            width: 40,
                                           ),
                                           reports['assessments']['cvd']['tfl'] == 'AMBER' ?
                                           Container(
@@ -1174,13 +1227,32 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                       Column(
                                         children: <Widget>[
                                           Container(
-                                            color: kPrimaryRedColor,
+                                            color: kRedColor,
                                             height: 14,
-                                            width: 57,
+                                            width: 40,
+                                            margin: EdgeInsets.only(right: 10),
                                           ),
-                                          reports['assessments']['cvd']['tfl'] == 'RED' ?
+                                          reports['assessments']['cvd']['tfl'] == 'RED' ||  reports['assessments']['blood_pressure']['tfl'] == 'DEEP-RED' ?
                                           Container(
-                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryRedColor,),
+                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kRedColor,),
+                                          ) :
+                                          Container(),
+                                        ],
+                                      ),
+
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          Container(
+                                            margin: EdgeInsets.only(right: 10),
+                                            color: kPrimaryDeepRedColor,
+                                            height: 14,
+                                            width: 40,
+                                          ),
+                                          reports['assessments']['cvd']['tfl'] == 'DEEP-RED' || reports['assessments']['cvd']['tfl'] == 'DARK-RED' ?
+                                          Container(
+                                            child: Icon(Icons.arrow_drop_up, size: 40, color: kPrimaryDeepRedColor,),
                                           ) :
                                           Container(),
                                         ],
@@ -1189,6 +1261,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                     ],
                                   ),
                                 ),
+                              
                               ],
                             ),
                             SizedBox(height: 25,),

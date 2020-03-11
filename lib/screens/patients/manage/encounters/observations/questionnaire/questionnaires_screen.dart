@@ -33,9 +33,19 @@ class Questionnaires extends StatefulWidget {
 
 class _QuestionnairesState extends State<Questionnaires> {
 
+  bool avatarExists = false;
+
   @override
   void initState() {
     super.initState();
+    _checkAvatar();
+  }
+
+  _checkAvatar() async {
+    var data = await File(Patient().getPatient()['data']['avatar']).exists();
+    setState(() {
+      avatarExists = data;
+    });
   }
 
   _getStatus(type) {
@@ -73,7 +83,8 @@ class _QuestionnairesState extends State<Questionnaires> {
                     child: Container(
                       child: Row(
                         children: <Widget>[
-                          Patient().getPatient()['data']['avatar'] == null ? Container(
+                          Patient().getPatient()['data']['avatar'] == null || !avatarExists ?
+                          Container(
                             height: 35,
                             width: 35,
                             decoration: BoxDecoration(
@@ -82,13 +93,9 @@ class _QuestionnairesState extends State<Questionnaires> {
                             ),
                             child: Icon(Icons.perm_identity),
                           ) :
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: Image.file(
-                              File(Patient().getPatient()['data']['avatar']),
-                              height: 35.0,
-                              width: 35.0,
-                            ),
+                          CircleAvatar(
+                            radius: 17,
+                            backgroundImage: FileImage(File(Patient().getPatient()['data']['avatar'])),
                           ),
                           SizedBox(width: 15,),
                           Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 18))
@@ -254,11 +261,20 @@ class EncounnterSteps extends StatefulWidget {
 
 class EncounnterStepsState extends State<EncounnterSteps> {
   String status = 'Incomplete';
+  bool avatarExists = false;
 
   @override
   void initState() {
     super.initState();
+    _checkAvatar();
     setStatus();
+  }
+
+  _checkAvatar() async {
+    var data = await File(Patient().getPatient()['data']['avatar']).exists();
+    setState(() {
+      avatarExists = data;
+    });
   }
 
   setStatus() {

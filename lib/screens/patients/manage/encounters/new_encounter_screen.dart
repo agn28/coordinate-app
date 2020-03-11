@@ -37,10 +37,12 @@ class _NewEncounterState extends State<NewEncounter> {
   String selectedType = 'In-clinic Screening';
   final commentController = TextEditingController();
   bool _dataSaved = false;
+  bool avatarExists = false;
 
   @override
   void initState() {
     super.initState();
+    _checkAvatar();
     BloodPressure().removeDeleteIds();
     if (Assessment().getSelectedAssessment() != {}) {
       setState(() {
@@ -50,6 +52,14 @@ class _NewEncounterState extends State<NewEncounter> {
         selectedType = type == 'in-clinic' ? 'In-clinic Screening' : 'Home Visit';
       });
     }
+  }
+
+  _checkAvatar() async {
+    var data = await File(Patient().getPatient()['data']['avatar']).exists();
+    setState(() {
+      avatarExists = data;
+    });
+
   }
 
   _changeType(value) {
@@ -64,7 +74,7 @@ class _NewEncounterState extends State<NewEncounter> {
       key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('createNewAssessment'), style: TextStyle(color: Colors.white),),
+        title: Text(AppLocalizations.of(context).translate('createNewEncounter'), style: TextStyle(color: Colors.white),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -93,7 +103,8 @@ class _NewEncounterState extends State<NewEncounter> {
                       child: Container(
                         child: Row(
                           children: <Widget>[
-                            Patient().getPatient()['data']['avatar'] == null ? Container(
+                            Patient().getPatient()['data']['avatar'] == null || !avatarExists ? 
+                            Container(
                               height: 35,
                               width: 35,
                               decoration: BoxDecoration(
@@ -102,13 +113,9 @@ class _NewEncounterState extends State<NewEncounter> {
                               ),
                               child: Icon(Icons.perm_identity),
                             ) :
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: Image.file(
-                                File(Patient().getPatient()['data']['avatar']),
-                                height: 35.0,
-                                width: 35.0,
-                              ),
+                            CircleAvatar(
+                              radius: 17,
+                              backgroundImage: FileImage(File(Patient().getPatient()['data']['avatar'])),
                             ),
                             SizedBox(width: 15,),
                             Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 18))

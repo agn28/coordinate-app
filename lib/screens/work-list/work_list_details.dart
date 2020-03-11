@@ -61,7 +61,8 @@ class _WorkListDetailsState extends State<WorkListDetails> {
 
     if (video.isNotEmpty) {
       setState(() {
-        videoId = YoutubePlayer.convertUrlToId("https://www.youtube.com/watch?v=prE6Ty2qDq8");
+        // videoId = YoutubePlayer.convertUrlToId("https://www.youtube.com/watch?v=prE6Ty2qDq8");
+        videoId = YoutubePlayer.convertUrlToId(video.first['uri']);
         _youtubeController  = YoutubePlayerController(
           initialVideoId: videoId,
           flags: YoutubePlayerFlags(

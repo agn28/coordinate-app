@@ -5,30 +5,76 @@ import 'package:nhealth/controllers/care_plan_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
-import 'package:nhealth/screens/patients/manage/care_plan/care_plan_details_screen.dart';
+import 'package:nhealth/screens/patients/manage/encounters/observations/body-measurements/height_screen.dart';
 import 'package:nhealth/widgets/primary_button_widget.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class CarePlanInterventionScreen extends CupertinoPageRoute {
-  var carePlan;
-  var parent;
+  final carePlan;
+  final parent;
   CarePlanInterventionScreen({this.carePlan, this.parent})
       : super(builder: (BuildContext context) => CarePlanIntervention(carePlan: carePlan, parent: parent));
 
 }
 
 class CarePlanIntervention extends StatefulWidget {
-  var carePlan;
-  var parent;
+  final carePlan;
+  final parent;
   CarePlanIntervention({this.carePlan, this.parent});
   @override
   _CarePlanInterventionState createState() => _CarePlanInterventionState();
 }
 
 class _CarePlanInterventionState extends State<CarePlanIntervention> {
+  YoutubePlayerController _youtubeController;
 
-  bool smoking = true;
+  bool form = false;
+  bool videoWatched = false;
   bool isLoading = false;
   final commentController = TextEditingController();
+  String videoUrl = '';
+  String videoId = '';
+  String formUrl = '';
+
+  @override
+  initState() {
+    super.initState();
+    print(widget.carePlan);
+    _getVideoUrl();
+    _getFormUrl();
+  }
+
+  _getFormUrl() {
+    var form = widget.carePlan['body']['components'].where((item) => item['type'] == 'form');
+
+    if (form.isNotEmpty) {
+      setState(() {
+        formUrl = form.first['uri'];
+      });
+    }
+    
+  }
+
+  _getVideoUrl() {
+    var video = widget.carePlan['body']['components'].where((item) => item['type'] == 'video');
+
+    if (video.isNotEmpty) {
+      setState(() {
+        // videoId = YoutubePlayer.convertUrlToId("https://www.youtube.com/watch?v=prE6Ty2qDq8");
+        videoId = YoutubePlayer.convertUrlToId(video.first['uri']);
+        _youtubeController  = YoutubePlayerController(
+          initialVideoId: videoId,
+          flags: YoutubePlayerFlags(
+            autoPlay: true,
+          ),
+        );
+        videoUrl = video.first != null ? video.first['uri'] : '';
+      });
+    }
+
+    
+    
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,44 +92,8 @@ class _CarePlanInterventionState extends State<CarePlanIntervention> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border(
-                      bottom: BorderSide(width: 1, color: Colors.black38)
-                    )
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                height: 35,
-                                width: 35,
-                                decoration: BoxDecoration(
-                                  color: kLightPrimaryColor,
-                                  shape: BoxShape.circle
-                                ),
-                                child: Icon(Icons.perm_identity),
-                              ),
-                              SizedBox(width: 15,),
-                              Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 18))
-                            ],
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(Helpers().getPatientAgeAndGender(Patient().getPatient()), style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
-                      ),
-                      Expanded(
-                        child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
-                      )
-                    ],
-                  ),
-                ),
+
+                formUrl != '' ?
                 Container(
                   height: 70,
                   width: double.infinity,
@@ -96,17 +106,95 @@ class _CarePlanInterventionState extends State<CarePlanIntervention> {
                     children: <Widget>[
                       Checkbox(
                         activeColor: kPrimaryColor,
-                        value: smoking,
+                        value: form,
                         onChanged: (value) {
                           setState(() {
-                            smoking = value;
+                            form = value;
                           });
                         },
                       ),
-                      Text('Smoking cessation advise provided to patient', style: TextStyle(fontSize: 16),)
+                      Text('Fill up the form',  style: TextStyle(fontSize: 16)),
+                      SizedBox(width: 10,),
+                      GestureDetector(
+                        onTap: () async {
+                          
+                        },
+                        child: Text('Click here', 
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: kPrimaryColor,
+                            decoration: TextDecoration.underline
+                          )
+                        ),
+                      ),
                     ],
                   ),
-                ),
+                ) : SizedBox(height: 40),
+
+                videoUrl != '' ? Container(
+                  width: double.infinity,
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.only(left: 17, bottom: 30),
+                  child: Row(
+                    children: <Widget>[
+                      Checkbox(
+                        activeColor: kPrimaryColor,
+                        value: videoWatched,
+                        onChanged: (value) {
+                          setState(() {
+                            videoWatched = value;
+                          });
+                        },
+                      ),
+                      Text('Watch the video',  style: TextStyle(fontSize: 16)),
+                      SizedBox(width: 10,),
+                      GestureDetector(
+                        onTap: () async {
+                          await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Dialog(
+                                elevation: 0.0,
+                                backgroundColor: Colors.transparent,
+                                child: Container(
+                                  // height: 300,
+                                  width: double.infinity,
+                                  color: Colors.white,
+                                  child: YoutubePlayer(
+                                    onEnded: (data) {
+                                      print(data);
+                                      setState(() {
+                                        videoWatched = true;
+                                      });
+                                    } ,
+                                    
+                                    controller: _youtubeController,
+                                    liveUIColor: Colors.amber,
+                                    progressColors: ProgressBarColors(
+                                    playedColor: Colors.amber,
+                                    handleColor: Colors.amberAccent,
+                                ),
+                                
+                                  ),
+                                ),
+                              );
+                            },
+                          ).then((value) {
+                            print('closed');
+                            _youtubeController.reset();
+                          });
+                        },
+                        child: Text(videoUrl, 
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: kPrimaryColor,
+                            decoration: TextDecoration.underline
+                          )
+                        ),
+                      ),
+                    ],
+                  ),
+                ) : Container(),
                 
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 30),
@@ -143,6 +231,7 @@ class _CarePlanInterventionState extends State<CarePlanIntervention> {
                         isLoading = true;
                       });
                       var response = await CarePlanController().update(widget.carePlan, commentController.text);
+                      print('hello' + response);
                       setState(() {
                         isLoading = false;
                       });

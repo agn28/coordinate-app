@@ -31,13 +31,19 @@ class _PatientRecordsState extends State<PatientRecords> {
   var _patient;
   bool isLoading = false;
   var carePlans;
+  bool avatarExists = false;
 
   @override
   void initState() {
     super.initState();
-     _patient = Patient().getPatient();
-     _checkAuth();
-     _getCarePlan();
+    _patient = Patient().getPatient();
+    _checkAvatar();
+    _checkAuth();
+    _getCarePlan();
+  }
+
+  _checkAvatar() async {
+    avatarExists = await File(Patient().getPatient()['data']['avatar']).exists();
   }
 
   _checkAuth() {
@@ -117,7 +123,7 @@ class _PatientRecordsState extends State<PatientRecords> {
                       margin: EdgeInsets.symmetric(horizontal: 50, vertical: 30),
                       child: Row(
                         children: <Widget>[
-                          Patient().getPatient()['data']['avatar'] == null ? 
+                          Patient().getPatient()['data']['avatar'] == null || !avatarExists ? 
                           Container(
                             height: 60,
                             width: 60,
@@ -485,13 +491,13 @@ class _OverviewInterventionState extends State<OverviewIntervention> {
 
   getStatus() {
     setState(() {
-      status = widget.carePlan['body']['status'];
+      status = widget.carePlan['meta']['status'];
     });
   }
 
   setStatus() {
     setState(() {
-      widget.carePlan['body']['status'] = 'completed';
+      widget.carePlan['meta']['status'] = 'completed';
       status = 'completed';
     });
   }
@@ -506,7 +512,7 @@ class _OverviewInterventionState extends State<OverviewIntervention> {
       ),
       child: FlatButton(
         onPressed: () {
-          if (widget.carePlan['body']['status'] == null) {
+          if (widget.carePlan['meta']['status'] == 'pending') {
             Navigator.of(context).push(CarePlanInterventionScreen(carePlan: widget.carePlan, parent: this));
           }
         },
@@ -524,7 +530,7 @@ class _OverviewInterventionState extends State<OverviewIntervention> {
                     SizedBox(height: 15,),
                     Text('Intervention: ${widget.carePlan['body']['title']}', overflow: TextOverflow.fade, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400,)),
                     SizedBox(height: 15,),
-                    Text('${status != null ? status[0].toUpperCase() + status.substring(1) : 'Pending'}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: status != null ? kPrimaryGreenColor : kPrimaryRedColor)),
+                    Text('${status != 'pending' ? status[0].toUpperCase() + status.substring(1) : 'Pending'}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: status != 'pending' ? kPrimaryGreenColor : kPrimaryRedColor)),
                   ],
                 ),
               ),

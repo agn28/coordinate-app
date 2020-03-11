@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 //urls
-// const String apiUrl = 'http://35.185.186.78/api/v1/';
+// const String apiUrl = 'http://bd752a91.ngrok.io/api/v1/';
 const String apiUrl = 'https://coordinate-api.monarko.com/api/v1/';
 
 const kTextInputColorGrey = Color(0xFFE5E5E5);
@@ -23,7 +23,11 @@ const kErroText = Color(0xFFFFB8B8);
 const kSecondaryTextField = Color(0xFFE8E8E8);
 
 const kBackgroundGrey = Color(0xFFF9F9F9);
-const kPrimaryAmberColor = Color(0xFFD43900);
+const kPrimaryAmberColor = Color(0xFFFFbf00);
+const kRedColor = Color(0xFFFF0000);
+const kGreenColor = Color(0xFF007000);
+const kPrimaryBlueColor = Color(0xFFa5be40);
+const kPrimaryDeepRedColor = Color(0xFF8b0000);
 
 const kTextGrey = Color(0x65000000);
 const kShapeColorGreen = Color(0xFF98C645);
@@ -35,10 +39,11 @@ const kWarningColor = Color(0xFFFFF8E1);
 
 class ColorUtils {
   static var statusColor = {
-    'AMBER': Color(0xFFD43900),
-    'GREEN': Color(0xFF2E7D32),
-    'BLUE': Color(0xFF2E7D32),
-    'RED': Color(0xFFD92647),
-    'DEEP-RED': Color(0xFFD92647)
+    'AMBER': kPrimaryAmberColor,
+    'GREEN': kGreenColor,
+    'BLUE': kPrimaryBlueColor,
+    'RED': kRedColor,
+    'DEEP-RED': kPrimaryDeepRedColor,
+    'DARK-RED': kPrimaryDeepRedColor
   };
 }

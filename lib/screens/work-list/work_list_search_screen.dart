@@ -35,12 +35,12 @@ class _WorkListSearchState extends State<WorkListSearch> {
   _getWorklist() async {
 
     var data = await WorklistController().getWorklist();
-    print(data['data']);
 
     if (data['error'] != null && data['error']) {
       return Toast.show('Server Error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
     }
 
+    print(data['data'].length);
     setState(() {
       allWorklist = data['data'];
       worklist = allWorklist;
@@ -75,16 +75,14 @@ class _WorkListSearchState extends State<WorkListSearch> {
   }
 
   _getDuration(item) {
-    // print(item['body']['goal']);
-    item['body']['goal']['start'] = '2020-01-05';
-    item['body']['goal']['end'] = '2020-02-06';
 
-    if (item['body']['goal'] != null && item['body']['goal']['start'] != null && item['body']['goal']['end'] != null) {
+    if (item['body']['goal'] != null && item['body']['goal']['start'] != '' && item['body']['goal']['end'] != '') {
+      // print();
       var start = DateTime.parse(item['body']['goal']['start']);
       var end = DateTime.parse(item['body']['goal']['end']).difference(DateTime.parse(item['body']['goal']['start'])).inDays;
 
       int result = (end / 30).round();
-      if (result > 1) {
+      if (result >= 1) {
         return 'Within ${result.toString()} months of recommendation of goal';
       }
       // print(start);
@@ -171,7 +169,7 @@ class _WorkListSearchState extends State<WorkListSearch> {
                 ),
                 SizedBox(height: 20,),
                 ...worklist.map((item) => 
-                item['body']['status'] != 'completed' ?
+                item['meta']['status'] == 'pending' ?
                 GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(WorkListDetailsScreen(carePlan: item, parent: this));
@@ -187,12 +185,21 @@ class _WorkListSearchState extends State<WorkListSearch> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        item['patient']['avatar'] != null ?
-                        CircleAvatar(
-                          backgroundColor: kPrimaryRedColor,
-                          radius: 20,
-                          backgroundImage: FileImage(File(item['patient']['avatar'])),
-                        ) : Container(),
+                        Container(
+                          height: 38,
+                          width: 38,
+                          decoration: BoxDecoration(
+                            color: kLightPrimaryColor,
+                            shape: BoxShape.circle
+                          ),
+                          child: Icon(Icons.perm_identity),
+                        ),
+                        // item['patient']['avatar'] != null ?
+                        // CircleAvatar(
+                        //   backgroundColor: kPrimaryRedColor,
+                        //   radius: 20,
+                        //   backgroundImage: FileImage(File(item['patient']['avatar'])),
+                        // ) : Container(),
 
                         SizedBox(width: 20,),
                         Expanded(
@@ -200,7 +207,7 @@ class _WorkListSearchState extends State<WorkListSearch> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(item['patient'] != null ? item['patient']['first_name'] + ' ' + item['patient']['last_name'] : '', style: TextStyle(fontSize: 18),),
-                              // SizedBox(height: 12,),
+                              SizedBox(height: 12,),
                               Text(item['patient'] != null ? item['patient']['age'].toString() + 'Y ' + ' - ' + StringUtils.capitalize(item['patient']['gender']) : '', style: TextStyle(fontSize: 15),),
                               SizedBox(height: 12,),
                               Text(item['body']['title'], style: TextStyle(fontSize: 15, color: kTextGrey),),
