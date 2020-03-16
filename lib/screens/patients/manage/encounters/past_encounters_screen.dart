@@ -42,6 +42,7 @@ class _PastEncountersState extends State<PastEncounters> {
     _checkAuth();
     // _assessments = await AssessmentController().getAllAssessmentsByPatient();
     _assessments = await AssessmentController().getLiveAllAssessmentsByPatient();
+    print(_assessments);
 
     setState(() {
       isLoading = false;

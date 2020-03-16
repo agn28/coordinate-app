@@ -14,6 +14,7 @@
   "useThumbprint": "Use Thumbprint",
   "pendingRecommendation": "Pending Recommendations Only",
   "filters": "Filters",
+  "sort": "Sort",
   "clearFilter": "CLEAR FILTERS",
   "noPatientFound": "No patient found",
   "selectDiseases": "Select Diagnosed Diseases",

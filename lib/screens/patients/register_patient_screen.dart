@@ -8,6 +8,7 @@ import 'package:nhealth/configs/configs.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/care_plan_controller.dart';
@@ -48,6 +49,7 @@ final contactHomePhoneController = TextEditingController();
 final contactEmailController = TextEditingController();
 final GlobalKey<FormState> _patientFormKey = new GlobalKey<FormState>();
 final GlobalKey<FormState> _contactFormKey = new GlobalKey<FormState>();
+String uploadedImageUrl = '';
 bool isEditState = false;
 String selectedGender = 'male';
 List relationships = [
@@ -112,12 +114,13 @@ class _RegisterPatientState extends State<RegisterPatient> {
     // print(patient);
     firstNameController.text = patient['data']['first_name'];
     lastNameController.text = patient['data']['last_name'];
-    setState(() {
-      _image = File(patient['data']['avatar']);
-    });
-    birthDateController.text = DateFormat('d').format(DateTime.parse(patient['data']['birth_date']));
-    birthMonthController.text = DateFormat('MM').format(DateTime.parse(patient['data']['birth_date']));
-    birthYearController.text = DateFormat('y').format(DateTime.parse(patient['data']['birth_date']));
+    // setState(() {
+    //   _image = File(patient['data']['avatar']);
+    // });
+    print(_image);
+    // birthDateController.text = DateFormat('d').format(DateTime.parse(patient['data']['birth_date']));
+    // birthMonthController.text = DateFormat('MM').format(DateTime.parse(patient['data']['birth_date']));
+    // birthYearController.text = DateFormat('y').format(DateTime.parse(patient['data']['birth_date']));
     districtController.text = patient['data']['address']['district'];
     postalCodeController.text = patient['data']['address']['postal_code'];
     townController.text = patient['data']['address']['town'];
@@ -188,9 +191,9 @@ class _RegisterPatientState extends State<RegisterPatient> {
           return Row();
         },
           onStepTapped: (step) {
-            // setState(() {
-            //   this._currentStep = step;
-            // });
+            setState(() {
+              this._currentStep = step;
+            });
           },
           steps: _mySteps(),
           currentStep: this._currentStep,
@@ -307,7 +310,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
       'first_name': firstNameController.text,
       'last_name': lastNameController.text,
       'gender': selectedGender,
-      'avatar': _image != null ? _image.path : '',
+      'avatar': uploadedImageUrl,
       'age': 26, //age needs to be calculated
       'birth_date': birthDateController.text,
       'birth_month': birthMonthController.text,
@@ -767,6 +770,9 @@ class AddPhoto extends StatefulWidget {
 File _image;
 class _AddPhotoState extends State<AddPhoto> {
   bool firstTime = true;
+  final FirebaseStorage _storage = FirebaseStorage(storageBucket: gsBucket);
+  StorageUploadTask _uploadTask;
+
   @override
   initState() {
     super.initState();
@@ -780,6 +786,35 @@ class _AddPhotoState extends State<AddPhoto> {
     // });
 
     await cropImage();
+  }
+
+  uploadImage() async {
+    print(_image);
+    print(DateTime.now().millisecondsSinceEpoch);
+    var url = '';
+    if (_image != null) {
+      String filePath = 'images/patients/${firstNameController.text}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+      setState(() {
+        _uploadTask = _storage.ref().child(filePath).putFile(_image);
+      });
+      await _uploadTask.onComplete;
+      if (_uploadTask.isComplete) {
+        var url = await _storage.ref().child(filePath).getDownloadURL();
+        setState(() {
+          uploadedImageUrl = url.toString();
+        });
+      }
+
+      if (_uploadTask.isCanceled) {
+
+      }
+
+      print(_uploadTask);
+
+      return url;
+      // print(_uploadTask);
+    }
   }
 
   cropImage() async {
@@ -887,6 +922,7 @@ class _AddPhotoState extends State<AddPhoto> {
           GestureDetector(
             onTap: () async {
               var formData = _RegisterPatientState()._prepareFormData();
+              var url = await uploadImage();
               var response = isEditState != null ? await PatientController().update(formData) : await PatientController().create(formData);
               if (response == 'success') {
                 _RegisterPatientState()._clearForm();

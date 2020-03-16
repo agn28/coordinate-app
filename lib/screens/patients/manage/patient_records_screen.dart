@@ -40,6 +40,7 @@ class _PatientRecordsState extends State<PatientRecords> {
     _checkAvatar();
     _checkAuth();
     _getCarePlan();
+    print(Patient().getPatient()['data']['avatar']);
   }
 
   _checkAvatar() async {
@@ -123,20 +124,28 @@ class _PatientRecordsState extends State<PatientRecords> {
                       margin: EdgeInsets.symmetric(horizontal: 50, vertical: 30),
                       child: Row(
                         children: <Widget>[
-                          Patient().getPatient()['data']['avatar'] == null || !avatarExists ? 
-                          Container(
-                            height: 60,
-                            width: 60,
-                            child: Icon(Icons.perm_identity, size: 35, color: kPrimaryColor,),
-                            decoration: BoxDecoration(
-                              color: kLightButton,
-                              shape: BoxShape.circle
+                          Patient().getPatient()['data']['avatar'] == '' ? 
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(30.0),
+                            child: Image.asset(
+                              'assets/images/avatar.png',
+                              height: 60.0,
+                              width: 60.0,
                             ),
                           ) :
                           CircleAvatar(
                             radius: 30,
-                            backgroundImage: FileImage(File(Patient().getPatient()['data']['avatar'])),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(30.0),
+                              child: Image.network(
+                                Patient().getPatient()['data']['avatar'],
+                                height: 60.0,
+                                width: 60.0,
+                              ),
+                            ),
+                            backgroundImage: AssetImage('assets/images/avatar.png'),
                           ),
+                          // NetworkImage(Patient().getPatient()['data']['avatar'])
                           // ClipRRect(
                           //   borderRadius: BorderRadius.circular(100),
                           //   child: Image.file(
