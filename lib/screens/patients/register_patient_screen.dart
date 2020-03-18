@@ -9,6 +9,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/care_plan_controller.dart';
@@ -102,6 +103,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     isEditState = widget.isEdit;
 
     if (isEditState != null) {
+      _clearForm();
       _fillFormData();
     } else {
       _clearForm();
@@ -110,14 +112,14 @@ class _RegisterPatientState extends State<RegisterPatient> {
 
   _fillFormData() {
     var patient = Patient().getPatient();
-    print(_image);
     // print(patient);
     firstNameController.text = patient['data']['first_name'];
     lastNameController.text = patient['data']['last_name'];
     // setState(() {
     //   _image = File(patient['data']['avatar']);
     // });
-    print(_image);
+    print(patient['data']['birth_date']);
+    print(DateTime.parse(patient['data']['birth_date'].toString()));
     // birthDateController.text = DateFormat('d').format(DateTime.parse(patient['data']['birth_date']));
     // birthMonthController.text = DateFormat('MM').format(DateTime.parse(patient['data']['birth_date']));
     // birthYearController.text = DateFormat('y').format(DateTime.parse(patient['data']['birth_date']));
@@ -769,14 +771,21 @@ class AddPhoto extends StatefulWidget {
 
 File _image;
 class _AddPhotoState extends State<AddPhoto> {
+  bool isLoading = false;
   bool firstTime = true;
   final FirebaseStorage _storage = FirebaseStorage(storageBucket: gsBucket);
   StorageUploadTask _uploadTask;
+  String storageAvatar = '';
 
   @override
   initState() {
     super.initState();
-    // _image = null;
+    _image = null;
+    print('hello');
+    print(isEditState);
+    if (isEditState != null) {
+      storageAvatar = isEditState ? Patient().getPatient()['data']['avatar'] : '';
+    }
   }
 
   Future getImageFromCam() async {
@@ -799,18 +808,20 @@ class _AddPhotoState extends State<AddPhoto> {
         _uploadTask = _storage.ref().child(filePath).putFile(_image);
       });
       await _uploadTask.onComplete;
+      print('file uploaded');
       if (_uploadTask.isComplete) {
         var url = await _storage.ref().child(filePath).getDownloadURL();
+        print(url);
         setState(() {
-          uploadedImageUrl = url.toString();
+          uploadedImageUrl = url;
         });
       }
 
-      if (_uploadTask.isCanceled) {
+      // if (_uploadTask.isCanceled) {
 
-      }
+      // }
 
-      print(_uploadTask);
+      // print(_uploadTask);
 
       return url;
       // print(_uploadTask);
@@ -868,9 +879,9 @@ class _AddPhotoState extends State<AddPhoto> {
             decoration: BoxDecoration(
               border: Border.all(width: 1, color: kTableBorderGrey)
             ),
-            child: _image == null ? 
+            child: _image == null && storageAvatar == '' ? 
             GestureDetector(
-              onTap: getImageFromCam,
+              onTap: () => getImageFromCam(),
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
                 child: Column(
@@ -882,7 +893,59 @@ class _AddPhotoState extends State<AddPhoto> {
                   ],
                 ),
               ),
+            ) : _image == null && storageAvatar != '' ? 
+            Container(
+              height: 200,
+              width: 200,
+              child: Stack(
+              children: <Widget>[
+                Image.network(storageAvatar, fit: BoxFit.contain),
+                CachedNetworkImage(
+                  imageUrl: storageAvatar,
+                  placeholder: (context,url) => 
+                  Center(),
+                  errorWidget: (context,url,error) => 
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(Icons.error),
+                        Text('Image not found')
+                      ],
+                    )
+                  ),
+                ),
+                // Positioned(
+                //   bottom: 0,
+                //   left: 30,
+                //   child: GestureDetector(
+                //     onTap: () {
+                //       setState(() {
+                //         _image.delete();
+                //         _image = null;
+                //         firstTime = true;
+                //       });
+                //     },
+                //     child: CircleAvatar(
+                //       child: Icon(Icons.delete),
+                //     ),
+                //   ),
+                // ),
+                Positioned(
+                  bottom: 0,
+                  right: 80,
+                  child: GestureDetector(
+                    onTap: () => getImageFromCam(),
+                    child: CircleAvatar(
+                      child: Icon(Icons.edit),
+                    ),
+                  ),
+                )
+              ],
+            ),
             ) : Container(
+              height: 200,
+              width: 200,
               child: Stack(
               children: <Widget>[
                 Image.file(_image, fit: BoxFit.contain),
@@ -893,6 +956,9 @@ class _AddPhotoState extends State<AddPhoto> {
                     onTap: () {
                       setState(() {
                         _image.delete();
+                        setState(() {
+                          storageAvatar = '';
+                        });
                         _image = null;
                         firstTime = true;
                       });
@@ -915,15 +981,21 @@ class _AddPhotoState extends State<AddPhoto> {
               ],
             ),
             )
-          ),
+          ) ,
 
           SizedBox(height: 70,),
           
           GestureDetector(
             onTap: () async {
-              var formData = _RegisterPatientState()._prepareFormData();
+              setState(() {
+                isLoading = true;
+              });
               var url = await uploadImage();
+              var formData = _RegisterPatientState()._prepareFormData();
               var response = isEditState != null ? await PatientController().update(formData) : await PatientController().create(formData);
+              setState(() {
+                isLoading = false;
+              });
               if (response == 'success') {
                 _RegisterPatientState()._clearForm();
                 Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen(isEditState: isEditState));
@@ -937,7 +1009,7 @@ class _AddPhotoState extends State<AddPhoto> {
                 color: kPrimaryColor,
                 borderRadius: BorderRadius.circular(4)
               ),
-              child: Text("${isEditState != null ? AppLocalizations.of(context).translate('updatePatient') : AppLocalizations.of(context).translate('completeRegistration')}", style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w400))
+              child: isLoading ? CircularProgressIndicator() : Text("${isEditState != null ? AppLocalizations.of(context).translate('updatePatient') : AppLocalizations.of(context).translate('completeRegistration')}", style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w400))
             ),
           ),
         ],

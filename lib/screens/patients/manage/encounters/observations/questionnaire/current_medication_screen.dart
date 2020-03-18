@@ -395,7 +395,7 @@ class _MedicationListState extends State<MedicationList> {
   void initState() {
     super.initState();
     _preparedata();
-    
+    _selectedItem = [];
   }
 
   _preparedata() async {
@@ -446,23 +446,24 @@ class _MedicationListState extends State<MedicationList> {
 
             SizedBox(height: 10,),
             Container(
+              width: double.infinity,
               alignment: Alignment.centerLeft,
-              child: Row(
+              child: Wrap(
                 // direction: Axis.horizontal,
                 // crossAxisAlignment: CrossAxisAlignment.start,
                 
                 children: <Widget>[
                   ..._selectedItem.map((item) => 
                     Container(
-                      margin: EdgeInsets.only(right: 10),
+                      margin: EdgeInsets.only(right: 10, bottom: 10),
                       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
                       decoration: BoxDecoration(
-                        color: kTableBorderGrey,
+                        color: kPrimaryColor,
                         borderRadius: BorderRadius.circular(5),
                       ),
-                      child: Row(
+                      child: Wrap(
                         children: <Widget>[
-                          Text(item),
+                          Text(item, style: TextStyle(color: Colors.white),),
                           SizedBox(width: 5,),
                           GestureDetector(
                             onTap: () {
@@ -471,7 +472,7 @@ class _MedicationListState extends State<MedicationList> {
                                 _selectedItem.removeAt(_selectedItem.indexOf(item));
                               });
                             },
-                            child: Icon(Icons.close, size: 15,),
+                            child: Icon(Icons.close, size: 15, color: Colors.white,),
                           ),
                         ],
                       )

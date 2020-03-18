@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/care_plan_controller.dart';
@@ -499,9 +500,25 @@ class _OverviewInterventionState extends State<OverviewIntervention> {
   }
 
   getStatus() {
-    setState(() {
-      status = widget.carePlan['meta']['status'];
-    });
+    String completedDate = '';
+    if (widget.carePlan['meta']['status'] == 'completed') {
+      if (widget.carePlan['meta']['completed_at'] != null && widget.carePlan['meta']['completed_at']['_seconds'] != null) {
+        var parsedDate = DateTime.fromMillisecondsSinceEpoch(widget.carePlan['meta']['completed_at']['_seconds'] * 1000);
+
+        completedDate = DateFormat("MMMM d, y").format(parsedDate).toString();
+        print(completedDate);
+      }
+
+      setState(() {
+        status = widget.carePlan['meta']['status'] + ' on ' + completedDate;
+      });
+      
+    } else {
+      setState(() {
+        status = widget.carePlan['meta']['status'];
+      });
+    }
+    
   }
 
   setStatus() {

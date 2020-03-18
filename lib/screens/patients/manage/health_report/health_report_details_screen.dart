@@ -62,7 +62,7 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Create a New Health Assessment', style: TextStyle(color: Colors.white),),
+        title: Text('Health Assessment Details', style: TextStyle(color: Colors.white),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
