@@ -9,6 +9,7 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 
 String selectedArm = 'left';
@@ -110,53 +111,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 17, horizontal: 20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border(
-                  bottom: BorderSide(width: 2, color: Colors.black26)
-                )
-              ),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    flex: 4,
-                    child: Container(
-                      child: Row(
-                        children: <Widget>[
-                          Patient().getPatient()['data']['avatar'] == null || !avatarExists ?
-                          Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                              color: kLightPrimaryColor,
-                              shape: BoxShape.circle
-                            ),
-                            child: Icon(Icons.perm_identity),
-                          ) :
-                          CircleAvatar(
-                            radius: 17,
-                            backgroundImage: FileImage(File(Patient().getPatient()['data']['avatar'])),
-                          ),
-                          SizedBox(width: 15,),
-                          Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 18))
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Text(Helpers().getPatientAgeAndGender(Patient().getPatient()), style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
-                  )
-                ],
-              ),
-            ),
-
+            PatientTopbar(),
             Container(
               height: 90,
               width: double.infinity,

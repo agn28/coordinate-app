@@ -30,6 +30,7 @@ class _WorkListSearchState extends State<WorkListSearch> {
 
   List patients = [];
   bool isLoading = true;
+  
 
   /// Get all the worklist
   _getWorklist() async {
@@ -40,7 +41,7 @@ class _WorkListSearchState extends State<WorkListSearch> {
       return Toast.show('Server Error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
     }
 
-    print(data['data'].length);
+    // print(data['data'][0]);
     setState(() {
       allWorklist = data['data'];
       worklist = allWorklist;
@@ -55,6 +56,61 @@ class _WorkListSearchState extends State<WorkListSearch> {
       setState(() {
         worklist.removeAt(index);
       });
+    }
+  }
+
+  applySort() {
+    // print(patientSortActive);
+    if (patientSortActive) {
+      if (patientSort == 'asc') {
+        worklist.sort((a, b) => a['patient']['first_name'].toString().toLowerCase().compareTo(b['patient']['first_name'].toString().toLowerCase()));
+      } else {
+        worklist.sort((a, b) => b['patient']['first_name'].toString().toLowerCase().compareTo(a['patient']['first_name'].toString().toLowerCase()));
+      }
+    }
+
+    if (dueDateSortActive) {
+      var worklistWithdate = [];
+      var worklistWithoutdate = [];
+      // worklist = allWorklist;
+      // worklist[2]['body']['activityDuration']['end'] = '2020-02-05';
+      // print(DateTime.parse(worklist[2]['body']['activityDuration']['end']).difference(DateTime.parse(worklist[0]['body']['activityDuration']['start'])).inDays);
+      worklist.forEach((item) {
+        if (item['body']['activityDuration']['start'] != '' || item['body']['activityDuration']['end'] != '') {
+          worklistWithdate.add(item);
+        } else {
+          worklistWithoutdate.add(item);
+        }
+      });
+      print(DateTime.parse(worklist[0]['body']['activityDuration']['end']).difference(DateTime.now()).inDays);
+      print(DateTime.parse(worklist[1]['body']['activityDuration']['end']).difference(DateTime.now()).inDays);
+      print(DateTime.parse(worklist[2]['body']['activityDuration']['end']).difference(DateTime.now()).inDays);
+      // print(worklistWithdate.length);
+      // print(worklistWithoutdate.length);
+      // worklist.forEach((item){
+      //   print(worklist.indexOf(item));
+      //   print(DateTime.parse(item['body']['activityDuration']['end']).difference(DateTime.parse(item['body']['activityDuration']['start'])).inDays);
+      // });
+      if (dueDateSort == 'asc') {
+        worklistWithdate.sort((a, b) {
+          return DateTime.parse(a['body']['activityDuration']['end']).difference(DateTime.now()).inDays.compareTo(DateTime.parse(b['body']['activityDuration']['end']).difference(DateTime.now()).inDays);
+        });
+      } else {
+        worklistWithdate.sort((a, b) {
+          return DateTime.parse(b['body']['activityDuration']['end']).difference(DateTime.now()).inDays.compareTo(DateTime.parse(a['body']['activityDuration']['end']).difference(DateTime.now()).inDays);
+        });
+      }
+
+      setState(() {
+        worklist = worklistWithdate;
+        worklistWithoutdate.forEach((item) {
+          worklist.add(item);
+        });
+      });
+
+      print(DateTime.parse(worklistWithdate[0]['body']['activityDuration']['end']).difference(DateTime.now()).inDays);
+      print(DateTime.parse(worklistWithdate[1]['body']['activityDuration']['end']).difference(DateTime.now()).inDays);
+      print(DateTime.parse(worklistWithdate[2]['body']['activityDuration']['end']).difference(DateTime.now()).inDays);
     }
   }
 
@@ -74,14 +130,20 @@ class _WorkListSearchState extends State<WorkListSearch> {
     });
   }
 
+  clearSort() {
+    setState(() {
+      worklist = allWorklist;
+    });
+  }
+
   _getDuration(item) {
 
-    if (item['body']['goal'] != null && item['body']['goal']['start'] != '' && item['body']['goal']['end'] != '') {
+    if (item['body']['activityDuration'] != null && item['body']['activityDuration']['start'] != '' && item['body']['activityDuration']['end'] != '') {
       // print();
-      var start = DateTime.parse(item['body']['goal']['start']);
-      var end = DateTime.parse(item['body']['goal']['end']).difference(DateTime.parse(item['body']['goal']['start'])).inDays;
+      var start = DateTime.parse(item['body']['activityDuration']['start']);
+      var time = DateTime.parse(item['body']['activityDuration']['end']).difference(DateTime.parse(item['body']['activityDuration']['start'])).inDays;
 
-      int result = (end / 30).round();
+      int result = (time / 30).round();
       if (result >= 1) {
         return 'Within ${result.toString()} months of recommendation of goal';
       }
@@ -91,12 +153,18 @@ class _WorkListSearchState extends State<WorkListSearch> {
     return '';
   }
 
+  
+
   @override
   initState() {
     super.initState();
     allWorklist = [];
     worklist = [];
     _getWorklist();
+    patientSort = 'asc';
+    dueDateSort = 'asc';
+    patientSortActive = false;
+    dueDateSortActive = false;
   }
 
   @override
@@ -163,7 +231,29 @@ class _WorkListSearchState extends State<WorkListSearch> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 8,)
+                      SizedBox(height: 10,),
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        padding: EdgeInsets.only(right: 15, bottom: 10),
+                        child: GestureDetector(
+                          onTap: () async {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return SortDialog(parent: this);
+                            },
+                          );
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Icon(Icons.sort, color: Colors.white,),
+                              SizedBox(width: 5),
+                              Text(AppLocalizations.of(context).translate('sort'), style: TextStyle(color: Colors.white),)
+                            ],
+                          )
+                        ),
+                      ),
                     ],
                   )
                 ),
@@ -248,6 +338,213 @@ class _WorkListSearchState extends State<WorkListSearch> {
   }
 }
 
+class SortDialog extends StatefulWidget {
+  _WorkListSearchState parent;
+  SortDialog({this.parent});
+
+  @override
+  _SortDialogState createState() => _SortDialogState();
+}
+
+String patientSort = 'asc';
+String dueDateSort = 'asc';
+bool patientSortActive = false;
+bool dueDateSortActive = false;
+
+class _SortDialogState extends State<SortDialog> {
+
+  _updatePatientSorting(value) {
+    setState(() {
+      patientSort = value;
+    });
+  }
+
+  _updateDueDateSorting(value) {
+    setState(() {
+      dueDateSort = value;
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      elevation: 0.0,
+      backgroundColor: Colors.transparent,
+      child: Container(
+        width: double.infinity,
+        height: 450.0,
+        color: Colors.white,
+        // padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        child: ListView(
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(top: 20, right: 20, left: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text('Sort by', style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      setState(() {
+                        patientSort = 'asc';
+                        dueDateSort = 'asc';
+                        patientSortActive = false;
+                        dueDateSortActive = false;
+                      });
+                      widget.parent.setState((){
+                        widget.parent.clearSort();
+                      });
+                    },
+                    child: Text('CLEAR SORT', style: TextStyle(fontSize: 15, color: kPrimaryColor, fontWeight: FontWeight.w500),),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.only(top: 20, left: 5),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Checkbox(
+                        activeColor: kPrimaryColor,
+                        value: patientSortActive,
+                        onChanged: (value) {
+                          setState(() {
+                            patientSortActive = value;
+                          });
+                        },
+                      ),
+                      Text('Patients', style: TextStyle(fontSize: 18,),),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      SizedBox(width: 20,),
+                      Radio(
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        value: 'asc',
+                        groupValue: patientSort,
+                        activeColor: kPrimaryColor,
+                        onChanged: (value) {
+                          _updatePatientSorting(value);
+                        },
+                      ),
+                      Text('Ascending', style: TextStyle(color: Colors.black)),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      SizedBox(width: 20,),
+                      Radio(
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        value: 'desc',
+                        groupValue: patientSort,
+                        activeColor: kPrimaryColor,
+                        onChanged: (value) {
+                          _updatePatientSorting(value);
+                        },
+                      ),
+                      Text('Descending', style: TextStyle(color: Colors.black)),
+                    ],
+                  ),
+                  SizedBox(height: 20,),
+                  Row(
+                    children: <Widget>[
+                      Checkbox(
+                        activeColor: kPrimaryColor,
+                        value: dueDateSortActive,
+                        onChanged: (value) {
+                          setState(() {
+                            dueDateSortActive = value;
+                          });
+                        },
+                      ),
+                      Text('Due Date for Intervention', style: TextStyle(fontSize: 18),),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      SizedBox(width: 20,),
+                      Radio(
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        value: 'asc',
+                        groupValue: dueDateSort,
+                        activeColor: kPrimaryColor,
+                        onChanged: (value) {
+                          _updateDueDateSorting(value);
+                        },
+                      ),
+                      Text('Ascending', style: TextStyle(color: Colors.black)),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      SizedBox(width: 20,),
+                      Radio(
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        value: 'desc',
+                        groupValue: dueDateSort,
+                        activeColor: kPrimaryColor,
+                        onChanged: (value) {
+                          _updateDueDateSorting(value);
+                        },
+                      ),
+                      Text('Descending', style: TextStyle(color: Colors.black)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Container(
+                  alignment: Alignment.bottomRight,
+                  margin: EdgeInsets.only(top: 40),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      FlatButton(
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        onPressed: () {
+                          setState(() {
+                            // _selectedItem = [];
+                          });
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: kPrimaryColor, fontSize: 16),)
+                      ),
+                      SizedBox(width: 20,),
+                      FlatButton(
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          widget.parent.setState(() {
+                            widget.parent.applySort();
+                          });
+                          // selectedDiseases = _selectedItem;
+                          // this.parent.setState(() {
+                          //   this.parent.getSelectedDiseaseText();
+                          // });
+                        },
+                        child: Text(AppLocalizations.of(context).translate('apply'), style: TextStyle(color: kPrimaryColor, fontSize: 16))
+                      ),
+                    ],
+                  )
+                )
+              ],
+            )
+          ],
+        ),
+      )
+    );
+  }
+}
+
 class LeaderBoard {
   LeaderBoard(this.username, this.score);
 
@@ -255,143 +552,4 @@ class LeaderBoard {
   final double score;
 }
 
-class SelectedItemWidget extends StatelessWidget {
-  const SelectedItemWidget(this.selectedItem, this.deleteSelectedItem);
 
-  final selectedItem;
-  final VoidCallback deleteSelectedItem;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-
-    );
-  }
-}
-
-class MyTextField extends StatelessWidget {
-  const MyTextField(this.controller, this.focusNode);
-
-  final TextEditingController controller;
-  final FocusNode focusNode;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-      child: TextField(
-        controller: controller,
-        focusNode: focusNode,
-        autofocus: true,
-        style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-        decoration: InputDecoration(
-          fillColor: Colors.white,
-          filled: true,
-          enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Color(0x4437474F),
-            ),
-            borderRadius: BorderRadius.all(
-              Radius.circular(5)
-            )
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).primaryColor),
-          ),
-          prefixIcon: Icon(Icons.search),
-          suffixIcon: IconButton(
-            onPressed: () { 
-              controller.text = '';
-             },
-            icon: Icon(Icons.cancel, color: kTextGrey, size: 25,)
-          ),
-          border: InputBorder.none,
-          hintText: AppLocalizations.of(context).translate('searchHere'),
-          contentPadding: const EdgeInsets.only(
-            left: 16,
-            right: 20,
-            top: 14,
-            bottom: 14,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class NoItemsFound extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Icon(
-          Icons.folder_open,
-          size: 24,
-          color: Colors.grey[900].withOpacity(0.7),
-        ),
-        const SizedBox(width: 10),
-        Text(
-          AppLocalizations.of(context).translate('noItems'),
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.grey[900].withOpacity(0.7),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class PopupListItemWidget extends StatelessWidget {
-  const PopupListItemWidget(this.item);
-
-  final item;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
-        margin: const EdgeInsets.only(bottom: 20),
-        decoration: BoxDecoration(
-          color: kBackgroundGrey,
-          borderRadius: BorderRadius.circular(3)
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Container(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.topCenter,
-                    child: CircleAvatar(
-                      child: Image.asset('assets/images/work_list_1.png', )
-                    ),
-                  ),
-                  SizedBox(width: 20,),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text('Nurul begum', style: TextStyle(fontSize: 18),),
-                      SizedBox(height: 12,),
-                      Text('45Y F - 1992121324283', style: TextStyle(fontSize: 16),),
-                      SizedBox(height: 12,),
-                      Text('Counselling about reduced salt intake', style: TextStyle(fontSize: 15, color: kTextGrey),),
-                      SizedBox(height: 12,),
-                      Text('Within 1 month of recommendation of goal', style: TextStyle(fontSize: 15, color: kTextGrey),),
-                    ],
-                  )
-                ],
-              ),
-            ),
-            Icon(Icons.arrow_forward, color: kPrimaryColor,)
-          ],
-        ),
-      ),
-    );
-  }
-}

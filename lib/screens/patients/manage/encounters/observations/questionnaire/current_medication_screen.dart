@@ -8,6 +8,7 @@ import 'package:nhealth/custom-classes/custom_stepper.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
+import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/questionnaires_screen.dart';
 
@@ -220,7 +221,7 @@ class _FirstQuestionState extends State<FirstQuestion> {
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _getPatientDetails(),
+            PatientTopbar(),
             Container(
               height: 70,
               width: double.infinity,
@@ -269,7 +270,7 @@ class _SecondQuestionState extends State<SecondQuestion> {
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _getPatientDetails(),
+            PatientTopbar(),
             Container(
               height: 70,
               width: double.infinity,
@@ -335,7 +336,7 @@ class _ThirdQuestionState extends State<ThirdQuestion> {
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _getPatientDetails(),
+            PatientTopbar(),
             Container(
               height: 70,
               width: double.infinity,
@@ -394,7 +395,7 @@ class _MedicationListState extends State<MedicationList> {
   void initState() {
     super.initState();
     _preparedata();
-    
+    _selectedItem = [];
   }
 
   _preparedata() async {
@@ -431,7 +432,7 @@ class _MedicationListState extends State<MedicationList> {
       color: Color(0x07000000),
       padding: EdgeInsets.all(10),
       child: Form(
-        child: Column(
+        child: ListView(
           children: <Widget>[
             SizedBox(height: 10,),
             Container(
@@ -443,7 +444,44 @@ class _MedicationListState extends State<MedicationList> {
               ),
             ),
 
-            SizedBox(height: 20,),
+            SizedBox(height: 10,),
+            Container(
+              width: double.infinity,
+              alignment: Alignment.centerLeft,
+              child: Wrap(
+                // direction: Axis.horizontal,
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                
+                children: <Widget>[
+                  ..._selectedItem.map((item) => 
+                    Container(
+                      margin: EdgeInsets.only(right: 10, bottom: 10),
+                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: kPrimaryColor,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Wrap(
+                        children: <Widget>[
+                          Text(item, style: TextStyle(color: Colors.white),),
+                          SizedBox(width: 5,),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _checkValue[item] = false;
+                                _selectedItem.removeAt(_selectedItem.indexOf(item));
+                              });
+                            },
+                            child: Icon(Icons.close, size: 15, color: Colors.white,),
+                          ),
+                        ],
+                      )
+                    ),
+                  ).toList()
+                ],
+              )
+            ),
+            SizedBox(height: 10,),
             Container(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -463,7 +501,7 @@ class _MedicationListState extends State<MedicationList> {
                     },
                     decoration: InputDecoration(
                       counterText: ' ',
-                      contentPadding: EdgeInsets.only(top: 18, bottom: 18,),
+                      contentPadding: EdgeInsets.only(top: 14, bottom: 14,),
                       prefixIcon: Icon(Icons.search),
                       filled: true,
                       fillColor: kSecondaryTextField,
@@ -514,49 +552,3 @@ class _MedicationListState extends State<MedicationList> {
     );
   }
 }
-
-
-
-_getPatientDetails() {
-  return Container(
-    padding: EdgeInsets.symmetric(vertical: 17, horizontal: 20),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      border: Border(
-        bottom: BorderSide(width: 2, color: Colors.black26)
-      )
-    ),
-    child: Row(
-      children: <Widget>[
-        Expanded(
-          child: Container(
-            child: Row(
-              children: <Widget>[
-                Container(
-                  height: 35,
-                  width: 35,
-                  decoration: BoxDecoration(
-                    color: kLightPrimaryColor,
-                    shape: BoxShape.circle
-                  ),
-                  child: Icon(Icons.perm_identity),
-                ),
-                SizedBox(width: 15,),
-                Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 18))
-              ],
-            ),
-          ),
-        ),
-        Expanded(
-          child: Text(Helpers().getPatientAgeAndGender(Patient().getPatient()), style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
-        ),
-        Expanded(
-          child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
-        )
-      ],
-    ),
-  );
-}
-
-
-

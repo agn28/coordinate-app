@@ -7,6 +7,7 @@ import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/questionnaires_screen.dart';
+import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
 int selectedOption = -1;
 var _questions = {};
@@ -202,7 +203,7 @@ class _FirstQuestionState extends State<FirstQuestion> {
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _getPatientDetails(),
+            PatientTopbar(),
             Container(
               height: 70,
               width: double.infinity,
@@ -297,7 +298,7 @@ class _SecondQuestionState extends State<SecondQuestion> {
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _getPatientDetails(),
+            PatientTopbar(),
             Container(
               height: 70,
               width: double.infinity,
@@ -347,47 +348,3 @@ class _SecondQuestionState extends State<SecondQuestion> {
     );
   }
  }
-
-_getPatientDetails() {
-  return Container(
-    padding: EdgeInsets.symmetric(vertical: 17, horizontal: 20),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      border: Border(
-        bottom: BorderSide(width: 2, color: Colors.black26)
-      )
-    ),
-    child: Row(
-      children: <Widget>[
-        Expanded(
-          child: Container(
-            child: Row(
-              children: <Widget>[
-                Container(
-                  height: 35,
-                  width: 35,
-                  decoration: BoxDecoration(
-                    color: kLightPrimaryColor,
-                    shape: BoxShape.circle
-                  ),
-                  child: Icon(Icons.perm_identity),
-                ),
-                SizedBox(width: 15,),
-                Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 18))
-              ],
-            ),
-          ),
-        ),
-        Expanded(
-          child: Text(Helpers().getPatientAgeAndGender(Patient().getPatient()), style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
-        ),
-        Expanded(
-          child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
-        )
-      ],
-    ),
-  );
-}
-
-
-

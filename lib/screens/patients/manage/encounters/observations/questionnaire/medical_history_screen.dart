@@ -5,6 +5,7 @@ import 'package:nhealth/custom-classes/custom_stepper.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
+import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/questionnaires_screen.dart';
 
@@ -244,7 +245,7 @@ class _FirstQuestionState extends State<FirstQuestion> {
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _getPatientDetails(),
+            PatientTopbar(),
             Container(
               height: 70,
               width: double.infinity,
@@ -345,7 +346,7 @@ class _SecondQuestionState extends State<SecondQuestion> {
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _getPatientDetails(),
+            PatientTopbar(),
             Container(
               height: 70,
               width: double.infinity,
@@ -422,7 +423,7 @@ class _ThirdQuestionState extends State<ThirdQuestion> {
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _getPatientDetails(),
+            PatientTopbar(),
             Container(
               height: 70,
               width: double.infinity,
@@ -499,7 +500,7 @@ class _FourthQuestionState extends State<FourthQuestion> {
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _getPatientDetails(),
+            PatientTopbar(),
             Container(
               height: 70,
               width: double.infinity,
@@ -576,7 +577,7 @@ class _FifthQuestionState extends State<FifthQuestion> {
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _getPatientDetails(),
+            PatientTopbar(),
             Container(
               height: 70,
               width: double.infinity,
@@ -653,7 +654,7 @@ class _SixthQuestionState extends State<SixthQuestion> {
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _getPatientDetails(),
+            PatientTopbar(),
             Container(
               height: 70,
               width: double.infinity,
@@ -730,7 +731,7 @@ class _SeventhQuestionState extends State<SeventhQuestion> {
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _getPatientDetails(),
+            PatientTopbar(),
             Container(
               height: 70,
               width: double.infinity,
@@ -788,7 +789,7 @@ class _EighthQuestionState extends State<EighthQuestion> {
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _getPatientDetails(),
+            PatientTopbar(),
             Container(
               height: 70,
               width: double.infinity,
@@ -843,47 +844,3 @@ class _EighthQuestionState extends State<EighthQuestion> {
     );
   }
 }
-
-_getPatientDetails() {
-  return Container(
-    padding: EdgeInsets.symmetric(vertical: 17, horizontal: 20),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      border: Border(
-        bottom: BorderSide(width: 2, color: Colors.black26)
-      )
-    ),
-    child: Row(
-      children: <Widget>[
-        Expanded(
-          child: Container(
-            child: Row(
-              children: <Widget>[
-                Container(
-                  height: 35,
-                  width: 35,
-                  decoration: BoxDecoration(
-                    color: kLightPrimaryColor,
-                    shape: BoxShape.circle
-                  ),
-                  child: Icon(Icons.perm_identity),
-                ),
-                SizedBox(width: 15,),
-                Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 18))
-              ],
-            ),
-          ),
-        ),
-        Expanded(
-          child: Text(Helpers().getPatientAgeAndGender(Patient().getPatient()), style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
-        ),
-        Expanded(
-          child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
-        )
-      ],
-    ),
-  );
-}
-
-
-
