@@ -604,6 +604,23 @@ class InterventionsState extends State<Interventions> {
     getStatus();
   }
 
+  _getDuration(item) {
+
+    if (item['body']['activityDuration'] != null && item['body']['activityDuration']['start'] != '' && item['body']['activityDuration']['end'] != '') {
+      // print();
+      var start = DateTime.parse(item['body']['activityDuration']['start']);
+      var time = DateTime.parse(item['body']['activityDuration']['end']).difference(DateTime.parse(item['body']['activityDuration']['start'])).inDays;
+
+      int result = (time / 30).round();
+      if (result >= 1) {
+        return 'Within ${result.toString()} months of recommendation of goal';
+      }
+      // print(start);
+      // print(result);
+    }
+    return '';
+  }
+
   getStatus() {
     String completedDate = '';
     if (widget.carePlan['meta']['status'] == 'completed') {
@@ -670,22 +687,22 @@ class InterventionsState extends State<Interventions> {
             )
           ),
 
-          // SizedBox(height: 30,),
-          // Container(
-          //   padding: EdgeInsets.symmetric(horizontal: 25,),
-          //   child: Column(
-          //     crossAxisAlignment: CrossAxisAlignment.start,
-          //     children: <Widget>[
-          //       Text('When', style: TextStyle(color: kTextGrey),),
-          //       SizedBox(height: 10,),
-          //       Text('Within 1 month of recommendation of goal', style: TextStyle(fontSize: 19),),
-          //     ],
-          //   )
-          // ),
+          SizedBox(height: 30,),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 25,),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text('When', style: TextStyle(color: kTextGrey),),
+                SizedBox(height: 10,),
+                Text(_getDuration(widget.carePlan), style: TextStyle(fontSize: 19),),
+              ],
+            )
+          ),
           SizedBox(height: 20,),
           GestureDetector(
             onTap: () {
-              if (widget.carePlan['body']['status'] == null) {
+              if (widget.carePlan['meta']['status'] != 'completed') {
                 Navigator.of(context).push(CarePlanInterventionScreen(carePlan: widget.carePlan, parent: this));
               }
             },

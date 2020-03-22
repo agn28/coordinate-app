@@ -13,7 +13,11 @@ var observationConcepts = [
     'concept_id': '778ea43c-2dbb-4d07-b4c9-3f15416cde4f'
   },
   {
-    'type': 'waist/hip',
+    'type': 'waist',
+    'concept_id': 'a53486ed-dbc1-4d86-a52d-699dfc2a575b'
+  },
+  {
+    'type': 'hip',
     'concept_id': 'a53486ed-dbc1-4d86-a52d-699dfc2a575b'
   },
   {
@@ -29,19 +33,15 @@ var observationConcepts = [
     'concept_id': ''
   },
   {
-    'type': 'fasting_blood_glucose',
+    'type': 'blood_glucose',
     'concept_id': '2f661c71-2436-4055-bc35-9a9e6a295c00'
   },
   {
-    'type': 'random_blood_sugar',
+    'type': 'blood_sugar',
     'concept_id': ''
   },
   {
-    'type': 'fasting_blood_glucose',
-    'concept_id': '2f661c71-2436-4055-bc35-9a9e6a295c00'
-  },
-  {
-    'type': 'hba1c',
+    'type': 'a1c',
     'concept_id': 'cfb7649e-3ebf-4bc3-ab38-d0ab16a83671'
   },
   {

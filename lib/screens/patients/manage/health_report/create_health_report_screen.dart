@@ -92,8 +92,37 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
         reports = data;
       });
     }
+    // print(checkIfAllGreen());
 
-    
+  }
+
+  checkIfAllGreen() {
+    // print(reports);
+    // reports['assessments']['lifestyle']['components']['smoking']['tfl'] = 'GREEN';
+    // reports['assessments']['lifestyle']['components']['alcohol']['tfl'] = 'GREEN';
+    // reports['assessments']['lifestyle']['components']['diet']['components']['fruit_vegetable']['tfl'] = 'GREEN';
+    // reports['assessments']['lifestyle']['components']['physical_activity']['tfl'] = 'GREEN';
+    // reports['assessments']['body_composition']['components']['bmi']['tfl'] = 'GREEN';
+    // reports['assessments']['blood_pressure']['tfl'] = 'GREEN';
+    // reports['assessments']['diabetes']['tfl'] = 'GREEN';
+    // reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] = 'GREEN';
+    // reports['assessments']['cvd']['tfl'] = 'GREEN';
+
+    var tobacco = reports['assessments']['lifestyle']['components']['smoking']['tfl'] == 'GREEN' || reports['assessments']['lifestyle']['components']['smoking']['tfl'] == 'BLUE';
+    var alcohol = reports['assessments']['lifestyle']['components']['alcohol']['tfl'] == 'GREEN' || reports['assessments']['lifestyle']['components']['alcohol']['tfl'] == 'BLUE';
+    var fruits = reports['assessments']['lifestyle']['components']['diet']['components']['fruit_vegetable']['tfl'] == 'GREEN' || reports['assessments']['lifestyle']['components']['diet']['components']['fruit_vegetable']['tfl'] == 'BLUE';
+    var physicalActivity = reports['assessments']['lifestyle']['components']['physical_activity']['tfl'] == 'GREEN' || reports['assessments']['lifestyle']['components']['physical_activity']['tfl'] == 'BLUE';
+    var bmi = reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'GREEN' || reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'BLUE';
+    var bloodPressure = reports['assessments']['blood_pressure']['tfl'] == 'GREEN' || reports['assessments']['blood_pressure']['tfl'] == 'BLUE';
+    var diabetes = reports['assessments']['diabetes']['tfl'] == 'GREEN' || reports['assessments']['diabetes']['tfl'] == 'BLUE';
+    var cholesterol = reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'GREEN' || reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'BLUE';
+    var cvd = reports['assessments']['cvd']['tfl'] == 'GREEN' || reports['assessments']['cvd']['tfl'] == 'BLUE';
+
+    if (tobacco && alcohol && fruits && physicalActivity && bmi && bloodPressure && diabetes && cholesterol && cvd) {
+      return true;
+    }
+
+    return false;
   }
 
   @override
@@ -1376,11 +1405,11 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                             width: double.infinity,
                             height: 60,
                             decoration: BoxDecoration(
-                              color: Color(0xFF00838F),
+                              color: checkIfAllGreen() ? Color(0x60000000) : Color(0xFF00838F),
                               borderRadius: BorderRadius.circular(3)
                             ),
                             child: FlatButton(
-                              onPressed: () async {
+                              onPressed: checkIfAllGreen() ? null : () async {
                                 setState(() {
                                   confirmLoading = true;
                                 });
