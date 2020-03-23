@@ -35,7 +35,7 @@ class _PastHealthReportState extends State<PastHealthReport> {
   @override
   void initState() {
     super.initState();
-    _getList();
+    _getAssessments();
     _checkAvatar();
   }
 
@@ -46,7 +46,7 @@ class _PastHealthReportState extends State<PastHealthReport> {
     });
   }
 
-  _getList() async {
+  _getAssessments() async {
     setState(() {
       isLoading = true;
     });
@@ -57,6 +57,9 @@ class _PastHealthReportState extends State<PastHealthReport> {
     var response = await HealthReportController().getReports();
 
     if (response['error']) {
+      if (response['message'] == 'No matching documents.') {
+        return Toast.show('No Assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+      }
       return Toast.show('Server Error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
     }
     
@@ -66,7 +69,6 @@ class _PastHealthReportState extends State<PastHealthReport> {
     }
 
     reports = response['data'];
-    print(reports);
 
     if (reports != null) {
       reports.forEach((item){

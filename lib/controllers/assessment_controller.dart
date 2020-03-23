@@ -37,6 +37,9 @@ class AssessmentController {
   getLiveAllAssessmentsByPatient() async {
     var assessments = await AssessmentRepository().getAllAssessments();
     var data = [];
+    if (assessments == null) {
+      return data;
+    }
 
     if (assessments['error'] != null && !assessments['error']) {
       await assessments['data'].forEach((assessment) {
