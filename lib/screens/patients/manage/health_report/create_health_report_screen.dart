@@ -58,7 +58,15 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
     }
     var data = await HealthReportController().getReport();
 
+    print(data);
+
+    if (data == null) {
+      return Toast.show('Server Error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+    }
     if (data['error'] != null && data['error']) {
+      if (data['message'] == 'No matching documents.') {
+        return Toast.show('No Assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+      }
       return Toast.show('Server Error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
     }
     var fetchedSurveys = await ObservationController().getLiveSurveysByPatient();
@@ -92,8 +100,40 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
         reports = data;
       });
     }
+    // print(checkIfAllGreen());
 
-    
+  }
+
+  checkIfAllGreen() {
+    // print(reports);
+    // reports['assessments']['lifestyle']['components']['smoking']['tfl'] = 'GREEN';
+    // reports['assessments']['lifestyle']['components']['alcohol']['tfl'] = 'GREEN';
+    // reports['assessments']['lifestyle']['components']['diet']['components']['fruit_vegetable']['tfl'] = 'GREEN';
+    // reports['assessments']['lifestyle']['components']['physical_activity']['tfl'] = 'GREEN';
+    // reports['assessments']['body_composition']['components']['bmi']['tfl'] = 'GREEN';
+    // reports['assessments']['blood_pressure']['tfl'] = 'GREEN';
+    // reports['assessments']['diabetes']['tfl'] = 'GREEN';
+    // reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] = 'GREEN';
+    // reports['assessments']['cvd']['tfl'] = 'GREEN';
+
+    var tobacco = reports['assessments']['lifestyle']['components']['smoking'] != null ? reports['assessments']['lifestyle']['components']['smoking']['tfl'] == 'GREEN' || reports['assessments']['lifestyle']['components']['smoking']['tfl'] == 'BLUE' : false;
+    var alcohol = reports['assessments']['lifestyle']['components']['alcohol'] != null ? reports['assessments']['lifestyle']['components']['alcohol']['tfl'] == 'GREEN' || reports['assessments']['lifestyle']['components']['alcohol']['tfl'] == 'BLUE' : false;
+    var fruits = reports['assessments']['lifestyle']['components']['diet']['components']['fruit_vegetable'] != null ? reports['assessments']['lifestyle']['components']['diet']['components']['fruit_vegetable']['tfl'] == 'GREEN' || reports['assessments']['lifestyle']['components']['diet']['components']['fruit_vegetable']['tfl'] == 'BLUE' : false;
+    var physicalActivity = reports['assessments']['lifestyle']['components']['physical_activity'] != null ? reports['assessments']['lifestyle']['components']['physical_activity']['tfl'] == 'GREEN' || reports['assessments']['lifestyle']['components']['physical_activity']['tfl'] == 'BLUE' : false;
+    var bmi = reports['assessments']['body_composition']['components']['bmi'] != null ? reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'GREEN' || reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'BLUE' : false;
+    var bloodPressure = reports['assessments']['blood_pressure']!= null ? reports['assessments']['blood_pressure']['tfl'] == 'GREEN' || reports['assessments']['blood_pressure']['tfl'] == 'BLUE' : false;
+    var diabetes = reports['assessments']['diabetes'] != null ? reports['assessments']['diabetes']['tfl'] == 'GREEN' || reports['assessments']['diabetes']['tfl'] == 'BLUE' : false;
+    var cholesterol = reports['assessments']['cholesterol']['components']['total_cholesterol'] != null ? reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'GREEN' || reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'BLUE' : false;
+    var cvd = reports['assessments']['cvd'] != null ? reports['assessments']['cvd']['tfl'] == 'GREEN' || reports['assessments']['cvd']['tfl'] == 'BLUE' : false;
+
+    print('hello');
+    print(fruits);
+
+    if (tobacco && alcohol && fruits && physicalActivity && bmi && bloodPressure && diabetes && cholesterol && cvd) {
+      return true;
+    }
+
+    return false;
   }
 
   @override
@@ -364,6 +404,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                     ),
                                   ),
                                   SizedBox(width: 15,),
+                                  reports['assessments']['lifestyle']['components']['physical_activity'] != null ? 
                                   Expanded(
                                     child: Container(
                                       height: 210,
@@ -401,7 +442,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                         ],
                                       ),
                                     ),
-                                  ),
+                                  ) : Container(),
                                 ],
                               ),
                             ) :
@@ -1376,11 +1417,11 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                             width: double.infinity,
                             height: 60,
                             decoration: BoxDecoration(
-                              color: Color(0xFF00838F),
+                              color: checkIfAllGreen() ? Color(0x60000000) : Color(0xFF00838F),
                               borderRadius: BorderRadius.circular(3)
                             ),
                             child: FlatButton(
-                              onPressed: () async {
+                              onPressed: checkIfAllGreen() ? null : () async {
                                 setState(() {
                                   confirmLoading = true;
                                 });

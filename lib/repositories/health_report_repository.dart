@@ -57,7 +57,6 @@ class HealthReportRepository {
         'Authorization': 'Bearer ' + token
       },
     ).then((response) {
-      print(response.body);
       return json.decode(response.body);
       
     }).catchError((error) {

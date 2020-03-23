@@ -37,7 +37,7 @@ class AssessmentRepositoryLocal {
     var bodyMeasurements = BodyMeasurement().bmItems;
     var questionnaires = Questionnaire().qnItems;
 
-    if (bloodPressures.isEmpty && bloodTests.isEmpty && bodyMeasurements.isEmpty) {
+    if (bloodPressures.isEmpty && bloodTests.isEmpty && bodyMeasurements.isEmpty && questionnaires.isEmpty) {
       return 'No observations added';
     }
 
@@ -74,7 +74,35 @@ class AssessmentRepositoryLocal {
   }
 
   _getCodings(item) async {
-    var type = item['body']['type'] == 'blood_pressure' ? item['body']['type'] : item['body']['data']['type'];
+    var type = item['body']['type'] == 'blood_pressure' ? item['body']['type'] : item['body']['data']['name'];
+    if (type == 'hdl') {
+      return {
+        'snomed': {
+          'id': '17888004',
+          'origin': 'Snomed CT',
+          'version': 'Internation Edition 2020-03-09'
+        }
+      };
+    }
+    if (type == 'tg') {
+      return {
+        'snomed': {
+          'id': '14740000',
+          'origin': 'Snomed CT',
+          'version': 'Internation Edition 2020-03-09'
+        }
+      };
+    }
+    if (type == 'blood_sugar') {
+      return {
+        'snomed': {
+          'id': '33747003',
+          'origin': 'Snomed CT',
+          'version': 'Internation Edition 2020-03-09'
+        }
+      };
+    }
+
     var observationConcept = await ObservationConceptsRepositoryLocal().getConceptByObservation(type);
       if (observationConcept != null && observationConcept['concept_id'] != '' ) {
         var concept = await ConceptManagerRepositoryLocal().getConceptById(observationConcept['concept_id']);

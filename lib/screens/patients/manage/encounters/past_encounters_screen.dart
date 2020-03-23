@@ -13,22 +13,25 @@ import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/encounter_details_screen.dart';
 
 class PastEncountersScreen extends CupertinoPageRoute {
-  PastEncountersScreen()
-      : super(builder: (BuildContext context) => new PastEncounters());
+  var encounters;
+  PastEncountersScreen({this.encounters})
+      : super(builder: (BuildContext context) => new PastEncounters(encounters: encounters));
 
 }
 
 
 class PastEncounters extends StatefulWidget {
+  var encounters;
+  PastEncounters({this.encounters});
+
   @override
   _PastEncountersState createState() => _PastEncountersState();
 }
 
 class _PastEncountersState extends State<PastEncounters> {
 
-  var _assessments;
   var _patient;
-  bool isLoading = true;
+  bool isLoading = false;
   List<Widget> list = List<Widget>();
 
   _checkAuth() {
@@ -41,14 +44,14 @@ class _PastEncountersState extends State<PastEncounters> {
   _getData() async {
     _checkAuth();
     // _assessments = await AssessmentController().getAllAssessmentsByPatient();
-    _assessments = await AssessmentController().getLiveAllAssessmentsByPatient();
-    print(_assessments);
+    // _assessments = await AssessmentController().getLiveAllAssessmentsByPatient();
+    // print(_assessments);
 
-    setState(() {
-      isLoading = false;
-    });
+    // setState(() {
+    //   isLoading = false;
+    // });
     // _assessments = await AssessmentController().getAllAssessmentsByPatient();
-    _assessments.forEach((assessment) => {
+    widget.encounters.forEach((encounter) => {
       setState(() => {
         list.add(
           Container(
@@ -58,7 +61,7 @@ class _PastEncountersState extends State<PastEncounters> {
               )
             ),
             child: FlatButton(
-              onPressed: () => Navigator.of(context).push(EncounterDetailsScreen(assessment)),
+              onPressed: () => Navigator.of(context).push(EncounterDetailsScreen(encounter)),
               child: Column(
                 children: <Widget>[
                   Container(
@@ -67,10 +70,10 @@ class _PastEncountersState extends State<PastEncounters> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
                         Expanded(
-                          child: Text(Helpers().convertDate(assessment['data']['assessment_date']), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+                          child: Text(Helpers().convertDate(encounter['data']['assessment_date']), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
                         ),
                         Expanded(
-                          child: Text(StringUtils.capitalize(assessment['data']['type']), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+                          child: Text(StringUtils.capitalize(encounter['data']['type']), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
                         ),
                         Expanded(
                           child: Container(

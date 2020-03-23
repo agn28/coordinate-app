@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/care_plan_controller.dart';
+import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
@@ -33,6 +35,10 @@ class _PatientRecordsState extends State<PatientRecords> {
   bool isLoading = false;
   var carePlans;
   bool avatarExists = false;
+  var encounters = [];
+  String lastEncounterdDate = '';
+  String lastAssessmentdDate = '';
+  String lastCarePlanDate = '';
 
   @override
   void initState() {
@@ -41,7 +47,53 @@ class _PatientRecordsState extends State<PatientRecords> {
     _checkAvatar();
     _checkAuth();
     _getCarePlan();
-    print(Patient().getPatient()['data']['avatar']);
+    getEncounters();
+    getAssessments();
+  }
+
+  getAssessments() async {
+    setState(() {
+      isLoading = true;
+    });
+    var response = await HealthReportController().getLastReport();
+    if (response == null) {
+      return;
+    }
+    if (response['error']) {
+      return;
+    }
+
+    setState(() {
+      lastAssessmentdDate = DateFormat("MMMM d, y").format(DateTime.parse(response['data']['meta']['created_at']));
+    });
+
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  getEncounters() async {
+    setState(() {
+      isLoading = true;
+    });
+    encounters = await AssessmentController().getLiveAllAssessmentsByPatient();
+
+    setState(() {
+      isLoading = false;
+    });
+
+    if (encounters.isNotEmpty) {
+      encounters.sort((a, b) {
+        return DateTime.parse(b['meta']['created_at']).compareTo(DateTime.parse(a['meta']['created_at']));
+      });
+
+      setState(() {
+        lastEncounterdDate = DateFormat("MMMM d, y").format(DateTime.parse(encounters.first['meta']['created_at']));
+      });
+
+    }
+    
   }
 
   _checkAvatar() async {
@@ -61,7 +113,6 @@ class _PatientRecordsState extends State<PatientRecords> {
     });
     
     var data = await CarePlanController().getCarePlan();
-    print(data);
     
     if (data != null && data['message'] == 'Unauthorized') {
       setState(() {
@@ -78,6 +129,7 @@ class _PatientRecordsState extends State<PatientRecords> {
         carePlans = data['data'];
         isLoading = false;
       });
+
     }
   }
 
@@ -209,13 +261,16 @@ class _PatientRecordsState extends State<PatientRecords> {
                                   Container(
                                     padding: EdgeInsets.symmetric(vertical: 30, horizontal: 30),
                                     child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                                       children: <Widget>[
                                         Expanded(
                                           child: Text(AppLocalizations.of(context).translate('encounters'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                                         ),
-                                        // Expanded(
-                                        //   child: Text('Last encounter on Jan 27, 2020', style: TextStyle(fontSize: 16), textAlign: TextAlign.right,)
-                                        // )
+                                        lastEncounterdDate != '' ? 
+                                        Expanded(
+                                          flex: 2,
+                                          child: Text('Last encounter on ' + lastEncounterdDate, style: TextStyle(fontSize: 16), textAlign: TextAlign.right,)
+                                        ) : Container()
                                       ],
                                     ),
                                   ),
@@ -244,7 +299,7 @@ class _PatientRecordsState extends State<PatientRecords> {
                                   ),
 
                                   FlatButton(
-                                    onPressed: () => Navigator.of(context).push(PastEncountersScreen()),
+                                    onPressed: () => Navigator.of(context).push(PastEncountersScreen(encounters: encounters)),
                                     child: Container(
                                       margin: EdgeInsets.symmetric(horizontal: 10),
                                       padding: EdgeInsets.only(bottom: 17, top: 17),
@@ -289,9 +344,11 @@ class _PatientRecordsState extends State<PatientRecords> {
                                         Expanded(
                                           child: Text(AppLocalizations.of(context).translate('assessments'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                                         ),
-                                        // Expanded(
-                                        //   child: Text('Last encounter on Jan 5, 2019', style: TextStyle(fontSize: 16), textAlign: TextAlign.right,)
-                                        // )
+                                        lastAssessmentdDate != '' ? 
+                                        Expanded(
+                                          flex: 2,
+                                          child: Text('Last assessment on ' + lastAssessmentdDate, style: TextStyle(fontSize: 16), textAlign: TextAlign.right,)
+                                        ) : Container()
                                       ],
                                     ),
                                   ),
@@ -362,9 +419,10 @@ class _PatientRecordsState extends State<PatientRecords> {
                                         Expanded(
                                           child: Text(AppLocalizations.of(context).translate('carePlan'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                                         ),
+                                        lastCarePlanDate != '' ?
                                         Expanded(
-                                          child: Text('Last modified on Jan 5, 2019', style: TextStyle(fontSize: 16), textAlign: TextAlign.right,)
-                                        )
+                                          child: Text('Last modified on ' + lastCarePlanDate, style: TextStyle(fontSize: 16), textAlign: TextAlign.right,)
+                                        ) : Container()
                                       ],
                                     ),
                                   ),
@@ -506,7 +564,6 @@ class _OverviewInterventionState extends State<OverviewIntervention> {
         var parsedDate = DateTime.fromMillisecondsSinceEpoch(widget.carePlan['meta']['completed_at']['_seconds'] * 1000);
 
         completedDate = DateFormat("MMMM d, y").format(parsedDate).toString();
-        print(completedDate);
       }
 
       setState(() {
@@ -554,9 +611,9 @@ class _OverviewInterventionState extends State<OverviewIntervention> {
                   children: <Widget>[
                     Text(widget.carePlan['body']['goal']['title'], style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400,)),
                     SizedBox(height: 15,),
-                    Text('Intervention: ${widget.carePlan['body']['title']}', overflow: TextOverflow.fade, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400,)),
+                    Text('Intervention: ${widget.carePlan['body']['title']}', overflow: TextOverflow.fade, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400,)),
                     SizedBox(height: 15,),
-                    Text('${status != 'pending' ? status[0].toUpperCase() + status.substring(1) : 'Pending'}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: status != 'pending' ? kPrimaryGreenColor : kPrimaryRedColor)),
+                    Text('${status != 'pending' ? status[0].toUpperCase() + status.substring(1) : 'Pending'}', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: status != 'pending' ? kPrimaryGreenColor : kPrimaryRedColor)),
                   ],
                 ),
               ),
