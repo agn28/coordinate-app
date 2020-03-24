@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/care_plan_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
-import 'package:nhealth/helpers/helpers.dart';
-import 'package:nhealth/models/patient.dart';
-import 'package:nhealth/screens/patients/manage/encounters/observations/body-measurements/height_screen.dart';
 import 'package:nhealth/widgets/primary_button_widget.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -28,6 +25,11 @@ class CarePlanIntervention extends StatefulWidget {
 class _CarePlanInterventionState extends State<CarePlanIntervention> {
   YoutubePlayerController _youtubeController;
 
+  PageController _controller = PageController(
+    initialPage: 0,
+  );
+
+
   bool form = false;
   bool videoWatched = false;
   bool isLoading = false;
@@ -35,6 +37,14 @@ class _CarePlanInterventionState extends State<CarePlanIntervention> {
   String videoUrl = '';
   String videoId = '';
   String formUrl = '';
+  List<Widget> pages = [];
+  int currentPage = 0;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   initState() {
@@ -42,6 +52,7 @@ class _CarePlanInterventionState extends State<CarePlanIntervention> {
     print(widget.carePlan);
     _getVideoUrl();
     _getFormUrl();
+    createPages();
   }
 
   _getFormUrl() {
@@ -49,7 +60,7 @@ class _CarePlanInterventionState extends State<CarePlanIntervention> {
 
     if (form.isNotEmpty) {
       setState(() {
-        formUrl = form.first['uri'];
+        formUrl = form.first != null ? form.first['uri'] : '';
       });
     }
     
@@ -72,8 +83,30 @@ class _CarePlanInterventionState extends State<CarePlanIntervention> {
       });
     }
 
-    
-    
+  }
+
+  createPages() {
+    if (formUrl != '') {
+      setState(() {
+        pages.add(
+          FormContainer(form: form)
+        );
+      });
+    }
+
+    if (videoUrl != '') {
+      setState(() {
+        pages.add(
+          VideoContainer(youtubeController: _youtubeController)
+        );
+      });
+    }
+
+    setState(() {
+      pages.add(
+        CommentContainer(commentController: commentController, widget: widget),
+      );
+    });
   }
 
   @override
@@ -81,181 +114,46 @@ class _CarePlanInterventionState extends State<CarePlanIntervention> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Intervention', style: TextStyle(color: Colors.white),),
+        title: Text('Care Plan', style: TextStyle(color: Colors.white),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
       ),
-      body: SingleChildScrollView(
+      body: Container(
+        // height: 400,
         child: Stack(
           children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-
-                formUrl != '' ?
-                Container(
-                  height: 70,
-                  width: double.infinity,
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.only(left: 17),
-                  decoration: BoxDecoration(
-                    
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      Checkbox(
-                        activeColor: kPrimaryColor,
-                        value: form,
-                        onChanged: (value) {
-                          setState(() {
-                            form = value;
-                          });
-                        },
-                      ),
-                      Text('Fill up the form',  style: TextStyle(fontSize: 16)),
-                      SizedBox(width: 10,),
-                      GestureDetector(
-                        onTap: () async {
-                          
-                        },
-                        child: Text('Click here', 
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: kPrimaryColor,
-                            decoration: TextDecoration.underline
-                          )
-                        ),
-                      ),
-                    ],
-                  ),
-                ) : SizedBox(height: 40),
-
-                videoUrl != '' ? Container(
-                  width: double.infinity,
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.only(left: 17, bottom: 30),
-                  child: Row(
-                    children: <Widget>[
-                      Checkbox(
-                        activeColor: kPrimaryColor,
-                        value: videoWatched,
-                        onChanged: (value) {
-                          setState(() {
-                            videoWatched = value;
-                          });
-                        },
-                      ),
-                      Text('Watch the video',  style: TextStyle(fontSize: 16)),
-                      SizedBox(width: 10,),
-                      GestureDetector(
-                        onTap: () async {
-                          await showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Dialog(
-                                elevation: 0.0,
-                                backgroundColor: Colors.transparent,
-                                child: Container(
-                                  // height: 300,
-                                  width: double.infinity,
-                                  color: Colors.white,
-                                  child: YoutubePlayer(
-                                    onEnded: (data) {
-                                      print(data);
-                                      setState(() {
-                                        videoWatched = true;
-                                      });
-                                    } ,
-                                    
-                                    controller: _youtubeController,
-                                    liveUIColor: Colors.amber,
-                                    progressColors: ProgressBarColors(
-                                    playedColor: Colors.amber,
-                                    handleColor: Colors.amberAccent,
-                                ),
-                                
-                                  ),
-                                ),
-                              );
-                            },
-                          ).then((value) {
-                            print('closed');
-                            _youtubeController.reset();
-                          });
-                        },
-                        child: Text(videoUrl, 
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: kPrimaryColor,
-                            decoration: TextDecoration.underline
-                          )
-                        ),
-                      ),
-                    ],
-                  ),
-                ) : Container(),
-                
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 30),
-                  child: TextField(
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 5,
-                    style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
-                    controller: commentController,
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.only(top: 25.0, bottom: 25.0, left: 20, right: 20),
-                      filled: true,
-                      fillColor: kSecondaryTextField,
-                      border: new UnderlineInputBorder(
-                        borderSide: new BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(4),
-                          topRight: Radius.circular(4),
-                        )
-                      ),
-                    
-                      hintText: 'Comments/Notes (optional)',
-                      hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
-                    ),
-                  )
-                ),
-                
-                SizedBox(height: 30,),
-
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                  child: PrimaryButton(
-                    onTap: () async {
-                      setState(() {
-                        isLoading = true;
-                      });
-                      var response = await CarePlanController().update(widget.carePlan, commentController.text);
-                      print('hello' + response);
-                      setState(() {
-                        isLoading = false;
-                      });
-                      if (response == 'success') {
-                        widget.parent.setState(() {
-                          widget.parent.setStatus();
-                        });
-                        Navigator.of(context).pop();
-                      } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
-                      
-                    },
-                    text: Text('MARK AS COMPLETE', style: TextStyle(color: Colors.white, fontSize: 16),),
-                  ),
-                ),
-              ],
+            PageView(
+              controller: _controller,
+              onPageChanged: (value) {
+                setState(() {
+                  currentPage = value;
+                });
+              },
+              children: pages  
             ),
-            isLoading ? Container(
-              height: MediaQuery.of(context).size.height,
-              width: double.infinity,
-              color: Color(0x90FFFFFF),
-              child: Center(
-                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),backgroundColor: Color(0x30FFFFFF),)
+            Positioned(
+              bottom: 0.0,
+              left: 0.0,
+              right: 0.0,
+              child: Container(
+                alignment: Alignment.bottomCenter,
+                height: 100,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: pages.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (BuildContext context, index) {
+                    return Padding(
+                      padding: EdgeInsets.only(right: 10),
+                      child: Icon(Icons.lens, size: 15, 
+                        color: currentPage == index ? kPrimaryColor : kStepperDot,
+                      )
+                    );
+                  },
+                ),
               ),
-            ) : Container(),
+            ),
           ],
         ),
       ),
@@ -263,54 +161,414 @@ class _CarePlanInterventionState extends State<CarePlanIntervention> {
   }
 }
 
-class EncounnterSteps extends StatelessWidget {
-   EncounnterSteps({this.text, this.onTap, this.icon, this.status});
+class CommentContainer extends StatefulWidget {
+  const CommentContainer({
+    Key key,
+    @required this.commentController,
+    @required this.widget,
+  }) : super(key: key);
 
-   final Text text;
-   final Function onTap;
-   final Image icon;
-   final String status;
+  final TextEditingController commentController;
+  final CarePlanIntervention widget;
+
+  @override
+  _CommentContainerState createState() => _CommentContainerState();
+}
+
+class _CommentContainerState extends State<CommentContainer> {
+
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
-      onPressed: onTap,
-      child: Container(
-        // padding: EdgeInsets.only(left: 20, right: 20),
-        width: double.infinity,
-        height: 100,
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(width: .5, color: Color(0x40000000))
-          )
-        ),
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: icon,
-            ),
-            Expanded(
-              flex: 5,
-              child: Container(
-                padding: EdgeInsets.only(left: 20),
-                child: text,
-              )
-            ),
-            Expanded(
-              flex: 2,
-              child: Text(status, style: TextStyle(color: kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.w500),),
-            ),
-            
-            Expanded(
-              flex: 1,
-              child: Container(
-                child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 50,),
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          TextField(
+            keyboardType: TextInputType.multiline,
+            maxLines: 5,
+            style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
+            controller: widget.commentController,
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.only(top: 25.0, bottom: 25.0, left: 20, right: 20),
+              filled: true,
+              fillColor: kSecondaryTextField,
+              border: new UnderlineInputBorder(
+                borderSide: new BorderSide(color: Colors.white),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(4),
+                  topRight: Radius.circular(4),
+                )
               ),
-            )
-          ],
-        )
+            
+              hintText: 'Comments/Notes (optional)',
+              hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+            ),
+          ),
+
+          SizedBox(height: 30,),
+
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 10),
+            child: PrimaryButton(
+              onTap: () async {
+                // showCupertinoDialog(context: null, builder: null)
+                setState(() {
+                  isLoading = true;
+                });
+                var response = await CarePlanController().update(widget.widget.carePlan, widget.commentController.text);
+                setState(() {
+                  isLoading = false;
+                });
+                
+                if (response == 'success') {
+                  widget.widget.parent.setState(() {
+                    widget.widget.parent.setStatus(widget.widget.carePlan);
+                  });
+                  Navigator.of(context).pop();
+                } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+                
+              },
+              text: isLoading ? CircularProgressIndicator() : Text('MARK AS COMPLETE', style: TextStyle(color: Colors.white, fontSize: 16),),
+            ),
+          ),
+          
+        ],
       )
     );
   }
 }
+
+class VideoContainer extends StatelessWidget {
+  const VideoContainer({
+    Key key,
+    @required YoutubePlayerController youtubeController,
+  }) : _youtubeController = youtubeController, super(key: key);
+
+  final YoutubePlayerController _youtubeController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      alignment: Alignment.topLeft,
+      margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            child: Text('Watch the video', style: TextStyle(fontSize: 17),),
+          ),
+          SizedBox(height: 20,),
+
+          Row(
+            children: <Widget>[
+              // Checkbox(
+              //   activeColor: kPrimaryColor,
+              //   value: videoWatched,
+              //   onChanged: (value) {
+              //     setState(() {
+              //       videoWatched = value;
+              //     });
+              //   },
+              // ),
+              Expanded(
+                child: Container(
+                  child: YoutubePlayer(
+                    onEnded: (data) {
+                      print(data);
+                     
+                    } ,
+                    
+                    controller: _youtubeController,
+                    liveUIColor: Colors.amber,
+                    progressColors: ProgressBarColors(
+                      playedColor: Colors.amber,
+                      handleColor: Colors.amberAccent,
+                    ),
+                
+                  ),
+                ),
+              ),
+              // GestureDetector(
+              //   onTap: () async {
+              //     await showDialog(
+              //       context: context,
+              //       builder: (BuildContext context) {
+              //         return Dialog(
+              //           elevation: 0.0,
+              //           backgroundColor: Colors.transparent,
+              //           child: Container(
+              //             // height: 300,
+              //             width: double.infinity,
+              //             color: Colors.white,
+              //             child: YoutubePlayer(
+              //               onEnded: (data) {
+              //                 print(data);
+              //                 setState(() {
+              //                   videoWatched = true;
+              //                 });
+              //               } ,
+                            
+              //               controller: _youtubeController,
+              //               liveUIColor: Colors.amber,
+              //               progressColors: ProgressBarColors(
+              //                 playedColor: Colors.amber,
+              //                 handleColor: Colors.amberAccent,
+              //               ),
+                        
+              //             ),
+              //           ),
+              //         );
+              //       },
+              //     ).then((value) {
+              //       print('closed');
+              //       _youtubeController.reset();
+              //     });
+              //   },
+              //   child: Text(videoUrl, 
+              //     style: TextStyle(
+              //       fontSize: 16,
+              //       color: kPrimaryColor,
+              //       decoration: TextDecoration.underline
+              //     )
+              //   ),
+              // ),
+            
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class FormContainer extends StatefulWidget {
+  FormContainer({this.form});
+
+  var form;
+
+  @override
+  _FormContainerState createState() => _FormContainerState();
+}
+
+class _FormContainerState extends State<FormContainer> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // height: 70,
+      width: double.infinity,
+      alignment: Alignment.topLeft,
+      padding: EdgeInsets.only(left: 17),
+      decoration: BoxDecoration(
+        
+      ),
+      child: Row(
+        children: <Widget>[
+          Checkbox(
+            activeColor: kPrimaryColor,
+            value: widget.form,
+            onChanged: (value) {
+              setState(() {
+                widget.form = value;
+              });
+            },
+          ),
+          Text('Fill up the form',  style: TextStyle(fontSize: 16)),
+          SizedBox(width: 10,),
+          GestureDetector(
+            onTap: () async {
+              
+            },
+            child: Text('Click here', 
+              style: TextStyle(
+                fontSize: 16,
+                color: kPrimaryColor,
+                decoration: TextDecoration.underline
+              )
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+// SingleChildScrollView(
+//   child: Stack(
+//     children: <Widget>[
+//       Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: <Widget>[
+
+//           Container(
+//             height: 70,
+//             width: double.infinity,
+//             alignment: Alignment.centerLeft,
+//             padding: EdgeInsets.only(left: 17),
+//             decoration: BoxDecoration(
+              
+//             ),
+//             child: Row(
+//               children: <Widget>[
+//                 Checkbox(
+//                   activeColor: kPrimaryColor,
+//                   value: form,
+//                   onChanged: (value) {
+//                     setState(() {
+//                       form = value;
+//                     });
+//                   },
+//                 ),
+//                 Text('Fill up the form',  style: TextStyle(fontSize: 16)),
+//                 SizedBox(width: 10,),
+//                 GestureDetector(
+//                   onTap: () async {
+                    
+//                   },
+//                   child: Text('Click here', 
+//                     style: TextStyle(
+//                       fontSize: 16,
+//                       color: kPrimaryColor,
+//                       decoration: TextDecoration.underline
+//                     )
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+
+//           videoUrl != '' ? Container(
+//             width: double.infinity,
+//             alignment: Alignment.centerLeft,
+//             padding: EdgeInsets.only(left: 17, bottom: 30),
+//             child: Row(
+//               children: <Widget>[
+//                 Checkbox(
+//                   activeColor: kPrimaryColor,
+//                   value: videoWatched,
+//                   onChanged: (value) {
+//                     setState(() {
+//                       videoWatched = value;
+//                     });
+//                   },
+//                 ),
+//                 Text('Watch the video',  style: TextStyle(fontSize: 16)),
+//                 SizedBox(width: 10,),
+//                 GestureDetector(
+//                   onTap: () async {
+//                     await showDialog(
+//                       context: context,
+//                       builder: (BuildContext context) {
+//                         return Dialog(
+//                           elevation: 0.0,
+//                           backgroundColor: Colors.transparent,
+//                           child: Container(
+//                             // height: 300,
+//                             width: double.infinity,
+//                             color: Colors.white,
+//                             child: YoutubePlayer(
+//                               onEnded: (data) {
+//                                 print(data);
+//                                 setState(() {
+//                                   videoWatched = true;
+//                                 });
+//                               } ,
+                              
+//                               controller: _youtubeController,
+//                               liveUIColor: Colors.amber,
+//                               progressColors: ProgressBarColors(
+//                               playedColor: Colors.amber,
+//                               handleColor: Colors.amberAccent,
+//                           ),
+                          
+//                             ),
+//                           ),
+//                         );
+//                       },
+//                     ).then((value) {
+//                       print('closed');
+//                       _youtubeController.reset();
+//                     });
+//                   },
+//                   child: Text(videoUrl, 
+//                     style: TextStyle(
+//                       fontSize: 16,
+//                       color: kPrimaryColor,
+//                       decoration: TextDecoration.underline
+//                     )
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ) : Container(),
+          
+//           Container(
+//             margin: EdgeInsets.symmetric(horizontal: 30),
+//             child: TextField(
+//               keyboardType: TextInputType.multiline,
+//               maxLines: 5,
+//               style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
+//               controller: commentController,
+//               decoration: InputDecoration(
+//                 contentPadding: const EdgeInsets.only(top: 25.0, bottom: 25.0, left: 20, right: 20),
+//                 filled: true,
+//                 fillColor: kSecondaryTextField,
+//                 border: new UnderlineInputBorder(
+//                   borderSide: new BorderSide(color: Colors.white),
+//                   borderRadius: BorderRadius.only(
+//                     topLeft: Radius.circular(4),
+//                     topRight: Radius.circular(4),
+//                   )
+//                 ),
+              
+//                 hintText: 'Comments/Notes (optional)',
+//                 hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+//               ),
+//             )
+//           ),
+          
+//           SizedBox(height: 30,),
+
+//           Container(
+//             margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+//             child: PrimaryButton(
+//               onTap: () async {
+//                 setState(() {
+//                   isLoading = true;
+//                 });
+//                 var response = await CarePlanController().update(widget.carePlan, commentController.text);
+//                 print('hello' + response);
+//                 setState(() {
+//                   isLoading = false;
+//                 });
+//                 if (response == 'success') {
+//                   widget.parent.setState(() {
+//                     widget.parent.update(widget.carePlan);
+//                   });
+//                   Navigator.of(context).pop();
+//                 } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+                
+//               },
+//               text: Text('MARK AS COMPLETE', style: TextStyle(color: Colors.white, fontSize: 16),),
+//             ),
+//           ),
+//         ],
+//       ),
+//       isLoading ? Container(
+//         height: MediaQuery.of(context).size.height,
+//         width: double.infinity,
+//         color: Color(0x90FFFFFF),
+//         child: Center(
+//           child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),backgroundColor: Color(0x30FFFFFF),)
+//         ),
+//       ) : Container(),
+//     ],
+//   ),
+// ),
+    

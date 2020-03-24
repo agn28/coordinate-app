@@ -3,7 +3,7 @@ import '../constants/constants.dart';
 
 class PrimaryButton extends StatelessWidget {
   PrimaryButton({this.text, this.onTap});
-  Text text ;
+  Widget text ;
   Function onTap;
 
   @override
