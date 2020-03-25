@@ -4,6 +4,7 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/care_plan_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/widgets/primary_button_widget.dart';
+import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class WorkListDetailsScreen extends CupertinoPageRoute {
@@ -86,18 +87,33 @@ class _WorkListDetailsState extends State<WorkListDetails> {
   }
 
   createPages() {
-    if (formUrl != '') {
+    if (widget.carePlan['body']['id'] == 'a4') {
       setState(() {
         pages.add(
-          FormContainer(form: form)
+          Form4()
         );
       });
-    }
+    } if (widget.carePlan['body']['id'] == 'a8') {
+      setState(() {
+        pages.add(
+          Form8()
+        );
+      });
+    } if (widget.carePlan['body']['id'] == 'a16') {
+      setState(() {
+        pages.add(
+          Form16()
+        );
+      });
+    } 
 
     if (videoUrl != '') {
       setState(() {
         pages.add(
           VideoContainer(youtubeController: _youtubeController)
+        );
+        pages.add(
+          VideoConfirmForm()
         );
       });
     }
@@ -160,6 +176,326 @@ class _WorkListDetailsState extends State<WorkListDetails> {
     );
   }
 }
+
+class Form4 extends StatelessWidget {
+  const Form4({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      alignment: Alignment.topLeft,
+      padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+      decoration: BoxDecoration(
+        
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Form(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text('What is your blood pressure reading?', style: TextStyle(fontSize: 17),),
+                SizedBox(height: 15,),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: PrimaryTextField(
+                        topPaadding: 10,
+                        bottomPadding: 10,
+                        hintText: 'Systolic',
+                        type: TextInputType.number,
+                      ),
+                    ),
+                    SizedBox(width: 20,),
+                    Expanded(
+                      child: PrimaryTextField(
+                        topPaadding: 10,
+                        bottomPadding: 10,
+                        hintText: 'Diastolic',
+                        type: TextInputType.number
+                      ),
+                    ),
+                  ],
+                ),
+                Text('Second reading of blood pressure?', style: TextStyle(fontSize: 17),),
+                SizedBox(height: 15,),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: PrimaryTextField(
+                        topPaadding: 10,
+                        bottomPadding: 10,
+                        hintText: 'Systolic',
+                        type: TextInputType.number,
+                      ),
+                    ),
+                    SizedBox(width: 20,),
+                    Expanded(
+                      child: PrimaryTextField(
+                        topPaadding: 10,
+                        bottomPadding: 10,
+                        hintText: 'Diastolic',
+                        type: TextInputType.number
+                      ),
+                    ),
+                  ],
+                ),
+                Text('Third reading of blood pressure?', style: TextStyle(fontSize: 17),),
+                SizedBox(height: 15,),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: PrimaryTextField(
+                        topPaadding: 10,
+                        bottomPadding: 10,
+                        hintText: 'Systolic',
+                        type: TextInputType.number,
+                      ),
+                    ),
+                    SizedBox(width: 20,),
+                    Expanded(
+                      child: PrimaryTextField(
+                        topPaadding: 10,
+                        bottomPadding: 10,
+                        hintText: 'Diastolic',
+                        type: TextInputType.number
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      )
+    );
+  }
+}
+
+class Form8 extends StatelessWidget {
+  const Form8({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      alignment: Alignment.topLeft,
+      padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+      decoration: BoxDecoration(
+        
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Form(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Text('What is your total cholesterol?', style: TextStyle(fontSize: 17),),
+                    SizedBox(width: 15,),
+                    Text('(add in mg/dL)', style: TextStyle(fontSize: 14),),
+                  ],
+                ),
+                SizedBox(height: 15,),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: PrimaryTextField(
+                        topPaadding: 10,
+                        bottomPadding: 10,
+                        hintText: '',
+                        type: TextInputType.number,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      )
+    );
+  }
+}
+
+class Form16 extends StatelessWidget {
+  const Form16({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      alignment: Alignment.topLeft,
+      padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+      decoration: BoxDecoration(
+        
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Form(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Text('What is your blood sugar?', style: TextStyle(fontSize: 17),),
+                    SizedBox(width: 15,),
+                    Text('(add in mg/dL)', style: TextStyle(fontSize: 14),),
+                  ],
+                ),
+                SizedBox(height: 15,),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: PrimaryTextField(
+                        topPaadding: 10,
+                        bottomPadding: 10,
+                        hintText: '',
+                        type: TextInputType.number,
+                      ),
+                    ),
+                  ],
+                ),
+                Text('When the blood sugar is taken?', style: TextStyle(fontSize: 17),),
+                SizedBox(height: 15,),
+                DropdownButtonFormField(
+                  validator: (value) {
+                    if (value == null) {
+                      // return AppLocalizations.of(context).translate('relationshipRequired');
+                    }
+                  },
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: kSecondaryTextField,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(4),
+                      topRight: Radius.circular(4),
+                    )
+                  ),
+                  ),
+                  items: [
+                      DropdownMenuItem(
+                        child: Text('Fasting'),
+                        value: 'fasting'
+                      ),
+                      DropdownMenuItem(
+                        child: Text('Random'),
+                        value: 'random'
+                      )
+                    ,
+                  ],
+                  value: 'fasting',
+                  isExpanded: true,
+                  onChanged: (value) {
+                    // setState(() {
+                    //   selectedRelation = value;
+                    // });
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      )
+    );
+  }
+}
+
+class VideoConfirmForm extends StatelessWidget {
+  const VideoConfirmForm({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      alignment: Alignment.topLeft,
+      padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+      decoration: BoxDecoration(
+        
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Form(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Text('Did you watch the video?', style: TextStyle(fontSize: 17),),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    // SizedBox(width: 20,),
+                    Radio(
+                      activeColor: kPrimaryColor,
+                      value: 'yes',
+                      groupValue: 'yes',
+                      onChanged: (val) {
+                        // setState(() {
+                        //   selectedArm = val;
+                        // });
+                      },
+                    ),
+                    Text('Yes', style: TextStyle(fontSize: 15),),
+
+                    Radio(
+                      activeColor: kPrimaryColor,
+                      value: 'no',
+                      groupValue: 'yes',
+                      onChanged: (val) {
+                        // setState(() {
+                        //   selectedArm = val;
+                        // });
+                      },
+                    ),
+                    Text(
+                      'No',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 15,),
+                Text('What did you learn?', style: TextStyle(fontSize: 17),),
+                SizedBox(height: 15,),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: PrimaryTextField(
+                        topPaadding: 10,
+                        bottomPadding: 10,
+                        hintText: '',
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      )
+    );
+  }
+}
+
+
 
 class CommentContainer extends StatefulWidget {
   const CommentContainer({
@@ -398,177 +734,3 @@ class _FormContainerState extends State<FormContainer> {
 }
 
 
-
-// SingleChildScrollView(
-//   child: Stack(
-//     children: <Widget>[
-//       Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: <Widget>[
-
-//           Container(
-//             height: 70,
-//             width: double.infinity,
-//             alignment: Alignment.centerLeft,
-//             padding: EdgeInsets.only(left: 17),
-//             decoration: BoxDecoration(
-              
-//             ),
-//             child: Row(
-//               children: <Widget>[
-//                 Checkbox(
-//                   activeColor: kPrimaryColor,
-//                   value: form,
-//                   onChanged: (value) {
-//                     setState(() {
-//                       form = value;
-//                     });
-//                   },
-//                 ),
-//                 Text('Fill up the form',  style: TextStyle(fontSize: 16)),
-//                 SizedBox(width: 10,),
-//                 GestureDetector(
-//                   onTap: () async {
-                    
-//                   },
-//                   child: Text('Click here', 
-//                     style: TextStyle(
-//                       fontSize: 16,
-//                       color: kPrimaryColor,
-//                       decoration: TextDecoration.underline
-//                     )
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-
-//           videoUrl != '' ? Container(
-//             width: double.infinity,
-//             alignment: Alignment.centerLeft,
-//             padding: EdgeInsets.only(left: 17, bottom: 30),
-//             child: Row(
-//               children: <Widget>[
-//                 Checkbox(
-//                   activeColor: kPrimaryColor,
-//                   value: videoWatched,
-//                   onChanged: (value) {
-//                     setState(() {
-//                       videoWatched = value;
-//                     });
-//                   },
-//                 ),
-//                 Text('Watch the video',  style: TextStyle(fontSize: 16)),
-//                 SizedBox(width: 10,),
-//                 GestureDetector(
-//                   onTap: () async {
-//                     await showDialog(
-//                       context: context,
-//                       builder: (BuildContext context) {
-//                         return Dialog(
-//                           elevation: 0.0,
-//                           backgroundColor: Colors.transparent,
-//                           child: Container(
-//                             // height: 300,
-//                             width: double.infinity,
-//                             color: Colors.white,
-//                             child: YoutubePlayer(
-//                               onEnded: (data) {
-//                                 print(data);
-//                                 setState(() {
-//                                   videoWatched = true;
-//                                 });
-//                               } ,
-                              
-//                               controller: _youtubeController,
-//                               liveUIColor: Colors.amber,
-//                               progressColors: ProgressBarColors(
-//                               playedColor: Colors.amber,
-//                               handleColor: Colors.amberAccent,
-//                           ),
-                          
-//                             ),
-//                           ),
-//                         );
-//                       },
-//                     ).then((value) {
-//                       print('closed');
-//                       _youtubeController.reset();
-//                     });
-//                   },
-//                   child: Text(videoUrl, 
-//                     style: TextStyle(
-//                       fontSize: 16,
-//                       color: kPrimaryColor,
-//                       decoration: TextDecoration.underline
-//                     )
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ) : Container(),
-          
-//           Container(
-//             margin: EdgeInsets.symmetric(horizontal: 30),
-//             child: TextField(
-//               keyboardType: TextInputType.multiline,
-//               maxLines: 5,
-//               style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
-//               controller: commentController,
-//               decoration: InputDecoration(
-//                 contentPadding: const EdgeInsets.only(top: 25.0, bottom: 25.0, left: 20, right: 20),
-//                 filled: true,
-//                 fillColor: kSecondaryTextField,
-//                 border: new UnderlineInputBorder(
-//                   borderSide: new BorderSide(color: Colors.white),
-//                   borderRadius: BorderRadius.only(
-//                     topLeft: Radius.circular(4),
-//                     topRight: Radius.circular(4),
-//                   )
-//                 ),
-              
-//                 hintText: 'Comments/Notes (optional)',
-//                 hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
-//               ),
-//             )
-//           ),
-          
-//           SizedBox(height: 30,),
-
-//           Container(
-//             margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-//             child: PrimaryButton(
-//               onTap: () async {
-//                 setState(() {
-//                   isLoading = true;
-//                 });
-//                 var response = await CarePlanController().update(widget.carePlan, commentController.text);
-//                 print('hello' + response);
-//                 setState(() {
-//                   isLoading = false;
-//                 });
-//                 if (response == 'success') {
-//                   widget.parent.setState(() {
-//                     widget.parent.update(widget.carePlan);
-//                   });
-//                   Navigator.of(context).pop();
-//                 } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
-                
-//               },
-//               text: Text('MARK AS COMPLETE', style: TextStyle(color: Colors.white, fontSize: 16),),
-//             ),
-//           ),
-//         ],
-//       ),
-//       isLoading ? Container(
-//         height: MediaQuery.of(context).size.height,
-//         width: double.infinity,
-//         color: Color(0x90FFFFFF),
-//         child: Center(
-//           child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),backgroundColor: Color(0x30FFFFFF),)
-//         ),
-//       ) : Container(),
-//     ],
-//   ),
-// ),
-    

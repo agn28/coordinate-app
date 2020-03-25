@@ -4,6 +4,7 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/care_plan_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/widgets/primary_button_widget.dart';
+import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class CarePlanInterventionScreen extends CupertinoPageRoute {
@@ -49,13 +50,14 @@ class _CarePlanInterventionState extends State<CarePlanIntervention> {
   @override
   initState() {
     super.initState();
-    print(widget.carePlan);
     _getVideoUrl();
     _getFormUrl();
     createPages();
   }
 
   _getFormUrl() {
+    print(widget.carePlan['body']['id']);
+    print(widget.carePlan['body']['components']);
     var form = widget.carePlan['body']['components'].where((item) => item['type'] == 'form');
 
     if (form.isNotEmpty) {
@@ -86,18 +88,40 @@ class _CarePlanInterventionState extends State<CarePlanIntervention> {
   }
 
   createPages() {
-    if (formUrl != '') {
+    if (widget.carePlan['body']['id'] == 'a4') {
       setState(() {
         pages.add(
-          FormContainer(form: form)
+          Form4()
         );
       });
-    }
+    } if (widget.carePlan['body']['id'] == 'a8') {
+      setState(() {
+        pages.add(
+          Form8()
+        );
+      });
+    } if (widget.carePlan['body']['id'] == 'a16') {
+      setState(() {
+        pages.add(
+          Form16()
+        );
+      });
+    } 
+    // else if (formUrl != '') {
+    //   setState(() {
+    //     pages.add(
+    //       FormContainer(form: form)
+    //     );
+    //   });
+    // }
 
     if (videoUrl != '') {
       setState(() {
         pages.add(
           VideoContainer(youtubeController: _youtubeController)
+        );
+        pages.add(
+          VideoConfirmForm()
         );
       });
     }
@@ -160,6 +184,325 @@ class _CarePlanInterventionState extends State<CarePlanIntervention> {
     );
   }
 }
+
+class Form4 extends StatelessWidget {
+  const Form4({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      alignment: Alignment.topLeft,
+      padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+      decoration: BoxDecoration(
+        
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Form(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text('What is your blood pressure reading?', style: TextStyle(fontSize: 17),),
+                SizedBox(height: 15,),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: PrimaryTextField(
+                        topPaadding: 10,
+                        bottomPadding: 10,
+                        hintText: 'Systolic',
+                        type: TextInputType.number,
+                      ),
+                    ),
+                    SizedBox(width: 20,),
+                    Expanded(
+                      child: PrimaryTextField(
+                        topPaadding: 10,
+                        bottomPadding: 10,
+                        hintText: 'Diastolic',
+                        type: TextInputType.number
+                      ),
+                    ),
+                  ],
+                ),
+                Text('Second reading of blood pressure?', style: TextStyle(fontSize: 17),),
+                SizedBox(height: 15,),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: PrimaryTextField(
+                        topPaadding: 10,
+                        bottomPadding: 10,
+                        hintText: 'Systolic',
+                        type: TextInputType.number,
+                      ),
+                    ),
+                    SizedBox(width: 20,),
+                    Expanded(
+                      child: PrimaryTextField(
+                        topPaadding: 10,
+                        bottomPadding: 10,
+                        hintText: 'Diastolic',
+                        type: TextInputType.number
+                      ),
+                    ),
+                  ],
+                ),
+                Text('Third reading of blood pressure?', style: TextStyle(fontSize: 17),),
+                SizedBox(height: 15,),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: PrimaryTextField(
+                        topPaadding: 10,
+                        bottomPadding: 10,
+                        hintText: 'Systolic',
+                        type: TextInputType.number,
+                      ),
+                    ),
+                    SizedBox(width: 20,),
+                    Expanded(
+                      child: PrimaryTextField(
+                        topPaadding: 10,
+                        bottomPadding: 10,
+                        hintText: 'Diastolic',
+                        type: TextInputType.number
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      )
+    );
+  }
+}
+
+class Form8 extends StatelessWidget {
+  const Form8({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      alignment: Alignment.topLeft,
+      padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+      decoration: BoxDecoration(
+        
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Form(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Text('What is your total cholesterol?', style: TextStyle(fontSize: 17),),
+                    SizedBox(width: 15,),
+                    Text('(add in mg/dL)', style: TextStyle(fontSize: 14),),
+                  ],
+                ),
+                SizedBox(height: 15,),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: PrimaryTextField(
+                        topPaadding: 10,
+                        bottomPadding: 10,
+                        hintText: '',
+                        type: TextInputType.number,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      )
+    );
+  }
+}
+
+class Form16 extends StatelessWidget {
+  const Form16({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      alignment: Alignment.topLeft,
+      padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+      decoration: BoxDecoration(
+        
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Form(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Text('What is your blood sugar?', style: TextStyle(fontSize: 17),),
+                    SizedBox(width: 15,),
+                    Text('(add in mg/dL)', style: TextStyle(fontSize: 14),),
+                  ],
+                ),
+                SizedBox(height: 15,),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: PrimaryTextField(
+                        topPaadding: 10,
+                        bottomPadding: 10,
+                        hintText: '',
+                        type: TextInputType.number,
+                      ),
+                    ),
+                  ],
+                ),
+                Text('When the blood sugar is taken?', style: TextStyle(fontSize: 17),),
+                SizedBox(height: 15,),
+                DropdownButtonFormField(
+                  validator: (value) {
+                    if (value == null) {
+                      // return AppLocalizations.of(context).translate('relationshipRequired');
+                    }
+                  },
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: kSecondaryTextField,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(4),
+                      topRight: Radius.circular(4),
+                    )
+                  ),
+                  ),
+                  items: [
+                      DropdownMenuItem(
+                        child: Text('Fasting'),
+                        value: 'fasting'
+                      ),
+                      DropdownMenuItem(
+                        child: Text('Random'),
+                        value: 'random'
+                      )
+                    ,
+                  ],
+                  value: 'fasting',
+                  isExpanded: true,
+                  onChanged: (value) {
+                    // setState(() {
+                    //   selectedRelation = value;
+                    // });
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      )
+    );
+  }
+}
+
+class VideoConfirmForm extends StatelessWidget {
+  const VideoConfirmForm({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      alignment: Alignment.topLeft,
+      padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+      decoration: BoxDecoration(
+        
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Form(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Text('Did you watch the video?', style: TextStyle(fontSize: 17),),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    // SizedBox(width: 20,),
+                    Radio(
+                      activeColor: kPrimaryColor,
+                      value: 'yes',
+                      groupValue: 'yes',
+                      onChanged: (val) {
+                        // setState(() {
+                        //   selectedArm = val;
+                        // });
+                      },
+                    ),
+                    Text('Yes', style: TextStyle(fontSize: 15),),
+
+                    Radio(
+                      activeColor: kPrimaryColor,
+                      value: 'no',
+                      groupValue: 'yes',
+                      onChanged: (val) {
+                        // setState(() {
+                        //   selectedArm = val;
+                        // });
+                      },
+                    ),
+                    Text(
+                      'No',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 15,),
+                Text('What did you learn?', style: TextStyle(fontSize: 17),),
+                SizedBox(height: 15,),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: PrimaryTextField(
+                        topPaadding: 10,
+                        bottomPadding: 10,
+                        hintText: '',
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      )
+    );
+  }
+}
+
 
 class CommentContainer extends StatefulWidget {
   const CommentContainer({
