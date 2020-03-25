@@ -192,7 +192,7 @@ class _HomeState extends State<HomeScreen> {
                     margin: EdgeInsets.only(left: 18),
                     child: Row(
                       children: <Widget>[
-                        Text('Version 0.0.4 (beta)', style: TextStyle( fontSize: 18, fontWeight: FontWeight.w400)),
+                        Text('Version 0.0.5 (beta)', style: TextStyle( fontSize: 18, fontWeight: FontWeight.w400)),
                       ],
                     )
                   )

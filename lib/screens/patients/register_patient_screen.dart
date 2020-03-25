@@ -1,4 +1,5 @@
 import 'package:basic_utils/basic_utils.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -50,6 +51,7 @@ final contactHomePhoneController = TextEditingController();
 final contactEmailController = TextEditingController();
 final GlobalKey<FormState> _patientFormKey = new GlobalKey<FormState>();
 final GlobalKey<FormState> _contactFormKey = new GlobalKey<FormState>();
+final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 String uploadedImageUrl = '';
 bool isEditState = false;
 String selectedGender = 'male';
@@ -178,6 +180,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).translate('registerNewPatient')),
       ),
@@ -210,6 +213,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
             Expanded(
               child: _currentStep != 0 ? FlatButton(
                 onPressed: () {
+                  
                   setState(() {
                     _currentStep = _currentStep - 1;
                     nextText = AppLocalizations.of(context).translate('next');
@@ -251,6 +255,16 @@ class _RegisterPatientState extends State<RegisterPatient> {
                       }
                     }
                     if (_currentStep < 1) {
+                      if (birthDateController.text == null || birthDateController.text == '') {
+                        _scaffoldKey.currentState.showSnackBar(
+                          SnackBar(
+                            content: Text('Please input birthday'),
+                            backgroundColor: kPrimaryRedColor,
+                          )
+                        );
+                        _patientFormKey.currentState.validate();
+                        return;
+                      }
                       
                       if (_patientFormKey.currentState.validate()) {
                         // If the form is valid, display a Snackbar.
@@ -360,6 +374,8 @@ class PatientDetails extends StatefulWidget {
 class _PatientDetailsState extends State<PatientDetails> {
   
   DateTime selectedDate = DateTime.now();
+  final lastVisitDateController = TextEditingController();
+  final format = DateFormat("yyyy-MM-dd");
 
   @override
   Widget build(BuildContext context) {
@@ -450,40 +466,51 @@ class _PatientDetailsState extends State<PatientDetails> {
               Row(
               children: <Widget>[
                 Expanded(
-                  child: PrimaryTextField(
-                    topPaadding: 18,
-                    bottomPadding: 18,
-                    hintText: AppLocalizations.of(context).translate('dd'),
-                    controller: birthDateController,
-                    name: AppLocalizations.of(context).translate('date'),
-                    validation: true,
-                    type: TextInputType.number,
-                  ),
+                  child: DatePicker(controller: birthDateController, hintText: 'dd'),
                 ),
                 SizedBox(width: 20,),
                 Expanded(
-                  child: PrimaryTextField(
-                    topPaadding: 18,
-                    bottomPadding: 18,
-                    hintText: AppLocalizations.of(context).translate('mm'),
-                    controller: birthMonthController,
-                    name: AppLocalizations.of(context).translate('month'),
-                    validation: true,
-                    type: TextInputType.number
-                  ),
+                  child: DatePicker(controller: birthMonthController, hintText: 'mm'),
                 ),
                 SizedBox(width: 20,),
                 Expanded(
-                  child: PrimaryTextField(
-                    topPaadding: 18,
-                    bottomPadding: 18,
-                    hintText: AppLocalizations.of(context).translate('yy'),
-                    controller: birthYearController,
-                    name: AppLocalizations.of(context).translate('year'),
-                    validation: true,
-                    type: TextInputType.number
-                  ),
+                  child: DatePicker(controller: birthYearController, hintText: 'yy'),
                 ),
+                // Expanded(
+                //   child: PrimaryTextField(
+                //     topPaadding: 18,
+                //     bottomPadding: 18,
+                //     hintText: AppLocalizations.of(context).translate('dd'),
+                //     controller: birthDateController,
+                //     name: AppLocalizations.of(context).translate('date'),
+                //     validation: true,
+                //     type: TextInputType.number,
+                //   ),
+                // ),
+                // SizedBox(width: 20,),
+                // Expanded(
+                //   child: PrimaryTextField(
+                //     topPaadding: 18,
+                //     bottomPadding: 18,
+                //     hintText: AppLocalizations.of(context).translate('mm'),
+                //     controller: birthMonthController,
+                //     name: AppLocalizations.of(context).translate('month'),
+                //     validation: true,
+                //     type: TextInputType.number
+                //   ),
+                // ),
+                // SizedBox(width: 20,),
+                // Expanded(
+                //   child: PrimaryTextField(
+                //     topPaadding: 18,
+                //     bottomPadding: 18,
+                //     hintText: AppLocalizations.of(context).translate('yy'),
+                //     controller: birthYearController,
+                //     name: AppLocalizations.of(context).translate('year'),
+                //     validation: true,
+                //     type: TextInputType.number
+                //   ),
+                // ),
               ],
             ),
             SizedBox(height: 10,),
@@ -581,6 +608,76 @@ class _PatientDetailsState extends State<PatientDetails> {
         ),
       )
     );
+  }
+}
+
+class DatePicker extends StatefulWidget {
+  DatePicker({
+   this.controller,
+   this.hintText
+  });
+
+  final controller;
+  String hintText = '';
+
+  @override
+  _DatePickerState createState() => _DatePickerState();
+}
+bool autoValidate = false;
+class _DatePickerState extends State<DatePicker> {
+  final format = DateFormat("yyyy-MM-dd");
+
+  var selectedDate;
+
+  
+
+  setDate(date) {
+    if (date != null) {
+      
+      selectedDate = date;
+      birthDateController.text = DateFormat('dd').format(date);
+      birthMonthController.text = DateFormat('MM').format(date);
+      birthYearController.text = DateFormat('y').format(date);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DateTimeField(
+    format: format,
+    controller: widget.controller,
+    style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
+    decoration: InputDecoration(
+      suffixIcon: IconButton(icon: Icon(Icons.close), onPressed: () {}, color: kSecondaryTextField,),
+      hintText: widget.hintText,
+      hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+      contentPadding: EdgeInsets.only(top: 18, bottom: 18, left: 10, right: 10),
+      // prefixIcon: Icon(Icons.date_range),
+      filled: true,
+      fillColor: kSecondaryTextField,
+      border: new UnderlineInputBorder(
+        borderSide: new BorderSide(color: Colors.white),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(4),
+          topRight: Radius.circular(4),
+        )
+      ),
+    ),
+
+    onChanged: (date) {
+      setDate(date);
+
+    },
+    
+    onShowPicker: (context, currentValue) {
+      return showDatePicker(
+        context: context,
+        firstDate: DateTime(1900),
+        initialDate: selectedDate ?? DateTime.now(),
+        lastDate: DateTime(2021)
+      );
+    },
+                );
   }
 }
 
