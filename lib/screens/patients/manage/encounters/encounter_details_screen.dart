@@ -8,6 +8,7 @@ import 'package:nhealth/models/blood_test.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:basic_utils/basic_utils.dart';
 import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.dart';
+import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
 class EncounterDetailsScreen extends CupertinoPageRoute {
   final assessment;
@@ -149,7 +150,7 @@ class EncounterDetailsState extends State<EncounterDetails> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('assessmentDetails'), style: TextStyle(color: Colors.white),),
+        title: Text(AppLocalizations.of(context).translate('encounterDetails'), style: TextStyle(color: Colors.white),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -160,49 +161,7 @@ class EncounterDetailsState extends State<EncounterDetails> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border(
-                      bottom: BorderSide(width: 1, color: Colors.black38)
-                    )
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                height: 35,
-                                width: 35,
-                                decoration: BoxDecoration(
-                                  color: kLightPrimaryColor,
-                                  shape: BoxShape.circle
-                                ),
-                                child: Icon(Icons.perm_identity),
-                              ),
-                              SizedBox(width: 15,),
-                              Text(Helpers().getPatientName(_patient), style: TextStyle(fontSize: 18))
-                            ],
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(Helpers().getPatientAgeAndGender(_patient), style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
-                      ),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
-                          ],
-                        )
-                      )
-                    ],
-                  ),
-                ),
+                PatientTopbar(),
 
                 Container(
                   color: Colors.white,

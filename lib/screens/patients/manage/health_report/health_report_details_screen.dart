@@ -273,10 +273,11 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
                               ),
                             ),
                             SizedBox(height: 20,),
-                            widget.reports['assessments']['lifestyle']['components']['diet'] != null && widget.reports['assessments']['lifestyle']['components']['diet']['components']['fruit_vegetable'] != null ?
+                            
                             Container(
                               child: Row(
                                 children: <Widget>[
+                                  widget.reports['assessments']['lifestyle']['components']['diet'] != null && widget.reports['assessments']['lifestyle']['components']['diet']['components']['fruit_vegetable'] != null ?
                                   Expanded(
                                     child: Container(
                                       // height: 210,
@@ -314,8 +315,9 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
                                         ],
                                       ),
                                     ),
-                                  ),
+                                  ) : Container(),
                                   SizedBox(width: 15,),
+                                  widget.reports['assessments']['lifestyle']['components']['physical_activity'] != null ?
                                   Expanded(
                                     child: Container(
                                       height: 210,
@@ -353,16 +355,13 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
                                         ],
                                       ),
                                     ),
-                                  ),
+                                  ) : Container(),
                                 ],
                               ),
-                            ) : 
-                            Container(),
+                            ),
                           ],
                         )
                       ),
-
-
                       
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 25, vertical: 35),

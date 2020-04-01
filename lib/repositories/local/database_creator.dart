@@ -1,6 +1,4 @@
 import 'dart:io';
-import 'package:nhealth/models/observation_concepts.dart';
-import 'package:nhealth/repositories/local/observation_concepts_repository_local.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 

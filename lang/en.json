@@ -78,6 +78,7 @@
   "nid": "NID",
   "registeredOn": "Registered On",
   "encounters": "Encounters",
+  "encounterDetails": "Encounter Details",
   "assessments": "Assessments",
   "newHealthAssessment": "Create a New Health Assessment",
   "pastHealthAssessments": "View Past Health Assessments",

@@ -11,6 +11,7 @@ class HealthReportRepository {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     var patientID = Patient().getPatient()['uuid'];
+    print(patientID);
     return await http.post(
       apiUrl + 'health-reports/generate/' + patientID,
       headers: {
