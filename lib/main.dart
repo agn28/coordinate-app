@@ -65,6 +65,9 @@ class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onPanDown: (_) {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
 

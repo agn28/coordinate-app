@@ -43,14 +43,12 @@ class AssessmentController {
 
     if (assessments['error'] != null && !assessments['error']) {
       await assessments['data'].forEach((assessment) {
-      if (assessment['body']['patient_id'] == Patient().getPatient()['uuid']) {
         data.add({
           'uuid': assessment['id'],
           'data': assessment['body'],
           'meta': assessment['meta']
         });
-      }
-    });
+      });
     }
 
     
@@ -112,9 +110,6 @@ class AssessmentController {
 
     if (response['error'] != null && !response['error']) {
       await response['data'].forEach((item) {
-      // parsedData = jsonDecode(item['data']);
-      // // print(assessment),
-      if (item['body']['patient_id'] == Patient().getPatient()['uuid'] && item['body']['assessment_id'] == assessment['uuid']) {
         data.add({
           'uuid': item['id'],
           'body': {
@@ -126,8 +121,7 @@ class AssessmentController {
           },
           'meta': item['meta']
         });
-      }
-    });
+      });
     }
     return data;
   }

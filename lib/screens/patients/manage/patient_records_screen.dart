@@ -579,6 +579,9 @@ class _OverviewInterventionState extends State<OverviewIntervention> {
   }
 
   setStatus() {
+    //  var index = careplans.indexOf(carePlan);
+    print(widget.carePlan);
+
     setState(() {
       widget.carePlan['meta']['status'] = 'completed';
       status = 'completed';

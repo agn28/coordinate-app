@@ -10,6 +10,7 @@ import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_intervention_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_medication_screen.dart';
+import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
 class CarePlanDetailsScreen extends CupertinoPageRoute {
   var carePlans;
@@ -75,45 +76,10 @@ class _CarePlanDetailsState extends State<CarePlanDetails> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                PatientTopbar(),
+
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border(
-                      bottom: BorderSide(width: 1, color: Colors.black38)
-                    )
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                height: 35,
-                                width: 35,
-                                decoration: BoxDecoration(
-                                  color: kLightPrimaryColor,
-                                  shape: BoxShape.circle
-                                ),
-                                child: Icon(Icons.perm_identity),
-                              ),
-                              SizedBox(width: 15,),
-                              Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 18))
-                            ],
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(Helpers().getPatientAgeAndGender(Patient().getPatient()), style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
-                      ),
-                      Expanded(
-                        child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
-                      )
-                    ],
-                  ),
-                ),
-                Container(
+                  color: Colors.white,
                   height: 50,
                   width: double.infinity,
                   alignment: Alignment.centerLeft,
@@ -148,6 +114,8 @@ class _CarePlanDetailsState extends State<CarePlanDetails> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
+
+                                  reports['body']['result']['assessments']['body_composition']['components']['body_fat'] != null ?
                                   Container(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,9 +143,10 @@ class _CarePlanDetailsState extends State<CarePlanDetails> {
                                         )
                                       ],
                                     ),
-                                  ),
+                                  ) : Container(),
                                   SizedBox(height: 35,),
 
+                                  reports['body']['result']['assessments']['lifestyle']['components']['smoking'] != null ?
                                   Container(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,10 +167,11 @@ class _CarePlanDetailsState extends State<CarePlanDetails> {
                                         )
                                       ],
                                     ),
-                                  ),
+                                  ) : Container(),
 
                                   SizedBox(height: 35,),
 
+                                  reports['body']['result']['assessments']['lifestyle']['components']['physical_activity'] != null ?
                                   Container(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,10 +192,11 @@ class _CarePlanDetailsState extends State<CarePlanDetails> {
                                         )
                                       ],
                                     ),
-                                  ),
+                                  ) : Container(),
 
                                   SizedBox(height: 35,),
 
+                                  reports['body']['result']['assessments']['diabetes'] != null ?
                                   Container(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -253,15 +224,17 @@ class _CarePlanDetailsState extends State<CarePlanDetails> {
                                         )
                                       ],
                                     ),
-                                  ),
+                                  ) : Container(),
                                 ],
                               ),
                             ),
 
+                            
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
+                                  reports['body']['result']['assessments']['body_composition']['components']['bmi'] != null ?
                                   Container(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -289,10 +262,11 @@ class _CarePlanDetailsState extends State<CarePlanDetails> {
                                         )
                                       ],
                                     ),
-                                  ),
+                                  ) : Container(),
 
                                   SizedBox(height: 35,),
 
+                                  reports['body']['result']['assessments']['lifestyle']['components']['alcohol'] != null ?
                                   Container(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -313,10 +287,11 @@ class _CarePlanDetailsState extends State<CarePlanDetails> {
                                         )
                                       ],
                                     ),
-                                  ),
+                                  ) : Container(),
 
                                   SizedBox(height: 35,),
 
+                                  reports['body']['result']['assessments']['blood_pressure'] != null ?
                                   Container(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -344,10 +319,11 @@ class _CarePlanDetailsState extends State<CarePlanDetails> {
                                         )
                                       ],
                                     ),
-                                  ),
+                                  ) : Container(),
 
                                   SizedBox(height: 35,),
-
+                                  
+                                  reports['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ?
                                   Container(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -375,7 +351,7 @@ class _CarePlanDetailsState extends State<CarePlanDetails> {
                                         )
                                       ],
                                     ),
-                                  ),
+                                  ) : Container(),
                                   
                                 ],
                               ),

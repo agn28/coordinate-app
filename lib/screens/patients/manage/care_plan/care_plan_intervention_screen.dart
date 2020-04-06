@@ -558,6 +558,10 @@ class _CommentContainerState extends State<CommentContainer> {
             child: PrimaryButton(
               onTap: () async {
                 // showCupertinoDialog(context: null, builder: null)
+                widget.widget.parent.setState(() {
+                  widget.widget.parent.setStatus();
+                });
+                Navigator.of(context).pop();
                 setState(() {
                   isLoading = true;
                 });

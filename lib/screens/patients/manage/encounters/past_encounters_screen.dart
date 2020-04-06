@@ -11,6 +11,7 @@ import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/encounter_details_screen.dart';
+import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
 class PastEncountersScreen extends CupertinoPageRoute {
   var encounters;
@@ -117,52 +118,7 @@ class _PastEncountersState extends State<PastEncounters> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
 
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border(
-                      bottom: BorderSide(width: 1, color: Colors.black38)
-                    )
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          child: Row(
-                            children: <Widget>[
-                              Patient().getPatient()['data']['avatar'] == null ? Container(
-                                height: 35,
-                                width: 35,
-                                decoration: BoxDecoration(
-                                  color: kLightPrimaryColor,
-                                  shape: BoxShape.circle
-                                ),
-                                child: Icon(Icons.perm_identity),
-                              ) :
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(100),
-                                child: Image.file(
-                                  File(Patient().getPatient()['data']['avatar']),
-                                  height: 35.0,
-                                  width: 35.0,
-                                ),
-                              ),
-                              SizedBox(width: 15,),
-                              Text(Helpers().getPatientName(_patient), style: TextStyle(fontSize: 18))
-                            ],
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(Helpers().getPatientAgeAndGender(_patient), style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
-                      ),
-                      Expanded(
-                        child: Text('PID: N-1216657773', style: TextStyle(fontSize: 18))
-                      )
-                    ],
-                  ),
-                ),
+                PatientTopbar(),
 
                 Container(
                   color: Colors.white,

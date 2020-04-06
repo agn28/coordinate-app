@@ -29,9 +29,10 @@ class AssessmentRepository {
   getAllAssessments() async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
+    var patientId = Patient().getPatient()['uuid'];
     
     return http.get(
-      apiUrl + 'assessments',
+      apiUrl + 'patients/' + patientId + '/assessments',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -49,9 +50,10 @@ class AssessmentRepository {
   getAllObservations() async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
+    var patientId = Patient().getPatient()['uuid'];
     
     return http.get(
-      apiUrl + 'observations',
+      apiUrl + 'patients/' + patientId + '/observations',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',

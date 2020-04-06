@@ -10,7 +10,7 @@ class PatientTopbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 17, horizontal: 10),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       decoration: BoxDecoration(
       color: Colors.white,
         boxShadow: [BoxShadow(
@@ -30,8 +30,8 @@ class PatientTopbar extends StatelessWidget {
                     borderRadius: BorderRadius.circular(30.0),
                     child: Image.asset(
                       'assets/images/avatar.png',
-                      height: 35.0,
-                      width: 35.0,
+                      height: 30.0,
+                      width: 30.0,
                     ),
                   ) :
                   CircleAvatar(
