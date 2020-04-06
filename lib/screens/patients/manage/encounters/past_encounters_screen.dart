@@ -32,7 +32,8 @@ class PastEncounters extends StatefulWidget {
 class _PastEncountersState extends State<PastEncounters> {
 
   var _patient;
-  bool isLoading = false;
+  var _encounters;
+  bool isLoading = true;
   List<Widget> list = List<Widget>();
 
   _checkAuth() {
@@ -44,15 +45,16 @@ class _PastEncountersState extends State<PastEncounters> {
 
   _getData() async {
     _checkAuth();
-    // _assessments = await AssessmentController().getAllAssessmentsByPatient();
-    // _assessments = await AssessmentController().getLiveAllAssessmentsByPatient();
-    // print(_assessments);
 
-    // setState(() {
-    //   isLoading = false;
-    // });
+    // _encounters = await AssessmentController().getAllAssessmentsByPatient();
+    _encounters = await AssessmentController().getLiveAllAssessmentsByPatient();
+    print(_encounters);
+
+    setState(() {
+      isLoading = false;
+    });
     // _assessments = await AssessmentController().getAllAssessmentsByPatient();
-    widget.encounters.forEach((encounter) => {
+    _encounters.forEach((encounter) => {
       setState(() => {
         list.add(
           Container(

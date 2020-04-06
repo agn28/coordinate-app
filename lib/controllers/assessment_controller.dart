@@ -102,11 +102,8 @@ class AssessmentController {
   /// Get observations under a specific assessment.
   /// [assessment] object is required as parameter.
   getLiveObservationsByAssessment(assessment) async {
-    var response = await AssessmentRepository().getAllObservations();
+    var response = await AssessmentRepository().getObservationsByAssessment(assessment['uuid']);
     var data = [];
-    var parsedData;
-    print(response);
-    // return;
 
     if (response['error'] != null && !response['error']) {
       await response['data'].forEach((item) {
