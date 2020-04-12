@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/constants/constants.dart';
@@ -140,6 +143,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                   answers.add(_questions['items'][5]['options'][_sixthQuestionOption]);
                   answers.add(_seventhQuestionController.text);
                   answers.add(_questions['items'][7]['options'][_eightsQuestionOption]);
+                  answers.add(_selectedAllergies);
                   var result = Questionnaire().addMedicalHistory('medical_history', answers);
                   if (result == 'success') {
                     _scaffoldKey.currentState.showSnackBar(
@@ -775,13 +779,55 @@ class EighthQuestion extends StatefulWidget {
   _EighthQuestionState createState() => _EighthQuestionState();
 }
 
+var selectedDiseases = [];
+var _selectedAllergies = [];
 class _EighthQuestionState extends State<EighthQuestion> {
+  List allMedications = [];
+  List _medications = [];
+  var _checkValue = {};
   
+
+
+  @override
+  void initState() {
+    super.initState();
+    _preparedata();
+    _selectedAllergies = [];
+  }
+
+  List _allDiseases = ['lupus', 'diabetes', 'bronchitis', 'hypertension', 'cancer', 'Ciliac', 'Scleroderma', 'Abulia', 'Agraphia', 'Chorea', 'Coma' ];
     _changeOption(value) {
       setState(() {
         _eightsQuestionOption = value;
       });
     }
+
+  _preparedata() async {
+    var data = await DefaultAssetBundle.of(context).loadString('assets/allergies.json');
+    setState(() {
+      allMedications = json.decode(data);
+      _medications = allMedications;
+    });
+    _preapareCheckboxValue();
+  }
+  _preapareCheckboxValue() {
+    _medications.forEach((item) {
+      selectedDiseases.indexOf(item) == -1 ? _checkValue[item] = false : _checkValue[item] = true;
+    });
+
+  }
+
+  _updateCheckBox(value, index) {
+    // if (value == true && _selectedItem.length == 3) {
+    //   return Toast.show("You cannot select more than three diseases", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+    // }
+
+    setState(() {
+      value ? _selectedAllergies.add(_medications[index]) : _selectedAllergies.removeAt(_selectedAllergies.indexOf(_medications[index]));
+      _checkValue[_medications[index]] = value;
+    });
+
+  }
     
   @override
   Widget build(BuildContext context) {
@@ -814,7 +860,7 @@ class _EighthQuestionState extends State<EighthQuestion> {
               margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
               child: Row(
                 children: <Widget>[
-                  ..._questions['items'][4]['options'].map((option) => 
+                  ..._questions['items'][7]['options'].map((option) => 
                     Expanded(
                       child: Container(
                         height: 60,
@@ -839,6 +885,131 @@ class _EighthQuestionState extends State<EighthQuestion> {
                 ],
               )
             ),
+
+            _eightsQuestionOption == 0 ? Container(
+              width: double.infinity,
+              height: 520.0,
+              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+              child: Form(
+                child: ListView(
+                  children: <Widget>[
+                    SizedBox(height: 10,),
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text('Select Allergies', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: 10,),
+                    Container(
+                      width: double.infinity,
+                      alignment: Alignment.centerLeft,
+                      child: Wrap(
+                        // direction: Axis.horizontal,
+                        // crossAxisAlignment: CrossAxisAlignment.start,
+                        
+                        children: <Widget>[
+                          ..._selectedAllergies.map((item) => 
+                            Container(
+                              margin: EdgeInsets.only(right: 10, bottom: 10),
+                              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: kPrimaryColor,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Wrap(
+                                children: <Widget>[
+                                  Text(item, style: TextStyle(color: Colors.white),),
+                                  SizedBox(width: 5,),
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _checkValue[item] = false;
+                                        _selectedAllergies.removeAt(_selectedAllergies.indexOf(item));
+                                      });
+                                    },
+                                    child: Icon(Icons.close, size: 15, color: Colors.white,),
+                                  ),
+                                ],
+                              )
+                            ),
+                          ).toList()
+                        ],
+                      )
+                    ),
+                    SizedBox(height: 10,),
+                    Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          
+                          TextField(
+                            
+                            style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
+                            onChanged: (value) => {
+                              setState(() {
+                                _medications = allMedications
+                                  .where((item) => item
+                                  .toLowerCase()
+                                  .contains(value.toLowerCase()))
+                                  .toList();
+                              })
+                            },
+                            decoration: InputDecoration(
+                              counterText: ' ',
+                              contentPadding: EdgeInsets.only(top: 14, bottom: 14,),
+                              prefixIcon: Icon(Icons.search),
+                              filled: true,
+                              fillColor: kSecondaryTextField,
+                              border: new UnderlineInputBorder(
+                                borderSide: new BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(4),
+                                  topRight: Radius.circular(4),
+                                )
+                              ),
+                              hintText: 'Search',
+                              hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                            )
+                          )
+                        ],
+                      )
+                    ),
+
+                    Container(
+                      height: 340,
+                      child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        itemCount: _medications.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Container(
+                            height: 50,
+                            child: Row(
+                              children: <Widget>[
+                                SizedBox(width: 10,),
+                                Checkbox(
+                                  activeColor: kPrimaryColor,
+                                  value: _checkValue[_medications[index]],
+                                  onChanged: (value) {
+                                    _updateCheckBox(value, index);
+                                  },
+                                ),
+                                Text(StringUtils.capitalize(_medications[index]), style: TextStyle(fontSize: 17),)
+                              ],
+                            )
+                          );
+                        },
+                      )
+                    ),
+                    
+                  ],
+                )
+              ),
+            ) : Container(),
+  
           ],
         ),
     );

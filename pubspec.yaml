@@ -99,7 +99,9 @@ flutter:
    - assets/images/avatar.png
    - lang/en.json
    - lang/bn.json
+
    - assets/medications.json
+   - assets/allergies.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

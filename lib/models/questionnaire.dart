@@ -116,6 +116,7 @@ var _questions = {
         },
         {
           'question': 'Do you have any allergies?',
+          'type': 'allergy',
           'options': ['yes', 'no']
         },
       ]
@@ -202,7 +203,7 @@ class Questionnaire {
     if (!updated) {
       _questionnaireItems.add(_prepareMedicalHistoryData(questions, answers, type));
     }
-    
+
     return 'success';
   }
 
@@ -404,6 +405,7 @@ class Questionnaire {
           'kidney_disease': answers[5],
           'other_ilness': answers[6],
           'allergies': answers[7],
+          'allergy_types': answers[8],
         },
         "patient_id": Patient().getPatient()['uuid'],
       }
