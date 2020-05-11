@@ -19,18 +19,12 @@ import 'package:nhealth/screens/patients/manage/health_report/create_health_repo
 import 'package:nhealth/screens/patients/manage/health_report/past_health_report_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 
-
-class PatientRecordsScreen extends CupertinoPageRoute {
-  PatientRecordsScreen()
-      : super(builder: (BuildContext context) => new PatientRecords());
-}
-
-class PatientRecords extends StatefulWidget {
+class PatientRecordsScreenOld extends StatefulWidget {
   @override
   _PatientRecordsState createState() => _PatientRecordsState();
 }
 
-class _PatientRecordsState extends State<PatientRecords> {
+class _PatientRecordsState extends State<PatientRecordsScreenOld> {
   var _patient;
   bool isLoading = false;
   var carePlans;
@@ -503,7 +497,7 @@ class _PatientRecordsState extends State<PatientRecords> {
                                           ),
                                           child: FlatButton(
                                             onPressed: () {
-                                              Navigator.of(context).push(CarePlanDetailsScreen(carePlans: carePlans));
+                                              Navigator.of(context).pushNamed('/carePlanDetails', arguments: carePlans);
                                             },
                                             padding: EdgeInsets.symmetric(vertical: 20),
                                             child: Text('VIEW CARE PLAN DETAILS', style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
@@ -599,7 +593,8 @@ class _OverviewInterventionState extends State<OverviewIntervention> {
       child: FlatButton(
         onPressed: () {
           if (widget.carePlan['meta']['status'] == 'pending') {
-            Navigator.of(context).push(CarePlanInterventionScreen(carePlan: widget.carePlan, parent: this));
+            // Navigator.of(context).push(CarePlanInterventionScreen(carePlan: widget.carePlan, parent: this));
+            Navigator.of(context).pushNamed('/carePlanInterventions', arguments: {'carePlan' : widget.carePlan, 'parent': this });
           }
         },
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

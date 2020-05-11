@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/concept-manager/concept_manager.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:nhealth/models/language.dart';
+import 'package:nhealth/route_generator.dart';
 import 'app_localizations.dart';
 
 import 'package:nhealth/constants/constants.dart';
@@ -108,6 +109,10 @@ class MyAppState extends State<MyApp> {
           return supportedLocales.first;
         },
 
+        onGenerateRoute: RouteGenerator.generarteRoute ,
+
+        initialRoute: '/',
+
         home: CheckAuth(),
       ),
     );
@@ -118,10 +123,15 @@ class MyAppState extends State<MyApp> {
 class CheckAuth extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Auth().getStorageAuth().then((success) {
-      if (success['status']) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (ctx) => HomeScreen()));
+    Auth().getStorageAuth().then((data) {
+      print('success');
+      print(data);
+      if (data['status']) {
+        if (data['role'] == 'nurse') {
+          Navigator.of(context).pushReplacementNamed('/chwHome');
+        } else {
+          Navigator.of(context).pushReplacementNamed('/');
+        }
       } else {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (ctx) => AuthScreen()));

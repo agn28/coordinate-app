@@ -4,8 +4,6 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/home_screen.dart';
-import 'package:nhealth/screens/patients/manage/patient_records_screen.dart';
-import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
 
 class HealthReportSuccessScreen extends CupertinoPageRoute {
   HealthReportSuccessScreen()
@@ -54,7 +52,7 @@ class HealthReportSuccess extends StatelessWidget {
                   SizedBox(height: 20,),
                   FlatButton(
                     onPressed: () {
-                      Navigator.of(context).push(PatientRecordsScreen());
+                      Navigator.of(context).pushNamed('/patientOverview');
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -68,7 +66,7 @@ class HealthReportSuccess extends StatelessWidget {
 
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(PatientSearchScreen());
+                      Navigator.of(context).pushNamed('/patientSearch');
                     },
                     child: Container(
                       // height: 190,

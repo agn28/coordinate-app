@@ -14,7 +14,6 @@ import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/patients/manage/patient_records_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 
@@ -29,18 +28,18 @@ List allPatients = [];
 final searchController = TextEditingController();
 bool isPendingRecommendation = false;
 
-class PatientSearchScreen extends CupertinoPageRoute {
-  PatientSearchScreen()
-      : super(builder: (BuildContext context) => new PatientSearch());
+// class PatientSearchScreen extends CupertinoPageRoute {
+//   PatientSearchScreen()
+//       : super(builder: (BuildContext context) => new PatientSearch());
 
-}
+// }
 
-class PatientSearch extends StatefulWidget {
+class PatientSearchScreen extends StatefulWidget {
   @override
   _PatientSearchState createState() => _PatientSearchState();
 }
 
-class _PatientSearchState extends State<PatientSearch> {
+class _PatientSearchState extends State<PatientSearchScreen> {
   bool isLoading = false;
   @override
   initState() {
@@ -278,7 +277,7 @@ class _PatientSearchState extends State<PatientSearch> {
                 ...patients.map((item) => GestureDetector(
                   onTap: () {
                     Patient().setPatient(item);
-                      Navigator.of(context).push(PatientRecordsScreen());
+                      Navigator.of(context).pushNamed('/patientOverview');
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -932,7 +931,7 @@ class PopupListItemWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Patient().setPatient(item);
-          Navigator.of(context).push(PatientRecordsScreen());
+        Navigator.of(context).pushNamed('/patientOverview');
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),

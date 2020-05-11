@@ -12,20 +12,15 @@ import 'package:nhealth/screens/patients/manage/care_plan/care_plan_intervention
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_medication_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
-class CarePlanDetailsScreen extends CupertinoPageRoute {
-  var carePlans;
-  CarePlanDetailsScreen({this.carePlans})
-      : super(builder: (BuildContext context) => CarePlanDetails(carePlans: carePlans));
-}
 
-class CarePlanDetails extends StatefulWidget {
+class CarePlanDetailsScreen extends StatefulWidget {
   var carePlans;
-  CarePlanDetails({this.carePlans});
+  CarePlanDetailsScreen({this.carePlans});
   @override
   _CarePlanDetailsState createState() => _CarePlanDetailsState();
 }
 
-class _CarePlanDetailsState extends State<CarePlanDetails> {
+class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
   var reports;
   bool isLoading = false;
   bool canEdit = false;
@@ -679,7 +674,8 @@ class InterventionsState extends State<Interventions> {
           GestureDetector(
             onTap: () {
               if (widget.carePlan['meta']['status'] != 'completed') {
-                Navigator.of(context).push(CarePlanInterventionScreen(carePlan: widget.carePlan, parent: this));
+                // Navigator.of(context).push(CarePlanInterventionScreen(carePlan: widget.carePlan, parent: this));
+                Navigator.of(context).pushNamed('/carePlanInterventions', arguments: {'carePlan' : widget.carePlan, 'parent': this });
               }
             },
             child: Container(

@@ -6,7 +6,6 @@ import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/home_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.dart';
-import 'package:nhealth/screens/patients/manage/patient_records_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 
 
@@ -100,7 +99,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                   SizedBox(height: 20,),
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(context).pushReplacement(PatientRecordsScreen());
+                      Navigator.of(context).pushNamed('/patientOverview');
                     },
                     child: Container(
                       margin: EdgeInsets.symmetric(horizontal: 50),
