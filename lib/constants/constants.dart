@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
 //urls
-// const String apiUrl = 'http://643776b0.ngrok.io/api/v1/';
+// const String apiUrl = 'http://bfb2e964.ngrok.io/api/v1/';
 const String apiUrl = 'https://coordinate-api.monarko.com/api/v1/';
 
 const String gsBucket = 'gs://nhealth-demo.appspot.com';
 
 const kTextInputColorGrey = Color(0xFFE5E5E5);
 const kPrimaryColor = Color(0xFF01579B);
+const kPrimaryLight = Color(0x5001579B);
 const kPrimaryTextFillColor = Color(0xFF00508f);
 const kLightPrimaryColor = Color(0xFFebf2f7);
 const kPrimaryRedColor = Color(0xFFD92647);

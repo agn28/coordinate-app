@@ -79,7 +79,6 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
       } else {
         _bloodPressures = BloodPressure().items;
       }
-    print(_bloodPressures);
       
     });
   }

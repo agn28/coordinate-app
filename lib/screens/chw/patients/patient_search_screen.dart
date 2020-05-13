@@ -34,12 +34,12 @@ bool isPendingRecommendation = false;
 
 // }
 
-class PatientSearchScreen extends StatefulWidget {
+class ChwPatientSearchScreen extends StatefulWidget {
   @override
   _PatientSearchState createState() => _PatientSearchState();
 }
 
-class _PatientSearchState extends State<PatientSearchScreen> {
+class _PatientSearchState extends State<ChwPatientSearchScreen> {
   bool isLoading = false;
   @override
   initState() {

@@ -12,20 +12,15 @@ import 'package:nhealth/screens/patients/manage/care_plan/care_plan_intervention
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_medication_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
-class CarePlanDetailsScreen extends CupertinoPageRoute {
-  var carePlans;
-  CarePlanDetailsScreen({this.carePlans})
-      : super(builder: (BuildContext context) => CarePlanDetails(carePlans: carePlans));
-}
 
-class CarePlanDetails extends StatefulWidget {
+class CarePlanDetailsScreen extends StatefulWidget {
   var carePlans;
-  CarePlanDetails({this.carePlans});
+  CarePlanDetailsScreen({this.carePlans});
   @override
   _CarePlanDetailsState createState() => _CarePlanDetailsState();
 }
 
-class _CarePlanDetailsState extends State<CarePlanDetails> {
+class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
   var reports;
   bool isLoading = false;
   bool canEdit = false;
@@ -40,7 +35,6 @@ class _CarePlanDetailsState extends State<CarePlanDetails> {
   getReports() async {
     isLoading = true;
     var data = await HealthReportController().getLastReport();
-    print(data);
     
     if (data['error'] == true) {
       setState(() {
@@ -583,7 +577,6 @@ class InterventionsState extends State<Interventions> {
   _getDuration(item) {
 
     if (item['body']['activityDuration'] != null && item['body']['activityDuration']['start'] != '' && item['body']['activityDuration']['end'] != '') {
-      // print();
       var start = DateTime.parse(item['body']['activityDuration']['start']);
       var time = DateTime.parse(item['body']['activityDuration']['end']).difference(DateTime.parse(item['body']['activityDuration']['start'])).inDays;
 
@@ -591,8 +584,6 @@ class InterventionsState extends State<Interventions> {
       if (result >= 1) {
         return 'Within ${result.toString()} months of recommendation of goal';
       }
-      // print(start);
-      // print(result);
     }
     return '';
   }
@@ -604,7 +595,6 @@ class InterventionsState extends State<Interventions> {
         var parsedDate = DateTime.fromMillisecondsSinceEpoch(widget.carePlan['meta']['completed_at']['_seconds'] * 1000);
 
         completedDate = DateFormat("MMMM d, y").format(parsedDate).toString();
-        print(completedDate);
       }
 
       setState(() {
@@ -679,7 +669,8 @@ class InterventionsState extends State<Interventions> {
           GestureDetector(
             onTap: () {
               if (widget.carePlan['meta']['status'] != 'completed') {
-                Navigator.of(context).push(CarePlanInterventionScreen(carePlan: widget.carePlan, parent: this));
+                // Navigator.of(context).push(CarePlanInterventionScreen(carePlan: widget.carePlan, parent: this));
+                Navigator.of(context).pushNamed('/carePlanInterventions', arguments: {'carePlan' : widget.carePlan, 'parent': this });
               }
             },
             child: Container(

@@ -48,7 +48,6 @@ class _PastEncountersState extends State<PastEncounters> {
 
     // _encounters = await AssessmentController().getAllAssessmentsByPatient();
     _encounters = await AssessmentController().getLiveAllAssessmentsByPatient();
-    print(_encounters);
 
     setState(() {
       isLoading = false;
@@ -64,7 +63,7 @@ class _PastEncountersState extends State<PastEncounters> {
               )
             ),
             child: FlatButton(
-              onPressed: () => Navigator.of(context).push(EncounterDetailsScreen(encounter)),
+              onPressed: () => Navigator.of(context).pushNamed('/encounterDetails', arguments: encounter),
               child: Column(
                 children: <Widget>[
                   Container(

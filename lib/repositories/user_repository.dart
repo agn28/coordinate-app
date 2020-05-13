@@ -1,30 +1,30 @@
 import 'package:http/http.dart' as http;
 import 'package:nhealth/models/auth.dart';
-import 'package:nhealth/models/patient.dart';
 import '../constants/constants.dart';
 import 'dart:convert';
 
-class WorklistRepository {
+class UserRepository {
 
-  getWorklist() async {
 
+
+  getUsers() async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
-
-    return await http.get(
-      apiUrl + 'care-plans/work-list' ,
+    return http.get(
+      apiUrl + 'users?role=nurse,doctor,chw',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
       },
     ).then((response) {
-      return jsonDecode(response.body);
+      return json.decode(response.body);
       
     }).catchError((error) {
       print('error ' + error.toString());
     });
-    
-    
   }
+
+  
   
 }

@@ -10,23 +10,15 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
-class EncounterDetailsScreen extends CupertinoPageRoute {
-  final assessment;
-
-  EncounterDetailsScreen(this.assessment)
-      : super(builder: (BuildContext context) => new EncounterDetails(assessment));
-
-}
-
-class EncounterDetails extends StatefulWidget {
-  final assessment;
-  EncounterDetails(this.assessment);
+class EncounterDetailsScreen extends StatefulWidget {
+  final encounter;
+  EncounterDetailsScreen({this.encounter});
 
   @override
   EncounterDetailsState createState() => EncounterDetailsState();
 }
 
-class EncounterDetailsState extends State<EncounterDetails> {
+class EncounterDetailsState extends State<EncounterDetailsScreen> {
   var _patient;
   var _observations;
   var _bloodPressures = [];
@@ -44,7 +36,7 @@ class EncounterDetailsState extends State<EncounterDetails> {
   /// Get all observations by assessment
   getObservations() async {
     // _observations =  await AssessmentController().getObservationsByAssessment(widget.assessment);
-    _observations =  await AssessmentController().getLiveObservationsByAssessment(widget.assessment);
+    _observations =  await AssessmentController().getLiveObservationsByAssessment(widget.encounter);
     _getItem();
 
    setState(() {
@@ -60,7 +52,6 @@ class EncounterDetailsState extends State<EncounterDetails> {
     int diastolic = 0;
 
     _bloodPressures.forEach((item) {
-      print(item['body']['data']['systolic']);
       systolic = systolic + item['body']['data']['systolic'];
       diastolic = diastolic + item['body']['data']['diastolic'];
     });
@@ -178,15 +169,15 @@ class EncounterDetailsState extends State<EncounterDetails> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: <Widget>[
                             Expanded(
-                              child: Text(Helpers().convertDate(widget.assessment['data']['assessment_date']), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+                              child: Text(Helpers().convertDate(widget.encounter['data']['assessment_date']), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
                             ),
                             Expanded(
-                              child: Text(StringUtils.capitalize(widget.assessment['data']['type']), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+                              child: Text(StringUtils.capitalize(widget.encounter['data']['type']), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
                             ),
                             Expanded(
                               child: GestureDetector(
                                 onTap: () {
-                                  AssessmentController().edit(widget.assessment, _observations);
+                                  AssessmentController().edit(widget.encounter, _observations);
                                   Navigator.of(context).push(NewEncounterScreen(encounterDetailsState: this));
                                 },
                                 child: Row(

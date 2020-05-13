@@ -114,14 +114,11 @@ class _RegisterPatientState extends State<RegisterPatient> {
 
   _fillFormData() {
     var patient = Patient().getPatient();
-    // print(patient);
     firstNameController.text = patient['data']['first_name'];
     lastNameController.text = patient['data']['last_name'];
     // setState(() {
     //   _image = File(patient['data']['avatar']);
     // });
-    print(patient['data']['birth_date']);
-    print(DateTime.parse(patient['data']['birth_date'].toString()));
     // birthDateController.text = DateFormat('d').format(DateTime.parse(patient['data']['birth_date']));
     // birthMonthController.text = DateFormat('MM').format(DateTime.parse(patient['data']['birth_date']));
     // birthYearController.text = DateFormat('y').format(DateTime.parse(patient['data']['birth_date']));
@@ -878,8 +875,6 @@ class _AddPhotoState extends State<AddPhoto> {
   initState() {
     super.initState();
     _image = null;
-    print('hello');
-    print(isEditState);
     if (isEditState != null) {
       storageAvatar = isEditState ? Patient().getPatient()['data']['avatar'] : '';
     }
@@ -895,8 +890,6 @@ class _AddPhotoState extends State<AddPhoto> {
   }
 
   uploadImage() async {
-    print(_image);
-    print(DateTime.now().millisecondsSinceEpoch);
     var url = '';
     if (_image != null) {
       String filePath = 'images/patients/${firstNameController.text}_${DateTime.now().millisecondsSinceEpoch}.jpg';
@@ -905,10 +898,8 @@ class _AddPhotoState extends State<AddPhoto> {
         _uploadTask = _storage.ref().child(filePath).putFile(_image);
       });
       await _uploadTask.onComplete;
-      print('file uploaded');
       if (_uploadTask.isComplete) {
         var url = await _storage.ref().child(filePath).getDownloadURL();
-        print(url);
         setState(() {
           uploadedImageUrl = url;
         });
@@ -918,10 +909,8 @@ class _AddPhotoState extends State<AddPhoto> {
 
       // }
 
-      // print(_uploadTask);
 
       return url;
-      // print(_uploadTask);
     }
   }
 

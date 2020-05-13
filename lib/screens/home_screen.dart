@@ -1,6 +1,7 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/auth.dart';
@@ -22,18 +23,18 @@ class _HomeState extends State<HomeScreen> {
   String role = '';
   @override
   initState() {
-    super.initState();
     _getAuthData();
+    super.initState();
   }
   
 
   _getAuthData() async {
     var data = await Auth().getStorageAuth();
-    print(data);
     if (!data['status']) {
       await Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+      Navigator.of(context).pushNamed('/login',);
     }
+    // Navigator.of(context).pushNamed('/login',);
     setState(() {
       userName = data['name'];
       role = data['role'];
@@ -115,7 +116,7 @@ class _HomeState extends State<HomeScreen> {
                     height: 50,
                     child: FlatButton(
                       onPressed: () {
-                        Navigator.of(context).push(PatientSearchScreen());
+                        Navigator.of(context).pushNamed('/patientSearch');
                       },
                       child: Row(
                         children: <Widget>[
@@ -232,6 +233,7 @@ class _HomeState extends State<HomeScreen> {
                         SizedBox(height: 15,),
                         Text(role != null ? StringUtils.capitalize(role) : '', style: TextStyle(color: Colors.white70, fontSize: 16),),
                         SizedBox(height: 40,),
+                        
                         Text(AppLocalizations.of(context).translate('homeIntro'), style: TextStyle(color: Colors.white, fontSize: 34),)
                       ],
                     ),
@@ -250,7 +252,8 @@ class _HomeState extends State<HomeScreen> {
                           onTap: () async {
                             // await Auth().isExpired();
                             // return;
-                            Navigator.of(context).push(PatientSearchScreen());
+                            Navigator.of(context).pushNamed('/patientSearch');
+                            // Navigator.of(context).push(PatientSearchScreen());
                           },
                           child: Container(
                             height: 190,
@@ -317,4 +320,18 @@ class _HomeState extends State<HomeScreen> {
       ),
     );
   }
+}
+
+class CustomClipPath extends CustomClipper<Path> {
+  var radius=10.0;
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.lineTo(size.height, size.width / 2);
+    path.lineTo(size.width, 0.0);
+    return path;
+  }
+  
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

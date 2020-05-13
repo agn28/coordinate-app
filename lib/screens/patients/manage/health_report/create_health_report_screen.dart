@@ -59,8 +59,6 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
     }
     var data = await HealthReportController().getReport();
 
-    print(data);
-
     if (data == null) {
       return Toast.show('Server Error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
     }
@@ -101,7 +99,6 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
         reports = data;
       });
     }
-    // print(checkIfAllGreen());
 
   }
 
@@ -126,9 +123,6 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
     var diabetes = reports['assessments']['diabetes'] != null ? reports['assessments']['diabetes']['tfl'] == 'GREEN' || reports['assessments']['diabetes']['tfl'] == 'BLUE' : false;
     var cholesterol = reports['assessments']['cholesterol']['components']['total_cholesterol'] != null ? reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'GREEN' || reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'BLUE' : false;
     var cvd = reports['assessments']['cvd'] != null ? reports['assessments']['cvd']['tfl'] == 'GREEN' || reports['assessments']['cvd']['tfl'] == 'BLUE' : false;
-
-    print('hello');
-    print(fruits);
 
     if (tobacco && alcohol && fruits && physicalActivity && bmi && bloodPressure && diabetes && cholesterol && cvd) {
       return true;

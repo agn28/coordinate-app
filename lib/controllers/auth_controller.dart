@@ -9,7 +9,7 @@ class AuthController {
 
     if (response['uid'] != null) {
       Auth().setAuth(response);
-      return 'success';
+      return response;
     }
 
     return 'error';

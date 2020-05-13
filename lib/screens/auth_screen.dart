@@ -28,7 +28,6 @@ class _AuthScreenState extends State<AuthScreen> {
 
     final double shortestSide = MediaQuery.of(context).size.shortestSide;
     final bool useMobileLayout = shortestSide < 600;
-    print(shortestSide);
 
     return Scaffold(
       backgroundColor: kPrimaryColor,
@@ -201,7 +200,10 @@ class _MobileAuthState extends State<MobileAuth> {
                             setState(() {
                               isLoading = false;
                             });
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => HomeScreen()));
+                            if (response['role'] == 'nurse') {
+                              Navigator.of(context).pushReplacementNamed('/chwHome');
+                            }
+                            Navigator.of(context).pushReplacementNamed('/');
                           }
 
                         },
@@ -419,7 +421,13 @@ class _TabAuthState extends State<TabAuth> {
                             setState(() {
                               isLoading = false;
                             });
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => HomeScreen()));
+                            if (response['role'] == 'chw') {
+                              Navigator.of(context).pushReplacementNamed('/chwHome');
+                            } else {
+                              Navigator.of(context).pushReplacementNamed('/home');
+                            }
+                            
+                            // Navigator.of(context).pushReplacementNamed('/');
                           }
 
                         },

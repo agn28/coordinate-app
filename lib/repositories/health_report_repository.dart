@@ -11,7 +11,6 @@ class HealthReportRepository {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     var patientID = Patient().getPatient()['uuid'];
-    print(patientID);
     return await http.post(
       apiUrl + 'health-reports/generate/' + patientID,
       headers: {
@@ -77,7 +76,6 @@ class HealthReportRepository {
       },
       body: json.encode(data)
     ).then((response) {
-      print('response ' + response.body);
       return json.decode(response.body);
       
     }).catchError((error) {

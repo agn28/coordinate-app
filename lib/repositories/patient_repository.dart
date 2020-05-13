@@ -6,7 +6,6 @@ import 'dart:convert';
 class PatientRepository {
 
   create(data) async {
-    print('patient created');
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     await http.post(
@@ -18,7 +17,24 @@ class PatientRepository {
       },
       body: json.encode(data)
     ).then((response) {
-      print('response ' + response.body);
+      
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
+  }
+
+  getPatient(patientId) async {
+    var authData = await Auth().getStorageAuth() ;
+    var token = authData['accessToken'];
+    return http.get(
+      apiUrl + 'patients/' + patientId,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    ).then((response) {
+      return json.decode(response.body);
       
     }).catchError((error) {
       print('error ' + error.toString());
@@ -55,7 +71,6 @@ class PatientRepository {
       },
       body: json.encode(data)
     ).then((response) {
-      print('response ' + response.body);
       
     }).catchError((error) {
       print('error ' + error.toString());

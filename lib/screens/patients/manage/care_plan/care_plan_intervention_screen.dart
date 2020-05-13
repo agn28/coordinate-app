@@ -7,23 +7,17 @@ import 'package:nhealth/widgets/primary_button_widget.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-class CarePlanInterventionScreen extends CupertinoPageRoute {
+
+
+class CarePlanInterventionScreen extends StatefulWidget {
   final carePlan;
   final parent;
-  CarePlanInterventionScreen({this.carePlan, this.parent})
-      : super(builder: (BuildContext context) => CarePlanIntervention(carePlan: carePlan, parent: parent));
-
-}
-
-class CarePlanIntervention extends StatefulWidget {
-  final carePlan;
-  final parent;
-  CarePlanIntervention({this.carePlan, this.parent});
+  CarePlanInterventionScreen({this.carePlan, this.parent});
   @override
   _CarePlanInterventionState createState() => _CarePlanInterventionState();
 }
 
-class _CarePlanInterventionState extends State<CarePlanIntervention> {
+class _CarePlanInterventionState extends State<CarePlanInterventionScreen> {
   YoutubePlayerController _youtubeController;
 
   PageController _controller = PageController(
@@ -56,8 +50,6 @@ class _CarePlanInterventionState extends State<CarePlanIntervention> {
   }
 
   _getFormUrl() {
-    print(widget.carePlan['body']['id']);
-    print(widget.carePlan['body']['components']);
     var form = widget.carePlan['body']['components'].where((item) => item['type'] == 'form');
 
     if (form.isNotEmpty) {
@@ -512,7 +504,7 @@ class CommentContainer extends StatefulWidget {
   }) : super(key: key);
 
   final TextEditingController commentController;
-  final CarePlanIntervention widget;
+  final CarePlanInterventionScreen widget;
 
   @override
   _CommentContainerState createState() => _CommentContainerState();
@@ -626,7 +618,6 @@ class VideoContainer extends StatelessWidget {
                 child: Container(
                   child: YoutubePlayer(
                     onEnded: (data) {
-                      print(data);
                      
                     } ,
                     

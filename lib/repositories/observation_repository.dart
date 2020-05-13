@@ -29,7 +29,6 @@ class ObservationRepository {
       },
       body: json.encode(data)
     ).then((response) {
-      print('response ' + response.body);
       
     }).catchError((error) {
       print('error ' + error.toString());
@@ -46,7 +45,6 @@ class ObservationRepository {
       },
       body: json.encode(data)
     ).then((response) {
-      print('response ' + response.body);
       
     }).catchError((error) {
       print('error ' + error.toString());
@@ -62,7 +60,6 @@ class ObservationRepository {
         'Content-Type': 'application/json'
       },
     ).then((response) {
-      print('response ' + response.body);
       
     }).catchError((error) {
       print('error ' + error.toString());

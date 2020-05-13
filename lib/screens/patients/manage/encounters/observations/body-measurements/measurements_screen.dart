@@ -49,7 +49,6 @@ class MeasurementsState extends State<Measurements> {
 
   @override
   Widget build(BuildContext context) {
-    print(MediaQuery.of(context).size.width);
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.white,
@@ -295,7 +294,6 @@ class _AddDialogueState extends State<AddDialogue> {
 
    _getItem() {
     var item = BodyMeasurement().getItem(widget.name);
-    print(item);
     if (item.isNotEmpty) {
       setState(() {
         valueController.text = item['value'].toString();
@@ -304,7 +302,6 @@ class _AddDialogueState extends State<AddDialogue> {
       });
     }
 
-    print(selectedUnit);
   }
 
   @override
