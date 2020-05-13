@@ -10,8 +10,6 @@ class WorklistRepository {
 
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
-    // var patientID = Patient().getPatient()['uuid'];
-    // print(patientID);
 
     return await http.get(
       apiUrl + 'care-plans/work-list' ,

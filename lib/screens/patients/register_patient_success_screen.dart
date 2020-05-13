@@ -29,8 +29,6 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print('isedit');
-    print(widget.isEditState);
   }
   
   @override

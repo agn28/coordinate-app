@@ -81,7 +81,6 @@ class AssessmentController {
 
     await observations.forEach((item) {
       parsedData = jsonDecode(item['data']);
-      // // print(assessment),
       if (parsedData['body']['patient_id'] == Patient().getPatient()['uuid'] && parsedData['body']['assessment_id'] == assessment['uuid']) {
         data.add({
           'uuid': item['uuid'],
@@ -186,7 +185,6 @@ class AssessmentController {
   }
 
   edit(assessment, observations) {
-    print('hello');
     Assessment().selectAssessment(assessment);
     Helpers().clearObservationItems();
     observations.forEach((item) {
@@ -197,7 +195,6 @@ class AssessmentController {
       } else if (item['body']['type'] == 'blood_pressure') {
         BloodPressure().addBpItemsForEdit(item);
       } else if (item['body']['type'] == 'survey') {
-        print(item);
         Questionnaire().addQnItemsForEdit(item);
         // BloodPressure().addBpItemsForEdit(item);
       }

@@ -65,8 +65,6 @@ class BloodTest {
       return 'Error! Minimum 1 step should be completed.';
     }
 
-    // print(_btItems);
-    // return;
     for (var item in _items) {
       bool updated = false;
       for (var bt in _btItems) {

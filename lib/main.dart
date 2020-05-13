@@ -31,7 +31,6 @@ void main() async {
 
   runApp(MyApp());
 
-  print('beforecodings');
   print(DatabaseCreator().dBCreatedStatus());
 
   if (DatabaseCreator().dBCreatedStatus()) {
@@ -124,14 +123,10 @@ class CheckAuth extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Auth().getStorageAuth().then((data) {
-      print('success');
-      print(data);
       if (data['status']) {
         if (data['role'] == 'chw') {
           Navigator.of(context).pushReplacementNamed('/chwHome');
         } else {
-          print('hello');
-          print(data);
           Navigator.of(context).pushReplacementNamed('/home');
         }
       } else {

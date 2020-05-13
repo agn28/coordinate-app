@@ -184,7 +184,6 @@ class _MobileAuthState extends State<MobileAuth> {
                       SizedBox(height: 30,),
                       GestureDetector(
                         onTap: () async {
-                          print('hasdkaskd');
                           
                           FocusScope.of(context).requestFocus(FocusNode());
                           if (_formKey.currentState.validate()) {
@@ -422,8 +421,6 @@ class _TabAuthState extends State<TabAuth> {
                             setState(() {
                               isLoading = false;
                             });
-                            print('response hello');
-                            print(response['role']);
                             if (response['role'] == 'chw') {
                               Navigator.of(context).pushReplacementNamed('/chwHome');
                             } else {

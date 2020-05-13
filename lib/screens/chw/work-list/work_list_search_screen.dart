@@ -50,7 +50,6 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
       return Toast.show('Server Error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
     }
 
-    // print(data['data'][0]);
     setState(() {
       allWorklist = data['data'];
       worklist = allWorklist;
@@ -69,7 +68,6 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
   }
 
   applySort() {
-    // print(patientSortActive);
     if (patientSortActive) {
       if (patientSort == 'asc') {
         worklist.sort((a, b) => a['patient']['first_name'].toString().toLowerCase().compareTo(b['patient']['first_name'].toString().toLowerCase()));
@@ -83,7 +81,6 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
       var worklistWithoutdate = [];
       // worklist = allWorklist;
       // worklist[2]['body']['activityDuration']['end'] = '2020-02-05';
-      // print(DateTime.parse(worklist[2]['body']['activityDuration']['end']).difference(DateTime.parse(worklist[0]['body']['activityDuration']['start'])).inDays);
       worklist.forEach((item) {
         if (item['body']['activityDuration']['start'] != '' || item['body']['activityDuration']['end'] != '') {
           worklistWithdate.add(item);
@@ -91,11 +88,6 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
           worklistWithoutdate.add(item);
         }
       });
-      print(DateTime.parse(worklist[0]['body']['activityDuration']['end']).difference(DateTime.now()).inDays);
-      print(DateTime.parse(worklist[1]['body']['activityDuration']['end']).difference(DateTime.now()).inDays);
-      print(DateTime.parse(worklist[2]['body']['activityDuration']['end']).difference(DateTime.now()).inDays);
-      // print(worklistWithdate.length);
-      // print(worklistWithoutdate.length);
       // worklist.forEach((item){
       //   print(worklist.indexOf(item));
       //   print(DateTime.parse(item['body']['activityDuration']['end']).difference(DateTime.parse(item['body']['activityDuration']['start'])).inDays);
@@ -117,9 +109,6 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
         });
       });
 
-      print(DateTime.parse(worklistWithdate[0]['body']['activityDuration']['end']).difference(DateTime.now()).inDays);
-      print(DateTime.parse(worklistWithdate[1]['body']['activityDuration']['end']).difference(DateTime.now()).inDays);
-      print(DateTime.parse(worklistWithdate[2]['body']['activityDuration']['end']).difference(DateTime.now()).inDays);
     }
   }
 
@@ -148,7 +137,6 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
   _getDuration(item) {
 
     if (item['body']['activityDuration'] != null && item['body']['activityDuration']['start'] != '' && item['body']['activityDuration']['end'] != '') {
-      // print();
       var start = DateTime.parse(item['body']['activityDuration']['start']);
       var time = DateTime.parse(item['body']['activityDuration']['end']).difference(DateTime.parse(item['body']['activityDuration']['start'])).inDays;
 
@@ -156,8 +144,6 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
       if (result >= 1) {
         return 'Within ${result.toString()} months of recommendation of goal';
       }
-      // print(start);
-      // print(result);
     }
     return '';
   }
@@ -186,12 +172,6 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
       bp = report['body']['result']['assessments']['blood_pressure'] != null ? report['body']['result']['assessments']['blood_pressure'] : null;
       cholesterol = report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ? report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] : null;
     });
-    // print('report');
-    // print(bmi);
-    // print(cvd);
-    // print(bp);
-    // print(cholesterol);
-
 
   }
 

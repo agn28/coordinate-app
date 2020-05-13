@@ -52,8 +52,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   @override
   void initState() {
     super.initState();
-    print('checkInState');
-    print(widget.checkInState);
     _patient = Patient().getPatient();
     _checkAvatar();
     _checkAuth();
@@ -86,13 +84,10 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   }
 
   getReport() async {
-    print('get report');
     setState(() {
       isLoading = true;
     });
     var data = await HealthReportController().getLastReport();
-    print('data');
-    print(data);
     
     if (data['error'] == true) {
       setState(() {
@@ -114,14 +109,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
       bp = report['body']['result']['assessments']['blood_pressure'] != null ? report['body']['result']['assessments']['blood_pressure'] : null;
       cholesterol = report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ? report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] : null;
     });
-    // print('report');
-    // print(bmi);
-    // print(cvd);
-    // print(bp);
-    // print(cholesterol);
-    print('report');
-    print(report);
-
 
   }
 
@@ -193,7 +180,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   }
 
   getEncounters() async {
-    print('getencounters');
     setState(() {
       isLoading = true;
     });
@@ -251,8 +237,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
       });
 
     }
-    print('carePlans');
-    print(carePlans);
   }
 
 

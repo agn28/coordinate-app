@@ -74,7 +74,6 @@ class WorklistController {
   }
 
   edit(assessment, observations) {
-    print('hello');
     Assessment().selectAssessment(assessment);
     Helpers().clearObservationItems();
     observations.forEach((item) {
@@ -85,7 +84,6 @@ class WorklistController {
       } else if (item['body']['type'] == 'blood_pressure') {
         BloodPressure().addBpItemsForEdit(item);
       } else if (item['body']['type'] == 'survey') {
-        print(item);
         Questionnaire().addQnItemsForEdit(item);
         // BloodPressure().addBpItemsForEdit(item);
       }

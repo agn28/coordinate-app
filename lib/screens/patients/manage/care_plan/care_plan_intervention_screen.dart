@@ -50,8 +50,6 @@ class _CarePlanInterventionState extends State<CarePlanInterventionScreen> {
   }
 
   _getFormUrl() {
-    print(widget.carePlan['body']['id']);
-    print(widget.carePlan['body']['components']);
     var form = widget.carePlan['body']['components'].where((item) => item['type'] == 'form');
 
     if (form.isNotEmpty) {
@@ -620,7 +618,6 @@ class VideoContainer extends StatelessWidget {
                 child: Container(
                   child: YoutubePlayer(
                     onEnded: (data) {
-                      print(data);
                      
                     } ,
                     

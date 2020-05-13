@@ -30,8 +30,6 @@ class _HomeState extends State<HomeScreen> {
 
   _getAuthData() async {
     var data = await Auth().getStorageAuth();
-    print('hello');
-    print(data);
     if (!data['status']) {
       await Auth().logout();
       Navigator.of(context).pushNamed('/login',);

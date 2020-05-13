@@ -49,7 +49,6 @@ class _NewEncounterState extends State<NewEncounter> {
       setState(() {
         commentController.text = Assessment().getSelectedAssessment()['data'] != null ? Assessment().getSelectedAssessment()['data']['comment'] : '';
         var type = Assessment().getSelectedAssessment()['data'] != null ? Assessment().getSelectedAssessment()['data']['type'] : 'in-clinic';
-        print(type);
         selectedType = type == 'in-clinic' ? 'In-clinic Screening' : 'Home Visit';
       });
     }

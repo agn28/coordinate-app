@@ -21,8 +21,6 @@ class Auth {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var auth = prefs.getString('auth');
 
-    // print(jsonDecode(auth)['expirationTime']);
-
     if (auth == null) {
       return {
         'status': false
@@ -31,7 +29,6 @@ class Auth {
 
     var authData = jsonDecode(auth);
 
-    // print(DateTime.parse('Fri, 14 Feb 2020 09:35:32'));
     localAuth = authData;
     if (isExpired()) {
       return {

@@ -35,7 +35,6 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
   getReports() async {
     isLoading = true;
     var data = await HealthReportController().getLastReport();
-    print(data);
     
     if (data['error'] == true) {
       setState(() {
@@ -578,7 +577,6 @@ class InterventionsState extends State<Interventions> {
   _getDuration(item) {
 
     if (item['body']['activityDuration'] != null && item['body']['activityDuration']['start'] != '' && item['body']['activityDuration']['end'] != '') {
-      // print();
       var start = DateTime.parse(item['body']['activityDuration']['start']);
       var time = DateTime.parse(item['body']['activityDuration']['end']).difference(DateTime.parse(item['body']['activityDuration']['start'])).inDays;
 
@@ -586,8 +584,6 @@ class InterventionsState extends State<Interventions> {
       if (result >= 1) {
         return 'Within ${result.toString()} months of recommendation of goal';
       }
-      // print(start);
-      // print(result);
     }
     return '';
   }
@@ -599,7 +595,6 @@ class InterventionsState extends State<Interventions> {
         var parsedDate = DateTime.fromMillisecondsSinceEpoch(widget.carePlan['meta']['completed_at']['_seconds'] * 1000);
 
         completedDate = DateFormat("MMMM d, y").format(parsedDate).toString();
-        print(completedDate);
       }
 
       setState(() {

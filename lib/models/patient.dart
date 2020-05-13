@@ -8,15 +8,12 @@ class Patient {
   }
   setPatientById(patientId) async {
     var response = await PatientController().getPatient(patientId);
-    print('response');
-    print(response);
     if (response['error'] != null && response['error'] == false) {
       _patient = {
         'uuid': response['data']['id'],
         'data': response['data']['body']
       };
     }
-    print(_patient);
     return 'success';
   }
 

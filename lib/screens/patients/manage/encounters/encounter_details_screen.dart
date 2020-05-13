@@ -52,7 +52,6 @@ class EncounterDetailsState extends State<EncounterDetailsScreen> {
     int diastolic = 0;
 
     _bloodPressures.forEach((item) {
-      print(item['body']['data']['systolic']);
       systolic = systolic + item['body']['data']['systolic'];
       diastolic = diastolic + item['body']['data']['diastolic'];
     });

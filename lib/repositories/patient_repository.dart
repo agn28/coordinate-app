@@ -6,7 +6,6 @@ import 'dart:convert';
 class PatientRepository {
 
   create(data) async {
-    print('patient created');
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     await http.post(

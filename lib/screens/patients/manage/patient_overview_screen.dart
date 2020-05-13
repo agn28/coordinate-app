@@ -105,12 +105,6 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
       bp = report['body']['result']['assessments']['blood_pressure'] != null ? report['body']['result']['assessments']['blood_pressure'] : null;
       cholesterol = report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ? report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] : null;
     });
-    // print('report');
-    // print(bmi);
-    // print(cvd);
-    // print(bp);
-    // print(cholesterol);
-
 
   }
 
@@ -239,8 +233,6 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
       });
 
     }
-    print('carePlans');
-    print(carePlans);
   }
 
 
@@ -962,7 +954,6 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                                       // SizedBox(height: 20),
                                                       GestureDetector(
                                                         onTap: () {
-                                                          print(encounter['meta']['collected_by']);
                                                           return;
                                                           Navigator.of(context).pushNamed('/encounterDetails', arguments: encounter);
                                                         },

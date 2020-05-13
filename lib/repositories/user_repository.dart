@@ -18,8 +18,6 @@ class UserRepository {
         'Authorization': 'Bearer ' + token
       },
     ).then((response) {
-      print('users');
-      print(json.decode(response.body));
       return json.decode(response.body);
       
     }).catchError((error) {

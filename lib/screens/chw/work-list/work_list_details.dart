@@ -50,7 +50,6 @@ class _WorkListDetailsState extends State<WorkListDetails> {
   @override
   initState() {
     super.initState();
-    print(widget.carePlan);
     _getVideoUrl();
     _getFormUrl();
     createPages();
@@ -615,7 +614,6 @@ class VideoContainer extends StatelessWidget {
                 child: Container(
                   child: YoutubePlayer(
                     onEnded: (data) {
-                      print(data);
                      
                     } ,
                     
