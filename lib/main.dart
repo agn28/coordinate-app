@@ -127,10 +127,12 @@ class CheckAuth extends StatelessWidget {
       print('success');
       print(data);
       if (data['status']) {
-        if (data['role'] == 'nurse') {
+        if (data['role'] == 'chw') {
           Navigator.of(context).pushReplacementNamed('/chwHome');
         } else {
-          Navigator.of(context).pushReplacementNamed('/');
+          print('hello');
+          print(data);
+          Navigator.of(context).pushReplacementNamed('/home');
         }
       } else {
         Navigator.pushReplacement(

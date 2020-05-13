@@ -77,7 +77,6 @@ class HealthReportRepository {
       },
       body: json.encode(data)
     ).then((response) {
-      print('response ' + response.body);
       return json.decode(response.body);
       
     }).catchError((error) {

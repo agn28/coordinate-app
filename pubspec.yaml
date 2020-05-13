@@ -98,6 +98,9 @@ flutter:
    - assets/images/icons/icon_physical-activity.png
    - assets/images/icons/icon_smoker.png
    - assets/images/avatar.png
+   - assets/images/patient_big.png
+   - assets/images/icons/well.png
+   - assets/images/icons/unwell.png
    - lang/en.json
    - lang/bn.json
 

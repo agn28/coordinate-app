@@ -26,6 +26,21 @@ class PatientController {
     return data;
   }
 
+  getPatient(patientId) async {
+    var response = await PatientRepository().getPatient(patientId);
+
+    // await patients.forEach((patient) {
+    //   parsedData = jsonDecode(patient['data']);
+    //   data.add({
+    //     'uuid': patient['uuid'],
+    //     'data': parsedData['body'],
+    //     'meta': parsedData['meta']
+    //   });
+    // });
+
+    return response;
+  }
+
   getAllLivePatients() async {
     var response = await PatientRepository().getPatients();
 

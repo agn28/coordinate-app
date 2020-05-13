@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/main.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/chw/new_communiti_visit/patient_feeling_screen.dart';
+import 'package:nhealth/screens/chw/new_communiti_visit/verify_patient_screen.dart';
+import 'package:nhealth/screens/chw/patients/patient_summary_screen.dart';
 import 'package:nhealth/screens/chw/work-list/chw_home_screen.dart';
 import 'package:nhealth/screens/chw/work-list/work_list_search_screen.dart';
 import 'package:nhealth/screens/home_screen.dart';
@@ -13,12 +16,13 @@ import 'package:nhealth/screens/patients/manage/encounters/encounter_details_scr
 import 'package:nhealth/screens/patients/manage/patient_overview_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_overview_screen_old.dart';
 import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
+import 'package:nhealth/screens/patients/register_patient_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic>  generarteRoute(RouteSettings settings) {
     
     switch (settings.name) {
-      case '/':
+      case '/home':
         return MaterialPageRoute(builder: (ctx) => HomeScreen());
       case '/login':
         return MaterialPageRoute(builder: (_) => AuthScreen());
@@ -36,8 +40,16 @@ class RouteGenerator {
         var data = settings.arguments;
         return CupertinoPageRoute(builder: (_) => EncounterDetailsScreen( encounter: data ));
 
+      case '/chwPatientSummary':
+        var data = settings.arguments;
+        return CupertinoPageRoute(builder: (_) => ChwPatientRecordsScreen(checkInState: data));
+
       case '/chwHome':
         return CupertinoPageRoute(builder: (_) => ChwHomeScreen());
+      case '/verifyPatient':
+        return CupertinoPageRoute(builder: (_) => VerifyPatientScreen());
+      case '/patientFeeling':
+        return CupertinoPageRoute(builder: (_) => PatientFeelingScreen());
     }
   }
 }

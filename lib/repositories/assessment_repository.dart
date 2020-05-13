@@ -19,7 +19,6 @@ class AssessmentRepository {
       },
       body: json.encode(data)
     ).then((response) {
-      print('response ' + response.body);
       
     }).catchError((error) {
       print('error ' + error.toString());
@@ -101,7 +100,6 @@ class AssessmentRepository {
       },
       body: json.encode(data)
     ).then((response) {
-      print('response ' + response.body);
       
     }).catchError((error) {
       print('error ' + error.toString());

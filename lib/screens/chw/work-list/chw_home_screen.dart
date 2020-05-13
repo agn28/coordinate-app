@@ -6,6 +6,8 @@ import 'dart:math';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/chw/patients/patient_search_screen.dart';
+import 'package:nhealth/screens/chw/work-list/work_list_search_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:nhealth/screens/settings/settings_screen.dart';
@@ -44,27 +46,30 @@ class _HomeState extends State<ChwHomeScreen> {
     });
   }
   var navigationItems = [
-    Center(child: Text('worklist'),),
-    Center(child: Text('patients'),),
-    Center(child: Text('new patient'),),
-    Center(child: Text('more'),)
+    ChwWorkListSearchScreen(),
+    PatientSearchScreen(),
+    Container(),
+    Center(child: Text(''),)
   ];
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: new AppBar(
-        title: new Text(AppLocalizations.of(context).translate('home'), style: TextStyle(color: Colors.white, fontSize: 22),),
-        backgroundColor: kPrimaryColor,
-        elevation: 0.0,
-        iconTheme: IconThemeData(color: Colors.white),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.more_vert, color: Colors.white),
-            onPressed: () {},
-          )
-        ],
-      ),
+      // appBar: new AppBar(
+      //   title: new Text(AppLocalizations.of(context).translate('home'), style: TextStyle(color: Colors.white, fontSize: 22),),
+      //   backgroundColor: kPrimaryColor,
+      //   elevation: 0.0,
+      //   iconTheme: IconThemeData(color: Colors.white),
+      //   actions: <Widget>[
+      //     FlatButton(
+      //       child: Text('Logout', style: TextStyle(color: Colors.white),),
+      //       onPressed: () async {
+      //         await Auth().logout();
+      //         Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+      //       },
+      //     )
+      //   ],
+      // ),
       
       body: navigationItems[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -92,9 +97,13 @@ class _HomeState extends State<ChwHomeScreen> {
           )
         ],
         onTap: (value) {
-          setState(() {
-            _currentIndex = value;
-          });
+          if(value == 2) {
+            Navigator.of(context).push(RegisterPatientScreen());
+          } else {
+            setState(() {
+              _currentIndex = value;
+            });
+          }
         },
       ),
     );
