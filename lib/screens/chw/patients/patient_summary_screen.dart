@@ -577,7 +577,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                   children: <Widget>[
                                     SizedBox(height: 10,),
                                       ...carePlans.map( (item) {
-                                      if (item['meta']['status'] == 'pending') {
                                         interventionIndex = interventionIndex + 1;
                                         return Container(
                                           margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -621,7 +620,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                             ],),
                                           ),
                                         );
-                                      } else return Container();
                                     }).toList()
                                   
                                     
@@ -652,10 +650,16 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                           ),
                                           child: GestureDetector(
                                             onTap: () {
-                                              Navigator.of(context).pushNamed('/carePlanInterventions', arguments: {
-                                                'carePlan' : item,
-                                                'parent': this
-                                              });
+                                              if (item['meta']['status'] == 'pending') {
+                                                print('asdlask');
+                                                print(item['body']['goal']['title']);
+                                                if (item['body']['goal']['title'] == 'Improve blood pressure control') {
+
+                                                  Navigator.of(context).pushNamed('/chwImproveBp');
+                                                } else {
+                                                  Navigator.of(context).pushNamed('/chwOtherActions');
+                                                }
+                                              }
                                             },
                                             child: Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -673,6 +677,12 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                                       ),
                                                       child: GestureDetector(
                                                         onTap: () {
+                                                          if (item['body']['goal']['title'] == 'Improve blood pressure control') {
+
+                                                            Navigator.of(context).pushNamed('/chwImproveBp');
+                                                          } else {
+                                                            Navigator.of(context).pushNamed('/chwOtherActions');
+                                                          }
                                                         },
                                                         child: Row(
                                                           children: <Widget>[
@@ -694,6 +704,84 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                   
                                     
                                   ],
+                                ),
+                              ),
+                              Container(
+                                width: double.infinity,
+                                margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: kPrimaryColor,
+                                  borderRadius: BorderRadius.circular(3)
+                                ),
+                                child: FlatButton(
+                                  onPressed: () async {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return Dialog(
+                                          child: Container(
+                                            width: double.infinity,
+                                            height: 160.0,
+                                            child: Column(
+                                              children: <Widget>[
+                                                Container(
+                                                  margin: EdgeInsets.only(top: 20),
+                                                  width: 350,
+                                                  alignment: Alignment.center,
+                                                  child: Text('In the course of your visit, were there any medical issues identified?', style: TextStyle(
+                                                  fontSize: 22
+                                                ), textAlign: TextAlign.center,),
+                                                ),
+                                                Row(
+                                                  children: <Widget>[
+                                                    Expanded(
+                                                      child: Container(
+                                                        width: double.infinity,
+                                                        margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                                                        height: 50,
+                                                        decoration: BoxDecoration(
+                                                          color: kPrimaryRedColor,
+                                                          borderRadius: BorderRadius.circular(3)
+                                                        ),
+                                                        child: FlatButton(
+                                                          onPressed: () {
+                                                            Navigator.of(context).pushNamed('/reportMedicalIssues');
+                                                          },
+                                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                          child: Text('YES', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Container(
+                                                        width: double.infinity,
+                                                        margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                                                        height: 50,
+                                                        decoration: BoxDecoration(
+                                                          color: kPrimaryGreenColor,
+                                                          borderRadius: BorderRadius.circular(3)
+                                                        ),
+                                                        child: FlatButton(
+                                                          onPressed: () {
+                                                            Navigator.of(context).pushNamed('/chwHome');
+                                                          },
+                                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                          child: Text('No', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  child: Text('COMPLETE VISIT', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
                                 ),
                               ),
                             ],

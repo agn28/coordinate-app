@@ -4,18 +4,19 @@ import 'package:nhealth/models/patient.dart';
 import '../constants/constants.dart';
 import 'dart:convert';
 
-class WorklistRepository {
+class MedicalIssuesRepository {
 
-  getWorklist() async {
+  getIssues() async {
 
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
 
     return await http.get(
-      apiUrl + 'care-plans/work-list' ,
+      apiUrl + 'medications' ,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
       },
     ).then((response) {
       return jsonDecode(response.body);

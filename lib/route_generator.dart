@@ -1,22 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:nhealth/main.dart';
-import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/chw/new_communiti_visit/patient_feeling_screen.dart';
-import 'package:nhealth/screens/chw/new_communiti_visit/verify_patient_screen.dart';
+import 'package:nhealth/screens/chw/careplan_actions/improve_bp_screen.dart';
+import 'package:nhealth/screens/chw/careplan_actions/other_actions_screen.dart';
+import 'package:nhealth/screens/chw/new_community_visit/patient_feeling_screen.dart';
+import 'package:nhealth/screens/chw/new_community_visit/verify_patient_screen.dart';
 import 'package:nhealth/screens/chw/patients/patient_summary_screen.dart';
+import 'package:nhealth/screens/chw/patients/report_medical_issues_screen.dart';
+import 'package:nhealth/screens/chw/unwell/continue_screen.dart';
+import 'package:nhealth/screens/chw/unwell/followup_screen.dart';
+import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
+import 'package:nhealth/screens/chw/unwell/severity_screen.dart';
 import 'package:nhealth/screens/chw/work-list/chw_home_screen.dart';
-import 'package:nhealth/screens/chw/work-list/work_list_search_screen.dart';
 import 'package:nhealth/screens/home_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_details_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_intervention_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/encounter_details_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_overview_screen.dart';
-import 'package:nhealth/screens/patients/manage/patient_overview_screen_old.dart';
 import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
-import 'package:nhealth/screens/patients/register_patient_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic>  generarteRoute(RouteSettings settings) {
@@ -50,6 +52,22 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => VerifyPatientScreen());
       case '/patientFeeling':
         return CupertinoPageRoute(builder: (_) => PatientFeelingScreen());
+      case '/chwFollowup':
+        return CupertinoPageRoute(builder: (_) => ChwFollowupScreen());
+      case '/chwSeverity':
+        return CupertinoPageRoute(builder: (_) => SeverityScreen());
+      case '/chwContinue':
+        return CupertinoPageRoute(builder: (_) => ContinueScreen());
+      case '/chwImproveBp':
+        return CupertinoPageRoute(builder: (_) => ImproveBpControlScreen());
+      case '/reportMedicalIssues':
+        return CupertinoPageRoute(builder: (_) => ReportMedicalIssuesScreen());
+
+      case '/medicalRecommendation':
+        return CupertinoPageRoute(builder: (_) => MedicalRecommendationScreen());
+
+      case '/chwOtherActions':
+        return CupertinoPageRoute(builder: (_) => OtherActionsScreen());
     }
   }
 }

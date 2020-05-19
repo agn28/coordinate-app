@@ -8,15 +8,16 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/chw/unwell/followup_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 
 
-class PatientFeelingScreen extends StatefulWidget {
+class SeverityScreen extends StatefulWidget {
   @override
-  _PatientFeelingState createState() => _PatientFeelingState();
+  _SeverityScreenState createState() => _SeverityScreenState();
 }
 
-class _PatientFeelingState extends State<PatientFeelingScreen> {
+class _SeverityScreenState extends State<SeverityScreen> {
   var _patient;
   bool isLoading = false;
   bool avatarExists = false;
@@ -69,87 +70,65 @@ class _PatientFeelingState extends State<PatientFeelingScreen> {
         child: SingleChildScrollView(
           child: Stack(
             children: <Widget>[
-              Column(
-                children: <Widget>[
-                  PatientTopbar(),
-                  Center(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(height: 40,),
-                        Container(
-                          child: Text('How is the patient feeling today?', style: TextStyle(fontSize: 23),)
-                        ),
-                        SizedBox(height: 40,),
-
-                        Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: Container(
-                                width: double.infinity,
-                                margin: EdgeInsets.symmetric(horizontal: 30),
-                                height: 180,
-                                decoration: BoxDecoration(
-                                  color: kPrimaryGreenColor,
-                                  borderRadius: BorderRadius.circular(4)
-                                ),
-                                child: FlatButton(
-                                  onPressed: () async {
-                                    Navigator.of(context).pushNamed('/chwPatientSummary', arguments: true);
-                                  },
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Image.asset('assets/images/icons/well.png'),
-                                      SizedBox(height: 20,),
-                                      Text('Well', style: TextStyle(fontSize: 21, color: Colors.white, fontWeight: FontWeight.normal),)
-                                    ],
-                                  )
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                width: double.infinity,
-                                margin: EdgeInsets.symmetric(horizontal: 30),
-                                height: 180,
-                                decoration: BoxDecoration(
-                                  color: kPrimaryRedColor,
-                                  borderRadius: BorderRadius.circular(4)
-                                ),
-                                child: FlatButton(
-                                  onPressed: () async {
-                                    setState(() {
-                                    });
-                                  },
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Image.asset('assets/images/icons/unwell.png'),
-                                      SizedBox(height: 20,),
-                                      Text('Unwell', style: TextStyle(fontSize: 21, color: Colors.white, fontWeight: FontWeight.normal),)
-                                    ],
-                                  )
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        
-                        SizedBox(height: 30,),
-                        
-                        
-                      ], 
-                      
+              Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    PatientTopbar(),
+                    SizedBox(height: 60,),
+                    Container(
+                      child: Image.asset(
+                        'assets/images/icons/unwell_green.png',
+                        height: 70,
+                      ),
                     ),
-                  ),
+                    SizedBox(height: 30,),
+                    Text('Would you like to continue with this visit', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),),
+                    SizedBox(height: 30,),
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Container(
+                            width: double.infinity,
+                            margin: EdgeInsets.only(left: 30, right: 10),
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: kPrimaryColor,
+                              borderRadius: BorderRadius.circular(3)
+                            ),
+                            child: FlatButton(
+                              onPressed: () async {
+                                Navigator.of(context).pushNamed('/chwPatientSummary', arguments: true);
+                              },
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              child: Text('YES', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            width: double.infinity,
+                            margin: EdgeInsets.only(right: 30, left: 10),
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: kPrimaryColor,
+                              borderRadius: BorderRadius.circular(3)
+                            ),
+                            child: FlatButton(
+                              onPressed: () async {
+                                Navigator.of(context).pushNamed('/chwWorklistSearch');
+                              },
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              child: Text('NO', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ], 
                   
-                ],
+                ),
               ),
               isLoading ? Container(
                 height: MediaQuery.of(context).size.height,

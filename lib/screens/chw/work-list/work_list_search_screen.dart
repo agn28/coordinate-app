@@ -232,9 +232,9 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
                   child: Column(
                     children: <Widget>[
                       Container(
-                        margin: EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 10),
+                        margin: EdgeInsets.only(left: 15, right: 15, top: 10,),
                         decoration: BoxDecoration(
-                          border: Border( bottom: BorderSide(color: kPrimaryColor))
+                          // border: Border( bottom: BorderSide(color: kPrimaryColor))
                         ),
                         child: TextField(
                           controller: searchController,
@@ -279,16 +279,23 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
                           ),
                         ),
                       ),
+                      SizedBox(height: 20,)
                     ],
-                  )
+                  ),
                 ),
+                
                 Container(
                   height: MediaQuery.of(context).size.height,
+                  decoration: BoxDecoration(
+                  color: kPrimaryColor,
+                    border: Border.all(width: 0, color: kPrimaryColor)
+                  ),
                   child: DefaultTabController(
-                    length: 2,
+                    length: 3,
                     child: Scaffold(
                       appBar: AppBar(
                         elevation: 0,
+                        backgroundColor: kPrimaryColor,
                         bottom: PreferredSize(child: Container(color: kPrimaryColor, height: 1.0,), preferredSize: Size.fromHeight(1.0)),
                         flexibleSpace: TabBar(
                           labelPadding: EdgeInsets.all(0),
@@ -299,8 +306,12 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
                               child: Text('Pending (${getPendingCount()})', style: TextStyle(fontSize: 17)),
                             ),
                             Tab(
+                              child: Text('Past Due (0)', style: TextStyle(fontSize: 17)),
+                            ),
+                            Tab(
                               child: Text('Completed (${getCompletedCount()})', style: TextStyle(fontSize: 17)),
                             ),
+                            
                           ],
                         ),
                       ),
@@ -329,6 +340,16 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
                               ],
                             )
                           ),
+                          
+                          
+                          Container(
+                            child: ListView(
+                              children: <Widget>[
+                                SizedBox(height: 20,),
+                                
+                              ],
+                            )
+                          ),
                           Container(
                             child: ListView(
                               children: <Widget>[
@@ -351,6 +372,7 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
                               ],
                             )
                           ),
+
                           
                         ],
                       ),
