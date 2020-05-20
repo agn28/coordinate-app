@@ -132,6 +132,7 @@ class _WorkListDetailsState extends State<WorkListDetails> {
         title: Text('Work List', style: TextStyle(color: Colors.white),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
+        automaticallyImplyLeading: false,
         iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Container(

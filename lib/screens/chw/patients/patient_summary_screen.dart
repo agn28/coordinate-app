@@ -382,7 +382,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                                 borderRadius: BorderRadius.circular(2)
                                               ),
                                               child: Text('BP',style: TextStyle(
-                                                  color: ColorUtils.statusColor[bmi['tfl']],
+                                                  color: ColorUtils.statusColor[bp['tfl']],
                                                   fontWeight: FontWeight.w500
                                                 )  
                                               ),
@@ -577,7 +577,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                   children: <Widget>[
                                     SizedBox(height: 10,),
                                       ...carePlans.map( (item) {
-                                      if (item['meta']['status'] == 'pending') {
                                         interventionIndex = interventionIndex + 1;
                                         return Container(
                                           margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -621,7 +620,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                             ],),
                                           ),
                                         );
-                                      } else return Container();
                                     }).toList()
                                   
                                     
@@ -642,58 +640,90 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                     SizedBox(height: 10,),
                                       ...carePlans.map( (item) {
                                         interventionIndex = interventionIndex + 1;
-                                        return Container(
-                                          margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                                          padding: EdgeInsets.only(bottom: 10),
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              bottom: BorderSide(color: kBorderLighter)
-                                            )
-                                          ),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              Navigator.of(context).pushNamed('/carePlanInterventions', arguments: {
-                                                'carePlan' : item,
-                                                'parent': this
-                                              });
-                                            },
-                                            child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              if (item['body']['goal'] != null && item['body']['goal']['title'] != null)
-                                              Text(item['body']['goal']['title'], style: TextStyle(fontSize: 16, color: kPrimaryColor)),
-                                              Container(
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Container(
-                                                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(color: item['meta']['status'] == 'pending' ? kPrimaryRedColor : kPrimaryGreenColor),
-                                                        borderRadius: BorderRadius.circular(3)
-                                                      ),
-                                                      child: GestureDetector(
-                                                        onTap: () {
-                                                        },
-                                                        child: Row(
-                                                          children: <Widget>[
-                                                            Text('${item['body']['components'].length} Actions  ', style: TextStyle(color: item['meta']['status'] == 'pending' ? kPrimaryRedColor : kPrimaryGreenColor, fontWeight: FontWeight.w500),),
-                                                            if (item['meta']['status'] != 'pending') 
-                                                            Icon(Icons.check_circle, color: kPrimaryGreenColor, size: 14,)
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Icon(Icons.chevron_right, color: kBorderLight,)
-                                                  ],
-                                                ),
-                                              ),
-                                            ],),
-                                          ),
-                                        );
+                                        return GoalItem(item: item);
                                     }).toList()
                                   
                                     
                                   ],
+                                ),
+                              ),
+                              Container(
+                                width: double.infinity,
+                                margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: kPrimaryColor,
+                                  borderRadius: BorderRadius.circular(3)
+                                ),
+                                child: FlatButton(
+                                  onPressed: () async {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return Dialog(
+                                          child: Container(
+                                            width: double.infinity,
+                                            height: 160.0,
+                                            child: Column(
+                                              children: <Widget>[
+                                                Container(
+                                                  margin: EdgeInsets.only(top: 20),
+                                                  width: 350,
+                                                  alignment: Alignment.center,
+                                                  child: Text('In the course of your visit, were there any medical issues identified?', style: TextStyle(
+                                                  fontSize: 22
+                                                ), textAlign: TextAlign.center,),
+                                                ),
+                                                Row(
+                                                  children: <Widget>[
+                                                    Expanded(
+                                                      child: Container(
+                                                        width: double.infinity,
+                                                        margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                                                        height: 50,
+                                                        decoration: BoxDecoration(
+                                                          color: kPrimaryRedColor,
+                                                          borderRadius: BorderRadius.circular(3)
+                                                        ),
+                                                        child: FlatButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(context);
+                                                            Navigator.of(context).pushNamed('/reportMedicalIssues');
+                                                          },
+                                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                          child: Text('YES', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Container(
+                                                        width: double.infinity,
+                                                        margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                                                        height: 50,
+                                                        decoration: BoxDecoration(
+                                                          color: kPrimaryGreenColor,
+                                                          borderRadius: BorderRadius.circular(3)
+                                                        ),
+                                                        child: FlatButton(
+                                                          onPressed: () {
+                                                            Navigator.of(context).pushNamed('/chwHome');
+                                                          },
+                                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                          child: Text('No', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  child: Text('COMPLETE VISIT', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
                                 ),
                               ),
                             ],
@@ -736,6 +766,93 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   }
 }
 
+class GoalItem extends StatefulWidget {
+  final item;
+  GoalItem({this.item});
+
+  @override
+  _GoalItemState createState() => _GoalItemState();
+}
+
+class _GoalItemState extends State<GoalItem> {
+  var status = 'pending';
+
+    @override
+  void initState() {
+    super.initState();
+    getStatus();
+  }
+
+  getStatus() {
+    status = widget.item['meta']['status'];
+  }
+  setStatus() {
+    setState(() {
+      status = 'completed';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      padding: EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: kBorderLighter)
+        )
+      ),
+      child: GestureDetector(
+        onTap: () {
+          if (status == 'pending') {
+            if (widget.item['body']['goal']['title'] == 'Improve blood pressure control') {
+              Navigator.of(context).pushNamed('/chwImproveBp', arguments: { 'data': widget.item, 'parent': this });
+            } else {
+              Navigator.of(context).pushNamed('/chwOtherActions', arguments: { 'data': widget.item, 'parent': this });
+            }
+          }
+        },
+        child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          if (widget.item['body']['goal'] != null && widget.item['body']['goal']['title'] != null)
+          Text(widget.item['body']['goal']['title'], style: TextStyle(fontSize: 16, color: kPrimaryColor)),
+          Container(
+            child: Row(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: status == 'pending' ? kPrimaryRedColor : kPrimaryGreenColor),
+                    borderRadius: BorderRadius.circular(3)
+                  ),
+                  child: GestureDetector(
+                    onTap: () {
+                      if (widget.item['body']['goal']['title'] == 'Improve blood pressure control') {
+                        Navigator.of(context).pushNamed('/chwImproveBp', arguments: { 'data': widget.item, 'parent': this });
+                      } else {
+                        Navigator.of(context).pushNamed('/chwOtherActions', arguments: { 'data': widget.item, 'parent': this });
+                      }
+                    },
+                    child: Row(
+                      children: <Widget>[
+                        Text('${widget.item['body']['components'].length} Actions  ', style: TextStyle(color: status == 'pending' ? kPrimaryRedColor : kPrimaryGreenColor, fontWeight: FontWeight.w500),),
+                        if (status != 'pending') 
+                        Icon(Icons.check_circle, color: kPrimaryGreenColor, size: 14,)
+                      ],
+                    ),
+                  ),
+                ),
+                Icon(Icons.chevron_right, color: kBorderLight,)
+              ],
+            ),
+          ),
+        ],),
+      ),
+    );
+  }
+}
+
 class FloatingButton extends StatelessWidget {
   final String text;
   final Function onPressed;
@@ -763,140 +880,3 @@ class FloatingButton extends StatelessWidget {
     );
   }
 }
-
-class OverviewIntervention extends StatefulWidget {
-  var carePlan;
-  OverviewIntervention({this.carePlan});
-
-  @override
-  _OverviewInterventionState createState() => _OverviewInterventionState();
-}
-
-class _OverviewInterventionState extends State<OverviewIntervention> {
-  var status;
-
-  @override
-  void initState() {
-    super.initState();
-    getStatus();
-  }
-
-  getStatus() {
-    String completedDate = '';
-    if (widget.carePlan['meta']['status'] == 'completed') {
-      if (widget.carePlan['meta']['completed_at'] != null && widget.carePlan['meta']['completed_at']['_seconds'] != null) {
-        var parsedDate = DateTime.fromMillisecondsSinceEpoch(widget.carePlan['meta']['completed_at']['_seconds'] * 1000);
-
-        completedDate = DateFormat("MMMM d, y").format(parsedDate).toString();
-      }
-
-      setState(() {
-        status = widget.carePlan['meta']['status'] + ' on ' + completedDate;
-      });
-      
-    } else {
-      setState(() {
-        status = widget.carePlan['meta']['status'];
-      });
-    }
-    
-  }
-
-  setStatus() {
-    //  var index = careplans.indexOf(carePlan);
-
-    setState(() {
-      widget.carePlan['meta']['status'] = 'completed';
-      status = 'completed';
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(width: .5, color: Colors.black12),
-        )
-      ),
-      child: FlatButton(
-        onPressed: () {
-          if (widget.carePlan['meta']['status'] == 'pending') {
-            // Navigator.of(context).push(CarePlanInterventionScreen(carePlan: widget.carePlan, parent: this));
-            Navigator.of(context).pushNamed('/carePlanInterventions', arguments: {'carePlan' : widget.carePlan, 'parent': this });
-          }
-        },
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        child: Container(
-          padding: EdgeInsets.only(left: 10, top: 20, bottom: 20, right: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(widget.carePlan['body']['goal']['title'], style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400,)),
-                    SizedBox(height: 15,),
-                    Text('Intervention: ${widget.carePlan['body']['title']}', overflow: TextOverflow.fade, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400,)),
-                    SizedBox(height: 15,),
-                    Text('${status != 'pending' ? status[0].toUpperCase() + status.substring(1) : 'Pending'}', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: status != 'pending' ? kPrimaryGreenColor : kPrimaryRedColor)),
-                  ],
-                ),
-              ),
-              Container(
-                child: Icon(Icons.arrow_forward, color: kPrimaryColor,),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class CustomClipPath extends CustomClipper<Path> {
-  var radius=10.0;
-  @override
-  Path getClip(Size size) {
-    Path path = Path();
-    path.lineTo(size.width / 2, size.height);
-    path.lineTo(size.width, 0.0);
-    return path;
-  }
-  
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-}
-
-// One entry in the multilevel list displayed by this app.
-class Entry {
-  Entry(this.title, [this.children = const <Entry>[]]);
-
-  final String title;
-  final List<Entry> children;
-}
-
-// The entire multilevel list displayed by this app.
-
-
-class EntryItem extends StatelessWidget {
-  const EntryItem(this.entry);
-
-  final Entry entry;
-
-  Widget _buildTiles(Entry root) {
-    if (root.children.isEmpty) return ListTile(title: Text(root.title));
-    return ExpansionTile(
-      key: PageStorageKey<Entry>(root),
-      title: Text(root.title),
-      children: root.children.map(_buildTiles).toList(),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _buildTiles(entry);
-  }
-}
-

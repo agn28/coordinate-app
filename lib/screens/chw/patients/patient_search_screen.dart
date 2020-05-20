@@ -1,9 +1,13 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
+// import 'package:barcode_scan/barcode_scan.dart';
+import 'package:barcode_scan_fix/barcode_scan.dart';
+// import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 import 'package:nhealth/configs/configs.dart';
 import 'package:nhealth/constants/constants.dart';
@@ -14,6 +18,7 @@ import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/chw/patients/patient_summary_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 
@@ -41,12 +46,29 @@ class ChwPatientSearchScreen extends StatefulWidget {
 
 class _PatientSearchState extends State<ChwPatientSearchScreen> {
   bool isLoading = false;
+  var test = '';
   @override
   initState() {
     super.initState();
     // getPatients();
     isLoading = true;
     getLivePatients();
+  }
+
+  matchBarcodeData(data) async {
+    var patient;
+    await allPatients.forEach((item) {
+      if (data == '${item['data']['first_name']} ${item['data']['last_name']}') {
+        patient = item;
+        Patient().setPatient(item);
+        Navigator.of(context).pushNamed('/patientOverview');
+      }
+    });
+
+    if (patient == null) {
+      Toast.show('Patient not mached!', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+    }
+
   }
 
   getPatients() async {
@@ -58,6 +80,7 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
       patients = allPatients;
     });
   }
+ 
 
   getLivePatients() async {
     
@@ -197,13 +220,15 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
                             ),
                             prefixIcon: Icon(Icons.search),
                             suffixIcon: IconButton(
-                              onPressed: () { 
-                                setState(() {
-                                  searchController.text = '';
-                                  patients = allPatients;
-                                });
+                              onPressed: () async {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return FiltersDialog(parent: this,);
+                                },
+                              );
                               },
-                              icon: Icon(Icons.cancel, color: kTextGrey, size: 25,)
+                              icon: Icon(Icons.filter_list, color: kPrimaryColor, size: 25,)
                             ),
                             border: InputBorder.none,
                             hintText: "Search here...",
@@ -216,77 +241,42 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 5,),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            padding: EdgeInsets.only(left: 2),
-                            child: Row(
-                              children: <Widget>[
-                                Theme(
-                                  data: Theme.of(context).copyWith(
-                                    unselectedWidgetColor: Colors.white
-                                  ),
-                                  child: Checkbox(
-                                    materialTapTargetSize: null,
-                                    activeColor: Colors.white,
-                                    checkColor: kPrimaryColor,
-                                    value: isPendingRecommendation,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        isPendingRecommendation = value;
-                                      });
-                                    },
-                                  ),
-                                ),
-                                Text(AppLocalizations.of(context).translate('pendingRecommendation'), style: TextStyle(color: Colors.white),)
-                              ],
-                            ),
-                          ),
-                          
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            padding: EdgeInsets.only(right: 15),
-                            child: GestureDetector(
-                              onTap: () async {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return FiltersDialog(parent: this,);
-                                },
-                              );
-                              },
-                              child: Row(
-                                children: <Widget>[
-                                  Icon(Icons.filter_list, color: Colors.white,),
-                                  SizedBox(width: 10),
-                                  Text(AppLocalizations.of(context).translate('filters'), style: TextStyle(color: Colors.white),)
-                                ],
-                              )
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 8,)
+                      SizedBox(height: 15,),
+                      
                     ],
                   )
                 ),
-                SizedBox(height: 20,),
                 ...patients.map((item) => GestureDetector(
                   onTap: () {
-                    Patient().setPatient(item);
+                      Patient().setPatient(item);
                       Navigator.of(context).pushNamed('/patientOverview');
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     height: 50,
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: kBorderLighter)
+                      )
+                    ),
                     child: Row(
                       children: <Widget>[
                         Expanded(
-                          child: Text(item['data']['first_name'] + ' ' + item['data']['last_name'],
-                            style: TextStyle(color: Colors.black87, fontSize: 18),
+                          child: Row(
+                            children: <Widget>[
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(30.0),
+                                child: Image.asset(
+                                  'assets/images/avatar.png',
+                                  height: 25.0,
+                                  width: 25.0,
+                                ),
+                              ),
+                              SizedBox(width: 10,),
+                              Text(item['data']['first_name'] + ' ' + item['data']['last_name'],
+                                style: TextStyle(color: Colors.black87, fontSize: 18),
+                              )
+                            ],
                           ),
                         ),
                         Expanded(
@@ -319,6 +309,44 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
           ),
         ],
       ),
+      floatingActionButtonLocation:
+        FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              alignment: Alignment.bottomRight,
+              child: Column(
+              // crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                FloatingActionButton(
+                  heroTag: 'btn1',
+                  onPressed: () {},
+                  backgroundColor: kPrimaryColor,
+                  child: Icon(Icons.fingerprint,),
+                ),
+                SizedBox(height: 15,),
+                FloatingActionButton(
+                  heroTag: 'btn2',
+                  onPressed: () async {
+                    print('hello');
+                    
+                    try {
+                      // print(await BarcodeScanner.scan());
+                      var result = await BarcodeScanner.scan();
+                      matchBarcodeData(result);
+                    } catch (e) {
+                      print('hi');
+                      print(e);
+                    }
+                  },
+                  backgroundColor: kPrimaryColor,
+                  child: Icon(Icons.line_weight),
+                )
+              ],
+            ),
+            )
+          )
     );
   }
 }

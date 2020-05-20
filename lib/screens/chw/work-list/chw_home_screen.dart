@@ -45,7 +45,7 @@ class _HomeState extends State<ChwHomeScreen> {
   }
   var navigationItems = [
     ChwWorkListSearchScreen(),
-    PatientSearchScreen(),
+    ChwPatientSearchScreen(),
     Container(),
     Center(child: Text(''),)
   ];

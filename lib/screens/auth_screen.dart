@@ -191,6 +191,8 @@ class _MobileAuthState extends State<MobileAuth> {
                               isLoading = true;
                             });
                             var response = await AuthController().login(emailController.text, passwordController.text);
+                            print('response');
+                            print(response);
                             if (response == 'error') {
                               setState(() {
                                 isLoading = false;

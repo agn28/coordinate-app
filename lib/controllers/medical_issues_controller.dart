@@ -9,24 +9,18 @@ import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/repositories/local/assessment_repository_local.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:nhealth/repositories/medical_issues_repository.dart';
 import 'package:nhealth/repositories/worklist_repository.dart';
 
 var bloodPressures = [];
 
-class WorklistController {
+class MedicalIssuesController {
 
   /// Create assessment.
   /// Assessment [type] and [comment] is required as parameter.
-  getWorklist() async {
+  getIssues() async {
 
-    var response = await WorklistRepository().getWorklist();
-
-    return response;
-  }
-
-  getPatientsWorklist() async {
-
-    var response = await WorklistRepository().getWorklist();
+    var response = await MedicalIssuesRepository().getIssues();
 
     return response;
   }

@@ -7,6 +7,7 @@ import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
+import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:nhealth/controllers/worklist_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/helpers/helpers.dart';
@@ -20,6 +21,15 @@ final searchController = TextEditingController();
 List allWorklist = [];
 List worklist = [];
 
+List allPendingPatients = [];
+List pendingPatients = [];
+
+List allCompletedPatients = [];
+List completedPatients = [];
+
+List allpastPatients = [];
+List pastPatients = [];
+
 
 class ChwWorkListSearchScreen extends StatefulWidget {
   @override
@@ -30,7 +40,7 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
 
   List patients = [];
   bool isLoading = true;
-   var report;
+  var report;
   var bmi;
   var cholesterol;
   var bp;
@@ -42,19 +52,34 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
     });
   }
   /// Get all the worklist
-  _getWorklist() async {
+  _getPatients() async {
 
-    var data = await WorklistController().getWorklist();
+    var pending = await PatientController().getPatientsWorklist('pending');
+    var completed = await PatientController().getPatientsWorklist('completed');
+    var past = await PatientController().getPatientsWorklist('past');
 
-    if (data['error'] != null && data['error']) {
-      return Toast.show('Server Error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+    if (pending['error'] != null && !pending['error']) {
+      setState(() {
+        allPendingPatients = pending['data'];
+        pendingPatients = allPendingPatients;
+      });
     }
-
+    if (completed['error'] != null && !completed['error']) {
+      setState(() {
+        allCompletedPatients = completed['data'];
+        completedPatients = allCompletedPatients;
+      });
+    }
+    if (past['error'] != null && !past['error']) {
+      setState(() {
+        allpastPatients = past['data'];
+        pastPatients = allpastPatients;
+      });
+    }
     setState(() {
-      allWorklist = data['data'];
-      worklist = allWorklist;
       isLoading = false;
     });
+
   }
 
   update(carePlan) {
@@ -176,14 +201,11 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
   }
 
   getPendingCount() {
-    var items = worklist.where((item) => item['meta']['status'] == 'pending');
+    return  pendingPatients.length;
 
-    return items.isNotEmpty ? items.length : 0;
   }
   getCompletedCount() {
-    var items = worklist.where((item) => item['meta']['completed'] == 'pending');
-
-    return items.isNotEmpty ? items.length : 0;
+    return  completedPatients.length;
   }
 
   TabController _controller;
@@ -193,8 +215,7 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
     super.initState();
     allWorklist = [];
     worklist = [];
-    _getWorklist();
-    getReport();
+    _getPatients();
     patientSort = 'asc';
     dueDateSort = 'asc';
     patientSortActive = false;
@@ -232,9 +253,9 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
                   child: Column(
                     children: <Widget>[
                       Container(
-                        margin: EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 10),
+                        margin: EdgeInsets.only(left: 15, right: 15, top: 10,),
                         decoration: BoxDecoration(
-                          border: Border( bottom: BorderSide(color: kPrimaryColor))
+                          // border: Border( bottom: BorderSide(color: kPrimaryColor))
                         ),
                         child: TextField(
                           controller: searchController,
@@ -279,16 +300,24 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
                           ),
                         ),
                       ),
+                      SizedBox(height: 20,)
                     ],
-                  )
+                  ),
                 ),
+                
                 Container(
                   height: MediaQuery.of(context).size.height,
+                  decoration: BoxDecoration(
+                  color: kPrimaryColor,
+                    border: Border.all(width: 0, color: kPrimaryColor)
+                  ),
                   child: DefaultTabController(
-                    length: 2,
+                    length: 3,
                     child: Scaffold(
                       appBar: AppBar(
                         elevation: 0,
+                        automaticallyImplyLeading: false,
+                        backgroundColor: kPrimaryColor,
                         bottom: PreferredSize(child: Container(color: kPrimaryColor, height: 1.0,), preferredSize: Size.fromHeight(1.0)),
                         flexibleSpace: TabBar(
                           labelPadding: EdgeInsets.all(0),
@@ -299,8 +328,12 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
                               child: Text('Pending (${getPendingCount()})', style: TextStyle(fontSize: 17)),
                             ),
                             Tab(
+                              child: Text('Past Due (${pendingPatients.length})', style: TextStyle(fontSize: 17)),
+                            ),
+                            Tab(
                               child: Text('Completed (${getCompletedCount()})', style: TextStyle(fontSize: 17)),
                             ),
+                            
                           ],
                         ),
                       ),
@@ -311,17 +344,28 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
                             child: ListView(
                               children: <Widget>[
                                 SizedBox(height: 20,),
-                                ...worklist.map((item) => 
-                                item['meta']['status'] == 'pending' ?
+                                ...pendingPatients.map((item) => 
 
-                                WorklistItem(item: item, report: report, bmi: bmi, bp: bp, cvd: cvd, cholesterol: cholesterol, parent: this, onTap: () async {
-                                  loaderHandle(true);
-                                  var data = await Patient().setPatientById(item['body']['patient_id']);
-                                  loaderHandle(false);
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
-                                },) : Container()).toList(),
+                                PatientItem(item: item, parent: this)).toList(),
                                 
-                                worklist.length == 0 ? Container(
+                                pendingPatients.length == 0 ? Container(
+                                  alignment: Alignment.centerLeft,
+                                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                                  child: Text(AppLocalizations.of(context).translate('worklistFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
+                                ) : Container()
+                              ],
+                            )
+                          ),
+                          
+                          
+                          Container(
+                            child: ListView(
+                              children: <Widget>[
+                                SizedBox(height: 20,),
+                                ...pastPatients.map((item) => 
+                                PatientItem(item: item, parent: this)).toList(),
+
+                                pastPatients.length == 0 ? Container(
                                   alignment: Alignment.centerLeft,
                                   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                                   child: Text(AppLocalizations.of(context).translate('worklistFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
@@ -333,17 +377,10 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
                             child: ListView(
                               children: <Widget>[
                                 SizedBox(height: 20,),
-                                ...worklist.map((item) => 
-                                item['meta']['status'] == 'completed' ?
-                                
-                                WorklistItem(item: item, report: report, bmi: bmi, bp: bp, cvd: cvd, cholesterol: cholesterol, parent: this, onTap: () async {
-                                  loaderHandle(true);
-                                  var data = await Patient().setPatientById(item['body']['patient_id']);
-                                  loaderHandle(false);
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
-                                },) : Container()).toList(),
+                                ...completedPatients.map((item) => 
+                                PatientItem(item: item, parent: this)).toList(),
 
-                                worklist.length == 0 ? Container(
+                                completedPatients.length == 0 ? Container(
                                   alignment: Alignment.centerLeft,
                                   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                                   child: Text(AppLocalizations.of(context).translate('worklistFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
@@ -351,6 +388,7 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
                               ],
                             )
                           ),
+
                           
                         ],
                       ),
@@ -376,36 +414,28 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
   }
 }
 
-class WorklistItem extends StatefulWidget {
-  const WorklistItem({
+class PatientItem extends StatefulWidget {
+  const PatientItem({
     @required this.item,
-    @required this.report,
-    @required this.bmi,
-    @required this.bp,
-    @required this.cvd,
-    @required this.cholesterol,
     @required this.parent,
-    @required this.onTap,
   });
 
-  final report;
-  final bmi;
-  final bp;
-  final cvd;
-  final cholesterol;
+
   final item;
   final _WorkListSearchState parent;
-  final onTap;
 
   @override
-  _WorklistItemState createState() => _WorklistItemState();
+  _PatientItemState createState() => _PatientItemState();
 }
 
-class _WorklistItemState extends State<WorklistItem> {
+class _PatientItemState extends State<PatientItem> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: widget.onTap,
+      onTap: () {
+        Patient().setPatientModify(widget.item);
+        Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
+      },
       child: Container(
         color: Colors.transparent,
         child: Column(
@@ -462,11 +492,11 @@ class _WorklistItemState extends State<WorklistItem> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text(widget.item['patient'] != null ? widget.item['patient']['first_name'] + ' ' + widget.item['patient']['last_name'] : '', style: TextStyle( fontSize: 19, fontWeight: FontWeight.normal),),
+                            Text(widget.item['body']['first_name'] + ' ' + widget.item['body']['last_name'], style: TextStyle( fontSize: 19, fontWeight: FontWeight.normal),),
                             SizedBox(height: 7,),
                             Row(
                               children: <Widget>[
-                                Text(widget.item['patient'] != null ? widget.item['patient']['age'].toString() + 'Y ' + ' - ' + widget.item['patient']['gender'] : '', style: TextStyle(fontSize: 16, color: kTextGrey),),
+                                Text(widget.item['body']['age'].toString() + 'Y ' + ' - ' + widget.item['body']['gender'], style: TextStyle(fontSize: 16, color: kTextGrey),),
                                 SizedBox(width: 10,),
                                 SizedBox(width: 10,),
                                 Row(
@@ -495,61 +525,71 @@ class _WorklistItemState extends State<WorklistItem> {
                             SizedBox(height: 10,),
                             Row(
                               children: <Widget>[
+
+
+                                widget.item['body']['assessments'] != null && widget.item['body']['assessments']['body_composition']['components']['bmi'] != null ?
                                 Container(
                                   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                                   decoration: BoxDecoration(
-                                    border: Border.all(width: 1, color: ColorUtils.statusColor['RED']),
+                                    border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['body_composition']['components']['bmi']['tfl']]),
                                     borderRadius: BorderRadius.circular(2)
                                   ),
                                   child: Text('BMI',style: TextStyle(
-                                      color: ColorUtils.statusColor['RED'],
+                                      color: ColorUtils.statusColor[widget.item['body']['assessments']['body_composition']['components']['bmi']['tfl']],
                                       fontWeight: FontWeight.w500
                                     )  
                                   ),
-                                ),
+                                ) : Container(),
                                 SizedBox(width: 7,),
+
+
+                                widget.item['body']['assessments'] != null && widget.item['body']['assessments']['blood_pressure'] != null ?
                                 Container(
                                   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                                   decoration: BoxDecoration(
-                                    border: Border.all(width: 1, color: ColorUtils.statusColor['RED']),
+                                    border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['blood_pressure']['tfl']]),
                                     borderRadius: BorderRadius.circular(2)
                                   ),
                                   child: Text('BP',style: TextStyle(
-                                      color: ColorUtils.statusColor['RED'],
+                                      color: ColorUtils.statusColor[widget.item['body']['assessments']['blood_pressure']['tfl']],
                                       fontWeight: FontWeight.w500
                                     )  
                                   ),
-                                ),
+                                ) : Container(),
                                 SizedBox(width: 7,),
+
+
+                                widget.item['body']['assessments'] != null && widget.item['body']['assessments']['cvd'] != null ?
                                 Container(
                                   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                                   decoration: BoxDecoration(
-                                    border: Border.all(width: 1, color: ColorUtils.statusColor['RED']),
+                                    border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['cvd']['tfl']]),
                                     borderRadius: BorderRadius.circular(2)
                                   ),
                                   child: Text('CVD Risk',style: TextStyle(
-                                      color: ColorUtils.statusColor['RED'],
+                                      color: ColorUtils.statusColor[widget.item['body']['assessments']['cvd']['tfl']],
                                       fontWeight: FontWeight.w500
                                     )  
                                   ),
-                                ),
+                                ) : Container(),
                                 SizedBox(width: 7,),
+
+
+                                widget.item['body']['assessments'] != null && widget.item['body']['assessments']['cholesterol']['components']['total_cholesterol'] != null ?
                                 Container(
                                   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                                   decoration: BoxDecoration(
-                                    border: Border.all(width: 1, color: ColorUtils.statusColor['AMBER']),
+                                    border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['cholesterol']['components']['total_cholesterol']['tfl']]),
                                     borderRadius: BorderRadius.circular(2)
                                   ),
                                   child: Text('Cholesterol',style: TextStyle(
-                                      color: ColorUtils.statusColor['AMBER'],
+                                      color: ColorUtils.statusColor[widget.item['body']['assessments']['cholesterol']['components']['total_cholesterol']['tfl']],
                                       fontWeight: FontWeight.w500
                                     )  
                                   ),
-                                ),
+                                ) : Container(),
                               ],
                             ),
-                            SizedBox(height: 15,),
-                            Text(' 3 Interventions due today', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16,))
                             // Row(
                             //   children: <Widget>[
                             //     report != null && bmi != null ?
