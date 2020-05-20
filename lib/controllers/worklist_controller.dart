@@ -24,6 +24,13 @@ class WorklistController {
     return response;
   }
 
+  getPatientsWorklist() async {
+
+    var response = await WorklistRepository().getWorklist();
+
+    return response;
+  }
+
   update(type, comment) {
     var data = _prepareUpdateData(type, comment);
     var status = AssessmentRepositoryLocal().update(data);

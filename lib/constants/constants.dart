@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 //urls
-// const String apiUrl = 'http://96cf7eb1.ngrok.io/api/v1/';
+// const String apiUrl = 'http://b2e8d3c9.ngrok.io/api/v1/';
 const String apiUrl = 'https://coordinate-api.monarko.com/api/v1/';
 
 const String gsBucket = 'gs://nhealth-demo.appspot.com';

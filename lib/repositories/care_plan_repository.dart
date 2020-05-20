@@ -2,7 +2,6 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
-import 'package:uuid/uuid.dart';
 import '../constants/constants.dart';
 import 'dart:convert';
 

@@ -554,14 +554,15 @@ class _OverviewInterventionState extends State<OverviewIntervention> {
   getStatus() {
     String completedDate = '';
     if (widget.carePlan['meta']['status'] == 'completed') {
-      if (widget.carePlan['meta']['completed_at'] != null && widget.carePlan['meta']['completed_at']['_seconds'] != null) {
-        var parsedDate = DateTime.fromMillisecondsSinceEpoch(widget.carePlan['meta']['completed_at']['_seconds'] * 1000);
+      // if (widget.carePlan['meta']['completed_at'] != null && widget.carePlan['meta']['completed_at']['_seconds'] != null) {
+      //   var parsedDate = DateTime.fromMillisecondsSinceEpoch(widget.carePlan['meta']['completed_at']['_seconds'] * 1000);
 
-        completedDate = DateFormat("MMMM d, y").format(parsedDate).toString();
-      }
+      //   completedDate = DateFormat("MMMM d, y").format(parsedDate).toString();
+      // }
 
       setState(() {
-        status = widget.carePlan['meta']['status'] + ' on ' + completedDate;
+        // status = widget.carePlan['meta']['status'] + ' on ' + completedDate;
+        status = widget.carePlan['meta']['status'];
       });
       
     } else {

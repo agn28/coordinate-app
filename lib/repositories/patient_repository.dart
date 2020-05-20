@@ -59,6 +59,25 @@ class PatientRepository {
     });
   }
 
+  getPatientsWorklist(type) async {
+    var authData = await Auth().getStorageAuth() ;
+    var token = authData['accessToken'];
+    print('type ' + type);
+    return http.get(
+      apiUrl + 'patients?type=' + type,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    ).then((response) {
+      return json.decode(response.body);
+      
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
+  }
+
   update(data) async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];

@@ -18,6 +18,7 @@ import 'package:nhealth/screens/patients/manage/care_plan/care_plan_details_scre
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_intervention_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/encounter_details_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_overview_screen.dart';
+import 'package:nhealth/screens/patients/manage/patient_overview_screen_old.dart';
 import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
 
 class RouteGenerator {
@@ -32,6 +33,9 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => PatientSearchScreen());
       case '/patientOverview':
         return CupertinoPageRoute(builder: (_) => PatientRecordsScreen());
+      case '/patientOverviewOld':
+        return CupertinoPageRoute(builder: (_) => PatientRecordsScreenOld());
+        
       case '/carePlanDetails':
         var data = settings.arguments;
         return CupertinoPageRoute(builder: (_) => CarePlanDetailsScreen( carePlans: data));
@@ -59,7 +63,8 @@ class RouteGenerator {
       case '/chwContinue':
         return CupertinoPageRoute(builder: (_) => ContinueScreen());
       case '/chwImproveBp':
-        return CupertinoPageRoute(builder: (_) => ImproveBpControlScreen());
+        var data = settings.arguments as Map;
+        return CupertinoPageRoute(builder: (_) => ImproveBpControlScreen(data: data['data'], parent: data['parent'],));
       case '/reportMedicalIssues':
         return CupertinoPageRoute(builder: (_) => ReportMedicalIssuesScreen());
 
@@ -67,7 +72,8 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => MedicalRecommendationScreen());
 
       case '/chwOtherActions':
-        return CupertinoPageRoute(builder: (_) => OtherActionsScreen());
+        var data = settings.arguments as Map;
+        return CupertinoPageRoute(builder: (_) => OtherActionsScreen(data: data['data'], parent: data['parent'],));
     }
   }
 }

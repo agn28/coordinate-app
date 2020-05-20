@@ -5,7 +5,9 @@ import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/configs/configs.dart';
 
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/controllers/followup_controller.dart';
 import 'package:nhealth/models/auth.dart';
+import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
@@ -19,6 +21,15 @@ final _systolicController = TextEditingController();
 final _diastolicController = TextEditingController();
 final _pulseController = TextEditingController();
 final _glucoseController = TextEditingController();
+final _deviceController = TextEditingController();
+List causes = ['Fever', 'Shortness of breath', 'Feeling faint', 'Stomach discomfort'];
+List issues = ['Vision', 'Smell', 'Mental Health', 'Other'];
+List selectedCauses = [];
+List selectedIssues = [];
+final otherIssuesController = TextEditingController();
+String selectedArm = 'left';
+String selectedGlucoseType = 'fasting';
+String selectedGlucoseUnit = 'mg/dL';
 
 
 class ChwFollowupScreen extends StatefulWidget {
@@ -36,6 +47,15 @@ class _ChwFollowupState extends State<ChwFollowupScreen> {
   void initState() {
     super.initState();
     _checkAuth();
+    clearForm();
+  }
+
+  clearForm() {
+    _temperatureController.text = '';
+    _systolicController.text = '';
+    _diastolicController.text = '';
+    _pulseController.text = '';
+    _glucoseController.text = '';
   }
 
   _checkAuth() {
@@ -45,33 +65,55 @@ class _ChwFollowupState extends State<ChwFollowupScreen> {
     } 
   }
 
-  checkData() {
+  checkData() async {
     int temp = 0;
     int systolic = 0;
     int diastolic = 0;
     int glucose = 0;
+
+    var data = {
+      'meta': {
+        'patient_id': Patient().getPatient()['uuid']
+      },
+      'body': {
+        'causes' : selectedCauses,
+        'issues': selectedIssues,
+        'blood_pressure': {
+          'arm': selectedArm,
+          'systolic': _systolicController.text,
+          'diastolic': _diastolicController.text,
+        },
+        'fasting_glucose': {
+          'type': selectedGlucoseType,
+          'value': _glucoseController.text,
+          'unit': selectedGlucoseUnit
+        }
+      }
+    };
     if (_temperatureController.text != '') {
-      print('temp');
       temp = int.parse(_temperatureController.text);
     }
     if (_systolicController.text != '') {
-      print('systolic');
       // print(_systolicController.text);
       systolic = int.parse(_systolicController.text);
     }
     if (_diastolicController.text != '') {
-      print('diastolic');
       diastolic = int.parse(_diastolicController.text);
     }
     if (_glucoseController.text != '') {
-      print('glucose');
       glucose = int.parse(_glucoseController.text);
     }
 
     if (temp > 39 || glucose > 250 || systolic > 160 || diastolic > 100) {
-      Navigator.of(context).pushNamed('/medicalRecommendation');
+      var response = FollowupController().create(data);
+      // print(response);
+      // if (response['error'] != null && !response['error'])
+        Navigator.of(context).pushReplacementNamed('/medicalRecommendation');
     } else {
-      Navigator.of(context).pushNamed('/chwSeverity');
+      var response = FollowupController().create(data);
+      // print(response);
+      // if (response['error'] != null && !response['error'])
+        Navigator.of(context).pushReplacementNamed('/chwContinue');
     }
   }
 
@@ -151,7 +193,6 @@ class _ChwFollowupState extends State<ChwFollowupScreen> {
                     print(_currentStep);
                     if (nextText =='COMPLETE') {
                       checkData();
-                      
                     }
                     if (_currentStep == 2) {
                       print(_currentStep);
@@ -229,6 +270,22 @@ class UnwellCauses extends StatefulWidget {
 class _UnwellCausesState extends State<UnwellCauses> {
   
   DateTime selectedDate = DateTime.now();
+  bool isOtherIssue = false;
+
+  checkCause(value, item) {
+    if (value) {
+      selectedCauses.add(item);
+    } else {
+      selectedCauses.remove(item);
+    }
+  }
+  checkIssue(value, item) {
+    if (value) {
+      selectedIssues.add(item);
+    } else {
+      selectedIssues.remove(item);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -247,125 +304,38 @@ class _UnwellCausesState extends State<UnwellCauses> {
               child: Text('What is causing you to be unwell ?', style: TextStyle(fontSize: 21),),
             ),
             SizedBox(height: 30,),
-            Container(
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              height: 50,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(3),
-                border: Border.all(color: kPrimaryColor)
-              ),
-              child: FlatButton(
-                onPressed: () async {
+            ...causes.map((item) {
+              return Container(
+                width: double.infinity,
+                margin: EdgeInsets.only(left: 30, right: 30, bottom: 15),
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(3),
+                  border: Border.all(color: selectedCauses.contains(item) ? kPrimaryColor : kBorderGrey)
+                ),
+                child: FlatButton(
+                  onPressed: () async {
 
-                },
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                child: Row(
-                  children: <Widget>[
-                    Checkbox(
-                      activeColor: kPrimaryColor,
-                      value: true,
-                      onChanged: (value) {
-                        setState(() {
-                          // widget.form = value;
-                        });
-                      },
-                    ),
-                    Text('Fever', style: TextStyle(fontSize: 17, ),)
-                  ],
-                )
-              ),
-            ),
-            SizedBox(height: 15,),
-            Container(
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              height: 50,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(3),
-                border: Border.all(color: kTextGrey)
-              ),
-              child: FlatButton(
-                onPressed: () async {
-
-                },
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                child: Row(
-                  children: <Widget>[
-                    Checkbox(
-                      activeColor: kPrimaryColor,
-                      value: false,
-                      onChanged: (value) {
-                        setState(() {
-                          // widget.form = value;
-                        });
-                      },
-                    ),
-                    Text('Shortness of breath', style: TextStyle(fontSize: 17, ),)
-                  ],
-                )
-              ),
-            ),
-            SizedBox(height: 15,),
-            Container(
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              height: 50,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(3),
-                border: Border.all(color: kTextGrey)
-              ),
-              child: FlatButton(
-                onPressed: () async {
-
-                },
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                child: Row(
-                  children: <Widget>[
-                    Checkbox(
-                      activeColor: kPrimaryColor,
-                      value: false,
-                      onChanged: (value) {
-                        setState(() {
-                          // widget.form = value;
-                        });
-                      },
-                    ),
-                    Text('Feeling faint', style: TextStyle(fontSize: 17, ),)
-                  ],
-                )
-              ),
-            ),
-            SizedBox(height: 15,),
-            Container(
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              height: 50,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(3),
-                border: Border.all(color: kTextGrey)
-              ),
-              child: FlatButton(
-                onPressed: () async {
-
-                },
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                child: Row(
-                  children: <Widget>[
-                    Checkbox(
-                      activeColor: kPrimaryColor,
-                      value: false,
-                      onChanged: (value) {
-                        setState(() {
-                          // widget.form = value;
-                        });
-                      },
-                    ),
-                    Text('Stomach discomfort', style: TextStyle(fontSize: 17, ),)
-                  ],
-                )
-              ),
-            ),
+                  },
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  child: Row(
+                    children: <Widget>[
+                      Checkbox(
+                        activeColor: kPrimaryColor,
+                        value: selectedCauses.contains(item),
+                        onChanged: (value) {
+                          setState(() {
+                            // widget.form = value;
+                            checkCause(value, item);
+                          });
+                        },
+                      ),
+                      Text(item, style: TextStyle(fontSize: 17, ),)
+                    ],
+                  )
+                ),
+              );
+            }).toList(),
 
             SizedBox(height: 20,),
             Container(
@@ -378,126 +348,42 @@ class _UnwellCausesState extends State<UnwellCauses> {
                   Wrap(
                     direction: Axis.horizontal,
                     children: <Widget>[
-                      Container(
-                      padding: EdgeInsets.only(right: 20),
-                        height: 50,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(3),
-                          border: Border.all(color: kPrimaryColor)
-                        ),
-                        child: GestureDetector(
-                          onTap: () async {
+                      ...issues.map((item) {
+                        return Container(
+                          padding: EdgeInsets.only(right: 20),
+                          margin: EdgeInsets.only(right: 20,  bottom: 15),
+                          height: 50,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            border: Border.all(color: selectedIssues.contains(item) ? kPrimaryColor : kBorderGrey)
+                          ),
+                          child: GestureDetector(
+                            onTap: () async {
 
-                          },
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Checkbox(
-                                activeColor: kPrimaryColor,
-                                value: true,
-                                onChanged: (value) {
-                                  setState(() {
-                                    // widget.form = value;
-                                  });
-                                },
-                              ),
-                              Text('Vision', style: TextStyle(fontSize: 17, ),)
-                            ],
-                          )
-                        ),
-                      ),
-                      SizedBox(width: 20,),
-                      Container(
-                      padding: EdgeInsets.only(right: 20),
-                      margin: EdgeInsets.only(bottom: 20),
-                        height: 50,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(3),
-                          border: Border.all(color: kTextGrey)
-                        ),
-                        child: GestureDetector(
-                          onTap: () async {
-
-                          },
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Checkbox(
-                                activeColor: kPrimaryColor,
-                                value: false,
-                                onChanged: (value) {
-                                  setState(() {
-                                    // widget.form = value;
-                                  });
-                                },
-                              ),
-                              Text('Smell', style: TextStyle(fontSize: 17, ),)
-                            ],
-                          )
-                        ),
-                      ),
-                      SizedBox(width: 20,),
-                      Container(
-                      padding: EdgeInsets.only(right: 20),
-                        height: 50,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(3),
-                          border: Border.all(color: kTextGrey)
-                        ),
-                        child: GestureDetector(
-                          onTap: () async {
-
-                          },
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Checkbox(
-                                activeColor: kPrimaryColor,
-                                value: false,
-                                onChanged: (value) {
-                                  setState(() {
-                                    // widget.form = value;
-                                  });
-                                },
-                              ),
-                              Text('Mental Health', style: TextStyle(fontSize: 17, ),)
-                            ],
-                          )
-                        ),
-                      ),
-                      SizedBox(width: 20,),
-                      Container(
-                      padding: EdgeInsets.only(right: 20),
-                        height: 50,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(3),
-                          border: Border.all(color: kTextGrey)
-                        ),
-                        child: GestureDetector(
-                          onTap: () async {
-
-                          },
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Checkbox(
-                                activeColor: kPrimaryColor,
-                                value: false,
-                                onChanged: (value) {
-                                  setState(() {
-                                    // widget.form = value;
-                                  });
-                                },
-                              ),
-                              Text('Other', style: TextStyle(fontSize: 17, ),)
-                            ],
-                          )
-                        ),
-                      ),
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Checkbox(
+                                  activeColor: kPrimaryColor,
+                                  value: selectedIssues.contains(item),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      // widget.form = value;
+                                      checkIssue(value, item);
+                                    });
+                                  },
+                                ),
+                                Text(item, style: TextStyle(fontSize: 17, ),)
+                              ],
+                            )
+                          ),
+                        );
+                      }).toList(),
                     ],
                   ),
                   SizedBox(height: 20,),
-                  Container(
+                  selectedIssues.contains('Other') ? Container(
                     child: TextField(
                       keyboardType: TextInputType.multiline,
                       maxLines: 3,
@@ -518,7 +404,7 @@ class _UnwellCausesState extends State<UnwellCauses> {
                         hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                       ),
                     ),
-                  ),
+                  ) : Container(),
                 ],
               ),
             ),
@@ -613,9 +499,12 @@ class _BloodPressureState extends State<BloodPressure> {
                   Radio(
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     value: 'left',
-                    groupValue: 'left',
+                    groupValue: selectedArm,
                     activeColor: kPrimaryColor,
                     onChanged: (value) {
+                      setState(() {
+                        selectedArm = value;
+                      });
                     },
                   ),
                   Text('Left Arm', style: TextStyle(color: Colors.black)),
@@ -623,9 +512,12 @@ class _BloodPressureState extends State<BloodPressure> {
                   Radio(
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     value: 'right',
-                    groupValue: 'left',
+                    groupValue: selectedArm,
                     activeColor: kPrimaryColor,
                     onChanged: (value) {
+                      setState(() {
+                        selectedArm = value;
+                      });
                     },
                   ),
                   Text('Right Arm', style: TextStyle(color: Colors.black)),
@@ -723,9 +615,12 @@ class _GlucoseState extends State<Glucose> {
                   Radio(
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     value: 'fasting',
-                    groupValue: 'fasting',
+                    groupValue: selectedGlucoseType,
                     activeColor: kPrimaryColor,
                     onChanged: (value) {
+                      setState(() {
+                        selectedGlucoseType = value;
+                      });
                     },
                   ),
                   Text('Fasting', style: TextStyle(color: Colors.black)),
@@ -733,9 +628,12 @@ class _GlucoseState extends State<Glucose> {
                   Radio(
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     value: 'random',
-                    groupValue: 'fasting',
+                    groupValue: selectedGlucoseType,
                     activeColor: kPrimaryColor,
                     onChanged: (value) {
+                      setState(() {
+                        selectedGlucoseType = value;
+                      });
                     },
                   ),
                   Text('Random', style: TextStyle(color: Colors.black)),
@@ -763,9 +661,12 @@ class _GlucoseState extends State<Glucose> {
                   Radio(
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     value: 'mg/dL',
-                    groupValue: 'mg/dL',
+                    groupValue: selectedGlucoseUnit,
                     activeColor: kPrimaryColor,
                     onChanged: (value) {
+                      setState(() {
+                        selectedGlucoseUnit = value;
+                      });
                     },
                   ),
                   Text('mg/dL', style: TextStyle(color: Colors.black)),
@@ -773,9 +674,12 @@ class _GlucoseState extends State<Glucose> {
                   Radio(
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     value: 'mmol/L',
-                    groupValue: 'mg/dL',
+                    groupValue: selectedGlucoseUnit,
                     activeColor: kPrimaryColor,
                     onChanged: (value) {
+                      setState(() {
+                        selectedGlucoseUnit = value;
+                      });
                     },
                   ),
                   Text('mmol/L', style: TextStyle(color: Colors.black)),
@@ -789,6 +693,7 @@ class _GlucoseState extends State<Glucose> {
                 hintText: 'Select a device',
                 topPaadding: 10,
                 bottomPadding: 10,
+                controller: _deviceController,
               ),
             ),
             SizedBox(height: 10,),
@@ -804,8 +709,6 @@ class _GlucoseState extends State<Glucose> {
     );
   }
 }
-
-
 
 
 class PatientTopbar extends StatelessWidget {

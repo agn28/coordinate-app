@@ -46,6 +46,7 @@ class _ContinueScreenState extends State<ContinueScreen> {
         title: new Text('New Community visit', style: TextStyle(color: Colors.white, fontSize: 20),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
+        automaticallyImplyLeading: false,
         iconTheme: IconThemeData(color: Colors.white),
         actions: <Widget>[
           GestureDetector(
@@ -116,7 +117,7 @@ class _ContinueScreenState extends State<ContinueScreen> {
                             ),
                             child: FlatButton(
                               onPressed: () async {
-                                Navigator.of(context).pushNamed('/chwWorklistSearch');
+                                Navigator.of(context).pushReplacementNamed('/chwHome');
                               },
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               child: Text('NO', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)

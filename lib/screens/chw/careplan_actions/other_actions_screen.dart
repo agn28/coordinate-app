@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/controllers/care_plan_controller.dart';
+import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
@@ -15,6 +17,10 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 
 class OtherActionsScreen extends StatefulWidget {
+  final data;
+  final parent;
+  OtherActionsScreen({this.data, this.parent});
+
   @override
   _OtherActionsScreenState createState() => _OtherActionsScreenState();
 }
@@ -37,11 +43,14 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
 
       setState(() {
         videoId = YoutubePlayer.convertUrlToId("https://www.youtube.com/watch?v=prE6Ty2qDq8");
-        // videoId = YoutubePlayer.convertUrlToId(video.first['uri']);
+        var url = widget.data['body']['components'].where((item) => item['type'] == 'video');
+        if (url.isNotEmpty) {
+          videoId = YoutubePlayer.convertUrlToId(url.first['uri']);
+        }
         _youtubeController = YoutubePlayerController(
           initialVideoId: videoId,
           flags: YoutubePlayerFlags(
-            autoPlay: true,
+            autoPlay: false,
           ),
         );
       });
@@ -63,7 +72,7 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text('Careplan goal', style: TextStyle(color: Colors.black87, fontSize: 20),),
+        title: new Text(widget.data['body']['goal']['title'], style: TextStyle(color: Colors.black87, fontSize: 20),),
         backgroundColor: Colors.white,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.black87),
@@ -195,7 +204,25 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
                               ),
                               child: FlatButton(
                                 onPressed: () async {
-                                  Navigator.of(context).pop();
+                                  // widget.widget.parent.setState(() {
+                                  //   widget.widget.parent.setStatus();
+                                  // });
+                                  // Navigator.of(context).pop();
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+                                  var response = await CarePlanController().update(widget.data, '');
+                                  print(response);
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+                                  
+                                  if (response == 'success') {
+                                    widget.parent.setState(() {
+                                      widget.parent.setStatus();
+                                    });
+                                    Navigator.of(context).pop();
+                                  } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
                                 },
                                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 child: Text('COMPLETE GOAL', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
@@ -231,52 +258,4 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
 }
 
 
-class PatientTopbar extends StatelessWidget {
-  const PatientTopbar({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      decoration: BoxDecoration(
-      color: Colors.white,
-        boxShadow: [BoxShadow(
-          blurRadius: .5,
-          color: Colors.black38,
-          offset: Offset(0.0, 1.0)
-        )]
-      ),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              child: Row(
-                children: <Widget>[
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(30.0),
-                    child: Image.asset(
-                      'assets/images/avatar.png',
-                      height: 30.0,
-                      width: 30.0,
-                    ),
-                  ),
-                  SizedBox(width: 15,),
-                  Text('Nurul Begum', style: TextStyle(fontSize: 18))
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            child: Text('31Y Female', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
-          ),
-          Expanded(
-            child: Text('PID: N-121933421', style: TextStyle(fontSize: 18))
-          )
-        ],
-      ),
-    );
-  }
-}
 

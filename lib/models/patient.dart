@@ -17,6 +17,14 @@ class Patient {
     return 'success';
   }
 
+  setPatientModify(patient) {
+    _patient = {
+      'uuid': patient['id'],
+      'data': patient['body'],
+      'meta': patient['meta']
+    };
+  }
+
   getPatient() {
     return _patient;
   }

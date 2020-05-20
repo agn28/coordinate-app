@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/controllers/care_plan_controller.dart';
+import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
@@ -15,6 +17,9 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 
 class ImproveBpControlScreen extends StatefulWidget {
+  final data;
+  final parent;
+  ImproveBpControlScreen({this.data, this.parent});
   @override
   _ImproveBpControlState createState() => _ImproveBpControlState();
 }
@@ -31,17 +36,21 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
     super.initState();
     _patient = Patient().getPatient();
     _getVideoUrl();
+    print(widget.data);
 
   }
   _getVideoUrl() async {
 
       setState(() {
         videoId = YoutubePlayer.convertUrlToId("https://www.youtube.com/watch?v=prE6Ty2qDq8");
-        // videoId = YoutubePlayer.convertUrlToId(video.first['uri']);
+        var url = widget.data['body']['components'].where((item) => item['type'] == 'video');
+        if (url.isNotEmpty) {
+          videoId = YoutubePlayer.convertUrlToId(url.first['uri']);
+        }
         _youtubeController = YoutubePlayerController(
           initialVideoId: videoId,
           flags: YoutubePlayerFlags(
-            autoPlay: true,
+            autoPlay: false,
           ),
         );
       });
@@ -63,7 +72,7 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text('Improve BP Control', style: TextStyle(color: Colors.black87, fontSize: 20),),
+        title: new Text(widget.data['body']['goal']['title'], style: TextStyle(color: Colors.black87, fontSize: 20),),
         backgroundColor: Colors.white,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.black87),
@@ -248,7 +257,7 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
                             ),
                         
                           ),
-                        ),
+                        )
                       ],
                     ),
                   ),
@@ -384,7 +393,25 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
                               ),
                               child: FlatButton(
                                 onPressed: () async {
-                                  Navigator.of(context).pop();
+                                  // widget.widget.parent.setState(() {
+                                  //   widget.widget.parent.setStatus();
+                                  // });
+                                  // Navigator.of(context).pop();
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+                                  var response = await CarePlanController().update(widget.data, '');
+                                  print(response);
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+                                  
+                                  if (response == 'success') {
+                                    widget.parent.setState(() {
+                                      widget.parent.setStatus();
+                                    });
+                                    Navigator.of(context).pop();
+                                  } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
                                 },
                                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 child: Text('COMPLETE GOAL', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
@@ -414,6 +441,64 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class VideoPlayer extends StatefulWidget {
+  VideoPlayer({
+    this.data,
+  });
+
+  final data;
+
+  @override
+  _VideoPlayerState createState() => _VideoPlayerState();
+}
+
+class _VideoPlayerState extends State<VideoPlayer> {
+  YoutubePlayerController _youtubeController;
+  var videoId = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _getVideoUrl();
+  }
+
+  _getVideoUrl() async {
+
+      setState(() {
+        // videoId = YoutubePlayer.convertUrlToId("https://www.youtube.com/watch?v=prE6Ty2qDq8");
+        videoId = YoutubePlayer.convertUrlToId(widget.data['uri']);
+        _youtubeController = YoutubePlayerController(
+          initialVideoId: videoId,
+          flags: YoutubePlayerFlags(
+            autoPlay: false,
+          ),
+        );
+      });
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 200.0,
+      color: Colors.red,
+      child: YoutubePlayer(
+        onEnded: (data) {
+        
+        } ,
+        
+        controller: _youtubeController,
+        liveUIColor: Colors.amber,
+        progressColors: ProgressBarColors(
+          playedColor: Colors.amber,
+          handleColor: Colors.amberAccent,
+        ),
+    
       ),
     );
   }

@@ -9,6 +9,7 @@ import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
+import 'package:nhealth/widgets/primary_textfield_widget.dart';
 
 
 class VerifyPatientScreen extends StatefulWidget {
@@ -124,9 +125,14 @@ class _VerifyPatientState extends State<VerifyPatientScreen> {
                       ),
                       child: FlatButton(
                         onPressed: () async {
-                          setState(() {
-                          });
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return SkipAlert();
+                            },
+                          );
                         },
+                          
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         child: Text('MARK AS UNSUCCESSFULL VISIT', style: TextStyle(fontSize: 14, color: kPrimaryColor, fontWeight: FontWeight.w500),)
                       ),
@@ -153,6 +159,138 @@ class _VerifyPatientState extends State<VerifyPatientScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+
+class SkipAlert extends StatefulWidget {
+
+  @override
+  _SkipAlertState createState() => _SkipAlertState();
+}
+
+class _SkipAlertState extends State<SkipAlert> {
+  final GlobalKey<FormState> _skipForm = new GlobalKey<FormState>();
+  String selectedReason = 'patient refused';
+  bool isOther = false;
+  final skipReasonController = TextEditingController();
+  List devices = ['Other'];
+  String selectedDevice;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      elevation: 0.0,
+      backgroundColor: Colors.transparent,
+      child: SingleChildScrollView(
+        child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(20),
+        color: Colors.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text('MARK AS UNSUCCESSFULL VISIT', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),),
+              SizedBox(height: 20,),
+                // margin: EdgeInsets.symmetric(horizontal: 30),
+              
+              Text('What went wrong?', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+              SizedBox(height: 20,),
+              Container(
+                  color: kSecondaryTextField,
+                  child: DropdownButtonFormField(
+                    hint: Text('Select a reason', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                    decoration: InputDecoration(
+                      fillColor: kSecondaryTextField,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                      border: UnderlineInputBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(4),
+                        topRight: Radius.circular(4),
+                      )
+                    ),
+                    ),
+                    items: [
+                      ...devices.map((item) =>
+                        DropdownMenuItem(
+                          child: Text(item),
+                          value: devices.indexOf(item)
+                        )
+                      ).toList(),
+                    ],
+                    value: selectedDevice,
+                    isExpanded: true,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedDevice = value;
+                      });
+                    },
+                  ),
+                ),
+                SizedBox(height: 40,),
+                Container(
+                  width: double.infinity,
+                  child: TextFormField(
+                    style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(top: 15.0, bottom: 25.0, left: 10, right: 10),
+                      filled: true,
+                      fillColor: kSecondaryTextField,
+                      border: new UnderlineInputBorder(
+                        borderSide: new BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          topRight: Radius.circular(4),
+                        )
+                      ),
+
+                      hintText: 'Comments/Notes',
+                      hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                    ),
+                  )
+                ),
+              SizedBox(height: 20,),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.bottomRight,
+                    margin: EdgeInsets.only(top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: kPrimaryColor, fontSize: 16),)
+                        ),
+                        SizedBox(width: 30,),
+                        GestureDetector(
+                          onTap: () async {
+                            Navigator.of(context).pushReplacementNamed('/chwHome');
+                          },
+                          child: Text('DONE', style: TextStyle(color: kPrimaryColor, fontSize: 16))
+                        ),
+                      ],
+                    )
+                  )
+                ],
+              )
+            ],
+          ),
+        )
+      )
+      
     );
   }
 }

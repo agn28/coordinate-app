@@ -1085,11 +1085,13 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: <Widget>[
-                            FloatingButton(text: 'FOLLOW-UP', onPressed: () {},),
-                            FloatingButton(text: 'ACUTE', onPressed: () {},),
-                            FloatingButton(text: 'CHILD', onPressed: () {},),
-                            FloatingButton(text: 'MATERIAL', onPressed: () {},),
-                            FloatingButton(text: 'HEALTH SCREENING', onPressed: () {},),
+                            FloatingButton( text: 'FOLLOW-UP', onPressed: () {}, active: false),
+                            FloatingButton(text: 'ACUTE', onPressed: () {}, active: false,),
+                            FloatingButton(text: 'CHILD', onPressed: () {}, active: false,),
+                            FloatingButton(text: 'MATERIAL', onPressed: () {}, active: false,),
+                            FloatingButton(text: 'HEALTH SCREENING', onPressed: () {
+                              Navigator.of(context).push(NewEncounterScreen());
+                            }, active: true,),
                           ],
                         ),
                       ),
@@ -1112,7 +1114,8 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
 class FloatingButton extends StatelessWidget {
   final String text;
   final Function onPressed;
-  const FloatingButton({this.text, this.onPressed});
+  bool active = true;
+  FloatingButton({this.text, this.onPressed, this.active});
 
   @override
   Widget build(BuildContext context) {
@@ -1120,6 +1123,7 @@ class FloatingButton extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 15),
       width: 300,
       child: RaisedButton(
+        color: active ? Colors.white : Color(0xFFdbdbdb),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),
         ),
