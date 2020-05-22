@@ -11,6 +11,7 @@ import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
+import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import '../../../custom-classes/custom_stepper.dart';
 
 final GlobalKey<FormState> _patientFormKey = new GlobalKey<FormState>();
@@ -706,56 +707,6 @@ class _GlucoseState extends State<Glucose> {
           ],
         ),
       )
-    );
-  }
-}
-
-
-class PatientTopbar extends StatelessWidget {
-  const PatientTopbar({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      decoration: BoxDecoration(
-      color: Colors.white,
-        boxShadow: [BoxShadow(
-          blurRadius: .5,
-          color: Colors.black38,
-          offset: Offset(0.0, 1.0)
-        )]
-      ),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              child: Row(
-                children: <Widget>[
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(30.0),
-                    child: Image.asset(
-                      'assets/images/avatar.png',
-                      height: 30.0,
-                      width: 30.0,
-                    ),
-                  ),
-                  SizedBox(width: 15,),
-                  Text('Nurul Begum', style: TextStyle(fontSize: 18))
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            child: Text('31Y Female', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
-          ),
-          Expanded(
-            child: Text('PID: N-121933421', style: TextStyle(fontSize: 18))
-          )
-        ],
-      ),
     );
   }
 }

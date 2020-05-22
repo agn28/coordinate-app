@@ -63,6 +63,32 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     getUsers();
   }
 
+  getStatus(item) {
+    var status = 'completed';
+    item['items'].forEach( (goal) {
+      if (goal['meta']['status'] == 'pending') {
+        setState(() {
+          status = 'pending';
+        });
+      }
+    });
+
+    return status;
+  }
+
+  getCount(item) {
+    var count = 0;
+
+    item['items'].forEach( (goal) {
+      setState(() {
+        count += 1;
+      });
+    });
+    
+
+    return count.toString();
+  }
+
   getUsers() async {
     setState(() {
       isLoading = true;
@@ -231,10 +257,28 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
         isLoading = false;
       });
     } else {
-      setState(() {
-        carePlans = data['data'];
-        isLoading = false;
+      // print( data['data']);
+      data['data'].forEach( (item) {
+        var existedCp = carePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
+        // print(existedCp);
+        if (existedCp.isEmpty) {
+          var items = [];
+          items.add(item);
+          carePlans.add({
+            'items': items,
+            'title': item['body']['goal']['title'],
+            'id': item['body']['goal']['id']
+          });
+        } else {
+          carePlans[carePlans.indexOf(existedCp.first)]['items'].add(item);
+
+        }
       });
+
+      // setState(() {
+      //   carePlans = data['data'];
+      //   isLoading = false;
+      // });
 
     }
   }
@@ -554,7 +598,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text('Due Today', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                              Text(getDueCounts(),)
+                              // Text(getDueCounts(),)
                             ],
                           ),
                         ),
@@ -588,16 +632,15 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                           ),
                                           child: GestureDetector(
                                             onTap: () {
-                                              Navigator.of(context).pushNamed('/carePlanInterventions', arguments: {
-                                                'carePlan' : item,
-                                                'parent': this
-                                              });
+                                              // Navigator.of(context).pushNamed('/carePlanInterventions', arguments: {
+                                              //   'carePlan' : item,
+                                              //   'parent': this
+                                              // });
                                             },
                                             child: Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
-                                              if (item['body']['goal'] != null && item['body']['goal']['title'] != null)
-                                              Text(item['body']['goal']['title'], style: TextStyle(fontSize: 16, color: kBorderLight)),
+                                              Text(item['title'], style: TextStyle(fontSize: 16, color: kBorderLight)),
                                               Container(
                                                 child: Row(
                                                   children: <Widget>[
@@ -610,7 +653,8 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                                       child: GestureDetector(
                                                         onTap: () {
                                                         },
-                                                        child: Text('${item['body']['components'].length} Actions', style: TextStyle(color: kBorderLight, fontWeight: FontWeight.w500),),
+                                                        // child: Text('${item['body']['actions'].length} Actions', style: TextStyle(color: kBorderLight, fontWeight: FontWeight.w500),),
+                                                        child: Text('${getCount(item)} Actions', style: TextStyle(color: kBorderLight, fontWeight: FontWeight.w500),),
                                                       ),
                                                     ),
                                                     Icon(Icons.chevron_right, color: kBorderLight,)
@@ -784,12 +828,39 @@ class _GoalItemState extends State<GoalItem> {
   }
 
   getStatus() {
-    status = widget.item['meta']['status'];
+    status = 'completed';
+    widget.item['items'].forEach( (goal) {
+      if (goal['meta']['status'] == 'pending') {
+        setState(() {
+          status = 'pending';
+        });
+      }
+    });
   }
   setStatus() {
     setState(() {
       status = 'completed';
     });
+  }
+  getCount() {
+    var count = 0;
+    if (status == 'pending') {
+      widget.item['items'].forEach( (goal) {
+        if (goal['meta']['status'] == 'pending') {
+          setState(() {
+            count += 1;
+          });
+        }
+      });
+    } else {
+      widget.item['items'].forEach( (goal) {
+        setState(() {
+          count += 1;
+        });
+      });
+    }
+
+    return count.toString();
   }
 
   @override
@@ -805,7 +876,7 @@ class _GoalItemState extends State<GoalItem> {
       child: GestureDetector(
         onTap: () {
           if (status == 'pending') {
-            if (widget.item['body']['goal']['title'] == 'Improve blood pressure control') {
+            if (widget.item['title'] == 'Improve blood pressure control') {
               Navigator.of(context).pushNamed('/chwImproveBp', arguments: { 'data': widget.item, 'parent': this });
             } else {
               Navigator.of(context).pushNamed('/chwOtherActions', arguments: { 'data': widget.item, 'parent': this });
@@ -815,8 +886,7 @@ class _GoalItemState extends State<GoalItem> {
         child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          if (widget.item['body']['goal'] != null && widget.item['body']['goal']['title'] != null)
-          Text(widget.item['body']['goal']['title'], style: TextStyle(fontSize: 16, color: kPrimaryColor)),
+          Text(widget.item['title'], style: TextStyle(fontSize: 16, color: kPrimaryColor)),
           Container(
             child: Row(
               children: <Widget>[
@@ -828,7 +898,7 @@ class _GoalItemState extends State<GoalItem> {
                   ),
                   child: GestureDetector(
                     onTap: () {
-                      if (widget.item['body']['goal']['title'] == 'Improve blood pressure control') {
+                      if (widget.item['title'] == 'Improve blood pressure control') {
                         Navigator.of(context).pushNamed('/chwImproveBp', arguments: { 'data': widget.item, 'parent': this });
                       } else {
                         Navigator.of(context).pushNamed('/chwOtherActions', arguments: { 'data': widget.item, 'parent': this });
@@ -836,7 +906,8 @@ class _GoalItemState extends State<GoalItem> {
                     },
                     child: Row(
                       children: <Widget>[
-                        Text('${widget.item['body']['components'].length} Actions  ', style: TextStyle(color: status == 'pending' ? kPrimaryRedColor : kPrimaryGreenColor, fontWeight: FontWeight.w500),),
+                        // Text('${widget.item['body']['actions'].length} Actions  ', style: TextStyle(color: status == 'pending' ? kPrimaryRedColor : kPrimaryGreenColor, fontWeight: FontWeight.w500),),
+                        Text('${getCount()} Actions  ', style: TextStyle(color: status == 'pending' ? kPrimaryRedColor : kPrimaryGreenColor, fontWeight: FontWeight.w500),),
                         if (status != 'pending') 
                         Icon(Icons.check_circle, color: kPrimaryGreenColor, size: 14,)
                       ],

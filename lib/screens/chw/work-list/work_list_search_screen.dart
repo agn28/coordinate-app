@@ -229,6 +229,7 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).translate('workList')),
+        automaticallyImplyLeading: false,
         elevation: 0,
         actions: <Widget>[
           FlatButton(
