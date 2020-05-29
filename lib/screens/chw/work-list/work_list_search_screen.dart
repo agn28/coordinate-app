@@ -45,10 +45,46 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
   var cholesterol;
   var bp;
   var cvd;
+  var authUser;
+  TabController _controller;
+
+  @override
+  initState() {
+    super.initState();
+    allWorklist = [];
+    worklist = [];
+    _getAuthUser();
+    _getPatients();
+    patientSort = 'asc';
+    dueDateSort = 'asc';
+    patientSortActive = false;
+    dueDateSortActive = false;
+  }
   
   loaderHandle(value) {
     setState(() {
       isLoading = value;
+    });
+  }
+  _logout() {
+    Auth().logout();
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+  }
+
+  _getAuthUserName() {
+    var name = '';
+    name = authUser != null && authUser['name'] != null ? authUser['name'] + ' (${authUser["role"].toUpperCase()})'  : '';
+    return name;
+  }
+
+  _getAuthUser() async {
+    var data = await Auth().getStorageAuth() ;
+    if (!data['status']) {
+      _logout();
+    }
+
+    setState(() {
+      authUser = data;
     });
   }
   /// Get all the worklist
@@ -208,19 +244,7 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
     return  completedPatients.length;
   }
 
-  TabController _controller;
-
-  @override
-  initState() {
-    super.initState();
-    allWorklist = [];
-    worklist = [];
-    _getPatients();
-    patientSort = 'asc';
-    dueDateSort = 'asc';
-    patientSortActive = false;
-    dueDateSortActive = false;
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -232,13 +256,41 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
         automaticallyImplyLeading: false,
         elevation: 0,
         actions: <Widget>[
-          FlatButton(
-            onPressed: () {
-              Auth().logout();
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+          // overflow menu
+          PopupMenuButton(
+            itemBuilder: (_) => <PopupMenuItem<String>>[
+                new PopupMenuItem<String>(
+                    
+                    child: Container(
+                      child: Text('Logout'),
+                    ),
+                    value: 'logout'),
+              ],
+            onSelected: (value) {
+              if (value == 'logout') {
+                _logout();
+              }
             },
-            child: Text('Logout', style: TextStyle(color: Colors.white, fontSize: 16),),
-          )
+            child: Container(
+              alignment: Alignment.center,
+              child: Row(
+                children: <Widget>[
+                  Text(_getAuthUserName(),),
+                  SizedBox(width: 10),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(30.0),
+                    child: Image.asset(
+                      'assets/images/avatar.png',
+                      height: 20.0,
+                      width: 20.0,
+                    ),
+                  ),
+                  SizedBox(width: 20,)
+                ],
+              ),
+            ),
+          ),
+
         ],
         bottom: PreferredSize(child: Container(color: kPrimaryColor, height: 1.0,), preferredSize: Size.fromHeight(1.0)),
 
@@ -502,23 +554,29 @@ class _PatientItemState extends State<PatientItem> {
                                 SizedBox(width: 10,),
                                 Row(
                                   children: <Widget>[
+
+                                    widget.item['body']['assessments'] != null && widget.item['body']['assessments']['lifestyle']['components']['diet'] != null && widget.item['body']['assessments']['lifestyle']['components']['diet']['components']['fruit'] != null ?
                                     CircleAvatar(
                                       child: Image.asset('assets/images/icons/fruit.png', width: 11,),
                                       radius: 11,
-                                      backgroundColor: kPrimaryRedColor,
-                                    ),
+                                      backgroundColor: ColorUtils.statusColor[widget.item['body']['assessments']['lifestyle']['components']['diet']['components']['fruit']['tfl']],
+                                    ) : Container(),
                                     SizedBox(width: 5,),
+
+                                    widget.item['body']['assessments'] != null && widget.item['body']['assessments']['lifestyle']['components']['diet'] != null && widget.item['body']['assessments']['lifestyle']['components']['diet']['components']['vegetable'] != null ?
                                     CircleAvatar(
                                       child: Image.asset('assets/images/icons/vegetables.png', width: 11,),
                                       radius: 11,
-                                      backgroundColor: kPrimaryRedColor,
-                                    ),
+                                      backgroundColor: ColorUtils.statusColor[widget.item['body']['assessments']['lifestyle']['components']['diet']['components']['vegetable']['tfl']],
+                                    ) : Container(),
                                     SizedBox(width: 5,),
+
+                                    widget.item['body']['assessments'] != null && widget.item['body']['assessments']['lifestyle']['components']['physical_activity'] != null ?
                                     CircleAvatar(
                                       child: Image.asset('assets/images/icons/activity.png', width: 11,),
                                       radius: 11,
-                                      backgroundColor: kPrimaryAmberColor,
-                                    )
+                                      backgroundColor: ColorUtils.statusColor[widget.item['body']['assessments']['lifestyle']['components']['physical_activity']['tfl']],
+                                    ) : Container()
                                   ],
                                 ),
                               ],

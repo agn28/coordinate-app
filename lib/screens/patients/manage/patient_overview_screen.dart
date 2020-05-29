@@ -181,21 +181,51 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
     });
     encounters = await AssessmentController().getLiveAllAssessmentsByPatient();
 
-    setState(() {
-      isLoading = false;
-    });
+    // setState(() {
+    //   isLoading = false;
+    // });
 
     if (encounters.isNotEmpty) {
+      var allEncounters = encounters;
+      await Future.forEach(allEncounters, (item) async {
+        var data = await getObservations(item);
+        var completed_observations = [];
+        if (data.isNotEmpty) {
+          data.forEach((obs) {
+            
+            if (obs['body']['type'] == 'survey') {
+              if (!completed_observations.contains(obs['body']['data']['name'])) {
+                completed_observations.add(obs['body']['data']['name']);
+              }
+            } else  {
+              if (!completed_observations.contains(obs['body']['type'])) {
+                completed_observations.add(obs['body']['type']);
+              }
+            }
+          });
+        }
+        encounters[encounters.indexOf(item)]['completed_observations'] = completed_observations;
+      });
+      // print(encounters);
       encounters.sort((a, b) {
         return DateTime.parse(b['meta']['created_at']).compareTo(DateTime.parse(a['meta']['created_at']));
       });
 
       setState(() {
+        isLoading = false;
         lastEncounterdDate = DateFormat("MMMM d, y").format(DateTime.parse(encounters.first['meta']['created_at']));
       });
 
     }
     
+  }
+
+  getObservations(assessment) async {
+    // _observations =  await AssessmentController().getObservationsByAssessment(widget.assessment);
+    var data =  await AssessmentController().getLiveObservationsByAssessment(assessment);
+    // print(data);
+    return data;
+
   }
 
   _checkAvatar() async {
@@ -866,45 +896,54 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                                       SizedBox(height: 20,),
                                                       Row(
                                                         children: <Widget>[
-                                                          Column(
-                                                            children: <Widget>[
-                                                              Image.asset('assets/images/icons/questionnaire.png', width: 20,),
-                                                              SizedBox(height: 10,),
-                                                              Text('Health \nHistory', textAlign: TextAlign.center,)
-                                                            ],
-                                                          ),
-                                                          SizedBox(width: 25,),
-                                                          Column(
-                                                            children: <Widget>[
-                                                              Image.asset('assets/images/icons/body_measurements.png', width: 20,),
-                                                              SizedBox(height: 10,),
-                                                              Text('Body\nMeasurement', textAlign: TextAlign.center,)
-                                                            ],
-                                                          ),
-                                                          SizedBox(width: 25,),
-                                                          Column(
-                                                            children: <Widget>[
-                                                              Image.asset('assets/images/icons/blood_pressure.png', width: 20,),
-                                                              SizedBox(height: 10,),
-                                                              Text('Blood\nPressure', textAlign: TextAlign.center,)
-                                                            ],
-                                                          ),
-                                                          SizedBox(width: 25,),
-                                                          Column(
-                                                            children: <Widget>[
-                                                              Image.asset('assets/images/icons/blood_test.png', width: 20,),
-                                                              SizedBox(height: 10,),
-                                                              Text('Blood\nTest', textAlign: TextAlign.center,)
-                                                            ],
-                                                          ),
-                                                          SizedBox(width: 25,),
-                                                          Column(
-                                                            children: <Widget>[
-                                                              Image.asset('assets/images/icons/blood_glucose.png', width: 20,),
-                                                              SizedBox(height: 10,),
-                                                              Text('Medical\nHistory', textAlign: TextAlign.center,)
-                                                            ],
-                                                          )
+                                                          
+                                                          encounter['completed_observations'] != null && encounter['completed_observations'].contains('body_measurement') ?
+                                                          Container(
+                                                            margin: EdgeInsets.only(right: 20),
+                                                            child: Column(
+                                                              children: <Widget>[
+                                                                Image.asset('assets/images/icons/body_measurements.png', width: 20,),
+                                                                SizedBox(height: 10,),
+                                                                Text('Body\nMeasurement', textAlign: TextAlign.center,)
+                                                              ],
+                                                            ),
+                                                          ) : Container(),
+
+                                                          encounter['completed_observations'] != null && encounter['completed_observations'].contains('blood_pressure') ?
+                                                          Container(
+                                                            margin: EdgeInsets.only(right: 20),
+                                                            child: Column(
+                                                              children: <Widget>[
+                                                                Image.asset('assets/images/icons/blood_pressure.png', width: 20,),
+                                                                SizedBox(height: 10,),
+                                                                Text('Blood\nPressure', textAlign: TextAlign.center,)
+                                                              ],
+                                                            ),
+                                                          ) : Container(),
+
+                                                          encounter['completed_observations'] != null && encounter['completed_observations'].contains('blood_test') ?
+                                                          Container(
+                                                            margin: EdgeInsets.only(right: 20),
+                                                            child: Column(
+                                                              children: <Widget>[
+                                                                Image.asset('assets/images/icons/blood_test.png', width: 20,),
+                                                                SizedBox(height: 10,),
+                                                                Text('Blood\nTest', textAlign: TextAlign.center,)
+                                                              ],
+                                                            ),
+                                                          ) : Container(),
+
+                                                          encounter['completed_observations'] != null && encounter['completed_observations'].contains('medical_history') ?
+                                                          Container(
+                                                            margin: EdgeInsets.only(right: 20),
+                                                            child: Column(
+                                                              children: <Widget>[
+                                                                Image.asset('assets/images/icons/blood_glucose.png', width: 20,),
+                                                                SizedBox(height: 10,),
+                                                                Text('Medical\nHistory', textAlign: TextAlign.center,)
+                                                              ],
+                                                            ),
+                                                          ): Container()
                                                         ],
                                                       ),
                                                       
@@ -954,7 +993,6 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                                       // SizedBox(height: 20),
                                                       GestureDetector(
                                                         onTap: () {
-                                                          return;
                                                           Navigator.of(context).pushNamed('/encounterDetails', arguments: encounter);
                                                         },
                                                         child: Text('View Encounter Details', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w400, fontSize: 16),)
@@ -1037,8 +1075,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                       ),
                                     ],
                                   ),
-                                )
-                                    ;
+                                );
                             
                               }).toList()  
                             ],

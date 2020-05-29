@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
@@ -49,21 +50,7 @@ class _VerifyPatientState extends State<VerifyPatientScreen> {
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
         actions: <Widget>[
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(RegisterPatientScreen(isEdit: true));
-            },
-            child: Container(
-              margin: EdgeInsets.only(right: 30),
-              child: Row(
-                children: <Widget>[
-                  Icon(Icons.edit, color: Colors.white,),
-                  SizedBox(width: 10),
-                  Text(AppLocalizations.of(context).translate('viewOrEditPatient'), style: TextStyle(color: Colors.white))
-                ],
-              )
-            )
-          )
+
         ],
       ),
       body: isLoading ? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
@@ -80,12 +67,21 @@ class _VerifyPatientState extends State<VerifyPatientScreen> {
                       child: Text('Verify Patient', style: TextStyle(fontSize: 23),)
                     ),
                     SizedBox(height: 30,),
+                    Patient().getPatient()['data']['avatar'] == null ? 
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(70.0),
+                      child: Image.asset(
+                        'assets/images/avatar.png',
+                        height: 140.0,
+                        width: 140.0,
+                      ),
+                    ) :
                     CircleAvatar(
                       radius: 70,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(30.0),
-                        child: Image.asset(
-                          'assets/images/patient_big.png',
+                        child: Image.network(
+                          Patient().getPatient()['data']['avatar'],
                           height: 140.0,
                           width: 140.0,
                         ),
@@ -93,9 +89,9 @@ class _VerifyPatientState extends State<VerifyPatientScreen> {
                       backgroundImage: AssetImage('assets/images/avatar.png'),
                     ),
                     SizedBox(height: 30,),
-                    Text('Nurul Begum', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
+                    Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 18)),
                     SizedBox(height: 20,),
-                    Text('45 Y F', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                    Text(Helpers().getPatientAgeAndGender(Patient().getPatient()), style: TextStyle(fontSize: 20, color: kTextGrey),),
                     SizedBox(height: 30,),
                     Container(
                       width: double.infinity,

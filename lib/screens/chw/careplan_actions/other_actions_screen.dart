@@ -17,6 +17,8 @@ import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
+bool isWatched = false;
+
 
 class OtherActionsScreen extends StatefulWidget {
   final data;
@@ -156,10 +158,14 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
                                         children: <Widget>[
                                           Checkbox(
                                             activeColor: kPrimaryColor,
-                                            value: true,
+                                            value: item['meta']['status'] == 'completed',
                                             onChanged: (value) {
                                               setState(() {
-                                                // widget.form = value;
+                                                if (value) {
+                                                  item['meta']['status'] = 'completed';
+                                                } else {
+                                                  item['meta']['status'] = 'pending';
+                                                }
                                               });
                                             },
                                           ),

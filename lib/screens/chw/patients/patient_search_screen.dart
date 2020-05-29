@@ -45,14 +45,37 @@ class ChwPatientSearchScreen extends StatefulWidget {
 }
 
 class _PatientSearchState extends State<ChwPatientSearchScreen> {
-  bool isLoading = false;
+  bool isLoading = true;
   var test = '';
+  var authUser;
+
   @override
   initState() {
     super.initState();
     // getPatients();
-    isLoading = true;
+    _getAuthUser();
     getLivePatients();
+  }
+  _logout() {
+    Auth().logout();
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+  }
+
+  _getAuthUserName() {
+    var name = '';
+    name = authUser != null && authUser['name'] != null ? authUser['name'] + ' (${authUser["role"].toUpperCase()})'  : '';
+    return name;
+  }
+
+  _getAuthUser() async {
+    var data = await Auth().getStorageAuth() ;
+    if (!data['status']) {
+      _logout();
+    }
+
+    setState(() {
+      authUser = data;
+    });
   }
 
   matchBarcodeData(data) async {
@@ -144,18 +167,38 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
         title: Text(AppLocalizations.of(context).translate('patients')),
         elevation: 0,
         actions: <Widget>[
-          FlatButton(
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: 5,),
-                Icon(Icons.person_add, color: Colors.white, size: 20,),
-                SizedBox(height: 5,),
-                Text(AppLocalizations.of(context).translate('newPatient'), style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14),)
+          PopupMenuButton(
+            itemBuilder: (_) => <PopupMenuItem<String>>[
+                new PopupMenuItem<String>(
+                    
+                    child: Container(
+                      child: Text('Logout'),
+                    ),
+                    value: 'logout'),
               ],
-            ),
-            onPressed: () {
-              Navigator.of(context).push(RegisterPatientScreen());
+            onSelected: (value) {
+              if (value == 'logout') {
+                _logout();
+              }
             },
+            child: Container(
+              alignment: Alignment.center,
+              child: Row(
+                children: <Widget>[
+                  Text(_getAuthUserName(),),
+                  SizedBox(width: 10),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(30.0),
+                    child: Image.asset(
+                      'assets/images/avatar.png',
+                      height: 20.0,
+                      width: 20.0,
+                    ),
+                  ),
+                  SizedBox(width: 20,)
+                ],
+              ),
+            ),
           ),
           Configs().configAvailable('isBarcode') ? FlatButton(
             child: Column(

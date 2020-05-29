@@ -276,10 +276,14 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
                                         children: <Widget>[
                                           Checkbox(
                                             activeColor: kPrimaryColor,
-                                            value: true,
+                                            value: item['meta']['status'] == 'completed',
                                             onChanged: (value) {
                                               setState(() {
-                                                // widget.form = value;
+                                                if (value) {
+                                                  item['meta']['status'] = 'completed';
+                                                } else {
+                                                  item['meta']['status'] = 'pending';
+                                                }
                                               });
                                             },
                                           ),

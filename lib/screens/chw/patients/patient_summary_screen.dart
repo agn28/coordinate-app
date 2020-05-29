@@ -31,7 +31,7 @@ class ChwPatientRecordsScreen extends StatefulWidget {
 
 class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   var _patient;
-  bool isLoading = false;
+  bool isLoading = true;
   var carePlans = [];
   bool avatarExists = false;
   var encounters = [];
@@ -90,9 +90,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   }
 
   getUsers() async {
-    setState(() {
-      isLoading = true;
-    });
+  
     users = await UserController().getUsers();
 
 
@@ -110,22 +108,17 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   }
 
   getReport() async {
-    setState(() {
-      isLoading = true;
-    });
+
     var data = await HealthReportController().getLastReport();
     
     if (data['error'] == true) {
-      setState(() {
-        isLoading = false;
-      });
+      
       Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
     } else if (data['message'] == 'Unauthorized') {
       Auth().logout();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
     } else {
       setState(() {
-        isLoading = false;
         report = data['data'];
       });
     }
@@ -184,10 +177,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
       lastAssessmentdDate = DateFormat("MMMM d, y").format(DateTime.parse(response['data']['meta']['created_at']));
     });
 
-
-    setState(() {
-      isLoading = false;
-    });
   }
 
   getDueCounts() {
@@ -211,9 +200,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     });
     encounters = await AssessmentController().getLiveAllAssessmentsByPatient();
 
-    setState(() {
-      isLoading = false;
-    });
 
     if (encounters.isNotEmpty) {
       encounters.sort((a, b) {
@@ -240,22 +226,16 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   }
 
   _getCarePlan() async {
-    setState(() {
-      isLoading = true;
-    });
+
     
     var data = await CarePlanController().getCarePlan();
     
     if (data != null && data['message'] == 'Unauthorized') {
-      setState(() {
-        isLoading = false;
-      });
+
       Auth().logout();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
     } else if (data['error'] == true) {
-      setState(() {
-        isLoading = false;
-      });
+
     } else {
       // print( data['data']);
       data['data'].forEach( (item) {
@@ -288,26 +268,12 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text(AppLocalizations.of(context).translate('patientOverview'), style: TextStyle(color: Colors.white, fontSize: 20),),
+        title: new Text('Patient Summary', style: TextStyle(color: Colors.white, fontSize: 20),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
         actions: <Widget>[
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(RegisterPatientScreen(isEdit: true));
-            },
-            child: Container(
-              margin: EdgeInsets.only(right: 30),
-              child: Row(
-                children: <Widget>[
-                  Icon(Icons.edit, color: Colors.white,),
-                  SizedBox(width: 10),
-                  Text(AppLocalizations.of(context).translate('viewOrEditPatient'), style: TextStyle(color: Colors.white))
-                ],
-              )
-            )
-          )
+
         ],
       ),
       body: isLoading ? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
@@ -379,23 +345,28 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                             SizedBox(width: 10,),
                                             Row(
                                               children: <Widget>[
+                                                report['body']['result']['assessments'] != null && report['body']['result']['assessments']['lifestyle']['components']['diet'] != null && report['body']['result']['assessments']['lifestyle']['components']['diet']['components']['fruit'] != null ?
                                                 CircleAvatar(
                                                   child: Image.asset('assets/images/icons/fruit.png', width: 11,),
                                                   radius: 11,
-                                                  backgroundColor: kPrimaryRedColor,
-                                                ),
+                                                  backgroundColor: ColorUtils.statusColor[report['body']['result']['assessments']['lifestyle']['components']['diet']['components']['fruit']['tfl']],
+                                                ) : Container(),
                                                 SizedBox(width: 5,),
+
+                                                report['body']['result']['assessments'] != null && report['body']['result']['assessments']['lifestyle']['components']['diet'] != null && report['body']['result']['assessments']['lifestyle']['components']['diet']['components']['vegetable'] != null ?
                                                 CircleAvatar(
                                                   child: Image.asset('assets/images/icons/vegetables.png', width: 11,),
                                                   radius: 11,
-                                                  backgroundColor: kPrimaryRedColor,
-                                                ),
+                                                  backgroundColor: ColorUtils.statusColor[report['body']['result']['assessments']['lifestyle']['components']['diet']['components']['vegetable']['tfl']],
+                                                ) : Container(),
                                                 SizedBox(width: 5,),
+
+                                                report['body']['result']['assessments'] != null && report['body']['result']['assessments']['lifestyle']['components']['physical_activity'] != null ?
                                                 CircleAvatar(
                                                   child: Image.asset('assets/images/icons/activity.png', width: 11,),
                                                   radius: 11,
-                                                  backgroundColor: kPrimaryAmberColor,
-                                                )
+                                                  backgroundColor: ColorUtils.statusColor[report['body']['result']['assessments']['lifestyle']['components']['physical_activity']['tfl']],
+                                                ) : Container()
                                               ],
                                             ),
                                           ],
@@ -906,7 +877,7 @@ class _GoalItemState extends State<GoalItem> {
                     },
                     child: Row(
                       children: <Widget>[
-                        // Text('${widget.item['body']['actions'].length} Actions  ', style: TextStyle(color: status == 'pending' ? kPrimaryRedColor : kPrimaryGreenColor, fontWeight: FontWeight.w500),),
+                        // Text('${report['body']['result']['actions'].length} Actions  ', style: TextStyle(color: status == 'pending' ? kPrimaryRedColor : kPrimaryGreenColor, fontWeight: FontWeight.w500),),
                         Text('${getCount()} Actions  ', style: TextStyle(color: status == 'pending' ? kPrimaryRedColor : kPrimaryGreenColor, fontWeight: FontWeight.w500),),
                         if (status != 'pending') 
                         Icon(Icons.check_circle, color: kPrimaryGreenColor, size: 14,)
