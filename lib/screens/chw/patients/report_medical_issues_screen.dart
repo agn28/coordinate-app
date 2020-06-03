@@ -5,15 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/medical_issues_controller.dart';
-import 'package:nhealth/custom-classes/custom_stepper.dart';
-import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
-import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
-import 'package:nhealth/widgets/primary_textfield_widget.dart';
-import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/questionnaires_screen.dart';
 
 int selectedOption = -1;
 var _questions = {};

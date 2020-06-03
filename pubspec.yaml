@@ -104,6 +104,7 @@ flutter:
    - assets/images/icons/unwell.png
    - assets/images/icons/unwell_green.png
    - assets/images/icons/unwell_red.png
+   - assets/images/user_placeholder.png
    - lang/en.json
    - lang/bn.json
 

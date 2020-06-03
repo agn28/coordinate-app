@@ -1,13 +1,9 @@
 import 'package:intl/intl.dart';
-import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/repositories/care_plan_repository.dart';
 import 'package:nhealth/repositories/health_report_repository.dart';
-import 'package:nhealth/repositories/local/patient_repository_local.dart';
-import 'dart:convert';
 
-import 'package:nhealth/repositories/patient_repository.dart';
 import 'package:uuid/uuid.dart';
 
 class CarePlanController {

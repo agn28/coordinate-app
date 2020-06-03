@@ -294,7 +294,7 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
                                   
                                   if (response == 'success') {
                                     widget.parent.setState(() {
-                                      widget.parent.setStatus();
+                                      widget.parent.setStatus(widget.data);
                                     });
                                     Navigator.of(context).pop();
                                   } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);

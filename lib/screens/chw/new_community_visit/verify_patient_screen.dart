@@ -71,7 +71,7 @@ class _VerifyPatientState extends State<VerifyPatientScreen> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(70.0),
                       child: Image.asset(
-                        'assets/images/avatar.png',
+                        'assets/images/user_placeholder.png',
                         height: 140.0,
                         width: 140.0,
                       ),
@@ -86,7 +86,8 @@ class _VerifyPatientState extends State<VerifyPatientScreen> {
                           width: 140.0,
                         ),
                       ),
-                      backgroundImage: AssetImage('assets/images/avatar.png'),
+                      backgroundColor: Colors.transparent,
+                      backgroundImage: AssetImage('assets/images/user_placeholder.png'),
                     ),
                     SizedBox(height: 30,),
                     Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 18)),

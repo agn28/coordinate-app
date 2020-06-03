@@ -33,6 +33,10 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
   var _patient;
   bool isLoading = false;
   var carePlans = [];
+  var dueCarePlans = [];
+  var completedCarePlans = [];
+  var upcomingCarePlans = [];
+
   bool avatarExists = false;
   var encounters = [];
   String lastEncounterdDate = '';
@@ -65,8 +69,8 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
     setState(() {
       isLoading = true;
     });
+    
     users = await UserController().getUsers();
-
 
     setState(() {
       isLoading = false;
@@ -163,14 +167,14 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
   getDueCounts() {
     var goalCount = 0;
     var actionCount = 0;
-    carePlans.forEach((item) {
-      if(item['meta']['status'] == 'pending') {
-        goalCount = goalCount + 1;
-        if (item['body']['components'] != null) {
-          // actionCount = actionCount + item['body']['components'].length;
-        }
-      }
-    });
+    // carePlans.forEach((item) {
+    //   if(item['meta']['status'] == 'pending') {
+    //     goalCount = goalCount + 1;
+    //     if (item['body']['components'] != null) {
+    //       // actionCount = actionCount + item['body']['components'].length;
+    //     }
+    //   }
+    // });
 
     return "$goalCount goals & $actionCount actions";
   }
@@ -257,10 +261,106 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
         isLoading = false;
       });
     } else {
-      setState(() {
-        carePlans = data['data'];
-        isLoading = false;
+
+
+      data['data'].forEach( (item) {
+        DateFormat format = new DateFormat("E LLL d y");
+        var endDate = format.parse(item['body']['activityDuration']['end']);
+        var startDate = format.parse(item['body']['activityDuration']['start']);
+        var todayDate = DateTime.now();
+        // print(endDate);
+        // print(todayDate.isBefore(endDate));
+        // print(todayDate.isAfter(startDate));
+
+        //check due careplans
+        if (item['meta']['status'] == 'pending') {
+          if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
+            var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
+            // print(existedCp);
+            // print(item['body']['activityDuration']['start']);
+
+            if (existedCp.isEmpty) {
+              var items = [];
+              items.add(item);
+              dueCarePlans.add({
+                'items': items,
+                'title': item['body']['goal']['title'],
+                'id': item['body']['goal']['id']
+              });
+            } else {
+              dueCarePlans[dueCarePlans.indexOf(existedCp.first)]['items'].add(item);
+
+            }
+          } else if (todayDate.isBefore(startDate)) {
+            var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
+            // print(existedCp);
+            // print(item['body']['activityDuration']['start']);
+
+            if (existedCp.isEmpty) {
+              var items = [];
+              items.add(item);
+              upcomingCarePlans.add({
+                'items': items,
+                'title': item['body']['goal']['title'],
+                'id': item['body']['goal']['id']
+              });
+            } else {
+              upcomingCarePlans[upcomingCarePlans.indexOf(existedCp.first)]['items'].add(item);
+
+            }
+          }
+        } else {
+          var existedCp = completedCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
+          // print(existedCp);
+          // print(item['body']['activityDuration']['start']);
+
+          if (existedCp.isEmpty) {
+            var items = [];
+            items.add(item);
+            completedCarePlans.add({
+              'items': items,
+              'title': item['body']['goal']['title'],
+              'id': item['body']['goal']['id']
+            });
+          } else {
+            completedCarePlans[completedCarePlans.indexOf(existedCp.first)]['items'].add(item);
+
+          }
+        }
+
+        // print('due');
+        // print(dueCarePlans);
+        // print('completed');
+        // print(completedCarePlans);
+        // print('upcoming');
+        // print(upcomingCarePlans);
+
+        
+        
+        // var existedCp = carePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
+        // // print(existedCp);
+        // // print(item['body']['activityDuration']['start']);
+        
+
+        // if (existedCp.isEmpty) {
+        //   var items = [];
+        //   items.add(item);
+        //   carePlans.add({
+        //     'items': items,
+        //     'title': item['body']['goal']['title'],
+        //     'id': item['body']['goal']['id']
+        //   });
+        // } else {
+        //   carePlans[carePlans.indexOf(existedCp.first)]['items'].add(item);
+
+        // }
       });
+
+
+      // setState(() {
+      //   carePlans = data['data'];
+      //   isLoading = false;
+      // });
 
     }
   }
@@ -574,235 +674,15 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                             ],
                           ),
                         ),
-                        Container(
-                          child: ExpandableTheme(
-                            data: ExpandableThemeData(
-                              iconColor: kBorderGrey,
-                              iconPlacement: ExpandablePanelIconPlacement.left,
-                              useInkWell: true,
-                              iconPadding: EdgeInsets.only(top: 12, left: 8, right: 8)
-                            ),
-                            child: Column(
-                              children: <Widget>[
-                                Container(
-                                    child: ExpandableNotifier(
-                                      child: Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(width: 1, color: kBorderLighter)
-                                        ),
-                                        child: Column(
-                                          children: <Widget>[
-                                            ScrollOnExpand(
-                                              scrollOnExpand: true,
-                                              scrollOnCollapse: false,
-                                              child: ExpandablePanel(
-                                                theme: const ExpandableThemeData(
-                                                  headerAlignment: ExpandablePanelHeaderAlignment.center,
-                                                  tapBodyToCollapse: true,
-                                                ),
-                                                header: Container(
-                                                  padding: EdgeInsets.only(top:10),
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                    children: <Widget>[
-                                                      Text(
-                                                        "Due Today",
-                                                        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
-                                                      ),
-                                                      Container(
-                                                        margin: EdgeInsets.only(right: 20),
-                                                        child: Text(getDueCounts(), style: TextStyle(color: Colors.black54, fontSize: 16),),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                                expanded: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    SizedBox(height: 10,),
-                                                      ...carePlans.map( (item) {
-                                                      if (item['meta']['status'] == 'pending') {
-                                                        return Container(
-                                                          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                                                          padding: EdgeInsets.only(bottom: 20),
-                                                          decoration: BoxDecoration(
-                                                            border: Border(
-                                                              bottom: BorderSide(color: kBorderLighter)
-                                                            )
-                                                          ),
-                                                          child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: <Widget>[
-                                                              if (item['body']['goal'] != null && item['body']['goal']['title'] != null)
-                                                                Text(item['body']['goal']['title'], style: TextStyle(fontSize: 16)),
-                                                              SizedBox(height: 15,),
-                                                              GestureDetector(
-                                                                onTap: () {
-                                                                  Navigator.of(context).pushNamed('/carePlanInterventions', arguments: {
-                                                                    'carePlan' : item,
-                                                                    'parent': this
-                                                                  });
-                                                                },
-                                                                child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                children: <Widget>[
-                                                                  if (item['body']['title'] != null)
-                                                                    Text(item['body']['title'], style: TextStyle(fontSize: 17, color: kPrimaryColor)),
-                                                                  Icon(Icons.chevron_right, color: kPrimaryColor,)
-                                                                ],),
-                                                              ),
-                                                            ],
-                                                          )
-                                                        );
-                                                      } else return Container();
-                                                    }).toList()
-                                                  
-                                                    
-                                                  ],
-                                                ),
-                                                builder: (_, collapsed, expanded) {
-                                                  return Padding(
-                                                    padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                                                    child: Expandable(
-                                                      collapsed: collapsed,
-                                                      expanded: expanded,
-                                                      theme: const ExpandableThemeData(crossFadePoint: 0),
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  )
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Container(
-                          child: ExpandableTheme(
-                            data: ExpandableThemeData(
-                              iconColor: kBorderGrey,
-                              iconPlacement: ExpandablePanelIconPlacement.left,
-                              useInkWell: true,
-                              iconPadding: EdgeInsets.only(top: 12, left: 8, right: 8)
-                            ),
-                            child: Column(
-                              children: <Widget>[
-                                Container(
-                                    child: ExpandableNotifier(
-                                      child: Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(width: 1, color: kBorderLighter)
-                                        ),
-                                        child: Column(
-                                          children: <Widget>[
-                                            ScrollOnExpand(
-                                              scrollOnExpand: true,
-                                              scrollOnCollapse: false,
-                                              child: ExpandablePanel(
-                                                theme: const ExpandableThemeData(
-                                                  headerAlignment: ExpandablePanelHeaderAlignment.center,
-                                                  tapBodyToCollapse: true,
-                                                ),
-                                                header: Container(
-                                                  padding: EdgeInsets.only(top:10),
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                    children: <Widget>[
-                                                      Text(
-                                                        "Upcoming",
-                                                        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
-                                                      ),
-                                                      Container(
-                                                        margin: EdgeInsets.only(right: 20),
-                                                        child: Text('2 goals & 6 actions', style: TextStyle(color: Colors.black54, fontSize: 16),),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                                expanded: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Container(
-                                                      margin: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                                                      padding: EdgeInsets.only(bottom: 20),
-                                                      decoration: BoxDecoration(
-                                                        border: Border(
-                                                          bottom: BorderSide(color: kBorderLighter)
-                                                        )
-                                                      ),
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: <Widget>[
-                                                          Text('Improve glycemic control', style: TextStyle(fontSize: 16)),
-                                                          SizedBox(height: 15,),
-                                                          Row(
-                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                            children: <Widget>[
-                                                              Text('Councelling about diet/ physical exercise', style: TextStyle(fontSize: 17, color: kPrimaryColor)),
-                                                              Icon(Icons.chevron_right, color: kPrimaryColor,)
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      )
-                                                    ),
-                                                    Container(
-                                                      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                                                      padding: EdgeInsets.only(bottom: 20),
-                                                      decoration: BoxDecoration(
-                                                        border: Border(
-                                                          bottom: BorderSide(color: kBorderLighter)
-                                                        )
-                                                      ),
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: <Widget>[
-                                                          Text('Improve glycemic control', style: TextStyle(fontSize: 16)),
-                                                          SizedBox(height: 15,),
-                                                          Row(
-                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                            children: <Widget>[
-                                                              Text('Councelling about diet/ physical exercise', style: TextStyle(fontSize: 17, color: kPrimaryColor)),
-                                                              Icon(Icons.chevron_right, color: kPrimaryColor,)
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      )
-                                                    ),
-                                                  
-                                                  ],
-                                                ),
-                                                builder: (_, collapsed, expanded) {
-                                                  return Padding(
-                                                    padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                                                    child: Expandable(
-                                                      collapsed: collapsed,
-                                                      expanded: expanded,
-                                                      theme: const ExpandableThemeData(crossFadePoint: 0),
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  )
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
 
+
+                        dueCarePlans.length > 0 ? CareplanAccordion(carePlans: dueCarePlans, text: 'Due Today',) : Container(),
+                        upcomingCarePlans.length > 0 ? CareplanAccordion(carePlans: upcomingCarePlans, text: 'Upcoming') : Container(),
+                        completedCarePlans.length > 0 ? CareplanAccordion(carePlans: completedCarePlans, text: 'Completed') : Container(),
+                        // CareplanAccordion(carePlans: completedCarePlans),
+
+
+                        
                       ],
                     )
                   ),
@@ -1143,6 +1023,166 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
         icon: Icon(Icons.add),
         label: Text("NEW ENCOUNTER"),
         backgroundColor: kPrimaryColor,
+      ),
+    );
+  }
+}
+
+class CareplanAccordion extends StatefulWidget {
+  const CareplanAccordion({
+    this.carePlans,
+    this.text
+  });
+
+  final List carePlans;
+  final String text;
+
+  @override
+  _CareplanAccordionState createState() => _CareplanAccordionState();
+}
+
+class _CareplanAccordionState extends State<CareplanAccordion> {
+
+  @override
+  void initState() {
+    super.initState();
+
+  }
+
+  getCount() {
+    var goalCount = 0;
+    var actionCount = 0;
+    widget.carePlans.forEach((item) {
+      item['items'].forEach( (action) {
+          goalCount = goalCount + 1;
+          if (action['body']['components'] != null) {
+            actionCount = actionCount + action['body']['components'].length;
+          }
+      });
+
+    });
+
+    return "$goalCount goals & $actionCount actions";
+  }
+
+  getTitle(action) {
+
+    print(action);
+    return 'asda';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: ExpandableTheme(
+        data: ExpandableThemeData(
+          iconColor: kBorderGrey,
+          iconPlacement: ExpandablePanelIconPlacement.left,
+          useInkWell: true,
+          iconPadding: EdgeInsets.only(top: 12, left: 8, right: 8)
+        ),
+        child: Column(
+          children: <Widget>[
+            Container(
+                child: ExpandableNotifier(
+                  child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: kBorderLighter)
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        ScrollOnExpand(
+                          scrollOnExpand: true,
+                          scrollOnCollapse: false,
+                          child: ExpandablePanel(
+                            theme: const ExpandableThemeData(
+                              headerAlignment: ExpandablePanelHeaderAlignment.center,
+                              tapBodyToCollapse: true,
+                            ),
+                            header: Container(
+                              padding: EdgeInsets.only(top:10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    widget.text,
+                                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(right: 20),
+                                    child: Text(getCount(), style: TextStyle(color: Colors.black54, fontSize: 16),),
+                                  )
+                                ],
+                              ),
+                            ),
+                            expanded: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                SizedBox(height: 10,),
+                                  ...widget.carePlans.map( (item) {
+                                    return Container(
+                                      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                      padding: EdgeInsets.only(bottom: 20),
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(color: kBorderLighter)
+                                        )
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(item['title'], style: TextStyle(fontSize: 16, color: Colors.black87)),
+                                          SizedBox(height: 10,),
+                                          ...item['items'].map( (action) {
+                                            return Container(
+                                              margin: EdgeInsets.only(top: 7),
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.of(context).pushNamed('/carePlanInterventions', arguments: {
+                                                    'carePlan' : item,
+                                                    'parent': this
+                                                  });
+                                                },
+                                                child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: <Widget>[
+                                                  Text(action['body']['title'], style: TextStyle(fontSize: 17, color: kPrimaryColor)),
+                                                  
+                                                  Icon(Icons.chevron_right, color: kPrimaryColor,)
+                                                ],),
+                                              ),
+                                            );
+                                          }).toList()
+                                        ],
+                                      )
+                                    );
+                                }).toList()
+                              
+                                
+                              ],
+                            ),
+                            builder: (_, collapsed, expanded) {
+                              return Padding(
+                                padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                                child: Expandable(
+                                  collapsed: collapsed,
+                                  expanded: expanded,
+                                  theme: const ExpandableThemeData(crossFadePoint: 0),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              )
+            ),
+          ],
+        ),
       ),
     );
   }
