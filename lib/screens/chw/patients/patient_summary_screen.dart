@@ -114,6 +114,31 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     }
     return '';
   }
+  getCompletedDate(goal) {
+    var data = '';
+    DateTime date;
+    // print(goal['items']);
+    goal['items'].forEach((item) {
+      // print(item['body']['activityDuration']['end']);
+      DateFormat format = new DateFormat("E LLL d y");
+      var endDate = format.parse(item['body']['activityDuration']['end']);
+      // print(endDate);
+      date = endDate;
+      if (date != null) {
+        date  = endDate;
+      } else {
+        if (endDate.isBefore(date)) {
+          date = endDate;
+        }
+      }
+      
+    });
+    if (date != null) {
+      var test = DateFormat('MMMM d, y').format(date);
+      data = 'Complete By ' + test;
+    }
+    return data;
+  }
 
   getReport() async {
 
@@ -1135,6 +1160,32 @@ class _GoalItemState extends State<GoalItem> {
 
     return count.toString();
   }
+  
+  getCompletedDate(goal) {
+    var data = '';
+    DateTime date;
+    // print(goal['items']);
+    goal['items'].forEach((item) {
+      // print(item['body']['activityDuration']['end']);
+      DateFormat format = new DateFormat("E LLL d y");
+      var endDate = format.parse(item['body']['activityDuration']['end']);
+      // print(endDate);
+      date = endDate;
+      if (date != null) {
+        date  = endDate;
+      } else {
+        if (endDate.isBefore(date)) {
+          date = endDate;
+        }
+      }
+      
+    });
+    if (date != null) {
+      var test = DateFormat('MMMM d, y').format(date);
+      data = 'Complete By ' + test;
+    }
+    return data;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1160,6 +1211,7 @@ class _GoalItemState extends State<GoalItem> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(widget.item['title'], style: TextStyle(fontSize: 16, color: kPrimaryColor)),
+          status != 'completed' ? Text(getCompletedDate(widget.item), style: TextStyle(fontSize: 15, color: kBorderLight)) : Container(),
           Container(
             child: Row(
               children: <Widget>[
@@ -1223,6 +1275,34 @@ class _CareplanActionState extends State<CareplanAction> {
     return count.toString();
   }
 
+  getCompletedDate(goal) {
+    var data = '';
+    DateTime date;
+    // print(goal['items']);
+    goal['items'].forEach((item) {
+      // print(item['body']['activityDuration']['end']);
+      if (item['meta']['status'] != 'completed') {
+        DateFormat format = new DateFormat("E LLL d y");
+        var endDate = format.parse(item['body']['activityDuration']['end']);
+        // print(endDate);
+        date = endDate;
+        if (date != null) {
+          date  = endDate;
+        } else {
+          if (endDate.isBefore(date)) {
+            date = endDate;
+          }
+        }
+      }
+      
+    });
+    if (date != null) {
+      var test = DateFormat('MMMM d, y').format(date);
+      data = 'Complete By ' + test;
+    }
+    return data;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -1276,6 +1356,7 @@ class _CareplanActionState extends State<CareplanAction> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(item['title'], style: TextStyle(fontSize: 16, color: kBorderLight)),
+                              Text(getCompletedDate(item), style: TextStyle(fontSize: 15, color: kBorderLight)),
                               Container(
                                 child: Row(
                                   children: <Widget>[

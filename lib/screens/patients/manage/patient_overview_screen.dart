@@ -1048,6 +1048,18 @@ class _CareplanAccordionState extends State<CareplanAccordion> {
     super.initState();
 
   }
+  
+  getCompletedDate(action) {
+    var data = '';
+    // print(goal['items']);
+    // print(item['body']['activityDuration']['end']);
+    DateFormat format = new DateFormat("E LLL d y");
+    var endDate = format.parse(action['body']['activityDuration']['end']);
+    
+    var date = DateFormat('MMMM d, y').format(endDate);
+    data = 'Complete By ' + date;
+    return data;
+  }
 
   getCount() {
     var goalCount = 0;
@@ -1137,7 +1149,7 @@ class _CareplanAccordionState extends State<CareplanAccordion> {
                                           SizedBox(height: 10,),
                                           ...item['items'].map( (action) {
                                             return Container(
-                                              margin: EdgeInsets.only(top: 7),
+                                              margin: EdgeInsets.only(top: 12),
                                               child: GestureDetector(
                                                 onTap: () {
                                                   Navigator.of(context).pushNamed('/carePlanInterventions', arguments: {
@@ -1148,7 +1160,13 @@ class _CareplanAccordionState extends State<CareplanAccordion> {
                                                 child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: <Widget>[
-                                                  Text(action['body']['title'], style: TextStyle(fontSize: 17, color: kPrimaryColor)),
+                                                  Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: <Widget>[
+                                                      Text(action['body']['title'], style: TextStyle(fontSize: 17, color: kPrimaryColor)),
+                                                      action['meta']['status'] != 'completed' ? Text(getCompletedDate(action), style: TextStyle(fontSize: 14, color: kBorderLight)) : Container(),
+                                                    ],
+                                                  ),
                                                   
                                                   Icon(Icons.chevron_right, color: kPrimaryColor,)
                                                 ],),

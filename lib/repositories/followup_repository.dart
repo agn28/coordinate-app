@@ -6,6 +6,7 @@ import 'dart:convert';
 class FollowupRepository {
 
   create(data) async {
+    print('folowup called');
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     await http.post(
