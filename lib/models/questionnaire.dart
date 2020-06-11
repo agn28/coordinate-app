@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:intl/intl.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
-import 'dart:developer';
 
 var _questions = {
     'tobacco': {

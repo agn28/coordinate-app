@@ -1,7 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
-import 'package:uuid/uuid.dart';
 import '../constants/constants.dart';
 import 'dart:convert';
 
@@ -19,6 +18,8 @@ class HealthReportRepository {
         'Authorization': 'Bearer ' + token
       },
     ).then((response) {
+      print('response generate');
+      print(response.body);
       return json.decode(response.body);
       
     }).catchError((error) {

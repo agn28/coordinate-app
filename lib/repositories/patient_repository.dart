@@ -17,7 +17,8 @@ class PatientRepository {
       },
       body: json.encode(data)
     ).then((response) {
-      
+      print('response');
+      print(response);
     }).catchError((error) {
       print('error ' + error.toString());
     });

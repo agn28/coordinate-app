@@ -1,3 +1,4 @@
+import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/assessment.dart';
 import 'package:nhealth/models/auth.dart';
@@ -124,13 +125,23 @@ class AssessmentController {
 
   /// Create assessment.
   /// Assessment [type] and [comment] is required as parameter.
-  create(type, comment) {
+  create(type, comment) async {
 
     var data = _prepareData(type, comment);
-    var status = AssessmentRepositoryLocal().create(data);
+    var status = await AssessmentRepositoryLocal().create(data);
     if (status == 'success') {
       Helpers().clearObservationItems();
     }
+
+    print('before health report');
+
+    await Future.delayed(const Duration(seconds: 20));
+
+    print('after health report');
+
+    await HealthReportController().getReport();
+
+    print('after health report');
 
     return status;
   }

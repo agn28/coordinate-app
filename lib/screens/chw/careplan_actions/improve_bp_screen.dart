@@ -17,6 +17,7 @@ import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
+bool btnDisabled = true;
 
 
 class ImproveBpControlScreen extends StatefulWidget {
@@ -38,6 +39,7 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
+    btnDisabled = true;
     // _getVideoUrl();
 
   }
@@ -237,124 +239,23 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
                       ],
                     ),
                   ),
+                  Container(
+                    width: double.infinity,
+                    child: Text('Pending Actions', style: TextStyle( fontSize: 16),),
+                    padding: EdgeInsets.only(bottom: 15, top: 15, left: 20),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: kBorderLighter)
+                      )
+                    ),
+                  ),
 
 
                   Column(
                     children: <Widget>[
                       ...widget.data['items'].map((item) {
-                        return Container(
-                          padding: EdgeInsets.only(top: 20,bottom: 20, left: 20, right: 20),
-                          decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(width: 5, color: kBorderLighter)
-                          )
-                        ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(item['body']['title'] ?? '', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),),
-                                  Text(StringUtils.capitalize(item['meta']['status']), style: TextStyle(fontSize: 14, color: item['meta']['status'] == 'completed' ? kPrimaryGreenColor : kPrimaryRedColor),),
-                                  
-                                
-                                ],
-                              ),
-                              SizedBox(height: 20,),
-                              ...item['body']['components'].map((comp) {
-                                if (comp['type'] == 'video') {
-                                  return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Container(
-                                        height: 130,
-                                        width: 250,
-                                        child: VideoPlayer(component: comp),
-                                      ),
-                                      Row(
-                                        children: <Widget>[
-                                          Checkbox(
-                                            activeColor: kPrimaryColor,
-                                            value: item['meta']['status'] == 'completed',
-                                            onChanged: (value) {
-                                              setState(() {
-                                                if (value) {
-                                                  item['meta']['status'] = 'completed';
-                                                } else {
-                                                  item['meta']['status'] = 'pending';
-                                                }
-                                              });
-                                            },
-                                          ),
-                                          Text('Patient has watched at least one of these videos', style: TextStyle(fontSize: 16),)
-                                          
-                                        ],
-                                      ),
-                                    ],
-                                  );
-                                } else if (item['body']['title'] == 'Repeat measurement of BP in community') {
-                                  return Container(
-                                    margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                     
-                                    child: Form(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          SizedBox(height: 20,),
-                                          Container(
-                                            child: Wrap(
-                                              children: <Widget>[
-                                                Container(
-                                                  width: 200,
-                                                  child: PrimaryTextField(
-                                                    hintText: 'Systolic',
-                                                    topPaadding: 10,
-                                                    bottomPadding: 10,
-                                                  ),
-                                                ),
-                                                SizedBox(width: 20,),
-                                                Container(
-                                                  width: 200,
-                                                  child: PrimaryTextField(
-                                                    hintText: 'DIastolic',
-                                                    topPaadding: 10,
-                                                    bottomPadding: 10,
-                                                  ),
-                                                ),
-                                                Container(
-                                                  width: 200,
-                                                  child: PrimaryTextField(
-                                                    hintText: 'Pulse',
-                                                    topPaadding: 10,
-                                                    bottomPadding: 10,
-                                                  ),
-                                                ),
-                                                SizedBox(width: 20,),
-                                              ],
-                                            ),
-                                          ),
-                                          Container(
-                                            alignment: Alignment.center,
-                                            child: PrimaryTextField(
-                                              hintText: 'Select a device',
-                                              topPaadding: 10,
-                                              bottomPadding: 10,
-                                            ),
-                                          ),
-
-                                        ],
-                                      ),
-                                    )
-                                  );
-                                } else {
-                                  return Container();
-                                }
-                              })
-                            ],
-                          ),
-                        );
-                      }).toList(),
+                        return ActionItem(item: item,);
+                        }).toList(),
 
                     ],
                   ),
@@ -409,7 +310,7 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
                               margin: EdgeInsets.only(right: 30, left: 10),
                               height: 50,
                               decoration: BoxDecoration(
-                                color: kPrimaryColor,
+                                color: btnDisabled ? kTextGrey : kPrimaryColor,
                                 borderRadius: BorderRadius.circular(3)
                               ),
                               child: FlatButton(
@@ -418,29 +319,31 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
                                   //   widget.widget.parent.setStatus();
                                   // });
                                   // Navigator.of(context).pop();
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-                                  var response = '';
-                                  await Future.forEach(widget.data['items'], (item) async {
-                                    if (item['meta']['status'] == 'pending') {
-                                      response = await CarePlanController().update(item, '');
-                                    }
-                                  });
-                                  
-                                  setState(() {
-                                    isLoading = false;
-                                  });
-                                  
-                                  if (response == 'success') {
-                                    widget.parent.setState(() {
-                                      widget.parent.setStatus(widget.data);
+                                  if (!btnDisabled) {
+                                    setState(() {
+                                      isLoading = true;
                                     });
-                                    Navigator.of(context).pop();
-                                  } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+                                    var response = '';
+                                    await Future.forEach(widget.data['items'], (item) async {
+                                      if (item['meta']['status'] == 'pending') {
+                                        response = await CarePlanController().update(item, '');
+                                      }
+                                    });
+                                    
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    
+                                    if (response == 'success') {
+                                      widget.parent.setState(() {
+                                        widget.parent.setStatus(widget.data);
+                                      });
+                                      Navigator.of(context).pop();
+                                    } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+                                  }
                                 },
                                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                child: Text('COMPLETE GOAL', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                                child: Text('COMPLETE GOAL', style: TextStyle(fontSize: 14, color: btnDisabled ? Colors.white54 : Colors.white, fontWeight: FontWeight.normal),)
                               ),
                             ),
                           ),
@@ -471,6 +374,171 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
     );
   }
 }
+
+class ActionItem extends StatefulWidget {
+  const ActionItem({
+    this.item
+  });
+
+  final item;
+
+  @override
+  _ActionItemState createState() => _ActionItemState();
+}
+
+class _ActionItemState extends State<ActionItem> {
+  String status = 'pending';
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getStatus();
+  }
+
+  getStatus() {
+    setState(() {
+      status = widget.item['meta']['status'];
+    });
+  }
+
+  setStatus() {
+    setState(() {
+      btnDisabled = false;
+      status = 'completed';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        print(widget.item['body']);
+        Navigator.of(context).pushNamed('/chwActionsSwipper', arguments: { 'data': widget.item, 'parent': this});
+      },
+      child: Container(
+        padding: EdgeInsets.only(top: 20, bottom: 5, left: 20, right: 20),
+        decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(width: 1, color: kBorderLighter)
+        )
+      ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(widget.item['body']['title'] ?? '', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),),
+                    SizedBox(height: 15,),
+                    Text(StringUtils.capitalize(status), style: TextStyle(fontSize: 14, color: status == 'completed' ? kPrimaryGreenColor : kPrimaryRedColor),),
+                  ],
+                ),
+                
+                Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
+              
+              ],
+            ),
+            SizedBox(height: 20,),
+            // ...item['body']['components'].map((comp) {
+            //   if (comp['type'] == 'video') {
+            //     return Column(
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       children: <Widget>[
+            //         Container(
+            //           height: 130,
+            //           width: 250,
+            //           child: VideoPlayer(component: comp),
+            //         ),
+            //         Row(
+            //           children: <Widget>[
+            //             Checkbox(
+            //               activeColor: kPrimaryColor,
+            //               value: item['meta']['status'] == 'completed',
+            //               onChanged: (value) {
+            //                 setState(() {
+            //                   if (value) {
+            //                     item['meta']['status'] = 'completed';
+            //                   } else {
+            //                     item['meta']['status'] = 'pending';
+            //                   }
+            //                 });
+            //               },
+            //             ),
+            //             Text('Patient has watched at least one of these videos', style: TextStyle(fontSize: 16),)
+                        
+            //           ],
+            //         ),
+            //       ],
+            //     );
+            //   } else if (item['body']['title'] == 'Repeat measurement of BP in community') {
+            //     return Container(
+            //       margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                     
+            //       child: Form(
+            //         child: Column(
+            //           crossAxisAlignment: CrossAxisAlignment.start,
+            //           children: <Widget>[
+            //             SizedBox(height: 20,),
+            //             Container(
+            //               child: Wrap(
+            //                 children: <Widget>[
+            //                   Container(
+            //                     width: 200,
+            //                     child: PrimaryTextField(
+            //                       hintText: 'Systolic',
+            //                       topPaadding: 10,
+            //                       bottomPadding: 10,
+            //                     ),
+            //                   ),
+            //                   SizedBox(width: 20,),
+            //                   Container(
+            //                     width: 200,
+            //                     child: PrimaryTextField(
+            //                       hintText: 'DIastolic',
+            //                       topPaadding: 10,
+            //                       bottomPadding: 10,
+            //                     ),
+            //                   ),
+            //                   Container(
+            //                     width: 200,
+            //                     child: PrimaryTextField(
+            //                       hintText: 'Pulse',
+            //                       topPaadding: 10,
+            //                       bottomPadding: 10,
+            //                     ),
+            //                   ),
+            //                   SizedBox(width: 20,),
+            //                 ],
+            //               ),
+            //             ),
+            //             Container(
+            //               alignment: Alignment.center,
+            //               child: PrimaryTextField(
+            //                 hintText: 'Select a device',
+            //                 topPaadding: 10,
+            //                 bottomPadding: 10,
+            //               ),
+            //             ),
+
+            //           ],
+            //         ),
+            //       )
+            //     );
+            //   } else {
+            //     return Container();
+            //   }
+            // })
+          
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 
 class VideoPlayer extends StatefulWidget {
   VideoPlayer({

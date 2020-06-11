@@ -110,6 +110,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
       cholesterol = report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ? report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] : null;
     });
 
+    print(cvd);
   }
 
   getMedicationsConditions() async {
@@ -514,19 +515,19 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                               ),
                                             ) : Container(),
                                             SizedBox(width: 7,),
-                                            report != null && cvd != null ?
-                                            Container(
-                                              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                              decoration: BoxDecoration(
-                                                border: Border.all(width: 1, color: ColorUtils.statusColor[cvd['tfl']]),
-                                                borderRadius: BorderRadius.circular(2)
-                                              ),
-                                              child: Text('CVD Risk',style: TextStyle(
-                                                  color: ColorUtils.statusColor[cvd['tfl']],
-                                                  fontWeight: FontWeight.w500
-                                                )  
-                                              ),
-                                            ) : Container(),
+                                            // report != null && cvd != null ?
+                                            // Container(
+                                            //   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                            //   decoration: BoxDecoration(
+                                            //     border: Border.all(width: 1, color: ColorUtils.statusColor[cvd['tfl']]),
+                                            //     borderRadius: BorderRadius.circular(2)
+                                            //   ),
+                                            //   child: Text('CVD Risk',style: TextStyle(
+                                            //       color: ColorUtils.statusColor[cvd['tfl']],
+                                            //       fontWeight: FontWeight.w500
+                                            //     )  
+                                            //   ),
+                                            // ) : Container(),
                                             SizedBox(width: 7,),
                                             report != null && cholesterol != null ?
                                             Container(
@@ -550,8 +551,13 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                   ],
                                 ),
                               ),
-                              Container(
-                                child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 35,)
+                              InkWell(
+                                onTap: () {
+                                  Navigator.of(context).pushNamed('/chwPatientDetails');
+                                },
+                                child: Container(
+                                  child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 35,)
+                                ),
                               )
                             ],
                           )
@@ -642,7 +648,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                     ),
                   ),
 
-
+                  // dueCarePlans.length != 0 && completedCarePlans.length != 0 && upcomingCarePlans.length > 0 ?
                   Container(
                     decoration: BoxDecoration(
                       border: Border(
@@ -652,6 +658,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                     padding: EdgeInsets.only(top: 15, left: 10, right: 10),
                     child: Column(
                       children: <Widget>[
+                        
                         Container(
                           padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
                           child: Row(
@@ -685,7 +692,8 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                         
                       ],
                     )
-                  ),
+                  ), 
+                  // : Container(),
                   SizedBox(height: 15,),
                   Container(
                     padding: EdgeInsets.symmetric(vertical: 20),
@@ -716,11 +724,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Container(
-                                margin: EdgeInsets.only(left: 15),
-                                child: Text('Jan 2020', style: TextStyle(fontSize: 17),),
-                              ),
-                              SizedBox(height: 15,),
+                              
                               ...encounters.map((encounter) {
                                 return Container(
                                   child: Stack(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
-import 'package:intl/intl.dart';
 
 class BloodPressureItem with ChangeNotifier {
   final String arm;

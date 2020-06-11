@@ -2,10 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/chw/careplan_actions/actions_swipper_screen.dart';
 import 'package:nhealth/screens/chw/careplan_actions/improve_bp_screen.dart';
 import 'package:nhealth/screens/chw/careplan_actions/other_actions_screen.dart';
 import 'package:nhealth/screens/chw/new_community_visit/patient_feeling_screen.dart';
 import 'package:nhealth/screens/chw/new_community_visit/verify_patient_screen.dart';
+import 'package:nhealth/screens/chw/patients/patient_details_screen.dart';
 import 'package:nhealth/screens/chw/patients/patient_summary_screen.dart';
 import 'package:nhealth/screens/chw/patients/report_medical_issues_screen.dart';
 import 'package:nhealth/screens/chw/unwell/continue_screen.dart';
@@ -74,6 +76,13 @@ class RouteGenerator {
       case '/chwOtherActions':
         var data = settings.arguments as Map;
         return CupertinoPageRoute(builder: (_) => OtherActionsScreen(data: data['data'], parent: data['parent'],));
+
+      case '/chwActionsSwipper':
+        var data = settings.arguments as Map;
+        return CupertinoPageRoute(builder: (_) => ActionsSwipperScreen(carePlan: data['data'], parent: data['parent'],));
+      
+      case '/chwPatientDetails':
+        return CupertinoPageRoute(builder: (_) => PatientDetailsScreen());
     }
   }
 }

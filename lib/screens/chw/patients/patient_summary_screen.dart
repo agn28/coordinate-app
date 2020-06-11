@@ -573,8 +573,13 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                   ],
                                 ),
                               ),
-                              Container(
-                                child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 35,)
+                              InkWell(
+                                onTap: () {
+                                  Navigator.of(context).pushNamed('/chwPatientDetails');
+                                },
+                                child: Container(
+                                  child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 35,)
+                                ),
                               )
                             ],
                           )

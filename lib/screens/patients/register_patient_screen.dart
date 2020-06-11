@@ -890,9 +890,12 @@ class _AddPhotoState extends State<AddPhoto> {
   }
 
   uploadImage() async {
+    print('ksajdkas');
     var url = '';
     if (_image != null) {
       String filePath = 'images/patients/${firstNameController.text}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      print('file path');
+      print(filePath);
 
       setState(() {
         _uploadTask = _storage.ref().child(filePath).putFile(_image);
@@ -900,6 +903,8 @@ class _AddPhotoState extends State<AddPhoto> {
       await _uploadTask.onComplete;
       if (_uploadTask.isComplete) {
         var url = await _storage.ref().child(filePath).getDownloadURL();
+        print('url');
+        print(url);
         setState(() {
           uploadedImageUrl = url;
         });
@@ -1078,6 +1083,7 @@ class _AddPhotoState extends State<AddPhoto> {
               });
               var url = await uploadImage();
               var formData = _RegisterPatientState()._prepareFormData();
+              print('formdata');
               var response = isEditState != null ? await PatientController().update(formData) : await PatientController().create(formData);
               setState(() {
                 isLoading = false;

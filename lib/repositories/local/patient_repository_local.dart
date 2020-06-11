@@ -18,7 +18,7 @@ class PatientReposioryLocal {
 
   /// Create a patient.
   /// Patient [data] is required as parameter.
-  Future<void> create(data) async {
+  create(data) async {
     var uuid = Uuid().v4();
 
     final sql = '''INSERT INTO ${DatabaseCreator.patientTable}
@@ -39,7 +39,10 @@ class PatientReposioryLocal {
 
     data['id'] = uuid;
 
+    print('live patient create');
+
     PatientRepository().create(data);
+
 
     await Patient().setPatient(patient);
     DatabaseCreator.databaseLog('Add patient', sql, null, result, params);

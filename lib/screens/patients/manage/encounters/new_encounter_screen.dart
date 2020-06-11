@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
+import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/assessment.dart';
 import 'package:nhealth/models/blood_pressure.dart';
@@ -39,6 +40,8 @@ class _NewEncounterState extends State<NewEncounter> {
   final commentController = TextEditingController();
   bool _dataSaved = false;
   bool avatarExists = false;
+
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -79,7 +82,9 @@ class _NewEncounterState extends State<NewEncounter> {
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
       ),
-      body: GestureDetector(
+      body: 
+      
+      !isLoading ? GestureDetector(
         onTap: () {
           FocusScope.of(context).requestFocus(new FocusNode());
         },
@@ -213,7 +218,15 @@ class _NewEncounterState extends State<NewEncounter> {
             ],
           ),
         ),
-      ),
+      )
+      : Container(
+          height: MediaQuery.of(context).size.height,
+          width: double.infinity,
+          color: Color(0x90FFFFFF),
+          child: Center(
+            child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),backgroundColor: Color(0x30FFFFFF),)
+          ),
+        ),
 
       
       bottomNavigationBar: Container(
@@ -292,11 +305,26 @@ class _NewEncounterState extends State<NewEncounter> {
                                           GestureDetector(
                                             onTap: () async {
                                               var result = '';
+                                              Navigator.of(context).pop();
+                                              setState(() {
+                                                isLoading = true;
+                                              });
                                               if (Assessment().getSelectedAssessment().isEmpty) {
                                                 result = await AssessmentController().create(selectedType, commentController.text);
                                               } else {
                                                 result = await AssessmentController().update(selectedType, commentController.text);
                                               }
+                                              
+                                              setState(() {
+                                                isLoading = false;
+                                              });
+
+                                              _scaffoldKey.currentState.showSnackBar(
+                                                SnackBar(
+                                                  content: Text(AppLocalizations.of(context).translate('dataSaved')),
+                                                  backgroundColor: Color(0xFF4cAF50),
+                                                )
+                                              );
 
                                               if (result == 'success') {
                                                 _dataSaved = true;
