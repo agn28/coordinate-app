@@ -266,7 +266,7 @@ class _NewEncounterState extends State<NewEncounter> {
                 child: FlatButton(
                   onPressed: () async {
                     await showDialog(
-                      context: context,
+                      context: _scaffoldKey.currentContext,
                       builder: (BuildContext context) {
                         // return object of type Dialog
                         return Dialog(
@@ -318,23 +318,25 @@ class _NewEncounterState extends State<NewEncounter> {
                                               setState(() {
                                                 isLoading = false;
                                               });
+                                              print('before if');
 
-                                              _scaffoldKey.currentState.showSnackBar(
-                                                SnackBar(
-                                                  content: Text(AppLocalizations.of(context).translate('dataSaved')),
-                                                  backgroundColor: Color(0xFF4cAF50),
-                                                )
-                                              );
+                                              // _scaffoldKey.currentState.showSnackBar(
+                                              //   SnackBar(
+                                              //     content: Text(AppLocalizations.of(context).translate('dataSaved')),
+                                              //     backgroundColor: Color(0xFF4cAF50),
+                                              //   )
+                                              // );
 
                                               if (result == 'success') {
+                                                print('hello');
+                                                Navigator.of(_scaffoldKey.currentContext).pushNamed('/patientOverview');
                                                 _dataSaved = true;
-                                                _scaffoldKey.currentState.showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(AppLocalizations.of(context).translate('dataSaved')),
-                                                    backgroundColor: Color(0xFF4cAF50),
-                                                  )
-                                                );
-                                                Navigator.of(context).pop();
+                                                // _scaffoldKey.currentState.showSnackBar(
+                                                //   SnackBar(
+                                                //     content: Text(AppLocalizations.of(context).translate('dataSaved')),
+                                                //     backgroundColor: Color(0xFF4cAF50),
+                                                //   )
+                                                // );
 
                                                 if (widget.encounterDetailsState != null) {
                                                   widget.encounterDetailsState.setState(() async {
@@ -343,13 +345,14 @@ class _NewEncounterState extends State<NewEncounter> {
                                                 }
                                                 
                                               } else {
+                                                print('else');
                                                 Navigator.of(context).pop();
-                                                _scaffoldKey.currentState.showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(result.toString()),
-                                                    backgroundColor: kPrimaryRedColor,
-                                                  )
-                                                );
+                                                // _scaffoldKey.currentState.showSnackBar(
+                                                //   SnackBar(
+                                                //     content: Text(result.toString()),
+                                                //     backgroundColor: kPrimaryRedColor,
+                                                //   )
+                                                // );
                                               }
                                             },
                                             child: Text(AppLocalizations.of(context).translate('save'), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
@@ -368,7 +371,9 @@ class _NewEncounterState extends State<NewEncounter> {
                     );
                     if (_dataSaved) {
                       await Future.delayed(const Duration(seconds: 1));
-                      Navigator.pop(context);
+                      print('hello');
+                      Navigator.of(context).pushNamed('/patientOverview');
+                      // Navigator.pop(context);
                     }
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),

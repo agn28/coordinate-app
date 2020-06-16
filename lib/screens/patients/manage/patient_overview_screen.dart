@@ -44,6 +44,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
   String lastCarePlanDate = '';
   var conditions = [];
   var medications = [];
+  var allergies = [];
   var users = [];
   var report;
   var bmi;
@@ -124,6 +125,8 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
     if(fetchedSurveys.isNotEmpty) {
       fetchedSurveys.forEach((item) {
         if (item['data']['name'] == 'medical_history') {
+          allergies = item['data']['allergy_types'] != null ? item['data']['allergy_types'] : [];
+
           item['data'].keys.toList().forEach((key) {
             if (item['data'][key] == 'yes') {
               setState(() {
@@ -263,6 +266,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
       });
     } else {
 
+      carePlans = data['data'];
 
       data['data'].forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");
@@ -509,7 +513,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                                 borderRadius: BorderRadius.circular(2)
                                               ),
                                               child: Text('BP',style: TextStyle(
-                                                  color: ColorUtils.statusColor[bmi['tfl']],
+                                                  color: ColorUtils.statusColor[bp['tfl']],
                                                   fontWeight: FontWeight.w500
                                                 )  
                                               ),
@@ -621,7 +625,14 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                             ),
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text('Pollen', style: TextStyle(fontSize: 17,),),
+                              child: Wrap(
+                                children: <Widget>[
+                                  Container(),
+                                  ...allergies.map((item) {
+                                    return Text(item + '${medications.length - 1 == medications.indexOf(item) ? '' : ', '}', style: TextStyle(fontSize: 17,));
+                                  }).toList()
+                                ],
+                              ),
                             ),
                           ]
                         ),

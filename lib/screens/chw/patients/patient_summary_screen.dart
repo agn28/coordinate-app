@@ -44,6 +44,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   String lastCarePlanDate = '';
   var conditions = [];
   var medications = [];
+  var allergies = [];
   var users = [];
   var report;
   var bmi;
@@ -179,6 +180,9 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     if(fetchedSurveys.isNotEmpty) {
       fetchedSurveys.forEach((item) {
         if (item['data']['name'] == 'medical_history') {
+
+          allergies = item['data']['allergy_types'] != null ? item['data']['allergy_types'] : [];
+
           item['data'].keys.toList().forEach((key) {
             if (item['data'][key] == 'yes') {
               setState(() {
@@ -537,20 +541,20 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                               ),
                                             ) : Container(),
                                             SizedBox(width: 7,),
-                                            report != null && cvd != null ?
-                                            Container(
-                                              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                              decoration: BoxDecoration(
-                                                border: Border.all(width: 1, color: ColorUtils.statusColor[cvd['tfl']]),
-                                                borderRadius: BorderRadius.circular(2)
-                                              ),
-                                              child: Text('CVD Risk',style: TextStyle(
-                                                  color: ColorUtils.statusColor[cvd['tfl']],
-                                                  fontWeight: FontWeight.w500
-                                                )  
-                                              ),
-                                            ) : Container(),
-                                            SizedBox(width: 7,),
+                                            // report != null && cvd != null ?
+                                            // Container(
+                                            //   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                            //   decoration: BoxDecoration(
+                                            //     border: Border.all(width: 1, color: ColorUtils.statusColor[cvd['tfl']]),
+                                            //     borderRadius: BorderRadius.circular(2)
+                                            //   ),
+                                            //   child: Text('CVD Risk',style: TextStyle(
+                                            //       color: ColorUtils.statusColor[cvd['tfl']],
+                                            //       fontWeight: FontWeight.w500
+                                            //     )  
+                                            //   ),
+                                            // ) : Container(),
+                                            // SizedBox(width: 7,),
                                             report != null && cholesterol != null ?
                                             Container(
                                               padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
@@ -643,7 +647,14 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                             ),
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text('Pollen', style: TextStyle(fontSize: 17,),),
+                              child: Wrap(
+                                children: <Widget>[
+                                  Container(),
+                                  ...allergies.map((item) {
+                                    return Text(item + '${medications.length - 1 == medications.indexOf(item) ? '' : ', '}', style: TextStyle(fontSize: 17,));
+                                  }).toList()
+                                ],
+                              ),
                             ),
                           ]
                         ),

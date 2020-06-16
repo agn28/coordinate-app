@@ -618,20 +618,20 @@ class _PatientItemState extends State<PatientItem> {
                                 SizedBox(width: 7,),
 
 
-                                widget.item['body']['assessments'] != null && widget.item['body']['assessments']['cvd'] != null ?
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['cvd']['tfl']]),
-                                    borderRadius: BorderRadius.circular(2)
-                                  ),
-                                  child: Text('CVD Risk',style: TextStyle(
-                                      color: ColorUtils.statusColor[widget.item['body']['assessments']['cvd']['tfl']],
-                                      fontWeight: FontWeight.w500
-                                    )  
-                                  ),
-                                ) : Container(),
-                                SizedBox(width: 7,),
+                                // widget.item['body']['assessments'] != null && widget.item['body']['assessments']['cvd'] != null ?
+                                // Container(
+                                //   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                //   decoration: BoxDecoration(
+                                //     border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['cvd']['tfl']]),
+                                //     borderRadius: BorderRadius.circular(2)
+                                //   ),
+                                //   child: Text('CVD Risk',style: TextStyle(
+                                //       color: ColorUtils.statusColor[widget.item['body']['assessments']['cvd']['tfl']],
+                                //       fontWeight: FontWeight.w500
+                                //     )  
+                                //   ),
+                                // ) : Container(),
+                                // SizedBox(width: 7,),
 
 
                                 widget.item['body']['assessments'] != null && widget.item['body']['assessments']['cholesterol']['components']['total_cholesterol'] != null ?

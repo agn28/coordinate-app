@@ -16,7 +16,7 @@ int selectedOption = -1;
 var _questions = {};
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-int _secondQuestionOption = 0;
+int _secondQuestionOption = 1;
 int _firstQuestionOption = 1;
 int _thirdQuestionOption = 1;
 int _fourthQuestionOption = 1;
@@ -48,6 +48,13 @@ class _MedicalHistoryState extends State<MedicalHistory> {
     super.initState();
     setState(() {
       _questions = Questionnaire().questions['medical_history'];
+      _secondQuestionOption = 1;
+      _firstQuestionOption = 1;
+      _thirdQuestionOption = 1;
+      _fourthQuestionOption = 1;
+      _fifthQuestionOption = 1;
+      _sixthQuestionOption = 1;
+      _eightsQuestionOption = 1;
     });
   }
 

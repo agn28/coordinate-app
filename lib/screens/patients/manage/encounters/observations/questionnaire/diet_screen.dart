@@ -2,10 +2,7 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/constants/constants.dart';
-import 'package:nhealth/controllers/questionnaire_controller.dart';
 import 'package:nhealth/custom-classes/custom_stepper.dart';
-import 'package:nhealth/helpers/helpers.dart';
-import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/questionnaires_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
@@ -42,6 +39,10 @@ class _DietState extends State<Diet> {
     super.initState();
     setState(() {
       _questions = Questionnaire().questions['diet'];
+      _firstQuestionOption = 1;
+      _secondQuestionOption = 1;
+      _thirdQuestionOption = 1;
+      _fourthQuestionOption = 1;
     });
   }
 

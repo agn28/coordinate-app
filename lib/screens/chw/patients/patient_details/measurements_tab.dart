@@ -39,7 +39,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
   }
 
   getDate(date) {
-    if (['_seconds'] != null) {
+    if (date['_seconds'] != null) {
       var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
 
       return DateFormat("MMMM d, y").format(parsedDate).toString();

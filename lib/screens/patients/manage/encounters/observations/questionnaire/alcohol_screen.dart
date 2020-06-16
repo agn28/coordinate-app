@@ -44,6 +44,9 @@ class _AlcoholState extends State<Alcohol> {
     setState(() {
       _questions = Questionnaire().questions['alcohol'];
       _selectedOption = 1;
+      _secondQuestionOption = 0;
+      daysController.text = '';
+      unitsController.text = '';
     });
   }
 

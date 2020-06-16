@@ -65,6 +65,7 @@ List relationships = [
   'aunt'
 ];
 int selectedRelation;
+bool isContactAddressSame = false;
 
 class RegisterPatientScreen extends CupertinoPageRoute {
   bool isEdit = false;
@@ -686,6 +687,28 @@ class ContactDetails extends StatefulWidget {
 
 class _ContactDetailsState extends State<ContactDetails> {
 
+  sameAddressChecked(value) {
+    if (value) {
+      setState(() {
+        isContactAddressSame = value;
+        contactDistrictController.text = districtController.text;
+        contactPostalCodeController.text = postalCodeController.text;
+        contactTownController.text = townController.text;
+        contactVillageController.text = villageController.text;
+        contactStreetNameController.text = streetNameController.text;
+      });
+    } else {
+      setState(() {
+        isContactAddressSame = value;
+        contactDistrictController.text = '';
+        contactPostalCodeController.text = '';
+        contactTownController.text = '';
+        contactVillageController.text = '';
+        contactStreetNameController.text = '';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -768,7 +791,20 @@ class _ContactDetailsState extends State<ContactDetails> {
             SizedBox(height: 15,),
 
             Text(AppLocalizations.of(context).translate("contact'sAddress"), style: TextStyle(fontSize: 16),),
-            SizedBox(height: 20,),
+            SizedBox(height: 10,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Checkbox(
+                  activeColor: kPrimaryColor,
+                  value: isContactAddressSame,
+                  onChanged: (value) {
+                    sameAddressChecked(value);
+                  },
+                ),
+                Text('Same as patient', style: TextStyle(),)
+              ],
+            ),
 
             PrimaryTextField(
               topPaadding: 18,

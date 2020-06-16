@@ -44,6 +44,7 @@ class _CurrentMedicationState extends State<CurrentMedication> {
     setState(() {
       _questions = Questionnaire().questions['current_medication'];
       _selectedOption = 1;
+      problemController.text = '';
     });
     getMedications();
   }
