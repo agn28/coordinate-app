@@ -179,12 +179,10 @@ class AssessmentController {
     var data = {
       "meta": {
         "collected_by": Auth().getAuth()['uid'],
-        "start_time": "17 December, 2019 12:00",
-        "end_time": "17 December, 2019 12:05",
         "created_at": DateTime.now().toString()
       },
       "body": {
-        "type": type == 'In-clinic Screening' ? 'in-clinic' : 'visit',
+        "type": type == 'In-clinic Screening' ? 'in-clinic' : type,
         "comment": comment,
         "performed_by": Auth().getAuth()['uid'],
         "assessment_date": DateFormat('y-MM-dd').format(DateTime.now()),

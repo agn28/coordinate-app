@@ -4,7 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/care_plan_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
+import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/chw/unwell/severity_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import 'package:nhealth/widgets/primary_button_widget.dart';
@@ -12,6 +14,8 @@ import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 
+final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+String videoUrl = '';
 
 class ActionsSwipperScreen extends StatefulWidget {
   final carePlan;
@@ -48,6 +52,9 @@ class _ActionsSwipperState extends State<ActionsSwipperScreen> {
   @override
   initState() {
     super.initState();
+    videoUrl = '';
+
+    print(widget.carePlan['body']['title']);
     _getVideoUrl();
     // _getFormUrl();
     createPages();
@@ -84,6 +91,14 @@ class _ActionsSwipperState extends State<ActionsSwipperScreen> {
   }
 
   createPages() {
+    print(widget.carePlan['body']['id']);
+    if (widget.carePlan['body']['id'] == 'a4') {
+      setState(() {
+        pages.add(
+          Form4()
+        );
+      });
+    }
     // if (widget.carePlan['body']['id'] == 'a4') {
     //   setState(() {
     //     pages.add(
@@ -114,7 +129,7 @@ class _ActionsSwipperState extends State<ActionsSwipperScreen> {
     if (videoUrl != '') {
       setState(() {
         pages.add(
-          VideoContainer(youtubeController: _youtubeController, title: _youtubeController.metadata.title)
+          VideoContainer(youtubeController: _youtubeController, title: _youtubeController.metadata.title, carePlan: widget.carePlan)
         );
       });
     }
@@ -129,6 +144,7 @@ class _ActionsSwipperState extends State<ActionsSwipperScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(widget.carePlan['body']['title'], style: TextStyle(color: Colors.black87),),
@@ -136,173 +152,212 @@ class _ActionsSwipperState extends State<ActionsSwipperScreen> {
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.black87),
       ),
-      body: Container(
-        // height: 400,
-        color: Color(0xFFefefef),
-        child: Column(
-          children: <Widget>[
-            PatientTopbar(),
-            Container(
-              margin: EdgeInsets.only(top: 20, left: 20, right: 20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(5),
-                boxShadow: [
-                  new BoxShadow(
-                    offset: Offset(0.0, 0.0),
-                    color: Color(0x20000000),
-                    blurRadius: 2.0,
-                  ),
-                ],
-              ),
-              child: Container(
-                height: MediaQuery.of(context).size.height * .7,
-                child: Stack(
-                  children: <Widget>[
-                    PageView(
-                      controller: _controller,
-                      onPageChanged: (value) {
-                        setState(() {
-                          currentPage = value;
-                        });
-                      },
-                      children: pages  
+      body: SingleChildScrollView(
+        child: Container(
+          // height: 400,
+          color: Color(0xFFefefef),
+          child: Column(
+            children: <Widget>[
+              PatientTopbar(),
+              Container(
+                margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(5),
+                  boxShadow: [
+                    new BoxShadow(
+                      offset: Offset(0.0, 0.0),
+                      color: Color(0x20000000),
+                      blurRadius: 2.0,
                     ),
                   ],
                 ),
-              ),
-            ),
-            Container(
-              height: MediaQuery.of(context).size.height * .1,
-              child: Stack(
-              children: <Widget>[
-                Positioned(
-                  bottom: 0.0,
-                  left: 0.0,
-                  right: 0.0,
-                  child: Container(
-                    height: 10,
-                    alignment: Alignment.bottomCenter,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: pages.length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (BuildContext context, index) {
-                        return Padding(
-                          padding: EdgeInsets.only(right: 10),
-                          child: Icon(Icons.lens, size: 15, 
-                            color: currentPage == index ? kPrimaryColor : kStepperDot,
-                          )
-                        );
-                      },
-                    ),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * .7,
+                  child: Stack(
+                    children: <Widget>[
+                      PageView(
+                        controller: _controller,
+                        onPageChanged: (value) {
+                          setState(() {
+                            currentPage = value;
+                          });
+                        },
+                        children: pages  
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            )
-            )
-          ],
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * .1,
+                child: Stack(
+                children: <Widget>[
+                  Positioned(
+                    bottom: 0.0,
+                    left: 0.0,
+                    right: 0.0,
+                    child: Container(
+                      height: 10,
+                      alignment: Alignment.bottomCenter,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: pages.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (BuildContext context, index) {
+                          return Padding(
+                            padding: EdgeInsets.only(right: 10),
+                            child: Icon(Icons.lens, size: 15, 
+                              color: currentPage == index ? kPrimaryColor : kStepperDot,
+                            )
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              )
+              )
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class Form4 extends StatelessWidget {
+class Form4 extends StatefulWidget {
   const Form4({
     Key key,
   }) : super(key: key);
 
   @override
+  _Form4State createState() => _Form4State();
+}
+
+class _Form4State extends State<Form4> {
+
+  final systolicController = TextEditingController();
+  final diastolicController = TextEditingController();
+  String selectedArm = 'left';
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      alignment: Alignment.topLeft,
-      padding: EdgeInsets.only(left: 20, right: 20, top: 20),
-      decoration: BoxDecoration(
-        
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Form(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text('What is your blood pressure reading?', style: TextStyle(fontSize: 17),),
-                SizedBox(height: 15,),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: PrimaryTextField(
-                        topPaadding: 10,
-                        bottomPadding: 10,
-                        hintText: 'Systolic',
-                        type: TextInputType.number,
+    return SingleChildScrollView(
+      child: Container(
+        width: double.infinity,
+        alignment: Alignment.topLeft,
+        padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+        decoration: BoxDecoration(
+          
+        ),
+        child: Column(
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Form(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text('What is your blood pressure reading?', style: TextStyle(fontSize: 17),),
+                  SizedBox(height: 15,),
+                  Row(
+                    children: <Widget>[
+                      // SizedBox(width: 20,),
+                      
+                      Radio(
+                        activeColor: kPrimaryColor,
+                        value: 'left',
+                        groupValue: selectedArm,
+                        onChanged: (val) {
+                          setState(() {
+                            selectedArm = val;
+                          });
+                        },
                       ),
-                    ),
-                    SizedBox(width: 20,),
-                    Expanded(
-                      child: PrimaryTextField(
-                        topPaadding: 10,
-                        bottomPadding: 10,
-                        hintText: 'Diastolic',
-                        type: TextInputType.number
+                      Text('Left Arm', style: TextStyle(fontSize: 15),),
+
+                      Radio(
+                        activeColor: kPrimaryColor,
+                        value: 'right',
+                        groupValue: selectedArm,
+                        onChanged: (val) {
+                          setState(() {
+                            selectedArm = val;
+                          });
+                        },
                       ),
-                    ),
-                  ],
-                ),
-                Text('Second reading of blood pressure?', style: TextStyle(fontSize: 17),),
-                SizedBox(height: 15,),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: PrimaryTextField(
-                        topPaadding: 10,
-                        bottomPadding: 10,
-                        hintText: 'Systolic',
-                        type: TextInputType.number,
+                      Text(
+                        'Right Arm',
+                        style: TextStyle(fontSize: 15),
                       ),
-                    ),
-                    SizedBox(width: 20,),
-                    Expanded(
-                      child: PrimaryTextField(
-                        topPaadding: 10,
-                        bottomPadding: 10,
-                        hintText: 'Diastolic',
-                        type: TextInputType.number
+                    ],
+                  ),
+                  SizedBox(height: 15,),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: PrimaryTextField(
+                          topPaadding: 10,
+                          bottomPadding: 10,
+                          controller: systolicController,
+                          hintText: 'Systolic',
+                          type: TextInputType.number,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                Text('Third reading of blood pressure?', style: TextStyle(fontSize: 17),),
-                SizedBox(height: 15,),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: PrimaryTextField(
-                        topPaadding: 10,
-                        bottomPadding: 10,
-                        hintText: 'Systolic',
-                        type: TextInputType.number,
+                      SizedBox(width: 20,),
+                      Expanded(
+                        child: PrimaryTextField(
+                          controller: diastolicController,
+                          topPaadding: 10,
+                          bottomPadding: 10,
+                          hintText: 'Diastolic',
+                          type: TextInputType.number
+                        ),
                       ),
+                    ],
+                  ),
+                  
+                  SizedBox(height: 20,),
+
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical:15),
+                    width: double.infinity,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(2),
+                      border: Border.all(color: kPrimaryColor)
                     ),
-                    SizedBox(width: 20,),
-                    Expanded(
-                      child: PrimaryTextField(
-                        topPaadding: 10,
-                        bottomPadding: 10,
-                        hintText: 'Diastolic',
-                        type: TextInputType.number
-                      ),
+                    child: InkWell(
+                      onTap: () async {
+                        var result = BloodPressure().addBpPreparedItems(selectedArm, int.parse(systolicController.text), int.parse(diastolicController.text), '');
+                        if (result == 'success') {
+                          _scaffoldKey.currentState.showSnackBar(
+                            SnackBar(
+                              content: Text('Data added'),
+                              backgroundColor: Color(0xFF4cAF50),
+                            )
+                          );
+                          await Future.delayed(const Duration(seconds: 1));
+                          // Navigator.of(context).pop();
+                        } else {
+                          _scaffoldKey.currentState.showSnackBar(
+                            SnackBar(
+                              content: Text(result.toString()),
+                              backgroundColor: kPrimaryRedColor,
+                            )
+                          );
+                        }
+                      },
+                      child: Text('Add Blood Presure', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w500),),
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  
+                ],
+              ),
             ),
-          ),
-        ],
-      )
+          ],
+        )
+      ),
     );
   }
 }
@@ -612,11 +667,13 @@ class VideoContainer extends StatefulWidget {
   const VideoContainer({
     Key key,
     @required YoutubePlayerController youtubeController,
-    this.title
+    this.title,
+    this.carePlan
   }) : _youtubeController = youtubeController, super(key: key);
 
   final YoutubePlayerController _youtubeController;
   final String title;
+  final carePlan;
 
   @override
   _VideoContainerState createState() => _VideoContainerState();
@@ -626,7 +683,6 @@ class _VideoContainerState extends State<VideoContainer> {
   @override
   initState() {
     super.initState();
-    print(widget.title);
   }
   getTime(time) {
     var data = '';
@@ -739,7 +795,26 @@ class _VideoContainerState extends State<VideoContainer> {
               border: Border.all(color: kPrimaryColor)
             ),
             child: InkWell(
-              onTap: () {},
+              onTap: () async {
+                var result = Questionnaire().addVideoSurvey(videoUrl, widget.carePlan);
+                if (result == 'success') {
+                  _scaffoldKey.currentState.showSnackBar(
+                    SnackBar(
+                      content: Text('Data added'),
+                      backgroundColor: Color(0xFF4cAF50),
+                    )
+                  );
+                  await Future.delayed(const Duration(seconds: 1));
+                  // Navigator.of(context).pop();
+                } else {
+                  _scaffoldKey.currentState.showSnackBar(
+                    SnackBar(
+                      content: Text(result.toString()),
+                      backgroundColor: kPrimaryRedColor,
+                    )
+                  );
+                }
+              },
               child: Text('USER HAS WATCHED THE ENTIRE VIDEO', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w500),),
             ),
           ),
@@ -749,16 +824,16 @@ class _VideoContainerState extends State<VideoContainer> {
   }
 }
 
-class FormContainer extends StatefulWidget {
-  FormContainer({this.form});
+class BpFormContainer extends StatefulWidget {
+  BpFormContainer({this.form});
 
   var form;
 
   @override
-  _FormContainerState createState() => _FormContainerState();
+  _BpFormContainerState createState() => _BpFormContainerState();
 }
 
-class _FormContainerState extends State<FormContainer> {
+class _BpFormContainerState extends State<BpFormContainer> {
   @override
   Widget build(BuildContext context) {
     return Container(

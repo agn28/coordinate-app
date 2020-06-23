@@ -4,6 +4,7 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/medical_issues_controller.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/questionnaire.dart';
@@ -17,9 +18,8 @@ int _selectedOption = 1;
 List allMedications =  ['fever', 'cough' ];
 List _medications = [];
 final problemController = TextEditingController();
-final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 bool showItems = false;
+final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
 
 class ReportMedicalIssuesScreen extends StatefulWidget {
@@ -28,7 +28,8 @@ class ReportMedicalIssuesScreen extends StatefulWidget {
 }
 
 class _ReportMedicalIssuesScreenState extends State<ReportMedicalIssuesScreen> {
- int _currentStep = 0; 
+  int _currentStep = 0; 
+  bool isLoading = false;
 
  @override
  void initState() {
@@ -38,6 +39,12 @@ class _ReportMedicalIssuesScreenState extends State<ReportMedicalIssuesScreen> {
       _selectedOption = 1;
     });
     getMedicalIssues();
+  }
+
+  setLoader(value) {
+    setState(() {
+      isLoading = value;
+    });
   }
 
   getMedicalIssues() async {
@@ -69,37 +76,56 @@ class _ReportMedicalIssuesScreenState extends State<ReportMedicalIssuesScreen> {
       ),
 
       body: SingleChildScrollView(
-              child: GestureDetector(
+        child: GestureDetector(
           onTap: () {
             setState(() {
               showItems = false;
             });
           },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: 
+            Stack(
               children: <Widget>[
-                PatientTopbar(),
-                Container(
-                  height: 70,
+                !isLoading ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    PatientTopbar(),
+                    Container(
+                      height: 70,
+                      width: double.infinity,
+                      alignment: Alignment.centerLeft,
+                      padding: EdgeInsets.symmetric(horizontal: 30),
+                      decoration: BoxDecoration(
+                        color: Color(0xFFFFFFFF),
+                        border: Border(
+                        )
+                      ),
+                      child: Text('What issues were noticed during the course of your visit?', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+                    ),
+
+
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+                      child: MedicationList(parent: this)
+                    ),
+                    SizedBox(height: 10,),
+                  ],
+                )
+              
+              
+                : Container(
+                  height: MediaQuery.of(context).size.height,
                   width: double.infinity,
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.symmetric(horizontal: 30),
-                  decoration: BoxDecoration(
-                    color: Color(0xFFFFFFFF),
-                    border: Border(
-                    )
+                  color: Color(0x90FFFFFF),
+                  child: Center(
+                    child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),backgroundColor: Color(0x30FFFFFF),)
                   ),
-                  child: Text('What issues were noticed during the course of your visit?', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
-                ),
-
-
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-                  child: MedicationList()
-                ),
-                SizedBox(height: 10,),
+                ) ,
               ],
             ),
+            
+            
+            
+            
         ),
       ),
     );
@@ -110,7 +136,8 @@ class _ReportMedicalIssuesScreenState extends State<ReportMedicalIssuesScreen> {
 
 
  class MedicationList extends StatefulWidget {
-
+   MedicationList({this.parent});
+   final _ReportMedicalIssuesScreenState parent;
 
   @override
   _MedicationListState createState() => _MedicationListState();
@@ -381,8 +408,19 @@ class _MedicationListState extends State<MedicationList> {
                   borderRadius: BorderRadius.circular(3)
                 ),
                 child: FlatButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamed('/chwHome');
+                  onPressed: () async {
+                    // Navigator.of(_scaffoldKey.currentContext).pushNamed('/chwHome');
+                    widget.parent.setLoader(true);
+                    await Future.delayed(const Duration(seconds: 5));
+
+                    var result = '';
+                    
+                    result = await AssessmentController().create('visit', '');
+                    print('result');
+
+                    widget.parent.setLoader(false);
+
+                    Navigator.of(_scaffoldKey.currentContext).pushNamed('/chwHome');
                   },
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   child: Text('COMPLETE VISIT', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)

@@ -676,6 +676,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text('Care Plan Actions', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                              carePlans.length > 0 ?
                               Container(
                                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                                 decoration: BoxDecoration(
@@ -688,7 +689,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                   },
                                   child: Text('VIEW CARE PLAN', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w500),),
                                 ),
-                              ),
+                              ) : Container(),
                             ],
                           ),
                         ),
@@ -766,7 +767,9 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                                     children: <Widget>[
                                                       Text(Helpers().convertDate(encounter['data']['assessment_date']), style: TextStyle(fontSize: 16)),
                                                       SizedBox(height: 15,),
-                                                      Text('Follow-up Encounter: ' + encounter['data']['type'], style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
+                                                      encounter['data']['type'] == 'in-clinic' ?
+                                                      Text('Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),)
+                                                      : Text('Follow-up Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1) , style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
 
                                                       SizedBox(height: 15,),
                                                       Row(
@@ -1168,7 +1171,7 @@ class _CareplanAccordionState extends State<CareplanAccordion> {
                                               child: GestureDetector(
                                                 onTap: () {
                                                   Navigator.of(context).pushNamed('/carePlanInterventions', arguments: {
-                                                    'carePlan' : item,
+                                                    'carePlan' : action,
                                                     'parent': this
                                                   });
                                                 },

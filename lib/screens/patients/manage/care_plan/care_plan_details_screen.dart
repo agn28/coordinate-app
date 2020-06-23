@@ -32,6 +32,7 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
   @override
   void initState() {
     super.initState();
+    print(widget.carePlans);
     getReports();
   }
 

@@ -87,6 +87,28 @@ class BloodPressure {
     _items.add(data);
     // _items.add(observation['body']['data']);
   }
+  addBpPreparedItems(arm, systolic, diastolic, comment) {
+    var data = {
+      "meta": {
+        "collected_by": Auth().getAuth()['uid'],
+        "created_at": DateTime.now().toString()
+      },
+      "body": {
+        "type": "blood_pressure",
+        "data": {
+          'systolic': systolic,
+          'diastolic': diastolic,
+          'arm': arm
+        },
+        "comment": comment,
+        'patient_id': Patient().getPatient()['uuid'],
+      }
+    };
+
+    _bpItems.add(data);
+
+    return 'success';
+  }
 
   /// Prepare blood pressure data
   _prepareBloodPressureData(formData, item) {

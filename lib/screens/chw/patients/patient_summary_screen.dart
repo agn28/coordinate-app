@@ -25,6 +25,8 @@ var dueCarePlans = [];
 var completedCarePlans = [];
 var upcomingCarePlans = [];
 
+
+
 class ChwPatientRecordsScreen extends StatefulWidget {
   var checkInState = false;
   ChwPatientRecordsScreen({this.checkInState});
@@ -36,6 +38,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   var _patient;
   bool isLoading = true;
   var carePlans = [];
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   
   bool avatarExists = false;
   var encounters = [];
@@ -310,6 +313,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     } else {
       // print( data['data']);
       // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
+      carePlans = data['data'];
       data['data'].forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");
         var endDate = format.parse(item['body']['activityDuration']['end']);
@@ -414,6 +418,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: new AppBar(
         title: new Text('Patient Summary', style: TextStyle(color: Colors.white, fontSize: 20),),
         backgroundColor: kPrimaryColor,
@@ -784,7 +789,10 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                                           children: <Widget>[
                                                             Text(Helpers().convertDate(encounter['data']['assessment_date']), style: TextStyle(fontSize: 16)),
                                                             SizedBox(height: 15,),
-                                                            Text('Follow-up Encounter: ' + encounter['data']['type'], style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
+
+                                                            encounter['data']['type'] == 'in-clinic' ?
+                                                            Text('Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),)
+                                                            : Text('Follow-up Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1) , style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
 
                                                             SizedBox(height: 15,),
                                                             Row(
@@ -1011,7 +1019,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                           child: FlatButton(
                             onPressed: () async {
                               showDialog(
-                                context: context,
+                                context: _scaffoldKey.currentContext,
                                 builder: (BuildContext context) {
                                   return Dialog(
                                     child: Container(
@@ -1058,8 +1066,24 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                                     borderRadius: BorderRadius.circular(3)
                                                   ),
                                                   child: FlatButton(
-                                                    onPressed: () {
-                                                      Navigator.of(context).pushNamed('/chwHome');
+                                                    onPressed: () async {
+                                                      Navigator.of(context).pop();
+                                                      var result = '';
+                                                      setState(() {
+                                                        isLoading = true;
+                                                      });
+
+                                                      await Future.delayed(const Duration(seconds: 5));
+
+                                                      
+                                                      result = await AssessmentController().create('visit', '');
+
+                                                      setState(() {
+                                                        isLoading = false;
+                                                      });
+                                                      Navigator.of(_scaffoldKey.currentContext).pushNamed('/chwHome');
+
+                                                      
                                                     },
                                                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                                     child: Text('No', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
@@ -1103,7 +1127,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
           ),
         ),
       ),
-      floatingActionButton: widget.checkInState == null ?FloatingActionButton.extended(
+      floatingActionButton: widget.checkInState == null ? FloatingActionButton.extended(
         onPressed: () {
           Navigator.of(context).pushNamed('/verifyPatient');
         },

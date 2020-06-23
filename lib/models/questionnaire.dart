@@ -222,6 +222,32 @@ class Questionnaire {
     return 'success';
   }
 
+  addVideoSurvey(url, careplan) {
+
+    var data = {
+      "meta": {
+        "performed_by": Auth().getAuth()['uid'],
+        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
+      },
+      "body": {
+        "type": "survey",
+        "data": {
+          'video_watched': true,
+          'url': url,
+          'care_plan_id': careplan['id'],
+          'title': careplan['body']['title']
+        },
+        "patient_id": Patient().getPatient()['uuid'],
+      }
+    };
+    // _questionnaireItems = [];
+
+
+    _questionnaireItems.add(data);
+    print(_questionnaireItems);
+    return 'success';
+  }
+
   addDiet(type, answers) {
     var questions = Questionnaire().questions[type];
     var updated = false;

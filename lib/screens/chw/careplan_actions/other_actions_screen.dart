@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/care_plan_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/models/auth.dart';
@@ -190,6 +191,8 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
                                         response = await CarePlanController().update(item, '');
                                       }
                                     });
+
+                                    
                                     setState(() {
                                       isLoading = false;
                                     });
