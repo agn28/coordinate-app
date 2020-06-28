@@ -5,6 +5,7 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/care_plan_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/models/blood_pressure.dart';
+import 'package:nhealth/models/devices.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/chw/unwell/severity_screen.dart';
@@ -240,6 +241,8 @@ class _Form4State extends State<Form4> {
   final systolicController = TextEditingController();
   final diastolicController = TextEditingController();
   String selectedArm = 'left';
+  List devices = Device().getDevices();
+  var selectedDevice = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -252,7 +255,7 @@ class _Form4State extends State<Form4> {
           
         ),
         child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.start,
+          
           children: <Widget>[
             Form(
               child: Column(
@@ -316,6 +319,40 @@ class _Form4State extends State<Form4> {
                       ),
                     ],
                   ),
+
+                  Container(
+                    color: kSecondaryTextField,
+                    alignment: Alignment.centerLeft,
+                    margin: EdgeInsets.symmetric(horizontal: 100),
+                    child: DropdownButtonFormField(
+                      hint: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                      decoration: InputDecoration(
+                        fillColor: kSecondaryTextField,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                        border: UnderlineInputBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          topRight: Radius.circular(4),
+                        )
+                      ),
+                      ),
+                      items: [
+                        ...devices.map((item) =>
+                          DropdownMenuItem(
+                            child: Text(item['name']),
+                            value: devices.indexOf(item)
+                          )
+                        ).toList(),
+                      ],
+                      value: selectedDevice,
+                      isExpanded: true,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedDevice = value;
+                        });
+                      },
+                    ),
+                  ),
                   
                   SizedBox(height: 20,),
 
@@ -329,7 +366,7 @@ class _Form4State extends State<Form4> {
                     ),
                     child: InkWell(
                       onTap: () async {
-                        var result = BloodPressure().addBpPreparedItems(selectedArm, int.parse(systolicController.text), int.parse(diastolicController.text), '');
+                        var result = BloodPressure().addBpPreparedItems(selectedArm, int.parse(systolicController.text), int.parse(diastolicController.text), devices[selectedDevice]['id'], '');
                         if (result == 'success') {
                           _scaffoldKey.currentState.showSnackBar(
                             SnackBar(

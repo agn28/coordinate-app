@@ -7,6 +7,7 @@ import 'package:nhealth/configs/configs.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/followup_controller.dart';
 import 'package:nhealth/models/auth.dart';
+import 'package:nhealth/models/devices.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
@@ -439,7 +440,7 @@ class _TemperatureState extends State<Temperature> {
             SizedBox(height: 30,),
             Container(
               alignment: Alignment.center,
-              child: Text('Can I take your temerature ?', style: TextStyle(fontSize: 21),),
+              child: Text('Can I take your temperature ?', style: TextStyle(fontSize: 21),),
             ),
             SizedBox(height: 30,),
             Container(
@@ -588,6 +589,17 @@ class Glucose extends StatefulWidget {
 }
 
 class _GlucoseState extends State<Glucose> {
+
+  List devices = [];
+
+  var selectedDevice = 0;
+
+  @override
+  initState() {
+    super.initState();
+
+    devices = Device().getDevices();
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -688,13 +700,35 @@ class _GlucoseState extends State<Glucose> {
               ),
             ),
             Container(
+              color: kSecondaryTextField,
               margin: EdgeInsets.symmetric(horizontal: 100),
-              alignment: Alignment.center,
-              child: PrimaryTextField(
-                hintText: 'Select a device',
-                topPaadding: 10,
-                bottomPadding: 10,
-                controller: _deviceController,
+              child: DropdownButtonFormField(
+                hint: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                decoration: InputDecoration(
+                  fillColor: kSecondaryTextField,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                  border: UnderlineInputBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(4),
+                    topRight: Radius.circular(4),
+                  )
+                ),
+                ),
+                items: [
+                  ...devices.map((item) =>
+                    DropdownMenuItem(
+                      child: Text(item['name']),
+                      value: devices.indexOf(item)
+                    )
+                  ).toList(),
+                ],
+                value: selectedDevice,
+                isExpanded: true,
+                onChanged: (value) {
+                  setState(() {
+                    selectedDevice = value;
+                  });
+                },
               ),
             ),
             SizedBox(height: 10,),

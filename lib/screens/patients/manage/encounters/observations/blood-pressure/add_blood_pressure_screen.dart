@@ -8,6 +8,7 @@ import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/blood_pressure.dart';
+import 'package:nhealth/models/devices.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
@@ -23,7 +24,7 @@ final commentController = TextEditingController();
 final deviceController = TextEditingController();
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 int selectedDevice = 0;
-List devices = ['D-23429', 'B-94857'];
+List devices = [];
 List rightArmReason = [
   'left arm is missing',
   'participants hand is broken into pieces',
@@ -60,6 +61,8 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
     super.initState();
     _patient = Patient().getPatient();
     selectedArm = 'left';
+    devices = Device().getDevices();
+    print(devices);
     _checkAvatar();
     getBloodPressures();
   }
@@ -511,8 +514,8 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                       items: [
                         ...devices.map((item) =>
                           DropdownMenuItem(
-                            child: Text(item),
-                            value: devices.indexOf(item) 
+                            child: Text(item['name']),
+                            value: devices.indexOf(item)
                           )
                         ).toList(),
                       ],
@@ -619,7 +622,7 @@ _prepareFormData() {
     'items': _AddBloodPressureState().bpItems,
     'comment': commentController.text,
     'patient_id': Patient().getPatient()['uuid'],
-    'device': devices[selectedDevice],
+    'device': devices[selectedDevice]['id'],
     'performed_by': 'Md. Feroj Bepari',
   };
 }

@@ -5,11 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
+import 'package:nhealth/controllers/device_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/assessment.dart';
 import 'package:nhealth/models/blood_pressure.dart';
+import 'package:nhealth/models/devices.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-test/blood_test_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/body-measurements/measurements_screen.dart';
@@ -47,6 +50,7 @@ class _NewEncounterState extends State<NewEncounter> {
   void initState() {
     super.initState();
     _checkAvatar();
+    _getDevices();
     BloodPressure().removeDeleteIds();
     if (Assessment().getSelectedAssessment() != {}) {
       setState(() {
@@ -55,6 +59,18 @@ class _NewEncounterState extends State<NewEncounter> {
         selectedType = type == 'in-clinic' ? 'In-clinic Screening' : 'Home Visit';
       });
     }
+  }
+
+  _getDevices() async {
+    isLoading = true;
+    var data = await DeviceController().getDevices();
+    setState(() {
+      isLoading = false;
+    });
+    if (data.length > 0 ) {
+      Device().setDevices(data);
+    }
+    
   }
 
   _checkAvatar() async {

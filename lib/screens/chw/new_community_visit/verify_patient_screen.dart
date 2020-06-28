@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/controllers/device_controller.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
+import 'package:nhealth/models/devices.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
@@ -28,6 +30,17 @@ class _VerifyPatientState extends State<VerifyPatientScreen> {
     super.initState();
     _patient = Patient().getPatient();
 
+    getDevices();
+
+  }
+
+  getDevices() async {
+
+    var data = await DeviceController().getDevices();
+
+    if (data.length > 0 ) {
+      Device().setDevices(data);
+    }
   }
 
   _checkAvatar() async {

@@ -87,9 +87,10 @@ class BloodPressure {
     _items.add(data);
     // _items.add(observation['body']['data']);
   }
-  addBpPreparedItems(arm, systolic, diastolic, comment) {
+  addBpPreparedItems(arm, systolic, diastolic, device, comment) {
     var data = {
       "meta": {
+        'device_id': device,
         "collected_by": Auth().getAuth()['uid'],
         "created_at": DateTime.now().toString()
       },

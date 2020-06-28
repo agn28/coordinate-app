@@ -6,6 +6,7 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/blood_test.dart';
 import 'package:nhealth/models/body_measurement.dart';
+import 'package:nhealth/models/devices.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
@@ -276,7 +277,7 @@ class AddDialogue extends StatefulWidget {
 
   AddDialogue({this.parent, this.title, this.name});
 
-  List devices = ['D-23429', 'B-94857'];
+  List devices = [];
   int selectedDevice;
 
   @override
@@ -308,11 +309,13 @@ class _AddDialogueState extends State<AddDialogue> {
   void initState() {
     super.initState();
     selectedUnit = widget.name == 'weight' ? 'kg' : 'cm';
+    devices = Device().getDevices();
+    print(devices);
     _getItem();
   }
 
   _addItem() {
-    BodyMeasurement().addItem(widget.name, valueController.text, selectedUnit, commentController != null ? commentController.text : "", devices[selectedDevice]);
+    BodyMeasurement().addItem(widget.name, valueController.text, selectedUnit, commentController != null ? commentController.text : "", devices[selectedDevice]['id']);
     this.widget.parent.setState(() => {
       this.widget.parent.setStatus(),
     });
@@ -437,7 +440,7 @@ class _AddDialogueState extends State<AddDialogue> {
                     items: [
                       ...devices.map((item) =>
                         DropdownMenuItem(
-                          child: Text(item),
+                          child: Text(item['name']),
                           value: devices.indexOf(item)
                         )
                       ).toList(),
