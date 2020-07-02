@@ -414,6 +414,21 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     }
   }
 
+  getTitle(encounter) {
+    var screening_type =  encounter['data']['screening_type'];
+    if (screening_type != null && screening_type != '') {
+      if (screening_type == 'ncd') {
+        screening_type = screening_type.toUpperCase() + ' ';
+      } else {
+        screening_type = screening_type[0].toUpperCase() + screening_type.substring(1) + ' ';
+      }
+      
+      return screening_type + 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
+    }
+    
+    return 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -790,9 +805,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                                             Text(Helpers().convertDate(encounter['data']['assessment_date']), style: TextStyle(fontSize: 16)),
                                                             SizedBox(height: 15,),
 
-                                                            encounter['data']['type'] == 'in-clinic' ?
-                                                            Text('Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),)
-                                                            : Text('Follow-up Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1) , style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
+                                                            Text(getTitle(encounter) , style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
 
                                                             SizedBox(height: 15,),
                                                             Row(
@@ -1076,7 +1089,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                                       await Future.delayed(const Duration(seconds: 5));
 
                                                       
-                                                      result = await AssessmentController().create('visit', '');
+                                                      result = await AssessmentController().create('visit', 'follow-up', '');
 
                                                       setState(() {
                                                         isLoading = false;

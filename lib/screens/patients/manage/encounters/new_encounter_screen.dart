@@ -326,7 +326,7 @@ class _NewEncounterState extends State<NewEncounter> {
                                                 isLoading = true;
                                               });
                                               if (Assessment().getSelectedAssessment().isEmpty) {
-                                                result = await AssessmentController().create(selectedType, commentController.text);
+                                                result = await AssessmentController().create(selectedType, 'ncd', commentController.text);
                                               } else {
                                                 result = await AssessmentController().update(selectedType, commentController.text);
                                               }

@@ -125,9 +125,9 @@ class AssessmentController {
 
   /// Create assessment.
   /// Assessment [type] and [comment] is required as parameter.
-  create(type, comment) async {
+  create(type, screening_type, comment) async {
 
-    var data = _prepareData(type, comment);
+    var data = _prepareData(type, screening_type, comment);
     var status = await AssessmentRepositoryLocal().create(data);
     if (status == 'success') {
       Helpers().clearObservationItems();
@@ -175,7 +175,7 @@ class AssessmentController {
 
   /// Prepare data to create an assessment.
   /// Assessment [type] and [comment] is required as parameter.
-  _prepareData(type, comment) {
+  _prepareData(type, screening_type, comment) {
     var data = {
       "meta": {
         "collected_by": Auth().getAuth()['uid'],
@@ -183,6 +183,7 @@ class AssessmentController {
       },
       "body": {
         "type": type == 'In-clinic Screening' ? 'in-clinic' : type,
+        "screening_type": screening_type,
         "comment": comment,
         "performed_by": Auth().getAuth()['uid'],
         "assessment_date": DateFormat('y-MM-dd').format(DateTime.now()),

@@ -41,14 +41,7 @@ final nidController = TextEditingController();
 final contactFirstNameController = TextEditingController();
 final contactLastNameController = TextEditingController();
 final contactRelationshipController = TextEditingController();
-final contactDistrictController = TextEditingController();
-final contactPostalCodeController = TextEditingController();
-final contactTownController = TextEditingController();
-final contactVillageController = TextEditingController();
-final contactStreetNameController = TextEditingController();
 final contactMobilePhoneController = TextEditingController();
-final contactHomePhoneController = TextEditingController();
-final contactEmailController = TextEditingController();
 final GlobalKey<FormState> _patientFormKey = new GlobalKey<FormState>();
 final GlobalKey<FormState> _contactFormKey = new GlobalKey<FormState>();
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -135,14 +128,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     contactFirstNameController.text = patient['data']['contact']['first_name'];
     contactLastNameController.text = patient['data']['contact']['last_name'];
     contactRelationshipController.text = patient['data']['contact']['relationship'];
-    contactDistrictController.text = patient['data']['contact']['address']['district'];
-    contactPostalCodeController.text = patient['data']['contact']['address']['postal_code'];
-    contactTownController.text = patient['data']['contact']['address']['town'];
-    contactVillageController.text = patient['data']['contact']['address']['village'];
-    contactStreetNameController.text = patient['data']['contact']['address']['street_name'];
     contactMobilePhoneController.text = patient['data']['contact']['mobile'];
-    contactHomePhoneController.text = patient['data']['contact']['phone'];
-    contactEmailController.text = patient['data']['contact']['email'];
     selectedRelation = relationships.indexOf(patient['data']['contact']['relationship']);
 
   }
@@ -164,14 +150,6 @@ class _RegisterPatientState extends State<RegisterPatient> {
     nidController.clear();   contactFirstNameController.clear();
     contactLastNameController.clear();
     contactRelationshipController.clear();
-    contactDistrictController.clear();
-    contactPostalCodeController.clear();
-    contactTownController.clear();
-    contactVillageController.clear();
-    contactStreetNameController.clear();
-    contactMobilePhoneController.clear();
-    contactHomePhoneController.clear();
-    contactEmailController.clear();
     _image = null;
   }
   
@@ -346,16 +324,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
         'first_name': contactFirstNameController.text,
         'last_name': contactLastNameController.text,
         'relationship': selectedRelation != null ? relationships[selectedRelation] : '', 
-        'address': {
-          'district': contactDistrictController.text,
-          'postal_code': contactPostalCodeController.text,
-          'town': contactTownController.text,
-          'village': contactVillageController.text,
-          'street_name': contactStreetNameController.text,
-        },
         'mobile': contactMobilePhoneController.text,
-        'phone': contactHomePhoneController.text,
-        'email': contactEmailController.text,
       },
 
     };
@@ -687,27 +656,6 @@ class ContactDetails extends StatefulWidget {
 
 class _ContactDetailsState extends State<ContactDetails> {
 
-  sameAddressChecked(value) {
-    if (value) {
-      setState(() {
-        isContactAddressSame = value;
-        contactDistrictController.text = districtController.text;
-        contactPostalCodeController.text = postalCodeController.text;
-        contactTownController.text = townController.text;
-        contactVillageController.text = villageController.text;
-        contactStreetNameController.text = streetNameController.text;
-      });
-    } else {
-      setState(() {
-        isContactAddressSame = value;
-        contactDistrictController.text = '';
-        contactPostalCodeController.text = '';
-        contactTownController.text = '';
-        contactVillageController.text = '';
-        contactStreetNameController.text = '';
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -788,71 +736,6 @@ class _ContactDetailsState extends State<ContactDetails> {
 
             SizedBox(height: 20,),
             Divider(),
-            SizedBox(height: 15,),
-
-            Text(AppLocalizations.of(context).translate("contact'sAddress"), style: TextStyle(fontSize: 16),),
-            SizedBox(height: 10,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Checkbox(
-                  activeColor: kPrimaryColor,
-                  value: isContactAddressSame,
-                  onChanged: (value) {
-                    sameAddressChecked(value);
-                  },
-                ),
-                Text('Same as patient', style: TextStyle(),)
-              ],
-            ),
-
-            PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
-              hintText: AppLocalizations.of(context).translate('district'),
-              controller: contactDistrictController,
-              name: AppLocalizations.of(context).translate('district'),
-              validation: true
-            ),
-            SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
-              hintText: AppLocalizations.of(context).translate('postalCode'),
-              controller: contactPostalCodeController,
-              name: AppLocalizations.of(context).translate('postalCode'),
-              validation: true,
-              type: TextInputType.number,
-            ),
-            SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
-              hintText: AppLocalizations.of(context).translate('town'),
-              controller: contactTownController,
-              name: AppLocalizations.of(context).translate('town'),
-              validation: true
-            ),
-            SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
-              hintText: AppLocalizations.of(context).translate('village'),
-              controller: contactVillageController,
-              name: AppLocalizations.of(context).translate('village'),
-              validation: true
-            ),
-            SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
-              hintText: AppLocalizations.of(context).translate('streetName'),
-              controller: contactStreetNameController,
-              name: AppLocalizations.of(context).translate('streetName'),
-              validation: true
-            ),
-            
-            Divider(),
 
             SizedBox(height: 20,),
             PrimaryTextField(
@@ -865,24 +748,8 @@ class _ContactDetailsState extends State<ContactDetails> {
               validation: true,
               type: TextInputType.number
             ),
-            SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
-              prefixIcon: Icon(Icons.phone),
-              hintText: AppLocalizations.of(context).translate("contactHomePhone"),
-              controller: contactHomePhoneController,
-              type: TextInputType.number
-            ),
-            SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
-              prefixIcon: Icon(Icons.email),
-              hintText: AppLocalizations.of(context).translate("contactEmail"),
-              controller: contactEmailController,
-            ),
             SizedBox(height: 30,),
+            
           ],
         ),
       ),

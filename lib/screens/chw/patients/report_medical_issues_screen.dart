@@ -415,7 +415,7 @@ class _MedicationListState extends State<MedicationList> {
 
                     var result = '';
                     
-                    result = await AssessmentController().create('visit', '');
+                    result = await AssessmentController().create('visit', 'follow-up', '');
                     print('result');
 
                     widget.parent.setLoader(false);

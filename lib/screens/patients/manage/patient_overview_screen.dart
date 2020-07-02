@@ -77,6 +77,20 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
       isLoading = false;
     });
   }
+  getTitle(encounter) {
+    var screening_type =  encounter['data']['screening_type'];
+    if (screening_type != null && screening_type != '') {
+      if (screening_type == 'ncd') {
+        screening_type = screening_type.toUpperCase() + ' ';
+      } else {
+        screening_type = screening_type[0].toUpperCase() + screening_type.substring(1) + ' ';
+      }
+      
+      return screening_type + 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
+    }
+    
+    return 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
+  }
 
   getUser(uid) {
     var user = users.where((user) => user['uid'] == uid);
@@ -767,9 +781,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                                     children: <Widget>[
                                                       Text(Helpers().convertDate(encounter['data']['assessment_date']), style: TextStyle(fontSize: 16)),
                                                       SizedBox(height: 15,),
-                                                      encounter['data']['type'] == 'in-clinic' ?
-                                                      Text('Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),)
-                                                      : Text('Follow-up Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1) , style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
+                                                      Text(getTitle(encounter) , style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
 
                                                       SizedBox(height: 15,),
                                                       Row(
