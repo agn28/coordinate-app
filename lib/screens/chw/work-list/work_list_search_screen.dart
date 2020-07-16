@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,8 +28,10 @@ List pendingPatients = [];
 List allCompletedPatients = [];
 List completedPatients = [];
 
-List allpastPatients = [];
+List allPastPatients = [];
 List pastPatients = [];
+
+int selectedTab = 0;
 
 
 class ChwWorkListSearchScreen extends StatefulWidget {
@@ -45,10 +48,46 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
   var cholesterol;
   var bp;
   var cvd;
+  var authUser;
+  TabController _tabController;
+
+  @override
+  initState() {
+    super.initState();
+    allWorklist = [];
+    worklist = [];
+    _getAuthUser();
+    _getPatients();
+    patientSort = 'asc';
+    dueDateSort = 'asc';
+    patientSortActive = false;
+    dueDateSortActive = false;
+  }
   
   loaderHandle(value) {
     setState(() {
       isLoading = value;
+    });
+  }
+  _logout() {
+    Auth().logout();
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+  }
+
+  _getAuthUserName() {
+    var name = '';
+    name = authUser != null && authUser['name'] != null ? authUser['name'] + ' (${authUser["role"].toUpperCase()})'  : '';
+    return name;
+  }
+
+  _getAuthUser() async {
+    var data = await Auth().getStorageAuth() ;
+    if (!data['status']) {
+      _logout();
+    }
+
+    setState(() {
+      authUser = data;
     });
   }
   /// Get all the worklist
@@ -61,25 +100,94 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
     if (pending['error'] != null && !pending['error']) {
       setState(() {
         allPendingPatients = pending['data'];
+        pendingPatientsSort();
         pendingPatients = allPendingPatients;
       });
     }
     if (completed['error'] != null && !completed['error']) {
       setState(() {
         allCompletedPatients = completed['data'];
+        completedPatientsSort();
         completedPatients = allCompletedPatients;
       });
     }
     if (past['error'] != null && !past['error']) {
       setState(() {
-        allpastPatients = past['data'];
-        pastPatients = allpastPatients;
+        allPastPatients = past['data'];
+        pastPatientsSort();
+        pastPatients = allPastPatients;
       });
     }
     setState(() {
       isLoading = false;
     });
 
+  }
+
+  pendingPatientsSort() {
+    var patientsWithAssignment = [];
+    var patients = [];
+    allPendingPatients.forEach((patient) {
+      if (patient['body']['next_assignment'] != null && patient['body']['next_assignment']['meta']['created_at']['_seconds'] != null) {
+        patientsWithAssignment.add(patient);
+      } else {
+        patients.add(patient);
+      }
+    });
+
+    if (patientsWithAssignment.length > 0) {
+      patientsWithAssignment.sort((a, b) {
+        return DateTime.fromMillisecondsSinceEpoch(b['body']['next_assignment']['meta']['created_at']['_seconds'] * 1000).compareTo(DateTime.fromMillisecondsSinceEpoch(a['body']['next_assignment']['meta']['created_at']['_seconds'] * 1000));
+      });
+      allPendingPatients = [...patientsWithAssignment, ...patients];
+    }
+    
+  }
+
+  pastPatientsSort() {
+    var patientsWithAssignment = [];
+    var patients = [];
+    allPastPatients.forEach((patient) {
+      if (patient['body']['next_assignment'] != null && patient['body']['next_assignment']['meta']['created_at']['_seconds'] != null) {
+        patientsWithAssignment.add(patient);
+      } else {
+        patients.add(patient);
+      }
+    });
+
+
+    if (patientsWithAssignment.length > 0) {
+      patientsWithAssignment.sort((a, b) {
+        return DateTime.fromMillisecondsSinceEpoch(b['body']['next_assignment']['meta']['created_at']['_seconds'] * 1000).compareTo(DateTime.fromMillisecondsSinceEpoch(a['body']['next_assignment']['meta']['created_at']['_seconds'] * 1000));
+      });
+      allPastPatients = [...patientsWithAssignment, ...patients];
+    }
+    
+  }
+
+  completedPatientsSort() {
+    var patientsWithAssignment = [];
+    var patients = [];
+    allCompletedPatients.forEach((patient) {
+      if (patient['body']['next_assignment'] != null && patient['body']['next_assignment']['meta']['created_at']['_seconds'] != null) {
+        patientsWithAssignment.add(patient);
+      } else {
+        patients.add(patient);
+      }
+    });
+
+
+    if (patientsWithAssignment.length > 0) {
+      patientsWithAssignment.sort((a, b) {
+        return DateTime.fromMillisecondsSinceEpoch(b['body']['next_assignment']['meta']['created_at']['_seconds'] * 1000).compareTo(DateTime.fromMillisecondsSinceEpoch(a['body']['next_assignment']['meta']['created_at']['_seconds'] * 1000));
+      });
+      allCompletedPatients = [...patientsWithAssignment, ...patients];
+    }
+    
+  }
+
+  getNexDueDate(assignment) {
+    print(assignment['meta']);
   }
 
   update(carePlan) {
@@ -137,21 +245,120 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
     }
   }
 
-  search(query) {
+  bool isNumeric(String s) {
+    if (s == null) {
+      return false;
+    }
+    return double.tryParse(s) != null;
+  }
 
-    var modifiedWorklist = [...allWorklist].map((item)  {
-      item['patient']['name'] = '${item['patient']['first_name']} ${item['patient']['last_name']}' ;
+  bool isPid(String query) {
+    return query.length >= 3 && query.substring(0, 3) == 'PA-';
+  }
+
+  
+  search(query) {
+    if (selectedTab == 0) {
+      pendingSearch(query);
+    } else if (selectedTab == 1) {
+      pastSearch(query);
+    } else {
+      completedSearch(query);
+    }
+    
+  }
+
+  pendingSearch(query) {
+    var modifiedWorklist = [...allPendingPatients].map((item)  {
+      print(item['body']['pid']);
+      item['body']['name'] = '${item['body']['first_name']} ${item['body']['last_name']}';
       return item;
     }).toList();
 
     setState(() {
-      worklist = modifiedWorklist
-      .where((item) => item['patient']['name']
-      .toLowerCase()
-      .contains(query.toLowerCase()))
-      .toList();
+      if (isNumeric(query)) {
+        pendingPatients = modifiedWorklist
+        .where((item) => item['body']['mobile']
+        .toLowerCase()
+        .contains(query.toLowerCase()))
+        .toList();
+      } else if (isPid(query)) {
+        pendingPatients = modifiedWorklist
+        .where((item) => item['body']['pid']
+        .toLowerCase()
+        .contains(query.toLowerCase()))
+        .toList();
+      } else {
+        pendingPatients = modifiedWorklist
+        .where((item) => item['body']['name']
+        .toLowerCase()
+        .contains(query.toLowerCase()))
+        .toList();
+      }
     });
   }
+
+  pastSearch(query) {
+    var modifiedWorklist = [...allPastPatients].map((item)  {
+      print(item['body']['pid']);
+      item['body']['name'] = '${item['body']['first_name']} ${item['body']['last_name']}';
+      return item;
+    }).toList();
+
+    setState(() {
+      if (isNumeric(query)) {
+        pastPatients = modifiedWorklist
+        .where((item) => item['body']['mobile']
+        .toLowerCase()
+        .contains(query.toLowerCase()))
+        .toList();
+      } else if (isPid(query)) {
+        pastPatients = modifiedWorklist
+        .where((item) => item['body']['pid']
+        .toLowerCase()
+        .contains(query.toLowerCase()))
+        .toList();
+      } else {
+        pastPatients = modifiedWorklist
+        .where((item) => item['body']['name']
+        .toLowerCase()
+        .contains(query.toLowerCase()))
+        .toList();
+      }
+    });
+  }
+
+  completedSearch(query) {
+    var modifiedWorklist = [...allCompletedPatients].map((item)  {
+      print(item['body']['pid']);
+      item['body']['name'] = '${item['body']['first_name']} ${item['body']['last_name']}';
+      return item;
+    }).toList();
+
+    setState(() {
+      if (isNumeric(query)) {
+        completedPatients = modifiedWorklist
+        .where((item) => item['body']['mobile']
+        .toLowerCase()
+        .contains(query.toLowerCase()))
+        .toList();
+      } else if (isPid(query)) {
+        completedPatients = modifiedWorklist
+        .where((item) => item['body']['pid']
+        .toLowerCase()
+        .contains(query.toLowerCase()))
+        .toList();
+      } else {
+        completedPatients = modifiedWorklist
+        .where((item) => item['body']['name']
+        .toLowerCase()
+        .contains(query.toLowerCase()))
+        .toList();
+      }
+    });
+  }
+
+
 
   clearSort() {
     setState(() {
@@ -208,19 +415,7 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
     return  completedPatients.length;
   }
 
-  TabController _controller;
-
-  @override
-  initState() {
-    super.initState();
-    allWorklist = [];
-    worklist = [];
-    _getPatients();
-    patientSort = 'asc';
-    dueDateSort = 'asc';
-    patientSortActive = false;
-    dueDateSortActive = false;
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -229,15 +424,44 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).translate('workList')),
+        automaticallyImplyLeading: false,
         elevation: 0,
         actions: <Widget>[
-          FlatButton(
-            onPressed: () {
-              Auth().logout();
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+          // overflow menu
+          PopupMenuButton(
+            itemBuilder: (_) => <PopupMenuItem<String>>[
+                new PopupMenuItem<String>(
+                    
+                    child: Container(
+                      child: Text('Logout'),
+                    ),
+                    value: 'logout'),
+              ],
+            onSelected: (value) {
+              if (value == 'logout') {
+                _logout();
+              }
             },
-            child: Text('Logout', style: TextStyle(color: Colors.white, fontSize: 16),),
-          )
+            child: Container(
+              alignment: Alignment.center,
+              child: Row(
+                children: <Widget>[
+                  Text(_getAuthUserName(),),
+                  SizedBox(width: 10),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(30.0),
+                    child: Image.asset(
+                      'assets/images/avatar.png',
+                      height: 20.0,
+                      width: 20.0,
+                    ),
+                  ),
+                  SizedBox(width: 20,)
+                ],
+              ),
+            ),
+          ),
+
         ],
         bottom: PreferredSize(child: Container(color: kPrimaryColor, height: 1.0,), preferredSize: Size.fromHeight(1.0)),
 
@@ -312,6 +536,8 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
                     border: Border.all(width: 0, color: kPrimaryColor)
                   ),
                   child: DefaultTabController(
+                    initialIndex: 0,
+
                     length: 3,
                     child: Scaffold(
                       appBar: AppBar(
@@ -320,6 +546,11 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
                         backgroundColor: kPrimaryColor,
                         bottom: PreferredSize(child: Container(color: kPrimaryColor, height: 1.0,), preferredSize: Size.fromHeight(1.0)),
                         flexibleSpace: TabBar(
+                          onTap: (value) {
+                            setState(() {
+                              selectedTab = value;
+                            });
+                          },
                           labelPadding: EdgeInsets.all(0),
                           indicatorPadding: EdgeInsets.all(0),
                           indicatorColor: Colors.white,
@@ -328,7 +559,7 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
                               child: Text('Pending (${getPendingCount()})', style: TextStyle(fontSize: 17)),
                             ),
                             Tab(
-                              child: Text('Past Due (${pendingPatients.length})', style: TextStyle(fontSize: 17)),
+                              child: Text('Past Due (${pastPatients.length})', style: TextStyle(fontSize: 17)),
                             ),
                             Tab(
                               child: Text('Completed (${getCompletedCount()})', style: TextStyle(fontSize: 17)),
@@ -338,7 +569,8 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
                         ),
                       ),
                       body: TabBarView(
-                        
+                        controller: _tabController,
+                                        
                         children: [
                           Container(
                             child: ListView(
@@ -429,6 +661,28 @@ class PatientItem extends StatefulWidget {
 }
 
 class _PatientItemState extends State<PatientItem> {
+
+  getNexDueDate(assignment) {
+      var parsedDate = getParsedDate(assignment['meta']['created_at']['_seconds']);
+
+      if (isBeforeToday(parsedDate)) {
+        return DateFormat("MMMM d, y").format(parsedDate).toString() + ' (Overdue)';
+      }
+
+      return DateFormat("MMMM d, y").format(parsedDate).toString();
+
+
+  }
+
+  getParsedDate(seconds) {
+    return DateTime.fromMillisecondsSinceEpoch(seconds * 1000);
+  }
+
+  isBeforeToday(date) {
+    var today = DateTime.now();
+    return date.isBefore(today);
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -501,23 +755,29 @@ class _PatientItemState extends State<PatientItem> {
                                 SizedBox(width: 10,),
                                 Row(
                                   children: <Widget>[
+
+                                    widget.item['body']['assessments'] != null && widget.item['body']['assessments']['lifestyle']['components']['diet'] != null && widget.item['body']['assessments']['lifestyle']['components']['diet']['components']['fruit'] != null ?
                                     CircleAvatar(
                                       child: Image.asset('assets/images/icons/fruit.png', width: 11,),
                                       radius: 11,
-                                      backgroundColor: kPrimaryRedColor,
-                                    ),
+                                      backgroundColor: ColorUtils.statusColor[widget.item['body']['assessments']['lifestyle']['components']['diet']['components']['fruit']['tfl']],
+                                    ) : Container(),
                                     SizedBox(width: 5,),
+
+                                    widget.item['body']['assessments'] != null && widget.item['body']['assessments']['lifestyle']['components']['diet'] != null && widget.item['body']['assessments']['lifestyle']['components']['diet']['components']['vegetable'] != null ?
                                     CircleAvatar(
                                       child: Image.asset('assets/images/icons/vegetables.png', width: 11,),
                                       radius: 11,
-                                      backgroundColor: kPrimaryRedColor,
-                                    ),
+                                      backgroundColor: ColorUtils.statusColor[widget.item['body']['assessments']['lifestyle']['components']['diet']['components']['vegetable']['tfl']],
+                                    ) : Container(),
                                     SizedBox(width: 5,),
+
+                                    widget.item['body']['assessments'] != null && widget.item['body']['assessments']['lifestyle']['components']['physical_activity'] != null ?
                                     CircleAvatar(
                                       child: Image.asset('assets/images/icons/activity.png', width: 11,),
                                       radius: 11,
-                                      backgroundColor: kPrimaryAmberColor,
-                                    )
+                                      backgroundColor: ColorUtils.statusColor[widget.item['body']['assessments']['lifestyle']['components']['physical_activity']['tfl']],
+                                    ) : Container()
                                   ],
                                 ),
                               ],
@@ -559,20 +819,20 @@ class _PatientItemState extends State<PatientItem> {
                                 SizedBox(width: 7,),
 
 
-                                widget.item['body']['assessments'] != null && widget.item['body']['assessments']['cvd'] != null ?
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['cvd']['tfl']]),
-                                    borderRadius: BorderRadius.circular(2)
-                                  ),
-                                  child: Text('CVD Risk',style: TextStyle(
-                                      color: ColorUtils.statusColor[widget.item['body']['assessments']['cvd']['tfl']],
-                                      fontWeight: FontWeight.w500
-                                    )  
-                                  ),
-                                ) : Container(),
-                                SizedBox(width: 7,),
+                                // widget.item['body']['assessments'] != null && widget.item['body']['assessments']['cvd'] != null ?
+                                // Container(
+                                //   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                //   decoration: BoxDecoration(
+                                //     border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['cvd']['tfl']]),
+                                //     borderRadius: BorderRadius.circular(2)
+                                //   ),
+                                //   child: Text('CVD Risk',style: TextStyle(
+                                //       color: ColorUtils.statusColor[widget.item['body']['assessments']['cvd']['tfl']],
+                                //       fontWeight: FontWeight.w500
+                                //     )  
+                                //   ),
+                                // ) : Container(),
+                                // SizedBox(width: 7,),
 
 
                                 widget.item['body']['assessments'] != null && widget.item['body']['assessments']['cholesterol']['components']['total_cholesterol'] != null ?
@@ -654,9 +914,33 @@ class _PatientItemState extends State<PatientItem> {
                             // Text('Registered on Jan 5, 2019', style: TextStyle(color: Colors.white70, fontSize: 17, fontWeight: FontWeight.w400),),
                           ],
                         ),
+                      
+                        
                       ],
                     ),
                   ),
+
+                  widget.item['body']['next_assignment'] != null && widget.item['body']['next_assignment']['meta']['created_at']['_seconds'] != null ?
+                  Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text('Next care plan action: ', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),),
+                        Text(getNexDueDate(widget.item['body']['next_assignment']),
+                          style: TextStyle(
+                              fontSize: 16,
+                              height: 1.6,
+                              color: isBeforeToday(getParsedDate(widget.item['body']['next_assignment']['meta']['created_at']['_seconds'])) ?
+                                kPrimaryRedColor
+                                : 
+                                Colors.black
+                            ),
+                        )
+                      ],
+                    ),
+                  ) 
+                  : Container(),
+                  
                   Container(
                     child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 35,)
                   )

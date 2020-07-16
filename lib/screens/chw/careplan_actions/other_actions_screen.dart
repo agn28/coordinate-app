@@ -1,10 +1,12 @@
 import 'dart:io';
+import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/care_plan_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/models/auth.dart';
@@ -14,6 +16,10 @@ import 'package:nhealth/screens/chw/unwell/continue_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:nhealth/widgets/patient_topbar_widget.dart';
+
+bool isWatched = false;
+bool btnDisabled = true;
 
 
 class OtherActionsScreen extends StatefulWidget {
@@ -30,31 +36,44 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
   bool isLoading = false;
   bool avatarExists = false;
   String videoId = '';
-  YoutubePlayerController _youtubeController;
+  List<YoutubePlayerController> _youtubeControllers = [];
 
   @override
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
-    _getVideoUrl();
+    btnDisabled = true;
+  }
+  getCount() {
+    var completedCount = 0;
+    var count = 0;
 
+    widget.data['items'].forEach( (goal) {
+      count += 1;
+      if (goal['meta']['status'] == 'completed') {
+        completedCount += 1;
+      }
+    });
+    
+
+    return '$completedCount/$count Actions are Completed';
   }
   _getVideoUrl() async {
 
-      setState(() {
-        videoId = YoutubePlayer.convertUrlToId("https://www.youtube.com/watch?v=prE6Ty2qDq8");
-        var url = widget.data['body']['components'].where((item) => item['type'] == 'video');
-        if (url.isNotEmpty) {
-          videoId = YoutubePlayer.convertUrlToId(url.first['uri']);
-        }
-        _youtubeController = YoutubePlayerController(
-          initialVideoId: videoId,
-          flags: YoutubePlayerFlags(
-            autoPlay: false,
-          ),
+      widget.data['body']['actions'].forEach( (items) {
+      items.forEach( (item) {
+        if (item['type'] == 'video') {
+          var videoId = YoutubePlayer.convertUrlToId(item['uri']);
+          _youtubeControllers.add(YoutubePlayerController(
+            initialVideoId: videoId,
+            flags: YoutubePlayerFlags(
+              autoPlay: false,
+            ),
+          )
         );
+        }
       });
-
+    });
   }
 
   _checkAvatar() async {
@@ -72,7 +91,7 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text(widget.data['body']['goal']['title'], style: TextStyle(color: Colors.black87, fontSize: 20),),
+        title: new Text(widget.data['title'], style: TextStyle(color: Colors.black87, fontSize: 20),),
         backgroundColor: Colors.white,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.black87),
@@ -87,7 +106,7 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
                 children: <Widget>[
                   Icon(Icons.edit, color: Colors.white,),
                   SizedBox(width: 10),
-                  Text('0/2 Actions completed', style: TextStyle(color: kTextGrey))
+                  Text(getCount(), style: TextStyle(color: kTextGrey))
                 ],
               )
             )
@@ -100,75 +119,29 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
             children: <Widget>[
               
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   PatientTopbar(),
 
                   SizedBox(height: 20,),
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text('Counsel about reduced salt intake', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),),
-                        Text('Completed', style: TextStyle(fontSize: 14, color: kPrimaryGreenColor),),
-                       
-                      ],
-                    ),
-                  ),
-
-                  SizedBox(height: 20,),
-
-                  Container(
-                    margin: EdgeInsets.only(left: 20.0),
-                    height: 120.0,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: <Widget>[
-                        Container(
-                          width: 200.0,
-                          color: Colors.red,
-                          child: YoutubePlayer(
-                            onEnded: (data) {
-                            
-                            } ,
-                            
-                            controller: _youtubeController,
-                            liveUIColor: Colors.amber,
-                            progressColors: ProgressBarColors(
-                              playedColor: Colors.amber,
-                              handleColor: Colors.amberAccent,
-                            ),
-                        
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 20,),
-                  Container(
-                    padding: EdgeInsets.only(bottom: 10, left: 3),
+                    width: double.infinity,
+                    child: Text('Pending Actions', style: TextStyle( fontSize: 16),),
+                    padding: EdgeInsets.only(bottom: 15, left: 20),
                     decoration: BoxDecoration(
                       border: Border(
-                        bottom: BorderSide(width: 5, color: kBorderLighter)
+                        bottom: BorderSide(color: kBorderLighter)
                       )
                     ),
-                    child: Row(
-                      children: <Widget>[
-                        Checkbox(
-                          activeColor: kPrimaryColor,
-                          value: true,
-                          onChanged: (value) {
-                            setState(() {
-                              // widget.form = value;
-                            });
-                          },
-                        ),
-                        Text('Patient has watched at least one of these videos', style: TextStyle(fontSize: 16),)
-                        
-                      ],
-                    ),
                   ),
+                  Column(
+                    children: <Widget>[
+                      ...widget.data['items'].map((item) {
+                        return ActionItem(item: item);
+                      }).toList(),
 
+                    ],
+                  ),
                   SizedBox(height: 20,),
                   
                     SizedBox(height: 20,),
@@ -199,7 +172,7 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
                               margin: EdgeInsets.only(right: 30, left: 10),
                               height: 50,
                               decoration: BoxDecoration(
-                                color: kPrimaryColor,
+                                color: btnDisabled ? kTextGrey : kPrimaryColor,
                                 borderRadius: BorderRadius.circular(3)
                               ),
                               child: FlatButton(
@@ -208,24 +181,32 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
                                   //   widget.widget.parent.setStatus();
                                   // });
                                   // Navigator.of(context).pop();
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-                                  var response = await CarePlanController().update(widget.data, '');
-                                  print(response);
-                                  setState(() {
-                                    isLoading = false;
-                                  });
-                                  
-                                  if (response == 'success') {
-                                    widget.parent.setState(() {
-                                      widget.parent.setStatus();
+                                  if (!btnDisabled) {
+                                    setState(() {
+                                      isLoading = true;
                                     });
-                                    Navigator.of(context).pop();
-                                  } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+                                    var response = '';
+                                    await Future.forEach(widget.data['items'], (item) async {
+                                      if (item['meta']['status'] == 'pending') {
+                                        response = await CarePlanController().update(item, '');
+                                      }
+                                    });
+
+                                    
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    
+                                    if (response == 'success') {
+                                      widget.parent.setState(() {
+                                        widget.parent.setStatus(widget.data);
+                                      });
+                                      Navigator.of(context).pop();
+                                    } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+                                  }
                                 },
                                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                child: Text('COMPLETE GOAL', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                                child: Text('COMPLETE GOAL', style: TextStyle(fontSize: 14, color: btnDisabled ? Colors.white54 : Colors.white, fontWeight: FontWeight.normal),)
                               ),
                             ),
                           ),
@@ -257,5 +238,220 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
   }
 }
 
+class ActionItem extends StatefulWidget {
+  const ActionItem({
+    this.item
+  });
+
+  final item;
+
+  @override
+  _ActionItemState createState() => _ActionItemState();
+}
+
+class _ActionItemState extends State<ActionItem> {
+  String status = 'pending';
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getStatus();
+  }
+
+  getStatus() {
+    setState(() {
+      status = widget.item['meta']['status'];
+    });
+  }
+
+  setStatus() {
+    setState(() {
+      btnDisabled = false;
+      status = 'completed';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        print(widget.item['body']);
+        Navigator.of(context).pushNamed('/chwActionsSwipper', arguments: { 'data': widget.item, 'parent': this});
+      },
+      child: Container(
+        padding: EdgeInsets.only(top: 20, bottom: 5, left: 20, right: 20),
+        decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(width: 1, color: kBorderLighter)
+        )
+      ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(widget.item['body']['title'] ?? '', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),),
+                    SizedBox(height: 15,),
+                    Text(StringUtils.capitalize(status), style: TextStyle(fontSize: 14, color: status == 'completed' ? kPrimaryGreenColor : kPrimaryRedColor),),
+                  ],
+                ),
+                
+                Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
+              
+              ],
+            ),
+            SizedBox(height: 20,),
+            // ...item['body']['components'].map((comp) {
+            //   if (comp['type'] == 'video') {
+            //     return Column(
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       children: <Widget>[
+            //         Container(
+            //           height: 130,
+            //           width: 250,
+            //           child: VideoPlayer(component: comp),
+            //         ),
+            //         Row(
+            //           children: <Widget>[
+            //             Checkbox(
+            //               activeColor: kPrimaryColor,
+            //               value: item['meta']['status'] == 'completed',
+            //               onChanged: (value) {
+            //                 setState(() {
+            //                   if (value) {
+            //                     item['meta']['status'] = 'completed';
+            //                   } else {
+            //                     item['meta']['status'] = 'pending';
+            //                   }
+            //                 });
+            //               },
+            //             ),
+            //             Text('Patient has watched at least one of these videos', style: TextStyle(fontSize: 16),)
+                        
+            //           ],
+            //         ),
+            //       ],
+            //     );
+            //   } else if (item['body']['title'] == 'Repeat measurement of BP in community') {
+            //     return Container(
+            //       margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                     
+            //       child: Form(
+            //         child: Column(
+            //           crossAxisAlignment: CrossAxisAlignment.start,
+            //           children: <Widget>[
+            //             SizedBox(height: 20,),
+            //             Container(
+            //               child: Wrap(
+            //                 children: <Widget>[
+            //                   Container(
+            //                     width: 200,
+            //                     child: PrimaryTextField(
+            //                       hintText: 'Systolic',
+            //                       topPaadding: 10,
+            //                       bottomPadding: 10,
+            //                     ),
+            //                   ),
+            //                   SizedBox(width: 20,),
+            //                   Container(
+            //                     width: 200,
+            //                     child: PrimaryTextField(
+            //                       hintText: 'DIastolic',
+            //                       topPaadding: 10,
+            //                       bottomPadding: 10,
+            //                     ),
+            //                   ),
+            //                   Container(
+            //                     width: 200,
+            //                     child: PrimaryTextField(
+            //                       hintText: 'Pulse',
+            //                       topPaadding: 10,
+            //                       bottomPadding: 10,
+            //                     ),
+            //                   ),
+            //                   SizedBox(width: 20,),
+            //                 ],
+            //               ),
+            //             ),
+            //             Container(
+            //               alignment: Alignment.center,
+            //               child: PrimaryTextField(
+            //                 hintText: 'Select a device',
+            //                 topPaadding: 10,
+            //                 bottomPadding: 10,
+            //               ),
+            //             ),
+
+            //           ],
+            //         ),
+            //       )
+            //     );
+            //   } else {
+            //     return Container();
+            //   }
+            // })
+          
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class VideoPlayer extends StatefulWidget {
+  VideoPlayer({
+    this.component,
+  });
+
+  final component;
+
+  @override
+  _VideoPlayerState createState() => _VideoPlayerState();
+}
+
+class _VideoPlayerState extends State<VideoPlayer> {
+  YoutubePlayerController _youtubeController;
+  @override
+  void initState() {
+    super.initState();
+    getVideoUrl();
+  }
+  
+  getVideoUrl() {
+
+      // videoId = YoutubePlayer.convertUrlToId("https://www.youtube.com/watch?v=prE6Ty2qDq8");
+    var videoId = YoutubePlayer.convertUrlToId(widget.component['uri']);
+    _youtubeController  = YoutubePlayerController(
+      initialVideoId: videoId,
+      flags: YoutubePlayerFlags(
+        autoPlay: true,
+      ),
+    );
+  }
 
 
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 200.0,
+      color: Colors.red,
+      child: YoutubePlayer(
+        onEnded: (data) {
+        
+        } ,
+        
+        controller: _youtubeController,
+        liveUIColor: Colors.amber,
+        progressColors: ProgressBarColors(
+          playedColor: Colors.amber,
+          handleColor: Colors.amberAccent,
+        ),
+    
+      ),
+    );
+  }
+}

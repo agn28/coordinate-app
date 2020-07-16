@@ -41,14 +41,7 @@ final nidController = TextEditingController();
 final contactFirstNameController = TextEditingController();
 final contactLastNameController = TextEditingController();
 final contactRelationshipController = TextEditingController();
-final contactDistrictController = TextEditingController();
-final contactPostalCodeController = TextEditingController();
-final contactTownController = TextEditingController();
-final contactVillageController = TextEditingController();
-final contactStreetNameController = TextEditingController();
 final contactMobilePhoneController = TextEditingController();
-final contactHomePhoneController = TextEditingController();
-final contactEmailController = TextEditingController();
 final GlobalKey<FormState> _patientFormKey = new GlobalKey<FormState>();
 final GlobalKey<FormState> _contactFormKey = new GlobalKey<FormState>();
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -65,6 +58,7 @@ List relationships = [
   'aunt'
 ];
 int selectedRelation;
+bool isContactAddressSame = false;
 
 class RegisterPatientScreen extends CupertinoPageRoute {
   bool isEdit = false;
@@ -134,14 +128,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     contactFirstNameController.text = patient['data']['contact']['first_name'];
     contactLastNameController.text = patient['data']['contact']['last_name'];
     contactRelationshipController.text = patient['data']['contact']['relationship'];
-    contactDistrictController.text = patient['data']['contact']['address']['district'];
-    contactPostalCodeController.text = patient['data']['contact']['address']['postal_code'];
-    contactTownController.text = patient['data']['contact']['address']['town'];
-    contactVillageController.text = patient['data']['contact']['address']['village'];
-    contactStreetNameController.text = patient['data']['contact']['address']['street_name'];
     contactMobilePhoneController.text = patient['data']['contact']['mobile'];
-    contactHomePhoneController.text = patient['data']['contact']['phone'];
-    contactEmailController.text = patient['data']['contact']['email'];
     selectedRelation = relationships.indexOf(patient['data']['contact']['relationship']);
 
   }
@@ -163,15 +150,10 @@ class _RegisterPatientState extends State<RegisterPatient> {
     nidController.clear();   contactFirstNameController.clear();
     contactLastNameController.clear();
     contactRelationshipController.clear();
-    contactDistrictController.clear();
-    contactPostalCodeController.clear();
-    contactTownController.clear();
-    contactVillageController.clear();
-    contactStreetNameController.clear();
     contactMobilePhoneController.clear();
-    contactHomePhoneController.clear();
-    contactEmailController.clear();
     _image = null;
+
+    selectedRelation = null;
   }
   
   @override
@@ -345,16 +327,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
         'first_name': contactFirstNameController.text,
         'last_name': contactLastNameController.text,
         'relationship': selectedRelation != null ? relationships[selectedRelation] : '', 
-        'address': {
-          'district': contactDistrictController.text,
-          'postal_code': contactPostalCodeController.text,
-          'town': contactTownController.text,
-          'village': contactVillageController.text,
-          'street_name': contactStreetNameController.text,
-        },
         'mobile': contactMobilePhoneController.text,
-        'phone': contactHomePhoneController.text,
-        'email': contactEmailController.text,
       },
 
     };
@@ -686,6 +659,7 @@ class ContactDetails extends StatefulWidget {
 
 class _ContactDetailsState extends State<ContactDetails> {
 
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -765,58 +739,6 @@ class _ContactDetailsState extends State<ContactDetails> {
 
             SizedBox(height: 20,),
             Divider(),
-            SizedBox(height: 15,),
-
-            Text(AppLocalizations.of(context).translate("contact'sAddress"), style: TextStyle(fontSize: 16),),
-            SizedBox(height: 20,),
-
-            PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
-              hintText: AppLocalizations.of(context).translate('district'),
-              controller: contactDistrictController,
-              name: AppLocalizations.of(context).translate('district'),
-              validation: true
-            ),
-            SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
-              hintText: AppLocalizations.of(context).translate('postalCode'),
-              controller: contactPostalCodeController,
-              name: AppLocalizations.of(context).translate('postalCode'),
-              validation: true,
-              type: TextInputType.number,
-            ),
-            SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
-              hintText: AppLocalizations.of(context).translate('town'),
-              controller: contactTownController,
-              name: AppLocalizations.of(context).translate('town'),
-              validation: true
-            ),
-            SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
-              hintText: AppLocalizations.of(context).translate('village'),
-              controller: contactVillageController,
-              name: AppLocalizations.of(context).translate('village'),
-              validation: true
-            ),
-            SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
-              hintText: AppLocalizations.of(context).translate('streetName'),
-              controller: contactStreetNameController,
-              name: AppLocalizations.of(context).translate('streetName'),
-              validation: true
-            ),
-            
-            Divider(),
 
             SizedBox(height: 20,),
             PrimaryTextField(
@@ -829,24 +751,8 @@ class _ContactDetailsState extends State<ContactDetails> {
               validation: true,
               type: TextInputType.number
             ),
-            SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
-              prefixIcon: Icon(Icons.phone),
-              hintText: AppLocalizations.of(context).translate("contactHomePhone"),
-              controller: contactHomePhoneController,
-              type: TextInputType.number
-            ),
-            SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
-              prefixIcon: Icon(Icons.email),
-              hintText: AppLocalizations.of(context).translate("contactEmail"),
-              controller: contactEmailController,
-            ),
             SizedBox(height: 30,),
+            
           ],
         ),
       ),
@@ -890,9 +796,12 @@ class _AddPhotoState extends State<AddPhoto> {
   }
 
   uploadImage() async {
+    print('ksajdkas');
     var url = '';
     if (_image != null) {
       String filePath = 'images/patients/${firstNameController.text}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      print('file path');
+      print(filePath);
 
       setState(() {
         _uploadTask = _storage.ref().child(filePath).putFile(_image);
@@ -900,6 +809,8 @@ class _AddPhotoState extends State<AddPhoto> {
       await _uploadTask.onComplete;
       if (_uploadTask.isComplete) {
         var url = await _storage.ref().child(filePath).getDownloadURL();
+        print('url');
+        print(url);
         setState(() {
           uploadedImageUrl = url;
         });
@@ -1078,6 +989,7 @@ class _AddPhotoState extends State<AddPhoto> {
               });
               var url = await uploadImage();
               var formData = _RegisterPatientState()._prepareFormData();
+              print('formdata');
               var response = isEditState != null ? await PatientController().update(formData) : await PatientController().create(formData);
               setState(() {
                 isLoading = false;

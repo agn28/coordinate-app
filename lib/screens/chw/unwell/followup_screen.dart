@@ -7,10 +7,12 @@ import 'package:nhealth/configs/configs.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/followup_controller.dart';
 import 'package:nhealth/models/auth.dart';
+import 'package:nhealth/models/devices.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
+import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import '../../../custom-classes/custom_stepper.dart';
 
 final GlobalKey<FormState> _patientFormKey = new GlobalKey<FormState>();
@@ -50,7 +52,22 @@ class _ChwFollowupState extends State<ChwFollowupScreen> {
     clearForm();
   }
 
+  nextStep() {
+    setState(() {
+      if (_currentStep == 2) {
+        _currentStep = _currentStep + 1;
+        nextText = 'COMPLETE';
+      } else if (_currentStep == 3) {
+        checkData();
+      } else {
+        _currentStep = _currentStep + 1;
+      }
+    });
+  }
+
   clearForm() {
+    selectedCauses = [];
+    selectedIssues = [];
     _temperatureController.text = '';
     _systolicController.text = '';
     _diastolicController.text = '';
@@ -230,18 +247,18 @@ class _ChwFollowupState extends State<ChwFollowupScreen> {
       ),
       CustomStep(
         title: Text('Permission', textAlign: TextAlign.center,),
-        content: Temperature(),
+        content: Temperature(parent: this),
         isActive: _currentStep >= 1,
       ),
       CustomStep(
         title: Text('Permission', textAlign: TextAlign.center,),
-        content: BloodPressure(),
+        content: BloodPressure(parent: this),
         isActive: _currentStep >= 2,
       ),
 
       CustomStep(
         title: Text('Permission', textAlign: TextAlign.center,),
-        content: Glucose(),
+        content: Glucose(parent: this),
         isActive: _currentStep >= 4,
       ),
     ];
@@ -417,6 +434,8 @@ class _UnwellCausesState extends State<UnwellCauses> {
 
 
 class Temperature extends StatefulWidget {
+  Temperature({this.parent});
+  final parent;
 
   @override
   _TemperatureState createState() => _TemperatureState();
@@ -438,7 +457,7 @@ class _TemperatureState extends State<Temperature> {
             SizedBox(height: 30,),
             Container(
               alignment: Alignment.center,
-              child: Text('Can I take your temerature ?', style: TextStyle(fontSize: 21),),
+              child: Text('What is patient\'s temperature?', style: TextStyle(fontSize: 21),),
             ),
             SizedBox(height: 30,),
             Container(
@@ -451,10 +470,15 @@ class _TemperatureState extends State<Temperature> {
               ),
             ),
             SizedBox(height: 10,),
-            Container(
-              // margin: EdgeInsets.symmetric(horizontal: 30),
-              alignment: Alignment.center,
-              child: Text('SKIP (DEVICE UNAVAILABLE)', style: TextStyle(color: kPrimaryColor, fontSize: 15, fontWeight: FontWeight.w500,)),
+            InkWell(
+              onTap: () {
+                widget.parent.nextStep();
+              },
+              child: Container(
+                // margin: EdgeInsets.symmetric(horizontal: 30),
+                alignment: Alignment.center,
+                child: Text('SKIP (DEVICE UNAVAILABLE)', style: TextStyle(color: kPrimaryColor, fontSize: 15, fontWeight: FontWeight.w500,)),
+              ),
             )
 
           ],
@@ -465,6 +489,8 @@ class _TemperatureState extends State<Temperature> {
 }
 
 class BloodPressure extends StatefulWidget {
+  BloodPressure({this.parent});
+  final parent;
 
   @override
   _BloodPressureState createState() => _BloodPressureState();
@@ -486,7 +512,7 @@ class _BloodPressureState extends State<BloodPressure> {
             SizedBox(height: 30,),
             Container(
               alignment: Alignment.center,
-              child: Text('Can I take your BLood Pressure & Heart Rate ?', style: TextStyle(fontSize: 21),),
+              child: Text('What is blood pressure?', style: TextStyle(fontSize: 21),),
             ),
             SizedBox(height: 30,),
             Container(
@@ -566,10 +592,15 @@ class _BloodPressureState extends State<BloodPressure> {
               ),
             ),
             SizedBox(height: 10,),
-            Container(
-              // margin: EdgeInsets.symmetric(horizontal: 30),
-              alignment: Alignment.center,
-              child: Text('SKIP (DEVICE UNAVAILABLE)', style: TextStyle(color: kPrimaryColor, fontSize: 15, fontWeight: FontWeight.w500,)),
+            InkWell(
+              onTap: () {
+                widget.parent.nextStep();
+              },
+              child: Container(
+                // margin: EdgeInsets.symmetric(horizontal: 30),
+                alignment: Alignment.center,
+                child: Text('SKIP (DEVICE UNAVAILABLE)', style: TextStyle(color: kPrimaryColor, fontSize: 15, fontWeight: FontWeight.w500,)),
+              ),
             )
 
           ],
@@ -581,12 +612,25 @@ class _BloodPressureState extends State<BloodPressure> {
 
 
 class Glucose extends StatefulWidget {
+  Glucose({this.parent});
+  final parent;
 
   @override
   _GlucoseState createState() => _GlucoseState();
 }
 
 class _GlucoseState extends State<Glucose> {
+
+  List devices = [];
+
+  var selectedDevice = 0;
+
+  @override
+  initState() {
+    super.initState();
+
+    devices = Device().getDevices();
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -602,7 +646,7 @@ class _GlucoseState extends State<Glucose> {
             SizedBox(height: 30,),
             Container(
               alignment: Alignment.center,
-              child: Text('Can I take your Blood Pressure & Heart Rate ?', style: TextStyle(fontSize: 21),),
+              child: Text('What is blood glucose level?', style: TextStyle(fontSize: 21),),
             ),
             SizedBox(height: 30,),
             Container(
@@ -687,75 +731,52 @@ class _GlucoseState extends State<Glucose> {
               ),
             ),
             Container(
+              color: kSecondaryTextField,
               margin: EdgeInsets.symmetric(horizontal: 100),
-              alignment: Alignment.center,
-              child: PrimaryTextField(
-                hintText: 'Select a device',
-                topPaadding: 10,
-                bottomPadding: 10,
-                controller: _deviceController,
+              child: DropdownButtonFormField(
+                hint: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                decoration: InputDecoration(
+                  fillColor: kSecondaryTextField,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                  border: UnderlineInputBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(4),
+                    topRight: Radius.circular(4),
+                  )
+                ),
+                ),
+                items: [
+                  ...devices.map((item) =>
+                    DropdownMenuItem(
+                      child: Text(item['name']),
+                      value: devices.indexOf(item)
+                    )
+                  ).toList(),
+                ],
+                value: selectedDevice,
+                isExpanded: true,
+                onChanged: (value) {
+                  setState(() {
+                    selectedDevice = value;
+                  });
+                },
               ),
             ),
-            SizedBox(height: 10,),
-            Container(
-              // margin: EdgeInsets.symmetric(horizontal: 30),
-              alignment: Alignment.center,
-              child: Text('SKIP (DEVICE UNAVAILABLE)', style: TextStyle(color: kPrimaryColor, fontSize: 15, fontWeight: FontWeight.w500,)),
+            SizedBox(height: 20,),
+            InkWell(
+              onTap: () {
+                widget.parent.nextStep();
+              },
+              child: Container(
+                // margin: EdgeInsets.symmetric(horizontal: 30),
+                alignment: Alignment.center,
+                child: Text('SKIP (DEVICE UNAVAILABLE)', style: TextStyle(color: kPrimaryColor, fontSize: 15, fontWeight: FontWeight.w500,)),
+              ),
             )
 
           ],
         ),
       )
-    );
-  }
-}
-
-
-class PatientTopbar extends StatelessWidget {
-  const PatientTopbar({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      decoration: BoxDecoration(
-      color: Colors.white,
-        boxShadow: [BoxShadow(
-          blurRadius: .5,
-          color: Colors.black38,
-          offset: Offset(0.0, 1.0)
-        )]
-      ),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              child: Row(
-                children: <Widget>[
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(30.0),
-                    child: Image.asset(
-                      'assets/images/avatar.png',
-                      height: 30.0,
-                      width: 30.0,
-                    ),
-                  ),
-                  SizedBox(width: 15,),
-                  Text('Nurul Begum', style: TextStyle(fontSize: 18))
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            child: Text('31Y Female', style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
-          ),
-          Expanded(
-            child: Text('PID: N-121933421', style: TextStyle(fontSize: 18))
-          )
-        ],
-      ),
     );
   }
 }

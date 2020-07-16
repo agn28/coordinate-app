@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
-import 'package:intl/intl.dart';
 
 class BloodPressureItem with ChangeNotifier {
   final String arm;
@@ -87,6 +86,29 @@ class BloodPressure {
     data.addAll(observation['body']['data']);
     _items.add(data);
     // _items.add(observation['body']['data']);
+  }
+  addBpPreparedItems(arm, systolic, diastolic, device, comment) {
+    var data = {
+      "meta": {
+        'device_id': device,
+        "collected_by": Auth().getAuth()['uid'],
+        "created_at": DateTime.now().toString()
+      },
+      "body": {
+        "type": "blood_pressure",
+        "data": {
+          'systolic': systolic,
+          'diastolic': diastolic,
+          'arm': arm
+        },
+        "comment": comment,
+        'patient_id': Patient().getPatient()['uuid'],
+      }
+    };
+
+    _bpItems.add(data);
+
+    return 'success';
   }
 
   /// Prepare blood pressure data

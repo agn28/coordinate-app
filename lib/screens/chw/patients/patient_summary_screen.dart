@@ -21,6 +21,11 @@ import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chw/patients/patient_search_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 
+var dueCarePlans = [];
+var completedCarePlans = [];
+var upcomingCarePlans = [];
+
+
 
 class ChwPatientRecordsScreen extends StatefulWidget {
   var checkInState = false;
@@ -31,8 +36,10 @@ class ChwPatientRecordsScreen extends StatefulWidget {
 
 class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   var _patient;
-  bool isLoading = false;
+  bool isLoading = true;
   var carePlans = [];
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  
   bool avatarExists = false;
   var encounters = [];
   String lastEncounterdDate = '';
@@ -40,6 +47,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   String lastCarePlanDate = '';
   var conditions = [];
   var medications = [];
+  var allergies = [];
   var users = [];
   var report;
   var bmi;
@@ -53,6 +61,11 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
+    dueCarePlans = [];
+    completedCarePlans = [];
+    upcomingCarePlans = [];
+    conditions = [];
+
     _checkAvatar();
     _checkAuth();
     _getCarePlan();
@@ -63,10 +76,34 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     getUsers();
   }
 
-  getUsers() async {
-    setState(() {
-      isLoading = true;
+  getStatus(item) {
+    var status = 'completed';
+    item['items'].forEach( (goal) {
+      if (goal['meta']['status'] == 'pending') {
+        setState(() {
+          status = 'pending';
+        });
+      }
     });
+
+    return status;
+  }
+
+  getCount(item) {
+    var count = 0;
+
+    item['items'].forEach( (goal) {
+      setState(() {
+        count += 1;
+      });
+    });
+    
+
+    return count.toString();
+  }
+
+  getUsers() async {
+  
     users = await UserController().getUsers();
 
 
@@ -82,24 +119,48 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     }
     return '';
   }
+  getCompletedDate(goal) {
+    var data = '';
+    DateTime date;
+    // print(goal['items']);
+    goal['items'].forEach((item) {
+      // print(item['body']['activityDuration']['end']);
+      DateFormat format = new DateFormat("E LLL d y");
+      var endDate = format.parse(item['body']['activityDuration']['end']);
+      // print(endDate);
+      date = endDate;
+      if (date != null) {
+        date  = endDate;
+      } else {
+        if (endDate.isBefore(date)) {
+          date = endDate;
+        }
+      }
+      
+    });
+    if (date != null) {
+      var test = DateFormat('MMMM d, y').format(date);
+      data = 'Complete By ' + test;
+    }
+    return data;
+  }
 
   getReport() async {
+
     setState(() {
       isLoading = true;
     });
+
     var data = await HealthReportController().getLastReport();
     
     if (data['error'] == true) {
-      setState(() {
-        isLoading = false;
-      });
+      
       Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
     } else if (data['message'] == 'Unauthorized') {
       Auth().logout();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
     } else {
       setState(() {
-        isLoading = false;
         report = data['data'];
       });
     }
@@ -123,11 +184,18 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     if(fetchedSurveys.isNotEmpty) {
       fetchedSurveys.forEach((item) {
         if (item['data']['name'] == 'medical_history') {
+
+          allergies = item['data']['allergy_types'] != null ? item['data']['allergy_types'] : [];
+
           item['data'].keys.toList().forEach((key) {
             if (item['data'][key] == 'yes') {
               setState(() {
                 var text = key.replaceAll('_', ' ');
-                conditions.add(text[0].toUpperCase() + text.substring(1));
+                var upperCased = text[0].toUpperCase() + text.substring(1);
+                if (!conditions.contains(upperCased)) {
+                  conditions.add(upperCased);
+                }
+                
               });
             }
           });
@@ -155,13 +223,10 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     }
 
     setState(() {
-      lastAssessmentdDate = DateFormat("MMMM d, y").format(DateTime.parse(response['data']['meta']['created_at']));
+      lastAssessmentdDate = '';
+      // lastAssessmentdDate = DateFormat("MMMM d, y").format(DateTime.parse(response['data']['meta']['created_at']));
     });
 
-
-    setState(() {
-      isLoading = false;
-    });
   }
 
   getDueCounts() {
@@ -185,21 +250,48 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     });
     encounters = await AssessmentController().getLiveAllAssessmentsByPatient();
 
-    setState(() {
-      isLoading = false;
-    });
 
     if (encounters.isNotEmpty) {
+      var allEncounters = encounters;
+      await Future.forEach(allEncounters, (item) async {
+        var data = await getObservations(item);
+        var completed_observations = [];
+        if (data.isNotEmpty) {
+          data.forEach((obs) {
+            
+            if (obs['body']['type'] == 'survey') {
+              if (!completed_observations.contains(obs['body']['data']['name'])) {
+                completed_observations.add(obs['body']['data']['name']);
+              }
+            } else  {
+              if (!completed_observations.contains(obs['body']['type'])) {
+                completed_observations.add(obs['body']['type']);
+              }
+            }
+          });
+        }
+        encounters[encounters.indexOf(item)]['completed_observations'] = completed_observations;
+      });
+      // print(encounters);
       encounters.sort((a, b) {
         return DateTime.parse(b['meta']['created_at']).compareTo(DateTime.parse(a['meta']['created_at']));
       });
 
       setState(() {
+        isLoading = false;
         lastEncounterdDate = DateFormat("MMMM d, y").format(DateTime.parse(encounters.first['meta']['created_at']));
       });
 
     }
     
+  }
+
+  getObservations(assessment) async {
+    // _observations =  await AssessmentController().getObservationsByAssessment(widget.assessment);
+    var data =  await AssessmentController().getLiveObservationsByAssessment(assessment);
+    // print(data);
+    return data;
+
   }
 
   _checkAvatar() async {
@@ -214,56 +306,146 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   }
 
   _getCarePlan() async {
-    setState(() {
-      isLoading = true;
-    });
-    
+
     var data = await CarePlanController().getCarePlan();
     
     if (data != null && data['message'] == 'Unauthorized') {
-      setState(() {
-        isLoading = false;
-      });
+
       Auth().logout();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
     } else if (data['error'] == true) {
-      setState(() {
-        isLoading = false;
-      });
+
     } else {
-      setState(() {
-        carePlans = data['data'];
-        isLoading = false;
+      // print( data['data']);
+      // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
+      carePlans = data['data'];
+      data['data'].forEach( (item) {
+        DateFormat format = new DateFormat("E LLL d y");
+        var endDate = format.parse(item['body']['activityDuration']['end']);
+        var startDate = format.parse(item['body']['activityDuration']['start']);
+        var todayDate = DateTime.now();
+        // print(endDate);
+        // print(todayDate.isBefore(endDate));
+        // print(todayDate.isAfter(startDate));
+
+        //check due careplans
+        if (item['meta']['status'] == 'pending') {
+          if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
+            var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
+            // print(existedCp);
+            // print(item['body']['activityDuration']['start']);
+
+            if (existedCp.isEmpty) {
+              var items = [];
+              items.add(item);
+              dueCarePlans.add({
+                'items': items,
+                'title': item['body']['goal']['title'],
+                'id': item['body']['goal']['id']
+              });
+            } else {
+              dueCarePlans[dueCarePlans.indexOf(existedCp.first)]['items'].add(item);
+
+            }
+          } else if (todayDate.isBefore(startDate)) {
+            var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
+            // print(existedCp);
+            // print(item['body']['activityDuration']['start']);
+
+            if (existedCp.isEmpty) {
+              var items = [];
+              items.add(item);
+              upcomingCarePlans.add({
+                'items': items,
+                'title': item['body']['goal']['title'],
+                'id': item['body']['goal']['id']
+              });
+            } else {
+              upcomingCarePlans[upcomingCarePlans.indexOf(existedCp.first)]['items'].add(item);
+
+            }
+          }
+        } else {
+          var existedCp = completedCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
+          // print(existedCp);
+          // print(item['body']['activityDuration']['start']);
+
+          if (existedCp.isEmpty) {
+            var items = [];
+            items.add(item);
+            completedCarePlans.add({
+              'items': items,
+              'title': item['body']['goal']['title'],
+              'id': item['body']['goal']['id']
+            });
+          } else {
+            completedCarePlans[completedCarePlans.indexOf(existedCp.first)]['items'].add(item);
+
+          }
+        }
+
+        
+        
+        // var existedCp = carePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
+        // // print(existedCp);
+        // // print(item['body']['activityDuration']['start']);
+        
+
+        // if (existedCp.isEmpty) {
+        //   var items = [];
+        //   items.add(item);
+        //   carePlans.add({
+        //     'items': items,
+        //     'title': item['body']['goal']['title'],
+        //     'id': item['body']['goal']['id']
+        //   });
+        // } else {
+        //   carePlans[carePlans.indexOf(existedCp.first)]['items'].add(item);
+
+        // }
       });
+      print('completed');
+      print(completedCarePlans);
+      print('upcoming');
+      print(upcomingCarePlans);
+      print('due');
+      print(dueCarePlans);
+
+      // setState(() {
+      //   carePlans = data['data'];
+      //   isLoading = false;
+      // });
 
     }
+  }
+
+  getTitle(encounter) {
+    var screening_type =  encounter['data']['screening_type'];
+    if (screening_type != null && screening_type != '') {
+      if (screening_type == 'ncd') {
+        screening_type = screening_type.toUpperCase() + ' ';
+      } else {
+        screening_type = screening_type[0].toUpperCase() + screening_type.substring(1) + ' ';
+      }
+      
+      return screening_type + 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
+    }
+    
+    return 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
   }
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: new AppBar(
-        title: new Text(AppLocalizations.of(context).translate('patientOverview'), style: TextStyle(color: Colors.white, fontSize: 20),),
+        title: new Text('Patient Summary', style: TextStyle(color: Colors.white, fontSize: 20),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
         actions: <Widget>[
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(RegisterPatientScreen(isEdit: true));
-            },
-            child: Container(
-              margin: EdgeInsets.only(right: 30),
-              child: Row(
-                children: <Widget>[
-                  Icon(Icons.edit, color: Colors.white,),
-                  SizedBox(width: 10),
-                  Text(AppLocalizations.of(context).translate('viewOrEditPatient'), style: TextStyle(color: Colors.white))
-                ],
-              )
-            )
-          )
+
         ],
       ),
       body: isLoading ? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
@@ -312,16 +494,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                       ),
                                       backgroundImage: AssetImage('assets/images/avatar.png'),
                                     ),
-                                    // NetworkImage(Patient().getPatient()['data']['avatar'])
-                                    // ClipRRect(
-                                    //   borderRadius: BorderRadius.circular(100),
-                                    //   child: Image.file(
-                                    //     File(Patient().getPatient()['data']['avatar']),
-                                    //     height: 60.0,
-                                    //     width: 60.0,
-                                    //     fit: BoxFit.fitWidth,
-                                    //   ),
-                                    // ),
+
                                     SizedBox(width: 20,),
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -335,23 +508,28 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                             SizedBox(width: 10,),
                                             Row(
                                               children: <Widget>[
+                                                report != null && report['body']['result']['assessments'] != null && report['body']['result']['assessments']['lifestyle']['components']['diet'] != null && report['body']['result']['assessments']['lifestyle']['components']['diet']['components']['fruit'] != null ?
                                                 CircleAvatar(
                                                   child: Image.asset('assets/images/icons/fruit.png', width: 11,),
                                                   radius: 11,
-                                                  backgroundColor: kPrimaryRedColor,
-                                                ),
+                                                  backgroundColor: ColorUtils.statusColor[report['body']['result']['assessments']['lifestyle']['components']['diet']['components']['fruit']['tfl']],
+                                                ) : Container(),
                                                 SizedBox(width: 5,),
+
+                                                report != null && report['body']['result']['assessments'] != null && report['body']['result']['assessments']['lifestyle']['components']['diet'] != null && report['body']['result']['assessments']['lifestyle']['components']['diet']['components']['vegetable'] != null ?
                                                 CircleAvatar(
                                                   child: Image.asset('assets/images/icons/vegetables.png', width: 11,),
                                                   radius: 11,
-                                                  backgroundColor: kPrimaryRedColor,
-                                                ),
+                                                  backgroundColor: ColorUtils.statusColor[report['body']['result']['assessments']['lifestyle']['components']['diet']['components']['vegetable']['tfl']],
+                                                ) : Container(),
                                                 SizedBox(width: 5,),
+
+                                                report != null && report['body']['result']['assessments'] != null && report['body']['result']['assessments']['lifestyle']['components']['physical_activity'] != null ?
                                                 CircleAvatar(
                                                   child: Image.asset('assets/images/icons/activity.png', width: 11,),
                                                   radius: 11,
-                                                  backgroundColor: kPrimaryAmberColor,
-                                                )
+                                                  backgroundColor: ColorUtils.statusColor[report['body']['result']['assessments']['lifestyle']['components']['physical_activity']['tfl']],
+                                                ) : Container()
                                               ],
                                             ),
                                           ],
@@ -388,20 +566,20 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                               ),
                                             ) : Container(),
                                             SizedBox(width: 7,),
-                                            report != null && cvd != null ?
-                                            Container(
-                                              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                              decoration: BoxDecoration(
-                                                border: Border.all(width: 1, color: ColorUtils.statusColor[cvd['tfl']]),
-                                                borderRadius: BorderRadius.circular(2)
-                                              ),
-                                              child: Text('CVD Risk',style: TextStyle(
-                                                  color: ColorUtils.statusColor[cvd['tfl']],
-                                                  fontWeight: FontWeight.w500
-                                                )  
-                                              ),
-                                            ) : Container(),
-                                            SizedBox(width: 7,),
+                                            // report != null && cvd != null ?
+                                            // Container(
+                                            //   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                            //   decoration: BoxDecoration(
+                                            //     border: Border.all(width: 1, color: ColorUtils.statusColor[cvd['tfl']]),
+                                            //     borderRadius: BorderRadius.circular(2)
+                                            //   ),
+                                            //   child: Text('CVD Risk',style: TextStyle(
+                                            //       color: ColorUtils.statusColor[cvd['tfl']],
+                                            //       fontWeight: FontWeight.w500
+                                            //     )  
+                                            //   ),
+                                            // ) : Container(),
+                                            // SizedBox(width: 7,),
                                             report != null && cholesterol != null ?
                                             Container(
                                               padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
@@ -424,8 +602,13 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                   ],
                                 ),
                               ),
-                              Container(
-                                child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 35,)
+                              InkWell(
+                                onTap: () {
+                                  Navigator.of(context).pushNamed('/chwPatientDetails');
+                                },
+                                child: Container(
+                                  child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 35,)
+                                ),
                               )
                             ],
                           )
@@ -485,18 +668,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                           children: [
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text('Allergies:', style: TextStyle(fontSize: 17,),),
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text('Pollen', style: TextStyle(fontSize: 17,),),
-                            ),
-                          ]
-                        ),
-                        TableRow( 
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(vertical: 9),
                               child: Text('Medications', style: TextStyle(fontSize: 17,),),
                             ),
                             Container(
@@ -548,188 +719,389 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                             ],
                           ),
                         ),
+                        
+                        dueCarePlans.length > 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: dueCarePlans, text: 'Due Today') : Container(),
+                        upcomingCarePlans.length > 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: upcomingCarePlans, text: 'Upcoming') : Container(),
+                        completedCarePlans.length> 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: completedCarePlans, text: 'Completed') : Container(),
+
+
+                        SizedBox(height: 30,),
                         Container(
-                          margin: EdgeInsets.symmetric(horizontal: 13, vertical: 15),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text('Due Today', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                              Text(getDueCounts(),)
-                            ],
+                          padding: EdgeInsets.symmetric(vertical: 20),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide(width: 5, color: kBorderLighter)
+                            )
                           ),
-                        ),
-                        widget.checkInState != null ? Container(
-                          margin: EdgeInsets.symmetric(horizontal: 13, vertical: 15),
-                          child: Row(
-                            children: <Widget>[
-                              Icon(Icons.check_circle, color: kPrimaryGreenColor,),
-                              SizedBox(width: 10,),
-                              Text('Check in Complete', style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
-                            ],
-                          ),
-                        ) : Container(),
-                        widget.checkInState == null ? Container(
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Container(
+                                padding: EdgeInsets.symmetric(horizontal: 15),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text('Patient History', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                                    Icon(Icons.filter_list, color: kPrimaryColor,)
+                                  ],
+                                ),
+                              ),
+                              
+                              SizedBox(height: 20,),
+
+                              //Terminal
+                              Container(
+                                
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    SizedBox(height: 10,),
-                                      ...carePlans.map( (item) {
-                                        interventionIndex = interventionIndex + 1;
-                                        return Container(
-                                          margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                                          padding: EdgeInsets.only(bottom: 10),
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              bottom: BorderSide(color: kBorderLighter)
-                                            )
-                                          ),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              Navigator.of(context).pushNamed('/carePlanInterventions', arguments: {
-                                                'carePlan' : item,
-                                                'parent': this
-                                              });
-                                            },
-                                            child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              if (item['body']['goal'] != null && item['body']['goal']['title'] != null)
-                                              Text(item['body']['goal']['title'], style: TextStyle(fontSize: 16, color: kBorderLight)),
-                                              Container(
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Container(
-                                                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                                    // Container(
+                                    //   margin: EdgeInsets.only(left: 15),
+                                    //   child: Text('Jan 2020', style: TextStyle(fontSize: 17),),
+                                    // ),
+                                    SizedBox(height: 15,),
+                                    ...encounters.map((encounter) {
+                                      return Container(
+                                        child: Stack(
+                                          children: <Widget>[
+                                            Container(
+                                              margin: EdgeInsets.symmetric(horizontal: 25),
+                                              decoration: BoxDecoration(
+                                                border: Border(
+                                                  left: BorderSide(width: 1, color: kBorderGrey)
+                                                )
+                                              ),
+                                              child: Row(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  SizedBox(width: 30),
+                                                  Expanded(
+                                                    
+                                                    child: Container(
+                                                      margin: EdgeInsets.only(bottom: 20),
                                                       decoration: BoxDecoration(
-                                                        border: Border.all(color: kBorderLight),
-                                                        borderRadius: BorderRadius.circular(3)
+                                                        color: Colors.white,
+                                                        border: Border.all(color: kBorderLighter)
                                                       ),
-                                                      child: GestureDetector(
-                                                        onTap: () {
-                                                        },
-                                                        child: Text('${item['body']['components'].length} Actions', style: TextStyle(color: kBorderLight, fontWeight: FontWeight.w500),),
-                                                      ),
+                                                      child: Container(
+                                                        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            Text(Helpers().convertDate(encounter['data']['assessment_date']), style: TextStyle(fontSize: 16)),
+                                                            SizedBox(height: 15,),
+
+                                                            Text(getTitle(encounter) , style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
+
+                                                            SizedBox(height: 15,),
+                                                            Row(
+                                                              children: <Widget>[
+                                                                CircleAvatar(
+                                                                  radius: 15,
+                                                                  child: ClipRRect(
+                                                                    borderRadius: BorderRadius.circular(30.0),
+                                                                    child: Image.network(
+                                                                      Patient().getPatient()['data']['avatar'],
+                                                                      height: 30.0,
+                                                                      width: 30.0,
+                                                                    ),
+                                                                  ),
+                                                                  backgroundColor: Colors.transparent,
+                                                                  backgroundImage: AssetImage('assets/images/avatar.png'),
+                                                                ),
+                                                                SizedBox(width: 20,),
+                                                                Text(getUser(encounter['meta']['collected_by']), style: TextStyle(fontSize: 17)),
+                                                              ],
+                                                            ),
+
+                                                            SizedBox(height: 20,),
+                                                            Row(
+                                                              children: <Widget>[
+                                                                
+                                                                encounter['completed_observations'] != null && encounter['completed_observations'].contains('body_measurement') ?
+                                                                Container(
+                                                                  margin: EdgeInsets.only(right: 20),
+                                                                  child: Column(
+                                                                    children: <Widget>[
+                                                                      Image.asset('assets/images/icons/body_measurements.png', width: 20,),
+                                                                      SizedBox(height: 10,),
+                                                                      Text('Body\nMeasurement', textAlign: TextAlign.center,)
+                                                                    ],
+                                                                  ),
+                                                                ) : Container(),
+
+                                                                encounter['completed_observations'] != null && encounter['completed_observations'].contains('blood_pressure') ?
+                                                                Container(
+                                                                  margin: EdgeInsets.only(right: 20),
+                                                                  child: Column(
+                                                                    children: <Widget>[
+                                                                      Image.asset('assets/images/icons/blood_pressure.png', width: 20,),
+                                                                      SizedBox(height: 10,),
+                                                                      Text('Blood\nPressure', textAlign: TextAlign.center,)
+                                                                    ],
+                                                                  ),
+                                                                ) : Container(),
+
+                                                                encounter['completed_observations'] != null && encounter['completed_observations'].contains('blood_test') ?
+                                                                Container(
+                                                                  margin: EdgeInsets.only(right: 20),
+                                                                  child: Column(
+                                                                    children: <Widget>[
+                                                                      Image.asset('assets/images/icons/blood_test.png', width: 20,),
+                                                                      SizedBox(height: 10,),
+                                                                      Text('Blood\nTest', textAlign: TextAlign.center,)
+                                                                    ],
+                                                                  ),
+                                                                ) : Container(),
+
+                                                                encounter['completed_observations'] != null && encounter['completed_observations'].contains('medical_history') ?
+                                                                Container(
+                                                                  margin: EdgeInsets.only(right: 20),
+                                                                  child: Column(
+                                                                    children: <Widget>[
+                                                                      Image.asset('assets/images/icons/blood_glucose.png', width: 20,),
+                                                                      SizedBox(height: 10,),
+                                                                      Text('Medical\nHistory', textAlign: TextAlign.center,)
+                                                                    ],
+                                                                  ),
+                                                                ): Container()
+                                                              ],
+                                                            ),
+                                                            
+                                                            SizedBox(height: 20,),
+                                                            // Row(
+                                                            //   children: <Widget>[
+                                                            //     Container(
+                                                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                                            //       decoration: BoxDecoration(
+                                                            //         border: Border.all(width: 1, color: kPrimaryRedColor),
+                                                            //         borderRadius: BorderRadius.circular(2)
+                                                            //       ),
+                                                            //       child: Text('BMI',style: TextStyle(
+                                                            //           color: kPrimaryRedColor,
+                                                            //           fontWeight: FontWeight.w500
+                                                            //         )  
+                                                            //       ),
+                                                            //     ),
+                                                            //     SizedBox(width: 7,),
+                                                            //     Container(
+                                                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                                            //       decoration: BoxDecoration(
+                                                            //         border: Border.all(width: 1, color: kPrimaryRedColor),
+                                                            //         borderRadius: BorderRadius.circular(2)
+                                                            //       ),
+                                                            //       child: Text('CVD Risk',style: TextStyle(
+                                                            //           color: kPrimaryRedColor,
+                                                            //           fontWeight: FontWeight.w500
+                                                            //         )  
+                                                            //       ),
+                                                            //     ),
+                                                            //     SizedBox(width: 7,),
+                                                            //     Container(
+                                                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                                            //       decoration: BoxDecoration(
+                                                            //         border: Border.all(width: 1, color: kPrimaryAmberColor),
+                                                            //         borderRadius: BorderRadius.circular(2)
+                                                            //       ),
+                                                            //       child: Text('Cholesterol',style: TextStyle(
+                                                            //           color: kPrimaryAmberColor,
+                                                            //           fontWeight: FontWeight.w500
+                                                            //         )  
+                                                            //       ),
+                                                            //     ),
+                                                            //   ],
+                                                            // ),
+                                                            // SizedBox(height: 20),
+                                                            GestureDetector(
+                                                              onTap: () {
+                                                                Navigator.of(context).pushNamed('/encounterDetails', arguments: encounter);
+                                                              },
+                                                              child: Text('View Encounter Details', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w400, fontSize: 16),)
+                                                            ),
+                                                            SizedBox(height: 20,),
+                                                            // Container(
+                                                            //   padding: EdgeInsets.only(top: 20),
+                                                            //   width: double.infinity,
+                                                            //   decoration: BoxDecoration(
+                                                            //     border: Border(
+                                                            //       top: BorderSide(width: 1, color: kBorderLighter),
+                                                            //     ),
+                                                            //   ),
+                                                            //   child: Column(
+                                                            //     crossAxisAlignment: CrossAxisAlignment.start,
+                                                            //     children: <Widget>[
+                                                            //       Text('Interventions', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),),
+                                                            //       SizedBox(height: 15,),
+                                                            //       Text('Counselling on smoking cessation', style: TextStyle(fontSize: 16),),
+                                                            //       SizedBox(height: 15,),
+                                                            //       Text('Intimate METFORMIN 250 - 500 mg once daily', style: TextStyle(fontSize: 16),),
+                                                            //     ],
+                                                            //   ),
+                                                            // ),
+                                                          ],
+                                                        ),
+                                                      )
                                                     ),
-                                                    Icon(Icons.chevron_right, color: kBorderLight,)
-                                                  ],
+                                                  )
+                                                ],
+                                              ),
+                                          
+                                            ),
+                                            Positioned(
+                                              left: 15,
+                                              top:30,
+                                              child: Container(
+                                                child: CircleAvatar(
+                                                  backgroundColor: kPrimaryLight,
+                                                  radius: 10,
+                                                  child: CircleAvatar(
+                                                    backgroundColor: kPrimaryColor,
+                                                    radius: 6,
+                                                  )
                                                 ),
                                               ),
-                                            ],),
-                                          ),
-                                        );
-                                    }).toList()
-                                  
-                                    
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-
-                        : Container(
-                          child: Column(
-                            children: <Widget>[
-                              Container(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    SizedBox(height: 10,),
-                                      ...carePlans.map( (item) {
-                                        interventionIndex = interventionIndex + 1;
-                                        return GoalItem(item: item);
-                                    }).toList()
-                                  
-                                    
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                width: double.infinity,
-                                margin: EdgeInsets.only(left: 20, right: 20, top: 20),
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  color: kPrimaryColor,
-                                  borderRadius: BorderRadius.circular(3)
-                                ),
-                                child: FlatButton(
-                                  onPressed: () async {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return Dialog(
-                                          child: Container(
-                                            width: double.infinity,
-                                            height: 160.0,
-                                            child: Column(
-                                              children: <Widget>[
-                                                Container(
-                                                  margin: EdgeInsets.only(top: 20),
-                                                  width: 350,
-                                                  alignment: Alignment.center,
-                                                  child: Text('In the course of your visit, were there any medical issues identified?', style: TextStyle(
-                                                  fontSize: 22
-                                                ), textAlign: TextAlign.center,),
-                                                ),
-                                                Row(
-                                                  children: <Widget>[
-                                                    Expanded(
-                                                      child: Container(
-                                                        width: double.infinity,
-                                                        margin: EdgeInsets.only(left: 20, right: 20, top: 20),
-                                                        height: 50,
-                                                        decoration: BoxDecoration(
-                                                          color: kPrimaryRedColor,
-                                                          borderRadius: BorderRadius.circular(3)
-                                                        ),
-                                                        child: FlatButton(
-                                                          onPressed: () {
-                                                            Navigator.pop(context);
-                                                            Navigator.of(context).pushNamed('/reportMedicalIssues');
-                                                          },
-                                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                          child: Text('YES', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      child: Container(
-                                                        width: double.infinity,
-                                                        margin: EdgeInsets.only(left: 20, right: 20, top: 20),
-                                                        height: 50,
-                                                        decoration: BoxDecoration(
-                                                          color: kPrimaryGreenColor,
-                                                          borderRadius: BorderRadius.circular(3)
-                                                        ),
-                                                        child: FlatButton(
-                                                          onPressed: () {
-                                                            Navigator.of(context).pushNamed('/chwHome');
-                                                          },
-                                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                          child: Text('No', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
                                             ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  child: Text('COMPLETE VISIT', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
-                                ),
+                                            Positioned(
+                                              left: 41,
+                                              top: 33,
+                                              child: Transform.rotate(angle: 90 * pi/180, 
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    border: Border(
+                                                    )
+                                                  ),
+                                                  child: ClipPath(
+                                                    child: Container(
+                                                      width: 24,
+                                                      height: 12,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.black54,
+                                                            blurRadius: 2.0,
+                                                            spreadRadius: 2.0,
+                                                            offset: Offset(
+                                                              2.0, 
+                                                              5.0, 
+                                                            ),
+                                                          ),
+                                                        ]
+                                                      ),
+                                                    ),
+                                                    clipper: CustomClipPath(),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                  
+                                    }).toList()  
+                                  ],
+                                )
                               ),
                             ],
-                          ),
+                          )
                         ),
+                      
 
+                        widget.checkInState != null && widget.checkInState ? Container(
+                          width: double.infinity,
+                          margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: kPrimaryColor,
+                            borderRadius: BorderRadius.circular(3)
+                          ),
+                          child: FlatButton(
+                            onPressed: () async {
+                              showDialog(
+                                context: _scaffoldKey.currentContext,
+                                builder: (BuildContext context) {
+                                  return Dialog(
+                                    child: Container(
+                                      width: double.infinity,
+                                      height: 160.0,
+                                      child: Column(
+                                        children: <Widget>[
+                                          Container(
+                                            margin: EdgeInsets.only(top: 20),
+                                            width: 350,
+                                            alignment: Alignment.center,
+                                            child: Text('In the course of your visit, were there any medical issues identified?', style: TextStyle(
+                                            fontSize: 22
+                                          ), textAlign: TextAlign.center,),
+                                          ),
+                                          Row(
+                                            children: <Widget>[
+                                              Expanded(
+                                                child: Container(
+                                                  width: double.infinity,
+                                                  margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                                                  height: 50,
+                                                  decoration: BoxDecoration(
+                                                    color: kPrimaryRedColor,
+                                                    borderRadius: BorderRadius.circular(3)
+                                                  ),
+                                                  child: FlatButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                      Navigator.of(context).pushNamed('/reportMedicalIssues');
+                                                    },
+                                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                    child: Text('YES', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                                                  ),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Container(
+                                                  width: double.infinity,
+                                                  margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                                                  height: 50,
+                                                  decoration: BoxDecoration(
+                                                    color: kPrimaryGreenColor,
+                                                    borderRadius: BorderRadius.circular(3)
+                                                  ),
+                                                  child: FlatButton(
+                                                    onPressed: () async {
+                                                      Navigator.of(context).pop();
+                                                      var result = '';
+                                                      setState(() {
+                                                        isLoading = true;
+                                                      });
+
+                                                      await Future.delayed(const Duration(seconds: 5));
+
+                                                      
+                                                      result = await AssessmentController().create('visit', 'follow-up', '');
+
+                                                      setState(() {
+                                                        isLoading = false;
+                                                      });
+                                                      Navigator.of(_scaffoldKey.currentContext).pushNamed('/chwHome');
+
+                                                      
+                                                    },
+                                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                    child: Text('No', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            child: Text('COMPLETE VISIT', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                          ),
+                        ) : Container(),
                       ],
                     )
                   ),
@@ -754,7 +1126,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
           ),
         ),
       ),
-      floatingActionButton: widget.checkInState == null ?FloatingActionButton.extended(
+      floatingActionButton: widget.checkInState == null ? FloatingActionButton.extended(
         onPressed: () {
           Navigator.of(context).pushNamed('/verifyPatient');
         },
@@ -784,12 +1156,74 @@ class _GoalItemState extends State<GoalItem> {
   }
 
   getStatus() {
-    status = widget.item['meta']['status'];
-  }
-  setStatus() {
-    setState(() {
-      status = 'completed';
+    status = 'completed';
+    widget.item['items'].forEach( (goal) {
+      if (goal['meta']['status'] == 'pending') {
+        setState(() {
+          status = 'pending';
+        });
+      }
     });
+  }
+  setStatus(completedItem) {
+    // print(completedItem);
+
+    //set all the actions as completed
+    setState(() {
+      dueCarePlans.remove(completedItem);
+      var data = completedItem;
+      data['items'].forEach( (goal) {
+        completedItem['items'][completedItem['items'].indexOf(goal)]['meta']['status'] = 'completed';
+      });
+      completedCarePlans.add(completedItem);
+      // status = 'completed';
+    });
+  }
+  getCount() {
+    var count = 0;
+    if (status == 'pending') {
+      widget.item['items'].forEach( (goal) {
+        if (goal['meta']['status'] == 'pending') {
+          setState(() {
+            count += 1;
+          });
+        }
+      });
+    } else {
+      widget.item['items'].forEach( (goal) {
+        setState(() {
+          count += 1;
+        });
+      });
+    }
+
+    return count.toString();
+  }
+  
+  getCompletedDate(goal) {
+    var data = '';
+    DateTime date;
+    // print(goal['items']);
+    goal['items'].forEach((item) {
+      // print(item['body']['activityDuration']['end']);
+      DateFormat format = new DateFormat("E LLL d y");
+      var endDate = format.parse(item['body']['activityDuration']['end']);
+      // print(endDate);
+      date = endDate;
+      if (date != null) {
+        date  = endDate;
+      } else {
+        if (endDate.isBefore(date)) {
+          date = endDate;
+        }
+      }
+      
+    });
+    if (date != null) {
+      var test = DateFormat('MMMM d, y').format(date);
+      data = 'Complete By ' + test;
+    }
+    return data;
   }
 
   @override
@@ -805,7 +1239,7 @@ class _GoalItemState extends State<GoalItem> {
       child: GestureDetector(
         onTap: () {
           if (status == 'pending') {
-            if (widget.item['body']['goal']['title'] == 'Improve blood pressure control') {
+            if (widget.item['title'] == 'Improve blood pressure control') {
               Navigator.of(context).pushNamed('/chwImproveBp', arguments: { 'data': widget.item, 'parent': this });
             } else {
               Navigator.of(context).pushNamed('/chwOtherActions', arguments: { 'data': widget.item, 'parent': this });
@@ -815,8 +1249,8 @@ class _GoalItemState extends State<GoalItem> {
         child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          if (widget.item['body']['goal'] != null && widget.item['body']['goal']['title'] != null)
-          Text(widget.item['body']['goal']['title'], style: TextStyle(fontSize: 16, color: kPrimaryColor)),
+          Text(widget.item['title'], style: TextStyle(fontSize: 16, color: kPrimaryColor)),
+          status != 'completed' ? Text(getCompletedDate(widget.item), style: TextStyle(fontSize: 15, color: kBorderLight)) : Container(),
           Container(
             child: Row(
               children: <Widget>[
@@ -828,7 +1262,7 @@ class _GoalItemState extends State<GoalItem> {
                   ),
                   child: GestureDetector(
                     onTap: () {
-                      if (widget.item['body']['goal']['title'] == 'Improve blood pressure control') {
+                      if (widget.item['title'] == 'Improve blood pressure control') {
                         Navigator.of(context).pushNamed('/chwImproveBp', arguments: { 'data': widget.item, 'parent': this });
                       } else {
                         Navigator.of(context).pushNamed('/chwOtherActions', arguments: { 'data': widget.item, 'parent': this });
@@ -836,7 +1270,8 @@ class _GoalItemState extends State<GoalItem> {
                     },
                     child: Row(
                       children: <Widget>[
-                        Text('${widget.item['body']['components'].length} Actions  ', style: TextStyle(color: status == 'pending' ? kPrimaryRedColor : kPrimaryGreenColor, fontWeight: FontWeight.w500),),
+                        // Text('${report['body']['result']['actions'].length} Actions  ', style: TextStyle(color: status == 'pending' ? kPrimaryRedColor : kPrimaryGreenColor, fontWeight: FontWeight.w500),),
+                        Text('${getCount()} Actions  ', style: TextStyle(color: status == 'pending' ? kPrimaryRedColor : kPrimaryGreenColor, fontWeight: FontWeight.w500),),
                         if (status != 'pending') 
                         Icon(Icons.check_circle, color: kPrimaryGreenColor, size: 14,)
                       ],
@@ -849,6 +1284,174 @@ class _GoalItemState extends State<GoalItem> {
           ),
         ],),
       ),
+    );
+  }
+}
+
+class CareplanAction extends StatefulWidget {
+
+  CareplanAction({this.checkInState, this.carePlans, this.text});
+
+  bool checkInState;
+  var carePlans = [];
+  String text = '';
+  @override
+  _CareplanActionState createState() => _CareplanActionState();
+}
+
+class _CareplanActionState extends State<CareplanAction> {
+
+  getCount(item) {
+    var count = 0;
+
+    item['items'].forEach( (goal) {
+      setState(() {
+        count += 1;
+      });
+    });
+    
+
+    return count.toString();
+  }
+
+  getCompletedDate(goal) {
+    var data = '';
+    DateTime date;
+    // print(goal['items']);
+    goal['items'].forEach((item) {
+      // print(item['body']['activityDuration']['end']);
+      if (item['meta']['status'] != 'completed') {
+        DateFormat format = new DateFormat("E LLL d y");
+        var endDate = format.parse(item['body']['activityDuration']['end']);
+        // print(endDate);
+        date = endDate;
+        if (date != null) {
+          date  = endDate;
+        } else {
+          if (endDate.isBefore(date)) {
+            date = endDate;
+          }
+        }
+      }
+      
+    });
+    if (date != null) {
+      var test = DateFormat('MMMM d, y').format(date);
+      data = 'Complete By ' + test;
+    }
+    return data;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        SizedBox(height: 20,),
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 13,),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(widget.text, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+              // Text(getDueCounts(),)
+            ],
+          ),
+        ),
+        widget.text == 'Due Today' && widget.checkInState != null ? Container(
+          margin: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
+          child: Row(
+            children: <Widget>[
+              Icon(Icons.check_circle, color: kPrimaryGreenColor,),
+              SizedBox(width: 10,),
+              Text('Check in Complete', style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
+            ],
+          ),
+        ) : Container(),
+        widget.checkInState == null ? Container(
+          child: Column(
+            children: <Widget>[
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(height: 10,),
+                      ...widget.carePlans.map( (item) {
+                        return Container(
+                          margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          padding: EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(color: kBorderLighter)
+                            )
+                          ),
+                          child: GestureDetector(
+                            onTap: () {
+                              // Navigator.of(context).pushNamed('/carePlanInterventions', arguments: {
+                              //   'carePlan' : item,
+                              //   'parent': this
+                              // });
+                            },
+                            child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(item['title'], style: TextStyle(fontSize: 16, color: kBorderLight)),
+                              Text(getCompletedDate(item), style: TextStyle(fontSize: 15, color: kBorderLight)),
+                              Container(
+                                child: Row(
+                                  children: <Widget>[
+                                    Container(
+                                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: kBorderLight),
+                                        borderRadius: BorderRadius.circular(3)
+                                      ),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                        },
+                                        // child: Text('${item['body']['actions'].length} Actions', style: TextStyle(color: kBorderLight, fontWeight: FontWeight.w500),),
+                                        child: Text('${getCount(item)} Actions', style: TextStyle(color: kBorderLight, fontWeight: FontWeight.w500),),
+                                      ),
+                                    ),
+                                    Icon(Icons.chevron_right, color: kBorderLight,)
+                                  ],
+                                ),
+                              ),
+                            ],),
+                          ),
+                        );
+                    }).toList()
+                  
+                    
+                  ],
+                ),
+              ),
+            ],
+          ),
+        )
+
+        : Container(
+          child: Column(
+            children: <Widget>[
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(height: 10,),
+                      ...widget.carePlans.map( (item) {
+                        
+                        return GoalItem(item: item);
+                    }).toList()
+                  
+                    
+                  ],
+                ),
+              ),
+              
+            ],
+          ),
+        ),
+
+      ],
     );
   }
 }
@@ -879,4 +1482,18 @@ class FloatingButton extends StatelessWidget {
       )
     );
   }
+}
+
+class CustomClipPath extends CustomClipper<Path> {
+  var radius=10.0;
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.lineTo(size.width / 2, size.height);
+    path.lineTo(size.width, 0.0);
+    return path;
+  }
+  
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

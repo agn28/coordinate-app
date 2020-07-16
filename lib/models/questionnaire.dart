@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:intl/intl.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
-import 'dart:developer';
 
 var _questions = {
     'tobacco': {
@@ -222,6 +219,36 @@ class Questionnaire {
       _questionnaireItems.add(_prepareCurrentMedicationData(questions, answers, type));
     }
     
+    return 'success';
+  }
+
+  addVideoSurvey(url, careplan) {
+
+    var data = {
+      "meta": {
+        "performed_by": Auth().getAuth()['uid'],
+        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
+      },
+      "body": {
+        "type": "survey",
+        "data": {
+          'video_watched': true,
+          'url': url,
+          'care_plan_id': careplan['id'],
+          'title': careplan['body']['title']
+        },
+        "patient_id": Patient().getPatient()['uuid'],
+      }
+    };
+    // _questionnaireItems = [];
+    // print(data['body']['data']['url']);
+
+    print(_questionnaireItems.where((item) => item['body']['data']['url'] == url).isEmpty);
+    if (_questionnaireItems.where((item) => item['body']['data']['url'] == url).isEmpty) {
+      _questionnaireItems.add(data);
+    }
+    
+    print(_questionnaireItems);
     return 'success';
   }
 

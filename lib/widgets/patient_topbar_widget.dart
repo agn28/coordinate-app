@@ -14,8 +14,8 @@ class PatientTopbar extends StatelessWidget {
       decoration: BoxDecoration(
       color: Colors.white,
         boxShadow: [BoxShadow(
-          blurRadius: 20.0,
-          color: Colors.black,
+          blurRadius: 1.0,
+          color: Colors.black38,
           offset: Offset(0.0, 1.0)
         )]
       ),

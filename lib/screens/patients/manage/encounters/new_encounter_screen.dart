@@ -5,10 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
+import 'package:nhealth/controllers/device_controller.dart';
+import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/assessment.dart';
 import 'package:nhealth/models/blood_pressure.dart';
+import 'package:nhealth/models/devices.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-test/blood_test_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/body-measurements/measurements_screen.dart';
@@ -40,10 +44,13 @@ class _NewEncounterState extends State<NewEncounter> {
   bool _dataSaved = false;
   bool avatarExists = false;
 
+  bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
     _checkAvatar();
+    _getDevices();
     BloodPressure().removeDeleteIds();
     if (Assessment().getSelectedAssessment() != {}) {
       setState(() {
@@ -52,6 +59,18 @@ class _NewEncounterState extends State<NewEncounter> {
         selectedType = type == 'in-clinic' ? 'In-clinic Screening' : 'Home Visit';
       });
     }
+  }
+
+  _getDevices() async {
+    isLoading = true;
+    var data = await DeviceController().getDevices();
+    setState(() {
+      isLoading = false;
+    });
+    if (data.length > 0 ) {
+      Device().setDevices(data);
+    }
+    
   }
 
   _checkAvatar() async {
@@ -79,7 +98,9 @@ class _NewEncounterState extends State<NewEncounter> {
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
       ),
-      body: GestureDetector(
+      body: 
+      
+      !isLoading ? GestureDetector(
         onTap: () {
           FocusScope.of(context).requestFocus(new FocusNode());
         },
@@ -213,7 +234,15 @@ class _NewEncounterState extends State<NewEncounter> {
             ],
           ),
         ),
-      ),
+      )
+      : Container(
+          height: MediaQuery.of(context).size.height,
+          width: double.infinity,
+          color: Color(0x90FFFFFF),
+          child: Center(
+            child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),backgroundColor: Color(0x30FFFFFF),)
+          ),
+        ),
 
       
       bottomNavigationBar: Container(
@@ -253,7 +282,7 @@ class _NewEncounterState extends State<NewEncounter> {
                 child: FlatButton(
                   onPressed: () async {
                     await showDialog(
-                      context: context,
+                      context: _scaffoldKey.currentContext,
                       builder: (BuildContext context) {
                         // return object of type Dialog
                         return Dialog(
@@ -292,21 +321,38 @@ class _NewEncounterState extends State<NewEncounter> {
                                           GestureDetector(
                                             onTap: () async {
                                               var result = '';
+                                              Navigator.of(context).pop();
+                                              setState(() {
+                                                isLoading = true;
+                                              });
                                               if (Assessment().getSelectedAssessment().isEmpty) {
-                                                result = await AssessmentController().create(selectedType, commentController.text);
+                                                result = await AssessmentController().create(selectedType, 'ncd', commentController.text);
                                               } else {
                                                 result = await AssessmentController().update(selectedType, commentController.text);
                                               }
+                                              
+                                              setState(() {
+                                                isLoading = false;
+                                              });
+                                              print('before if');
+
+                                              // _scaffoldKey.currentState.showSnackBar(
+                                              //   SnackBar(
+                                              //     content: Text(AppLocalizations.of(context).translate('dataSaved')),
+                                              //     backgroundColor: Color(0xFF4cAF50),
+                                              //   )
+                                              // );
 
                                               if (result == 'success') {
+                                                print('hello');
+                                                Navigator.of(_scaffoldKey.currentContext).pushNamed('/patientOverview');
                                                 _dataSaved = true;
-                                                _scaffoldKey.currentState.showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(AppLocalizations.of(context).translate('dataSaved')),
-                                                    backgroundColor: Color(0xFF4cAF50),
-                                                  )
-                                                );
-                                                Navigator.of(context).pop();
+                                                // _scaffoldKey.currentState.showSnackBar(
+                                                //   SnackBar(
+                                                //     content: Text(AppLocalizations.of(context).translate('dataSaved')),
+                                                //     backgroundColor: Color(0xFF4cAF50),
+                                                //   )
+                                                // );
 
                                                 if (widget.encounterDetailsState != null) {
                                                   widget.encounterDetailsState.setState(() async {
@@ -315,13 +361,14 @@ class _NewEncounterState extends State<NewEncounter> {
                                                 }
                                                 
                                               } else {
+                                                print('else');
                                                 Navigator.of(context).pop();
-                                                _scaffoldKey.currentState.showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(result.toString()),
-                                                    backgroundColor: kPrimaryRedColor,
-                                                  )
-                                                );
+                                                // _scaffoldKey.currentState.showSnackBar(
+                                                //   SnackBar(
+                                                //     content: Text(result.toString()),
+                                                //     backgroundColor: kPrimaryRedColor,
+                                                //   )
+                                                // );
                                               }
                                             },
                                             child: Text(AppLocalizations.of(context).translate('save'), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
@@ -340,7 +387,9 @@ class _NewEncounterState extends State<NewEncounter> {
                     );
                     if (_dataSaved) {
                       await Future.delayed(const Duration(seconds: 1));
-                      Navigator.pop(context);
+                      print('hello');
+                      Navigator.of(context).pushNamed('/patientOverview');
+                      // Navigator.pop(context);
                     }
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),

@@ -44,6 +44,7 @@ class _CurrentMedicationState extends State<CurrentMedication> {
     setState(() {
       _questions = Questionnaire().questions['current_medication'];
       _selectedOption = 1;
+      problemController.text = '';
     });
     getMedications();
   }
@@ -60,323 +61,202 @@ class _CurrentMedicationState extends State<CurrentMedication> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Questionnaire', style: TextStyle(color: kPrimaryColor)),
+        title: Text('Current Medication', style: TextStyle(color: kPrimaryColor)),
         backgroundColor: Colors.white,
         elevation: 0.0,
         bottomOpacity: 0.0,
         iconTheme: IconThemeData(color: kPrimaryColor),
       ),
 
-      body: CustomStepper(
-        physics: ClampingScrollPhysics(),
-        type: CustomStepperType.horizontal,
-        isHeader: false,
-        controlsBuilder: (BuildContext context, {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
-          return Row();
-        },
-        onStepTapped: (step) {
-          setState(() {
-            this._currentStep = step;
-          });
-        },
-        steps: _mySteps(),
-        currentStep: this._currentStep,
-      ),
-
-      bottomNavigationBar: Container(
-        color: kBottomNavigationGrey,
-        height: 64,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Expanded(
-              child: _currentStep != 0 ? FlatButton(
-                onPressed: () {
-                  setState(() {
-                    _currentStep = _currentStep - 1;
-                  });
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Icon(Icons.chevron_left),
-                    Text('BACK', style: TextStyle(fontSize: 20)),
-                  ],
-                ),
-              ) : Text('')
-            ),
-            Expanded(
-              child: Container(
-                alignment: Alignment.center,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: _mySteps().length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (BuildContext context, index) {
-                    return Padding(
-                      padding: EdgeInsets.only(right: 10),
-                      child: Icon(Icons.lens, size: 15, color: _currentStep == index ? kPrimaryColor : kStepperDot,)
-                    );
-                  },
-                ),
-              ),
-            ),
-            Expanded(
-              child: _currentStep < _mySteps().length - 1 ? FlatButton(
-                onPressed: () {
-                  setState(() {
-                    _currentStep = _currentStep + 1;
-                  });
-                },
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Text('NEXT', style: TextStyle(fontSize: 20)),
-                    Icon(Icons.chevron_right)
-                  ],
-                ),
-              ) : FlatButton(
-                onPressed: () async {
-                  var answers = [];
-                  answers.add(_selectedItem);
-                  answers.add(_questions['items'][1]['options'][_secondQuestionOption]);
-                  answers.add(problemController.text);
-                  var result = Questionnaire().addCurrentMedication('current_medication', answers);
-                  if (result == 'success') {
-                    _scaffoldKey.currentState.showSnackBar(
-                      SnackBar(
-                        content: Text('Data saved successfully!'),
-                        backgroundColor: Color(0xFF4cAF50),
-                      )
-                    );
-                    this.widget.parent.setState(() {
-                      this.widget.parent.setStatus();
-                    });
-                    await Future.delayed(const Duration(seconds: 1));
-                    Navigator.of(context).pop();
-                  } else {
-                    _scaffoldKey.currentState.showSnackBar(
-                      SnackBar(
-                        content: Text(result.toString()),
-                        backgroundColor: kPrimaryRedColor,
-                      )
-                    );
-                  }
-                  
-                },
-                child: Text('COMPLETE', style: TextStyle(fontSize: 20, color: kPrimaryColor))
-              )
-            ),
-          ],
-        )
-      ),
-    );
-  }
-
-  List<CustomStep> _mySteps() {
-    List<CustomStep> _steps = [
-      CustomStep(
-        title: Text('Photo'),
-        content: FirstQuestion(),
-        isActive: _currentStep >= 2,
-      ),
-      CustomStep(
-        title: Text('Photo'),
-        content: SecondQuestion(),
-        isActive: _currentStep >= 2,
-      ),
-      CustomStep(
-        title: Text('Photo'),
-        content: ThirdQuestion(),
-        isActive: _currentStep >= 2,
-      ),
-    ];
-
-    return _steps;
-  }
-  
-}
-
-class FirstQuestion extends StatefulWidget {
-  const FirstQuestion({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  _FirstQuestionState createState() => _FirstQuestionState();
-}
-
-class _FirstQuestionState extends State<FirstQuestion> {
-
-  _changeOption(value) {
-    setState(() {
-      _selectedOption = value;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Column(
+      body: SingleChildScrollView(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             PatientTopbar(),
+
             Container(
-              height: 70,
-              width: double.infinity,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.symmetric(horizontal: 30),
+              padding: EdgeInsets.only(bottom: 20, top: 20),
               decoration: BoxDecoration(
-                color: Color(0xFFF0F0F0),
                 border: Border(
-                  bottom: BorderSide(width: .5, color: Color(0x50000000))
+                  bottom: BorderSide(color: kBorderLighter)
                 )
               ),
-              child: Text('Current Medication', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
-            ),
-
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
-              child: Text(_questions['items'][0]['question'],
-                style: TextStyle(fontSize: 18, height: 1.7),
-              )
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-              child: MedicationList()
-            ),
-            SizedBox(height: 10,),
-          ],
-        ),
-    );
-  }
- }
-
- class SecondQuestion extends StatefulWidget {
-  const SecondQuestion({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  _SecondQuestionState createState() => _SecondQuestionState();
-}
-
-class _SecondQuestionState extends State<SecondQuestion> {
-  
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            PatientTopbar(),
-            Container(
-              height: 70,
-              width: double.infinity,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              decoration: BoxDecoration(
-                color: Color(0xFFF0F0F0),
-                border: Border(
-                  bottom: BorderSide(width: .5, color: Color(0x50000000))
-                )
-              ),
-              child: Text('Current Medication', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
-            ),
-
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
-              child: Text(_questions['items'][1]['question'],
-                style: TextStyle(fontSize: 18, height: 1.7),
-              )
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  ..._questions['items'][1]['options'].map((option) => 
-                    Row(
-                      children: <Widget>[
-                        Radio(
-                          activeColor: kPrimaryColor,
-                          value: _questions['items'][1]['options'].indexOf(option),
-                          groupValue: _secondQuestionOption,
-                          onChanged: (val) {
-                            setState(() {
-                              _secondQuestionOption = val;
-                            });
-                          },
-                        ),
-                        Text(StringUtils.capitalize(option), style: TextStyle(color: Colors.black, fontSize: 18)),
-                      ],
-                    ),
-                  ).toList(),
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+                    child: Text(_questions['items'][0]['question'],
+                      style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
+                    )
+                  ),
+                  SizedBox(height: 15,),
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+                    child: MedicationList()
+                  ),
+
                 ],
               )
             ),
-          ],
-        ),
-    );
-  }
- }
 
-
- class ThirdQuestion extends StatefulWidget {
-
-  @override
-  _ThirdQuestionState createState() => _ThirdQuestionState();
-}
-
-class _ThirdQuestionState extends State<ThirdQuestion> {
-  
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            PatientTopbar(),
             Container(
-              height: 70,
-              width: double.infinity,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.symmetric(horizontal: 30),
+              padding: EdgeInsets.only(bottom: 20, top: 20),
               decoration: BoxDecoration(
-                color: Color(0xFFF0F0F0),
                 border: Border(
-                  bottom: BorderSide(width: .5, color: Color(0x50000000))
+                  bottom: BorderSide(color: kBorderLighter)
                 )
               ),
-              child: Text('Current Medication', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+                    child: Text(_questions['items'][1]['question'],
+                      style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
+                    )
+                  ),
+                  SizedBox(height: 20,),
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 0, horizontal: 17),
+                    child: Column(
+                      children: <Widget>[
+                        ..._questions['items'][1]['options'].map((option) => 
+                          Row(
+                            children: <Widget>[
+                              Radio(
+                                activeColor: kPrimaryColor,
+                                value: _questions['items'][1]['options'].indexOf(option),
+                                groupValue: _secondQuestionOption,
+                                onChanged: (val) {
+                                  setState(() {
+                                    _secondQuestionOption = val;
+                                  });
+                                },
+                              ),
+                              Text(StringUtils.capitalize(option), style: TextStyle(color: Colors.black, fontSize: 18)),
+                            ],
+                          ),
+                        ).toList(),
+                      ],
+                    )
+                  ),
+
+                ],
+              )
             ),
 
+
             Container(
-              margin: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
-              child: Text(_questions['items'][2]['question'],
-                style: TextStyle(fontSize: 18, height: 1.7),
+              padding: EdgeInsets.only(bottom: 20, top: 20),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: kBorderLighter)
+                )
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+                    child: Text(_questions['items'][2]['question'],
+                      style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
+                    )
+                  ),
+                  SizedBox(height: 20,),
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+                    width: 250,
+                    child: PrimaryTextField(
+                      topPaadding: 15,
+                      bottomPadding: 15,
+                      hintText: 'Write your problem',
+                      controller: problemController,
+                    )
+                  ),
+
+                ],
               )
             ),
+
+            SizedBox(height: 60,),
+
             Container(
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-              width: 250,
-              child: PrimaryTextField(
-                topPaadding: 15,
-                bottomPadding: 15,
-                hintText: 'Write your problem',
-                controller: problemController,
-              )
+              width: double.infinity,
+              margin: EdgeInsets.symmetric(horizontal: 30),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: Colors.black54),
+                        borderRadius: BorderRadius.circular(4)
+                      ),
+                      child: FlatButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: Text('CANCEL', style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
+                      ),
+                    )
+                  ),
+                  SizedBox(width: 20),
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: kPrimaryColor,
+                        borderRadius: BorderRadius.circular(4)
+                      ),
+                      child: FlatButton(
+                        onPressed: () async {
+                          var answers = [];
+                          answers.add(_selectedItem);
+                          answers.add(_questions['items'][1]['options'][_secondQuestionOption]);
+                          answers.add(problemController.text);
+                          var result = Questionnaire().addCurrentMedication('current_medication', answers);
+                          if (result == 'success') {
+                            _scaffoldKey.currentState.showSnackBar(
+                              SnackBar(
+                                content: Text('Data saved successfully!'),
+                                backgroundColor: Color(0xFF4cAF50),
+                              )
+                            );
+                            this.widget.parent.setState(() {
+                              this.widget.parent.setStatus();
+                            });
+                            await Future.delayed(const Duration(seconds: 1));
+                            Navigator.of(context).pop();
+                          } else {
+                            _scaffoldKey.currentState.showSnackBar(
+                              SnackBar(
+                                content: Text(result.toString()),
+                                backgroundColor: kPrimaryRedColor,
+                              )
+                            );
+                          }
+                        },
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: Text('SAVE', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                      ),
+                    )
+                  )
+                ],
+              ),
             ),
           ],
         ),
+      ),
+
     );
   }
- }
-
+  
+}
 
 
  class MedicationList extends StatefulWidget {
-
 
   @override
   _MedicationListState createState() => _MedicationListState();
@@ -428,18 +308,17 @@ class _MedicationListState extends State<MedicationList> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 520.0,
+      height: 420.0,
       color: Color(0x07000000),
       padding: EdgeInsets.all(10),
       child: Form(
         child: ListView(
           children: <Widget>[
-            SizedBox(height: 10,),
             Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text('Select Medications', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                  Text('Select Medications', style: TextStyle(fontSize: 18, ),),
                 ],
               ),
             ),

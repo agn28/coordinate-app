@@ -1,3 +1,4 @@
+import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/assessment.dart';
 import 'package:nhealth/models/auth.dart';
@@ -124,13 +125,23 @@ class AssessmentController {
 
   /// Create assessment.
   /// Assessment [type] and [comment] is required as parameter.
-  create(type, comment) {
+  create(type, screening_type, comment) async {
 
-    var data = _prepareData(type, comment);
-    var status = AssessmentRepositoryLocal().create(data);
+    var data = _prepareData(type, screening_type, comment);
+    var status = await AssessmentRepositoryLocal().create(data);
     if (status == 'success') {
       Helpers().clearObservationItems();
     }
+
+    print('before health report');
+
+    await Future.delayed(const Duration(seconds: 20));
+
+    print('after health report');
+
+    await HealthReportController().getReport();
+
+    print('after health report');
 
     return status;
   }
@@ -164,16 +175,15 @@ class AssessmentController {
 
   /// Prepare data to create an assessment.
   /// Assessment [type] and [comment] is required as parameter.
-  _prepareData(type, comment) {
+  _prepareData(type, screening_type, comment) {
     var data = {
       "meta": {
         "collected_by": Auth().getAuth()['uid'],
-        "start_time": "17 December, 2019 12:00",
-        "end_time": "17 December, 2019 12:05",
         "created_at": DateTime.now().toString()
       },
       "body": {
-        "type": type == 'In-clinic Screening' ? 'in-clinic' : 'visit',
+        "type": type == 'In-clinic Screening' ? 'in-clinic' : type,
+        "screening_type": screening_type,
         "comment": comment,
         "performed_by": Auth().getAuth()['uid'],
         "assessment_date": DateFormat('y-MM-dd').format(DateTime.now()),

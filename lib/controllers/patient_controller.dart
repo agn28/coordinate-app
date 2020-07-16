@@ -1,4 +1,3 @@
-import 'package:intl/intl.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/repositories/local/patient_repository_local.dart';
@@ -75,6 +74,7 @@ class PatientController {
   /// [formData] is required as parameter.
   create(formData) async {
     final data = _prepareData(formData);
+    print('create data');
     await PatientReposioryLocal().create(data);
 
     return 'success';

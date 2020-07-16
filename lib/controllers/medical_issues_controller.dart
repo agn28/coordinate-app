@@ -1,16 +1,7 @@
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/assessment.dart';
-import 'package:nhealth/models/auth.dart';
-import 'package:nhealth/models/blood_pressure.dart';
-import 'package:nhealth/models/blood_test.dart';
-import 'package:nhealth/models/body_measurement.dart';
-import 'package:nhealth/models/patient.dart';
-import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/repositories/local/assessment_repository_local.dart';
-import 'dart:convert';
-import 'package:intl/intl.dart';
 import 'package:nhealth/repositories/medical_issues_repository.dart';
-import 'package:nhealth/repositories/worklist_repository.dart';
 
 var bloodPressures = [];
 
@@ -52,43 +43,5 @@ class MedicalIssuesController {
     return data;
   }
 
-  /// Prepare data to create an assessment.
-  /// Assessment [type] and [comment] is required as parameter.
-  _prepareData(type, comment) {
-    var data = {
-      "meta": {
-        "collected_by": Auth().getAuth()['uid'],
-        "start_time": "17 December, 2019 12:00",
-        "end_time": "17 December, 2019 12:05",
-        "created_at": DateTime.now().toString()
-      },
-      "body": {
-        "type": type == 'In-clinic Screening' ? 'in-clinic' : 'visit',
-        "comment": comment,
-        "performed_by": Auth().getAuth()['uid'],
-        "assessment_date": DateFormat('y-MM-dd').format(DateTime.now()),
-        "patient_id": Patient().getPatient()['uuid']
-      }
-    };
-
-    return data;
-  }
-
-  edit(assessment, observations) {
-    Assessment().selectAssessment(assessment);
-    Helpers().clearObservationItems();
-    observations.forEach((item) {
-      if (item['body']['type'] == 'body_measurement') {
-        BodyMeasurement().addBmItemsForEdit(item);
-      } else if (item['body']['type'] == 'blood_test') {
-        BloodTest().addBtItemsForEdit(item);
-      } else if (item['body']['type'] == 'blood_pressure') {
-        BloodPressure().addBpItemsForEdit(item);
-      } else if (item['body']['type'] == 'survey') {
-        Questionnaire().addQnItemsForEdit(item);
-        // BloodPressure().addBpItemsForEdit(item);
-      }
-    });
-  }
   
 }

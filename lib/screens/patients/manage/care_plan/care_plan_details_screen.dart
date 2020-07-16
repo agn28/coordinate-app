@@ -1,3 +1,4 @@
+import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -10,6 +11,7 @@ import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_intervention_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_medication_screen.dart';
+import 'package:nhealth/screens/patients/manage/patient_overview_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
 
@@ -25,10 +27,12 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
   bool isLoading = false;
   bool canEdit = false;
   final commentsController = TextEditingController();
+  String generateDate = '';
 
   @override
   void initState() {
     super.initState();
+    print(widget.carePlans);
     getReports();
   }
 
@@ -48,6 +52,11 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
       setState(() {
         isLoading = false;
         reports = data['data'];
+        if (reports['meta']['report_date']['_seconds'] != null) {
+          var parsedDate = DateTime.fromMillisecondsSinceEpoch(reports['meta']['report_date']['_seconds'] * 1000);
+
+          generateDate =  DateFormat("MMMM d, y").format(parsedDate).toString();
+        }
       });
     }
 
@@ -80,15 +89,13 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
                   padding: EdgeInsets.only(left: 20),
                   child: Row(
                     children: <Widget>[
-                      Text('Generated on Jan 5, 2019', style: TextStyle(fontSize: 16),),
-                      SizedBox(width: 60,),
-                      Text('Last modified on Jan 10, 2019', style: TextStyle(fontSize: 16),)
+                      Text('Generated on ' + generateDate, style: TextStyle(fontSize: 16),),
                     ],
                   ),
                 ),
 
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                   decoration: BoxDecoration(
                     border: Border(
                       bottom: BorderSide(color: kBorderLight)
@@ -211,6 +218,38 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
                                             style: TextStyle(
                                                 fontSize: 14, 
                                                 color: ColorUtils.statusColor[reports['body']['result']['assessments']['diabetes']['tfl']] ?? Colors.black,
+                                                fontWeight: FontWeight.w500
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ) : Container(),
+
+                                  SizedBox(height: 35,),
+
+                                  reports['body']['result']['assessments']['cvd'] != null ?
+                                  Container(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text('CVD Risk', style: TextStyle(fontSize: 19),),
+                                        SizedBox(height: 10,),
+                                        Row(
+                                          children: <Widget>[
+                                            Text('${reports['body']['result']['assessments']['cvd']['value']}',
+                                            style: TextStyle(
+                                                fontSize: 14, 
+                                                color: ColorUtils.statusColor[reports['body']['result']['assessments']['cvd']['tfl']] ?? Colors.black,
+                                                fontWeight: FontWeight.w500
+                                              ),
+                                            ),
+                                            SizedBox(width: 40,),
+                                            Text('${reports['body']['result']['assessments']['cvd']['eval']}', 
+                                            style: TextStyle(
+                                                fontSize: 14, 
+                                                color: ColorUtils.statusColor[reports['body']['result']['assessments']['cvd']['tfl']] ?? Colors.black,
                                                 fontWeight: FontWeight.w500
                                               ),
                                             ),
@@ -357,7 +396,7 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
                   )
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
                   width: double.infinity,
                   decoration: BoxDecoration(
                     border: Border(
@@ -374,6 +413,501 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
                         Interventions(carePlan: item),
                       ).toList(),
                       SizedBox(height: 25,),
+
+                      SizedBox(height: 20,),
+
+                      Container(
+                        child: ExpandableTheme(
+                          data: ExpandableThemeData(
+                            iconColor: kBorderGrey,
+                            iconPlacement: ExpandablePanelIconPlacement.left,
+                            useInkWell: true,
+                            iconPadding: EdgeInsets.only(top: 12, left: 8, right: 8)
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                  child: ExpandableNotifier(
+                                    child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(width: 1, color: kBorderLighter)
+                                      ),
+                                      child: Column(
+                                        children: <Widget>[
+                                          ScrollOnExpand(
+                                            scrollOnExpand: true,
+                                            scrollOnCollapse: false,
+                                            child: ExpandablePanel(
+                                              theme: const ExpandableThemeData(
+                                                headerAlignment: ExpandablePanelHeaderAlignment.center,
+                                                tapBodyToCollapse: true,
+                                              ),
+                                              header: Container(
+                                                padding: EdgeInsets.only(top:10),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      'Nutrition',
+                                                      style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              expanded: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  SizedBox(height: 30,),
+        
+                                                ],
+                                              ),
+                                              builder: (_, collapsed, expanded) {
+                                                return Padding(
+                                                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                                                  child: Expandable(
+                                                    collapsed: collapsed,
+                                                    expanded: expanded,
+                                                    theme: const ExpandableThemeData(crossFadePoint: 0),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                )
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      Container(
+                        child: ExpandableTheme(
+                          data: ExpandableThemeData(
+                            iconColor: kBorderGrey,
+                            iconPlacement: ExpandablePanelIconPlacement.left,
+                            useInkWell: true,
+                            iconPadding: EdgeInsets.only(top: 12, left: 8, right: 8)
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                  child: ExpandableNotifier(
+                                    child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(width: 1, color: kBorderLighter)
+                                      ),
+                                      child: Column(
+                                        children: <Widget>[
+                                          ScrollOnExpand(
+                                            scrollOnExpand: true,
+                                            scrollOnCollapse: false,
+                                            child: ExpandablePanel(
+                                              theme: const ExpandableThemeData(
+                                                headerAlignment: ExpandablePanelHeaderAlignment.center,
+                                                tapBodyToCollapse: true,
+                                              ),
+                                              header: Container(
+                                                padding: EdgeInsets.only(top:10),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      'Physical Activity',
+                                                      style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              expanded: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  SizedBox(height: 30,),
+        
+                                                ],
+                                              ),
+                                              builder: (_, collapsed, expanded) {
+                                                return Padding(
+                                                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                                                  child: Expandable(
+                                                    collapsed: collapsed,
+                                                    expanded: expanded,
+                                                    theme: const ExpandableThemeData(crossFadePoint: 0),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                )
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      Container(
+                        child: ExpandableTheme(
+                          data: ExpandableThemeData(
+                            iconColor: kBorderGrey,
+                            iconPlacement: ExpandablePanelIconPlacement.left,
+                            useInkWell: true,
+                            iconPadding: EdgeInsets.only(top: 12, left: 8, right: 8)
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                  child: ExpandableNotifier(
+                                    child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(width: 1, color: kBorderLighter)
+                                      ),
+                                      child: Column(
+                                        children: <Widget>[
+                                          ScrollOnExpand(
+                                            scrollOnExpand: true,
+                                            scrollOnCollapse: false,
+                                            child: ExpandablePanel(
+                                              theme: const ExpandableThemeData(
+                                                headerAlignment: ExpandablePanelHeaderAlignment.center,
+                                                tapBodyToCollapse: true,
+                                              ),
+                                              header: Container(
+                                                padding: EdgeInsets.only(top:10),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      'Managing Medication',
+                                                      style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              expanded: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  SizedBox(height: 20,),
+                                                  Container(
+                                                    margin: EdgeInsets.only(left: 10),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: <Widget>[
+                                                        Text('Goals', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                                                        SizedBox(width: 50,),
+                                                        Container(
+                                                          child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: <Widget>[
+                                                              Row(
+                                                                children: <Widget>[
+                                                                  Icon(Icons.lens, size: 8, color: kPrimaryColor),
+                                                                  SizedBox(width: 10,),
+                                                                  Text('Improve glycemic control', style: TextStyle(fontSize: 16,))
+                                                                ],
+                                                              ),
+                                                              SizedBox(height: 10,),
+                                                              Row(
+                                                                children: <Widget>[
+                                                                  Icon(Icons.lens, size: 8, color: kPrimaryColor),
+                                                                  SizedBox(width: 10,),
+                                                                  Text('Medication adherence', style: TextStyle(fontSize: 16,))
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                
+                                                
+                                                  SizedBox(height: 30,),
+                                                  Container(
+                                                    child: Column(
+                                                      children: <Widget>[
+                                                        Container(
+                                                          margin: EdgeInsets.symmetric(horizontal: 10),
+                                                          padding: EdgeInsets.only(bottom: 12),
+                                                          decoration: BoxDecoration(
+                                                            border: Border(
+                                                              bottom: BorderSide(width: 2, color: kBorderLighter)
+                                                            )
+                                                          ),
+                                                          child: Row(
+                                                            children: <Widget>[
+                                                              Expanded(
+                                                                child: Text(
+                                                                  'Interventions',
+                                                                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                                                                ),
+                                                              ),
+                                                              SizedBox(width: 20,),
+                                                              Expanded(
+                                                                child: Text(
+                                                                  'Frequency',
+                                                                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                                                                ),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+
+                                                        Container(
+                                                          margin: EdgeInsets.symmetric(horizontal: 10),
+                                                          padding: EdgeInsets.only(bottom: 12),
+                                                          child: Row(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                            children: <Widget>[
+                                                              Expanded(
+                                                                child: Container(
+                                                                  child: Column(
+                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    children: <Widget>[
+                                                                      SizedBox(height: 10,),
+                                                                      Text(
+                                                                        'MEDICATION',
+                                                                        style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: kTextGrey),
+                                                                      ),
+                                                                      SizedBox(height: 10,),
+                                                                      Text(
+                                                                        'Initiate METFORMIN 250 - 500 mg once daily   ',
+                                                                        style: TextStyle(fontWeight: FontWeight.w400, fontSize: 15,),
+                                                                      ),
+                                                                      SizedBox(height: 10,),
+                                                                      Text(
+                                                                        'Diabetic therapy - first time',
+                                                                        style: TextStyle(fontSize: 14,),
+                                                                      ),
+
+                                                                      SizedBox(height: 15,),
+
+                                                                      Row(
+                                                                        children: <Widget>[
+                                                                          Container(
+                                                                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                                                            decoration: BoxDecoration(
+                                                                              border: Border.all(color: kPrimaryColor),
+                                                                              borderRadius: BorderRadius.circular(2)
+                                                                            ),
+                                                                            child: InkWell(
+                                                                              onTap: () {},
+                                                                              child: Text(
+                                                                                'Components',
+                                                                                style: TextStyle(color: kPrimaryColor, fontSize: 14, fontWeight: FontWeight.w500),
+                                                                              ),
+                                                                            )
+                                                                          ),
+
+                                                                          SizedBox(width: 20,),
+
+                                                                          Text(
+                                                                            'Doctor',
+                                                                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              SizedBox(width: 20,),
+                                                              Expanded(
+                                                                child: Container(
+                                                                  margin: EdgeInsets.only(top: 10),
+                                                                  child: Text(
+                                                                    'Followup: After 1 month',
+                                                                    style: TextStyle(fontSize: 14,),
+                                                                  ),
+                                                                )
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )
+                                                  ),
+                                                ],
+                                              ),
+                                              builder: (_, collapsed, expanded) {
+                                                return Padding(
+                                                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                                                  child: Expandable(
+                                                    collapsed: collapsed,
+                                                    expanded: expanded,
+                                                    theme: const ExpandableThemeData(crossFadePoint: 0),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                )
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      Container(
+                        child: ExpandableTheme(
+                          data: ExpandableThemeData(
+                            iconColor: kBorderGrey,
+                            iconPlacement: ExpandablePanelIconPlacement.left,
+                            useInkWell: true,
+                            iconPadding: EdgeInsets.only(top: 12, left: 8, right: 8)
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                  child: ExpandableNotifier(
+                                    child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(width: 1, color: kBorderLighter)
+                                      ),
+                                      child: Column(
+                                        children: <Widget>[
+                                          ScrollOnExpand(
+                                            scrollOnExpand: true,
+                                            scrollOnCollapse: false,
+                                            child: ExpandablePanel(
+                                              theme: const ExpandableThemeData(
+                                                headerAlignment: ExpandablePanelHeaderAlignment.center,
+                                                tapBodyToCollapse: true,
+                                              ),
+                                              header: Container(
+                                                padding: EdgeInsets.only(top:10),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      'Cessation of bad habits',
+                                                      style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              expanded: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  SizedBox(height: 30,),
+        
+                                                ],
+                                              ),
+                                              builder: (_, collapsed, expanded) {
+                                                return Padding(
+                                                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                                                  child: Expandable(
+                                                    collapsed: collapsed,
+                                                    expanded: expanded,
+                                                    theme: const ExpandableThemeData(crossFadePoint: 0),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                )
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+
+                      Container(
+                        child: ExpandableTheme(
+                          data: ExpandableThemeData(
+                            iconColor: kBorderGrey,
+                            iconPlacement: ExpandablePanelIconPlacement.left,
+                            useInkWell: true,
+                            iconPadding: EdgeInsets.only(top: 12, left: 8, right: 8)
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                  child: ExpandableNotifier(
+                                    child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(width: 1, color: kBorderLighter)
+                                      ),
+                                      child: Column(
+                                        children: <Widget>[
+                                          ScrollOnExpand(
+                                            scrollOnExpand: true,
+                                            scrollOnCollapse: false,
+                                            child: ExpandablePanel(
+                                              theme: const ExpandableThemeData(
+                                                headerAlignment: ExpandablePanelHeaderAlignment.center,
+                                                tapBodyToCollapse: true,
+                                              ),
+                                              header: Container(
+                                                padding: EdgeInsets.only(top:10),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      'Tracking Vitals',
+                                                      style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              expanded: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  SizedBox(height: 30,),
+        
+                                                ],
+                                              ),
+                                              builder: (_, collapsed, expanded) {
+                                                return Padding(
+                                                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                                                  child: Expandable(
+                                                    collapsed: collapsed,
+                                                    expanded: expanded,
+                                                    theme: const ExpandableThemeData(crossFadePoint: 0),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                )
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 20,),
 
                       // Container(
                       //   padding: EdgeInsets.symmetric(vertical: 25),
@@ -575,7 +1109,7 @@ class InterventionsState extends State<Interventions> {
   }
 
   _getDuration(item) {
-
+    return '';
     if (item['body']['activityDuration'] != null && item['body']['activityDuration']['start'] != '' && item['body']['activityDuration']['end'] != '') {
       var start = DateTime.parse(item['body']['activityDuration']['start']);
       var time = DateTime.parse(item['body']['activityDuration']['end']).difference(DateTime.parse(item['body']['activityDuration']['start'])).inDays;
@@ -589,10 +1123,17 @@ class InterventionsState extends State<Interventions> {
   }
 
   getStatus() {
+    // return 'asd';
     String completedDate = '';
     if (widget.carePlan['meta']['status'] == 'completed') {
-      if (widget.carePlan['meta']['completed_at'] != null && widget.carePlan['meta']['completed_at']['_seconds'] != null) {
-        var parsedDate = DateTime.fromMillisecondsSinceEpoch(widget.carePlan['meta']['completed_at']['_seconds'] * 1000);
+      // if (widget.carePlan['meta']['completed_at'] != null && widget.carePlan['meta']['completed_at']['_seconds'] != null) {
+      //   var parsedDate = DateTime.fromMillisecondsSinceEpoch(widget.carePlan['meta']['completed_at']['_seconds'] * 1000);
+
+      //   completedDate = DateFormat("MMMM d, y").format(parsedDate).toString();
+      // }
+
+      if (widget.carePlan['meta']['completed_at'] != null ) {
+        var parsedDate = DateTime.parse(widget.carePlan['meta']['completed_at']);
 
         completedDate = DateFormat("MMMM d, y").format(parsedDate).toString();
       }

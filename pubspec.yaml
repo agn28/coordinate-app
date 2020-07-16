@@ -14,7 +14,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.6.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -104,6 +104,7 @@ flutter:
    - assets/images/icons/unwell.png
    - assets/images/icons/unwell_green.png
    - assets/images/icons/unwell_red.png
+   - assets/images/user_placeholder.png
    - lang/en.json
    - lang/bn.json
 

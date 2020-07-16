@@ -30,7 +30,7 @@ class AssessmentRepositoryLocal {
 
   /// Create an assessment with observations.
   /// observations [data] is required as parameter.
-  create(data) {
+  create(data) async {
     var assessmentId = Uuid().v4();
     var bloodPressures = BloodPressure().bpItems;
     var bloodTests = BloodTest().btItems;
@@ -41,30 +41,34 @@ class AssessmentRepositoryLocal {
       return 'No observations added';
     }
 
-    _createAssessment(assessmentId, data);
+    await _createAssessment(assessmentId, data);
 
-    bloodPressures.forEach((item,) async {
+    print('after assessment');
+
+
+    Future.forEach(bloodPressures, (item) async {
+      print('into observations');
       var codings = await _getCodings(item);
       item['body']['data']['codings'] = codings;
       item['body']['assessment_id'] = assessmentId;
       await _createObservations(item);
     });
 
-    bloodTests.forEach((item) async {
+    Future.forEach(bloodTests, (item) async {
       var codings = await _getCodings(item);
       item['body']['data']['codings'] = codings;
       item['body']['assessment_id'] = assessmentId;
       await _createObservations(item);
     });
 
-    bodyMeasurements.forEach((item) async {
+    Future.forEach(bodyMeasurements, (item) async {
       var codings = await _getCodings(item);
       item['body']['data']['codings'] = codings;
       item['body']['assessment_id'] = assessmentId;
       await _createObservations(item);
     });
 
-    questionnaires.forEach((item) async {
+    Future.forEach(questionnaires, (item) async {
       item['body']['assessment_id'] = assessmentId;
       await _createObservations(item);
     });
@@ -219,7 +223,7 @@ class AssessmentRepositoryLocal {
 
     apiData.addAll(data);
 
-    ObservationRepository().create(apiData);
+    await ObservationRepository().create(apiData);
   }
 
   /// Create assessment.
@@ -242,7 +246,9 @@ class AssessmentRepositoryLocal {
 
     apiData.addAll(data);
 
-    AssessmentRepository().create(apiData);
+    await AssessmentRepository().create(apiData);
+
+    print('into encounter');
   }
 
   /// Create assessment.

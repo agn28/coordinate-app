@@ -1440,14 +1440,14 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
 
             ],
           ) : Container(),
-          isLoading ? Container(
-            height: MediaQuery.of(context).size.height,
-            width: double.infinity,
-            color: Color(0x90FFFFFF),
-            child: Center(
-              child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),backgroundColor: Color(0x30FFFFFF),)
-            ),
-          ) : Container(),
+            isLoading ? Container(
+              height: MediaQuery.of(context).size.height,
+              width: double.infinity,
+              color: Color(0x90FFFFFF),
+              child: Center(
+                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),backgroundColor: Color(0x30FFFFFF),)
+              ),
+            ) : Container(),
           ],
         )),
 

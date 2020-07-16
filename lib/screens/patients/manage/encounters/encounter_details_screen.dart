@@ -23,8 +23,10 @@ class EncounterDetailsState extends State<EncounterDetailsScreen> {
   var _observations;
   var _bloodPressures = [];
   var _bloodTests = [];
+  var _surveys = [];
   bool isLoading = true;
-   List<Widget> observationItems = List<Widget>();
+   List<Widget> bloodTestItems = List<Widget>();
+   List<Widget> surveyItems = List<Widget>();
 
   @override
   void initState() {
@@ -37,13 +39,22 @@ class EncounterDetailsState extends State<EncounterDetailsScreen> {
   getObservations() async {
     // _observations =  await AssessmentController().getObservationsByAssessment(widget.assessment);
     _observations =  await AssessmentController().getLiveObservationsByAssessment(widget.encounter);
+    
+
+    // print(_observations);
+
+    setState(() {
+      isLoading = false;
+      _bloodPressures =  _observations.where((item) => item['body']['type'] == 'blood_pressure').toList();
+      _bloodTests =  _observations.where((item) => item['body']['type'] == 'blood_test').toList();
+
+      _surveys = _observations.where((item) => item['body']['type'] == 'survey' && item['body']['data']['title'] != null).toList();
+
+    });
     _getItem();
 
-   setState(() {
-     isLoading = false;
-    _bloodPressures =  _observations.where((item) => item['body']['type'] == 'blood_pressure').toList();
-    _bloodTests =  _observations.where((item) => item['body']['type'] == 'blood_test').toList();
-   });
+    // print(_surveys);
+
   }
 
   /// Calculate average Blood Pressure
@@ -81,11 +92,11 @@ class EncounterDetailsState extends State<EncounterDetailsScreen> {
 
   /// Populate observation widgets form observations list.
   _getItem() {
-    observationItems = [];
+    bloodTestItems = [];
     _observations.forEach((item) {
       if (item['body']['type'] != 'blood_pressure' && item['body']['type'] != 'survey') {
         setState(() {
-          observationItems.add(
+          bloodTestItems.add(
             Column(
               children: <Widget>[
                 Container(
@@ -133,6 +144,53 @@ class EncounterDetailsState extends State<EncounterDetailsScreen> {
         });
       }
       
+    });
+
+    _surveys.forEach((item) {
+      print(item);
+      setState(() {
+        surveyItems.add(
+          Column(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text('Community Visits', style: TextStyle(fontSize: 20, ),),
+                      Text(item['body']['data']['title'], style: TextStyle(fontSize: 22, height: 1.7, fontWeight: FontWeight.w600),),
+                      Row(
+                        children: <Widget>[
+                          Text('Video Watched: ', style: TextStyle(fontSize: 20, height: 1.6),),
+                          Text(StringUtils.capitalize(item['body']['data']['video_watched'].toString()), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, height: 1.6),),
+                        ],
+                      ),
+
+                      Row(
+                        children: <Widget>[
+                          Text('Date: ', style: TextStyle(fontSize: 20, height: 1.6),),
+                          Text(item['meta']['created_at'], style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, height: 1.6),),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 30,),
+
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Divider()
+                    )
+                  ],
+                ),
+
+                SizedBox(height: 30,), 
+              ],
+            )
+          
+        );
+      });
     });
   }
 
@@ -197,13 +255,13 @@ class EncounterDetailsState extends State<EncounterDetailsScreen> {
                   )
                 ),
 
-                SizedBox(height: 30,),
                 
                 _bloodPressures.length > 0 ? Container(
                   padding: EdgeInsets.only(left: 20, right: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
+                      SizedBox(height: 30,),
                       Text(AppLocalizations.of(context).translate('observation'), style: TextStyle(fontSize: 20, ),),
                       // SizedBox(height: 20,),
                       Text(AppLocalizations.of(context).translate('bloodPressure'), style: TextStyle(fontSize: 35, height: 1.7),),
@@ -240,7 +298,8 @@ class EncounterDetailsState extends State<EncounterDetailsScreen> {
                 ),
 
                 SizedBox(height: 30,), 
-                Column(children: observationItems),
+                Column(children: bloodTestItems),
+                Column(children: surveyItems),
 
               ],
             ),

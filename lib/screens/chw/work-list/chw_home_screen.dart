@@ -70,40 +70,52 @@ class _HomeState extends State<ChwHomeScreen> {
       // ),
       
       body: navigationItems[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        type: BottomNavigationBarType.fixed,
-        unselectedFontSize: 16,
-        selectedFontSize: 16,
-        elevation: 30,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            title: Text('Work List')
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            title: Text('Patients')
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_add),
-            title: Text('New Patient')
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu),
-            title: Text('More')
-          )
-        ],
-        onTap: (value) {
-          if(value == 2) {
-            Navigator.of(context).push(RegisterPatientScreen());
-          } else {
-            setState(() {
-              _currentIndex = value;
-            });
-          }
-        },
-      ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: Offset(3, 0), // changes position of shadow
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          type: BottomNavigationBarType.fixed,
+          unselectedFontSize: 16,
+          selectedFontSize: 16,
+          elevation: 0,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.list),
+              title: Text('Work List')
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.people),
+              title: Text('Patients')
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_add),
+              title: Text('New Patient')
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.menu),
+              title: Text('More')
+            )
+          ],
+          onTap: (value) {
+            if(value == 2) {
+              Navigator.of(context).push(RegisterPatientScreen());
+            } else {
+              setState(() {
+                _currentIndex = value;
+              });
+            }
+          },
+        ),
+      )
     );
   }
 }

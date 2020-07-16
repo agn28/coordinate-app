@@ -17,7 +17,8 @@ class PatientRepository {
       },
       body: json.encode(data)
     ).then((response) {
-      
+      print('response');
+      print(response);
     }).catchError((error) {
       print('error ' + error.toString());
     });
@@ -71,6 +72,7 @@ class PatientRepository {
         'Authorization': 'Bearer ' + token
       },
     ).then((response) {
+      print(json.decode(response.body));
       return json.decode(response.body);
       
     }).catchError((error) {
