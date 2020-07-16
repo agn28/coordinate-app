@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -43,7 +44,7 @@ class _MedicalHistoryState extends State<MedicalHistoryTab> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text('Current Conditions', style: TextStyle(fontSize: 21),),
+          Text(AppLocalizations.of(context).translate('currentConditionsTitle'), style: TextStyle(fontSize: 21),),
           SizedBox(height: 10,),
 
           ...widget.conditions.map((item) {
@@ -66,7 +67,7 @@ class _MedicalHistoryState extends State<MedicalHistoryTab> {
 
           SizedBox(height: 40,),
 
-          Text('Medications', style: TextStyle(fontSize: 21),),
+          Text(AppLocalizations.of(context).translate('medicationsTitle'), style: TextStyle(fontSize: 21),),
           SizedBox(height: 10,),
 
           ...widget.medications.map((item) {
@@ -89,7 +90,7 @@ class _MedicalHistoryState extends State<MedicalHistoryTab> {
 
           SizedBox(height: 40,),
 
-          Text('Allergies', style: TextStyle(fontSize: 21),),
+          Text(AppLocalizations.of(context).translate('allergiesTitle'), style: TextStyle(fontSize: 21),),
           SizedBox(height: 10,),
 
           ...widget.allergies.map((item) {

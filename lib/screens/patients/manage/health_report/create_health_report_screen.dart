@@ -1278,9 +1278,9 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text('Referral Required', style: TextStyle(fontSize: 24, color: kPrimaryRedColor)),
+                            Text(AppLocalizations.of(context).translate('referralRequired'), style: TextStyle(fontSize: 24, color: kPrimaryRedColor)),
                             SizedBox(height: 20,),
-                            Text('Generate a referral before submitting.', style: TextStyle(fontSize: 20, height: 1.4),),
+                            Text(AppLocalizations.of(context).translate('generateReferral'), style: TextStyle(fontSize: 20, height: 1.4),),
                             SizedBox(height: 20,),
 
                             Container(
@@ -1298,7 +1298,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                   children: <Widget>[
                                     Icon(Icons.add, color: kPrimaryColor, size: 30,),
                                     SizedBox(width: 20,),
-                                    Text('Generate Referral', style: TextStyle(fontSize: 18, color: kPrimaryColor),)
+                                    Text(AppLocalizations.of(context).translate('generateReferralTitle'), style: TextStyle(fontSize: 18, color: kPrimaryColor),)
                                   ],
                                 )
                               ),

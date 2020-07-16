@@ -26,7 +26,7 @@ class _CarePlanMedicationState extends State<CarePlanMedication> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Medication', style: TextStyle(color: Colors.white),),
+        title: Text(AppLocalizations.of(context).translate('medicationTitle'), style: TextStyle(color: Colors.white),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),

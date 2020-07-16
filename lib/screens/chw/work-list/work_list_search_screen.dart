@@ -556,13 +556,13 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
                           indicatorColor: Colors.white,
                           tabs: [
                             Tab(
-                              child: Text('Pending (${getPendingCount()})', style: TextStyle(fontSize: 17)),
+                              child: Text(AppLocalizations.of(context).translate('pending') + ' (${getPendingCount()})', style: TextStyle(fontSize: 17)),
                             ),
                             Tab(
-                              child: Text('Past Due (${pastPatients.length})', style: TextStyle(fontSize: 17)),
+                              child: Text(AppLocalizations.of(context).translate('pastDue') + ' (${pastPatients.length})', style: TextStyle(fontSize: 17)),
                             ),
                             Tab(
-                              child: Text('Completed (${getCompletedCount()})', style: TextStyle(fontSize: 17)),
+                              child: Text(AppLocalizations.of(context).translate('completed') + ' (${getCompletedCount()})', style: TextStyle(fontSize: 17)),
                             ),
                             
                           ],
@@ -998,7 +998,7 @@ class _SortDialogState extends State<SortDialog> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text('Sort by', style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+                  Text(AppLocalizations.of(context).translate('sortBy'), style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
                   GestureDetector(
                     onTap: () {
                       Navigator.of(context).pop();
@@ -1012,7 +1012,7 @@ class _SortDialogState extends State<SortDialog> {
                         widget.parent.clearSort();
                       });
                     },
-                    child: Text('CLEAR SORT', style: TextStyle(fontSize: 15, color: kPrimaryColor, fontWeight: FontWeight.w500),),
+                    child: Text(AppLocalizations.of(context).translate('clearSort'), style: TextStyle(fontSize: 15, color: kPrimaryColor, fontWeight: FontWeight.w500),),
                   ),
                 ],
               ),
@@ -1033,7 +1033,7 @@ class _SortDialogState extends State<SortDialog> {
                           });
                         },
                       ),
-                      Text('Patients', style: TextStyle(fontSize: 18,),),
+                      Text(AppLocalizations.of(context).translate('patients'), style: TextStyle(fontSize: 18,),),
                     ],
                   ),
                   Row(
@@ -1048,7 +1048,7 @@ class _SortDialogState extends State<SortDialog> {
                           _updatePatientSorting(value);
                         },
                       ),
-                      Text('Ascending', style: TextStyle(color: Colors.black)),
+                      Text(AppLocalizations.of(context).translate('ascending'), style: TextStyle(color: Colors.black)),
                     ],
                   ),
                   Row(
@@ -1063,7 +1063,7 @@ class _SortDialogState extends State<SortDialog> {
                           _updatePatientSorting(value);
                         },
                       ),
-                      Text('Descending', style: TextStyle(color: Colors.black)),
+                      Text(AppLocalizations.of(context).translate('descending'), style: TextStyle(color: Colors.black)),
                     ],
                   ),
                   SizedBox(height: 20,),
@@ -1078,7 +1078,7 @@ class _SortDialogState extends State<SortDialog> {
                           });
                         },
                       ),
-                      Text('Due Date for Intervention', style: TextStyle(fontSize: 18),),
+                      Text(AppLocalizations.of(context).translate('dueDateIntervention'), style: TextStyle(fontSize: 18),),
                     ],
                   ),
                   Row(
@@ -1093,7 +1093,7 @@ class _SortDialogState extends State<SortDialog> {
                           _updateDueDateSorting(value);
                         },
                       ),
-                      Text('Ascending', style: TextStyle(color: Colors.black)),
+                      Text(AppLocalizations.of(context).translate('ascending'), style: TextStyle(color: Colors.black)),
                     ],
                   ),
                   Row(
@@ -1108,7 +1108,7 @@ class _SortDialogState extends State<SortDialog> {
                           _updateDueDateSorting(value);
                         },
                       ),
-                      Text('Descending', style: TextStyle(color: Colors.black)),
+                      Text(AppLocalizations.of(context).translate('descending'), style: TextStyle(color: Colors.black)),
                     ],
                   ),
                 ],

@@ -274,7 +274,7 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
                               icon: Icon(Icons.filter_list, color: kPrimaryColor, size: 25,)
                             ),
                             border: InputBorder.none,
-                            hintText: "Search here...",
+                            hintText: AppLocalizations.of(context).translate('searchHere'),
                             contentPadding: const EdgeInsets.only(
                               left: 16,
                               right: 20,

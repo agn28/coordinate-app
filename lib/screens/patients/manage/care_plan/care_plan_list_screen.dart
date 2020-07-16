@@ -16,7 +16,7 @@ class CarePlanList extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Health Report', style: TextStyle(color: Colors.white),),
+        title: Text(AppLocalizations.of(context).translate('healthReport'), style: TextStyle(color: Colors.white),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -201,7 +201,7 @@ class CarePlanList extends StatelessWidget {
                             child: Text('3 month follow-up', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
                           ),
                           Expanded(
-                            child: Text('Pending', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400, color: kPrimaryRedColor),),
+                            child: Text(AppLocalizations.of(context).translate('pending'), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400, color: kPrimaryRedColor),),
                           ),
                           Expanded(
                             child: Container(

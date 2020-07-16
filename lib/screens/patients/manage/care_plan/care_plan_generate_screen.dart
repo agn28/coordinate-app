@@ -26,7 +26,7 @@ class _CarePlanGenerateState extends State<CarePlanGenerate> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Health Report', style: TextStyle(color: Colors.white),),
+        title: Text(AppLocalizations.of(context).translate('healthReport'), style: TextStyle(color: Colors.white),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),

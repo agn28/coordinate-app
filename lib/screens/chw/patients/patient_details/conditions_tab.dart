@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -41,7 +42,7 @@ class _ConditionsState extends State<ConditionsTab> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text('Current Conditions', style: TextStyle(fontSize: 21),),
+          Text(AppLocalizations.of(context).translate('currentConditionsTitle'), style: TextStyle(fontSize: 21),),
           SizedBox(height: 10,),
 
           ...widget.conditions.map((item) {
