@@ -916,7 +916,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                                               onTap: () {
                                                                 Navigator.of(context).pushNamed('/encounterDetails', arguments: encounter);
                                                               },
-                                                              child: Text('View Encounter Details', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w400, fontSize: 16),)
+                                                              child: Text(AppLocalizations.of(context).translate('viewEncounterDetails'), style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w400, fontSize: 16),)
                                                             ),
                                                             SizedBox(height: 20,),
                                                             // Container(

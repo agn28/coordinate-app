@@ -273,6 +273,8 @@
   "medicationTitle": "Medication",
   "medications": "Medications: ", 
   "allergiesTitle": "Allergies",
-  "allergies": "Allergies: "
+  "allergies": "Allergies: ",
+  "dueToday": "Due Today",
+  "viewEncounterDetails": "View Encounter Details"
 
 }

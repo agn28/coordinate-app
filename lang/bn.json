@@ -271,5 +271,8 @@
   "medicationTitle": "Medication",
   "medications": "ওষুধপত্রঃ ", 
   "allergiesTitle": "এলার্জি",
-  "allergies": "এলার্জিঃ "
+  "allergies": "এলার্জিঃ ",
+  "dueToday": "আজ যা করণীয়",
+  "viewEncounterDetails": "ভিজিটের বিবরণ দেখুন"
+
 }
