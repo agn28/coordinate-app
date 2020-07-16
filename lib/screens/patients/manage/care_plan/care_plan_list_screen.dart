@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_generate_screen.dart';
 import 'package:nhealth/widgets/primary_button_widget.dart';
@@ -127,10 +128,10 @@ class CarePlanList extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
                           Expanded(
-                            child: Text('Provide diet advise', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+                            child: Text(AppLocalizations.of(context).translate('dietAdvise'), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
                           ),
                           Expanded(
-                            child: Text('Completed on Jan 10 2019', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: kPrimaryGreenColor),),
+                            child: Text(AppLocalizations.of(context).translate('completedOn') + ' Jan 10 2019', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: kPrimaryGreenColor),),
                           ),
                           Expanded(
                             child: Container(
@@ -162,10 +163,10 @@ class CarePlanList extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
                           Expanded(
-                            child: Text('Provide Smoking cessation nadvise', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+                            child: Text(AppLocalizations.of(context).translate('smokingAdvise'), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
                           ),
                           Expanded(
-                            child: Text('Pending', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400, color: kPrimaryRedColor),),
+                            child: Text(AppLocalizations.of(context).translate('pending'), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400, color: kPrimaryRedColor),),
                           ),
                           Expanded(
                             child: Container(

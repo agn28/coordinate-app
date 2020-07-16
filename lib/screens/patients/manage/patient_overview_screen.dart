@@ -689,7 +689,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              Text('Care Plan Actions', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                              Text(AppLocalizations.of(context).translate('careplanAcions'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                               carePlans.length > 0 ?
                               Container(
                                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
@@ -701,7 +701,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                   onTap: () {
                                     Navigator.of(context).pushNamed('/carePlanDetails', arguments: carePlans);
                                   },
-                                  child: Text('VIEW CARE PLAN', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w500),),
+                                  child: Text(AppLocalizations.of(context).translate('viewCareplan'), style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w500),),
                                 ),
                               ) : Container(),
                             ],
@@ -736,7 +736,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              Text('Patient History', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                              Text(AppLocalizations.of(context).translate('patientHistory'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                               Icon(Icons.filter_list, color: kPrimaryColor,)
                             ],
                           ),

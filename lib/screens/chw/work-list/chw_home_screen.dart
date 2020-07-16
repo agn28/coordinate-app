@@ -90,19 +90,19 @@ class _HomeState extends State<ChwHomeScreen> {
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.list),
-              title: Text('Work List')
+              title: Text(AppLocalizations.of(context).translate('workList'))
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.people),
-              title: Text('Patients')
+              title: Text(AppLocalizations.of(context).translate('patients'))
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person_add),
-              title: Text('New Patient')
+              title: Text(AppLocalizations.of(context).translate('newPatient'))
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.menu),
-              title: Text('More')
+              title: Text(AppLocalizations.of(context).translate('more'))
             )
           ],
           onTap: (value) {

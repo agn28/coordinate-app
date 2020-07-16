@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/screens/patients/manage/health_report/health_report_success_screen.dart';
 
@@ -960,7 +961,7 @@ class HealthReport extends StatelessWidget {
                 child: FlatButton(
                   onPressed: () => Navigator.pop(context),
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('Cancel', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
+                  child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
                 ),
               )
             ),

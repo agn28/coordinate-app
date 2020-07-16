@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/care_plan_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
@@ -129,7 +130,7 @@ class _WorkListDetailsState extends State<WorkListDetails> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Work List', style: TextStyle(color: Colors.white),),
+        title: Text(AppLocalizations.of(context).translate('workList'), style: TextStyle(color: Colors.white),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -197,7 +198,7 @@ class Form4 extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text('What is your blood pressure reading?', style: TextStyle(fontSize: 17),),
+                Text(AppLocalizations.of(context).translate('whatBPReading'), style: TextStyle(fontSize: 17),),
                 SizedBox(height: 15,),
                 Row(
                   children: <Widget>[
@@ -298,9 +299,9 @@ class Form8 extends StatelessWidget {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Text('What is your total cholesterol?', style: TextStyle(fontSize: 17),),
+                    Text(AppLocalizations.of(context).translate('whatIsCholesterol'), style: TextStyle(fontSize: 17),),
                     SizedBox(width: 15,),
-                    Text('(add in mg/dL)', style: TextStyle(fontSize: 14),),
+                    Text(AppLocalizations.of(context).translate('addInUnit'), style: TextStyle(fontSize: 14),),
                   ],
                 ),
                 SizedBox(height: 15,),
@@ -348,9 +349,9 @@ class Form16 extends StatelessWidget {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Text('What is your blood sugar?', style: TextStyle(fontSize: 17),),
+                    Text(AppLocalizations.of(context).translate('whatBloodSugar'), style: TextStyle(fontSize: 17),),
                     SizedBox(width: 15,),
-                    Text('(add in mg/dL)', style: TextStyle(fontSize: 14),),
+                    Text(AppLocalizations.of(context).translate('addInUnit'), style: TextStyle(fontSize: 14),),
                   ],
                 ),
                 SizedBox(height: 15,),
@@ -366,7 +367,7 @@ class Form16 extends StatelessWidget {
                     ),
                   ],
                 ),
-                Text('When the blood sugar is taken?', style: TextStyle(fontSize: 17),),
+                Text(AppLocalizations.of(context).translate('whenBloodSugarTaken'), style: TextStyle(fontSize: 17),),
                 SizedBox(height: 15,),
                 DropdownButtonFormField(
                   validator: (value) {
@@ -437,7 +438,7 @@ class VideoConfirmForm extends StatelessWidget {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Text('Did you watch the video?', style: TextStyle(fontSize: 17),),
+                    Text(AppLocalizations.of(context).translate('didYouWatchVideo'), style: TextStyle(fontSize: 17),),
                   ],
                 ),
                 Row(
@@ -472,7 +473,7 @@ class VideoConfirmForm extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 15,),
-                Text('What did you learn?', style: TextStyle(fontSize: 17),),
+                Text(AppLocalizations.of(context).translate('whatDidLearn'), style: TextStyle(fontSize: 17),),
                 SizedBox(height: 15,),
                 Row(
                   children: <Widget>[
@@ -566,7 +567,7 @@ class _CommentContainerState extends State<CommentContainer> {
                 } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
                 
               },
-              text: isLoading ? CircularProgressIndicator() : Text('MARK AS COMPLETE', style: TextStyle(color: Colors.white, fontSize: 16),),
+              text: isLoading ? CircularProgressIndicator() : Text(AppLocalizations.of(context).translate('markAsComplete'), style: TextStyle(color: Colors.white, fontSize: 16),),
             ),
           ),
           
@@ -595,7 +596,7 @@ class VideoContainer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            child: Text('Watch the video', style: TextStyle(fontSize: 17),),
+            child: Text(AppLocalizations.of(context).translate('watchTheVideo'), style: TextStyle(fontSize: 17),),
           ),
           SizedBox(height: 20,),
 
@@ -711,13 +712,13 @@ class _FormContainerState extends State<FormContainer> {
               });
             },
           ),
-          Text('Fill up the form',  style: TextStyle(fontSize: 16)),
+          Text(AppLocalizations.of(context).translate('fillUpForm'),  style: TextStyle(fontSize: 16)),
           SizedBox(width: 10,),
           GestureDetector(
             onTap: () async {
               
             },
-            child: Text('Click here', 
+            child: Text(AppLocalizations.of(context).translate('clickHere'), 
               style: TextStyle(
                 fontSize: 16,
                 color: kPrimaryColor,

@@ -126,7 +126,7 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
                   SizedBox(height: 20,),
                   Container(
                     width: double.infinity,
-                    child: Text('Pending Actions', style: TextStyle( fontSize: 16),),
+                    child: Text(AppLocalizations.of(context).translate('pendingActions'), style: TextStyle( fontSize: 16),),
                     padding: EdgeInsets.only(bottom: 15, left: 20),
                     decoration: BoxDecoration(
                       border: Border(
@@ -162,7 +162,7 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
                                   Navigator.of(context).pushNamed('/chwPatientSummary', arguments: true);
                                 },
                                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                child: Text('CANCEL', style: TextStyle(fontSize: 14, color: kPrimaryColor, fontWeight: FontWeight.normal),)
+                                child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(fontSize: 14, color: kPrimaryColor, fontWeight: FontWeight.normal),)
                               ),
                             ),
                           ),
@@ -206,7 +206,7 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
                                   }
                                 },
                                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                child: Text('COMPLETE GOAL', style: TextStyle(fontSize: 14, color: btnDisabled ? Colors.white54 : Colors.white, fontWeight: FontWeight.normal),)
+                                child: Text(AppLocalizations.of(context).translate('completeGoal'), style: TextStyle(fontSize: 14, color: btnDisabled ? Colors.white54 : Colors.white, fontWeight: FontWeight.normal),)
                               ),
                             ),
                           ),

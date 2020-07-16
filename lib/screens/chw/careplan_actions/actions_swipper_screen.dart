@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/care_plan_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
@@ -260,7 +261,7 @@ class _Form4State extends State<Form4> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('What is your blood pressure reading?', style: TextStyle(fontSize: 17),),
+                  Text(AppLocalizations.of(context).translate('whatBPReading'), style: TextStyle(fontSize: 17),),
                   SizedBox(height: 15,),
                   Row(
                     children: <Widget>[
@@ -384,7 +385,7 @@ class _Form4State extends State<Form4> {
                           );
                         }
                       },
-                      child: Text('Add Blood Presure', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w500),),
+                      child: Text(AppLocalizations.of(context).translate('addBloodPressure'), style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w500),),
                     ),
                   ),
                   
@@ -421,9 +422,9 @@ class Form8 extends StatelessWidget {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Text('What is your total cholesterol?', style: TextStyle(fontSize: 17),),
+                    Text(AppLocalizations.of(context).translate('whatIsCholesterol'), style: TextStyle(fontSize: 17),),
                     SizedBox(width: 15,),
-                    Text('(add in mg/dL)', style: TextStyle(fontSize: 14),),
+                    Text(AppLocalizations.of(context).translate('addInUnit'), style: TextStyle(fontSize: 14),),
                   ],
                 ),
                 SizedBox(height: 15,),
@@ -471,9 +472,9 @@ class Form16 extends StatelessWidget {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Text('What is your blood sugar?', style: TextStyle(fontSize: 17),),
+                    Text(AppLocalizations.of(context).translate('whatBloodSugar'), style: TextStyle(fontSize: 17),),
                     SizedBox(width: 15,),
-                    Text('(add in mg/dL)', style: TextStyle(fontSize: 14),),
+                    Text(AppLocalizations.of(context).translate('addInUnit'), style: TextStyle(fontSize: 14),),
                   ],
                 ),
                 SizedBox(height: 15,),
@@ -489,7 +490,7 @@ class Form16 extends StatelessWidget {
                     ),
                   ],
                 ),
-                Text('When the blood sugar is taken?', style: TextStyle(fontSize: 17),),
+                Text(AppLocalizations.of(context).translate('whenBloodSugarTaken'), style: TextStyle(fontSize: 17),),
                 SizedBox(height: 15,),
                 DropdownButtonFormField(
                   validator: (value) {
@@ -591,7 +592,7 @@ class VideoConfirmForm extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 15,),
-                Text('What did you learn?', style: TextStyle(fontSize: 17),),
+                Text(AppLocalizations.of(context).translate('whatDidLearn'), style: TextStyle(fontSize: 17),),
                 SizedBox(height: 15,),
                 Row(
                   children: <Widget>[
@@ -825,7 +826,7 @@ class _VideoContainerState extends State<VideoContainer> {
           SizedBox(height: 10,),
           // Text(getTime(widget._youtubeController.metadata.duration.toString()), style: TextStyle(fontSize: 14, color: kTextGrey),),
 
-          Text('User has watched the entire video?', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),),
+          Text(AppLocalizations.of(context).translate('userWatchEntireVideo'), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),),
 
           Row(
             children: <Widget>[
@@ -896,13 +897,13 @@ class _BpFormContainerState extends State<BpFormContainer> {
               });
             },
           ),
-          Text('Fill up the form',  style: TextStyle(fontSize: 16)),
+          Text(AppLocalizations.of(context).translate('fillUpForm'),  style: TextStyle(fontSize: 16)),
           SizedBox(width: 10,),
           GestureDetector(
             onTap: () async {
               
             },
-            child: Text('Click here', 
+            child: Text(AppLocalizations.of(context).translate('clickHere'), 
               style: TextStyle(
                 fontSize: 16,
                 color: kPrimaryColor,

@@ -1,6 +1,7 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/questionnaires_screen.dart';
@@ -201,7 +202,7 @@ class _PhysicalActivityState extends State<PhysicalActivity> {
                             Navigator.of(context).pop();
                           },
                           padding: EdgeInsets.symmetric(vertical: 20),
-                          child: Text('CANCEL', style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
+                          child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
                         ),
                       )
                     ),
@@ -241,7 +242,7 @@ class _PhysicalActivityState extends State<PhysicalActivity> {
                             }
                           },
                           padding: EdgeInsets.symmetric(vertical: 20),
-                          child: Text('SAVE', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                          child: Text(AppLocalizations.of(context).translate('save'), style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                         ),
                       )
                     )

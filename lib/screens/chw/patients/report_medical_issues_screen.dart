@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/medical_issues_controller.dart';
@@ -68,7 +69,7 @@ class _ReportMedicalIssuesScreenState extends State<ReportMedicalIssuesScreen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Report Medical Issues', style: TextStyle(color: kPrimaryColor)),
+        title: Text(AppLocalizations.of(context).translate('reportMedicalIssues'), style: TextStyle(color: kPrimaryColor)),
         backgroundColor: Colors.white,
         elevation: 0.0,
         bottomOpacity: 0.0,
@@ -99,7 +100,7 @@ class _ReportMedicalIssuesScreenState extends State<ReportMedicalIssuesScreen> {
                         border: Border(
                         )
                       ),
-                      child: Text('What issues were noticed during the course of your visit?', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+                      child: Text(AppLocalizations.of(context).translate('issueInVisit'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
                     ),
 
 
@@ -200,7 +201,7 @@ class _MedicationListState extends State<MedicationList> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text('Reported Symptoms', style: TextStyle(fontSize: 18),),
+                    Text(AppLocalizations.of(context).translate('reportedSymptoms'), style: TextStyle(fontSize: 18),),
                   ],
                 ),
               ),
@@ -423,7 +424,7 @@ class _MedicationListState extends State<MedicationList> {
                     Navigator.of(_scaffoldKey.currentContext).pushNamed('/chwHome');
                   },
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  child: Text('COMPLETE VISIT', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                  child: Text(AppLocalizations.of(context).translate('completeVisit'), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
                 ),
               ),
 

@@ -140,7 +140,7 @@ class _ChwFollowupState extends State<ChwFollowupScreen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Followup'),
+        title: Text(AppLocalizations.of(context).translate('followUp')),
       ),
       body: GestureDetector(
         onTap: () {

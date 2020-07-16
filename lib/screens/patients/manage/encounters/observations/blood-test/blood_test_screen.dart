@@ -564,7 +564,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                             onTap: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                            child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
                           ),
                           SizedBox(width: 30,),
                           GestureDetector(

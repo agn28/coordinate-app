@@ -500,7 +500,7 @@ class _PatientRecordsState extends State<PatientRecordsScreenOld> {
                                               Navigator.of(context).pushNamed('/carePlanDetails', arguments: carePlans);
                                             },
                                             padding: EdgeInsets.symmetric(vertical: 20),
-                                            child: Text('VIEW CARE PLAN DETAILS', style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                                            child: Text(AppLocalizations.of(context).translate('carePlaneDetails'), style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                                           ),
                                         )
                                       ],
