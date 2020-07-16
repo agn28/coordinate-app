@@ -104,7 +104,7 @@ class _MedicalRecommendationState extends State<MedicalRecommendationScreen> {
                                 Navigator.of(context).pushNamed('/chwHome',);
                               },
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              child: Text('END VISIT', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                              child: Text('SUBMIT FOR REFERRAL', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
                             ),
                           ),
                         ),

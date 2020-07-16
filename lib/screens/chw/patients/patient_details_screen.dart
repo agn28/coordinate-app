@@ -13,11 +13,9 @@ import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/chw/patients/patient_details/allergies_tab.dart';
-import 'package:nhealth/screens/chw/patients/patient_details/conditions_tab.dart';
 import 'package:nhealth/screens/chw/patients/patient_details/healthHistory_tab.dart';
 import 'package:nhealth/screens/chw/patients/patient_details/measurements_tab.dart';
-import 'package:nhealth/screens/chw/patients/patient_details/medications_tab.dart';
+import 'package:nhealth/screens/chw/patients/patient_details/medical_history_tab.dart';
 import 'package:nhealth/screens/chw/patients/patient_summary_screen.dart';
 
 final searchController = TextEditingController();
@@ -132,7 +130,7 @@ class _PatientDetailsState extends State<PatientDetailsScreen> {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
     } else {
       setState(() {
-        reports = data['data'][data['data'].length - 1]['result'];
+        reports = data['data'][data['data'].length - 1];
         data['data'].removeLast();
         print(data['data']);
          previousReports = data['data'];
@@ -246,7 +244,7 @@ class _PatientDetailsState extends State<PatientDetailsScreen> {
                   height: MediaQuery.of(context).size.height,
                   
                   child: DefaultTabController(
-                    length: 5,
+                    length: 3,
                     child: Scaffold(
                       appBar: AppBar(
                         elevation: 0,
@@ -268,13 +266,7 @@ class _PatientDetailsState extends State<PatientDetailsScreen> {
                               child: Text('Measurements', style: TextStyle(fontSize: 17, fontWeight: FontWeight.normal)),
                             ),
                             Tab(
-                              child: Text('Conditions', style: TextStyle(fontSize: 17, fontWeight: FontWeight.normal)),
-                            ),
-                            Tab(
-                              child: Text('Medications', style: TextStyle(fontSize: 17, fontWeight: FontWeight.normal)),
-                            ),
-                            Tab(
-                              child: Text('Allergies', style: TextStyle(fontSize: 17, fontWeight: FontWeight.normal)),
+                              child: Text('Medical History', style: TextStyle(fontSize: 17, fontWeight: FontWeight.normal)),
                             ),
                             
                           ],
@@ -288,9 +280,9 @@ class _PatientDetailsState extends State<PatientDetailsScreen> {
                           
                           MeasurementsTab(reports: reports, previousReports: previousReports),
                           
-                          ConditionsTab(conditions: conditions),
-                          MedicationsTab(medications: medications,),
-                          AllergiesTab(allergies: allergies,),
+                          MedicalHistoryTab(conditions: conditions, medications: medications, allergies: allergies,),
+                          // MedicationsTab(medications: medications,),
+                          // AllergiesTab(allergies: allergies,),
 
                           
                         ],

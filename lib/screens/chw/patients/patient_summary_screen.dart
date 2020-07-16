@@ -64,6 +64,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     dueCarePlans = [];
     completedCarePlans = [];
     upcomingCarePlans = [];
+    conditions = [];
 
     _checkAvatar();
     _checkAuth();
@@ -190,7 +191,11 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
             if (item['data'][key] == 'yes') {
               setState(() {
                 var text = key.replaceAll('_', ' ');
-                conditions.add(text[0].toUpperCase() + text.substring(1));
+                var upperCased = text[0].toUpperCase() + text.substring(1);
+                if (!conditions.contains(upperCased)) {
+                  conditions.add(upperCased);
+                }
+                
               });
             }
           });
@@ -653,25 +658,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                   Container(),
                                   ...conditions.map((item) {
                                     return Text(item + '${conditions.length - 1 == conditions.indexOf(item) ? '' : ', '}', style: TextStyle(fontSize: 17,));
-                                  }).toList()
-                                ],
-                              ),
-                            ),
-                          ]
-                        ),
-                        TableRow( 
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text('Allergies:', style: TextStyle(fontSize: 17,),),
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Wrap(
-                                children: <Widget>[
-                                  Container(),
-                                  ...allergies.map((item) {
-                                    return Text(item + '${medications.length - 1 == medications.indexOf(item) ? '' : ', '}', style: TextStyle(fontSize: 17,));
                                   }).toList()
                                 ],
                               ),

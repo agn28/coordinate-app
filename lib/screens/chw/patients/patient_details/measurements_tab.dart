@@ -47,6 +47,27 @@ class _MeasurementsState extends State<MeasurementsTab> {
     return '';
   }
 
+  getGlucoseData(data) {
+    var value = '';
+    data.forEach((item) {
+      if (item['name'] == 'blood_sugar') {
+      print(item);
+        value = item['value'].toString() + ' ' + item['units'];
+      }
+    });
+    return value;
+  }
+  getA1cData(data) {
+    var value = '';
+    data.forEach((item) {
+      if (item['name'] == 'a1c') {
+      print(item);
+        value = item['value'].toString() + ' ' + item['units'];
+      }
+    });
+    return value;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +87,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
               children: <Widget>[
 
 
-                widget.reports['assessments']['body_composition']['components']['bmi'] != null ?
+                widget.reports['result']['assessments']['body_composition']['components']['bmi'] != null ?
                 Container(
                   // alignment: Alignment.topCenter,
                   padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
@@ -100,15 +121,15 @@ class _MeasurementsState extends State<MeasurementsTab> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text('${widget.reports['assessments']['body_composition']['components']['bmi']['value']} ${widget.reports['assessments']['body_composition']['components']['bmi']['eval']}',
+                                  Text('${widget.reports['result']['assessments']['body_composition']['components']['bmi']['value']} ${widget.reports['result']['assessments']['body_composition']['components']['bmi']['eval']}',
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color: ColorUtils.statusColor[widget.reports['assessments']['body_composition']['components']['bmi']['tfl']] ?? Colors.black,
+                                      color: ColorUtils.statusColor[widget.reports['result']['assessments']['body_composition']['components']['bmi']['tfl']] ?? Colors.black,
 
                                     ),
                                   ),
                                   SizedBox(height: 5,),
-                                  // Text('${widget.reports['assessments']['body_composition']['components']['bmi']['unit']}',
+                                  // Text('${widget.reports['result']['assessments']['body_composition']['components']['bmi']['unit']}',
                                   //   style: TextStyle(
                                   //     fontSize: 12,
                                   //     color: kTextGrey
@@ -135,7 +156,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         height: 11,
                                         width: 40,
                                       ),
-                                      widget.reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'BLUE' ?
+                                      widget.reports['result']['assessments']['body_composition']['components']['bmi']['tfl'] == 'BLUE' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kPrimaryBlueColor,),
                                       ) :
@@ -152,7 +173,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         height: 11,
                                         width: 40,
                                       ),
-                                      widget.reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'GREEN' ?
+                                      widget.reports['result']['assessments']['body_composition']['components']['bmi']['tfl'] == 'GREEN' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kGreenColor,),
                                       ) :
@@ -167,7 +188,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         height: 11,
                                         width: 40,
                                       ),
-                                      widget.reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'AMBER' ?
+                                      widget.reports['result']['assessments']['body_composition']['components']['bmi']['tfl'] == 'AMBER' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kPrimaryAmberColor,),
                                       ) :
@@ -182,7 +203,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         width: 40,
                                         margin: EdgeInsets.only(right: 10),
                                       ),
-                                      widget.reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'RED' ||  widget.reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'DEEP-RED' ?
+                                      widget.reports['result']['assessments']['body_composition']['components']['bmi']['tfl'] == 'RED' ||  widget.reports['result']['assessments']['body_composition']['components']['bmi']['tfl'] == 'DEEP-RED' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kRedColor,),
                                       ) :
@@ -200,7 +221,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         height: 11,
                                         width: 40,
                                       ),
-                                      widget.reports['assessments']['body_composition']['components']['bmi']['tfl'] == 'DEEP-RED' ?
+                                      widget.reports['result']['assessments']['body_composition']['components']['bmi']['tfl'] == 'DEEP-RED' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kPrimaryDeepRedColor,),
                                       ) :
@@ -209,7 +230,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                   ),  
                                   SizedBox(width: 20,),
 
-                                  Text('${widget.reports['assessments']['body_composition']['components']['bmi']['target']}',
+                                  Text('${widget.reports['result']['assessments']['body_composition']['components']['bmi']['target']}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: kTextGrey
@@ -221,7 +242,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                             ),
                           ),
                           // Expanded(
-                          //   child:  Text('${widget.reports['assessments']['body_composition']['components']['bmi']['target']}',
+                          //   child:  Text('${widget.reports['result']['assessments']['body_composition']['components']['bmi']['target']}',
                           //     style: TextStyle(
                           //       fontSize: 12,
                           //       color: kTextGrey
@@ -245,38 +266,45 @@ class _MeasurementsState extends State<MeasurementsTab> {
                     Text('History', style: TextStyle(color: kTextGrey, fontSize: 16)),
                     SizedBox(height: 10,),
 
-                    ...widget.previousReports.map((item) {
-                      return Container(
-
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.only(right: 20, bottom: 15,),
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  right: BorderSide(color: kBorderLighter, width: widget.previousReports.length > 0 ? 1 : 0)
-                                )
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
+                      children: <Widget>[
+                        ...widget.previousReports.map((item) {
+                          if (widget.previousReports.indexOf(item) < 6) {
+                            return Container(
+                              child: Row(
                                 children: <Widget>[
-                                  Text(getDate(item['report_date']),style: TextStyle(color: kTextGrey, fontSize: 12),),
-                                  SizedBox(height: 4,),
-                                  Row(
-                                    children: <Widget>[
-                                      Text("${item['result']['assessments']['body_composition']['components']['bmi']['value']}",style: TextStyle(color: kPrimaryRedColor, fontSize: 15,),),
-                                    ],
+                                  Container(
+                                    padding: EdgeInsets.only(right: 10, bottom: 15, left: widget.previousReports.indexOf(item) == 0 ? 0 : 10),
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        right: BorderSide(color: kBorderLighter, width: widget.previousReports.length > 0 ? 1 : 0)
+                                      )
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(getDate(item['report_date']),style: TextStyle(color: kTextGrey, fontSize: 12),),
+                                        SizedBox(height: 4,),
+                                        Row(
+                                          children: <Widget>[
+                                            Text("${item['result']['assessments']['body_composition']['components']['bmi']['value']}",style: TextStyle(color: kPrimaryRedColor, fontSize: 15,),),
+                                          ],
+                                        ),
+                                        SizedBox(height: 4,),
+                                        // Text('mg/dL',style: TextStyle(color: kTextGrey, fontSize: 12),),
+                                      ],
+                                    ),
                                   ),
-                                  SizedBox(height: 4,),
-                                  // Text('mg/dL',style: TextStyle(color: kTextGrey, fontSize: 12),),
+
                                 ],
                               ),
-                            ),
-
-                          ],
-                        ),
-                      );
-                    }).toList()
+                            );
+                          } else {
+                            return Container();
+                          }
+                        }).toList()
+                      ],
+                    )
 
                   ],
                 ) : Container()
@@ -300,7 +328,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
               children: <Widget>[
 
 
-                widget.reports['assessments']['blood_pressure'] != null ?
+                widget.reports['result']['assessments']['blood_pressure'] != null ?
                 Container(
                   // alignment: Alignment.topCenter,
                   padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
@@ -334,15 +362,15 @@ class _MeasurementsState extends State<MeasurementsTab> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text('${widget.reports['assessments']['blood_pressure']['value']} ${widget.reports['assessments']['blood_pressure']['eval']}',
+                                  Text('${widget.reports['result']['assessments']['blood_pressure']['value']} ${widget.reports['result']['assessments']['blood_pressure']['eval']}',
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color: ColorUtils.statusColor[widget.reports['assessments']['blood_pressure']['tfl']] ?? Colors.black,
+                                      color: ColorUtils.statusColor[widget.reports['result']['assessments']['blood_pressure']['tfl']] ?? Colors.black,
 
                                     ),
                                   ),
                                   SizedBox(height: 5,),
-                                  // Text('${widget.reports['assessments']['body_composition']['components']['bmi']['unit']}',
+                                  // Text('${widget.reports['result']['assessments']['body_composition']['components']['bmi']['unit']}',
                                   //   style: TextStyle(
                                   //     fontSize: 12,
                                   //     color: kTextGrey
@@ -369,7 +397,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         height: 11,
                                         width: 40,
                                       ),
-                                      widget.reports['assessments']['blood_pressure']['tfl'] == 'BLUE' ?
+                                      widget.reports['result']['assessments']['blood_pressure']['tfl'] == 'BLUE' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kPrimaryBlueColor,),
                                       ) :
@@ -386,7 +414,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         height: 11,
                                         width: 40,
                                       ),
-                                      widget.reports['assessments']['blood_pressure']['tfl'] == 'GREEN' ?
+                                      widget.reports['result']['assessments']['blood_pressure']['tfl'] == 'GREEN' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kGreenColor,),
                                       ) :
@@ -401,7 +429,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         height: 11,
                                         width: 40,
                                       ),
-                                      widget.reports['assessments']['blood_pressure']['tfl'] == 'AMBER' ?
+                                      widget.reports['result']['assessments']['blood_pressure']['tfl'] == 'AMBER' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kPrimaryAmberColor,),
                                       ) :
@@ -416,7 +444,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         width: 40,
                                         margin: EdgeInsets.only(right: 10),
                                       ),
-                                      widget.reports['assessments']['blood_pressure']['tfl'] == 'RED' ||  widget.reports['assessments']['blood_pressure']['tfl'] == 'DEEP-RED' ?
+                                      widget.reports['result']['assessments']['blood_pressure']['tfl'] == 'RED' ||  widget.reports['result']['assessments']['blood_pressure']['tfl'] == 'DEEP-RED' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kRedColor,),
                                       ) :
@@ -434,7 +462,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         height: 11,
                                         width: 40,
                                       ),
-                                      widget.reports['assessments']['blood_pressure']['tfl'] == 'DEEP-RED' ?
+                                      widget.reports['result']['assessments']['blood_pressure']['tfl'] == 'DEEP-RED' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kPrimaryDeepRedColor,),
                                       ) :
@@ -443,7 +471,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                   ),  
                                   SizedBox(width: 20,),
 
-                                  Text('${widget.reports['assessments']['blood_pressure']['target']}',
+                                  Text('${widget.reports['result']['assessments']['blood_pressure']['target']}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: kTextGrey
@@ -455,7 +483,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                             ),
                           ),
                           // Expanded(
-                          //   child:  Text('${widget.reports['assessments']['body_composition']['components']['bmi']['target']}',
+                          //   child:  Text('${widget.reports['result']['assessments']['body_composition']['components']['bmi']['target']}',
                           //     style: TextStyle(
                           //       fontSize: 12,
                           //       color: kTextGrey
@@ -480,38 +508,45 @@ class _MeasurementsState extends State<MeasurementsTab> {
                     Text('History', style: TextStyle(color: kTextGrey, fontSize: 16)),
                     SizedBox(height: 10,),
 
-                    ...widget.previousReports.map((item) {
-                      return Container(
-
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.only(right: 20, bottom: 15,),
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  right: BorderSide(color: kBorderLighter, width: widget.previousReports.length > 0 ? 1 : 0)
-                                )
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
+                      children: <Widget>[
+                        ...widget.previousReports.map((item) {
+                          if (widget.previousReports.indexOf(item) < 6) {
+                            return Container(
+                              child: Row(
                                 children: <Widget>[
-                                  Text(getDate(item['report_date']),style: TextStyle(color: kTextGrey, fontSize: 12),),
-                                  SizedBox(height: 4,),
-                                  Row(
-                                    children: <Widget>[
-                                      Text("${item['result']['assessments']['blood_pressure']['value']}",style: TextStyle(color: kPrimaryRedColor, fontSize: 15,),),
-                                    ],
+                                  Container(
+                                    padding: EdgeInsets.only(right: 10, bottom: 15, left: widget.previousReports.indexOf(item) == 0 ? 0 : 10),
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        right: BorderSide(color: kBorderLighter, width: widget.previousReports.length > 0 ? 1 : 0)
+                                      )
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(getDate(item['report_date']),style: TextStyle(color: kTextGrey, fontSize: 12),),
+                                        SizedBox(height: 4,),
+                                        Row(
+                                          children: <Widget>[
+                                            Text("${item['result']['assessments']['blood_pressure']['value']}",style: TextStyle(color: ColorUtils.statusColor[widget.reports['result']['assessments']['blood_pressure']['tfl']] ?? Colors.black, fontSize: 15,),),
+                                          ],
+                                        ),
+                                        SizedBox(height: 4,),
+                                        // Text('mg/dL',style: TextStyle(color: kTextGrey, fontSize: 12),),
+                                      ],
+                                    ),
                                   ),
-                                  SizedBox(height: 4,),
-                                  // Text('mg/dL',style: TextStyle(color: kTextGrey, fontSize: 12),),
+
                                 ],
                               ),
-                            ),
-
-                          ],
-                        ),
-                      );
-                    }).toList()
+                            );
+                          } else {
+                            return Container();
+                          }
+                        }).toList()
+                      ],
+                    )
 
                   ],
                 ) : Container()
@@ -534,7 +569,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
               children: <Widget>[
 
 
-                widget.reports['assessments']['diabetes'] != null ?
+                widget.reports['result']['assessments']['diabetes'] != null ?
                 Container(
                   // alignment: Alignment.topCenter,
                   padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
@@ -568,15 +603,39 @@ class _MeasurementsState extends State<MeasurementsTab> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text('${widget.reports['assessments']['diabetes']['value']} ${widget.reports['assessments']['diabetes']['eval']}',
+                                  Text('${widget.reports['result']['assessments']['diabetes']['value']} ${widget.reports['result']['assessments']['diabetes']['eval']}',
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color: ColorUtils.statusColor[widget.reports['assessments']['diabetes']['tfl']] ?? Colors.black,
+                                      color: ColorUtils.statusColor[widget.reports['result']['assessments']['diabetes']['tfl']] ?? Colors.black,
 
                                     ),
                                   ),
+                                  SizedBox(height: 10,),
+                                  widget.reports['input'] != null && widget.reports['input']['params']['components']['biological-samples'] != null ?
+                                  Row(
+                                    children: <Widget>[
+                                      Text('Blood Glucose: ' + getGlucoseData(widget.reports['input']['params']['components']['biological-samples']),
+                                        style: TextStyle(
+                                          fontSize: 15,
+
+                                        ),
+                                      ),
+                                    ],
+                                  ) : Container(),
+                                  SizedBox(height: 10,),
+                                  widget.reports['input'] != null && widget.reports['input']['params']['components']['biological-samples'] != null ?
+                                  Row(
+                                    children: <Widget>[
+                                      Text('HbA1c: ' + getA1cData(widget.reports['input']['params']['components']['biological-samples']),
+                                        style: TextStyle(
+                                          fontSize: 15,
+
+                                        ),
+                                      ),
+                                    ],
+                                  ) : Container(),
                                   SizedBox(height: 5,),
-                                  // Text('${widget.reports['assessments']['body_composition']['components']['bmi']['unit']}',
+                                  // Text('${widget.reports['result']['assessments']['body_composition']['components']['bmi']['unit']}',
                                   //   style: TextStyle(
                                   //     fontSize: 12,
                                   //     color: kTextGrey
@@ -603,7 +662,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         height: 11,
                                         width: 40,
                                       ),
-                                      widget.reports['assessments']['diabetes']['tfl'] == 'BLUE' ?
+                                      widget.reports['result']['assessments']['diabetes']['tfl'] == 'BLUE' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kPrimaryBlueColor,),
                                       ) :
@@ -620,7 +679,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         height: 11,
                                         width: 40,
                                       ),
-                                      widget.reports['assessments']['diabetes']['tfl'] == 'GREEN' ?
+                                      widget.reports['result']['assessments']['diabetes']['tfl'] == 'GREEN' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kGreenColor,),
                                       ) :
@@ -635,7 +694,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         height: 11,
                                         width: 40,
                                       ),
-                                      widget.reports['assessments']['diabetes']['tfl'] == 'AMBER' ?
+                                      widget.reports['result']['assessments']['diabetes']['tfl'] == 'AMBER' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kPrimaryAmberColor,),
                                       ) :
@@ -650,7 +709,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         width: 40,
                                         margin: EdgeInsets.only(right: 10),
                                       ),
-                                      widget.reports['assessments']['diabetes']['tfl'] == 'RED' ||  widget.reports['assessments']['diabetes']['tfl'] == 'DEEP-RED' ?
+                                      widget.reports['result']['assessments']['diabetes']['tfl'] == 'RED' ||  widget.reports['result']['assessments']['diabetes']['tfl'] == 'DEEP-RED' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kRedColor,),
                                       ) :
@@ -668,7 +727,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         height: 11,
                                         width: 40,
                                       ),
-                                      widget.reports['assessments']['diabetes']['tfl'] == 'DEEP-RED' ?
+                                      widget.reports['result']['assessments']['diabetes']['tfl'] == 'DEEP-RED' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kPrimaryDeepRedColor,),
                                       ) :
@@ -677,10 +736,12 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                   ),  
                                   SizedBox(width: 20,),
 
-                                  Text('${widget.reports['assessments']['diabetes']['target']}',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: kTextGrey
+                                  Flexible(
+                                    child: Text('${widget.reports['result']['assessments']['diabetes']['target']}',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: kTextGrey
+                                      ),
                                     ),
                                   ),
 
@@ -689,7 +750,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                             ),
                           ),
                           // Expanded(
-                          //   child:  Text('${widget.reports['assessments']['body_composition']['components']['bmi']['target']}',
+                          //   child:  Text('${widget.reports['result']['assessments']['body_composition']['components']['bmi']['target']}',
                           //     style: TextStyle(
                           //       fontSize: 12,
                           //       color: kTextGrey
@@ -714,38 +775,58 @@ class _MeasurementsState extends State<MeasurementsTab> {
                     Text('History', style: TextStyle(color: kTextGrey, fontSize: 16)),
                     SizedBox(height: 10,),
 
-                    ...widget.previousReports.map((item) {
-                      return Container(
-
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.only(right: 20, bottom: 15,),
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  right: BorderSide(color: kBorderLighter, width: widget.previousReports.length > 0 ? 1 : 0)
-                                )
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
+                      children: <Widget>[
+                        ...widget.previousReports.map((item) {
+                          if (widget.previousReports.indexOf(item) < 6) {
+                            return Container(
+                              child: Row(
                                 children: <Widget>[
-                                  Text(getDate(item['report_date']),style: TextStyle(color: kTextGrey, fontSize: 12),),
-                                  SizedBox(height: 4,),
-                                  Row(
-                                    children: <Widget>[
-                                      Text("${item['result']['assessments']['diabetes']['value']}",style: TextStyle(color: kPrimaryRedColor, fontSize: 15,),),
-                                    ],
+                                  Container(
+                                    padding: EdgeInsets.only(right: 10, bottom: 15, left: widget.previousReports.indexOf(item) == 0 ? 0 : 10),
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        right: BorderSide(color: kBorderLighter, width: widget.previousReports.length > 0 ? 1 : 0)
+                                      )
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(getDate(item['report_date']),style: TextStyle(color: kTextGrey, fontSize: 12),),
+                                        SizedBox(height: 7,),
+                                        Row(
+                                          children: <Widget>[
+                                            Text("${item['result']['assessments']['diabetes']['value']}",style: TextStyle(color: ColorUtils.statusColor[item['result']['assessments']['diabetes']['tfl']], fontSize: 15,),),
+                                          ],
+                                        ),
+                                        SizedBox(height: 4,),
+                                        Row(
+                                          children: <Widget>[
+                                            Text('Glucose: ',style: TextStyle(color: kTextGrey, fontSize: 12),),
+                                            Text(getGlucoseData(item['input']['params']['components']['biological-samples']),style: TextStyle(color: kTextGrey, fontSize: 12, fontWeight: FontWeight.w500),),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: <Widget>[
+                                            Text('HbA1c: ',style: TextStyle(color: kTextGrey, fontSize: 12),),
+                                            Text(getA1cData(item['input']['params']['components']['biological-samples']),style: TextStyle(color: kTextGrey, fontSize: 12, fontWeight: FontWeight.w500),),
+                                          ],
+                                        ),
+                                        SizedBox(height: 4,),
+                                        // Text('mg/dL',style: TextStyle(color: kTextGrey, fontSize: 12),),
+                                      ],
+                                    ),
                                   ),
-                                  SizedBox(height: 4,),
-                                  // Text('mg/dL',style: TextStyle(color: kTextGrey, fontSize: 12),),
+
                                 ],
                               ),
-                            ),
-
-                          ],
-                        ),
-                      );
-                    }).toList()
+                            );
+                          } else {
+                            return Container();
+                          }
+                        }).toList()
+                      ],
+                    )
 
                   ],
                 ) : Container()
@@ -755,7 +836,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
 
 
           Container(
-            padding: EdgeInsets.only(left: 15, right: 15, bottom: 20),
+            padding: EdgeInsets.only(left: 15, right: 0, bottom: 20),
             width: double.infinity,
             decoration: BoxDecoration(
               border: Border(
@@ -767,7 +848,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
               children: <Widget>[
 
 
-                widget.reports['assessments']['cholesterol']['components']['total_cholesterol'] != null ?
+                widget.reports['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ?
                 Container(
                   // alignment: Alignment.topCenter,
                   padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
@@ -783,7 +864,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                         // crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text('Cholesterol', style: TextStyle(fontSize: 18, height: 1.4, fontWeight: FontWeight.w500),),
+                          Text('Total Cholesterol', style: TextStyle(fontSize: 18, height: 1.4, fontWeight: FontWeight.w500),),
                           canEdit ? GestureDetector(
                             child: Icon(Icons.edit, color: kPrimaryColor,),
                             onTap: () {}
@@ -801,15 +882,15 @@ class _MeasurementsState extends State<MeasurementsTab> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text('${widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['value']} ${widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['eval']}',
+                                  Text('${widget.reports['result']['assessments']['cholesterol']['components']['total_cholesterol']['value']} ${widget.reports['result']['assessments']['cholesterol']['components']['total_cholesterol']['eval']}',
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color: ColorUtils.statusColor[widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl']] ?? Colors.black,
+                                      color: ColorUtils.statusColor[widget.reports['result']['assessments']['cholesterol']['components']['total_cholesterol']['tfl']] ?? Colors.black,
 
                                     ),
                                   ),
                                   SizedBox(height: 5,),
-                                  // Text('${widget.reports['assessments']['body_composition']['components']['bmi']['unit']}',
+                                  // Text('${widget.reports['result']['assessments']['body_composition']['components']['bmi']['unit']}',
                                   //   style: TextStyle(
                                   //     fontSize: 12,
                                   //     color: kTextGrey
@@ -836,7 +917,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         height: 11,
                                         width: 40,
                                       ),
-                                      widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'BLUE' ?
+                                      widget.reports['result']['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'BLUE' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kPrimaryBlueColor,),
                                       ) :
@@ -853,7 +934,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         height: 11,
                                         width: 40,
                                       ),
-                                      widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'GREEN' ?
+                                      widget.reports['result']['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'GREEN' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kGreenColor,),
                                       ) :
@@ -868,7 +949,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         height: 11,
                                         width: 40,
                                       ),
-                                      widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'AMBER' ?
+                                      widget.reports['result']['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'AMBER' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kPrimaryAmberColor,),
                                       ) :
@@ -883,7 +964,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         width: 40,
                                         margin: EdgeInsets.only(right: 10),
                                       ),
-                                      widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'RED' ||  widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'DEEP-RED' ?
+                                      widget.reports['result']['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'RED' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kRedColor,),
                                       ) :
@@ -901,7 +982,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         height: 11,
                                         width: 40,
                                       ),
-                                      widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'DEEP-RED' ?
+                                      widget.reports['result']['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'DEEP-RED' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kPrimaryDeepRedColor,),
                                       ) :
@@ -910,10 +991,12 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                   ),  
                                   SizedBox(width: 10,),
 
-                                  Text('${widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['target']}',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: kTextGrey
+                                  Flexible(
+                                    child: Text('${widget.reports['result']['assessments']['cholesterol']['components']['total_cholesterol']['target']}',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: kTextGrey
+                                      ),
                                     ),
                                   ),
 
@@ -922,7 +1005,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                             ),
                           ),
                           // Expanded(
-                          //   child:  Text('${widget.reports['assessments']['body_composition']['components']['bmi']['target']}',
+                          //   child:  Text('${widget.reports['result']['assessments']['body_composition']['components']['bmi']['target']}',
                           //     style: TextStyle(
                           //       fontSize: 12,
                           //       color: kTextGrey
@@ -945,38 +1028,46 @@ class _MeasurementsState extends State<MeasurementsTab> {
                     Text('History', style: TextStyle(color: kTextGrey, fontSize: 16)),
                     SizedBox(height: 10,),
 
-                    ...widget.previousReports.map((item) {
-                      return Container(
-
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.only(right: 20, bottom: 15,),
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  right: BorderSide(color: kBorderLighter, width: widget.previousReports.length > 0 ? 1 : 0)
-                                )
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
+                      children: <Widget>[
+                        ...widget.previousReports.map((item) {
+                          if (widget.previousReports.indexOf(item) < 6) {
+                            return Container(
+                              child: Row(
                                 children: <Widget>[
-                                  Text(getDate(item['report_date']),style: TextStyle(color: kTextGrey, fontSize: 12),),
-                                  SizedBox(height: 4,),
-                                  Row(
-                                    children: <Widget>[
-                                      Text("${item['result']['assessments']['cholesterol']['components']['total_cholesterol']['value']}",style: TextStyle(color: kPrimaryRedColor, fontSize: 15,),),
-                                    ],
+                                  Container(
+                                    padding: EdgeInsets.only(right: 10, bottom: 15, left: widget.previousReports.indexOf(item) == 0 ? 0 : 10),
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        right: BorderSide(color: kBorderLighter, width: widget.previousReports.length > 0 ? 1 : 0)
+                                      )
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(getDate(item['report_date']),style: TextStyle(color: kTextGrey, fontSize: 12),),
+                                        SizedBox(height: 4,),
+                                        Row(
+                                          children: <Widget>[
+                                            Text("${item['result']['assessments']['cholesterol']['components']['total_cholesterol']['value']}",
+                                              style: TextStyle(color: ColorUtils.statusColor[item['result']['assessments']['cholesterol']['components']['total_cholesterol']['tfl']], fontSize: 15,),),
+                                          ],
+                                        ),
+                                        SizedBox(height: 4,),
+                                        // Text('mg/dL',style: TextStyle(color: kTextGrey, fontSize: 12),),
+                                      ],
+                                    ),
                                   ),
-                                  SizedBox(height: 4,),
-                                  // Text('mg/dL',style: TextStyle(color: kTextGrey, fontSize: 12),),
+
                                 ],
                               ),
-                            ),
-
-                          ],
-                        ),
-                      );
-                    }).toList()
+                            );
+                          } else {
+                            return Container();
+                          }
+                        }).toList()
+                      ],
+                    )
 
                   ],
                 ) : Container()
@@ -986,7 +1077,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
 
           
           Container(
-            padding: EdgeInsets.only(left: 15, right: 15, bottom: 20),
+            padding: EdgeInsets.only(left: 15, right: 0, bottom: 20),
             width: double.infinity,
             decoration: BoxDecoration(
               border: Border(
@@ -998,7 +1089,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
               children: <Widget>[
 
 
-                widget.reports['assessments']['cholesterol']['components']['total_cholesterol'] != null ?
+                widget.reports['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ?
                 Container(
                   // alignment: Alignment.topCenter,
                   padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
@@ -1032,15 +1123,15 @@ class _MeasurementsState extends State<MeasurementsTab> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text('${widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['value']} ${widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['eval']}',
+                                  Text('${widget.reports['result']['assessments']['cvd']['value']} ${widget.reports['result']['assessments']['cvd']['eval']}',
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color: ColorUtils.statusColor[widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl']] ?? Colors.black,
+                                      color: ColorUtils.statusColor[widget.reports['result']['assessments']['cvd']['tfl']] ?? Colors.black,
 
                                     ),
                                   ),
                                   SizedBox(height: 5,),
-                                  // Text('${widget.reports['assessments']['body_composition']['components']['bmi']['unit']}',
+                                  // Text('${widget.reports['result']['assessments']['body_composition']['components']['bmi']['unit']}',
                                   //   style: TextStyle(
                                   //     fontSize: 12,
                                   //     color: kTextGrey
@@ -1051,7 +1142,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                             )
                           ),
                           Expanded(
-                            flex: 4,
+                            flex: 5,
                             child: Container(
                               margin: EdgeInsets.only(top: 10),
                               child: Row(
@@ -1067,7 +1158,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         height: 11,
                                         width: 40,
                                       ),
-                                      widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'BLUE' ?
+                                      widget.reports['result']['assessments']['cvd']['tfl'] == 'BLUE' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kPrimaryBlueColor,),
                                       ) :
@@ -1084,7 +1175,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         height: 11,
                                         width: 40,
                                       ),
-                                      widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'GREEN' ?
+                                      widget.reports['result']['assessments']['cvd']['tfl'] == 'GREEN' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kGreenColor,),
                                       ) :
@@ -1099,7 +1190,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         height: 11,
                                         width: 40,
                                       ),
-                                      widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'AMBER' ?
+                                      widget.reports['result']['assessments']['cvd']['tfl'] == 'AMBER' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kPrimaryAmberColor,),
                                       ) :
@@ -1114,7 +1205,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         width: 40,
                                         margin: EdgeInsets.only(right: 10),
                                       ),
-                                      widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'RED' ||  widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'DEEP-RED' ?
+                                      widget.reports['result']['assessments']['cvd']['tfl'] == 'RED' ||  widget.reports['result']['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'DEEP-RED' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kRedColor,),
                                       ) :
@@ -1132,7 +1223,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         height: 11,
                                         width: 40,
                                       ),
-                                      widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['tfl'] == 'DEEP-RED' ?
+                                      widget.reports['result']['assessments']['cvd']['tfl'] == 'DEEP-RED' ?
                                       Container(
                                         child: Icon(Icons.arrow_drop_up, size: 30, color: kPrimaryDeepRedColor,),
                                       ) :
@@ -1141,10 +1232,12 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                   ),  
                                   SizedBox(width: 10,),
 
-                                  Text('${widget.reports['assessments']['cholesterol']['components']['total_cholesterol']['target']}',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: kTextGrey
+                                  Flexible(
+                                    child: Text('${widget.reports['result']['assessments']['cvd']['target']}',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: kTextGrey
+                                      ),
                                     ),
                                   ),
 
@@ -1153,7 +1246,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                             ),
                           ),
                           // Expanded(
-                          //   child:  Text('${widget.reports['assessments']['body_composition']['components']['bmi']['target']}',
+                          //   child:  Text('${widget.reports['result']['assessments']['body_composition']['components']['bmi']['target']}',
                           //     style: TextStyle(
                           //       fontSize: 12,
                           //       color: kTextGrey
@@ -1176,38 +1269,45 @@ class _MeasurementsState extends State<MeasurementsTab> {
                     Text('History', style: TextStyle(color: kTextGrey, fontSize: 16)),
                     SizedBox(height: 10,),
 
-                    ...widget.previousReports.map((item) {
-                      return Container(
-
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.only(right: 20, bottom: 15,),
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  right: BorderSide(color: kBorderLighter, width: widget.previousReports.length > 0 ? 1 : 0)
-                                )
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
+                      children: <Widget>[
+                        ...widget.previousReports.map((item) {
+                          if (widget.previousReports.indexOf(item) < 6) {
+                            return Container(
+                              child: Row(
                                 children: <Widget>[
-                                  Text(getDate(item['report_date']),style: TextStyle(color: kTextGrey, fontSize: 12),),
-                                  SizedBox(height: 4,),
-                                  Row(
-                                    children: <Widget>[
-                                      Text("${item['result']['assessments']['cholesterol']['components']['total_cholesterol']['value']}",style: TextStyle(color: kPrimaryRedColor, fontSize: 15,),),
-                                    ],
+                                  Container(
+                                    padding: EdgeInsets.only(right: 10, bottom: 15, left: widget.previousReports.indexOf(item) == 0 ? 0 : 10),
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        right: BorderSide(color: kBorderLighter, width: widget.previousReports.length > 0 ? 1 : 0)
+                                      )
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(getDate(item['report_date']),style: TextStyle(color: kTextGrey, fontSize: 12),),
+                                        SizedBox(height: 4,),
+                                        Row(
+                                          children: <Widget>[
+                                            Text("${item['result']['assessments']['cvd']['value']}",style: TextStyle(color: ColorUtils.statusColor[item['result']['assessments']['cvd']['tfl']], fontSize: 15,),),
+                                          ],
+                                        ),
+                                        SizedBox(height: 4,),
+                                        // Text('mg/dL',style: TextStyle(color: kTextGrey, fontSize: 12),),
+                                      ],
+                                    ),
                                   ),
-                                  SizedBox(height: 4,),
-                                  // Text('mg/dL',style: TextStyle(color: kTextGrey, fontSize: 12),),
+
                                 ],
                               ),
-                            ),
-
-                          ],
-                        ),
-                      );
-                    }).toList()
+                            );
+                          } else {
+                            return Container();
+                          }
+                        }).toList()
+                      ],
+                    )
 
                   ],
                 ) : Container()

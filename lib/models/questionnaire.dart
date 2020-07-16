@@ -241,9 +241,13 @@ class Questionnaire {
       }
     };
     // _questionnaireItems = [];
+    // print(data['body']['data']['url']);
 
-
-    _questionnaireItems.add(data);
+    print(_questionnaireItems.where((item) => item['body']['data']['url'] == url).isEmpty);
+    if (_questionnaireItems.where((item) => item['body']['data']['url'] == url).isEmpty) {
+      _questionnaireItems.add(data);
+    }
+    
     print(_questionnaireItems);
     return 'success';
   }

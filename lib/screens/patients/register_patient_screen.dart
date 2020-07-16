@@ -150,7 +150,10 @@ class _RegisterPatientState extends State<RegisterPatient> {
     nidController.clear();   contactFirstNameController.clear();
     contactLastNameController.clear();
     contactRelationshipController.clear();
+    contactMobilePhoneController.clear();
     _image = null;
+
+    selectedRelation = null;
   }
   
   @override

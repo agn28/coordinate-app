@@ -38,7 +38,6 @@ class _ActionsSwipperState extends State<ActionsSwipperScreen> {
   bool videoWatched = false;
   bool isLoading = false;
   final commentController = TextEditingController();
-  String videoUrl = '';
   String videoId = '';
   String formUrl = '';
   List<Widget> pages = [];
@@ -85,7 +84,7 @@ class _ActionsSwipperState extends State<ActionsSwipperScreen> {
             autoPlay: false,
           ),
         );
-        videoUrl = video.first != null ? video.first['uri'] : '';
+        videoUrl = video.first['uri'];
       });
     }
 
@@ -717,9 +716,12 @@ class VideoContainer extends StatefulWidget {
 }
 
 class _VideoContainerState extends State<VideoContainer> {
+
+  String videoWatched = 'no';
   @override
   initState() {
     super.initState();
+    videoWatched = 'no';
   }
   getTime(time) {
     var data = '';
@@ -822,39 +824,41 @@ class _VideoContainerState extends State<VideoContainer> {
           // Text(widget._youtubeController.metadata.title, style: TextStyle(fontSize: 18),),
           SizedBox(height: 10,),
           // Text(getTime(widget._youtubeController.metadata.duration.toString()), style: TextStyle(fontSize: 14, color: kTextGrey),),
-          SizedBox(height: 40,),
-          Container(
-            padding: EdgeInsets.symmetric(vertical:15),
-            width: double.infinity,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(2),
-              border: Border.all(color: kPrimaryColor)
-            ),
-            child: InkWell(
-              onTap: () async {
-                var result = Questionnaire().addVideoSurvey(videoUrl, widget.carePlan);
-                if (result == 'success') {
-                  _scaffoldKey.currentState.showSnackBar(
-                    SnackBar(
-                      content: Text('Data added'),
-                      backgroundColor: Color(0xFF4cAF50),
-                    )
-                  );
-                  await Future.delayed(const Duration(seconds: 1));
-                  // Navigator.of(context).pop();
-                } else {
-                  _scaffoldKey.currentState.showSnackBar(
-                    SnackBar(
-                      content: Text(result.toString()),
-                      backgroundColor: kPrimaryRedColor,
-                    )
-                  );
-                }
-              },
-              child: Text('USER HAS WATCHED THE ENTIRE VIDEO', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w500),),
-            ),
+
+          Text('User has watched the entire video?', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),),
+
+          Row(
+            children: <Widget>[
+              Radio(
+                activeColor: kPrimaryColor,
+                value: 'yes',
+                groupValue: videoWatched,
+                onChanged: (val) async {
+                  setState(() {
+                    videoWatched = val;
+                  });
+                  Questionnaire().addVideoSurvey(videoUrl, widget.carePlan);
+                },
+              ),
+              Text('Yes', style: TextStyle(fontSize: 15),),
+            ],
           ),
+
+          Row(
+            children: <Widget>[
+              Radio(
+                activeColor: kPrimaryColor,
+                value: 'no',
+                groupValue: videoWatched,
+                onChanged: (val) {
+                  setState(() {
+                    videoWatched = val;
+                  });
+                },
+              ),
+              Text('No', style: TextStyle(fontSize: 15),),
+            ],
+          )
         ],
       ),
     );

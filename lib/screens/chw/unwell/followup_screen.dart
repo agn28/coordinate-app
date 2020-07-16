@@ -52,7 +52,22 @@ class _ChwFollowupState extends State<ChwFollowupScreen> {
     clearForm();
   }
 
+  nextStep() {
+    setState(() {
+      if (_currentStep == 2) {
+        _currentStep = _currentStep + 1;
+        nextText = 'COMPLETE';
+      } else if (_currentStep == 3) {
+        checkData();
+      } else {
+        _currentStep = _currentStep + 1;
+      }
+    });
+  }
+
   clearForm() {
+    selectedCauses = [];
+    selectedIssues = [];
     _temperatureController.text = '';
     _systolicController.text = '';
     _diastolicController.text = '';
@@ -232,18 +247,18 @@ class _ChwFollowupState extends State<ChwFollowupScreen> {
       ),
       CustomStep(
         title: Text('Permission', textAlign: TextAlign.center,),
-        content: Temperature(),
+        content: Temperature(parent: this),
         isActive: _currentStep >= 1,
       ),
       CustomStep(
         title: Text('Permission', textAlign: TextAlign.center,),
-        content: BloodPressure(),
+        content: BloodPressure(parent: this),
         isActive: _currentStep >= 2,
       ),
 
       CustomStep(
         title: Text('Permission', textAlign: TextAlign.center,),
-        content: Glucose(),
+        content: Glucose(parent: this),
         isActive: _currentStep >= 4,
       ),
     ];
@@ -419,6 +434,8 @@ class _UnwellCausesState extends State<UnwellCauses> {
 
 
 class Temperature extends StatefulWidget {
+  Temperature({this.parent});
+  final parent;
 
   @override
   _TemperatureState createState() => _TemperatureState();
@@ -440,7 +457,7 @@ class _TemperatureState extends State<Temperature> {
             SizedBox(height: 30,),
             Container(
               alignment: Alignment.center,
-              child: Text('Can I take your temperature ?', style: TextStyle(fontSize: 21),),
+              child: Text('What is patient\'s temperature?', style: TextStyle(fontSize: 21),),
             ),
             SizedBox(height: 30,),
             Container(
@@ -453,10 +470,15 @@ class _TemperatureState extends State<Temperature> {
               ),
             ),
             SizedBox(height: 10,),
-            Container(
-              // margin: EdgeInsets.symmetric(horizontal: 30),
-              alignment: Alignment.center,
-              child: Text('SKIP (DEVICE UNAVAILABLE)', style: TextStyle(color: kPrimaryColor, fontSize: 15, fontWeight: FontWeight.w500,)),
+            InkWell(
+              onTap: () {
+                widget.parent.nextStep();
+              },
+              child: Container(
+                // margin: EdgeInsets.symmetric(horizontal: 30),
+                alignment: Alignment.center,
+                child: Text('SKIP (DEVICE UNAVAILABLE)', style: TextStyle(color: kPrimaryColor, fontSize: 15, fontWeight: FontWeight.w500,)),
+              ),
             )
 
           ],
@@ -467,6 +489,8 @@ class _TemperatureState extends State<Temperature> {
 }
 
 class BloodPressure extends StatefulWidget {
+  BloodPressure({this.parent});
+  final parent;
 
   @override
   _BloodPressureState createState() => _BloodPressureState();
@@ -488,7 +512,7 @@ class _BloodPressureState extends State<BloodPressure> {
             SizedBox(height: 30,),
             Container(
               alignment: Alignment.center,
-              child: Text('Can I take your BLood Pressure & Heart Rate ?', style: TextStyle(fontSize: 21),),
+              child: Text('What is blood pressure?', style: TextStyle(fontSize: 21),),
             ),
             SizedBox(height: 30,),
             Container(
@@ -568,10 +592,15 @@ class _BloodPressureState extends State<BloodPressure> {
               ),
             ),
             SizedBox(height: 10,),
-            Container(
-              // margin: EdgeInsets.symmetric(horizontal: 30),
-              alignment: Alignment.center,
-              child: Text('SKIP (DEVICE UNAVAILABLE)', style: TextStyle(color: kPrimaryColor, fontSize: 15, fontWeight: FontWeight.w500,)),
+            InkWell(
+              onTap: () {
+                widget.parent.nextStep();
+              },
+              child: Container(
+                // margin: EdgeInsets.symmetric(horizontal: 30),
+                alignment: Alignment.center,
+                child: Text('SKIP (DEVICE UNAVAILABLE)', style: TextStyle(color: kPrimaryColor, fontSize: 15, fontWeight: FontWeight.w500,)),
+              ),
             )
 
           ],
@@ -583,6 +612,8 @@ class _BloodPressureState extends State<BloodPressure> {
 
 
 class Glucose extends StatefulWidget {
+  Glucose({this.parent});
+  final parent;
 
   @override
   _GlucoseState createState() => _GlucoseState();
@@ -615,7 +646,7 @@ class _GlucoseState extends State<Glucose> {
             SizedBox(height: 30,),
             Container(
               alignment: Alignment.center,
-              child: Text('Can I take your Blood Pressure & Heart Rate ?', style: TextStyle(fontSize: 21),),
+              child: Text('What is blood glucose level?', style: TextStyle(fontSize: 21),),
             ),
             SizedBox(height: 30,),
             Container(
@@ -731,11 +762,16 @@ class _GlucoseState extends State<Glucose> {
                 },
               ),
             ),
-            SizedBox(height: 10,),
-            Container(
-              // margin: EdgeInsets.symmetric(horizontal: 30),
-              alignment: Alignment.center,
-              child: Text('SKIP (DEVICE UNAVAILABLE)', style: TextStyle(color: kPrimaryColor, fontSize: 15, fontWeight: FontWeight.w500,)),
+            SizedBox(height: 20,),
+            InkWell(
+              onTap: () {
+                widget.parent.nextStep();
+              },
+              child: Container(
+                // margin: EdgeInsets.symmetric(horizontal: 30),
+                alignment: Alignment.center,
+                child: Text('SKIP (DEVICE UNAVAILABLE)', style: TextStyle(color: kPrimaryColor, fontSize: 15, fontWeight: FontWeight.w500,)),
+              ),
             )
 
           ],

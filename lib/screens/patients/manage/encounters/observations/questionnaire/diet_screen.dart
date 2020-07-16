@@ -121,7 +121,9 @@ class _DietState extends State<Diet> {
                               ),
                               child: FlatButton(
                                 onPressed: () {
-                                  // _changeOption(_questions['items'][0]['options'].indexOf(option));
+                                  setState(() {
+                                    _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
+                                  });
                                 },
                                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 child: Text(StringUtils.capitalize(option),
@@ -258,10 +260,10 @@ class _DietState extends State<Diet> {
                               Radio(
                                 activeColor: kPrimaryColor,
                                 value: _questions['items'][3]['options'].indexOf(option),
-                                groupValue: _thirdQuestionOption,
+                                groupValue: _fourthQuestionOption,
                                 onChanged: (val) {
                                   setState(() {
-                                    _thirdQuestionOption = val;
+                                    _fourthQuestionOption = val;
                                   });
                                 },
                               ),

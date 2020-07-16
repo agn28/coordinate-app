@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 //urls
-// const String apiUrl = 'http://841b1dd3890c.ngrok.io/api/v1/';
+// const String apiUrl = 'http://6bd840ead184.ngrok.io/api/v1/';
 const String apiUrl = 'https://coordinate-api.monarko.com/api/v1/';
 
 const String gsBucket = 'gs://nhealth-demo.appspot.com';
@@ -48,6 +48,7 @@ class ColorUtils {
     'BLUE': kPrimaryBlueColor,
     'RED': kRedColor,
     'DEEP-RED': kPrimaryDeepRedColor,
-    'DARK-RED': kPrimaryDeepRedColor
+    'DARK-RED': kPrimaryDeepRedColor,
+    'GRAY': kBorderGrey,
   };
 }

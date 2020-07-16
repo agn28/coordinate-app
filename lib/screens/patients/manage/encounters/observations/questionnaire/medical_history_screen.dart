@@ -322,7 +322,7 @@ class _SecondQuestionState extends State<SecondQuestion> {
                       ),
                       child: FlatButton(
                         onPressed: () {
-                          // _changeOption(_questions['items'][0]['options'].indexOf(option));
+                          _changeOption(_questions['items'][0]['options'].indexOf(option));
                         },
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         child: Text(option.toUpperCase(),
