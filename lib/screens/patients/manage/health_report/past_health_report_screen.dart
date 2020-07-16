@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
@@ -130,7 +131,7 @@ class _PastHealthReportState extends State<PastHealthReport> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Past Health Assessments', style: TextStyle(color: Colors.white),),
+        title: Text(AppLocalizations.of(context).translate('pastHealthAssessments'), style: TextStyle(color: Colors.white),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),

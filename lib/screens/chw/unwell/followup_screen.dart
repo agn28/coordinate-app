@@ -561,7 +561,7 @@ class _BloodPressureState extends State<BloodPressure> {
                   SizedBox(width: 20,),
                   Expanded(
                     child: PrimaryTextField(
-                      hintText: 'Systolic',
+                      hintText: AppLocalizations.of(context).translate('systolic'),
                       controller: _systolicController,
                       topPaadding: 10,
                       bottomPadding: 10,
@@ -572,7 +572,7 @@ class _BloodPressureState extends State<BloodPressure> {
                   SizedBox(width: 10,),
                   Expanded(
                     child: PrimaryTextField(
-                      hintText: 'Diastolic',
+                      hintText: AppLocalizations.of(context).translate('diastolic'),
                       controller: _diastolicController,
                       topPaadding: 10,
                       bottomPadding: 10,
@@ -667,7 +667,7 @@ class _GlucoseState extends State<Glucose> {
                       });
                     },
                   ),
-                  Text('Fasting', style: TextStyle(color: Colors.black)),
+                  Text(AppLocalizations.of(context).translate('fasting'), style: TextStyle(color: Colors.black)),
                   SizedBox(width: 30,),
                   Radio(
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -680,7 +680,7 @@ class _GlucoseState extends State<Glucose> {
                       });
                     },
                   ),
-                  Text('Random', style: TextStyle(color: Colors.black)),
+                  Text(AppLocalizations.of(context).translate('random'), style: TextStyle(color: Colors.black)),
                 ],
               ),
             ),

@@ -592,7 +592,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                           children: [
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text('Last Encounter date:', style: TextStyle(fontSize: 17,),),
+                              child: Text(AppLocalizations.of(context).translate('lastEncounterDate'), style: TextStyle(fontSize: 17,),),
                             ),
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),
@@ -604,7 +604,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                           children: [
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text('Next Assessment Due on:', style: TextStyle(fontSize: 17,),),
+                              child: Text(AppLocalizations.of(context).translate('nextAssessmentDate'), style: TextStyle(fontSize: 17,),),
                             ),
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),
@@ -616,7 +616,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                           children: [
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text('Current Conditions:', style: TextStyle(fontSize: 17,),),
+                              child: Text(AppLocalizations.of(context).translate('currentConditions'), style: TextStyle(fontSize: 17,),),
                             ),
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),
@@ -635,7 +635,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                           children: [
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text('Allergies:', style: TextStyle(fontSize: 17,),),
+                              child: Text(AppLocalizations.of(context).translate('allergies'), style: TextStyle(fontSize: 17,),),
                             ),
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),
@@ -654,7 +654,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                           children: [
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text('Medications', style: TextStyle(fontSize: 17,),),
+                              child: Text(AppLocalizations.of(context).translate('medicationsTitle'), style: TextStyle(fontSize: 17,),),
                             ),
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
@@ -37,7 +38,7 @@ class HealthReportSuccess extends StatelessWidget {
                     child: Icon(Icons.done, size: 80, color: Colors.white,)
                   ),
                   SizedBox(height: 30,),
-                  Text('Health Assessment Created', style: TextStyle(fontSize: 24)),
+                  Text(AppLocalizations.of(context).translate('healthAssesmentCreated'), style: TextStyle(fontSize: 24)),
                   SizedBox(height: 40,),
                   Text(Helpers().getPatientName(Patient().getPatient()), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500,)),
                   SizedBox(height: 15,),
@@ -57,7 +58,7 @@ class HealthReportSuccess extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text('Patient Overview', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400, color: kPrimaryColor),),
+                        Text(AppLocalizations.of(context).translate('patientOverview'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400, color: kPrimaryColor),),
                         Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
                       ],
                     ),
@@ -98,7 +99,7 @@ class HealthReportSuccess extends StatelessWidget {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            Text('Patients', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
+                                            Text(AppLocalizations.of(context).translate('patients'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
                                             
                                           ],
                                         )
@@ -157,7 +158,7 @@ class HealthReportSuccess extends StatelessWidget {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            Text('Go to Home', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
+                                            Text(AppLocalizations.of(context).translate('goHome'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
                                           ],
                                         )
                                       ],

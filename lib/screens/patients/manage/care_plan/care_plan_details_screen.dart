@@ -2,6 +2,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
@@ -202,7 +203,7 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        Text('Fasting Blood Sugar', style: TextStyle(fontSize: 19),),
+                                        Text(AppLocalizations.of(context).translate('fastingBloodSugar'), style: TextStyle(fontSize: 19),),
                                         SizedBox(height: 10,),
                                         Row(
                                           children: <Widget>[

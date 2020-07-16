@@ -303,7 +303,7 @@ class _Form4State extends State<Form4> {
                           topPaadding: 10,
                           bottomPadding: 10,
                           controller: systolicController,
-                          hintText: 'Systolic',
+                          hintText: AppLocalizations.of(context).translate('systolic'),
                           type: TextInputType.number,
                         ),
                       ),
@@ -313,7 +313,7 @@ class _Form4State extends State<Form4> {
                           controller: diastolicController,
                           topPaadding: 10,
                           bottomPadding: 10,
-                          hintText: 'Diastolic',
+                          hintText: AppLocalizations.of(context).translate('diastolic'),
                           type: TextInputType.number
                         ),
                       ),
@@ -512,11 +512,11 @@ class Form16 extends StatelessWidget {
                   ),
                   items: [
                       DropdownMenuItem(
-                        child: Text('Fasting'),
+                        child: Text(AppLocalizations.of(context).translate('fasting')),
                         value: 'fasting'
                       ),
                       DropdownMenuItem(
-                        child: Text('Random'),
+                        child: Text(AppLocalizations.of(context).translate('random')),
                         value: 'random'
                       )
                     ,

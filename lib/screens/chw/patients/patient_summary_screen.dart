@@ -440,7 +440,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: new AppBar(
-        title: new Text('Patient Summary', style: TextStyle(color: Colors.white, fontSize: 20),),
+        title: new Text(AppLocalizations.of(context).translate('patientSummary'), style: TextStyle(color: Colors.white, fontSize: 20),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -625,7 +625,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                           children: [
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text('Last Encounter date:', style: TextStyle(fontSize: 17,),),
+                              child: Text(AppLocalizations.of(context).translate('lastEncounterDate'), style: TextStyle(fontSize: 17,),),
                             ),
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),
@@ -637,7 +637,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                           children: [
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text('Next Assessment Due on:', style: TextStyle(fontSize: 17,),),
+                              child: Text(AppLocalizations.of(context).translate('nextAssessmentDate'), style: TextStyle(fontSize: 17,),),
                             ),
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),
@@ -649,7 +649,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                           children: [
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text('Current Conditions:', style: TextStyle(fontSize: 17,),),
+                              child: Text(AppLocalizations.of(context).translate('currentConditions'), style: TextStyle(fontSize: 17,),),
                             ),
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),
@@ -668,7 +668,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                           children: [
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text('Medications', style: TextStyle(fontSize: 17,),),
+                              child: Text(AppLocalizations.of(context).translate('medicationsTitle'), style: TextStyle(fontSize: 17,),),
                             ),
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),

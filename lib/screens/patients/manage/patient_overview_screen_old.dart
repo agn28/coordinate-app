@@ -375,7 +375,7 @@ class _PatientRecordsState extends State<PatientRecordsScreenOld> {
                                         children: <Widget>[
                                           Icon(Icons.visibility, color: kPrimaryColor, size: 30,),
                                           SizedBox(width: 20),
-                                          Text(AppLocalizations.of(context).translate('pastHealthAssessments'), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500, color: kPrimaryColor), textAlign: TextAlign.right,)
+                                          Text(AppLocalizations.of(context).translate('viewPastHealthAssessments'), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500, color: kPrimaryColor), textAlign: TextAlign.right,)
                                         ],
                                       ),
                                     ),

@@ -206,7 +206,7 @@ class _PatientSearchState extends State<PatientSearchScreen> {
                               icon: Icon(Icons.cancel, color: kTextGrey, size: 25,)
                             ),
                             border: InputBorder.none,
-                            hintText: "Search here...",
+                            hintText: AppLocalizations.of(context).translate('searchHere'),
                             contentPadding: const EdgeInsets.only(
                               left: 16,
                               right: 20,

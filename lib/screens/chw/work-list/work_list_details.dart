@@ -207,7 +207,7 @@ class Form4 extends StatelessWidget {
                       child: PrimaryTextField(
                         topPaadding: 10,
                         bottomPadding: 10,
-                        hintText: 'Systolic',
+                        hintText: AppLocalizations.of(context).translate('systolic'),
                         type: TextInputType.number,
                       ),
                     ),
@@ -216,13 +216,13 @@ class Form4 extends StatelessWidget {
                       child: PrimaryTextField(
                         topPaadding: 10,
                         bottomPadding: 10,
-                        hintText: 'Diastolic',
+                        hintText: AppLocalizations.of(context).translate('diastolic'),
                         type: TextInputType.number
                       ),
                     ),
                   ],
                 ),
-                Text('Second reading of blood pressure?', style: TextStyle(fontSize: 17),),
+                Text(AppLocalizations.of(context).translate('secondReadingBP'), style: TextStyle(fontSize: 17),),
                 SizedBox(height: 15,),
                 Row(
                   children: <Widget>[
@@ -230,7 +230,7 @@ class Form4 extends StatelessWidget {
                       child: PrimaryTextField(
                         topPaadding: 10,
                         bottomPadding: 10,
-                        hintText: 'Systolic',
+                        hintText: AppLocalizations.of(context).translate('systolic'),
                         type: TextInputType.number,
                       ),
                     ),
@@ -239,13 +239,13 @@ class Form4 extends StatelessWidget {
                       child: PrimaryTextField(
                         topPaadding: 10,
                         bottomPadding: 10,
-                        hintText: 'Diastolic',
+                        hintText: AppLocalizations.of(context).translate('diastolic'),
                         type: TextInputType.number
                       ),
                     ),
                   ],
                 ),
-                Text('Third reading of blood pressure?', style: TextStyle(fontSize: 17),),
+                Text(AppLocalizations.of(context).translate('thirdReadingBP'), style: TextStyle(fontSize: 17),),
                 SizedBox(height: 15,),
                 Row(
                   children: <Widget>[
@@ -253,7 +253,7 @@ class Form4 extends StatelessWidget {
                       child: PrimaryTextField(
                         topPaadding: 10,
                         bottomPadding: 10,
-                        hintText: 'Systolic',
+                        hintText: AppLocalizations.of(context).translate('systolic'),
                         type: TextInputType.number,
                       ),
                     ),
@@ -262,7 +262,7 @@ class Form4 extends StatelessWidget {
                       child: PrimaryTextField(
                         topPaadding: 10,
                         bottomPadding: 10,
-                        hintText: 'Diastolic',
+                        hintText: AppLocalizations.of(context).translate('diastolic'),
                         type: TextInputType.number
                       ),
                     ),
@@ -390,11 +390,11 @@ class Form16 extends StatelessWidget {
                   ),
                   items: [
                       DropdownMenuItem(
-                        child: Text('Fasting'),
+                        child: Text(AppLocalizations.of(context).translate('fasting')),
                         value: 'fasting'
                       ),
                       DropdownMenuItem(
-                        child: Text('Random'),
+                        child: Text(AppLocalizations.of(context).translate('random')),
                         value: 'random'
                       )
                     ,
