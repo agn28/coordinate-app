@@ -1360,7 +1360,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                   Navigator.of(context).pop();
                                 },
                                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              child: Text('CANCEL', style: TextStyle(fontSize: 14),)
+                              child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(fontSize: 14),)
                             ),
                           ),
 

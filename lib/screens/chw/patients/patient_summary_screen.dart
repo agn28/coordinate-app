@@ -702,7 +702,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              Text('Care Plan Actions', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                              Text(AppLocalizations.of(context).translate('careplanAcions'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                               Container(
                                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                                 decoration: BoxDecoration(
@@ -713,7 +713,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                   onTap: () {
                                     Navigator.of(context).pushNamed('/carePlanDetails', arguments: carePlans);
                                   },
-                                  child: Text('VIEW CARE PLAN', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w500),),
+                                  child: Text(AppLocalizations.of(context).translate('viewCareplan'), style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w500),),
                                 ),
                               ),
                             ],
@@ -741,7 +741,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    Text('Patient History', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                                    Text(AppLocalizations.of(context).translate('patientHistory'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                     Icon(Icons.filter_list, color: kPrimaryColor,)
                                   ],
                                 ),
@@ -1030,7 +1030,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                             margin: EdgeInsets.only(top: 20),
                                             width: 350,
                                             alignment: Alignment.center,
-                                            child: Text('In the course of your visit, were there any medical issues identified?', style: TextStyle(
+                                            child: Text(AppLocalizations.of(context).translate('medicalIssueInVisit'), style: TextStyle(
                                             fontSize: 22
                                           ), textAlign: TextAlign.center,),
                                           ),
@@ -1099,7 +1099,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                               );
                             },
                             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            child: Text('COMPLETE VISIT', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                            child: Text(AppLocalizations.of(context).translate('completeVisit'), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
                           ),
                         ) : Container(),
                       ],

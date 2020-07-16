@@ -494,7 +494,7 @@ class _AddDialogueState extends State<AddDialogue> {
                             onTap: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text('CANCEL', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                            child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
                           ),
                           SizedBox(width: 50,),
                           GestureDetector(

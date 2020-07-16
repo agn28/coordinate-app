@@ -289,7 +289,7 @@ class _SkipAlertState extends State<SkipAlert> {
                           onTap: () async {
                             Navigator.of(context).pushReplacementNamed('/chwHome');
                           },
-                          child: Text('DONE', style: TextStyle(color: kPrimaryColor, fontSize: 16))
+                          child: Text(AppLocalizations.of(context).translate('done'), style: TextStyle(color: kPrimaryColor, fontSize: 16))
                         ),
                       ],
                     )

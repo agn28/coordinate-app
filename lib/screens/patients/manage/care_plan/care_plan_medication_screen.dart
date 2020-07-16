@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
@@ -129,7 +130,7 @@ class _CarePlanMedicationState extends State<CarePlanMedication> {
                 onTap: () {
                   Navigator.of(context).pop();
                 },
-                text: Text('MARK AS COMPLETE', style: TextStyle(color: Colors.white, fontSize: 16),),
+                text: Text(AppLocalizations.of(context).translate('markAsComplete'), style: TextStyle(color: Colors.white, fontSize: 16),),
               ),
             ),
           ],
