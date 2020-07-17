@@ -711,7 +711,7 @@ class _PatientItemState extends State<PatientItem> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        // Patient().getPatient()['data']['avatar'] == '' ? 
+                        widget.item['body']['avatar'] == '' && widget.item['body']['avatar'] != null ? 
                         ClipRRect(
                           borderRadius: BorderRadius.circular(30.0),
                           child: Image.asset(
@@ -719,20 +719,19 @@ class _PatientItemState extends State<PatientItem> {
                             height: 40.0,
                             width: 40.0,
                           ),
+                        ) :
+                        CircleAvatar(
+                          radius: 30,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(30.0),
+                            child: Image.network(
+                              widget.item['body']['avatar'],
+                              height: 70.0,
+                              width: 70.0,
+                            ),
+                          ),
+                          backgroundImage: AssetImage('assets/images/avatar.png'),
                         ),
-                        // CircleAvatar(
-                        //   radius: 30,
-                        //   child: ClipRRect(
-                        //     borderRadius: BorderRadius.circular(30.0),
-                        //     child: Image.network(
-                        //       Patient().getPatient()['data']['avatar'],
-                        //       height: 70.0,
-                        //       width: 70.0,
-                        //     ),
-                        //   ),
-                        //   backgroundImage: AssetImage('assets/images/avatar.png'),
-                        // ),
-                        // NetworkImage(Patient().getPatient()['data']['avatar'])
                         // ClipRRect(
                         //   borderRadius: BorderRadius.circular(100),
                         //   child: Image.file(

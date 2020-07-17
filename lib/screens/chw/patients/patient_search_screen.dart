@@ -721,7 +721,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
       selectedDiseases = [];
     });
 
-    this.widget.parent.getPatients();
+    this.widget.parent.getLivePatients();
   }
 
   @override
