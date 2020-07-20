@@ -18,8 +18,6 @@ import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/chw/patients/patient_search_screen.dart';
-import 'package:nhealth/screens/patients/register_patient_screen.dart';
 
 var dueCarePlans = [];
 var completedCarePlans = [];
@@ -56,6 +54,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   var cvd;
   int interventionIndex = 0;
   bool actionsActive = false;
+  bool carePlansEmpty = false;
 
   @override
   void initState() {
@@ -65,6 +64,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     completedCarePlans = [];
     upcomingCarePlans = [];
     conditions = [];
+    carePlansEmpty = false;
 
     _checkAvatar();
     _checkAuth();
@@ -154,7 +154,9 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     var data = await HealthReportController().getLastReport();
     
     if (data['error'] == true) {
-      
+      setState(() {
+        carePlansEmpty = true;
+      });
       Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
     } else if (data['message'] == 'Unauthorized') {
       Auth().logout();
@@ -711,7 +713,9 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                 ),
                                 child: GestureDetector(
                                   onTap: () {
-                                    Navigator.of(context).pushNamed('/carePlanDetails', arguments: carePlans);
+                                    if (!carePlansEmpty) {
+                                      Navigator.of(context).pushNamed('/carePlanDetails', arguments: carePlans);
+                                    }
                                   },
                                   child: Text(AppLocalizations.of(context).translate('viewCareplan'), style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w500),),
                                 ),

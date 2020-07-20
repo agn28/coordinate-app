@@ -6,13 +6,8 @@ import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
-import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
-import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/patients/manage/care_plan/care_plan_intervention_screen.dart';
-import 'package:nhealth/screens/patients/manage/care_plan/care_plan_medication_screen.dart';
-import 'package:nhealth/screens/patients/manage/patient_overview_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
 
@@ -33,8 +28,18 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    print(widget.carePlans);
     getReports();
+    prepareCarePlans();
+  }
+
+  prepareCarePlans() {
+    var data = widget.carePlans;
+
+    print(data[0]);
+
+    data.forEach((carePlan) => {
+
+    });
   }
 
   getReports() async {
@@ -1126,6 +1131,8 @@ class InterventionsState extends State<Interventions> {
   getStatus() {
     // return 'asd';
     String completedDate = '';
+    // print(widget.carePlan['meta']['completed_at']);
+    // return ;
     if (widget.carePlan['meta']['status'] == 'completed') {
       // if (widget.carePlan['meta']['completed_at'] != null && widget.carePlan['meta']['completed_at']['_seconds'] != null) {
       //   var parsedDate = DateTime.fromMillisecondsSinceEpoch(widget.carePlan['meta']['completed_at']['_seconds'] * 1000);
@@ -1133,10 +1140,10 @@ class InterventionsState extends State<Interventions> {
       //   completedDate = DateFormat("MMMM d, y").format(parsedDate).toString();
       // }
 
-      if (widget.carePlan['meta']['completed_at'] != null ) {
-        var parsedDate = DateTime.parse(widget.carePlan['meta']['completed_at']);
+      if (widget.carePlan['meta']['completed_at'] != null) {
+        // var parsedDate = DateTime.parse(widget.carePlan['meta']['completed_at']);
 
-        completedDate = DateFormat("MMMM d, y").format(parsedDate).toString();
+        completedDate = widget.carePlan['meta']['completed_at'].toString();
       }
 
       setState(() {
