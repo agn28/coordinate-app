@@ -903,7 +903,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                                       //   child: Column(
                                                       //     crossAxisAlignment: CrossAxisAlignment.start,
                                                       //     children: <Widget>[
-                                                      //       Text('Interventions', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),),
+                                                      //       Text(AppLocalizations.of(context).translate('interventions'), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),),
                                                       //       SizedBox(height: 15,),
                                                       //       Text('Counselling on smoking cessation', style: TextStyle(fontSize: 16),),
                                                       //       SizedBox(height: 15,),

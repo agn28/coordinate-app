@@ -116,7 +116,7 @@ class _CarePlanGenerateState extends State<CarePlanGenerate> {
                     )
                   ),
                 
-                  hintText: 'Comments/Notes (optional)',
+                  hintText: AppLocalizations.of(context).translate('comments'),
                   hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                 ),
               )

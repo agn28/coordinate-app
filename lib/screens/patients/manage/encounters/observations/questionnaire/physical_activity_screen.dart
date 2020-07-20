@@ -50,7 +50,7 @@ class _PhysicalActivityState extends State<PhysicalActivity> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Physical Activity', style: TextStyle(color: kPrimaryColor)),
+        title: Text(AppLocalizations.of(context).translate('physicalActivity'), style: TextStyle(color: kPrimaryColor)),
         backgroundColor: Colors.white,
         elevation: 0.0,
         bottomOpacity: 0.0,

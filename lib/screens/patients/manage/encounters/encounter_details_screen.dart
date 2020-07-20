@@ -243,7 +243,7 @@ class EncounterDetailsState extends State<EncounterDetailsScreen> {
                                   children: <Widget>[
                                     Icon(Icons.edit, color: kPrimaryColor,),
                                     SizedBox(width: 10),
-                                    Text('Edit Encounter', style: TextStyle(color: kPrimaryColor))
+                                    Text(AppLocalizations.of(context).translate('editEncounter'), style: TextStyle(color: kPrimaryColor))
                                   ],
                                 ),
                               )

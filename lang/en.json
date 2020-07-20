@@ -275,6 +275,27 @@
   "allergiesTitle": "Allergies",
   "allergies": "Allergies: ",
   "dueToday": "Due Today",
-  "viewEncounterDetails": "View Encounter Details"
+  "viewEncounterDetails": "View Encounter Details",
+  "newCommunityVisit": "New Community Visit",
+  "verifyPatient": "Verify Patient",
+  "confirmAndContinue": "CONFIRM PATIENT & CONTINUE",
+  "markAsUnsuccessful": "MARK AS UNSUCCESSFULL VISIT",
+  "selectAReason": "Select a reason",
+  "howIsFeelingToday": "How is the patient feeling today?",
+  "well": "Well",
+  "unwell": "Unwell",
+  "issuesWith": "Issues with",
+  "tempReading": "Temperature readings (celcius)",
+  "unwellCause": "What is causing you to be unwell?",
+  "whatWentWrong": "What went wrong?",
+  "skipDeviceUnavailable": "SKIP (DEVICE UNAVAILABLE)",
+  "nextCarePlanAction": "Next care plan action: ",
+  "wouldContinue": "Would you like to continue with this visit",
+  "whatPatientLearnt": "What did the patient learn? (optional)",
+  "editEncounter": "Edit Encounter",
+  "history": "History",
+  "generatedOn": "Generated on ", 
+  "summary": "Summary",
+  "interventions": "Interventions"
 
 }

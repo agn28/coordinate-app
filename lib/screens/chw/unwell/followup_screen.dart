@@ -318,7 +318,7 @@ class _UnwellCausesState extends State<UnwellCauses> {
             SizedBox(height: 30,),
             Container(
               alignment: Alignment.center,
-              child: Text('What is causing you to be unwell ?', style: TextStyle(fontSize: 21),),
+              child: Text(AppLocalizations.of(context).translate('unwellCause'), style: TextStyle(fontSize: 21),),
             ),
             SizedBox(height: 30,),
             ...causes.map((item) {
@@ -360,7 +360,7 @@ class _UnwellCausesState extends State<UnwellCauses> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('Issues with', style: TextStyle(fontSize: 17),),
+                  Text(AppLocalizations.of(context).translate('issuesWith'), style: TextStyle(fontSize: 17),),
                   SizedBox(height: 20,),
                   Wrap(
                     direction: Axis.horizontal,
@@ -463,7 +463,7 @@ class _TemperatureState extends State<Temperature> {
             Container(
               margin: EdgeInsets.symmetric(horizontal: 30),
               child: PrimaryTextField(
-                hintText: 'Temperature readings (celsius)',
+                hintText: AppLocalizations.of(context).translate('tempReading'),
                 controller: _temperatureController,
                 topPaadding: 10,
                 bottomPadding: 10,
@@ -477,7 +477,7 @@ class _TemperatureState extends State<Temperature> {
               child: Container(
                 // margin: EdgeInsets.symmetric(horizontal: 30),
                 alignment: Alignment.center,
-                child: Text('SKIP (DEVICE UNAVAILABLE)', style: TextStyle(color: kPrimaryColor, fontSize: 15, fontWeight: FontWeight.w500,)),
+                child: Text(AppLocalizations.of(context).translate('skipDeviceUnavailable'), style: TextStyle(color: kPrimaryColor, fontSize: 15, fontWeight: FontWeight.w500,)),
               ),
             )
 
@@ -599,7 +599,7 @@ class _BloodPressureState extends State<BloodPressure> {
               child: Container(
                 // margin: EdgeInsets.symmetric(horizontal: 30),
                 alignment: Alignment.center,
-                child: Text('SKIP (DEVICE UNAVAILABLE)', style: TextStyle(color: kPrimaryColor, fontSize: 15, fontWeight: FontWeight.w500,)),
+                child: Text(AppLocalizations.of(context).translate('skipDeviceUnavailable'), style: TextStyle(color: kPrimaryColor, fontSize: 15, fontWeight: FontWeight.w500,)),
               ),
             )
 
@@ -770,7 +770,7 @@ class _GlucoseState extends State<Glucose> {
               child: Container(
                 // margin: EdgeInsets.symmetric(horizontal: 30),
                 alignment: Alignment.center,
-                child: Text('SKIP (DEVICE UNAVAILABLE)', style: TextStyle(color: kPrimaryColor, fontSize: 15, fontWeight: FontWeight.w500,)),
+                child: Text(AppLocalizations.of(context).translate('skipDeviceUnavailable'), style: TextStyle(color: kPrimaryColor, fontSize: 15, fontWeight: FontWeight.w500,)),
               ),
             )
 

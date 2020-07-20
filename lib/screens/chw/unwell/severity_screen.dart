@@ -8,8 +8,6 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/chw/unwell/followup_screen.dart';
-import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
@@ -46,7 +44,7 @@ class _SeverityScreenState extends State<SeverityScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text('New Community visit', style: TextStyle(color: Colors.white, fontSize: 20),),
+        title: new Text(AppLocalizations.of(context).translate('newCommunityVisit'), style: TextStyle(color: Colors.white, fontSize: 20),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -86,7 +84,7 @@ class _SeverityScreenState extends State<SeverityScreen> {
                       ),
                     ),
                     SizedBox(height: 30,),
-                    Text('Would you like to continue with this visit', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),),
+                    Text(AppLocalizations.of(context).translate('wouldContinue'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),),
                     SizedBox(height: 30,),
                     Row(
                       children: <Widget>[

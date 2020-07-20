@@ -273,6 +273,27 @@
   "allergiesTitle": "এলার্জি",
   "allergies": "এলার্জিঃ ",
   "dueToday": "আজ যা করণীয়",
-  "viewEncounterDetails": "ভিজিটের বিবরণ দেখুন"
+  "viewEncounterDetails": "ভিজিটের বিবরণ দেখুন",
+  "newCommunityVisit": "নতুুন কমিউনিটি ভিজিট",
+  "verifyPatient": "রোগী যাচাইকরণ",
+  "confirmAndContinue": "রোগী নিশ্চিতকরণ ও সামনে আগান",
+  "markAsUnsuccessful": "অসফল ভিসিট হিসেবে চিহ্নিত করুন",
+  "selectAReason": "কারণ চিহ্নিত করুন",
+  "howIsFeelingToday": "রোগী আজকে কেমন আছেন?",
+  "well": "ভাল",
+  "unwell": "ভাল নয়",
+  "issuesWith": "সমস্যাগুলো কি কি?",
+  "tempReading": "তাপমাত্রা (সেলসিয়াস)",
+  "unwellCause": "আপনার কোথায়/কিসে সমস্যা?",
+  "whatWentWrong": "কি ভুল ছিল?",
+  "skipDeviceUnavailable": "বাদ দিয়ে যান (যন্ত্রপাতি নেই)",
+  "nextCarePlanAction": "Next care plan action: ",
+  "wouldContinue": "আপনি কি ভিজিটটি চালিয়ে যেতে চান?",
+  "whatPatientLearnt": "রোগী আজকে  কি শিখেছে? (optional)",
+  "editEncounter": "ভিজিট সম্পাদনা করুন",
+  "history": "ইতিহাস",
+  "generatedOn": "শুরু হয়েছে ",
+  "summary": "সারসংক্ষেপ",
+  "interventions": "ব্যবস্থাসমূহ"
 
 }

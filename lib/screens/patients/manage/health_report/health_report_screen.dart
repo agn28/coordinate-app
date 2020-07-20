@@ -79,9 +79,9 @@ class HealthReport extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text('Existing Conditions', style: TextStyle(fontSize: 24)),
+                        Text(AppLocalizations.of(context).translate('existingConditions'), style: TextStyle(fontSize: 24)),
                         SizedBox(height: 25,),
-                        Text('Diabetes', style: TextStyle(fontSize: 18)),
+                        Text(AppLocalizations.of(context).translate('diabetes'), style: TextStyle(fontSize: 18)),
 
                       ],
                     )
@@ -97,7 +97,7 @@ class HealthReport extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text('Current Medications', style: TextStyle(fontSize: 24)),
+                        Text(AppLocalizations.of(context).translate('currentMedications'), style: TextStyle(fontSize: 24)),
                         SizedBox(height: 25,),
                         Text('Metfornin 50mg', style: TextStyle(fontSize: 18)),
 
@@ -116,7 +116,7 @@ class HealthReport extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text('Lifestyle', style: TextStyle(fontSize: 24)),
+                        Text(AppLocalizations.of(context).translate('lifestyle'), style: TextStyle(fontSize: 24)),
                         SizedBox(height: 25,),
                         Container(
                           alignment: Alignment.topCenter,
@@ -199,7 +199,7 @@ class HealthReport extends StatelessWidget {
                                       child: Image.asset('assets/images/icons/activity.png', )
                                     ),
                                     SizedBox(height: 7,),
-                                    Text('Physical Activity', style: TextStyle(fontSize: 18, height: 1.4), textAlign: TextAlign.center,),
+                                    Text(AppLocalizations.of(context).translate('physicalActivity'), style: TextStyle(fontSize: 18, height: 1.4), textAlign: TextAlign.center,),
                                     Text('Low Activity', style: TextStyle(fontSize: 18, color: kPrimaryRedColor, height: 2),),
                                   ],
                                 )
@@ -583,7 +583,7 @@ class HealthReport extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text('Diabetes', style: TextStyle(fontSize: 24)),
+                        Text(AppLocalizations.of(context).translate('diabetes'), style: TextStyle(fontSize: 24)),
                         SizedBox(height: 20,),
 
                         Container(

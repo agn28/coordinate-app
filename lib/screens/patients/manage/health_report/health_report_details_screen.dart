@@ -132,7 +132,7 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Text('Existing Conditions', style: TextStyle(fontSize: 24)),
+                                Text(AppLocalizations.of(context).translate('existingConditions'), style: TextStyle(fontSize: 24)),
                                 canEdit ?  IconButton(
                                   icon: Icon(Icons.edit, color: kPrimaryColor,),
                                   onPressed: () {}
@@ -140,7 +140,7 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
                               ],
                             ),
                             SizedBox(height: 15,),
-                            Text('Diabetes', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                            Text(AppLocalizations.of(context).translate('diabetes'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
 
                           ],
                         )
@@ -159,7 +159,7 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Text('Current Medications', style: TextStyle(fontSize: 24)),
+                                Text(AppLocalizations.of(context).translate('currentMedications'), style: TextStyle(fontSize: 24)),
                                 canEdit ?  IconButton(
                                   icon: Icon(Icons.edit, color: kPrimaryColor,),
                                   onPressed: () {}
@@ -183,7 +183,7 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text('Lifestyle', style: TextStyle(fontSize: 24)),
+                            Text(AppLocalizations.of(context).translate('lifestyle'), style: TextStyle(fontSize: 24)),
                             SizedBox(height: 25,),
                             Container(
                               child: Row(
@@ -214,7 +214,7 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
                                             ],
                                           ),
                                           SizedBox(height: 10,),
-                                          Text('Tobacco Use', style: TextStyle(color: Colors.black87, fontSize: 19, fontWeight: FontWeight.w500),),
+                                          Text(AppLocalizations.of(context).translate('tobaccoUse'), style: TextStyle(color: Colors.black87, fontSize: 19, fontWeight: FontWeight.w500),),
                                           SizedBox(height: 20,),
                                           Text('${widget.reports['assessments']['lifestyle']['components']['smoking']['eval']}',
                                             style: TextStyle(
@@ -255,7 +255,7 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
                                             ],
                                           ),
                                           SizedBox(height: 10,),
-                                          Text('Alcohol Consumption', style: TextStyle(color: Colors.black87, fontSize: 19, fontWeight: FontWeight.w500),),
+                                          Text(AppLocalizations.of(context).translate('alcoholConsumption'), style: TextStyle(color: Colors.black87, fontSize: 19, fontWeight: FontWeight.w500),),
                                           SizedBox(height: 20,),
                                           Text('${widget.reports['assessments']['lifestyle']['components']['alcohol']['eval']}',
                                             style: TextStyle(
@@ -302,7 +302,7 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
                                             ],
                                           ),
                                           SizedBox(height: 10,),
-                                          Text('Fruits and vegetables intake', style: TextStyle(color: Colors.black87, fontSize: 19, fontWeight: FontWeight.w500),),
+                                          Text(AppLocalizations.of(context).translate('fruitsIntake'), style: TextStyle(color: Colors.black87, fontSize: 19, fontWeight: FontWeight.w500),),
                                           SizedBox(height: 20,),
                                           Text('${widget.reports['assessments']['lifestyle']['components']['diet']['components']['fruit_vegetable']['eval']}',
                                             style: TextStyle(
@@ -342,7 +342,7 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
                                             ],
                                           ),
                                           SizedBox(height: 10,),
-                                          Text('Physical Activity', style: TextStyle(color: Colors.black87, fontSize: 19, fontWeight: FontWeight.w500),),
+                                          Text(AppLocalizations.of(context).translate('physicalActivity'), style: TextStyle(color: Colors.black87, fontSize: 19, fontWeight: FontWeight.w500),),
                                           SizedBox(height: 20,),
                                           Text('${widget.reports['assessments']['lifestyle']['components']['physical_activity']['eval']}', 
                                             style: TextStyle(
@@ -812,7 +812,7 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Text('Diabetes', style: TextStyle(fontSize: 24)),
+                                Text(AppLocalizations.of(context).translate('diabetes'), style: TextStyle(fontSize: 24)),
                                 canEdit ? GestureDetector(
                                   child: Icon(Icons.edit, color: kPrimaryColor,),
                                   onTap: () {}

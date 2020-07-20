@@ -541,7 +541,7 @@ class _CommentContainerState extends State<CommentContainer> {
                 )
               ),
             
-              hintText: 'Comments/Notes (optional)',
+              hintText: AppLocalizations.of(context).translate('comments'),
               hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
             ),
           ),
@@ -868,7 +868,7 @@ class _FormContainerState extends State<FormContainer> {
 //                   )
 //                 ),
               
-//                 hintText: 'Comments/Notes (optional)',
+//                 hintText: AppLocalizations.of(context).translate('comments'),
 //                 hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
 //               ),
 //             )
