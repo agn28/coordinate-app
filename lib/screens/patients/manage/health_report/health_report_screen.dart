@@ -160,7 +160,7 @@ class HealthReport extends StatelessWidget {
                                       child: Image.asset('assets/images/icons/fruit.png', )
                                     ),
                                     SizedBox(height: 7,),
-                                    Text('Fruit Consumption', style: TextStyle(fontSize: 18, height: 1.4),),
+                                    Text(AppLocalizations.of(context).translate('fruitConsumption'), style: TextStyle(fontSize: 18, height: 1.4),),
                                     Text('Hight', style: TextStyle(fontSize: 18, color: kPrimaryGreenColor, height: 2),),
                                   ],
                                 )
@@ -222,10 +222,10 @@ class HealthReport extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text('Stop Smoking', style: TextStyle(fontSize: 18, height: 1.5),),
-                              Text('Reduce alcohol consumption', style: TextStyle(fontSize: 18, height: 1.5),),
-                              Text('Eat more fruits', style: TextStyle(fontSize: 18, height: 1.5),),
-                              Text('Aim for regular exercise, 30 minutes a day', style: TextStyle(fontSize: 18, height: 1.5),),
+                              Text(AppLocalizations.of(context).translate('stopSmoking'), style: TextStyle(fontSize: 18, height: 1.5),),
+                              Text(AppLocalizations.of(context).translate('reduceAlcohol'), style: TextStyle(fontSize: 18, height: 1.5),),
+                              Text(AppLocalizations.of(context).translate('eatMoreFruits'), style: TextStyle(fontSize: 18, height: 1.5),),
+                              Text(AppLocalizations.of(context).translate('aimForExcersize'), style: TextStyle(fontSize: 18, height: 1.5),),
                             ],
                           ),
                         )

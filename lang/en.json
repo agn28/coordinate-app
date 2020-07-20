@@ -296,6 +296,13 @@
   "history": "History",
   "generatedOn": "Generated on ", 
   "summary": "Summary",
-  "interventions": "Interventions"
+  "interventions": "Interventions",
+  "stopSmoking": "Stop Smoking",
+  "reduceAlcohol": "Reduce alcohol consumption",
+  "eatMoreFruits": "Eat more fruits",
+  "aimForExcersize": "Aim for regular exercise, 30 minutes a day",
+  "lowActivity": "Low Activity",
+  "vegetableConsumption": "Vegetable consumption",
+  "fruitConsumption": "Fruit consumption"
 
 }
