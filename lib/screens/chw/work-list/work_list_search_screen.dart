@@ -925,7 +925,7 @@ class _PatientItemState extends State<PatientItem> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text('Next care plan action: ', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),),
+                        Text(AppLocalizations.of(context).translate('nextCarePlanAction'), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),),
                         Text(getNexDueDate(widget.item['body']['next_assignment']),
                           style: TextStyle(
                               fontSize: 16,

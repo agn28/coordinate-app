@@ -116,7 +116,7 @@ class _CarePlanMedicationState extends State<CarePlanMedication> {
                     )
                   ),
                 
-                  hintText: 'Comments/Notes (optional)',
+                  hintText: AppLocalizations.of(context).translate('comments'),
                   hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                 ),
               )

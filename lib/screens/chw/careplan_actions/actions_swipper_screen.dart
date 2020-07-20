@@ -657,7 +657,7 @@ class _CommentContainerState extends State<CommentContainer> {
                 )
               ),
             
-              hintText: 'What did the patient learn? (optional)',
+              hintText: AppLocalizations.of(context).translate('whatPatientLearnt'),
               hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
             ),
           ),
@@ -1047,7 +1047,7 @@ class _BpFormContainerState extends State<BpFormContainer> {
 //                   )
 //                 ),
               
-//                 hintText: 'Comments/Notes (optional)',
+//                 hintText: AppLocalizations.of(context).translate('comments'),
 //                 hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
 //               ),
 //             )

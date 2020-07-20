@@ -263,7 +263,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text('History', style: TextStyle(color: kTextGrey, fontSize: 16)),
+                    Text(AppLocalizations.of(context).translate('history'), style: TextStyle(color: kTextGrey, fontSize: 16)),
                     SizedBox(height: 10,),
 
                     Row(
@@ -505,7 +505,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text('History', style: TextStyle(color: kTextGrey, fontSize: 16)),
+                    Text(AppLocalizations.of(context).translate('history'), style: TextStyle(color: kTextGrey, fontSize: 16)),
                     SizedBox(height: 10,),
 
                     Row(
@@ -585,7 +585,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                         // crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text('Diabetes', style: TextStyle(fontSize: 18, height: 1.4, fontWeight: FontWeight.w500),),
+                          Text(AppLocalizations.of(context).translate('diabetes'), style: TextStyle(fontSize: 18, height: 1.4, fontWeight: FontWeight.w500),),
                           canEdit ? GestureDetector(
                             child: Icon(Icons.edit, color: kPrimaryColor,),
                             onTap: () {}
@@ -772,7 +772,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text('History', style: TextStyle(color: kTextGrey, fontSize: 16)),
+                    Text(AppLocalizations.of(context).translate('history'), style: TextStyle(color: kTextGrey, fontSize: 16)),
                     SizedBox(height: 10,),
 
                     Row(
@@ -1025,7 +1025,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text('History', style: TextStyle(color: kTextGrey, fontSize: 16)),
+                    Text(AppLocalizations.of(context).translate('history'), style: TextStyle(color: kTextGrey, fontSize: 16)),
                     SizedBox(height: 10,),
 
                     Row(
@@ -1266,7 +1266,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text('History', style: TextStyle(color: kTextGrey, fontSize: 16)),
+                    Text(AppLocalizations.of(context).translate('history'), style: TextStyle(color: kTextGrey, fontSize: 16)),
                     SizedBox(height: 10,),
 
                     Row(

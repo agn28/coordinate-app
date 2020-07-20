@@ -90,7 +90,7 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
                   padding: EdgeInsets.only(left: 20),
                   child: Row(
                     children: <Widget>[
-                      Text('Generated on ' + generateDate, style: TextStyle(fontSize: 16),),
+                      Text(AppLocalizations.of(context).translate('generatedOn') + generateDate, style: TextStyle(fontSize: 16),),
                     ],
                   ),
                 ),
@@ -105,7 +105,7 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('Summary', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 21)),
+                      Text(AppLocalizations.of(context).translate('summary'), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 21)),
                       SizedBox(height: 20,),
                       reports != null ?
                       Container(
@@ -153,7 +153,7 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        Text('Tobacco Use', style: TextStyle(fontSize: 19),),
+                                        Text(AppLocalizations.of(context).translate('tobaccoUse'), style: TextStyle(fontSize: 19),),
                                         SizedBox(height: 10,),
                                         Row(
                                           children: <Widget>[
@@ -178,7 +178,7 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        Text('Physical Activity', style: TextStyle(fontSize: 19),),
+                                        Text(AppLocalizations.of(context).translate('physicalActivity'), style: TextStyle(fontSize: 19),),
                                         SizedBox(height: 10,),
                                         Row(
                                           children: <Widget>[
@@ -305,7 +305,7 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        Text('Alcohol Consumption', style: TextStyle(fontSize: 19),),
+                                        Text(AppLocalizations.of(context).translate('alcoholConsumption'), style: TextStyle(fontSize: 19),),
                                         SizedBox(height: 10,),
                                         Row(
                                           children: <Widget>[
@@ -407,7 +407,7 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('Interventions', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 21)),
+                      Text(AppLocalizations.of(context).translate('interventions'), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 21)),
                       SizedBox(height: 20,),
 
                       ...widget.carePlans.map<Widget>((item) => 
