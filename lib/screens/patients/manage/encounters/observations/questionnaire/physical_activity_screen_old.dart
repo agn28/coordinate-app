@@ -1,6 +1,7 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/custom-classes/custom_stepper.dart';
 import 'package:nhealth/helpers/helpers.dart';
@@ -47,7 +48,7 @@ class _PhysicalActivityState extends State<PhysicalActivity> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Physical Activity', style: TextStyle(color: kPrimaryColor)),
+        title: Text(AppLocalizations.of(context).translate('physicalActivity'), style: TextStyle(color: kPrimaryColor)),
         backgroundColor: Colors.white,
         elevation: 0.0,
         bottomOpacity: 0.0,
@@ -87,7 +88,7 @@ class _PhysicalActivityState extends State<PhysicalActivity> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Icon(Icons.chevron_left),
-                    Text('BACK', style: TextStyle(fontSize: 20)),
+                    Text(AppLocalizations.of(context).translate('back'), style: TextStyle(fontSize: 20)),
                   ],
                 ),
               ) : Text('')
@@ -119,7 +120,7 @@ class _PhysicalActivityState extends State<PhysicalActivity> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    Text('NEXT', style: TextStyle(fontSize: 20)),
+                    Text(AppLocalizations.of(context).translate('next'), style: TextStyle(fontSize: 20)),
                     Icon(Icons.chevron_right)
                   ],
                 ),
@@ -215,7 +216,7 @@ class _FirstQuestionState extends State<FirstQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Physical Activity', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate('physicalActivity'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
@@ -310,7 +311,7 @@ class _SecondQuestionState extends State<SecondQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Physical Activity', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate('physicalActivity'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(

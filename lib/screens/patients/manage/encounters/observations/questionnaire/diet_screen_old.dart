@@ -1,6 +1,7 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/custom-classes/custom_stepper.dart';
 import 'package:nhealth/models/questionnaire.dart';
@@ -91,7 +92,7 @@ class _DietState extends State<Diet> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Icon(Icons.chevron_left),
-                    Text('BACK', style: TextStyle(fontSize: 20)),
+                    Text(AppLocalizations.of(context).translate('back'), style: TextStyle(fontSize: 20)),
                   ],
                 ),
               ) : Text('')
@@ -123,7 +124,7 @@ class _DietState extends State<Diet> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    Text('NEXT', style: TextStyle(fontSize: 20)),
+                    Text(AppLocalizations.of(context).translate('next'), style: TextStyle(fontSize: 20)),
                     Icon(Icons.chevron_right)
                   ],
                 ),

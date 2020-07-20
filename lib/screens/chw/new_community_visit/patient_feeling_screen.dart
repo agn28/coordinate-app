@@ -43,7 +43,7 @@ class _PatientFeelingState extends State<PatientFeelingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text('New Community visit', style: TextStyle(color: Colors.white, fontSize: 20),),
+        title: new Text(AppLocalizations.of(context).translate('newCommunityVisit'), style: TextStyle(color: Colors.white, fontSize: 20),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -79,7 +79,7 @@ class _PatientFeelingState extends State<PatientFeelingScreen> {
                       children: <Widget>[
                         SizedBox(height: 40,),
                         Container(
-                          child: Text('How is the patient feeling today?', style: TextStyle(fontSize: 23),)
+                          child: Text(AppLocalizations.of(context).translate('howIsFeelingToday'), style: TextStyle(fontSize: 23),)
                         ),
                         SizedBox(height: 40,),
 
@@ -105,7 +105,7 @@ class _PatientFeelingState extends State<PatientFeelingScreen> {
                                     children: <Widget>[
                                       Image.asset('assets/images/icons/well.png'),
                                       SizedBox(height: 20,),
-                                      Text('Well', style: TextStyle(fontSize: 21, color: Colors.white, fontWeight: FontWeight.normal),)
+                                      Text(AppLocalizations.of(context).translate('well'), style: TextStyle(fontSize: 21, color: Colors.white, fontWeight: FontWeight.normal),)
                                     ],
                                   )
                                 ),
@@ -131,7 +131,7 @@ class _PatientFeelingState extends State<PatientFeelingScreen> {
                                     children: <Widget>[
                                       Image.asset('assets/images/icons/unwell.png'),
                                       SizedBox(height: 20,),
-                                      Text('Unwell', style: TextStyle(fontSize: 21, color: Colors.white, fontWeight: FontWeight.normal),)
+                                      Text(AppLocalizations.of(context).translate('unwell'), style: TextStyle(fontSize: 21, color: Colors.white, fontWeight: FontWeight.normal),)
                                     ],
                                   )
                                 ),

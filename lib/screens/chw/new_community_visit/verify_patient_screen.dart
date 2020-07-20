@@ -58,7 +58,7 @@ class _VerifyPatientState extends State<VerifyPatientScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text('New Community visit', style: TextStyle(color: Colors.white, fontSize: 20),),
+        title: new Text(AppLocalizations.of(context).translate('newCommunityVisit'), style: TextStyle(color: Colors.white, fontSize: 20),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -77,7 +77,7 @@ class _VerifyPatientState extends State<VerifyPatientScreen> {
                   children: <Widget>[
                     SizedBox(height: 30,),
                     Container(
-                      child: Text('Verify Patient', style: TextStyle(fontSize: 23),)
+                      child: Text(AppLocalizations.of(context).translate('verifyPatient'), style: TextStyle(fontSize: 23),)
                     ),
                     SizedBox(height: 30,),
                     Patient().getPatient()['data']['avatar'] == null ? 
@@ -120,7 +120,7 @@ class _VerifyPatientState extends State<VerifyPatientScreen> {
                           Navigator.of(context).pushNamed('/patientFeeling');
                         },
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        child: Text('CONFIRM PATIENT & CONTINUE', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                        child: Text(AppLocalizations.of(context).translate('confirmAndContinue'), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
                       ),
                     ),
                     SizedBox(height: 30,),
@@ -144,7 +144,7 @@ class _VerifyPatientState extends State<VerifyPatientScreen> {
                         },
                           
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        child: Text('MARK AS UNSUCCESSFULL VISIT', style: TextStyle(fontSize: 14, color: kPrimaryColor, fontWeight: FontWeight.w500),)
+                        child: Text(AppLocalizations.of(context).translate('markAsUnsuccessful'), style: TextStyle(fontSize: 14, color: kPrimaryColor, fontWeight: FontWeight.w500),)
                       ),
                     ),
                     
@@ -207,16 +207,16 @@ class _SkipAlertState extends State<SkipAlert> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('MARK AS UNSUCCESSFULL VISIT', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),),
+              Text(AppLocalizations.of(context).translate('markAsUnsuccessful'), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),),
               SizedBox(height: 20,),
                 // margin: EdgeInsets.symmetric(horizontal: 30),
               
-              Text('What went wrong?', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+              Text(AppLocalizations.of(context).translate('whatWentWrong'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
               SizedBox(height: 20,),
               Container(
                   color: kSecondaryTextField,
                   child: DropdownButtonFormField(
-                    hint: Text('Select a reason', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                    hint: Text(AppLocalizations.of(context).translate('selectAReason'), style: TextStyle(fontSize: 20, color: kTextGrey),),
                     decoration: InputDecoration(
                       fillColor: kSecondaryTextField,
                       contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
@@ -263,7 +263,7 @@ class _SkipAlertState extends State<SkipAlert> {
                         )
                       ),
 
-                      hintText: 'Comments/Notes',
+                      hintText: AppLocalizations.of(context).translate('comment'),
                       hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                     ),
                   )

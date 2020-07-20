@@ -934,7 +934,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                                             //   child: Column(
                                                             //     crossAxisAlignment: CrossAxisAlignment.start,
                                                             //     children: <Widget>[
-                                                            //       Text('Interventions', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),),
+                                                            //       Text(AppLocalizations.of(context).translate('interventions'), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),),
                                                             //       SizedBox(height: 15,),
                                                             //       Text('Counselling on smoking cessation', style: TextStyle(fontSize: 16),),
                                                             //       SizedBox(height: 15,),
@@ -1135,7 +1135,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
           Navigator.of(context).pushNamed('/verifyPatient');
         },
         icon: Icon(Icons.add),
-        label: Text("NEW COMMUNITY VISIT"),
+        label: Text(AppLocalizations.of(context).translate('newCommunityVisit')),
         backgroundColor: kPrimaryColor,
       ) : Container(),
     );

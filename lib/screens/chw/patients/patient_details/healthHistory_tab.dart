@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -51,7 +52,7 @@ class _HealthHistoryState extends State<HealthHistoryTab> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Text('Lifestyle', style: TextStyle(fontSize: 22)),
+                Text(AppLocalizations.of(context).translate('lifestyle'), style: TextStyle(fontSize: 22)),
                 SizedBox(height: 25,),
                 Container(
                   child: Row(
@@ -83,7 +84,7 @@ class _HealthHistoryState extends State<HealthHistoryTab> {
                                 ],
                               ),
                               SizedBox(height: 10,),
-                              Text('Tobacco Use', style: TextStyle(color: Colors.black87, fontSize: 19, fontWeight: FontWeight.w500),),
+                              Text(AppLocalizations.of(context).translate('tobaccoUse'), style: TextStyle(color: Colors.black87, fontSize: 19, fontWeight: FontWeight.w500),),
                               SizedBox(height: 20,),
                               Text('${widget.reports['result']['assessments']['lifestyle']['components']['smoking']['eval']}',
                                 style: TextStyle(
@@ -124,7 +125,7 @@ class _HealthHistoryState extends State<HealthHistoryTab> {
                                 ],
                               ),
                               SizedBox(height: 10,),
-                              Text('Alcohol Consumption', style: TextStyle(color: Colors.black87, fontSize: 19, fontWeight: FontWeight.w500),),
+                              Text(AppLocalizations.of(context).translate('alcoholConsumption'), style: TextStyle(color: Colors.black87, fontSize: 19, fontWeight: FontWeight.w500),),
                               SizedBox(height: 20,),
                               Text('${widget.reports['result']['assessments']['lifestyle']['components']['alcohol']['eval']}',
                                 style: TextStyle(
@@ -171,7 +172,7 @@ class _HealthHistoryState extends State<HealthHistoryTab> {
                                 ],
                               ),
                               SizedBox(height: 10,),
-                              Text('Fruits and vegetables intake', style: TextStyle(color: Colors.black87, fontSize: 19, fontWeight: FontWeight.w500),),
+                              Text(AppLocalizations.of(context).translate('fruitsIntake'), style: TextStyle(color: Colors.black87, fontSize: 19, fontWeight: FontWeight.w500),),
                               SizedBox(height: 20,),
                               Text('${widget.reports['result']['assessments']['lifestyle']['components']['diet']['components']['fruit_vegetable']['eval']}',
                                 style: TextStyle(
@@ -211,7 +212,7 @@ class _HealthHistoryState extends State<HealthHistoryTab> {
                                 ],
                               ),
                               SizedBox(height: 10,),
-                              Text('Physical Activity', style: TextStyle(color: Colors.black87, fontSize: 19, fontWeight: FontWeight.w500),),
+                              Text(AppLocalizations.of(context).translate('physicalActivity'), style: TextStyle(color: Colors.black87, fontSize: 19, fontWeight: FontWeight.w500),),
                               SizedBox(height: 20,),
                               Text('${widget.reports['result']['assessments']['lifestyle']['components']['physical_activity']['eval']}',
                                 style: TextStyle(

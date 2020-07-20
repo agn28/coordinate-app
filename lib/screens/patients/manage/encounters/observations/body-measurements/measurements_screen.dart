@@ -474,7 +474,7 @@ class _AddDialogueState extends State<AddDialogue> {
                         )
                       ),
 
-                      hintText: 'Comments/Notes',
+                      hintText: AppLocalizations.of(context).translate('comment'),
                       hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                     ),
                   )

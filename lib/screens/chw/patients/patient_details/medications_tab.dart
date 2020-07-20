@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -39,7 +40,7 @@ class _MedicationsState extends State<MedicationsTab> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text('Current Medications', style: TextStyle(fontSize: 21),),
+          Text(AppLocalizations.of(context).translate('currentMedications'), style: TextStyle(fontSize: 21),),
           SizedBox(height: 10,),
 
           ...widget.medications.map((item) {

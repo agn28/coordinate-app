@@ -44,7 +44,7 @@ class _ContinueScreenState extends State<ContinueScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text('New Community visit', style: TextStyle(color: Colors.white, fontSize: 20),),
+        title: new Text(AppLocalizations.of(context).translate('newCommunityVisit'), style: TextStyle(color: Colors.white, fontSize: 20),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         automaticallyImplyLeading: false,
@@ -85,7 +85,7 @@ class _ContinueScreenState extends State<ContinueScreen> {
                       ),
                     ),
                     SizedBox(height: 30,),
-                    Text('Would you like to continue with this visit', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),),
+                    Text(AppLocalizations.of(context).translate('wouldContinue'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),),
                     SizedBox(height: 30,),
                     Row(
                       children: <Widget>[
