@@ -6,15 +6,11 @@ import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
-import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
-import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/patients/manage/care_plan/care_plan_intervention_screen.dart';
-import 'package:nhealth/screens/patients/manage/care_plan/care_plan_medication_screen.dart';
-import 'package:nhealth/screens/patients/manage/patient_overview_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
+var preParedCarePlans = [];
 
 class CarePlanDetailsScreen extends StatefulWidget {
   var carePlans;
@@ -33,9 +29,41 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    print(widget.carePlans);
-    getReports();
+    // getReports();
+    prepareCarePlans();
   }
+
+  prepareCarePlans() {
+    var data = widget.carePlans;
+    preParedCarePlans = [];
+    
+
+    data.forEach((carePlan) { 
+      if (carePlan['body']['goal'] != null) {
+        var existedCp = preParedCarePlans.where( (cp) => cp['id'] == carePlan['body']['goal']['id']);
+        // print(carePlan['body']['goal']);
+        // print(existedCp);
+
+        if (existedCp.isEmpty) {
+          var items = [];
+          items.add(carePlan);
+          // print(items);
+          if (carePlan['body']['goal'] != null) {
+            preParedCarePlans.add({
+              'items': items,
+              'title': carePlan['body']['goal']['title'],
+              'id': carePlan['body']['goal']['id']
+            });
+          }
+        } else {
+          preParedCarePlans[preParedCarePlans.indexOf(existedCp.first)]['items'].add(carePlan);
+        }
+      }
+    });
+
+    print(preParedCarePlans[0]);
+  }
+
 
   getReports() async {
     isLoading = true;
@@ -410,7 +438,7 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
                       Text(AppLocalizations.of(context).translate('interventions'), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 21)),
                       SizedBox(height: 20,),
 
-                      ...widget.carePlans.map<Widget>((item) => 
+                      ...preParedCarePlans.map<Widget>((item) => 
                         Interventions(carePlan: item),
                       ).toList(),
                       SizedBox(height: 25,),
@@ -1106,7 +1134,7 @@ class InterventionsState extends State<Interventions> {
   @override
   void initState() {
     super.initState();
-    getStatus();
+    // getStatus();
   }
 
   _getDuration(item) {
@@ -1126,6 +1154,8 @@ class InterventionsState extends State<Interventions> {
   getStatus() {
     // return 'asd';
     String completedDate = '';
+    // print(widget.carePlan['meta']['completed_at']);
+    // return ;
     if (widget.carePlan['meta']['status'] == 'completed') {
       // if (widget.carePlan['meta']['completed_at'] != null && widget.carePlan['meta']['completed_at']['_seconds'] != null) {
       //   var parsedDate = DateTime.fromMillisecondsSinceEpoch(widget.carePlan['meta']['completed_at']['_seconds'] * 1000);
@@ -1133,10 +1163,10 @@ class InterventionsState extends State<Interventions> {
       //   completedDate = DateFormat("MMMM d, y").format(parsedDate).toString();
       // }
 
-      if (widget.carePlan['meta']['completed_at'] != null ) {
-        var parsedDate = DateTime.parse(widget.carePlan['meta']['completed_at']);
+      if (widget.carePlan['meta']['completed_at'] != null) {
+        // var parsedDate = DateTime.parse(widget.carePlan['meta']['completed_at']);
 
-        completedDate = DateFormat("MMMM d, y").format(parsedDate).toString();
+        completedDate = widget.carePlan['meta']['completed_at'].toString();
       }
 
       setState(() {
@@ -1157,6 +1187,15 @@ class InterventionsState extends State<Interventions> {
     });
   }
 
+  getStatusText(meta) {
+    var text = '';
+    if (meta['status'] != null) {
+      text = meta['status'][0].toUpperCase() + meta['status'].substring(1);
+    }
+
+    return text;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -1170,7 +1209,7 @@ class InterventionsState extends State<Interventions> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          widget.carePlan['body']['goal'] != null ?
+          // widget.carePlan['body']['goal'] != null ?
           Container(
             padding: EdgeInsets.symmetric(horizontal: 25,),
             child: Column(
@@ -1178,62 +1217,94 @@ class InterventionsState extends State<Interventions> {
               children: <Widget>[
                 Text('Goal', style: TextStyle(color: kTextGrey),),
                 SizedBox(height: 10,),
-                Text(widget.carePlan['body']['goal']['title'], style: TextStyle(fontSize: 19),),
+                Text(widget.carePlan['title'], style: TextStyle(fontSize: 19),),
               ],
             )
-          ) : Container(),
+          ) 
+          // : Container()
+          ,
           SizedBox(height: 30,),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 25,),
+            child: Text('Intervention', style: TextStyle(color: kTextGrey),),
+          ),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 25,),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text('Intervention', style: TextStyle(color: kTextGrey),),
-                SizedBox(height: 10,),
-                Text(widget.carePlan['body']['title'], style: TextStyle(fontSize: 19),),
+                ...widget.carePlan['items'].map( (item) {
+                  print(item);
+                  return Column(
+                    children: <Widget>[
+                      SizedBox(height: 20,),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Expanded(
+                            flex: 4,
+                            child: Text(item['body']['title'], style: TextStyle(fontSize: 19),),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Text(getStatusText(item['meta']), 
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: getStatusText(item['meta']) == 'Completed' ? kPrimaryGreenColor : kPrimaryRedColor
+                              ),
+                              textAlign: TextAlign.right,
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  );
+                }).toList()
+                
               ],
             )
           ),
 
           SizedBox(height: 30,),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 25,),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text('When', style: TextStyle(color: kTextGrey),),
-                SizedBox(height: 10,),
-                Text(_getDuration(widget.carePlan), style: TextStyle(fontSize: 19),),
-              ],
-            )
-          ),
-          SizedBox(height: 20,),
-          GestureDetector(
-            onTap: () {
-              if (widget.carePlan['meta']['status'] != 'completed') {
-                // Navigator.of(context).push(CarePlanInterventionScreen(carePlan: widget.carePlan, parent: this));
-                Navigator.of(context).pushNamed('/carePlanInterventions', arguments: {'carePlan' : widget.carePlan, 'parent': this });
-              }
-            },
-            child: Container(
-              height: 60,
-              decoration: BoxDecoration(
-                // color: Colors.red,
-                border: Border(
-                  top: BorderSide(color: kBorderLighter)
-                )
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 25,),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text('${status != null ? status[0].toUpperCase() + status.substring(1) : 'Pending'}', style: TextStyle(color: status != 'pending' ? kPrimaryGreenColor : kPrimaryRedColor, fontSize: 19, height: .5),),
-                  Icon(Icons.arrow_forward, color: kPrimaryColor,)
-                ],
-              )
-            ),
-          ),
+          // Container(
+          //   padding: EdgeInsets.symmetric(horizontal: 25,),
+          //   child: Column(
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     children: <Widget>[
+          //       Text('When', style: TextStyle(color: kTextGrey),),
+          //       SizedBox(height: 10,),
+          //       // Text(_getDuration(widget.carePlan), style: TextStyle(fontSize: 19),),
+          //       Text('', style: TextStyle(fontSize: 19),),
+          //     ],
+          //   )
+          // ),
+          // SizedBox(height: 20,),
+          // GestureDetector(
+          //   onTap: () {
+          //     if (widget.carePlan['meta']['status'] != 'completed') {
+          //       // Navigator.of(context).push(CarePlanInterventionScreen(carePlan: widget.carePlan, parent: this));
+          //       Navigator.of(context).pushNamed('/carePlanInterventions', arguments: {'carePlan' : widget.carePlan, 'parent': this });
+          //     }
+          //   },
+          //   child: Container(
+          //     height: 60,
+          //     decoration: BoxDecoration(
+          //       // color: Colors.red,
+          //       border: Border(
+          //         top: BorderSide(color: kBorderLighter)
+          //       )
+          //     ),
+          //     padding: EdgeInsets.symmetric(horizontal: 25,),
+          //     child: Row(
+          //       crossAxisAlignment: CrossAxisAlignment.center,
+          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //       children: <Widget>[
+          //         Text('${status != null ? status[0].toUpperCase() + status.substring(1) : 'Pending'}', style: TextStyle(color: status != 'pending' ? kPrimaryGreenColor : kPrimaryRedColor, fontSize: 19, height: .5),),
+          //         Icon(Icons.arrow_forward, color: kPrimaryColor,)
+          //       ],
+          //     )
+          //   ),
+          // ),
         ],
       )
     );

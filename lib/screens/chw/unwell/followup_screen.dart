@@ -90,7 +90,8 @@ class _ChwFollowupState extends State<ChwFollowupScreen> {
 
     var data = {
       'meta': {
-        'patient_id': Patient().getPatient()['uuid']
+        'patient_id': Patient().getPatient()['uuid'],
+        "collected_by": Auth().getAuth()['uid']
       },
       'body': {
         'causes' : selectedCauses,

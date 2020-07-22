@@ -107,6 +107,14 @@ class Helpers {
   convertDate(date) {
     return date != null ? DateFormat("MMMM d, y").format(DateTime.parse(date)) : '';
   }
+  convertDateFromSeconds(date) {
+    if (date['_seconds'] != null) {
+      var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
+
+      return DateFormat("MMMM d, y").format(parsedDate).toString();
+    }
+    return '';
+  }
 
   getPatientName(patient) {
     return '${patient['data']['first_name']} ${patient['data']['last_name']}';

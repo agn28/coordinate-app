@@ -10,4 +10,10 @@ class FollowupController {
     return response;
   }
 
+  getFollowupsByPatient() async {
+    var response = await FollowupRepository().getFollowupsByPatient();
+
+    return response;
+  }
+
 }
