@@ -97,6 +97,11 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
     var completed = await PatientController().getPatientsWorklist('completed');
     var past = await PatientController().getPatientsWorklist('past');
 
+    if (pending['message'] != null && pending['message'] == 'Unauthorized') {
+      Auth().logout();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    }
+
     if (pending['error'] != null && !pending['error']) {
       setState(() {
         allPendingPatients = pending['data'];
@@ -919,26 +924,34 @@ class _PatientItemState extends State<PatientItem> {
                     ),
                   ),
 
-                  widget.item['body']['next_assignment'] != null && widget.item['body']['next_assignment']['meta']['created_at']['_seconds'] != null ?
+                  
                   Container(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(AppLocalizations.of(context).translate('nextCarePlanAction'), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),),
-                        Text(getNexDueDate(widget.item['body']['next_assignment']),
-                          style: TextStyle(
-                              fontSize: 16,
-                              height: 1.6,
-                              color: isBeforeToday(getParsedDate(widget.item['body']['next_assignment']['meta']['created_at']['_seconds'])) ?
-                                kPrimaryRedColor
-                                : 
-                                Colors.black
-                            ),
-                        )
+                        widget.item['body']['next_assignment'] != null && widget.item['body']['next_assignment']['meta']['created_at']['_seconds'] != null ?
+                        Column(
+                          children: <Widget>[
+                            Text(AppLocalizations.of(context).translate('nextCarePlanAction'), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),),
+                            Text(getNexDueDate(widget.item['body']['next_assignment']),
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  height: 1.6,
+                                  color: isBeforeToday(getParsedDate(widget.item['body']['next_assignment']['meta']['created_at']['_seconds'])) ?
+                                    kPrimaryRedColor
+                                    : 
+                                    Colors.black
+                                ),
+                            )
+                          ],
+                        ) : Container(),
+                        SizedBox(height: 10,),
+
+                        Text(AppLocalizations.of(context).translate('pendingReferral'), style: TextStyle(fontSize: 15, color: kPrimaryYellowColor),),
+                        
                       ],
                     ),
-                  ) 
-                  : Container(),
+                  ),
                   
                   Container(
                     child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 35,)

@@ -10,6 +10,7 @@ import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/care_plan_controller.dart';
+import 'package:nhealth/controllers/followup_controller.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/controllers/observation_controller.dart';
 import 'package:nhealth/controllers/user_controller.dart';
@@ -22,6 +23,7 @@ import 'package:nhealth/screens/auth_screen.dart';
 var dueCarePlans = [];
 var completedCarePlans = [];
 var upcomingCarePlans = [];
+var referrals = [];
 
 
 
@@ -64,11 +66,13 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     completedCarePlans = [];
     upcomingCarePlans = [];
     conditions = [];
+    referrals = [];
     carePlansEmpty = false;
 
     _checkAvatar();
     _checkAuth();
     _getCarePlan();
+    getReferrals();
     getEncounters();
     getAssessments();
     getMedicationsConditions();
@@ -119,6 +123,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     }
     return '';
   }
+
   getCompletedDate(goal) {
     var data = '';
     DateTime date;
@@ -145,6 +150,34 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     return data;
   }
 
+  getReferrals() async {
+
+    setState(() {
+      isLoading = true;
+    });
+
+    var data = await FollowupController().getFollowupsByPatient();
+
+    print('hjello');
+    print(data);
+    
+    if (data['error'] == true) {
+
+      // Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+    } else if (data['message'] == 'Unauthorized') {
+      Auth().logout();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    } else {
+      setState(() {
+        // report = data['data'];
+        referrals = data['data'];
+      });
+    }
+
+    print(referrals[0]);
+
+  }
+
   getReport() async {
 
     setState(() {
@@ -157,7 +190,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
       setState(() {
         carePlansEmpty = true;
       });
-      Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+      // Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
     } else if (data['message'] == 'Unauthorized') {
       Auth().logout();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
@@ -406,12 +439,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
 
         // }
       });
-      print('completed');
-      print(completedCarePlans);
-      print('upcoming');
-      print(upcomingCarePlans);
-      print('due');
-      print(dueCarePlans);
 
       // setState(() {
       //   carePlans = data['data'];
@@ -873,49 +900,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                                             ),
                                                             
                                                             SizedBox(height: 20,),
-                                                            // Row(
-                                                            //   children: <Widget>[
-                                                            //     Container(
-                                                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                                            //       decoration: BoxDecoration(
-                                                            //         border: Border.all(width: 1, color: kPrimaryRedColor),
-                                                            //         borderRadius: BorderRadius.circular(2)
-                                                            //       ),
-                                                            //       child: Text('BMI',style: TextStyle(
-                                                            //           color: kPrimaryRedColor,
-                                                            //           fontWeight: FontWeight.w500
-                                                            //         )  
-                                                            //       ),
-                                                            //     ),
-                                                            //     SizedBox(width: 7,),
-                                                            //     Container(
-                                                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                                            //       decoration: BoxDecoration(
-                                                            //         border: Border.all(width: 1, color: kPrimaryRedColor),
-                                                            //         borderRadius: BorderRadius.circular(2)
-                                                            //       ),
-                                                            //       child: Text('CVD Risk',style: TextStyle(
-                                                            //           color: kPrimaryRedColor,
-                                                            //           fontWeight: FontWeight.w500
-                                                            //         )  
-                                                            //       ),
-                                                            //     ),
-                                                            //     SizedBox(width: 7,),
-                                                            //     Container(
-                                                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                                            //       decoration: BoxDecoration(
-                                                            //         border: Border.all(width: 1, color: kPrimaryAmberColor),
-                                                            //         borderRadius: BorderRadius.circular(2)
-                                                            //       ),
-                                                            //       child: Text('Cholesterol',style: TextStyle(
-                                                            //           color: kPrimaryAmberColor,
-                                                            //           fontWeight: FontWeight.w500
-                                                            //         )  
-                                                            //       ),
-                                                            //     ),
-                                                            //   ],
-                                                            // ),
-                                                            // SizedBox(height: 20),
                                                             GestureDetector(
                                                               onTap: () {
                                                                 Navigator.of(context).pushNamed('/encounterDetails', arguments: encounter);
@@ -923,25 +907,175 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                                               child: Text(AppLocalizations.of(context).translate('viewEncounterDetails'), style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w400, fontSize: 16),)
                                                             ),
                                                             SizedBox(height: 20,),
-                                                            // Container(
-                                                            //   padding: EdgeInsets.only(top: 20),
-                                                            //   width: double.infinity,
-                                                            //   decoration: BoxDecoration(
-                                                            //     border: Border(
-                                                            //       top: BorderSide(width: 1, color: kBorderLighter),
-                                                            //     ),
-                                                            //   ),
-                                                            //   child: Column(
-                                                            //     crossAxisAlignment: CrossAxisAlignment.start,
-                                                            //     children: <Widget>[
-                                                            //       Text(AppLocalizations.of(context).translate('interventions'), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),),
-                                                            //       SizedBox(height: 15,),
-                                                            //       Text('Counselling on smoking cessation', style: TextStyle(fontSize: 16),),
-                                                            //       SizedBox(height: 15,),
-                                                            //       Text('Intimate METFORMIN 250 - 500 mg once daily', style: TextStyle(fontSize: 16),),
-                                                            //     ],
-                                                            //   ),
+                                                            
+                                                          ],
+                                                        ),
+                                                      )
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                          
+                                            ),
+                                            Positioned(
+                                              left: 15,
+                                              top:30,
+                                              child: Container(
+                                                child: CircleAvatar(
+                                                  backgroundColor: kPrimaryLight,
+                                                  radius: 10,
+                                                  child: CircleAvatar(
+                                                    backgroundColor: kPrimaryColor,
+                                                    radius: 6,
+                                                  )
+                                                ),
+                                              ),
+                                            ),
+                                            Positioned(
+                                              left: 41,
+                                              top: 33,
+                                              child: Transform.rotate(angle: 90 * pi/180, 
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    border: Border(
+                                                    )
+                                                  ),
+                                                  child: ClipPath(
+                                                    child: Container(
+                                                      width: 24,
+                                                      height: 12,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.black54,
+                                                            blurRadius: 2.0,
+                                                            spreadRadius: 2.0,
+                                                            offset: Offset(
+                                                              2.0, 
+                                                              5.0, 
+                                                            ),
+                                                          ),
+                                                        ]
+                                                      ),
+                                                    ),
+                                                    clipper: CustomClipPath(),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                  
+                                    }).toList(),
+
+
+                                    ...referrals.map((referral) {
+                                      return Container(
+                                        child: Stack(
+                                          children: <Widget>[
+                                            Container(
+                                              margin: EdgeInsets.symmetric(horizontal: 25),
+                                              decoration: BoxDecoration(
+                                                border: Border(
+                                                  left: BorderSide(width: 1, color: kBorderGrey)
+                                                )
+                                              ),
+                                              child: Row(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  SizedBox(width: 30),
+                                                  Expanded(
+                                                    
+                                                    child: Container(
+                                                      margin: EdgeInsets.only(bottom: 20),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        border: Border.all(color: kBorderLighter)
+                                                      ),
+                                                      child: Container(
+                                                        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            Text(Helpers().convertDateFromSeconds(referral['meta']['created_at']), style: TextStyle(fontSize: 16)),
+                                                            SizedBox(height: 15,),
+
+                                                            Text('Referral' , style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
+
+                                                            SizedBox(height: 15,),
+                                                            referral['meta']['collected_by'] != null ? 
+                                                            Row(
+                                                              children: <Widget>[
+                                                                CircleAvatar(
+                                                                  radius: 15,
+                                                                  child: ClipRRect(
+                                                                    borderRadius: BorderRadius.circular(30.0),
+                                                                    child: Image.network(
+                                                                      Patient().getPatient()['data']['avatar'],
+                                                                      height: 30.0,
+                                                                      width: 30.0,
+                                                                    ),
+                                                                  ),
+                                                                  backgroundColor: Colors.transparent,
+                                                                  backgroundImage: AssetImage('assets/images/avatar.png'),
+                                                                ),
+                                                                SizedBox(width: 20,),
+                                                                Text(getUser(referral['meta']['collected_by']), style: TextStyle(fontSize: 17)),
+                                                              ],
+                                                            ) :Container(),
+
+                                                            SizedBox(height: 20,),
+                                                            Row(
+                                                              children: <Widget>[
+                                                                
+                                                                referral['body']['blood_pressure'] != null ?
+                                                                Container(
+                                                                  margin: EdgeInsets.only(right: 20),
+                                                                  child: Column(
+                                                                    children: <Widget>[
+                                                                      Image.asset('assets/images/icons/blood_pressure.png', width: 20,),
+                                                                      SizedBox(height: 10,),
+                                                                      Text('Blood\nPressure', textAlign: TextAlign.center,)
+                                                                    ],
+                                                                  ),
+                                                                ) : Container(),
+
+                                                                referral['body']['fasting_glucose'] != null ?
+                                                                Container(
+                                                                  margin: EdgeInsets.only(right: 20),
+                                                                  child: Column(
+                                                                    children: <Widget>[
+                                                                      Image.asset('assets/images/icons/blood_test.png', width: 20,),
+                                                                      SizedBox(height: 20,),
+                                                                      Text('Fasting\nGlucose', textAlign: TextAlign.center,)
+                                                                    ],
+                                                                  ),
+                                                                ) : Container(),
+                                                                referral['body']['causes'] != null ?
+                                                                Container(
+                                                                  margin: EdgeInsets.only(right: 20),
+                                                                  child: Column(
+                                                                    children: <Widget>[
+                                                                      Image.asset('assets/images/icons/blood_glucose.png', width: 20,),
+                                                                      SizedBox(height: 10,),
+                                                                      Text('Causes', textAlign: TextAlign.center,)
+                                                                    ],
+                                                                  ),
+                                                                ) : Container(),
+                                                              ],
+                                                            ),
+                                                            
+                                                            // SizedBox(height: 20,),
+                                                            // GestureDetector(
+                                                            //   onTap: () {
+                                                            //     Navigator.of(context).pushNamed('/encounterDetails', arguments: encounter);
+                                                            //   },
+                                                            //   child: Text(AppLocalizations.of(context).translate('viewEncounterDetails'), style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w400, fontSize: 16),)
                                                             // ),
+                                                            SizedBox(height: 20,),
+                                                            
                                                           ],
                                                         ),
                                                       )
