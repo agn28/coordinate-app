@@ -1,12 +1,18 @@
 import 'dart:io';
 
 import 'package:basic_utils/basic_utils.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:nhealth/app_localizations.dart';
+import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/assessment.dart';
+import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
 import 'package:nhealth/models/body_measurement.dart';
 import 'package:nhealth/models/questionnaire.dart';
+import 'package:nhealth/screens/auth_screen.dart';
 
 class Helpers {
 
@@ -122,5 +128,28 @@ class Helpers {
 
   getPatientAgeAndGender(patient) {
     return '${patient["data"]["age"]}Y ${StringUtils.capitalize(patient["data"]["gender"])}';
+  }
+
+  logout(context) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(AppLocalizations.of(context).translate('sessionExpired'), style: TextStyle(fontWeight: FontWeight.w500),),
+          content: Text(AppLocalizations.of(context).translate('sessionExpiredDetails')),
+          actions: [
+            FlatButton(
+              child: Text(AppLocalizations.of(context).translate('logout'), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500, color: kPrimaryColor),),
+              onPressed:  () async {
+                await Auth().logout();
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+              },
+            ),
+          ],
+        );
+      },
+    );
+    
   }
 }

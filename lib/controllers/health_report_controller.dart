@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/repositories/health_report_repository.dart';
@@ -18,9 +19,12 @@ class HealthReportController {
     return reports;
   }
 
-  getLastReport() async {
+  getLastReport(context) async {
     var response = await HealthReportRepository().getLastReport();
 
+    if (response['message'] != null && response['message'] == 'Unauthorized') {
+      Helpers().logout(context);
+    }
     return response;
   }
 

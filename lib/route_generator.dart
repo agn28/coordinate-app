@@ -5,6 +5,7 @@ import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chw/careplan_actions/actions_swipper_screen.dart';
 import 'package:nhealth/screens/chw/careplan_actions/improve_bp_screen.dart';
 import 'package:nhealth/screens/chw/careplan_actions/other_actions_screen.dart';
+import 'package:nhealth/screens/chw/chw_home_screen.dart';
 import 'package:nhealth/screens/chw/new_community_visit/patient_feeling_screen.dart';
 import 'package:nhealth/screens/chw/new_community_visit/verify_patient_screen.dart';
 import 'package:nhealth/screens/chw/patients/patient_details_screen.dart';
@@ -14,7 +15,7 @@ import 'package:nhealth/screens/chw/unwell/continue_screen.dart';
 import 'package:nhealth/screens/chw/unwell/followup_screen.dart';
 import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
 import 'package:nhealth/screens/chw/unwell/severity_screen.dart';
-import 'package:nhealth/screens/chw/work-list/chw_home_screen.dart';
+import 'package:nhealth/screens/chw/work-list/chw_navigation_screen.dart';
 import 'package:nhealth/screens/home_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_details_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_intervention_screen.dart';
@@ -48,12 +49,16 @@ class RouteGenerator {
         var data = settings.arguments;
         return CupertinoPageRoute(builder: (_) => EncounterDetailsScreen( encounter: data ));
 
+      case '/chwHome':
+        return CupertinoPageRoute(builder: (_) => ChwHomeScreen());
+
       case '/chwPatientSummary':
         var data = settings.arguments;
         return CupertinoPageRoute(builder: (_) => ChwPatientRecordsScreen(checkInState: data));
 
-      case '/chwHome':
-        return CupertinoPageRoute(builder: (_) => ChwHomeScreen());
+      case '/chwNavigation':
+        var data = settings.arguments;
+        return CupertinoPageRoute(builder: (_) => ChwNavigationScreen(pageIndex: data,));
       case '/verifyPatient':
         return CupertinoPageRoute(builder: (_) => VerifyPatientScreen());
       case '/patientFeeling':

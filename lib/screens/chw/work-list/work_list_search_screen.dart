@@ -69,10 +69,6 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
       isLoading = value;
     });
   }
-  _logout() {
-    Auth().logout();
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-  }
 
   _getAuthUserName() {
     var name = '';
@@ -82,8 +78,9 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
 
   _getAuthUser() async {
     var data = await Auth().getStorageAuth() ;
+
     if (!data['status']) {
-      _logout();
+      await Helpers().logout(context);
     }
 
     setState(() {
@@ -93,14 +90,11 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
   /// Get all the worklist
   _getPatients() async {
 
-    var pending = await PatientController().getPatientsWorklist('pending');
-    var completed = await PatientController().getPatientsWorklist('completed');
-    var past = await PatientController().getPatientsWorklist('past');
+    var pending = await PatientController().getPatientsWorklist(context, 'pending');
+    var completed = await PatientController().getPatientsWorklist(context, 'completed');
+    var past = await PatientController().getPatientsWorklist(context, 'past');
 
-    if (pending['message'] != null && pending['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    }
+    
 
     if (pending['error'] != null && !pending['error']) {
       setState(() {
@@ -387,7 +381,7 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
 
   getReport() async {
     isLoading = true;
-    var data = await HealthReportController().getLastReport();
+    var data = await HealthReportController().getLastReport(context);
     
     if (data['error'] == true) {
       setState(() {
@@ -395,8 +389,7 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
       });
       Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
     } else if (data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+      
     } else {
       setState(() {
         isLoading = false;
@@ -444,7 +437,7 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
               ],
             onSelected: (value) {
               if (value == 'logout') {
-                _logout();
+                Helpers().logout(context);
               }
             },
             child: Container(

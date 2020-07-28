@@ -184,7 +184,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
       isLoading = true;
     });
 
-    var data = await HealthReportController().getLastReport();
+    var data = await HealthReportController().getLastReport(context);
     
     if (data['error'] == true) {
       setState(() {
@@ -249,7 +249,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     setState(() {
       isLoading = true;
     });
-    var response = await HealthReportController().getLastReport();
+    var response = await HealthReportController().getLastReport(context);
     if (response == null) {
       return;
     }
@@ -1218,7 +1218,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                                       setState(() {
                                                         isLoading = false;
                                                       });
-                                                      Navigator.of(_scaffoldKey.currentContext).pushNamed('/chwHome');
+                                                      Navigator.of(_scaffoldKey.currentContext).pushNamed('/chwNavigation');
 
                                                       
                                                     },

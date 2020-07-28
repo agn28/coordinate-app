@@ -15,6 +15,7 @@ import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
@@ -56,10 +57,6 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
     _getAuthUser();
     getLivePatients();
   }
-  _logout() {
-    Auth().logout();
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-  }
 
   _getAuthUserName() {
     var name = '';
@@ -70,7 +67,7 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
   _getAuthUser() async {
     var data = await Auth().getStorageAuth() ;
     if (!data['status']) {
-      _logout();
+      Helpers().logout(context);
     }
 
     setState(() {
@@ -106,11 +103,6 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
  
 
   getLivePatients() async {
-    
-    if (Auth().isExpired()) {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    }
 
     setState(() {
       isLoading = true;
@@ -119,8 +111,7 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
     var data = await PatientController().getAllLivePatients();
 
     if (data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+      Helpers().logout(context);
     }
 
     var parsedPatients = [];
@@ -178,7 +169,7 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
               ],
             onSelected: (value) {
               if (value == 'logout') {
-                _logout();
+                Helpers().logout(context);
               }
             },
             child: Container(

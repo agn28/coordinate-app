@@ -203,7 +203,7 @@ class _MobileAuthState extends State<MobileAuth> {
                               isLoading = false;
                             });
                             if (response['role'] == 'nurse') {
-                              Navigator.of(context).pushReplacementNamed('/chwHome');
+                              Navigator.of(context).pushReplacementNamed('/chwNavigation');
                             }
                             Navigator.of(context).pushReplacementNamed('/');
                           }

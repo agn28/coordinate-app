@@ -49,7 +49,7 @@ class _PatientRecordsState extends State<PatientRecordsScreenOld> {
     setState(() {
       isLoading = true;
     });
-    var response = await HealthReportController().getLastReport();
+    var response = await HealthReportController().getLastReport(context);
     if (response == null) {
       return;
     }

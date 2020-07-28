@@ -15,12 +15,15 @@ import 'package:nhealth/screens/work-list/work_list_search_screen.dart';
 import 'package:nhealth/app_localizations.dart';
 
 
-class ChwHomeScreen extends StatefulWidget {
+class ChwNavigationScreen extends StatefulWidget {
+  final pageIndex;
+  ChwNavigationScreen({this.pageIndex});
+
   @override
-  _HomeState createState() => _HomeState();
+  _ChwNavigationState createState() => _ChwNavigationState();
 }
 
-class _HomeState extends State<ChwHomeScreen> {
+class _ChwNavigationState extends State<ChwNavigationScreen> {
   String userName = '';
   String role = '';
   int _currentIndex = 0;
@@ -28,6 +31,15 @@ class _HomeState extends State<ChwHomeScreen> {
   initState() {
     _getAuthData();
     super.initState();
+    setPage();
+  }
+
+  setPage() {
+    if (widget.pageIndex != null && widget.pageIndex < 4) {
+      setState(() {
+        _currentIndex = widget.pageIndex;
+      });
+    }
   }
   
 

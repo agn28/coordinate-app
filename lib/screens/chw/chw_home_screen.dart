@@ -8,18 +8,18 @@ import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
+import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:nhealth/screens/settings/settings_screen.dart';
 import 'package:nhealth/screens/work-list/work_list_search_screen.dart';
-import './patients/register_patient_screen.dart';
 import 'package:nhealth/app_localizations.dart';
 
 
-class HomeScreen extends StatefulWidget {
+class ChwHomeScreen extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  _ChwHomeState createState() => _ChwHomeState();
 }
 
-class _HomeState extends State<HomeScreen> {
+class _ChwHomeState extends State<ChwHomeScreen> {
   String userName = '';
   String role = '';
   @override
@@ -40,6 +40,15 @@ class _HomeState extends State<HomeScreen> {
       role = data['role'];
     });
   }
+
+  getRole(role) {
+    if (role == 'chw') {
+      return 'Community Health Worker';
+    }
+
+    return StringUtils.capitalize(role);
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -112,36 +121,36 @@ class _HomeState extends State<HomeScreen> {
                       )
                     )
                   ),
-                  Container(
-                    height: 50,
-                    child: FlatButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed('/patientSearch');
-                      },
-                      child: Row(
-                        children: <Widget>[
-                          Icon(Icons.supervisor_account, color: Colors.black54,),
-                          SizedBox(width: 20,),
-                          Text(AppLocalizations.of(context).translate('patients'),style: TextStyle( fontSize: 18,fontWeight: FontWeight.w400))
-                        ],
-                      )
-                    )
-                  ),
-                  Container(
-                    height: 50,
-                    child: FlatButton(
-                      onPressed: () {
-                        Navigator.of(context).push(WorkListSearchScreen());
-                      },
-                      child: Row(
-                        children: <Widget>[
-                          Icon(Icons.list, color: Colors.black54,),
-                          SizedBox(width: 20,),
-                          Text(AppLocalizations.of(context).translate('workList'),style: TextStyle( fontSize: 18,fontWeight: FontWeight.w400))
-                        ],
-                      )
-                    )
-                  )
+                  // Container(
+                  //   height: 50,
+                  //   child: FlatButton(
+                  //     onPressed: () {
+                  //       Navigator.of(context).pushNamed('/patientSearch');
+                  //     },
+                  //     child: Row(
+                  //       children: <Widget>[
+                  //         Icon(Icons.supervisor_account, color: Colors.black54,),
+                  //         SizedBox(width: 20,),
+                  //         Text(AppLocalizations.of(context).translate('patients'),style: TextStyle( fontSize: 18,fontWeight: FontWeight.w400))
+                  //       ],
+                  //     )
+                  //   )
+                  // ),
+                  // Container(
+                  //   height: 50,
+                  //   child: FlatButton(
+                  //     onPressed: () {
+                  //       Navigator.of(context).push(WorkListSearchScreen());
+                  //     },
+                  //     child: Row(
+                  //       children: <Widget>[
+                  //         Icon(Icons.list, color: Colors.black54,),
+                  //         SizedBox(width: 20,),
+                  //         Text(AppLocalizations.of(context).translate('workList'),style: TextStyle( fontSize: 18,fontWeight: FontWeight.w400))
+                  //       ],
+                  //     )
+                  //   )
+                  // )
                 ],
               )
             ),
@@ -230,7 +239,7 @@ class _HomeState extends State<HomeScreen> {
                         SizedBox(height: 15,),
                         Text(userName, style: TextStyle(color: Colors.white, fontSize: 24),),
                         SizedBox(height: 15,),
-                        Text(role != null ? StringUtils.capitalize(role) : '', style: TextStyle(color: Colors.white70, fontSize: 16),),
+                        Text(role != null ? getRole(role) : '', style: TextStyle(color: Colors.white70, fontSize: 16),),
                         SizedBox(height: 40,),
                         
                         Text(AppLocalizations.of(context).translate('homeIntro'), style: TextStyle(color: Colors.white, fontSize: 34),)
@@ -251,7 +260,7 @@ class _HomeState extends State<HomeScreen> {
                           onTap: () async {
                             // await Auth().isExpired();
                             // return;
-                            Navigator.of(context).pushNamed('/patientSearch');
+                            Navigator.of(context).pushNamed('/chwNavigation',);
                             // Navigator.of(context).push(PatientSearchScreen());
                           },
                           child: Container(
@@ -262,11 +271,12 @@ class _HomeState extends State<HomeScreen> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  Image.asset('assets/images/icons/manage_patient.png'),
+                                  Image.asset('assets/images/icons/inventory.png', width: 70,),
+                                  SizedBox(height: 10,),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
-                                      Text(AppLocalizations.of(context).translate('manageExistingPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
+                                      Text(AppLocalizations.of(context).translate('gotoMyWorklist'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
                                       Container(
                                         alignment: Alignment.center,
                                         child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
@@ -282,7 +292,7 @@ class _HomeState extends State<HomeScreen> {
                         SizedBox(height: 20,),
 
                         GestureDetector(
-                          onTap: () => Navigator.of(context).push(RegisterPatientScreen()),
+                          onTap: () => Navigator.of(context).pushNamed('/chwNavigation', arguments: 1),
                           child: Container(
                             height: 190,
                             width: double.infinity,
@@ -296,7 +306,7 @@ class _HomeState extends State<HomeScreen> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
-                                      Text(AppLocalizations.of(context).translate('registerNewPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
+                                      Text(AppLocalizations.of(context).translate('viewExistingPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
                                       Container(
                                         alignment: Alignment.centerLeft,
                                         child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)

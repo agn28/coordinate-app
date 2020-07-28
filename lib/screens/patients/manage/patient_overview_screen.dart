@@ -102,13 +102,13 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
 
   getReport() async {
     isLoading = true;
-    var data = await HealthReportController().getLastReport();
+    var data = await HealthReportController().getLastReport(context);
     
     if (data['error'] == true) {
       setState(() {
         isLoading = false;
       });
-      Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+      // Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
     } else if (data['message'] == 'Unauthorized') {
       Auth().logout();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
@@ -167,7 +167,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
     setState(() {
       isLoading = true;
     });
-    var response = await HealthReportController().getLastReport();
+    var response = await HealthReportController().getLastReport(context);
     if (response == null) {
       return;
     }
@@ -452,11 +452,11 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                       radius: 30,
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(30.0),
-                                        child: Image.network(
-                                          Patient().getPatient()['data']['avatar'],
-                                          height: 70.0,
-                                          width: 70.0,
-                                        ),
+                                        // child: Image.network(
+                                        //   Patient().getPatient()['data']['avatar'],
+                                        //   height: 70.0,
+                                        //   width: 70.0,
+                                        // ),
                                       ),
                                       backgroundImage: AssetImage('assets/images/avatar.png'),
                                     ),

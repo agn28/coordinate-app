@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 
@@ -82,8 +83,7 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
 
   _checkAuth() {
     if (Auth().isExpired()) {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+      Helpers().logout(context);
     }
   }
 

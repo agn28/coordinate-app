@@ -118,7 +118,7 @@ class _ContinueScreenState extends State<ContinueScreen> {
                             ),
                             child: FlatButton(
                               onPressed: () async {
-                                Navigator.of(context).pushReplacementNamed('/chwHome');
+                                Navigator.of(context).pushReplacementNamed('/chwNavigation');
                               },
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               child: Text('NO', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)

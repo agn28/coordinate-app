@@ -410,7 +410,7 @@ class _MedicationListState extends State<MedicationList> {
                 ),
                 child: FlatButton(
                   onPressed: () async {
-                    // Navigator.of(_scaffoldKey.currentContext).pushNamed('/chwHome');
+                    // Navigator.of(_scaffoldKey.currentContext).pushNamed('/chwNavigation');
                     widget.parent.setLoader(true);
                     await Future.delayed(const Duration(seconds: 5));
 
@@ -421,7 +421,7 @@ class _MedicationListState extends State<MedicationList> {
 
                     widget.parent.setLoader(false);
 
-                    Navigator.of(_scaffoldKey.currentContext).pushNamed('/chwHome');
+                    Navigator.of(_scaffoldKey.currentContext).pushNamed('/chwNavigation');
                   },
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   child: Text(AppLocalizations.of(context).translate('completeVisit'), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
