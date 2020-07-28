@@ -201,7 +201,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                     margin: EdgeInsets.only(left: 18),
                     child: Row(
                       children: <Widget>[
-                        Text('Version 0.0.8.1 (beta)', style: TextStyle( fontSize: 18, fontWeight: FontWeight.w400)),
+                        Text('Version 0.0.8.2 (beta)', style: TextStyle( fontSize: 18, fontWeight: FontWeight.w400)),
                       ],
                     )
                   )
