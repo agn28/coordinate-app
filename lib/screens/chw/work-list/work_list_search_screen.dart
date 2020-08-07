@@ -428,12 +428,12 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
           // overflow menu
           PopupMenuButton(
             itemBuilder: (_) => <PopupMenuItem<String>>[
-                new PopupMenuItem<String>(
-                    
-                    child: Container(
-                      child: Text('Logout'),
-                    ),
-                    value: 'logout'),
+              new PopupMenuItem<String>(
+                  
+                  child: Container(
+                    child: Text('Logout'),
+                  ),
+                  value: 'logout'),
               ],
             onSelected: (value) {
               if (value == 'logout') {
@@ -782,8 +782,6 @@ class _PatientItemState extends State<PatientItem> {
                             SizedBox(height: 10,),
                             Row(
                               children: <Widget>[
-
-
                                 widget.item['body']['assessments'] != null && widget.item['body']['assessments']['body_composition']['components']['bmi'] != null ?
                                 Container(
                                   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
@@ -798,7 +796,6 @@ class _PatientItemState extends State<PatientItem> {
                                   ),
                                 ) : Container(),
                                 SizedBox(width: 7,),
-
 
                                 widget.item['body']['assessments'] != null && widget.item['body']['assessments']['blood_pressure'] != null ?
                                 Container(

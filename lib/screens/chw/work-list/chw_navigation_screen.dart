@@ -59,7 +59,6 @@ class _ChwNavigationState extends State<ChwNavigationScreen> {
     ChwWorkListSearchScreen(),
     ChwPatientSearchScreen(),
     Container(),
-    Center(child: Text(''),)
   ];
   @override
   Widget build(BuildContext context) {
@@ -112,10 +111,6 @@ class _ChwNavigationState extends State<ChwNavigationScreen> {
               icon: Icon(Icons.person_add),
               title: Text(AppLocalizations.of(context).translate('newPatient'))
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.menu),
-              title: Text(AppLocalizations.of(context).translate('more'))
-            )
           ],
           onTap: (value) {
             if(value == 2) {

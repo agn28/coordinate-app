@@ -255,7 +255,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                         
                         SizedBox(height: 60,),
 
-                        GestureDetector(
+                        InkWell(
                           
                           onTap: () async {
                             // await Auth().isExpired();
@@ -291,7 +291,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                         
                         SizedBox(height: 20,),
 
-                        GestureDetector(
+                        InkWell(
                           onTap: () => Navigator.of(context).pushNamed('/chwNavigation', arguments: 1),
                           child: Container(
                             height: 190,
@@ -302,7 +302,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  Image.asset('assets/images/icons/register_patient.png'),
+                                  Image.asset('assets/images/icons/manage_patient.png'),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
@@ -318,6 +318,37 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                             ),
                           ),
                         ),
+
+                        SizedBox(height: 20,),
+
+                        InkWell(
+                          onTap: () => Navigator.of(context).push(RegisterPatientScreen()),
+                          child: Container(
+                            height: 190,
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            child: Card(
+                              elevation: 2,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Image.asset('assets/images/icons/register_patient.png'),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(AppLocalizations.of(context).translate('registerNewPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+
                       ],
                     ),
                   ),

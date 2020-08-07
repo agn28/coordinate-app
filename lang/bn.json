@@ -307,6 +307,9 @@
   "fruitConsumption": "ফল খাওয়া",
   "gotoMyWorklist": "আপনার কাজের তালিকাতে যান ",
   "sessionExpired": "সেশন সমাপ্ত",
-  "sessionExpiredDetails": "আপনার বর্তমান সেশন শেষ হয়েছে। আপনাকে পুনরায় লগইন করতে হবে। "
+  "sessionExpiredDetails": "আপনার বর্তমান সেশন শেষ হয়েছে। আপনাকে পুনরায় লগইন করতে হবে।",
+  "newlyRegistered": "নতুন নিবন্ধিত",
+  "existing": "বিদ্যমান",
+  "fieldScreening": "ফিল্ড স্ক্রিনিং"
 
 }

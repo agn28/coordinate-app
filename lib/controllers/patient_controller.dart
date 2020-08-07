@@ -25,6 +25,8 @@ class PatientController {
     return data;
   }
 
+  
+
   getPatient(patientId) async {
     var response = await PatientRepository().getPatient(patientId);
 
@@ -70,6 +72,19 @@ class PatientController {
     //     'meta': parsedData['meta']
     //   });
     // });
+
+    return response;
+  }
+
+  /// Get all the patients
+  getNewPatients() async {
+    var response = await PatientRepository().getNewPatients();
+
+    return response;
+  }
+
+  getExistingPatients() async {
+    var response = await PatientRepository().getExistingPatients();
 
     return response;
   }

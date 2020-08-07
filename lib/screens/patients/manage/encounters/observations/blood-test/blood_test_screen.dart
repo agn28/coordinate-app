@@ -6,6 +6,7 @@ import 'package:nhealth/app_localizations.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/helpers/helpers.dart';
+import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import '../../../../../../models/blood_test.dart';
@@ -29,17 +30,26 @@ class BloodTests extends StatefulWidget {
 class _BloodTestsState extends State<BloodTests> {
 
   bool avatarExists = false;
+  var authUser;
 
   @override
   initState() {
     super.initState();
     _checkAvatar();
+    getAuth();
   }
 
   _checkAvatar() async {
     var data = await File(Patient().getPatient()['data']['avatar']).exists();
     setState(() {
       avatarExists = data;
+    });
+  }
+
+  getAuth() async {
+    var data = await Auth().getStorageAuth();
+    setState(() {
+      authUser = data;
     });
   }
 
@@ -59,7 +69,7 @@ class _BloodTestsState extends State<BloodTests> {
         iconTheme: IconThemeData(color: kPrimaryColor),
       ),
       body: SingleChildScrollView(
-        child: Column(
+        child: authUser != null ? Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             PatientTopbar(),
@@ -77,45 +87,52 @@ class _BloodTestsState extends State<BloodTests> {
               child: Text(AppLocalizations.of(context).translate('enterBloodTest'), style: TextStyle(fontSize: 18),)
             ),
 
-            Container(
-              height: 90,
-              width: double.infinity,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(left: 40),
-              decoration: BoxDecoration(
-                color: Color(0xFFF9F9F9),
-                border: Border(
-                  bottom: BorderSide(width: .5, color: Color(0x50000000))
-                )
-              ),
-              child: Text(AppLocalizations.of(context).translate('lipidProfile'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),)
-            ),
-            
-            Container(
-              color: Colors.white,
-              child: Column(
-                children: <Widget>[
-                  EncounnterSteps(
-                    icon: Image.asset('assets/images/icons/blood_test_common.png'),
-                    text: AppLocalizations.of(context).translate('totalCholesterol'),
-                    name: 'total_cholesterol'
-                  ),
 
-                  EncounnterSteps(
-                    icon: Image.asset('assets/images/icons/blood_test_common.png'),
-                    text: AppLocalizations.of(context).translate('hdl'),
-                    name: 'hdl'
+            authUser['role'] != 'chw' ?
+            Column(
+              children: <Widget>[
+                Container(
+                  height: 90,
+                  width: double.infinity,
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.only(left: 40),
+                  decoration: BoxDecoration(
+                    color: Color(0xFFF9F9F9),
+                    border: Border(
+                      bottom: BorderSide(width: .5, color: Color(0x50000000))
+                    )
                   ),
+                  child: Text(AppLocalizations.of(context).translate('lipidProfile'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),)
+                ),
+                
+                
+                Container(
+                  color: Colors.white,
+                  child: Column(
+                    children: <Widget>[
+                      EncounnterSteps(
+                        icon: Image.asset('assets/images/icons/blood_test_common.png'),
+                        text: AppLocalizations.of(context).translate('totalCholesterol'),
+                        name: 'total_cholesterol'
+                      ),
 
-                  EncounnterSteps(
-                    icon: Image.asset('assets/images/icons/blood_test_common.png'),
-                    text: AppLocalizations.of(context).translate('triglycerides'),
-                    name: 'tg'
-                  ),
-                ],
-              )
-            ),
+                      EncounnterSteps(
+                        icon: Image.asset('assets/images/icons/blood_test_common.png'),
+                        text: AppLocalizations.of(context).translate('hdl'),
+                        name: 'hdl'
+                      ),
 
+                      EncounnterSteps(
+                        icon: Image.asset('assets/images/icons/blood_test_common.png'),
+                        text: AppLocalizations.of(context).translate('triglycerides'),
+                        name: 'tg'
+                      ),
+                    ],
+                  )
+                ),
+
+              ],
+            ) : Container(),
             Container(
               height: 90,
               width: double.infinity,
@@ -139,52 +156,58 @@ class _BloodTestsState extends State<BloodTests> {
                     text: AppLocalizations.of(context).translate('fastingBloodGlucose'),
                     name: 'blood_glucose'
                   ),
-
+                  
+                  authUser['role'] != 'chw' ?
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_glucose.png'),
                     text: AppLocalizations.of(context).translate('randomBloodSugar'),
                     name: 'blood_sugar'
-                  ),
+                  ) : Container(),
                 ],
               )
             ),
 
-            Container(
-              height: 90,
-              width: double.infinity,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(left: 40),
-              decoration: BoxDecoration(
-                color: Color(0xFFF9F9F9),
-                border: Border(
-                  bottom: BorderSide(width: .5, color: Color(0x50000000))
-                )
-              ),
-              child: Text(AppLocalizations.of(context).translate('others'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),)
-            ),
-
-            Container(
-              color: Colors.white,
-              child: Column(
-                children: <Widget>[
-                  EncounnterSteps(
-                    icon: Image.asset('assets/images/icons/hba1c.png'),
-                    text: AppLocalizations.of(context).translate('hba1c'),
-                    name: 'a1c'
+            authUser['role'] != 'chw' ?
+            Column(
+              children: <Widget>[
+                Container(
+                  height: 90,
+                  width: double.infinity,
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.only(left: 40),
+                  decoration: BoxDecoration(
+                    color: Color(0xFFF9F9F9),
+                    border: Border(
+                      bottom: BorderSide(width: .5, color: Color(0x50000000))
+                    )
                   ),
+                  child: Text(AppLocalizations.of(context).translate('others'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),)
+                ),
 
-                  EncounnterSteps(
-                    icon: Image.asset('assets/images/icons/ogtt.png'),
-                    text: AppLocalizations.of(context).translate('hogtt'),
-                    name: '2h_ogtt'
-                  ),
-                ],
-              )
-            ),
+                Container(
+                  color: Colors.white,
+                  child: Column(
+                    children: <Widget>[
+                      EncounnterSteps(
+                        icon: Image.asset('assets/images/icons/hba1c.png'),
+                        text: AppLocalizations.of(context).translate('hba1c'),
+                        name: 'a1c'
+                      ),
 
+                      EncounnterSteps(
+                        icon: Image.asset('assets/images/icons/ogtt.png'),
+                        text: AppLocalizations.of(context).translate('hogtt'),
+                        name: '2h_ogtt'
+                      ),
+                    ],
+                  )
+                ),
+
+              ],
+            ) : Container(),
             SizedBox(height: 30,),
           ],
-        ),
+        ) : Container(),
       ),
 
       bottomNavigationBar: Container(

@@ -308,5 +308,8 @@
   "fruitConsumption": "Fruit consumption",
   "gotoMyWorklist": "Go To My Worklist",
   "sessionExpired": "Session Expired",
-  "sessionExpiredDetails": "Your current session is expired. You need to login again."
+  "sessionExpiredDetails": "Your current session is expired. You need to login again.",
+  "newlyRegistered": "Newly Registered",
+  "existing": "Existing",
+  "fieldScreening": "In-Field Screening"
 }

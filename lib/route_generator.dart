@@ -6,6 +6,7 @@ import 'package:nhealth/screens/chw/careplan_actions/actions_swipper_screen.dart
 import 'package:nhealth/screens/chw/careplan_actions/improve_bp_screen.dart';
 import 'package:nhealth/screens/chw/careplan_actions/other_actions_screen.dart';
 import 'package:nhealth/screens/chw/chw_home_screen.dart';
+import 'package:nhealth/screens/chw/encounters/new_chw_encounter_screen.dart';
 import 'package:nhealth/screens/chw/new_community_visit/patient_feeling_screen.dart';
 import 'package:nhealth/screens/chw/new_community_visit/verify_patient_screen.dart';
 import 'package:nhealth/screens/chw/patients/patient_details_screen.dart';
@@ -88,6 +89,9 @@ class RouteGenerator {
       
       case '/chwPatientDetails':
         return CupertinoPageRoute(builder: (_) => PatientDetailsScreen());
+      
+      case '/chwNewEncounter':
+        return CupertinoPageRoute(builder: (_) => NewChwEncounter());
     }
   }
 }

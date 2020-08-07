@@ -1016,12 +1016,8 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: <Widget>[
-                            FloatingButton( text: 'FOLLOW-UP', onPressed: () {}, active: false),
-                            FloatingButton(text: 'ACUTE', onPressed: () {}, active: false,),
-                            FloatingButton(text: 'CHILD', onPressed: () {}, active: false,),
-                            FloatingButton(text: 'MATERIAL', onPressed: () {}, active: false,),
-                            FloatingButton(text: 'HEALTH SCREENING', onPressed: () {
-                              Navigator.of(context).push(NewEncounterScreen());
+                            FloatingButton(text: 'IN-FIELD SCREENING', onPressed: () {
+                              Navigator.of(context).pushNamed('/chwNewEncounter');
                             }, active: true,),
                           ],
                         ),

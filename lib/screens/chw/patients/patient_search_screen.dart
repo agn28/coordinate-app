@@ -29,8 +29,11 @@ import '../../../app_localizations.dart';
 final birthDateController = TextEditingController();
 final birthmonthController = TextEditingController();
 final birthYearController = TextEditingController();
-List patients = [];
-List allPatients = [];
+List newPatients = [];
+List allNewPatients = [];
+
+List existingPatients = [];
+List allExistingPatients = [];
 final searchController = TextEditingController();
 bool isPendingRecommendation = false;
 
@@ -49,6 +52,8 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
   bool isLoading = true;
   var test = '';
   var authUser;
+  TabController _tabController;
+  int selectedTab = 0;
 
   @override
   initState() {
@@ -77,7 +82,7 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
 
   matchBarcodeData(data) async {
     var patient;
-    await allPatients.forEach((item) {
+    await allNewPatients.forEach((item) {
       if (data == '${item['data']['first_name']} ${item['data']['last_name']}') {
         patient = item;
         Patient().setPatient(item);
@@ -96,8 +101,8 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
     var data = await PatientController().getAllPatients();
 
     setState(() {
-      allPatients = data;
-      patients = allPatients;
+      allNewPatients = data;
+      newPatients = allNewPatients;
     });
   }
  
@@ -108,16 +113,26 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
       isLoading = true;
     });
 
-    var data = await PatientController().getAllLivePatients();
+    var data = await PatientController().getNewPatients();
+    var existingData = await PatientController().getExistingPatients();
 
     if (data['message'] == 'Unauthorized') {
       Helpers().logout(context);
     }
 
-    var parsedPatients = [];
+    var parsedNewPatients = [];
+    var parsedExistingPatients = [];
 
     for(var item in data['data']) {
-      parsedPatients.add({
+      parsedNewPatients.add({
+        'uuid': item['id'],
+        'data': item['body'],
+        'meta': item['meta']
+      });
+    }
+
+    for(var item in existingData['data']) {
+      parsedExistingPatients.add({
         'uuid': item['id'],
         'data': item['body'],
         'meta': item['meta']
@@ -125,20 +140,23 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
     }
 
     setState(() {
-      allPatients = parsedPatients;
-      patients = allPatients;
+      allNewPatients = parsedNewPatients;
+      newPatients = allNewPatients;
+
+      allExistingPatients = parsedExistingPatients;
+      existingPatients = allExistingPatients;
       isLoading = false;
     });
   }
 
   search(query) {
-    var modifiedPatients = [...allPatients].map((item)  {
+    var modifiedPatients = [...allNewPatients].map((item)  {
       item['data']['name'] = '${item['data']['first_name']} ${item['data']['last_name']}' ;
       return item;
     }).toList();
 
     setState(() {
-      patients = modifiedPatients
+      newPatients = modifiedPatients
         .where((item) => item['data']['name']
         .toLowerCase()
         .contains(query.toLowerCase()))
@@ -160,11 +178,11 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
         actions: <Widget>[
           PopupMenuButton(
             itemBuilder: (_) => <PopupMenuItem<String>>[
-                new PopupMenuItem<String>(
-                    
-                    child: Container(
-                      child: Text('Logout'),
-                    ),
+              new PopupMenuItem<String>(
+                  
+                  child: Container(
+                    child: Text('Logout'),
+                  ),
                     value: 'logout'),
               ],
             onSelected: (value) {
@@ -280,53 +298,166 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
                     ],
                   )
                 ),
-                ...patients.map((item) => GestureDetector(
-                  onTap: () {
-                      Patient().setPatient(item);
-                      Navigator.of(context).pushNamed('/patientOverview');
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    height: 50,
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: kBorderLighter)
-                      )
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Row(
-                            children: <Widget>[
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(30.0),
-                                child: Image.asset(
-                                  'assets/images/avatar.png',
-                                  height: 25.0,
-                                  width: 25.0,
-                                ),
-                              ),
-                              SizedBox(width: 10,),
-                              Text(item['data']['first_name'] + ' ' + item['data']['last_name'],
-                                style: TextStyle(color: Colors.black87, fontSize: 18),
-                              )
-                            ],
-                          ),
+
+                Container(
+                  height: MediaQuery.of(context).size.height,
+                  decoration: BoxDecoration(
+                  color: kPrimaryColor,
+                    border: Border.all(width: 0, color: kPrimaryColor)
+                  ),
+                  child: DefaultTabController(
+                    initialIndex: 0,
+
+                    length: 2,
+                    child: Scaffold(
+                      appBar: AppBar(
+                        elevation: 0,
+                        automaticallyImplyLeading: false,
+                        backgroundColor: kPrimaryColor,
+                        bottom: PreferredSize(child: Container(color: kPrimaryColor, height: 1.0,), preferredSize: Size.fromHeight(1.0)),
+                        flexibleSpace: TabBar(
+                          onTap: (value) {
+                            setState(() {
+                              selectedTab = value;
+                            });
+                          },
+                          labelPadding: EdgeInsets.all(0),
+                          indicatorPadding: EdgeInsets.all(0),
+                          indicatorColor: Colors.white,
+                          tabs: [
+                            Tab(
+                              child: Text(AppLocalizations.of(context).translate('newlyRegistered'), style: TextStyle(fontSize: 17)),
+                            ),
+                            Tab(
+                              child: Text(AppLocalizations.of(context).translate('existing'), style: TextStyle(fontSize: 17)),
+                            ),
+                            
+                          ],
                         ),
-                        Expanded(
-                          child: Text(item['data']['age'].toString() + 'Y ' + '${item['data']['gender'][0].toUpperCase()}' + ' - ' + item['data']['nid'].toString(), 
-                          style: TextStyle(
-                              color: Colors.black38,
-                              fontWeight: FontWeight.w400
-                            ), 
-                            textAlign: TextAlign.right,
+                      ),
+                      body: TabBarView(
+                        controller: _tabController,
+                                        
+                        children: [
+                          Container(
+                            child: Column(
+                              children: <Widget>[
+                                // SizedBox(height: 20,),
+                                ...newPatients.map((item) => GestureDetector(
+                                  onTap: () {
+                                      Patient().setPatient(item);
+                                      Navigator.of(context).pushNamed('/patientOverview');
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(color: kBorderLighter)
+                                      )
+                                    ),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Row(
+                                            children: <Widget>[
+                                              ClipRRect(
+                                                borderRadius: BorderRadius.circular(30.0),
+                                                child: Image.asset(
+                                                  'assets/images/avatar.png',
+                                                  height: 25.0,
+                                                  width: 25.0,
+                                                ),
+                                              ),
+                                              SizedBox(width: 10,),
+                                              Text(item['data']['first_name'] + ' ' + item['data']['last_name'],
+                                                style: TextStyle(color: Colors.black87, fontSize: 18),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(item['data']['age'].toString() + 'Y ' + '${item['data']['gender'][0].toUpperCase()}' + ' - ' + item['data']['nid'].toString(), 
+                                          style: TextStyle(
+                                              color: Colors.black38,
+                                              fontWeight: FontWeight.w400
+                                            ), 
+                                            textAlign: TextAlign.right,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )).toList(),
+                              ],
+                            )
                           ),
-                        ),
-                      ],
+                          
+                          
+                          Container(
+                            child: ListView(
+                              children: <Widget>[
+                                SizedBox(height: 20,),
+                                ...existingPatients.map((item) => GestureDetector(
+                                  onTap: () {
+                                      Patient().setPatient(item);
+                                      Navigator.of(context).pushNamed('/patientOverview');
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(color: kBorderLighter)
+                                      )
+                                    ),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Row(
+                                            children: <Widget>[
+                                              ClipRRect(
+                                                borderRadius: BorderRadius.circular(30.0),
+                                                child: Image.asset(
+                                                  'assets/images/avatar.png',
+                                                  height: 25.0,
+                                                  width: 25.0,
+                                                ),
+                                              ),
+                                              SizedBox(width: 10,),
+                                              Text(item['data']['first_name'] + ' ' + item['data']['last_name'],
+                                                style: TextStyle(color: Colors.black87, fontSize: 18),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(item['data']['age'].toString() + 'Y ' + '${item['data']['gender'][0].toUpperCase()}' + ' - ' + item['data']['nid'].toString(), 
+                                          style: TextStyle(
+                                              color: Colors.black38,
+                                              fontWeight: FontWeight.w400
+                                            ), 
+                                            textAlign: TextAlign.right,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )).toList(),
+                              ],
+                            )
+                          ),
+
+                          
+                        ],
+                      ),
                     ),
                   ),
-                )).toList(),
-                patients.length == 0 ? Container(
+                ),
+                
+                
+                
+                newPatients.length == 0 ? Container(
                   alignment: Alignment.centerLeft,
                   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   child: Text(AppLocalizations.of(context).translate('noPatientFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
@@ -680,7 +811,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
 
     if (birthDate != '') {
       this.widget.parent.setState(() {
-        patients = patients.where((item) => item['data']['birth_date'] == birthDate).toList();
+        newPatients = newPatients.where((item) => item['data']['birth_date'] == birthDate).toList();
       });
     }
 
@@ -689,7 +820,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
 
       var filteredAssessments = assessments.where((item) => item['data']['assessment_date'] == lastVisitDateController.text).toList();
       var filteredPatients = [];
-      patients.forEach((patient) { 
+      newPatients.forEach((patient) { 
         filteredAssessments.forEach((assessment) {
           if (assessment['data']['patient_id'] == patient['uuid']) {
             filteredPatients.add(patient);
@@ -698,7 +829,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
       });
 
       this.widget.parent.setState(() => {
-        patients = filteredPatients
+        newPatients = filteredPatients
       });
     }
   }
