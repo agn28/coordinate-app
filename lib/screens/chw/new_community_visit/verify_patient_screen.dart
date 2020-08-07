@@ -287,7 +287,7 @@ class _SkipAlertState extends State<SkipAlert> {
                         SizedBox(width: 30,),
                         GestureDetector(
                           onTap: () async {
-                            Navigator.of(context).pushReplacementNamed('/chwHome');
+                            Navigator.of(context).pushReplacementNamed('/chwNavigation');
                           },
                           child: Text(AppLocalizations.of(context).translate('done'), style: TextStyle(color: kPrimaryColor, fontSize: 16))
                         ),

@@ -67,7 +67,7 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
 
   getReports() async {
     isLoading = true;
-    var data = await HealthReportController().getLastReport();
+    var data = await HealthReportController().getLastReport(context);
     
     if (data['error'] == true) {
       setState(() {

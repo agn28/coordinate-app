@@ -101,7 +101,7 @@ class _MedicalRecommendationState extends State<MedicalRecommendationScreen> {
                             ),
                             child: FlatButton(
                               onPressed: () async {
-                                Navigator.of(context).pushNamed('/chwHome',);
+                                Navigator.of(context).pushNamed('/chwNavigation',);
                               },
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               child: Text('SUBMIT FOR REFERRAL', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)

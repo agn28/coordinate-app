@@ -183,7 +183,7 @@ class _PatientDetailsState extends State<PatientDetailsScreen> {
 
   getReport() async {
     isLoading = true;
-    var data = await HealthReportController().getLastReport();
+    var data = await HealthReportController().getLastReport(context);
     
     if (data['error'] == true) {
       setState(() {

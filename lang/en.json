@@ -3,6 +3,7 @@
   "home": "Home",
   "homeIntro": "What would you like to do?",
   "manageExistingPatient": "Manage an Existing Patients",
+  "viewExistingPatient": "View Existing Patients",
   "registerNewPatient": "Register a New Patient",
   "gotoProfile": "Go to Profile",
   "patients": "Patients",
@@ -304,6 +305,11 @@
   "aimForExcersize": "Aim for regular exercise, 30 minutes a day",
   "lowActivity": "Low Activity",
   "vegetableConsumption": "Vegetable consumption",
-  "fruitConsumption": "Fruit consumption"
-
+  "fruitConsumption": "Fruit consumption",
+  "gotoMyWorklist": "Go To My Worklist",
+  "sessionExpired": "Session Expired",
+  "sessionExpiredDetails": "Your current session is expired. You need to login again.",
+  "newlyRegistered": "Newly Registered",
+  "existing": "Existing",
+  "fieldScreening": "In-Field Screening"
 }

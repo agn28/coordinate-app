@@ -3,6 +3,7 @@
   "home": "হোম",
   "homeIntro": "আপনি কি করতে চান?",
   "manageExistingPatient": "একজন বর্তমান রোগীর চিকিৎসা করুন",
+  "viewExistingPatient": "বর্তমান রোগীগুলো দেখুন ",
   "registerNewPatient": "নতুন রোগী নিবন্ধন করুন",
   "gotoProfile": "প্রোফাইলে যান",
   "patients": "রোগী",
@@ -303,6 +304,12 @@
   "aimForExcersize": "প্রতিদিন কমপক্ষে ৩০ মিনিট শারিরিক পরিশ্রম করার লক্ষ্য ঠিক করুন",
   "lowActivity": "কম শারিরিক পরিশ্রম হচ্ছে",
   "vegetableConsumption": "শাকসবজি খাওয়া",
-  "fruitConsumption": "ফল খাওয়া"
+  "fruitConsumption": "ফল খাওয়া",
+  "gotoMyWorklist": "আপনার কাজের তালিকাতে যান ",
+  "sessionExpired": "সেশন সমাপ্ত",
+  "sessionExpiredDetails": "আপনার বর্তমান সেশন শেষ হয়েছে। আপনাকে পুনরায় লগইন করতে হবে।",
+  "newlyRegistered": "নতুন নিবন্ধিত",
+  "existing": "বিদ্যমান",
+  "fieldScreening": "ফিল্ড স্ক্রিনিং"
 
 }

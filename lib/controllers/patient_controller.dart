@@ -25,6 +25,8 @@ class PatientController {
     return data;
   }
 
+  
+
   getPatient(patientId) async {
     var response = await PatientRepository().getPatient(patientId);
 
@@ -40,7 +42,7 @@ class PatientController {
     return response;
   }
 
-  getPatientsWorklist(type) async {
+  getPatientsWorklist(context, type) async {
     var response = await PatientRepository().getPatientsWorklist(type);
 
     // await patients.forEach((patient) {
@@ -51,6 +53,10 @@ class PatientController {
     //     'meta': parsedData['meta']
     //   });
     // });
+    
+    if (response['message'] != null && response['message'] == 'Unauthorized') {
+      await Helpers().logout(context);
+    }
 
     return response;
   }
@@ -66,6 +72,19 @@ class PatientController {
     //     'meta': parsedData['meta']
     //   });
     // });
+
+    return response;
+  }
+
+  /// Get all the patients
+  getNewPatients() async {
+    var response = await PatientRepository().getNewPatients();
+
+    return response;
+  }
+
+  getExistingPatients() async {
+    var response = await PatientRepository().getExistingPatients();
 
     return response;
   }

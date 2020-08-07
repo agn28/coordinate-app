@@ -3,8 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
-import 'package:nhealth/helpers/helpers.dart';
-import 'package:nhealth/models/blood_test.dart';
+import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/body_measurement.dart';
 import 'package:nhealth/models/devices.dart';
 import 'package:nhealth/models/patient.dart';
@@ -30,17 +29,26 @@ class Measurements extends StatefulWidget {
 class MeasurementsState extends State<Measurements> {
 
   bool avatarExists = false;
+  var authUser;
 
   @override
   void initState() {
     super.initState();
     _checkAvatar();
+    getAuth();
   }
 
   _checkAvatar() async {
     var data = await File(Patient().getPatient()['data']['avatar']).exists();
     setState(() {
       avatarExists = data;
+    });
+  }
+
+  getAuth() async {
+    var data = await Auth().getStorageAuth();
+    setState(() {
+      authUser = data;
     });
   }
 
@@ -60,7 +68,7 @@ class MeasurementsState extends State<Measurements> {
         iconTheme: IconThemeData(color: kPrimaryColor),
       ),
       body: SingleChildScrollView(
-        child: Column(
+        child: authUser != null ? Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             PatientTopbar(),
@@ -94,17 +102,19 @@ class MeasurementsState extends State<Measurements> {
                     name: 'weight'
                   ),
 
+                  authUser['role'] != 'chw' ? 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/hip.png'),
                     text: AppLocalizations.of(context).translate('waist'),
                     name: 'waist'
-                  ),
+                  ) : Container(),
 
+                  authUser['role'] != 'chw' ?
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/hip.png'),
                     text: AppLocalizations.of(context).translate('hip'),
                     name: 'hip'
-                  ),
+                  ) : Container(),
                 ],
               )
             ),
@@ -113,7 +123,7 @@ class MeasurementsState extends State<Measurements> {
 
             SizedBox(height: 30,),
           ],
-        ),
+        ) : Container(),
       ),
 
       
