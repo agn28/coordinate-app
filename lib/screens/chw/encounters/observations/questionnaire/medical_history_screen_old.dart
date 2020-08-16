@@ -27,7 +27,7 @@ int _eightsQuestionOption = 1;
 final _seventhQuestionController = TextEditingController();
 
 class MedicalHistoryScreen extends CupertinoPageRoute {
-  var parent;
+  final EncounnterStepsState parent;
 
   MedicalHistoryScreen({this.parent})
       : super(builder: (BuildContext context) => new MedicalHistory(parent: parent));
@@ -64,133 +64,171 @@ class _MedicalHistoryState extends State<MedicalHistory> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Medical History', style: TextStyle(color: kPrimaryColor)),
+        title: Text('Questionnaire', style: TextStyle(color: kPrimaryColor)),
         backgroundColor: Colors.white,
         elevation: 0.0,
         bottomOpacity: 0.0,
         iconTheme: IconThemeData(color: kPrimaryColor),
       ),
 
-      body: SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            PatientTopbar(),
-
-            Container(
-              height: 90,
-              width: double.infinity,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              decoration: BoxDecoration(
-                color: Color(0xFFF4F4F4),
-                border: Border(
-                  bottom: BorderSide(width: .5, color: Color(0x50000000))
-                )
-              ),
-              child: Row(
-                children: <Widget>[
-                  Icon(Icons.error_outline, color: Color(0x87000000), size: 40,),
-                  SizedBox(width: 10,),
-                  Expanded(
-                    child: Text('Do you have a history of (or has ever been told they have) (select all that apply)', style: TextStyle(fontSize: 19),),
-                  )
-                ],
-              )
-            ),
-
-            
-            FirstQuestion(),
-            SecondQuestion(),
-            ThirdQuestion(),
-            FourthQuestion(),
-            FifthQuestion(),
-            SixthQuestion(),
-            SeventhQuestion(),
-            EighthQuestion(),
-
-
-            SizedBox(height: 60,),
-
-            Container(
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: Colors.black54),
-                        borderRadius: BorderRadius.circular(4)
-                      ),
-                      child: FlatButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
-                      ),
-                    )
-                  ),
-                  SizedBox(width: 20),
-                  Expanded(
-                    child: Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: kPrimaryColor,
-                        borderRadius: BorderRadius.circular(4)
-                      ),
-                      child: FlatButton(
-                        onPressed: () async {
-                          var answers = [];
-                          answers.add(_questions['items'][0]['options'][_firstQuestionOption]);
-                          answers.add(_questions['items'][1]['options'][_secondQuestionOption]);
-                          answers.add(_questions['items'][2]['options'][_thirdQuestionOption]);
-                          answers.add(_questions['items'][3]['options'][_fourthQuestionOption]);
-                          answers.add(_questions['items'][4]['options'][_fifthQuestionOption]);
-                          answers.add(_questions['items'][5]['options'][_sixthQuestionOption]);
-                          answers.add(_seventhQuestionController.text);
-                          answers.add(_questions['items'][7]['options'][_eightsQuestionOption]);
-                          answers.add(_selectedAllergies);
-                          var result = Questionnaire().addMedicalHistory('medical_history', answers);
-                          if (result == 'success') {
-                            _scaffoldKey.currentState.showSnackBar(
-                              SnackBar(
-                                content: Text('Data saved successfully!'),
-                                backgroundColor: Color(0xFF4cAF50),
-                              )
-                            );
-                            this.widget.parent.setState(() {
-                              this.widget.parent.setStatus();
-                            });
-                            await Future.delayed(const Duration(seconds: 1));
-                            Navigator.of(context).pop();
-                          } else {
-                            _scaffoldKey.currentState.showSnackBar(
-                              SnackBar(
-                                content: Text(result.toString()),
-                                backgroundColor: kPrimaryRedColor,
-                              )
-                            );
-                          }
-                        },
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        child: Text(AppLocalizations.of(context).translate('save'), style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
-                      ),
-                    )
-                  )
-                ],
-              ),
-            ),
-            
-          ],
-        ),
+      body: CustomStepper(
+        physics: ClampingScrollPhysics(),
+        type: CustomStepperType.horizontal,
+        isHeader: false,
+        controlsBuilder: (BuildContext context, {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
+          return Row();
+        },
+        onStepTapped: (step) {
+          setState(() {
+            this._currentStep = step;
+          });
+        },
+        steps: _mySteps(),
+        currentStep: this._currentStep,
       ),
 
+      bottomNavigationBar: Container(
+        color: kBottomNavigationGrey,
+        height: 64,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Expanded(
+              child: _currentStep != 0 ? FlatButton(
+                onPressed: () {
+                  setState(() {
+                    _currentStep = _currentStep - 1;
+                  });
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Icon(Icons.chevron_left),
+                    Text(AppLocalizations.of(context).translate('back'), style: TextStyle(fontSize: 20)),
+                  ],
+                ),
+              ) : Text('')
+            ),
+            Expanded(
+              child: Container(
+                alignment: Alignment.center,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _mySteps().length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (BuildContext context, index) {
+                    return Padding(
+                      padding: EdgeInsets.only(right: 10),
+                      child: Icon(Icons.lens, size: 15, color: _currentStep == index ? kPrimaryColor : kStepperDot,)
+                    );
+                  },
+                ),
+              ),
+            ),
+            Expanded(
+              child: _currentStep < _mySteps().length - 1 ? FlatButton(
+                onPressed: () {
+                  setState(() {
+                    _currentStep = _currentStep + 1;
+                  });
+                },
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate('next'), style: TextStyle(fontSize: 20)),
+                    Icon(Icons.chevron_right)
+                  ],
+                ),
+              ) : FlatButton(
+                onPressed: () async {
+                  var answers = [];
+                  answers.add(_questions['items'][0]['options'][_firstQuestionOption]);
+                  answers.add(_questions['items'][1]['options'][_secondQuestionOption]);
+                  answers.add(_questions['items'][2]['options'][_thirdQuestionOption]);
+                  answers.add(_questions['items'][3]['options'][_fourthQuestionOption]);
+                  answers.add(_questions['items'][4]['options'][_fifthQuestionOption]);
+                  answers.add(_questions['items'][5]['options'][_sixthQuestionOption]);
+                  answers.add(_seventhQuestionController.text);
+                  answers.add(_questions['items'][7]['options'][_eightsQuestionOption]);
+                  answers.add(_selectedAllergies);
+                  var result = Questionnaire().addMedicalHistory('medical_history', answers);
+                  if (result == 'success') {
+                    _scaffoldKey.currentState.showSnackBar(
+                      SnackBar(
+                        content: Text('Data saved successfully!'),
+                        backgroundColor: Color(0xFF4cAF50),
+                      )
+                    );
+                    this.widget.parent.setState(() {
+                      this.widget.parent.setStatus();
+                    });
+                    await Future.delayed(const Duration(seconds: 1));
+                    Navigator.of(context).pop();
+                  } else {
+                    _scaffoldKey.currentState.showSnackBar(
+                      SnackBar(
+                        content: Text(result.toString()),
+                        backgroundColor: kPrimaryRedColor,
+                      )
+                    );
+                  }
+                },
+                child: Text('COMPLETE', style: TextStyle(fontSize: 20, color: kPrimaryColor))
+              )
+            ),
+          ],
+        )
+      ),
     );
   }
 
+  List<CustomStep> _mySteps() {
+    List<CustomStep> _steps = [
+      CustomStep(
+        title: Text('Photo'),
+        content: FirstQuestion(),
+        isActive: _currentStep >= 2,
+      ),
+      CustomStep(
+        title: Text('Thumbprint'),
+        content: SecondQuestion(),
+        isActive: _currentStep >= 2,
+      ),
+      CustomStep(
+        title: Text('Thumbprint'),
+        content: ThirdQuestion(),
+        isActive: _currentStep >= 2,
+      ),
+      CustomStep(
+        title: Text('Thumbprint'),
+        content: FourthQuestion(),
+        isActive: _currentStep >= 2,
+      ),
+      CustomStep(
+        title: Text('Thumbprint'),
+        content: FifthQuestion(),
+        isActive: _currentStep >= 2,
+      ),
+      CustomStep(
+        title: Text('Thumbprint'),
+        content: SixthQuestion(),
+        isActive: _currentStep >= 2,
+      ),
+      CustomStep(
+        title: Text('Thumbprint'),
+        content: SeventhQuestion(),
+        isActive: _currentStep >= 2,
+      ),
+      CustomStep(
+        title: Text('Thumbprint'),
+        content: EighthQuestion(),
+        isActive: _currentStep >= 2,
+      ),
+    ];
+
+    return _steps;
+  }
   
 }
 
@@ -216,32 +254,59 @@ class _FirstQuestionState extends State<FirstQuestion> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: 25, top: 20),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: kBorderLighter)
-        )
-      ),
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            PatientTopbar(),
+            Container(
+              height: 70,
+              width: double.infinity,
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              decoration: BoxDecoration(
+                color: Color(0xFFF0F0F0),
+                border: Border(
+                  bottom: BorderSide(width: .5, color: Color(0x50000000))
+                )
+              ),
+              child: Text('Medical History', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+            ),
 
             Container(
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-              child: Text(_questions['items'][0]['question'],
-                style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
+              height: 90,
+              width: double.infinity,
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              decoration: BoxDecoration(
+                color: Color(0xFFF4F4F4),
+                border: Border(
+                  bottom: BorderSide(width: .5, color: Color(0x50000000))
+                )
+              ),
+              child: Row(
+                children: <Widget>[
+                  Icon(Icons.error_outline, color: Color(0x87000000), size: 40,),
+                  SizedBox(width: 10,),
+                  Expanded(
+                    child: Text('Do you have a history of (or has ever been told they have) (select all that apply)', style: TextStyle(fontSize: 19),),
+                  )
+                ],
               )
             ),
-            SizedBox(height: 20,),
             Container(
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 25),
-              width: MediaQuery.of(context).size.width * .5,
+              margin: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
+              child: Text(_questions['items'][0]['question'],
+                style: TextStyle(fontSize: 18, height: 1.7),
+              )
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
               child: Row(
                 children: <Widget>[
                   ..._questions['items'][0]['options'].map((option) => 
                     Expanded(
                       child: Container(
-                        height: 40,
+                        height: 60,
                         margin: EdgeInsets.only(right: 10, left: 10),
                         decoration: BoxDecoration(
                           border: Border.all(width: 1, color: _firstQuestionOption == _questions['items'][0]['options'].indexOf(option) ? Color(0xFF01579B) : Colors.black),
@@ -290,55 +355,61 @@ class _SecondQuestionState extends State<SecondQuestion> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: 25, top: 20),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: kBorderLighter)
-        )
-      ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-            child: Text(_questions['items'][1]['question'],
-              style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
-            )
-          ),
-          SizedBox(height: 29,),
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 0, horizontal: 25),
-            width: MediaQuery.of(context).size.width * .5,
-            child: Row(
-              children: <Widget>[
-                ..._questions['items'][0]['options'].map((option) => 
-                  Expanded(
-                    child: Container(
-                      height: 40,
-                      margin: EdgeInsets.only(right: 10, left: 10),
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: _secondQuestionOption == _questions['items'][0]['options'].indexOf(option) ? Color(0xFF01579B) : Colors.black),
-                        borderRadius: BorderRadius.circular(3),
-                        color: _secondQuestionOption == _questions['items'][0]['options'].indexOf(option) ? Color(0xFFE1F5FE) : null
-                      ),
-                      child: FlatButton(
-                        onPressed: () {
-                          _changeOption(_questions['items'][0]['options'].indexOf(option));
-                        },
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        child: Text(option.toUpperCase(),
-                          style: TextStyle(color: _secondQuestionOption == _questions['items'][0]['options'].indexOf(option) ? kPrimaryColor : null),
-                        ),
-                      ),
-                    )
-                  ),
-                ).toList()
-              ],
-            )
-          ),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            PatientTopbar(),
+            Container(
+              height: 70,
+              width: double.infinity,
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              decoration: BoxDecoration(
+                color: Color(0xFFF0F0F0),
+                border: Border(
+                  bottom: BorderSide(width: .5, color: Color(0x50000000))
+                )
+              ),
+              child: Text('Medical History', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+            ),
 
-        ],
-      )
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
+              child: Text(_questions['items'][1]['question'],
+                style: TextStyle(fontSize: 18, height: 1.7),
+              )
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+              child: Row(
+                children: <Widget>[
+                  ..._questions['items'][0]['options'].map((option) => 
+                    Expanded(
+                      child: Container(
+                        height: 60,
+                        margin: EdgeInsets.only(right: 10, left: 10),
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 1, color: _secondQuestionOption == _questions['items'][0]['options'].indexOf(option) ? Color(0xFF01579B) : Colors.black),
+                          borderRadius: BorderRadius.circular(3),
+                          color: _secondQuestionOption == _questions['items'][0]['options'].indexOf(option) ? Color(0xFFE1F5FE) : null
+                        ),
+                        child: FlatButton(
+                          onPressed: () {
+                            _changeOption(_questions['items'][0]['options'].indexOf(option));
+                          },
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          child: Text(option.toUpperCase(),
+                            style: TextStyle(color: _secondQuestionOption == _questions['items'][0]['options'].indexOf(option) ? kPrimaryColor : null),
+                          ),
+                        ),
+                      )
+                    ),
+                  ).toList()
+                ],
+              )
+            ),
+          ],
+        ),
     );
   }
  }
@@ -361,32 +432,38 @@ class _ThirdQuestionState extends State<ThirdQuestion> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: 25, top: 20),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: kBorderLighter)
-        )
-      ),
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            PatientTopbar(),
+            Container(
+              height: 70,
+              width: double.infinity,
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              decoration: BoxDecoration(
+                color: Color(0xFFF0F0F0),
+                border: Border(
+                  bottom: BorderSide(width: .5, color: Color(0x50000000))
+                )
+              ),
+              child: Text('Medical History', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+            ),
 
             Container(
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+              margin: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
               child: Text(_questions['items'][2]['question'],
-                style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 18, height: 1.7),
               )
             ),
-            SizedBox(height: 20,),
             Container(
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 25),
-              width: MediaQuery.of(context).size.width * .5,
+              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
               child: Row(
                 children: <Widget>[
                   ..._questions['items'][2]['options'].map((option) => 
                     Expanded(
                       child: Container(
-                        height: 40,
+                        height: 60,
                         margin: EdgeInsets.only(right: 10, left: 10),
                         decoration: BoxDecoration(
                           border: Border.all(width: 1, color: _thirdQuestionOption == _questions['items'][0]['options'].indexOf(option) ? Color(0xFF01579B) : Colors.black),
@@ -432,32 +509,38 @@ class _FourthQuestionState extends State<FourthQuestion> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: 25, top: 20),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: kBorderLighter)
-        )
-      ),
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            PatientTopbar(),
+            Container(
+              height: 70,
+              width: double.infinity,
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              decoration: BoxDecoration(
+                color: Color(0xFFF0F0F0),
+                border: Border(
+                  bottom: BorderSide(width: .5, color: Color(0x50000000))
+                )
+              ),
+              child: Text('Medical History', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+            ),
 
             Container(
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+              margin: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
               child: Text(_questions['items'][3]['question'],
-                style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 18, height: 1.7),
               )
             ),
-            SizedBox(height: 20,),
             Container(
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 25),
-              width: MediaQuery.of(context).size.width * .5,
+              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
               child: Row(
                 children: <Widget>[
                   ..._questions['items'][3]['options'].map((option) => 
                     Expanded(
                       child: Container(
-                        height: 40,
+                        height: 60,
                         margin: EdgeInsets.only(right: 10, left: 10),
                         decoration: BoxDecoration(
                           border: Border.all(width: 1, color: _fourthQuestionOption == _questions['items'][0]['options'].indexOf(option) ? Color(0xFF01579B) : Colors.black),
@@ -503,32 +586,38 @@ class _FifthQuestionState extends State<FifthQuestion> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: 25, top: 20),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: kBorderLighter)
-        )
-      ),
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            PatientTopbar(),
+            Container(
+              height: 70,
+              width: double.infinity,
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              decoration: BoxDecoration(
+                color: Color(0xFFF0F0F0),
+                border: Border(
+                  bottom: BorderSide(width: .5, color: Color(0x50000000))
+                )
+              ),
+              child: Text('Medical History', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+            ),
 
             Container(
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+              margin: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
               child: Text(_questions['items'][4]['question'],
-                style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 18, height: 1.7),
               )
             ),
-            SizedBox(height: 20,),
             Container(
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 25),
-              width: MediaQuery.of(context).size.width * .5,
+              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
               child: Row(
                 children: <Widget>[
                   ..._questions['items'][4]['options'].map((option) => 
                     Expanded(
                       child: Container(
-                        height: 40,
+                        height: 60,
                         margin: EdgeInsets.only(right: 10, left: 10),
                         decoration: BoxDecoration(
                           border: Border.all(width: 1, color: _fifthQuestionOption == _questions['items'][0]['options'].indexOf(option) ? Color(0xFF01579B) : Colors.black),
@@ -574,32 +663,38 @@ class _SixthQuestionState extends State<SixthQuestion> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: 25, top: 20),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: kBorderLighter)
-        )
-      ),
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            PatientTopbar(),
+            Container(
+              height: 70,
+              width: double.infinity,
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              decoration: BoxDecoration(
+                color: Color(0xFFF0F0F0),
+                border: Border(
+                  bottom: BorderSide(width: .5, color: Color(0x50000000))
+                )
+              ),
+              child: Text('Medical History', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+            ),
 
             Container(
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+              margin: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
               child: Text(_questions['items'][5]['question'],
-                style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 18, height: 1.7),
               )
             ),
-            SizedBox(height: 20,),
             Container(
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 25),
-              width: MediaQuery.of(context).size.width * .5,
+              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
               child: Row(
                 children: <Widget>[
                   ..._questions['items'][4]['options'].map((option) => 
                     Expanded(
                       child: Container(
-                        height: 40,
+                        height: 60,
                         margin: EdgeInsets.only(right: 10, left: 10),
                         decoration: BoxDecoration(
                           border: Border.all(width: 1, color: _sixthQuestionOption == _questions['items'][5]['options'].indexOf(option) ? Color(0xFF01579B) : Colors.black),
@@ -645,26 +740,33 @@ class _SeventhQuestionState extends State<SeventhQuestion> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: 25, top: 20),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: kBorderLighter)
-        )
-      ),
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            PatientTopbar(),
+            Container(
+              height: 70,
+              width: double.infinity,
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              decoration: BoxDecoration(
+                color: Color(0xFFF0F0F0),
+                border: Border(
+                  bottom: BorderSide(width: .5, color: Color(0x50000000))
+                )
+              ),
+              child: Text('Medical History', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+            ),
 
             Container(
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+              margin: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
               child: Text(_questions['items'][6]['question'],
-                style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 18, height: 1.7),
               )
             ),
-            SizedBox(height: 20,),
             Container(
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 25),
-              width: MediaQuery.of(context).size.width * .5,
+              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+              width: 250,
               child: PrimaryTextField(
                 topPaadding: 15,
                 bottomPadding: 15,
@@ -738,32 +840,38 @@ class _EighthQuestionState extends State<EighthQuestion> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: 25, top: 20),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: kBorderLighter)
-        )
-      ),
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            PatientTopbar(),
+            Container(
+              height: 70,
+              width: double.infinity,
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              decoration: BoxDecoration(
+                color: Color(0xFFF0F0F0),
+                border: Border(
+                  bottom: BorderSide(width: .5, color: Color(0x50000000))
+                )
+              ),
+              child: Text('Medical History', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+            ),
 
             Container(
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+              margin: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
               child: Text(_questions['items'][7]['question'],
-                style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 18, height: 1.7),
               )
             ),
-            SizedBox(height: 20,),
             Container(
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 25),
-              width: MediaQuery.of(context).size.width * .5,
+              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
               child: Row(
                 children: <Widget>[
                   ..._questions['items'][7]['options'].map((option) => 
                     Expanded(
                       child: Container(
-                        height: 40,
+                        height: 60,
                         margin: EdgeInsets.only(right: 10, left: 10),
                         decoration: BoxDecoration(
                           border: Border.all(width: 1, color: _eightsQuestionOption == _questions['items'][7]['options'].indexOf(option) ? Color(0xFF01579B) : Colors.black),
@@ -798,7 +906,7 @@ class _EighthQuestionState extends State<EighthQuestion> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text('Select Allergies', style: TextStyle(fontSize: 18,),),
+                          Text('Select Allergies', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),),
                         ],
                       ),
                     ),

@@ -23,7 +23,7 @@ final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
 class AlcoholScreen extends CupertinoPageRoute {
-  var parent;
+  final EncounnterStepsState parent;
   AlcoholScreen({this.parent})
       : super(builder: (BuildContext context) => new Alcohol(parent: parent));
 

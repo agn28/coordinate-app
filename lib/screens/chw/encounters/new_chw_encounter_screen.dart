@@ -9,10 +9,15 @@ import 'package:nhealth/controllers/device_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/assessment.dart';
+import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/blood_pressure.dart';
+import 'package:nhealth/models/blood_test.dart';
+import 'package:nhealth/models/body_measurement.dart';
 import 'package:nhealth/models/devices.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/chw/encounters/observations/questionnaire/questionnaires_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-test/blood_test_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/body-measurements/measurements_screen.dart';
@@ -43,12 +48,15 @@ class _NewChwEncounterState extends State<NewChwEncounter> {
   final commentController = TextEditingController();
   bool _dataSaved = false;
   bool avatarExists = false;
+  var authUser;
 
   bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
+    isLoading = false;
+    getAuth();
     _checkAvatar();
     _getDevices();
     BloodPressure().removeDeleteIds();
@@ -59,6 +67,19 @@ class _NewChwEncounterState extends State<NewChwEncounter> {
         selectedType = type == 'in-clinic' ? 'In-clinic Screening' : 'Home Visit';
       });
     }
+  }
+
+  setLoader(value) {
+    setState(() {
+      isLoading = value;
+    });
+  }
+
+  getAuth() async {
+    var data = await Auth().getStorageAuth();
+    setState(() {
+      authUser = data;
+    });
   }
 
   _getDevices() async {
@@ -270,115 +291,123 @@ class _NewChwEncounterState extends State<NewChwEncounter> {
                 ),
                 child: FlatButton(
                   onPressed: () async {
-                    await showDialog(
-                      context: _scaffoldKey.currentContext,
-                      builder: (BuildContext context) {
-                        // return object of type Dialog
-                        return Dialog(
-                          elevation: 0.0,
-                          backgroundColor: Colors.transparent,
-                          child: Container(
-                            width: double.infinity,
-                            padding: EdgeInsets.only(top: 30, left: 30, right: 30),
-                            height: 230.0,
-                            color: Colors.white,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(AppLocalizations.of(context).translate('confirmSave'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
-                                SizedBox(height: 20,),
-                                Text(AppLocalizations.of(context).translate('missingSections'),
-                                  style: TextStyle(fontSize: 18, height: 1.5),
-                                ),
+                    var bp = BloodPressure().bpItems;
+                    var bt = BloodTest().btItems;
+                    var qt = Questionnaire().qnItems;
+                    var bm = BodyMeasurement().bmItems;
 
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: <Widget>[
-                                    Container(
-                                      margin: EdgeInsets.only(top: 30),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: <Widget>[
-                                          GestureDetector(
-                                            onTap: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
-                                          ),
-                                          SizedBox(width: 30,),
-                                          GestureDetector(
-                                            onTap: () async {
-                                              var result = '';
-                                              Navigator.of(context).pop();
-                                              setState(() {
-                                                isLoading = true;
-                                              });
-                                              if (Assessment().getSelectedAssessment().isEmpty) {
-                                                result = await AssessmentController().create('in-field', 'ncd', commentController.text);
-                                              } else {
-                                                result = await AssessmentController().update(selectedType, commentController.text);
-                                              }
-                                              
-                                              setState(() {
-                                                isLoading = false;
-                                              });
-                                              print('before if');
+                    if (bp.isEmpty || bt.isEmpty || qt.isEmpty || bm.isEmpty) {
+                      return await showDialog(
+                        context: _scaffoldKey.currentContext,
+                        builder: (BuildContext context) {
 
-                                              // _scaffoldKey.currentState.showSnackBar(
-                                              //   SnackBar(
-                                              //     content: Text(AppLocalizations.of(context).translate('dataSaved')),
-                                              //     backgroundColor: Color(0xFF4cAF50),
-                                              //   )
-                                              // );
+                          return Dialog(
+                            elevation: 0.0,
+                            backgroundColor: Colors.transparent,
+                            child: Container(
+                              width: 200,
+                              padding: EdgeInsets.only(top: 30, left: 30, right: 30),
+                              height: 130.0,
+                              color: Colors.white,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(AppLocalizations.of(context).translate("observationNotAdded"), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),),
+                                  SizedBox(height: 10,),
 
-                                              if (result == 'success') {
-                                                print('hello');
-                                                Navigator.of(_scaffoldKey.currentContext).pushNamed('/patientOverview');
-                                                _dataSaved = true;
-                                                // _scaffoldKey.currentState.showSnackBar(
-                                                //   SnackBar(
-                                                //     content: Text(AppLocalizations.of(context).translate('dataSaved')),
-                                                //     backgroundColor: Color(0xFF4cAF50),
-                                                //   )
-                                                // );
-
-                                                if (widget.encounterDetailsState != null) {
-                                                  widget.encounterDetailsState.setState(() async {
-                                                    await widget.encounterDetailsState.getObservations();
-                                                  });
-                                                }
-                                                
-                                              } else {
-                                                print('else');
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: <Widget>[
+                                      Container(
+                                        margin: EdgeInsets.only(top: 30),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: <Widget>[
+                                            GestureDetector(
+                                              onTap: () {
                                                 Navigator.of(context).pop();
-                                                // _scaffoldKey.currentState.showSnackBar(
-                                                //   SnackBar(
-                                                //     content: Text(result.toString()),
-                                                //     backgroundColor: kPrimaryRedColor,
-                                                //   )
-                                                // );
-                                              }
-                                            },
-                                            child: Text(AppLocalizations.of(context).translate('save'), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
-                                          ),
-                                        ],
+                                              },
+                                              child: Text('OK', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                                            ),
+                                          ],
+                                        )
                                       )
-                                    )
-                                  ],
-                                )
-                              ],
+                                    ],
+                                  )
+                                ],
+                              )
                             )
-                          )
 
-                        );
-                      },
-                    );
-                    if (_dataSaved) {
-                      await Future.delayed(const Duration(seconds: 1));
-                      print('hello');
-                      Navigator.of(context).pushNamed('/patientOverview');
-                      // Navigator.pop(context);
+                          );
+                          
+                        },
+                      );
+                    }
+
+                    if (bt.length > 0) {
+                      print(bt[0]);
+
+                      bt.forEach((item) async  {
+                        if (item['body']['data']['name'] == 'blood_glucose') {
+                          if (item['body']['data']['value'] > 250) {
+                            return await showDialog(
+                              context: _scaffoldKey.currentContext,
+                              builder: (BuildContext context) {
+
+                                return MedicalRecommendationWidget(commentController: commentController, selectedType: selectedType, widget: widget, parent: this);
+                                
+                              },
+                            );
+                          
+                          }
+                        }
+                      });
+                    }
+
+                    var result = '';
+                    setState(() {
+                      isLoading = true;
+                    });
+
+                    result = await AssessmentController().create('in-field', 'ncd', commentController.text);
+
+                    setState(() {
+                      isLoading = false;
+                    });
+                    print('before if');
+
+                    // _scaffoldKey.currentState.showSnackBar(
+                    //   SnackBar(
+                    //     content: Text(AppLocalizations.of(context).translate('dataSaved')),
+                    //     backgroundColor: Color(0xFF4cAF50),
+                    //   )
+                    // );
+
+                    if (result == 'success') {
+                      Navigator.of(_scaffoldKey.currentContext).pushNamed('/patientOverview');
+                      // _scaffoldKey.currentState.showSnackBar(
+                      //   SnackBar(
+                      //     content: Text(AppLocalizations.of(context).translate('dataSaved')),
+                      //     backgroundColor: Color(0xFF4cAF50),
+                      //   )
+                      // );
+
+                      if (widget.encounterDetailsState != null) {
+                        widget.encounterDetailsState.setState(() async {
+                          await widget.encounterDetailsState.getObservations();
+                        });
+                      }
+                      
+                    } else {
+                      print('else');
+                      Navigator.of(context).pop();
+                      // _scaffoldKey.currentState.showSnackBar(
+                      //   SnackBar(
+                      //     content: Text(result.toString()),
+                      //     backgroundColor: kPrimaryRedColor,
+                      //   )
+                      // );
                     }
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
@@ -390,6 +419,118 @@ class _NewChwEncounterState extends State<NewChwEncounter> {
           ],
         )
       )
+    );
+  }
+}
+
+class MedicalRecommendationWidget extends StatefulWidget {
+  const MedicalRecommendationWidget({
+    @required this.commentController,
+    @required this.selectedType,
+    @required this.widget,
+    @required this.parent,
+  });
+
+  final TextEditingController commentController;
+  final String selectedType;
+  final NewChwEncounter widget;
+  final _NewChwEncounterState parent;
+
+  @override
+  _MedicalRecommendationWidgetState createState() => _MedicalRecommendationWidgetState();
+}
+
+class _MedicalRecommendationWidgetState extends State<MedicalRecommendationWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      elevation: 0.0,
+      backgroundColor: Colors.transparent,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.only(top: 30, left: 30, right: 30),
+        height: 180.0,
+        color: Colors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text('The patients seems to be severly unwell', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),),
+            SizedBox(height: 15,),
+            Text('Recommend seeking medical attention', style: TextStyle(color: kPrimaryRedColor, fontSize: 22, fontWeight: FontWeight.w400),),
+
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.only(top: 30),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                      ),
+                      SizedBox(width: 30,),
+                      GestureDetector(
+                        onTap: () async {
+                          var result = '';
+                          Navigator.of(context).pop();
+                          widget.parent.setLoader(true).
+
+                          // result = await AssessmentController().create('in-field', 'ncd', widget.commentController.text);
+
+                          // setState(() {
+                          //   isLoading = false;
+                          // });
+                          print('before if');
+
+                          // _scaffoldKey.currentState.showSnackBar(
+                          //   SnackBar(
+                          //     content: Text(AppLocalizations.of(context).translate('dataSaved')),
+                          //     backgroundColor: Color(0xFF4cAF50),
+                          //   )
+                          // );
+
+                          if (result == 'success') {
+                            Navigator.of(_scaffoldKey.currentContext).pushNamed('/patientOverview');
+                            // _scaffoldKey.currentState.showSnackBar(
+                            //   SnackBar(
+                            //     content: Text(AppLocalizations.of(context).translate('dataSaved')),
+                            //     backgroundColor: Color(0xFF4cAF50),
+                            //   )
+                            // );
+
+                            if (widget.widget.encounterDetailsState != null) {
+                              widget.widget.encounterDetailsState.setState(() async {
+                                await widget.widget.encounterDetailsState.getObservations();
+                              });
+                            }
+                            
+                          } else {
+                            print('else');
+                            Navigator.of(context).pop();
+                            // _scaffoldKey.currentState.showSnackBar(
+                            //   SnackBar(
+                            //     content: Text(result.toString()),
+                            //     backgroundColor: kPrimaryRedColor,
+                            //   )
+                            // );
+                          }
+                        },
+                        child: Text('SUBMIT FOR REFERRAL', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                      ),
+                    ],
+                  )
+                )
+              ],
+            )
+          ],
+        )
+      )
+
     );
   }
 }

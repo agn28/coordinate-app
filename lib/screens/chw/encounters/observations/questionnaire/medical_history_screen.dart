@@ -27,7 +27,7 @@ int _eightsQuestionOption = 1;
 final _seventhQuestionController = TextEditingController();
 
 class MedicalHistoryScreen extends CupertinoPageRoute {
-  var parent;
+  final EncounnterStepsState parent;
 
   MedicalHistoryScreen({this.parent})
       : super(builder: (BuildContext context) => new MedicalHistory(parent: parent));

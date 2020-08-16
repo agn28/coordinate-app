@@ -23,7 +23,7 @@ final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
 class AlcoholScreen extends CupertinoPageRoute {
-  var parent;
+  final EncounnterStepsState parent;
   AlcoholScreen({this.parent})
       : super(builder: (BuildContext context) => new Alcohol(parent: parent));
 
@@ -280,5 +280,164 @@ class _AlcoholState extends State<Alcohol> {
 
     );
   }
+
+  List<CustomStep> _mySteps() {
+    List<CustomStep> _steps = [
+      CustomStep(
+        title: Text('Photo'),
+        content: FirstQuestion(),
+        isActive: _currentStep >= 2,
+      ),
+    ];
+
+    return _steps;
+  }
   
 }
+
+class FirstQuestion extends StatefulWidget {
+  const FirstQuestion({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _FirstQuestionState createState() => _FirstQuestionState();
+}
+
+class _FirstQuestionState extends State<FirstQuestion> {
+
+  _changeOption(value) {
+    setState(() {
+      _selectedOption = value;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            PatientTopbar(),
+            Container(
+              height: 70,
+              width: double.infinity,
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              decoration: BoxDecoration(
+                color: Color(0xFFF0F0F0),
+                border: Border(
+                  bottom: BorderSide(width: .5, color: Color(0x50000000))
+                )
+              ),
+              child: Text('Alcohol', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+            ),
+
+            Container(
+              height: 90,
+              width: double.infinity,
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              decoration: BoxDecoration(
+                color: Color(0xFFF4F4F4),
+                border: Border(
+                  bottom: BorderSide(width: .5, color: Color(0x50000000))
+                )
+              ),
+              child: Row(
+                children: <Widget>[
+                  Icon(Icons.error_outline, color: Color(0x87000000), size: 40,),
+                  SizedBox(width: 10,),
+                  Expanded(
+                    child: Text('Now I am going to ask you some questions about alcohol use.', style: TextStyle(fontSize: 19),),
+                  )
+                ],
+              )
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
+              child: Text(_questions['items'][0]['question'],
+                style: TextStyle(fontSize: 18),
+              )
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+              child: Row(
+                children: <Widget>[
+                  ..._questions['items'][0]['options'].map((option) => 
+                    Expanded(
+                      child: Container(
+                        height: 60,
+                        margin: EdgeInsets.only(right: 10, left: 10),
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 1, color: _selectedOption == _questions['items'][0]['options'].indexOf(option) ? Color(0xFF01579B) : Colors.black),
+                          borderRadius: BorderRadius.circular(3),
+                          color: _selectedOption == _questions['items'][0]['options'].indexOf(option) ? Color(0xFFE1F5FE) : null
+                        ),
+                        child: FlatButton(
+                          onPressed: () {
+                            _changeOption(_questions['items'][0]['options'].indexOf(option));
+                          },
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          child: Text(StringUtils.capitalize(option),
+                            style: TextStyle(color: _selectedOption == _questions['items'][0]['options'].indexOf(option) ? kPrimaryColor : null),
+                          ),
+                        ),
+                      )
+                    ),
+                  ).toList()
+                ],
+              )
+            ),
+            SizedBox(height: 30,),
+
+            _selectedOption == 0 ? 
+            Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+                    child: Text(_questions['items'][1]['question'],
+                      style: TextStyle(fontSize: 18),
+                    )
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+                    width: 200,
+                    child: PrimaryTextField(
+                      topPaadding: 15,
+                      bottomPadding: 15,
+                      hintText: 'Number of days',
+                      validation: true,
+                      type: TextInputType.number,
+                      controller: daysController,
+                    )
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+                    child: Text(_questions['items'][2]['question'],
+                      style: TextStyle(fontSize: 18),
+                    )
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+                    width: 200,
+                    child: PrimaryTextField(
+                      topPaadding: 15,
+                      bottomPadding: 15,
+                      hintText: 'Number of units',
+                      validation: true,
+                      type: TextInputType.number,
+                      controller: unitsController,
+                    )
+                  ),
+                ],
+              ),
+            ) : Container(),
+          ],
+        ),
+    );
+  }
+ }

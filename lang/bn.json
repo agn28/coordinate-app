@@ -310,6 +310,9 @@
   "sessionExpiredDetails": "আপনার বর্তমান সেশন শেষ হয়েছে। আপনাকে পুনরায় লগইন করতে হবে।",
   "newlyRegistered": "নতুন নিবন্ধিত",
   "existing": "বিদ্যমান",
-  "fieldScreening": "ফিল্ড স্ক্রিনিং"
+  "fieldScreening": "ফিল্ড স্ক্রিনিং",
+  "referralList": "রেফারেল সমূহ",
+  "observationNotAdded": "পর্যবেক্ষণ যুক্ত করা হই নি",
+  "seemsUnwell": "The patients seems to be severly unwell"
 
 }

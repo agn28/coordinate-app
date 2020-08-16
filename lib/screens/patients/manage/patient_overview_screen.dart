@@ -51,6 +51,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
   var cholesterol;
   var bp;
   var cvd;
+  var dueDate;
 
   @override
   void initState() {
@@ -61,9 +62,26 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
     _getCarePlan();
     getEncounters();
     getAssessments();
+    getAssessmentDueDate();
     getMedicationsConditions();
     getReport();
     getUsers();
+  }
+
+  getAssessmentDueDate() {
+    print('hasld;sa');
+    print(DateFormat("MMMM d, y").format(DateTime.parse(_patient['data']['next_assignment']['body']['activityDuration']['start'])));
+
+    if (_patient != null && _patient['data']['next_assignment'] != null && _patient['data']['next_assignment']['body']['activityDuration']['start'] != null) {
+      setState(() {
+        dueDate = DateFormat("MMMM d, y").format(DateTime.parse(_patient['data']['next_assignment']['body']['activityDuration']['start']));
+      });
+    }
+    
+
+    // if (_patient['data']['body']['activityDuration'] != null && item['body']['activityDuration']['start'] != '' && item['body']['activityDuration']['end'] != '') {
+    //   var start = DateTime.parse(item['body']['activityDuration']['start']);
+    // }
   }
 
   getUsers() async {
@@ -483,23 +501,28 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                             SizedBox(width: 10,),
                                             Row(
                                               children: <Widget>[
+                                                _patient['data']['assessments'] != null && _patient['data']['assessments']['lifestyle']['components']['diet'] != null && _patient['data']['assessments']['lifestyle']['components']['diet']['components']['fruit'] != null ?
                                                 CircleAvatar(
                                                   child: Image.asset('assets/images/icons/fruit.png', width: 11,),
                                                   radius: 11,
-                                                  backgroundColor: kPrimaryRedColor,
-                                                ),
+                                                  backgroundColor: ColorUtils.statusColor[_patient['data']['assessments']['lifestyle']['components']['diet']['components']['fruit']['tfl']],
+                                                ) : Container(),
                                                 SizedBox(width: 5,),
+
+                                                _patient['data']['assessments'] != null && _patient['data']['assessments']['lifestyle']['components']['diet'] != null && _patient['data']['assessments']['lifestyle']['components']['diet']['components']['vegetable'] != null ?
                                                 CircleAvatar(
                                                   child: Image.asset('assets/images/icons/vegetables.png', width: 11,),
                                                   radius: 11,
-                                                  backgroundColor: kPrimaryRedColor,
-                                                ),
+                                                  backgroundColor: ColorUtils.statusColor[_patient['data']['assessments']['lifestyle']['components']['diet']['components']['vegetable']['tfl']],
+                                                ) : Container(),
                                                 SizedBox(width: 5,),
+
+                                                _patient['data']['assessments'] != null && _patient['data']['assessments']['lifestyle']['components']['physical_activity'] != null ?
                                                 CircleAvatar(
                                                   child: Image.asset('assets/images/icons/activity.png', width: 11,),
                                                   radius: 11,
-                                                  backgroundColor: kPrimaryAmberColor,
-                                                )
+                                                  backgroundColor: ColorUtils.statusColor[_patient['data']['assessments']['lifestyle']['components']['physical_activity']['tfl']],
+                                                ) : Container()
                                               ],
                                             ),
                                           ],
@@ -611,7 +634,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                             ),
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text('Feb 15, 2020', style: TextStyle(fontSize: 17,),),
+                              child: Text(dueDate != null ? dueDate : '', style: TextStyle(fontSize: 17,),),
                             ),
                           ]
                         ),

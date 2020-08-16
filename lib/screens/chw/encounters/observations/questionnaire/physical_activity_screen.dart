@@ -14,7 +14,7 @@ int _firstQuestionOption = 1;
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
 class PhysicalActivityScreen extends CupertinoPageRoute {
-  var parent;
+  final EncounnterStepsState parent;
   PhysicalActivityScreen({this.parent})
       : super(builder: (BuildContext context) => new PhysicalActivity(parent: parent));
 

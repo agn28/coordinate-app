@@ -96,6 +96,24 @@ class PatientRepository {
     });
   }
 
+  getReferralPatients() async {
+    var authData = await Auth().getStorageAuth() ;
+    var token = authData['accessToken'];
+    return http.get(
+      apiUrl + 'patients?type=referral',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    ).then((response) {
+      return json.decode(response.body);
+      
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
+  }
+
   getPatientsWorklist(type) async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];

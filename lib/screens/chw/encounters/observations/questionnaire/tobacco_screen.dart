@@ -18,7 +18,7 @@ final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
 class TobaccoScreen extends CupertinoPageRoute {
   
-  var parent;
+  EncounnterStepsState parent;
   TobaccoScreen({this.parent})
       : super(builder: (BuildContext context) => new Tobacco(parent: parent,));
 

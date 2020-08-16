@@ -115,6 +115,8 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
 
     var data = await PatientController().getNewPatients();
     var existingData = await PatientController().getExistingPatients();
+    print('hello');
+    print(existingData);
 
     if (data['message'] == 'Unauthorized') {
       Helpers().logout(context);

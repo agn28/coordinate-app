@@ -311,5 +311,8 @@
   "sessionExpiredDetails": "Your current session is expired. You need to login again.",
   "newlyRegistered": "Newly Registered",
   "existing": "Existing",
-  "fieldScreening": "In-Field Screening"
+  "fieldScreening": "In-Field Screening",
+  "referralList": "Referral List",
+  "observationNotAdded": "No observation added",
+  "seemsUnwell": "The patients seems to be severly unwell"
 }

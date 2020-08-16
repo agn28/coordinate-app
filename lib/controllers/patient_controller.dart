@@ -89,6 +89,12 @@ class PatientController {
     return response;
   }
 
+  getReferralPatients() async {
+    var response = await PatientRepository().getReferralPatients();
+
+    return response;
+  }
+
   /// Create a new patient
   /// [formData] is required as parameter.
   create(formData) async {

@@ -18,7 +18,7 @@ int _thirdQuestionOption = 1;
 int _fourthQuestionOption = 1;
 
 class DietScreen extends CupertinoPageRoute {
-  var parent;
+  final EncounnterStepsState parent;
 
   DietScreen({this.parent})
       : super(builder: (BuildContext context) => new Diet(parent: parent));

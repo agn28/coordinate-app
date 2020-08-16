@@ -12,6 +12,7 @@ import 'package:nhealth/screens/chw/new_community_visit/verify_patient_screen.da
 import 'package:nhealth/screens/chw/patients/patient_details_screen.dart';
 import 'package:nhealth/screens/chw/patients/patient_summary_screen.dart';
 import 'package:nhealth/screens/chw/patients/report_medical_issues_screen.dart';
+import 'package:nhealth/screens/chw/referrals/referral_patients_screen.dart';
 import 'package:nhealth/screens/chw/unwell/continue_screen.dart';
 import 'package:nhealth/screens/chw/unwell/followup_screen.dart';
 import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
@@ -92,6 +93,8 @@ class RouteGenerator {
       
       case '/chwNewEncounter':
         return CupertinoPageRoute(builder: (_) => NewChwEncounter());
+      case '/chwReferralPatients':
+        return CupertinoPageRoute(builder: (_) => ChwReferralPatientsScreen());
     }
   }
 }
