@@ -25,8 +25,6 @@ var completedCarePlans = [];
 var upcomingCarePlans = [];
 var referrals = [];
 
-
-
 class ChwPatientRecordsScreen extends StatefulWidget {
   var checkInState = false;
   ChwPatientRecordsScreen({this.checkInState});
@@ -57,20 +55,23 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   int interventionIndex = 0;
   bool actionsActive = false;
   bool carePlansEmpty = false;
+  var dueDate = '';
 
   @override
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
+    print(_patient['meta']);
     dueCarePlans = [];
     completedCarePlans = [];
     upcomingCarePlans = [];
     conditions = [];
     referrals = [];
     carePlansEmpty = false;
-
+    
     _checkAvatar();
     _checkAuth();
+    getAssessmentDueDate();
     _getCarePlan();
     getReferrals();
     getEncounters();
@@ -78,6 +79,21 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     getMedicationsConditions();
     getReport();
     getUsers();
+  }
+
+  getAssessmentDueDate() {
+    print(DateFormat("MMMM d, y").format(DateTime.parse(_patient['data']['next_assignment']['body']['activityDuration']['start'])));
+
+    if (_patient != null && _patient['data']['next_assignment'] != null && _patient['data']['next_assignment']['body']['activityDuration']['start'] != null) {
+      setState(() {
+        dueDate = DateFormat("MMMM d, y").format(DateTime.parse(_patient['data']['next_assignment']['body']['activityDuration']['start']));
+      });
+    }
+    
+
+    // if (_patient['data']['body']['activityDuration'] != null && item['body']['activityDuration']['start'] != '' && item['body']['activityDuration']['end'] != '') {
+    //   var start = DateTime.parse(item['body']['activityDuration']['start']);
+    // }
   }
 
   getStatus(item) {
@@ -628,6 +644,17 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                         // Text('Registered on Jan 5, 2019', style: TextStyle(color: Colors.white70, fontSize: 17, fontWeight: FontWeight.w400),),
                                       ],
                                     ),
+                                    
+                                    SizedBox(width: 100,),
+                                    _patient['meta']['has_pending'] ? Container(
+                                      alignment: Alignment.centerRight,
+                                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: kPrimaryRedColor,
+                                        borderRadius: BorderRadius.circular(3)
+                                      ),
+                                      child: Text(AppLocalizations.of(context).translate('pendingReferral'), style: TextStyle(fontSize: 13, color: Colors.white,)),
+                                    ) : Container(),
                                   ],
                                 ),
                               ),
@@ -670,7 +697,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                             ),
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text('Feb 15, 2020', style: TextStyle(fontSize: 17,),),
+                              child: Text(dueDate != null ? dueDate : '', style: TextStyle(fontSize: 17,),),
                             ),
                           ]
                         ),

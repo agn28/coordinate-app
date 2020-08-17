@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -9,14 +7,11 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
-import 'package:nhealth/controllers/worklist_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
-import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chw/patients/patient_summary_screen.dart';
-import 'package:nhealth/screens/work-list/work_list_details.dart';
 
 final searchController = TextEditingController();
 List allWorklist = [];
@@ -93,8 +88,6 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
     var pending = await PatientController().getPatientsWorklist(context, 'pending');
     var completed = await PatientController().getPatientsWorklist(context, 'completed');
     var past = await PatientController().getPatientsWorklist(context, 'past');
-
-    
 
     if (pending['error'] != null && !pending['error']) {
       setState(() {
@@ -182,7 +175,6 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
       });
       allCompletedPatients = [...patientsWithAssignment, ...patients];
     }
-    
   }
 
   getNexDueDate(assignment) {
@@ -661,15 +653,13 @@ class PatientItem extends StatefulWidget {
 class _PatientItemState extends State<PatientItem> {
 
   getNexDueDate(assignment) {
-      var parsedDate = getParsedDate(assignment['meta']['created_at']['_seconds']);
+    var parsedDate = getParsedDate(assignment['meta']['created_at']['_seconds']);
 
-      if (isBeforeToday(parsedDate)) {
-        return DateFormat("MMMM d, y").format(parsedDate).toString() + ' (Overdue)';
-      }
+    if (isBeforeToday(parsedDate)) {
+      return DateFormat("MMMM d, y").format(parsedDate).toString() + ' (Overdue)';
+    }
 
-      return DateFormat("MMMM d, y").format(parsedDate).toString();
-
-
+    return DateFormat("MMMM d, y").format(parsedDate).toString();
   }
 
   getParsedDate(seconds) {

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:basic_utils/basic_utils.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +13,7 @@ import 'dart:io';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/care_plan_controller.dart';
@@ -31,6 +34,7 @@ final birthYearController = TextEditingController();
 final districtController = TextEditingController();
 final postalCodeController = TextEditingController();
 final townController = TextEditingController();
+final upazilaController = TextEditingController();
 final villageController = TextEditingController();
 final streetNameController = TextEditingController();
 final mobilePhoneController = TextEditingController();
@@ -59,6 +63,25 @@ List relationships = [
 ];
 int selectedRelation;
 bool isContactAddressSame = false;
+  var districts = [];
+  var upazilas = [];
+
+int selectedOption = -1;
+var _questions = {};
+int _secondQuestionOption = 0;
+int _selectedOption = 1;
+List allMedications =  ['fever', 'cough' ];
+List allDestricts = [];
+List allUpazilas = [];
+List filteredUpazilas = [];
+List _medications = [];
+final problemController = TextEditingController();
+bool showItems = false;
+bool showUpazilaItems = false;
+
+var selectedDiseases = [];
+final lastVisitDateController = TextEditingController();
+var _selectedItem = [];
 
 class RegisterPatientScreen extends CupertinoPageRoute {
   bool isEdit = false;
@@ -75,6 +98,7 @@ class RegisterPatient extends StatefulWidget {
   _RegisterPatientState createState() => _RegisterPatientState();
 }
 
+
 class _RegisterPatientState extends State<RegisterPatient> {
   
   int _currentStep = 0;
@@ -84,8 +108,22 @@ class _RegisterPatientState extends State<RegisterPatient> {
   @override
   void initState() {
     super.initState();
+    getAddresses();
     _prepareState();
     _checkAuth();
+
+  }
+
+  getAddresses() async {
+    var districtsData = await DefaultAssetBundle.of(context).loadString('assets/districts.json');
+    var upazilasData = await DefaultAssetBundle.of(context).loadString('assets/upazilas.json');
+    setState(() {
+      districts = json.decode(districtsData);
+      allDestricts = districts;
+      upazilas = json.decode(upazilasData);
+      allUpazilas = upazilas;
+    });
+    print(districts);
   }
 
   _checkAuth() {
@@ -95,8 +133,14 @@ class _RegisterPatientState extends State<RegisterPatient> {
     } 
   }
 
+  
+
   _prepareState() {
     isEditState = widget.isEdit;
+    setState(() {
+      showItems = false;
+      showUpazilaItems = false;
+    });
 
     if (isEditState != null) {
       _clearForm();
@@ -165,6 +209,10 @@ class _RegisterPatientState extends State<RegisterPatient> {
       ),
       body: GestureDetector(
         onTap: () {
+          setState(() {
+            showItems = false;
+            showUpazilaItems = false;
+          });
           FocusScope.of(context).requestFocus(new FocusNode());
         },
         child: CustomStepper(
@@ -316,7 +364,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
       'address': {
         'district': districtController.text,
         'postal_code': postalCodeController.text,
-        'town': townController.text,
+        'upazila': upazilaController.text,
         'village': villageController.text,
         'street_name': streetNameController.text,
       },
@@ -346,6 +394,15 @@ class _PatientDetailsState extends State<PatientDetails> {
   DateTime selectedDate = DateTime.now();
   final lastVisitDateController = TextEditingController();
   final format = DateFormat("yyyy-MM-dd");
+
+  updateUpazilas(district) {
+    // print(district);
+    setState(() {
+      upazilaController.text = '';
+      filteredUpazilas = allUpazilas.where((upazila) { return upazila['district_id'] == district['id'];}).toList();
+    });
+    print(allUpazilas);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -491,14 +548,201 @@ class _PatientDetailsState extends State<PatientDetails> {
             Text(AppLocalizations.of(context).translate('address'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
             SizedBox(height: 20,),
 
-            PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
-              hintText: AppLocalizations.of(context).translate('district'),
-              controller: districtController,
-              name: AppLocalizations.of(context).translate('district'),
-              validation: true,
+            Container(
+              // color: Colors.red,
+              child: Column(
+                children: <Widget>[
+                  TextField(
+                    style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
+                    onChanged: (value) => {
+                      setState(() {
+                        districts = allDestricts
+                          .where((district) => district['name']
+                          .toLowerCase()
+                          .contains(value.toLowerCase()))
+                          .toList();
+
+                          showItems = true;
+                          showUpazilaItems = false;
+                        })
+                    },
+                    onEditingComplete: () {
+                      setState(() {
+                        showItems = false;
+                      });
+                    },
+                    onTap: () {
+                      setState(() {
+                        showUpazilaItems = false;
+                      });
+                    },
+                    controller: districtController,
+                    decoration: InputDecoration(
+                      counterText: ' ',
+                      contentPadding: EdgeInsets.only(top: 18.0, bottom: 18, left: 10, right: 10),
+                      filled: true,
+                      fillColor: kSecondaryTextField,
+                      border: new UnderlineInputBorder(
+                        borderSide: new BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          topRight: Radius.circular(4),
+                        )
+                      ),
+                    
+                      hintText: AppLocalizations.of(context).translate('district'),
+                      hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                    )
+                  ),
+                  showItems ? Container(
+                    height: 200,
+                    margin: EdgeInsets.only(top: 0),
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 0.2,
+                          blurRadius: 20,
+                          offset: Offset(0, 5), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Card(
+                      elevation: 0,
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: <Widget>[
+                          ...districts.map((district) {
+                            return InkWell(
+                              onTap: () {
+                                // _addSelectedItem(item, _medications.indexOf(item));
+                                setState(() {
+                                  districtController.text = district['name'];
+                                  showItems = false;
+                                  updateUpazilas(district);
+                                });
+                              },
+                              child: Container(
+                                height: 50,
+                                child: Row(
+                                  children: <Widget>[
+                                    SizedBox(width: 20,),
+                                    Text(district['name'], style: TextStyle(fontSize: 17),)
+                                  ],
+                                )
+                              ),
+                            );
+                          }).toList()
+                        ],
+                      ),
+                    )
+                  ) : Container(),
+                ],
+              ),
             ),
+
+            Container(
+              // color: Colors.red,
+              child: Column(
+                children: <Widget>[
+                  TextField(
+                    style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
+                    onChanged: (value) => {
+                      setState(() {
+                        upazilas = filteredUpazilas
+                          .where((upazila) => upazila['name']
+                          .toLowerCase()
+                          .contains(value.toLowerCase()))
+                          .toList();
+
+                          showUpazilaItems = true;
+                          showItems = false;
+                        })
+                    },
+                    onEditingComplete: () {
+                      print('asdas');
+                      setState(() {
+                        showItems = false;
+                      });
+                    },
+                    onTap: () {
+                      setState(() {
+                        showItems = false;
+                        // showUpazilaItems = true;
+                      });
+                    },
+                    controller: upazilaController,
+                    decoration: InputDecoration(
+                      counterText: ' ',
+                      contentPadding: EdgeInsets.only(top: 18.0, bottom: 18, left: 10, right: 10),
+                      filled: true,
+                      fillColor: kSecondaryTextField,
+                      border: new UnderlineInputBorder(
+                        borderSide: new BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          topRight: Radius.circular(4),
+                        )
+                      ),
+                    
+                      hintText: AppLocalizations.of(context).translate('upazila'),
+                      hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                    )
+                  ),
+                  showUpazilaItems ? Container(
+                    height: 200,
+                    margin: EdgeInsets.only(top: 0),
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 0.2,
+                          blurRadius: 20,
+                          offset: Offset(0, 5), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Card(
+                      elevation: 0,
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: <Widget>[
+                          ...upazilas.map((upazila) {
+                            return InkWell(
+                              onTap: () {
+                                // _addSelectedItem(item, _medications.indexOf(item));
+                                setState(() {
+                                  upazilaController.text = upazila['name'];
+                                  showUpazilaItems = false;
+                                });
+                              },
+                              child: Container(
+                                height: 50,
+                                child: Row(
+                                  children: <Widget>[
+                                    SizedBox(width: 20,),
+                                    Text(upazila['name'], style: TextStyle(fontSize: 17),)
+                                  ],
+                                )
+                              ),
+                            );
+                          }).toList()
+                        ],
+                      ),
+                    )
+                  ) : Container(),
+                ],
+              ),
+            ),
+
+            // PrimaryTextField(
+            //   topPaadding: 18,
+            //   bottomPadding: 18,
+            //   hintText: AppLocalizations.of(context).translate('district'),
+            //   controller: districtController,
+            //   name: AppLocalizations.of(context).translate('district'),
+            //   validation: true,
+            // ),
             SizedBox(height: 10,),
             PrimaryTextField(
               topPaadding: 18,
@@ -509,15 +753,15 @@ class _PatientDetailsState extends State<PatientDetails> {
               validation: true,
               type: TextInputType.number
             ),
-            SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
-              hintText: AppLocalizations.of(context).translate('town'),
-              controller: townController,
-              name: AppLocalizations.of(context).translate('town'),
-              validation: true,
-            ),
+            // SizedBox(height: 10,),
+            // PrimaryTextField(
+            //   topPaadding: 18,
+            //   bottomPadding: 18,
+            //   hintText: AppLocalizations.of(context).translate('town'),
+            //   controller: townController,
+            //   name: AppLocalizations.of(context).translate('town'),
+            //   validation: true,
+            // ),
             SizedBox(height: 10,),
             PrimaryTextField(
               topPaadding: 18,

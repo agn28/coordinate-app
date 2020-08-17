@@ -69,7 +69,6 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
   }
 
   getAssessmentDueDate() {
-    print('hasld;sa');
     print(DateFormat("MMMM d, y").format(DateTime.parse(_patient['data']['next_assignment']['body']['activityDuration']['start'])));
 
     if (_patient != null && _patient['data']['next_assignment'] != null && _patient['data']['next_assignment']['body']['activityDuration']['start'] != null) {

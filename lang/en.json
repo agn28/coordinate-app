@@ -314,5 +314,6 @@
   "fieldScreening": "In-Field Screening",
   "referralList": "Referral List",
   "observationNotAdded": "No observation added",
-  "seemsUnwell": "The patients seems to be severly unwell"
+  "seemsUnwell": "The patients seems to be severly unwell",
+  "upazila": "Upazila/Thana"
 }
