@@ -15,14 +15,14 @@ import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 
 
-class CreateReferralScreen extends StatefulWidget {
-  CreateReferralScreen({this.referralData});
+class UpdateReferralScreen extends StatefulWidget {
+  UpdateReferralScreen({this.referralData});
   var referralData;
   @override
-  _CreateReferralScreenState createState() => _CreateReferralScreenState();
+  _UpdateReferralScreenState createState() => _UpdateReferralScreenState();
 }
 
-class _CreateReferralScreenState extends State<CreateReferralScreen> {
+class _UpdateReferralScreenState extends State<UpdateReferralScreen> {
   var _patient;
   bool isLoading = false;
   bool avatarExists = false;
@@ -55,7 +55,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text(AppLocalizations.of(context).translate('referralCreate'), style: TextStyle(color: Colors.white, fontSize: 20),),
+        title: new Text(AppLocalizations.of(context).translate('referralUpdate'), style: TextStyle(color: Colors.white, fontSize: 20),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -191,14 +191,13 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                             margin: EdgeInsets.only(left: 20, right: 20),
                             height: 50,
                             decoration: BoxDecoration(
-                              color: kPrimaryColor,
+                              color: Colors.grey,
                               borderRadius: BorderRadius.circular(3)
                             ),
                             child: FlatButton(
                               onPressed: () async {
+                                return;
                                 // Navigator.of(context).pushNamed('/chwNavigation',);
-
-                              
 
                                 var data = widget.referralData;
 
@@ -209,6 +208,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
 
                                 print(data);
 
+                                
 
                                 setState(() {
                                   isLoading = true;
@@ -217,37 +217,11 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                                 setState(() {
                                   isLoading = false;
                                 });
-                                print('response');
                                 print(response);
-
-                                // return;
-
-                                if (response['error'] == true && response['message'] =='referral exists') {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      // return object of type Dialog
-                                      return AlertDialog(
-                                        content: new Text("Referral already exists!", style: TextStyle(fontSize: 20),),
-                                        actions: <Widget>[
-                                          // usually buttons at the bottom of the dialog
-                                          new FlatButton(
-                                            child: new Text("Update Referral", style: TextStyle(color: kPrimaryColor)),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              Navigator.of(context).pushNamed('/updateReferral', arguments: widget.referralData);
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                }
-                                return;
                                  Navigator.of(context).pushNamed('/chwNavigation',);
                               },
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              child: Text(AppLocalizations.of(context).translate('referralCreate').toUpperCase(), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                              child: Text(AppLocalizations.of(context).translate('referralUpdate').toUpperCase(), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
                             ),
                           ),
                         ),

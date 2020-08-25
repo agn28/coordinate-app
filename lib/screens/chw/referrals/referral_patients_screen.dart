@@ -53,6 +53,9 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
   TabController _tabController;
   int selectedTab = 0;
 
+  var sortList = ['patient', 'date', 'location', 'reason'];
+  var selectedSort;
+
   @override
   initState() {
     super.initState();
@@ -112,7 +115,8 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
     });
 
     var data = await PatientController().getReferralPatients();
-    print('hello');
+
+    print(data['data'][0]['body']['pending_referral']);
 
     if (data['message'] == 'Unauthorized') {
       Helpers().logout(context);
@@ -150,6 +154,15 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
         .contains(query.toLowerCase()))
         .toList();
     });
+  }
+
+  convertDateFromSeconds(date) {
+    if (date['_seconds'] != null) {
+      var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
+
+      return DateFormat("MMMM d, y").format(parsedDate).toString();
+    }
+    return '';
   }
 
   @override
@@ -195,31 +208,7 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
               ),
             ),
           ),
-          // Configs().configAvailable('isBarcode') ? FlatButton(
-          //   child: Column(
-          //     children: <Widget>[
-          //       SizedBox(height: 5,),
-          //       Icon(Icons.line_weight, color: Colors.white, size: 20,),
-          //       SizedBox(height: 5,),
-          //       Text(AppLocalizations.of(context).translate('scanBarcode'), style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14),)
-          //     ],
-          //   ),
-          //   onPressed: () {
-          //     Navigator.of(context).push(RegisterPatientScreen());
-          //   },
-          // ): Container(),
-
-          // Configs().configAvailable('isThumbprint') ? FlatButton(
-          //   child: Column(
-          //     children: <Widget>[
-          //       SizedBox(height: 5,),
-          //       Icon(Icons.fingerprint, color: Colors.white, size: 20,),
-          //       SizedBox(height: 5,),
-          //       Text(AppLocalizations.of(context).translate('useThumbprint'), style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),)
-          //     ],
-          //   ),
-          //   onPressed: () {},
-          // ) : Container()
+          
         ],
       ),
       body: Stack(
@@ -227,62 +216,7 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
           !isLoading ? SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                // Container(
-                //   // padding: EdgeInsets.symmetric(vertical: 20),
-                //   color: kPrimaryColor,
-                //   child: Column(
-                //     children: <Widget>[
-                //       Container(
-                //         padding: EdgeInsets.only(left: 15, right: 15, top: 20),
-                //         child: TextField(
-                //           controller: searchController,
-                //           onChanged: (query) {
-                //             search(query);
-                //           },
-                //           // focusNode: focusNode,
-                //           autofocus: true,
-                //           style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                //           decoration: InputDecoration(
-                //             fillColor: Colors.white,
-                //             filled: true,
-                //             enabledBorder: const OutlineInputBorder(
-                //               borderSide: BorderSide(
-                //                 color: Color(0x4437474F),
-                //               ),
-                //               borderRadius: BorderRadius.all(
-                //                 Radius.circular(5)
-                //               )
-                //             ),
-                //             focusedBorder: OutlineInputBorder(
-                //               borderSide: BorderSide(color: Theme.of(context).primaryColor),
-                //             ),
-                //             prefixIcon: Icon(Icons.search),
-                //             suffixIcon: IconButton(
-                //               onPressed: () async {
-                //               showDialog(
-                //                 context: context,
-                //                 builder: (BuildContext context) {
-                //                 },
-                //               );
-                //               },
-                //               icon: Icon(Icons.filter_list, color: kPrimaryColor, size: 25,)
-                //             ),
-                //             border: InputBorder.none,
-                //             hintText: AppLocalizations.of(context).translate('searchHere'),
-                //             contentPadding: const EdgeInsets.only(
-                //               left: 16,
-                //               right: 20,
-                //               top: 14,
-                //               bottom: 14,
-                //             ),
-                //           ),
-                //         ),
-                //       ),
-                //       SizedBox(height: 15,),
-                      
-                //     ],
-                //   )
-                // ),
+                
 
                 Container(
                   height: MediaQuery.of(context).size.height,
@@ -293,11 +227,95 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
                   child: Container(
                     child: Column(
                       children: <Widget>[
-                        // SizedBox(height: 20,),
+                        SizedBox(height: 20,),
+
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Row(
+                            children: <Widget>[
+                              Text('SORT BY' + ':', style: TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.w500)),
+                              SizedBox(width: 20,),
+                              Container(
+                                width: 200,
+                                child: DropdownButtonFormField(
+                                  // hint: Text('', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                                  
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: kSecondaryTextField,
+                                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                                    border: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white),
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(4),
+                                      topRight: Radius.circular(4),
+                                    )
+                                  ),
+                                  ),
+                                  items: [
+                                    ...sortList.map((item) =>
+                                      DropdownMenuItem(
+                                        child: Text(StringUtils.capitalize(item)),
+                                        value: sortList.indexOf(item) 
+                                      )
+                                    ).toList(),
+                                  ],
+                                  value: selectedSort,
+                                  isExpanded: true,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedSort = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 20,),
+                        Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[100],
+                              border: Border(
+                                bottom: BorderSide(color: kBorderLighter)
+                              )
+                            ),
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 3,
+                                  child: Text('Patient',
+                                    style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.w500),
+                                  )
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text('Date',
+                                        style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.w500),
+                                      )
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text('Location',
+                                    style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.w500),
+                                  )
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text('Reason',
+                                    style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.w500),
+                                  )
+                                ),
+                              ],
+                            ),
+                          ),
+                          
                         ...patients.map((item) => GestureDetector(
                           onTap: () {
-                              Patient().setPatient(item);
-                              Navigator.of(context).pushNamed('/patientOverview');
+                              // Patient().setPatient(item);
+                              // Navigator.of(context).pushNamed('/patientOverview');
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -309,34 +327,35 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
                             ),
                             child: Row(
                               children: <Widget>[
+
                                 Expanded(
-                                  child: Row(
-                                    children: <Widget>[
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(30.0),
-                                        child: Image.asset(
-                                          'assets/images/avatar.png',
-                                          height: 25.0,
-                                          width: 25.0,
-                                        ),
-                                      ),
-                                      SizedBox(width: 10,),
-                                      Text(item['data']['first_name'] + ' ' + item['data']['last_name'],
-                                        style: TextStyle(color: Colors.black87, fontSize: 18),
-                                      )
-                                    ],
-                                  ),
+                                  flex: 3,
+                                  child: Text(item['data']['first_name'] + ' ' + item['data']['last_name'] + ' ' + item['data']['age'].toString() + 'Y ' + '${item['data']['gender'][0].toUpperCase()}',
+                                    style: TextStyle(color: Colors.black87, fontSize: 18),
+                                  )
                                 ),
                                 Expanded(
-                                  child: Text(item['data']['age'].toString() + 'Y ' + '${item['data']['gender'][0].toUpperCase()}' + ' - ' + item['data']['nid'].toString(), 
-                                  style: TextStyle(
-                                      color: Colors.black38,
-                                      fontWeight: FontWeight.w400
-                                    ), 
-                                    textAlign: TextAlign.right,
-                                  ),
+                                  flex: 2,
+                                  child: item['data']['pending_referral'] != null ?
+                                    Text(convertDateFromSeconds(item['data']['pending_referral']['meta']['created_at']),
+                                      style: TextStyle(color: Colors.black87, fontSize: 16),
+                                    ) : Container()
                                 ),
-                              ],
+                                Expanded(
+                                  flex: 2,
+                                  child: item['data']['pending_referral'] != null ?
+                                    Text(item['data']['pending_referral']['body']['location']['clinic_name'],
+                                      style: TextStyle(color: Colors.black87, fontSize: 16),
+                                    ) : Container()
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: item['data']['pending_referral'] != null ?
+                                    Text(item['data']['pending_referral']['body']['reason'],
+                                      style: TextStyle(color: Colors.black87, fontSize: 16),
+                                    ) : Container()
+                                ),
+                                ],
                             ),
                           ),
                         )).toList(),
