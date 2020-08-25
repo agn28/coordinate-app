@@ -16,6 +16,7 @@ import 'package:nhealth/screens/chw/referrals/referral_patients_screen.dart';
 import 'package:nhealth/screens/chw/unwell/continue_screen.dart';
 import 'package:nhealth/screens/chw/unwell/followup_screen.dart';
 import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
+import 'package:nhealth/screens/chw/unwell/create_referral_screen.dart';
 import 'package:nhealth/screens/chw/unwell/severity_screen.dart';
 import 'package:nhealth/screens/chw/work-list/chw_navigation_screen.dart';
 import 'package:nhealth/screens/home_screen.dart';
@@ -78,7 +79,11 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => ReportMedicalIssuesScreen());
 
       case '/medicalRecommendation':
-        return CupertinoPageRoute(builder: (_) => MedicalRecommendationScreen());
+        var data = settings.arguments;
+        return CupertinoPageRoute(builder: (_) => MedicalRecommendationScreen(referralData: data,));
+      case '/createReferral':
+        var data = settings.arguments;
+        return CupertinoPageRoute(builder: (_) => CreateReferralScreen(referralData: data,));
 
       case '/chwOtherActions':
         var data = settings.arguments as Map;

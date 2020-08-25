@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -182,10 +183,11 @@ class SkipAlert extends StatefulWidget {
 
 class _SkipAlertState extends State<SkipAlert> {
   final GlobalKey<FormState> _skipForm = new GlobalKey<FormState>();
-  String selectedReason = 'patient refused';
+  String selectedReason;
   bool isOther = false;
   final skipReasonController = TextEditingController();
   List devices = ['Other'];
+  List reasons = ['patient unavailable', 'patient migrated', 'patient deceased', 'unable to locate address'];
   String selectedDevice;
 
   @override
@@ -228,18 +230,18 @@ class _SkipAlertState extends State<SkipAlert> {
                     ),
                     ),
                     items: [
-                      ...devices.map((item) =>
+                      ...reasons.map((item) =>
                         DropdownMenuItem(
-                          child: Text(item),
-                          value: devices.indexOf(item)
+                          child: Text(StringUtils.capitalize(item)),
+                          value: item
                         )
                       ).toList(),
                     ],
-                    value: selectedDevice,
+                    value: selectedReason,
                     isExpanded: true,
                     onChanged: (value) {
                       setState(() {
-                        selectedDevice = value;
+                        selectedReason = value;
                       });
                     },
                   ),

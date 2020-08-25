@@ -13,6 +13,8 @@ import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
 
 class MedicalRecommendationScreen extends StatefulWidget {
+  MedicalRecommendationScreen({this.referralData});
+  var referralData;
   @override
   _MedicalRecommendationState createState() => _MedicalRecommendationState();
 }
@@ -101,10 +103,11 @@ class _MedicalRecommendationState extends State<MedicalRecommendationScreen> {
                             ),
                             child: FlatButton(
                               onPressed: () async {
-                                Navigator.of(context).pushNamed('/chwNavigation',);
+                                // Navigator.of(context).pushNamed('/chwNavigation',);
+                                Navigator.of(context).pushNamed('/createReferral', arguments: widget.referralData);
                               },
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              child: Text('SUBMIT FOR REFERRAL', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                              child: Text(AppLocalizations.of(context).translate('referralCreate').toUpperCase(), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
                             ),
                           ),
                         ),

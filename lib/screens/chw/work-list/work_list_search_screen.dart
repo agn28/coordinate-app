@@ -94,6 +94,7 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
         allPendingPatients = pending['data'];
         pendingPatientsSort();
         pendingPatients = allPendingPatients;
+        print(pendingPatients[0]['body']['address']);
       });
     }
     if (completed['error'] != null && !completed['error']) {
@@ -740,100 +741,137 @@ class _PatientItemState extends State<PatientItem> {
                                 Text(widget.item['body']['age'].toString() + 'Y ' + ' - ' + widget.item['body']['gender'], style: TextStyle(fontSize: 16, color: kTextGrey),),
                                 SizedBox(width: 10,),
                                 SizedBox(width: 10,),
-                                Row(
-                                  children: <Widget>[
+                                
+                                // Row(
+                                //   children: <Widget>[
 
-                                    widget.item['body']['assessments'] != null && widget.item['body']['assessments']['lifestyle']['components']['diet'] != null && widget.item['body']['assessments']['lifestyle']['components']['diet']['components']['fruit'] != null ?
-                                    CircleAvatar(
-                                      child: Image.asset('assets/images/icons/fruit.png', width: 11,),
-                                      radius: 11,
-                                      backgroundColor: ColorUtils.statusColor[widget.item['body']['assessments']['lifestyle']['components']['diet']['components']['fruit']['tfl']],
-                                    ) : Container(),
-                                    SizedBox(width: 5,),
+                                //     widget.item['body']['assessments'] != null && widget.item['body']['assessments']['lifestyle']['components']['diet'] != null && widget.item['body']['assessments']['lifestyle']['components']['diet']['components']['fruit'] != null ?
+                                //     CircleAvatar(
+                                //       child: Image.asset('assets/images/icons/fruit.png', width: 11,),
+                                //       radius: 11,
+                                //       backgroundColor: ColorUtils.statusColor[widget.item['body']['assessments']['lifestyle']['components']['diet']['components']['fruit']['tfl']],
+                                //     ) : Container(),
+                                //     SizedBox(width: 5,),
 
-                                    widget.item['body']['assessments'] != null && widget.item['body']['assessments']['lifestyle']['components']['diet'] != null && widget.item['body']['assessments']['lifestyle']['components']['diet']['components']['vegetable'] != null ?
-                                    CircleAvatar(
-                                      child: Image.asset('assets/images/icons/vegetables.png', width: 11,),
-                                      radius: 11,
-                                      backgroundColor: ColorUtils.statusColor[widget.item['body']['assessments']['lifestyle']['components']['diet']['components']['vegetable']['tfl']],
-                                    ) : Container(),
-                                    SizedBox(width: 5,),
+                                //     widget.item['body']['assessments'] != null && widget.item['body']['assessments']['lifestyle']['components']['diet'] != null && widget.item['body']['assessments']['lifestyle']['components']['diet']['components']['vegetable'] != null ?
+                                //     CircleAvatar(
+                                //       child: Image.asset('assets/images/icons/vegetables.png', width: 11,),
+                                //       radius: 11,
+                                //       backgroundColor: ColorUtils.statusColor[widget.item['body']['assessments']['lifestyle']['components']['diet']['components']['vegetable']['tfl']],
+                                //     ) : Container(),
+                                //     SizedBox(width: 5,),
 
-                                    widget.item['body']['assessments'] != null && widget.item['body']['assessments']['lifestyle']['components']['physical_activity'] != null ?
-                                    CircleAvatar(
-                                      child: Image.asset('assets/images/icons/activity.png', width: 11,),
-                                      radius: 11,
-                                      backgroundColor: ColorUtils.statusColor[widget.item['body']['assessments']['lifestyle']['components']['physical_activity']['tfl']],
-                                    ) : Container()
-                                  ],
-                                ),
+                                //     widget.item['body']['assessments'] != null && widget.item['body']['assessments']['lifestyle']['components']['physical_activity'] != null ?
+                                //     CircleAvatar(
+                                //       child: Image.asset('assets/images/icons/activity.png', width: 11,),
+                                //       radius: 11,
+                                //       backgroundColor: ColorUtils.statusColor[widget.item['body']['assessments']['lifestyle']['components']['physical_activity']['tfl']],
+                                //     ) : Container()
+                                //   ],
+                                // ),
                               ],
                             ),
-                            SizedBox(height: 10,),
+                            SizedBox(height: 5,),
+
                             Row(
                               children: <Widget>[
-                                widget.item['body']['assessments'] != null && widget.item['body']['assessments']['body_composition']['components']['bmi'] != null ?
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['body_composition']['components']['bmi']['tfl']]),
-                                    borderRadius: BorderRadius.circular(2)
-                                  ),
-                                  child: Text('BMI',style: TextStyle(
-                                      color: ColorUtils.statusColor[widget.item['body']['assessments']['body_composition']['components']['bmi']['tfl']],
-                                      fontWeight: FontWeight.w500
-                                    )  
-                                  ),
-                                ) : Container(),
-                                SizedBox(width: 7,),
+                                Text('Village: ', style: TextStyle(fontSize: 16, color: Colors.black87),),
+                                Text(widget.item['body']['address']['village'] + ',', style: TextStyle(fontSize: 16, color: Colors.black87),),
 
-                                widget.item['body']['assessments'] != null && widget.item['body']['assessments']['blood_pressure'] != null ?
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['blood_pressure']['tfl']]),
-                                    borderRadius: BorderRadius.circular(2)
-                                  ),
-                                  child: Text('BP',style: TextStyle(
-                                      color: ColorUtils.statusColor[widget.item['body']['assessments']['blood_pressure']['tfl']],
-                                      fontWeight: FontWeight.w500
-                                    )  
-                                  ),
-                                ) : Container(),
-                                SizedBox(width: 7,),
+                                widget.item['body']['address']['ward'] != null ?
+                                Row(
+                                  children: <Widget>[
+                                    SizedBox(width: 5,),
+                                    Text(AppLocalizations.of(context).translate('ward') + ': ', style: TextStyle(fontSize: 16, color: Colors.black87),),
+                                    Text(widget.item['body']['address']['ward'], style: TextStyle(fontSize: 16, color: Colors.black87),),
+                                  ],
+                                ) 
+                                : Container(),
 
-
-                                // widget.item['body']['assessments'] != null && widget.item['body']['assessments']['cvd'] != null ?
-                                // Container(
-                                //   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                //   decoration: BoxDecoration(
-                                //     border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['cvd']['tfl']]),
-                                //     borderRadius: BorderRadius.circular(2)
-                                //   ),
-                                //   child: Text('CVD Risk',style: TextStyle(
-                                //       color: ColorUtils.statusColor[widget.item['body']['assessments']['cvd']['tfl']],
-                                //       fontWeight: FontWeight.w500
-                                //     )  
-                                //   ),
-                                // ) : Container(),
-                                // SizedBox(width: 7,),
-
-
-                                widget.item['body']['assessments'] != null && widget.item['body']['assessments']['cholesterol']['components']['total_cholesterol'] != null ?
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['cholesterol']['components']['total_cholesterol']['tfl']]),
-                                    borderRadius: BorderRadius.circular(2)
-                                  ),
-                                  child: Text('Cholesterol',style: TextStyle(
-                                      color: ColorUtils.statusColor[widget.item['body']['assessments']['cholesterol']['components']['total_cholesterol']['tfl']],
-                                      fontWeight: FontWeight.w500
-                                    )  
-                                  ),
-                                ) : Container(),
+                                
                               ],
                             ),
+                            SizedBox(height: 5,),
+
+                            Row(
+                              children: <Widget>[
+                                Text(AppLocalizations.of(context).translate('address') + ': ', style: TextStyle(fontSize: 16, color: Colors.black87),),
+                                SizedBox(height: 7,),
+                                Text(widget.item['body']['address']['street_name'], style: TextStyle(fontSize: 16, color: Colors.black87),),
+                              ],
+                            ),
+                            SizedBox(height: 5,),
+                            Row(
+                              children: <Widget>[
+                                Text(AppLocalizations.of(context).translate('contactNumber') + ': ', style: TextStyle(fontSize: 16, color: Colors.black87),),
+                                SizedBox(height: 5,),
+                                Text(widget.item['body']['mobile'], style: TextStyle(fontSize: 16, color: Colors.black87),),
+                              ],
+                            ) 
+                            // Row(
+                            //   children: <Widget>[
+                            //     widget.item['body']['assessments'] != null && widget.item['body']['assessments']['body_composition']['components']['bmi'] != null ?
+                            //     Container(
+                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                            //       decoration: BoxDecoration(
+                            //         border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['body_composition']['components']['bmi']['tfl']]),
+                            //         borderRadius: BorderRadius.circular(2)
+                            //       ),
+                            //       child: Text('BMI',style: TextStyle(
+                            //           color: ColorUtils.statusColor[widget.item['body']['assessments']['body_composition']['components']['bmi']['tfl']],
+                            //           fontWeight: FontWeight.w500
+                            //         )  
+                            //       ),
+                            //     ) : Container(),
+                            //     SizedBox(width: 7,),
+
+                            //     widget.item['body']['assessments'] != null && widget.item['body']['assessments']['blood_pressure'] != null ?
+                            //     Container(
+                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                            //       decoration: BoxDecoration(
+                            //         border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['blood_pressure']['tfl']]),
+                            //         borderRadius: BorderRadius.circular(2)
+                            //       ),
+                            //       child: Text('BP',style: TextStyle(
+                            //           color: ColorUtils.statusColor[widget.item['body']['assessments']['blood_pressure']['tfl']],
+                            //           fontWeight: FontWeight.w500
+                            //         )  
+                            //       ),
+                            //     ) : Container(),
+                            //     SizedBox(width: 7,),
+
+
+                            //     // widget.item['body']['assessments'] != null && widget.item['body']['assessments']['cvd'] != null ?
+                            //     // Container(
+                            //     //   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                            //     //   decoration: BoxDecoration(
+                            //     //     border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['cvd']['tfl']]),
+                            //     //     borderRadius: BorderRadius.circular(2)
+                            //     //   ),
+                            //     //   child: Text('CVD Risk',style: TextStyle(
+                            //     //       color: ColorUtils.statusColor[widget.item['body']['assessments']['cvd']['tfl']],
+                            //     //       fontWeight: FontWeight.w500
+                            //     //     )  
+                            //     //   ),
+                            //     // ) : Container(),
+                            //     // SizedBox(width: 7,),
+
+
+                            //     widget.item['body']['assessments'] != null && widget.item['body']['assessments']['cholesterol']['components']['total_cholesterol'] != null ?
+                            //     Container(
+                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                            //       decoration: BoxDecoration(
+                            //         border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['cholesterol']['components']['total_cholesterol']['tfl']]),
+                            //         borderRadius: BorderRadius.circular(2)
+                            //       ),
+                            //       child: Text('Cholesterol',style: TextStyle(
+                            //           color: ColorUtils.statusColor[widget.item['body']['assessments']['cholesterol']['components']['total_cholesterol']['tfl']],
+                            //           fontWeight: FontWeight.w500
+                            //         )  
+                            //       ),
+                            //     ) : Container(),
+                            //   ],
+                            // ),
                             // Row(
                             //   children: <Widget>[
                             //     report != null && bmi != null ?

@@ -56,8 +56,10 @@
   "postalCode": "Postal Code",
   "town": "Town",
   "village": "Village",
+  "ward": "Ward",
   "streetName": "Street Name",
   "mobile": "Mobile Phone",
+  "contactNumber": "Contact number",
   "homePhone": "Home Phone (Optional)",
   "emailAddress": "Email Address",
   "emailAddressOption": "Email Address (Optional)",
@@ -313,6 +315,7 @@
   "existing": "Existing",
   "fieldScreening": "In-Field Screening",
   "referralList": "Referral List",
+  "referralCreate": "Create Referral",
   "observationNotAdded": "No observation added",
   "seemsUnwell": "The patients seems to be severly unwell",
   "upazila": "Upazila/Thana"

@@ -13,10 +13,8 @@ import 'dart:io';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 
 import 'package:nhealth/constants/constants.dart';
-import 'package:nhealth/controllers/care_plan_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';

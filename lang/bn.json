@@ -56,8 +56,10 @@
   "postalCode": "পোস্ট কোড",
   "town": "শহর",
   "village": "গ্রাম",
+  "ward": "ওয়ার্ড",
   "streetName": "রাস্তার নাম",
   "mobile": "মোবাইল নম্বর",
+  "contactNumber": "যোগাযোগের নাম্বার",
   "homePhone": "বাড়ির ফোন (ঐচ্ছিক)",
   "emailAddress": "ইমেইল অ্যাড্রেস",
   "emailAddressOptional": "ইমেইল অ্যাড্রেস (ঐচ্ছিক)",
@@ -312,6 +314,7 @@
   "existing": "বিদ্যমান",
   "fieldScreening": "ফিল্ড স্ক্রিনিং",
   "referralList": "রেফারেল সমূহ",
+  "referralCreate": "রেফারেল তৈরি করুন",
   "observationNotAdded": "পর্যবেক্ষণ যুক্ত করা হই নি",
   "seemsUnwell": "The patients seems to be severly unwell",
   "upazila": "উপজিলা/থানা"
