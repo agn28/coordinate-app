@@ -25,10 +25,27 @@ class FollowupRepository {
     });
   }
 
-  getFollowupsByPatient() async {
+  update(data) async {
     print('folowup called');
     var authData = await Auth().getStorageAuth() ;
-    var patientID = Patient().getPatient()['uuid'];
+    var token = authData['accessToken'];
+    return await http.put(
+      apiUrl + 'followups/' + data['id'],
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: json.encode(data)
+    ).then((response) {
+      return json.decode(response.body);
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
+  }
+
+  getFollowupsByPatient(patientID) async {
+    var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     return await http.get(
       apiUrl + 'patients/' + patientID + '/followups',

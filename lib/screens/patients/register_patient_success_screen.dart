@@ -81,22 +81,6 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                   SizedBox(height: 40,),
                   GestureDetector(
                     onTap: () {
-                      // Navigator.of(context).pushReplacement( RegisterPatientSuccessScreen());
-                    },
-                    child: Container(
-                      margin: EdgeInsets.symmetric(horizontal: 50),
-                      height: 58.0,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: kPrimaryColor,
-                        borderRadius: BorderRadius.circular(4)
-                      ),
-                      child: Text(AppLocalizations.of(context).translate('patientCard'), style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w400))
-                    ),
-                  ),
-                  SizedBox(height: 20,),
-                  GestureDetector(
-                    onTap: () {
                       Navigator.of(context).pushNamed('/patientOverview');
                     },
                     child: Container(

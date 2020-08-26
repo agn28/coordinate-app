@@ -223,7 +223,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                                 // return;
 
                                 if (response['error'] == true && response['message'] =='referral exists') {
-                                  showDialog(
+                                  await showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
                                       // return object of type Dialog
@@ -235,16 +235,17 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                                             child: new Text("Update Referral", style: TextStyle(color: kPrimaryColor)),
                                             onPressed: () {
                                               Navigator.of(context).pop();
-                                              Navigator.of(context).pushNamed('/updateReferral', arguments: widget.referralData);
+                                              Navigator.of(context).pushNamed('/referralList',);
                                             },
                                           ),
                                         ],
                                       );
                                     },
                                   );
+                                } else {
+                                  Navigator.of(context).pushNamed('/chwNavigation',);
                                 }
-                                return;
-                                 Navigator.of(context).pushNamed('/chwNavigation',);
+                                 
                               },
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               child: Text(AppLocalizations.of(context).translate('referralCreate').toUpperCase(), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)

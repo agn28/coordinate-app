@@ -1,12 +1,15 @@
 import 'dart:io';
 import 'package:basic_utils/basic_utils.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/followup_controller.dart';
+import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
@@ -16,8 +19,8 @@ import 'package:nhealth/widgets/primary_textfield_widget.dart';
 
 
 class UpdateReferralScreen extends StatefulWidget {
-  UpdateReferralScreen({this.referralData});
-  var referralData;
+  UpdateReferralScreen({this.referral});
+  var referral;
   @override
   _UpdateReferralScreenState createState() => _UpdateReferralScreenState();
 }
@@ -26,18 +29,43 @@ class _UpdateReferralScreenState extends State<UpdateReferralScreen> {
   var _patient;
   bool isLoading = false;
   bool avatarExists = false;
+  final format = DateFormat("yyyy-MM-dd");
+
 
   List referralReasons = ['urgent medical attempt required', 'NCD screening required'];
   var selectedReason;
   List clinicTypes = ['community clinic', 'upazila health complex', 'hospital'];
   var selectedtype;
+  List status = ['pending', 'completed'];
+  var selectedStatus;
   var clinicNameController = TextEditingController();
+  var outcomeController = TextEditingController();
+  var dateController = TextEditingController();
+
+  var selectedDate;
+
+  
+
+  setDate(date) {
+    if (date != null) {
+      selectedDate = date;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
+    setData();
+  }
 
+  setData() {
+    setState(() {
+      selectedStatus = widget.referral['meta']['status'];
+      selectedReason = widget.referral['body']['reason'];
+      selectedtype = widget.referral['body']['location'] != null ? widget.referral['body']['location']['clinic_type'] : null;
+      clinicNameController.text = widget.referral['body']['location'] != null ? widget.referral['body']['location']['clinic_name'] : '';
+    });
   }
 
   _checkAvatar() async {
@@ -181,6 +209,116 @@ class _UpdateReferralScreenState extends State<UpdateReferralScreen> {
                       )
                     ),
 
+                    SizedBox(height: 30,),
+
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Text('Status', style: TextStyle(fontSize: 20),)
+                    ),
+                    SizedBox(height: 10,),
+
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      color: kSecondaryTextField,
+                      child: DropdownButtonFormField(
+                        hint: Text('Status *', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                        decoration: InputDecoration(
+                          fillColor: kSecondaryTextField,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                          border: UnderlineInputBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(4),
+                            topRight: Radius.circular(4),
+                          )
+                        ),
+                        ),
+                        items: [
+                          ...status.map((item) =>
+                            DropdownMenuItem(
+                              child: Text(StringUtils.capitalize(item)),
+                              value: item
+                            )
+                          ).toList(),
+                        ],
+                        value: selectedStatus,
+                        isExpanded: true,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedStatus = value;
+                          });
+                        },
+                      ),
+                    ),
+
+                    SizedBox(height: 30,),
+
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Text('Outcome', style: TextStyle(fontSize: 20),)
+                    ),
+                    SizedBox(height: 10,),
+
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      color: kSecondaryTextField,
+                      child: TextField(
+                        maxLines: 3,
+                        controller: outcomeController,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+                          hintText: 'Outcome',
+                          hintStyle: TextStyle(fontSize: 18)
+                        ),
+                      )
+                    ),
+
+                    SizedBox(height: 30,),
+
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Text('Date of Completion', style: TextStyle(fontSize: 20),)
+                    ),
+                    SizedBox(height: 10,),
+
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      color: kSecondaryTextField,
+                      child: DateTimeField(
+                        format: format,
+                        controller: dateController,
+                        style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
+                        decoration: InputDecoration(
+                          suffixIcon: IconButton(icon: Icon(Icons.close), onPressed: () {}, color: kSecondaryTextField,),
+                          hintText: 'Select a date',
+                          hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                          contentPadding: EdgeInsets.only(top: 18, bottom: 18, left: 10, right: 10),
+                          // prefixIcon: Icon(Icons.date_range),
+                          filled: true,
+                          fillColor: kSecondaryTextField,
+                          border: new UnderlineInputBorder(
+                            borderSide: new BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(4),
+                              topRight: Radius.circular(4),
+                            )
+                          ),
+                        ),
+
+                        onChanged: (date) {
+                          setDate(date);
+                        },
+                        
+                        onShowPicker: (context, currentValue) {
+                          return showDatePicker(
+                            context: context,
+                            firstDate: DateTime(1900),
+                            initialDate: selectedDate ?? DateTime.now(),
+                            lastDate: DateTime(2021)
+                          );
+                        },
+                      )
+                    ),
+
                     SizedBox(height: 50,),
 
                     Row(
@@ -191,34 +329,48 @@ class _UpdateReferralScreenState extends State<UpdateReferralScreen> {
                             margin: EdgeInsets.only(left: 20, right: 20),
                             height: 50,
                             decoration: BoxDecoration(
-                              color: Colors.grey,
+                              color: kPrimaryColor,
                               borderRadius: BorderRadius.circular(3)
                             ),
                             child: FlatButton(
                               onPressed: () async {
-                                return;
+                                // return;
                                 // Navigator.of(context).pushNamed('/chwNavigation',);
 
-                                var data = widget.referralData;
+                                var data = widget.referral;
 
                                 data['body']['reason'] = selectedReason;
+                                data['body']['outcome'] = outcomeController.text;
                                 data['body']['location'] = {};
                                 data['body']['location']['clinic_type'] = selectedtype;
                                 data['body']['location']['clinic_name'] = clinicNameController.text;
+                                if (selectedStatus == 'completed') {
+                                  if  (dateController.text == null || dateController.text == '') {
+                                    Toast.show('Please select completion date', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+                                    return;
+                                  }
+                                  data['meta']['completed_at'] = dateController.text;
+                                  data['meta']['status'] = 'completed';
+                                }
+                                
 
                                 print(data);
 
-                                
+                                // return;
+
 
                                 setState(() {
                                   isLoading = true;
                                 });
-                                var response = await FollowupController().create(data);
+                                var response = await FollowupController().update(data);
+                                Navigator.of(context).pushReplacementNamed('/referralList',);
                                 setState(() {
                                   isLoading = false;
                                 });
+                                print('response');
                                 print(response);
-                                 Navigator.of(context).pushNamed('/chwNavigation',);
+                                // return;
+                                 
                               },
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               child: Text(AppLocalizations.of(context).translate('referralUpdate').toUpperCase(), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)

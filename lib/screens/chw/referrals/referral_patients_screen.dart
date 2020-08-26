@@ -233,7 +233,7 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           child: Row(
                             children: <Widget>[
-                              Text('SORT BY' + ':', style: TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.w500)),
+                              Text(AppLocalizations.of(context).translate('sortBy') + ':', style: TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.w500)),
                               SizedBox(width: 20,),
                               Container(
                                 width: 200,
@@ -314,8 +314,8 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
                           
                         ...patients.map((item) => GestureDetector(
                           onTap: () {
-                              // Patient().setPatient(item);
-                              // Navigator.of(context).pushNamed('/patientOverview');
+                              Patient().setPatient(item);
+                              Navigator.of(context).pushNamed('/referralList');
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -344,14 +344,14 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
                                 Expanded(
                                   flex: 2,
                                   child: item['data']['pending_referral'] != null ?
-                                    Text(item['data']['pending_referral']['body']['location']['clinic_name'],
+                                    Text(item['data']['pending_referral']['body']['location'] != null && item['data']['pending_referral']['body']['location']['clinic_name'] != null ? item['data']['pending_referral']['body']['location']['clinic_name'] : '',
                                       style: TextStyle(color: Colors.black87, fontSize: 16),
                                     ) : Container()
                                 ),
                                 Expanded(
                                   flex: 2,
                                   child: item['data']['pending_referral'] != null ?
-                                    Text(item['data']['pending_referral']['body']['reason'],
+                                    Text(item['data']['pending_referral']['body']['reason'] ?? '',
                                       style: TextStyle(color: Colors.black87, fontSize: 16),
                                     ) : Container()
                                 ),

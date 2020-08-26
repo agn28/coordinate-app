@@ -95,11 +95,11 @@ class RegisterPatient extends StatefulWidget {
   @override
   _RegisterPatientState createState() => _RegisterPatientState();
 }
-
+int _currentStep = 0;
 
 class _RegisterPatientState extends State<RegisterPatient> {
   
-  int _currentStep = 0;
+
 
   String nextText = 'NEXT';
 
@@ -110,6 +110,13 @@ class _RegisterPatientState extends State<RegisterPatient> {
     _prepareState();
     _checkAuth();
 
+    _currentStep = 0;
+
+  }
+  nextStep() {
+    setState(() {
+      _currentStep += 1;
+    });
   }
 
   getAddresses() async {
@@ -222,11 +229,11 @@ class _RegisterPatientState extends State<RegisterPatient> {
         },
           onStepTapped: (step) {
             setState(() {
-              this._currentStep = step;
+              _currentStep = step;
             });
           },
           steps: _mySteps(),
-          currentStep: this._currentStep,
+          currentStep: _currentStep,
         ),
       ),
       bottomNavigationBar: Container(
@@ -328,8 +335,13 @@ class _RegisterPatientState extends State<RegisterPatient> {
       ),
       CustomStep(
         title: Text(AppLocalizations.of(context).translate('photo')),
-        content: AddPhoto(),
+        content: AddPhoto(parent: this),
         isActive: _currentStep >= 2,
+      ),
+      CustomStep(
+        title: Text(AppLocalizations.of(context).translate('viewSummary')),
+        content: ViewSummary(),
+        isActive: _currentStep >= 3,
       ),
     ];
 
@@ -338,7 +350,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
         CustomStep(
           title: Text(AppLocalizations.of(context).translate('thumbprint')),
           content: Text(''),
-          isActive: _currentStep >= 3,
+          isActive: _currentStep >= 4,
         )
       );
     }
@@ -387,9 +399,10 @@ class PatientDetails extends StatefulWidget {
   _PatientDetailsState createState() => _PatientDetailsState();
 }
 
+DateTime selectedDate = DateTime.now();
+
 class _PatientDetailsState extends State<PatientDetails> {
   
-  DateTime selectedDate = DateTime.now();
   final lastVisitDateController = TextEditingController();
   final format = DateFormat("yyyy-MM-dd");
 
@@ -889,7 +902,7 @@ class _DatePickerState extends State<DatePicker> {
         lastDate: DateTime(2021)
       );
     },
-                );
+    );
   }
 }
 
@@ -1003,9 +1016,10 @@ class _ContactDetailsState extends State<ContactDetails> {
 }
 
 class AddPhoto extends StatefulWidget {
-  const AddPhoto({
-    Key key,
-  }) : super(key: key);
+  AddPhoto({
+    this.parent
+  });
+  _RegisterPatientState parent;
 
   @override
   _AddPhotoState createState() => _AddPhotoState();
@@ -1038,7 +1052,6 @@ class _AddPhotoState extends State<AddPhoto> {
   }
 
   uploadImage() async {
-    print('ksajdkas');
     var url = '';
     if (_image != null) {
       String filePath = 'images/patients/${firstNameController.text}_${DateTime.now().millisecondsSinceEpoch}.jpg';
@@ -1154,22 +1167,6 @@ class _AddPhotoState extends State<AddPhoto> {
                     )
                   ),
                 ),
-                // Positioned(
-                //   bottom: 0,
-                //   left: 30,
-                //   child: GestureDetector(
-                //     onTap: () {
-                //       setState(() {
-                //         _image.delete();
-                //         _image = null;
-                //         firstTime = true;
-                //       });
-                //     },
-                //     child: CircleAvatar(
-                //       child: Icon(Icons.delete),
-                //     ),
-                //   ),
-                // ),
                 Positioned(
                   bottom: 0,
                   right: 80,
@@ -1221,6 +1218,174 @@ class _AddPhotoState extends State<AddPhoto> {
             ),
             )
           ) ,
+
+          SizedBox(height: 70,),
+          
+          GestureDetector(
+            onTap: () async {
+              print(_currentStep);
+
+              widget.parent.nextStep();
+              
+            },
+            child: Container(
+              width: double.infinity,
+              height: 62.0,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: kPrimaryColor,
+                borderRadius: BorderRadius.circular(4)
+              ),
+              child: isLoading ? CircularProgressIndicator() : Text("${isEditState != null ? AppLocalizations.of(context).translate('updatePatient') : AppLocalizations.of(context).translate('viewSummary')}", style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w400))
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ViewSummary extends StatefulWidget {
+  const ViewSummary({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _ViewSummaryState createState() => _ViewSummaryState();
+}
+
+class _ViewSummaryState extends State<ViewSummary> {
+  bool isLoading = false;
+  bool firstTime = true;
+
+  final FirebaseStorage _storage = FirebaseStorage(storageBucket: gsBucket);
+  StorageUploadTask _uploadTask;
+  String storageAvatar = '';
+
+  @override
+  initState() {
+    super.initState();
+  }
+
+    uploadImage() async {
+    var url = '';
+    if (_image != null) {
+      String filePath = 'images/patients/${firstNameController.text}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      print('file path');
+      print(filePath);
+
+      setState(() {
+        _uploadTask = _storage.ref().child(filePath).putFile(_image);
+      });
+      await _uploadTask.onComplete;
+      if (_uploadTask.isComplete) {
+        var url = await _storage.ref().child(filePath).getDownloadURL();
+        print('url');
+        print(url);
+        setState(() {
+          uploadedImageUrl = url;
+        });
+      }
+
+      // if (_uploadTask.isCanceled) {
+
+      // }
+
+
+      return url;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          SizedBox(height: 10,),
+
+          Container(
+            height: 250,
+            // width: 200,
+            // alignment: Alignment.topCenter,
+            decoration: BoxDecoration(
+              // border: Border.all(width: 1, color: kTableBorderGrey)
+            ),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate('patientName') + ': ', style: TextStyle(fontSize: 18),),
+                    Text(firstNameController.text + ' ' + lastNameController.text, style: TextStyle(fontSize: 18),),
+                  ],
+                ),
+                SizedBox(height: 7,),
+                Row(
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate('gender') + ': ', style: TextStyle(fontSize: 18),),
+                    Text(selectedGender, style: TextStyle(fontSize: 18),),
+                  ],
+                ),
+                SizedBox(height: 7,),
+                Row(
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate('dateOfBirth') + ': ', style: TextStyle(fontSize: 18),),
+                    Text(DateFormat('yyyy-MM-dd').format(selectedDate), style: TextStyle(fontSize: 18),),
+                  ],
+                ),
+                SizedBox(height: 7,),
+
+                Row(
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate('address') + ': ', style: TextStyle(fontSize: 18),),
+                    Text(streetNameController.text + ', ' + villageController.text + ', ' + upazilaController.text + ', ' + districtController.text + ' ' + postalCodeController.text, style: TextStyle(fontSize: 18),),
+                  ],
+                ),
+                SizedBox(height: 7,),
+
+                Row(
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate('mobile') + ': ', style: TextStyle(fontSize: 18),),
+                    Text(mobilePhoneController.text, style: TextStyle(fontSize: 18),),
+                  ],
+                ),
+                SizedBox(height: 7,),
+
+                Row(
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate('nationalId') + ': ', style: TextStyle(fontSize: 18),),
+                    Text(nidController.text, style: TextStyle(fontSize: 18),),
+                  ],
+                ),
+                SizedBox(height: 7,),
+
+                Row(
+                  children: <Widget>[
+                    // Text(AppLocalizations.of(context).translate('contactName') + ': ', style: TextStyle(fontSize: 18),),
+                    Text('Contact Name' + ': ', style: TextStyle(fontSize: 18),),
+                    Text(contactFirstNameController.text + ' ' + contactLastNameController.text, style: TextStyle(fontSize: 18),),
+                  ],
+                ),
+                SizedBox(height: 7,),
+
+                Row(
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate('relationship') + ': ', style: TextStyle(fontSize: 18),),
+                    Text(StringUtils.capitalize(relationships[selectedRelation]), style: TextStyle(fontSize: 18),),
+                  ],
+                ),
+                SizedBox(height: 7,),
+
+                Row(
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate('contactMobilePhone') + ': ', style: TextStyle(fontSize: 18),),
+                    Text(contactMobilePhoneController.text, style: TextStyle(fontSize: 18),),
+                  ],
+                ),
+              ],
+            ),
+          ),
 
           SizedBox(height: 70,),
           
