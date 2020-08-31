@@ -146,6 +146,21 @@ class AssessmentController {
     return status;
   }
 
+  /// Create assessment.
+  /// Assessment [type] and [comment] is required as parameter.
+  createOnlyAssessment(type, screening_type, comment) async {
+
+    var data = _prepareData(type, screening_type, comment);
+    var status = await AssessmentRepositoryLocal().create(data);
+    if (status == 'success') {
+      Helpers().clearObservationItems();
+    }
+
+    print('before health report');
+
+    return status;
+  }
+
   update(type, comment) {
     var data = _prepareUpdateData(type, comment);
     var status = AssessmentRepositoryLocal().update(data);

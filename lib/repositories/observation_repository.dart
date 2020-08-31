@@ -20,7 +20,8 @@ class ObservationRepository {
   }
 
   create(data) async {
-    
+    print('questionnaire data');
+    print(data);
     await http.post(
       apiUrl + 'observations',
       headers: {

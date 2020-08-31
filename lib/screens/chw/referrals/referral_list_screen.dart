@@ -290,7 +290,7 @@ class _ChwReferralListScreenState extends State<ChwReferralListScreen> {
                   ),
                 ),
 
-                patients.length == 0 ? Container(
+                referrals.length == 0 ? Container(
                   alignment: Alignment.centerLeft,
                   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   child: Text(AppLocalizations.of(context).translate('noPatientFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),

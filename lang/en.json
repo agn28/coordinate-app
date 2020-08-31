@@ -277,6 +277,7 @@
   "currentConditionsTitle": "Current Conditions",
   "medicationsTitle": "Medications",
   "medicationTitle": "Medication",
+  "riskFactors": "Risk Factors",
   "medications": "Medications: ", 
   "allergiesTitle": "Allergies",
   "allergies": "Allergies: ",
@@ -322,5 +323,7 @@
   "referralUpdate": "Update Referral",
   "observationNotAdded": "No observation added",
   "seemsUnwell": "The patients seems to be severly unwell",
-  "upazila": "Upazila/Thana"
+  "upazila": "Upazila/Thana",
+  "newPatientQuestionnaire": "New Patient Questionnaire",
+  "completeQuestionnaire": "Complete Questionnaire"
 }

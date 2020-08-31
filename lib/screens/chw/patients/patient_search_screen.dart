@@ -348,6 +348,8 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
                                 ...newPatients.map((item) => GestureDetector(
                                   onTap: () {
                                       Patient().setPatient(item);
+                                      print('hello');
+                                      print(item);
                                       Navigator.of(context).pushNamed('/patientOverview');
                                   },
                                   child: Container(

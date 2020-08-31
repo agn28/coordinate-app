@@ -117,6 +117,106 @@ var _questions = {
           'options': ['yes', 'no']
         },
       ]
+    },
+
+    'new_patient': {
+      'medical_history': {
+        'items' : [
+          {
+            'question': 'Have you ever been diagnosed with Diabetes?',
+            'options': ['yes', 'no']
+          },
+          {
+            'question': 'Have you ever been diagnosed with Stroke?',
+            'options': ['yes', 'no']
+          },
+          {
+            'question': 'Have you ever been diagnosed with heart attack?',
+            'options': ['yes', 'no']
+          },
+          {
+            'question': 'Have you ever been diagnosed with asthma/COPD?',
+            'options': ['yes', 'no']
+          },
+          {
+            'question': 'Have you ever been diagnosed with chronic kidney disease?',
+            'options': ['yes', 'no']
+          },
+          {
+            'question': 'Have you ever been diagnosed with Cancer?',
+            'options': ['yes', 'no']
+          },
+          {
+            'question': 'Have you ever been diagnosed with hypertension?',
+            'options': ['yes', 'no'],
+          },
+        ]
+      },
+      'medication': {
+        'items' : [
+          {
+            'question': 'Are you taking any medicines for hypertension?',
+            'options': ['yes', 'no']
+          },
+          {
+            'question': 'Are you taking any medicines for diabetes?',
+            'options': ['yes', 'no']
+          },
+          {
+            'question': 'Are you taking any aspirin/clopidegrol?',
+            'options': ['yes', 'no']
+          },
+          {
+            'question': 'Are you taking any anti cholesterol drug?',
+            'options': ['yes', 'no']
+          },
+          {
+            'question': 'Are you taking the medicines regularly?',
+            'options': ['yes', 'no']
+          } 
+        ]
+      },
+
+      'risk_factors': {
+        'items' : [
+          {
+            'question': 'Do you currently smoke?',
+            'options': ['yes', 'no']
+          },
+          {
+            'question': 'Do you currently consume any smokeless tobacco?',
+            'options': ['yes', 'no']
+          },
+          {
+            'question': 'Do you currently drink alcohol?',
+            'options': ['yes', 'no']
+          },
+          {
+            'question': 'Do you eat atleast 5 portions of fruits and vegetables daily?',
+            'options': ['yes', 'no']
+          },
+          {
+            'question': 'Do you eat any red meat, fried foods, canned or processed food on most days?',
+            'options': ['yes', 'no']
+          },
+          {
+            'question': 'Do you have sugery drinks on most days?',
+            'options': ['yes', 'no']
+          },
+          {
+            'question': 'Do you add extra salt to your meals or have excess salt or salty foods on most days?',
+            'options': ['yes', 'no']
+          },
+          {
+            'question': 'Do you do physical activity or moderate intensity (you get a little bit out of breath) for atleast 30 minutes per day on 5 days per week or 150 minutes per week?',
+            'options': ['yes', 'no']
+          },
+          {
+            'question': 'Do you do physical activity of high intensity (you get out of breath) for at least 15 minutes per day on 5 days per week, or 75 minutes per week?',
+            'options': ['yes', 'no']
+          },
+        ]
+      }
     }
     
 };
@@ -287,6 +387,61 @@ class Questionnaire {
     return 'success';
   }
 
+  addNewMedicalHistory(type, answers) {
+    var questions = Questionnaire().questions['new_patient'][type];
+    var updated = false;
+
+
+    for (var qn in _questionnaireItems) {
+      if (qn['body']['data']['name'] == type) {
+        _questionnaireItems[_questionnaireItems.indexOf(qn)] = _prepareNewMedicalData(questions, answers, type);
+        updated = true;
+      }
+    }
+
+    if (!updated) {
+      _questionnaireItems.add(_prepareNewMedicalData(questions, answers, type));
+    }
+    
+    return 'success';
+  }
+
+  addNewMedication(type, answers) {
+    var questions = Questionnaire().questions['new_patient'][type];
+    var updated = false;
+
+    for (var qn in _questionnaireItems) {
+      if (qn['body']['data']['name'] == type) {
+        _questionnaireItems[_questionnaireItems.indexOf(qn)] = _prepareNewMedicationData(questions, answers, type);
+        updated = true;
+      }
+    }
+
+    if (!updated) {
+      _questionnaireItems.add(_prepareNewMedicationData(questions, answers, type));
+    }
+    
+    return 'success';
+  }
+
+  addNewRiskFactors(type, answers) {
+    var questions = Questionnaire().questions['new_patient'][type];
+    var updated = false;
+
+    for (var qn in _questionnaireItems) {
+      if (qn['body']['data']['name'] == type) {
+        _questionnaireItems[_questionnaireItems.indexOf(qn)] = _prepareNewRiskData(questions, answers, type);
+        updated = true;
+      }
+    }
+
+    if (!updated) {
+      _questionnaireItems.add(_prepareNewRiskData(questions, answers, type));
+    }
+    
+    return 'success';
+  }
+
   /// Prepare questionnaire data
   _prepareCurrentMedicationData(questions, answers, type) {
     var data = {
@@ -392,6 +547,32 @@ class Questionnaire {
     return data;
   }
 
+    /// Prepare questionnaire data
+  _prepareNewMedicalData(questions, answers, type) {
+    var data = {
+      "meta": {
+        "performed_by": Auth().getAuth()['uid'],
+        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
+      },
+      "body": {
+        "type": "survey",
+        "data": {
+          'name': type,
+          'diabetes': answers[0],
+          'stroke': answers[1],
+          'heart_attack': answers[2],
+          'asthma': answers[3],
+          'kidney_disease': answers[4],
+          'cancer': answers[5],
+          'hypertension': answers[6],
+        },
+        "patient_id": Patient().getPatient()['uuid'],
+      }
+    };
+
+    return data;
+  }
+
   /// Prepare questionnaire data
   _preparePhysicalActivityData(questions, answers, type) {
     var data = {
@@ -433,6 +614,58 @@ class Questionnaire {
           'other_ilness': answers[6],
           'allergies': answers[7],
           'allergy_types': answers[8],
+        },
+        "patient_id": Patient().getPatient()['uuid'],
+      }
+    };
+
+    return data;
+  }
+
+  /// Prepare questionnaire data
+  _prepareNewMedicationData(questions, answers, type) {
+    var data = {
+      "meta": {
+        "performed_by": Auth().getAuth()['uid'],
+        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
+      },
+      "body": {
+        "type": "survey",
+        "data": {
+          'name': type,
+          'hypertension_medicine': answers[0],
+          'diabetes_medicine': answers[1],
+          'aspirin': answers[2],
+          'anti_cholesterol_drug': answers[3],
+          'regular_medicine': answers[4],
+        },
+        "patient_id": Patient().getPatient()['uuid'],
+      }
+    };
+
+    return data;
+  }
+
+ /// Prepare questionnaire data
+  _prepareNewRiskData(questions, answers, type) {
+    var data = {
+      "meta": {
+        "performed_by": Auth().getAuth()['uid'],
+        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
+      },
+      "body": {
+        "type": "survey",
+        "data": {
+          'name': type,
+          'smoking': answers[0],
+          'smokeless_tobacco': answers[1],
+          'alcohol': answers[2],
+          'fruits_vegitables_daily': answers[3],
+          'processed_foods': answers[4],
+          'sugary_drinks': answers[5],
+          'extra_salt': answers[6],
+          'physical_activity_moderate': answers[7],
+          'physical_activity_high': answers[8],
         },
         "patient_id": Patient().getPatient()['uuid'],
       }

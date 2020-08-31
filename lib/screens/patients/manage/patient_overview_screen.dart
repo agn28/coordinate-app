@@ -69,7 +69,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
   }
 
   getAssessmentDueDate() {
-    print(DateFormat("MMMM d, y").format(DateTime.parse(_patient['data']['next_assignment']['body']['activityDuration']['start'])));
+    // print(DateFormat("MMMM d, y").format(DateTime.parse(_patient['data']['next_assignment']['body']['activityDuration']['start'])));
 
     if (_patient != null && _patient['data']['next_assignment'] != null && _patient['data']['next_assignment']['body']['activityDuration']['start'] != null) {
       setState(() {
@@ -181,6 +181,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
   }
 
   getAssessments() async {
+    print('assessments');
     setState(() {
       isLoading = true;
     });
@@ -218,14 +219,17 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
   }
 
   getEncounters() async {
+    print('encounters');
     setState(() {
       isLoading = true;
     });
     encounters = await AssessmentController().getLiveAllAssessmentsByPatient();
+    print(encounters);
 
     // setState(() {
     //   isLoading = false;
     // });
+
 
     if (encounters.isNotEmpty) {
       var allEncounters = encounters;
@@ -282,6 +286,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
   }
 
   _getCarePlan() async {
+    print('careplans');
     setState(() {
       isLoading = true;
     });
@@ -794,14 +799,14 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                                         children: <Widget>[
                                                           CircleAvatar(
                                                             radius: 15,
-                                                            child: ClipRRect(
+                                                            child: Patient().getPatient()['data']['avatar'] != null ? ClipRRect(
                                                               borderRadius: BorderRadius.circular(30.0),
                                                               child: Image.network(
                                                                 Patient().getPatient()['data']['avatar'],
                                                                 height: 30.0,
                                                                 width: 30.0,
                                                               ),
-                                                            ),
+                                                            ) : Container(),
                                                             backgroundImage: AssetImage('assets/images/avatar.png'),
                                                           ),
                                                           SizedBox(width: 20,),

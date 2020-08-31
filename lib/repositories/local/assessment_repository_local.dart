@@ -69,6 +69,7 @@ class AssessmentRepositoryLocal {
     });
 
     Future.forEach(questionnaires, (item) async {
+      print('into questionnaire');
       item['body']['assessment_id'] = assessmentId;
       await _createObservations(item);
     });

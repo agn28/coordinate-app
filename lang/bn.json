@@ -276,6 +276,7 @@
   "currentConditionsTitle": "বর্তমান অবস্থা",
   "medicationsTitle": "ওষুধপত্র",
   "medicationTitle": "Medication",
+  "riskFactors": "Risk Factors",
   "medications": "ওষুধপত্রঃ ", 
   "allergiesTitle": "এলার্জি",
   "allergies": "এলার্জিঃ ",
@@ -321,6 +322,8 @@
   "referralUpdate": "রেফারেল আপডেট করুন",
   "observationNotAdded": "পর্যবেক্ষণ যুক্ত করা হই নি",
   "seemsUnwell": "The patients seems to be severly unwell",
-  "upazila": "উপজিলা/থানা"
+  "upazila": "উপজিলা/থানা",
+  "newPatientQuestionnaire": "নতুন রোগীর প্রশ্নপত্র",
+  "completeQuestionnaire": "প্রশ্নপত্র সম্পুর্ন করুন"
 
 }

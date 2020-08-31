@@ -8,6 +8,7 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/chw/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
@@ -96,6 +97,7 @@ class _PatientFeelingState extends State<PatientFeelingScreen> {
                                 ),
                                 child: FlatButton(
                                   onPressed: () async {
+                                    // Navigator.of(context).pushNamed(NewPatientQuestionnaireScreen.path);
                                     Navigator.of(context).pushNamed('/chwPatientSummary', arguments: true);
                                   },
                                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/helpers/helpers.dart';
+import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/screens/chw/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
 import 'package:nhealth/screens/home_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
@@ -24,11 +26,26 @@ class RegisterPatientSuccess extends StatefulWidget {
 }
 
 class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
-
+  var role = '';
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    _getAuthData();
+  }
+
+  _getAuthData() async {
+    var data = await Auth().getStorageAuth();
+    if (!data['status']) {
+      Helpers().logout(context);
+    }
+
+    print('role');
+    print(data['role']);
+    setState(() {
+      role = data['role'];
+    });
   }
   
   @override
@@ -97,7 +114,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
 
                   SizedBox(height: 40,),
 
-                  GestureDetector(
+                  role != 'chw' ? GestureDetector(
                     onTap: () => Navigator.of(context).push(NewEncounterScreen()),
                     child: Container(
                       // height: 190,
@@ -151,12 +168,67 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                         )
                       ),
                     ),
+                  ) : GestureDetector(
+                    onTap: () => Navigator.of(context).pushNamed(NewPatientQuestionnaireScreen.path),
+                    child: Container(
+                      // height: 190,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0x10000000),
+                            blurRadius: 5,
+                            offset: Offset(0.0, 1.0,)
+                          ),
+                        ]
+                      ),
+                      child: Card(
+                        elevation: 0,
+                        child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 25, horizontal: 30),
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    flex: 4,
+                                    child: Row(
+                                      children: <Widget>[
+                                        Image.asset('assets/images/icons/manage_patient.png'),
+                                        SizedBox(width: 20,),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(AppLocalizations.of(context).translate('newPatientQuestionnaire'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      alignment: Alignment.topRight,
+                                      child: Icon(Icons.chevron_right, size: 40, color: kPrimaryColor,),
+                                    )
+                                  )
+                                ],
+                              ),
+                            ),  
+
+                          ],
+                        )
+                      ),
+                    ),
                   ),
 
                   SizedBox(height: 20,),
 
                   GestureDetector(
-                    onTap: () => Navigator.of(context).push(RegisterPatientScreen()),
+                    onTap: () {
+                      Navigator.of(context).push(RegisterPatientScreen());
+                      
+                    },
                     child: Container(
                       // height: 190,
                       width: double.infinity,
@@ -211,7 +283,13 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                   SizedBox(height: 20,),
 
                   GestureDetector(
-                    onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => HomeScreen())),
+                    onTap: () {
+                      if (role == 'chw') {
+                        Navigator.of(context).pushNamed('/chwHome');
+                      } else {
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => HomeScreen()));
+                      }
+                    },
                     child: Container(
                       // height: 190,
                       width: double.infinity,
