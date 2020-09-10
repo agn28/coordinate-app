@@ -11,7 +11,7 @@ class UserRepository {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     return http.get(
-      apiUrl + 'users?role=nurse,doctor,chw',
+      apiUrl + 'users?role=',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',

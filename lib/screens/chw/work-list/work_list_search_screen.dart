@@ -94,7 +94,7 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
         allPendingPatients = pending['data'];
         pendingPatientsSort();
         pendingPatients = allPendingPatients;
-        print(pendingPatients[0]['body']['address']);
+        print(pendingPatients[0]['body']);
       });
     }
     if (completed['error'] != null && !completed['error']) {

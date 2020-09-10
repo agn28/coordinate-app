@@ -304,6 +304,7 @@
   "summary": "সারসংক্ষেপ",
   "interventions": "ব্যবস্থাসমূহ",
   "pendingReferral": "অসম্পূর্ণ রেফারেল",
+  "reviewReferral": "রিভিউ রেফারেল",
   "stopSmoking": "ধূমপান ছেড়ে দিবেন",
   "reduceAlcohol": "মদ্যপান কমাবেন",
   "eatMoreFruits": "বেশি বেশি পরিমাণে ফল খাবেন",
@@ -324,6 +325,6 @@
   "seemsUnwell": "The patients seems to be severly unwell",
   "upazila": "উপজিলা/থানা",
   "newPatientQuestionnaire": "নতুন রোগীর প্রশ্নপত্র",
-  "completeQuestionnaire": "প্রশ্নপত্র সম্পুর্ন করুন"
-
+  "completeQuestionnaire": "প্রশ্নপত্র সম্পুর্ন করুন",
+  "fathersName": "পিতার নাম"
 }

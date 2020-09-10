@@ -305,6 +305,7 @@
   "summary": "Summary",
   "interventions": "Interventions",
   "pendingReferral": "Pending Referral",
+  "reviewReferral": "Review Referral",
   "stopSmoking": "Stop Smoking",
   "reduceAlcohol": "Reduce alcohol consumption",
   "eatMoreFruits": "Eat more fruits",
@@ -325,5 +326,7 @@
   "seemsUnwell": "The patients seems to be severly unwell",
   "upazila": "Upazila/Thana",
   "newPatientQuestionnaire": "New Patient Questionnaire",
-  "completeQuestionnaire": "Complete Questionnaire"
+  "completeQuestionnaire": "Complete Questionnaire",
+  "emailAddressOptional": "Email Address (optional)",
+  "fathersName": "Father's Name"
 }

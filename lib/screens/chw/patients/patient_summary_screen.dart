@@ -24,6 +24,7 @@ var dueCarePlans = [];
 var completedCarePlans = [];
 var upcomingCarePlans = [];
 var referrals = [];
+var pendingReferral;
 
 class ChwPatientRecordsScreen extends StatefulWidget {
   var checkInState = false;
@@ -67,10 +68,12 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     upcomingCarePlans = [];
     conditions = [];
     referrals = [];
+    pendingReferral = null;
     carePlansEmpty = false;
     
     _checkAvatar();
     _checkAuth();
+    getUsers();
     getAssessmentDueDate();
     _getCarePlan();
     getReferrals();
@@ -78,7 +81,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     getAssessments();
     getMedicationsConditions();
     getReport();
-    getUsers();
+    
   }
 
   getAssessmentDueDate() {
@@ -124,19 +127,26 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
 
   getUsers() async {
   
-    users = await UserController().getUsers();
+    var data = await UserController().getUsers();
 
 
     setState(() {
+      users = data;
       isLoading = false;
     });
   }
 
   getUser(uid) {
+    print('uid');
+    print(users.length);
     var user = users.where((user) => user['uid'] == uid);
     if (user.isNotEmpty) {
+      print(user.first['name']);
       return user.first['name'];
     }
+
+    print('user not found');
+    print(users[10]);
     return '';
   }
 
@@ -176,8 +186,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
 
     var data = await FollowupController().getFollowupsByPatient(patientID);
 
-    print('hjello');
-    print(data);
+    print('referrals');
     
     if (data['error'] == true) {
 
@@ -187,12 +196,19 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
     } else {
       setState(() {
-        // report = data['data'];
         referrals = data['data'];
       });
     }
 
-    print(referrals[0]);
+    referrals.forEach((referral) {
+      if (referral['meta']['status'] == 'pending') {
+        setState(() {
+          pendingReferral = referral;
+        });
+      }
+    });
+
+    print(pendingReferral);
 
   }
 
@@ -466,6 +482,15 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     }
   }
 
+  convertDateFromSeconds(date) {
+    if (date['_seconds'] != null) {
+      var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
+
+      return DateFormat("MMMM d, y").format(parsedDate).toString();
+    }
+    return '';
+  }
+
   getTitle(encounter) {
     var screening_type =  encounter['data']['screening_type'];
     if (screening_type != null && screening_type != '') {
@@ -675,75 +700,81 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                     ),
                   ),
                   
+                  pendingReferral != null ? 
                   Container(
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                    child: Table(
-                      children: [
-                        TableRow( 
-                          children: [
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(AppLocalizations.of(context).translate('pendingReferral'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500,)),
                             Container(
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text(AppLocalizations.of(context).translate('lastEncounterDate'), style: TextStyle(fontSize: 17,),),
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text(lastEncounterdDate, style: TextStyle(fontSize: 17,),),
-                            ),
-                          ]
-                        ),
-                        TableRow( 
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text(AppLocalizations.of(context).translate('nextAssessmentDate'), style: TextStyle(fontSize: 17,),),
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text(dueDate != null ? dueDate : '', style: TextStyle(fontSize: 17,),),
-                            ),
-                          ]
-                        ),
-                        TableRow( 
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text(AppLocalizations.of(context).translate('currentConditions'), style: TextStyle(fontSize: 17,),),
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Wrap(
-                                children: <Widget>[
-                                  Container(),
-                                  ...conditions.map((item) {
-                                    return Text(item + '${conditions.length - 1 == conditions.indexOf(item) ? '' : ', '}', style: TextStyle(fontSize: 17,));
-                                  }).toList()
-                                ],
+                              width: 200,
+                              margin: EdgeInsets.only(top: 20),
+                              height: 30,
+                              decoration: BoxDecoration(
+                                color: kPrimaryColor,
+                                borderRadius: BorderRadius.circular(3)
                               ),
-                            ),
-                          ]
-                        ),
-                        TableRow( 
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Text(AppLocalizations.of(context).translate('medicationsTitle'), style: TextStyle(fontSize: 17,),),
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                              child: Wrap(
-                                children: <Widget>[
-                                  Container(),
-                                  ...medications.map((item) {
-                                    return Text(item + '${medications.length - 1 == medications.indexOf(item) ? '' : ', '}', style: TextStyle(fontSize: 17,));
-                                  }).toList()
-                                ],
+                              child: FlatButton(
+                                onPressed: () async {
+                                  // Navigator.of(context).pushNamed('/chwNavigation',);
+                                  Navigator.of(context).pushNamed('/referralList');
+                                  // Navigator.of(context).pushNamed('/updateReferral', arguments: referral);
+                                },
+                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                child: Text(AppLocalizations.of(context).translate('reviewReferral').toUpperCase(), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
                               ),
-                            ),
-                          ]
+                            )
+                          ],
+                        ),
+
+                        Row(
+                          children: <Widget>[
+                            Text('Date of referral: ', style: TextStyle(fontSize: 16),),
+                            Text(convertDateFromSeconds(pendingReferral['meta']['created_at']), style: TextStyle(fontSize: 16)),
+                          ],
+                        ),
+                        SizedBox(height: 5,),
+
+                        Row(
+                          children: <Widget>[
+                            Text('Reason: ', style: TextStyle(fontSize: 16)),
+                            Text(pendingReferral['body']['reason'] ?? '', style: TextStyle(fontSize: 16)),
+                          ],
+                        ),
+
+                        SizedBox(height: 5,),
+
+                        Row(
+                          children: <Widget>[
+                            Text('Referral Location: ', style: TextStyle(fontSize: 16)),
+                            Text(pendingReferral['body']['location'] != null && pendingReferral['body']['location']['clinic_name'] != null ? pendingReferral['body']['location']['clinic_name'] : '', style: TextStyle(fontSize: 16)),
+                          ],
+                        ),
+                        SizedBox(height: 5,),
+
+                        Row(
+                          children: <Widget>[
+                            Text('Referred By: ', style: TextStyle(fontSize: 16)),
+                            Text(getUser(pendingReferral['meta']['collected_by']), style: TextStyle(fontSize: 16)),
+                          ],
+                        ),
+                        SizedBox(height: 5,),
+
+                        Row(
+                          children: <Widget>[
+                            Text('Referred Outcome: ', style: TextStyle(fontSize: 16)),
+                            Text(pendingReferral['body']['outcome'] ?? '', style: TextStyle(fontSize: 16)),
+                          ],
                         ),
                       ],
-                    ),
-                  ),
+                    )
+                  ) : Container(),
+
+                  SizedBox(height: 15,),
+                  
 
 
                   Container(

@@ -8,6 +8,7 @@ class PatientRepository {
   create(data) async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
+    print(token);
     await http.post(
       apiUrl + 'patients',
       headers: {
@@ -18,7 +19,7 @@ class PatientRepository {
       body: json.encode(data)
     ).then((response) {
       print('response');
-      print(response);
+      print(response.body);
     }).catchError((error) {
       print('error ' + error.toString());
     });
@@ -126,7 +127,7 @@ class PatientRepository {
         'Authorization': 'Bearer ' + token
       },
     ).then((response) {
-      print(json.decode(response.body));
+      // print(json.decode(response.body));
       return json.decode(response.body);
       
     }).catchError((error) {

@@ -13,6 +13,7 @@ import 'dart:io';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
@@ -25,6 +26,7 @@ import '../../custom-classes/custom_stepper.dart';
 
 final firstNameController = TextEditingController();
 final lastNameController = TextEditingController();
+final fatherNameController = TextEditingController();
 // final gender = TextEditingController();
 final birthDateController = TextEditingController();
 final birthMonthController = TextEditingController();
@@ -60,6 +62,8 @@ List relationships = [
   'aunt'
 ];
 int selectedRelation;
+var selectedDistrict = {};
+var selectedUpazila = {};
 bool isContactAddressSame = false;
   var districts = [];
   var upazilas = [];
@@ -109,7 +113,8 @@ class _RegisterPatientState extends State<RegisterPatient> {
     getAddresses();
     _prepareState();
     _checkAuth();
-
+    selectedDistrict = {};
+    selectedUpazila = {};
     _currentStep = 0;
 
   }
@@ -158,6 +163,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
   _fillFormData() {
     var patient = Patient().getPatient();
     firstNameController.text = patient['data']['first_name'];
+    fatherNameController.text = patient['data']['father_name'];
     lastNameController.text = patient['data']['last_name'];
     // setState(() {
     //   _image = File(patient['data']['avatar']);
@@ -185,6 +191,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
   _clearForm() {
     firstNameController.clear();
     lastNameController .clear();
+    fatherNameController .clear();
     birthDateController.clear();
     birthMonthController.clear();
     birthYearController.clear();
@@ -196,7 +203,8 @@ class _RegisterPatientState extends State<RegisterPatient> {
     mobilePhoneController.clear();
     homePhoneController.clear();
     emailController.clear();
-    nidController.clear();   contactFirstNameController.clear();
+    nidController.clear();
+    contactFirstNameController.clear();
     contactLastNameController.clear();
     contactRelationshipController.clear();
     contactMobilePhoneController.clear();
@@ -362,6 +370,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     return {
       'first_name': firstNameController.text,
       'last_name': lastNameController.text,
+      'father_name': fatherNameController.text,
       'gender': selectedGender,
       'avatar': uploadedImageUrl,
       'age': 26, //age needs to be calculated
@@ -372,9 +381,9 @@ class _RegisterPatientState extends State<RegisterPatient> {
       'pid': 'PA-19284921',
       'registration_date': DateFormat('y-MM-dd').format(DateTime.now()),
       'address': {
-        'district': districtController.text,
+        'district': selectedDistrict['name'],
         'postal_code': postalCodeController.text,
-        'upazila': upazilaController.text,
+        'upazila': selectedUpazila['name'],
         'village': villageController.text,
         'street_name': streetNameController.text,
       },
@@ -414,7 +423,25 @@ class _PatientDetailsState extends State<PatientDetails> {
     });
     print(allUpazilas);
   }
-
+  Widget _customPopupItemBuilderExample2(
+        BuildContext context, item, bool isSelected) {
+      return SingleChildScrollView(
+              child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 8),
+          decoration: !isSelected
+              ? null
+              : BoxDecoration(
+                  border: Border.all(color: Theme.of(context).primaryColor),
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.white,
+                ),
+          child: ListTile(
+            selected: isSelected,
+            title: Text(item['name']),
+          ),
+        ),
+      );
+    }
   @override
   Widget build(BuildContext context) {
     
@@ -452,6 +479,16 @@ class _PatientDetailsState extends State<PatientDetails> {
                   ),
                 ),
               ],
+            ),
+
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 18,
+              bottomPadding: 18,
+              hintText: AppLocalizations.of(context).translate('fathersName'),
+              controller: fatherNameController,
+              name: AppLocalizations.of(context).translate('fathersName'),
+              validation: true,
             ),
 
             SizedBox(height: 20,),
@@ -559,192 +596,263 @@ class _PatientDetailsState extends State<PatientDetails> {
             Text(AppLocalizations.of(context).translate('address'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
             SizedBox(height: 20,),
 
-            Container(
-              // color: Colors.red,
-              child: Column(
-                children: <Widget>[
-                  TextField(
-                    style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
-                    onChanged: (value) => {
-                      setState(() {
-                        districts = allDestricts
-                          .where((district) => district['name']
-                          .toLowerCase()
-                          .contains(value.toLowerCase()))
-                          .toList();
-
-                          showItems = true;
-                          showUpazilaItems = false;
-                        })
-                    },
-                    onEditingComplete: () {
-                      setState(() {
-                        showItems = false;
-                      });
-                    },
-                    onTap: () {
-                      setState(() {
-                        showUpazilaItems = false;
-                      });
-                    },
-                    controller: districtController,
-                    decoration: InputDecoration(
-                      counterText: ' ',
-                      contentPadding: EdgeInsets.only(top: 18.0, bottom: 18, left: 10, right: 10),
-                      filled: true,
-                      fillColor: kSecondaryTextField,
-                      border: new UnderlineInputBorder(
-                        borderSide: new BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(4),
-                          topRight: Radius.circular(4),
-                        )
-                      ),
-                    
-                      hintText: AppLocalizations.of(context).translate('district'),
-                      hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
-                    )
-                  ),
-                  showItems ? Container(
-                    height: 200,
-                    margin: EdgeInsets.only(top: 0),
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 0.2,
-                          blurRadius: 20,
-                          offset: Offset(0, 5), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: Card(
-                      elevation: 0,
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: <Widget>[
-                          ...districts.map((district) {
-                            return InkWell(
-                              onTap: () {
-                                // _addSelectedItem(item, _medications.indexOf(item));
-                                setState(() {
-                                  districtController.text = district['name'];
-                                  showItems = false;
-                                  updateUpazilas(district);
-                                });
-                              },
-                              child: Container(
-                                height: 50,
-                                child: Row(
-                                  children: <Widget>[
-                                    SizedBox(width: 20,),
-                                    Text(district['name'], style: TextStyle(fontSize: 17),)
-                                  ],
-                                )
-                              ),
-                            );
-                          }).toList()
-                        ],
-                      ),
-                    )
-                  ) : Container(),
-                ],
+            DropdownSearch(
+              validator: (v) => v == null ? "required field" : null,
+              hint: AppLocalizations.of(context).translate('district'),
+              mode: Mode.MENU,
+              items: districts,
+              // showClearButton: true,
+              dropdownSearchDecoration: InputDecoration(
+                counterText: ' ',
+                contentPadding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10, right: 10),
+                filled: true,
+                fillColor: kSecondaryTextField,
+                border: new UnderlineInputBorder(
+                  borderSide: new BorderSide(color: Colors.white),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(4),
+                    topRight: Radius.circular(4),
+                  )
+                ),
+              
+                hintText: 'District',
+                hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
               ),
+              onChanged: (value) {
+                setState(() {
+                  selectedDistrict = value;
+                  updateUpazilas(selectedDistrict);
+                  selectedUpazila = {};
+                  // districtController.text = value;
+                });
+              },
+              selectedItem: selectedDistrict['name'],
+              popupItemBuilder: _customPopupItemBuilderExample2,
+              showSearchBox: true,
             ),
 
-            Container(
-              // color: Colors.red,
-              child: Column(
-                children: <Widget>[
-                  TextField(
-                    style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
-                    onChanged: (value) => {
-                      setState(() {
-                        upazilas = filteredUpazilas
-                          .where((upazila) => upazila['name']
-                          .toLowerCase()
-                          .contains(value.toLowerCase()))
-                          .toList();
+            SizedBox(height: 20,),
 
-                          showUpazilaItems = true;
-                          showItems = false;
-                        })
-                    },
-                    onEditingComplete: () {
-                      print('asdas');
-                      setState(() {
-                        showItems = false;
-                      });
-                    },
-                    onTap: () {
-                      setState(() {
-                        showItems = false;
-                        // showUpazilaItems = true;
-                      });
-                    },
-                    controller: upazilaController,
-                    decoration: InputDecoration(
-                      counterText: ' ',
-                      contentPadding: EdgeInsets.only(top: 18.0, bottom: 18, left: 10, right: 10),
-                      filled: true,
-                      fillColor: kSecondaryTextField,
-                      border: new UnderlineInputBorder(
-                        borderSide: new BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(4),
-                          topRight: Radius.circular(4),
-                        )
-                      ),
-                    
-                      hintText: AppLocalizations.of(context).translate('upazila'),
-                      hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
-                    )
-                  ),
-                  showUpazilaItems ? Container(
-                    height: 200,
-                    margin: EdgeInsets.only(top: 0),
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 0.2,
-                          blurRadius: 20,
-                          offset: Offset(0, 5), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: Card(
-                      elevation: 0,
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: <Widget>[
-                          ...upazilas.map((upazila) {
-                            return InkWell(
-                              onTap: () {
-                                // _addSelectedItem(item, _medications.indexOf(item));
-                                setState(() {
-                                  upazilaController.text = upazila['name'];
-                                  showUpazilaItems = false;
-                                });
-                              },
-                              child: Container(
-                                height: 50,
-                                child: Row(
-                                  children: <Widget>[
-                                    SizedBox(width: 20,),
-                                    Text(upazila['name'], style: TextStyle(fontSize: 17),)
-                                  ],
-                                )
-                              ),
-                            );
-                          }).toList()
-                        ],
-                      ),
-                    )
-                  ) : Container(),
-                ],
+            DropdownSearch(
+              validator: (v) => v == null ? "required field" : null,
+              hint: AppLocalizations.of(context).translate('upazila'),
+              mode: Mode.MENU,
+              items: filteredUpazilas,
+              // showClearButton: true,
+              dropdownSearchDecoration: InputDecoration(
+                counterText: ' ',
+                contentPadding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10, right: 10),
+                filled: true,
+                fillColor: kSecondaryTextField,
+                border: new UnderlineInputBorder(
+                  borderSide: new BorderSide(color: Colors.white),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(4),
+                    topRight: Radius.circular(4),
+                  )
+                ),
+              
+                hintText: 'Upazilas',
+                hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
               ),
+              onChanged: (value) {
+                setState(() {
+                  selectedUpazila = value;
+                  
+                  // districtController.text = value;
+                });
+              },
+              selectedItem: selectedUpazila['name'],
+              popupItemBuilder: _customPopupItemBuilderExample2,
+              showSearchBox: true,
             ),
+
+            // Container(
+            //   // color: Colors.red,
+            //   child: Column(
+            //     children: <Widget>[
+            //       TextField(
+            //         style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
+            //         onChanged: (value) => {
+            //           setState(() {
+            //             districts = allDestricts
+            //               .where((district) => district['name']
+            //               .toLowerCase()
+            //               .contains(value.toLowerCase()))
+            //               .toList();
+
+            //               showItems = true;
+            //               showUpazilaItems = false;
+            //             })
+            //         },
+            //         onEditingComplete: () {
+            //           setState(() {
+            //             showItems = false;
+            //           });
+            //         },
+            //         onTap: () {
+            //           setState(() {
+            //             showUpazilaItems = false;
+            //           });
+            //         },
+            //         controller: districtController,
+            //         decoration: InputDecoration(
+            //           counterText: ' ',
+            //           contentPadding: EdgeInsets.only(top: 18.0, bottom: 18, left: 10, right: 10),
+            //           filled: true,
+            //           fillColor: kSecondaryTextField,
+            //           border: new UnderlineInputBorder(
+            //             borderSide: new BorderSide(color: Colors.white),
+            //             borderRadius: BorderRadius.only(
+            //               topLeft: Radius.circular(4),
+            //               topRight: Radius.circular(4),
+            //             )
+            //           ),
+                    
+            //           hintText: AppLocalizations.of(context).translate('district'),
+            //           hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+            //         )
+            //       ),
+            //       showItems ? Container(
+            //         height: 200,
+            //         margin: EdgeInsets.only(top: 0),
+            //         decoration: BoxDecoration(
+            //           boxShadow: [
+            //             BoxShadow(
+            //               color: Colors.grey.withOpacity(0.3),
+            //               spreadRadius: 0.2,
+            //               blurRadius: 20,
+            //               offset: Offset(0, 5), // changes position of shadow
+            //             ),
+            //           ],
+            //         ),
+            //         child: Card(
+            //           elevation: 0,
+            //           child: ListView(
+            //             shrinkWrap: true,
+            //             children: <Widget>[
+            //               ...districts.map((district) {
+            //                 return InkWell(
+            //                   onTap: () {
+            //                     // _addSelectedItem(item, _medications.indexOf(item));
+            //                     setState(() {
+            //                       districtController.text = district['name'];
+            //                       showItems = false;
+            //                       updateUpazilas(district);
+            //                     });
+            //                   },
+            //                   child: Container(
+            //                     height: 50,
+            //                     child: Row(
+            //                       children: <Widget>[
+            //                         SizedBox(width: 20,),
+            //                         Text(district['name'], style: TextStyle(fontSize: 17),)
+            //                       ],
+            //                     )
+            //                   ),
+            //                 );
+            //               }).toList()
+            //             ],
+            //           ),
+            //         )
+            //       ) : Container(),
+            //     ],
+            //   ),
+            // ),
+
+            // Container(
+            //   // color: Colors.red,
+            //   child: Column(
+            //     children: <Widget>[
+            //       TextField(
+            //         style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
+            //         onChanged: (value) => {
+            //           setState(() {
+            //             upazilas = filteredUpazilas
+            //               .where((upazila) => upazila['name']
+            //               .toLowerCase()
+            //               .contains(value.toLowerCase()))
+            //               .toList();
+
+            //               showUpazilaItems = true;
+            //               showItems = false;
+            //             })
+            //         },
+            //         onEditingComplete: () {
+            //           print('asdas');
+            //           setState(() {
+            //             showItems = false;
+            //           });
+            //         },
+            //         onTap: () {
+            //           setState(() {
+            //             showItems = false;
+            //             // showUpazilaItems = true;
+            //           });
+            //         },
+            //         controller: upazilaController,
+            //         decoration: InputDecoration(
+            //           counterText: ' ',
+            //           contentPadding: EdgeInsets.only(top: 18.0, bottom: 18, left: 10, right: 10),
+            //           filled: true,
+            //           fillColor: kSecondaryTextField,
+            //           border: new UnderlineInputBorder(
+            //             borderSide: new BorderSide(color: Colors.white),
+            //             borderRadius: BorderRadius.only(
+            //               topLeft: Radius.circular(4),
+            //               topRight: Radius.circular(4),
+            //             )
+            //           ),
+                    
+            //           hintText: AppLocalizations.of(context).translate('upazila'),
+            //           hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+            //         )
+            //       ),
+            //       showUpazilaItems ? Container(
+            //         height: 200,
+            //         margin: EdgeInsets.only(top: 0),
+            //         decoration: BoxDecoration(
+            //           boxShadow: [
+            //             BoxShadow(
+            //               color: Colors.grey.withOpacity(0.3),
+            //               spreadRadius: 0.2,
+            //               blurRadius: 20,
+            //               offset: Offset(0, 5), // changes position of shadow
+            //             ),
+            //           ],
+            //         ),
+            //         child: Card(
+            //           elevation: 0,
+            //           child: ListView(
+            //             shrinkWrap: true,
+            //             children: <Widget>[
+            //               ...upazilas.map((upazila) {
+            //                 return InkWell(
+            //                   onTap: () {
+            //                     // _addSelectedItem(item, _medications.indexOf(item));
+            //                     setState(() {
+            //                       upazilaController.text = upazila['name'];
+            //                       showUpazilaItems = false;
+            //                     });
+            //                   },
+            //                   child: Container(
+            //                     height: 50,
+            //                     child: Row(
+            //                       children: <Widget>[
+            //                         SizedBox(width: 20,),
+            //                         Text(upazila['name'], style: TextStyle(fontSize: 17),)
+            //                       ],
+            //                     )
+            //                   ),
+            //                 );
+            //               }).toList()
+            //             ],
+            //           ),
+            //         )
+            //       ) : Container(),
+            //     ],
+            //   ),
+            // ),
 
             // PrimaryTextField(
             //   topPaadding: 18,
@@ -818,6 +926,7 @@ class _PatientDetailsState extends State<PatientDetails> {
               bottomPadding: 18,
               prefixIcon: Icon(Icons.email),
               hintText: AppLocalizations.of(context).translate('emailAddressOptional'),
+              name: AppLocalizations.of(context).translate('nationalId'),
               controller: emailController
             ),
             SizedBox(height: 10,),
@@ -951,6 +1060,7 @@ class _ContactDetailsState extends State<ContactDetails> {
                 ),
               ],
             ),
+            
 
             SizedBox(height: 10,),
 

@@ -264,7 +264,7 @@ class _ChwReferralListScreenState extends State<ChwReferralListScreen> {
                               referral['meta']['status'] != null && referral['meta']['status'] == 'pending' ? 
                               Center(
                                 child: Container(
-                                  width: 150,
+                                  width: 200,
                                   margin: EdgeInsets.only(top: 20),
                                   height: 30,
                                   decoration: BoxDecoration(
