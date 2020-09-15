@@ -6,6 +6,8 @@ import 'package:nhealth/screens/chw/careplan_actions/actions_swipper_screen.dart
 import 'package:nhealth/screens/chw/careplan_actions/improve_bp_screen.dart';
 import 'package:nhealth/screens/chw/careplan_actions/other_actions_screen.dart';
 import 'package:nhealth/screens/chw/chw_home_screen.dart';
+import 'package:nhealth/screens/chw/counselling_framework/counselling_framwork_screen.dart';
+import 'package:nhealth/screens/chw/counselling_framework/couselling_confirmation_screen.dart';
 import 'package:nhealth/screens/chw/encounters/new_chw_encounter_screen.dart';
 import 'package:nhealth/screens/chw/new_community_visit/patient_feeling_screen.dart';
 import 'package:nhealth/screens/chw/new_community_visit/verify_patient_screen.dart';
@@ -68,7 +70,8 @@ class RouteGenerator {
       case '/verifyPatient':
         return CupertinoPageRoute(builder: (_) => VerifyPatientScreen());
       case '/patientFeeling':
-        return CupertinoPageRoute(builder: (_) => PatientFeelingScreen());
+        var data = settings.arguments as Map;
+        return CupertinoPageRoute(builder: (_) => PatientFeelingScreen(communityClinic: data != null ? data['communityClinic'] : null));
       case '/chwFollowup':
         return CupertinoPageRoute(builder: (_) => ChwFollowupScreen());
       case '/chwSeverity':
@@ -80,11 +83,17 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => ImproveBpControlScreen(data: data['data'], parent: data['parent'],));
       case '/reportMedicalIssues':
         return CupertinoPageRoute(builder: (_) => ReportMedicalIssuesScreen());
+      case CounsellingFrameworkScreen.path:
+        var data = settings.arguments as Map;
+        return CupertinoPageRoute(builder: (_) => CounsellingFrameworkScreen(data: data['data'], parent: data['parent']));
+      case CounsellingConfirmation.path:
+      var data = settings.arguments as Map;
+        return CupertinoPageRoute(builder: (_) => CounsellingConfirmation(data: data['data']));
 
-      case '/medicalRecommendation':
+      case MedicalRecommendationScreen.path:
         var data = settings.arguments;
         return CupertinoPageRoute(builder: (_) => MedicalRecommendationScreen(referralData: data,));
-      case '/createReferral':
+      case CreateReferralScreen.path:
         var data = settings.arguments;
         return CupertinoPageRoute(builder: (_) => CreateReferralScreen(referralData: data,));
 
@@ -106,7 +115,8 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => PatientDetailsScreen());
       
       case '/chwNewEncounter':
-        return CupertinoPageRoute(builder: (_) => NewChwEncounter());
+        var data = settings.arguments as Map;
+        return CupertinoPageRoute(builder: (_) => NewChwEncounterScreen(communityClinic: data != null ? data['communityClinic'] : null));
       case '/chwReferralPatients':
         return CupertinoPageRoute(builder: (_) => ChwReferralPatientsScreen());
       

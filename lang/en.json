@@ -284,6 +284,8 @@
   "dueToday": "Due Today",
   "viewEncounterDetails": "View Encounter Details",
   "newCommunityVisit": "New Community Visit",
+  "newCommunityClinicVisitExam": "New Community Clinic Physical Exam",
+  "newCommunityClinicVisit": "Community Clinic Visit",
   "verifyPatient": "Verify Patient",
   "confirmAndContinue": "CONFIRM PATIENT & CONTINUE",
   "markAsUnsuccessful": "MARK AS UNSUCCESSFULL VISIT",
@@ -328,5 +330,7 @@
   "newPatientQuestionnaire": "New Patient Questionnaire",
   "completeQuestionnaire": "Complete Questionnaire",
   "emailAddressOptional": "Email Address (optional)",
-  "fathersName": "Father's Name"
+  "fathersName": "Father's Name",
+  "completeCounselling": "Complete Counselling",
+  "completeAction": "Complete Action"
 }

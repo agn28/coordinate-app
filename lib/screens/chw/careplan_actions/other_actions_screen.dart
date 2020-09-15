@@ -12,6 +12,7 @@ import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/chw/counselling_framework/counselling_framwork_screen.dart';
 import 'package:nhealth/screens/chw/unwell/continue_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
@@ -43,6 +44,7 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
     super.initState();
     _patient = Patient().getPatient();
     btnDisabled = true;
+    print(widget.data['items'][0]['id']);
   }
   getCount() {
     var completedCount = 0;
@@ -216,7 +218,6 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
                 ],
               ),
 
-
               isLoading ? Container(
                 height: MediaQuery.of(context).size.height,
                 width: double.infinity,
@@ -264,6 +265,11 @@ class _ActionItemState extends State<ActionItem> {
     });
   }
 
+  isCounselling() {
+    print(widget.item['body']['title']);
+    return widget.item['body']['title'].split(" ").contains('Counseling') || widget.item['body']['title'].split(" ").contains('Counselling');
+  }
+
   setStatus() {
     setState(() {
       btnDisabled = false;
@@ -276,6 +282,11 @@ class _ActionItemState extends State<ActionItem> {
     return InkWell(
       onTap: () {
         print(widget.item['body']);
+        print(isCounselling());
+        if (isCounselling()) {
+          Navigator.of(context).pushNamed(CounsellingFrameworkScreen.path, arguments: { 'data': widget.item, 'parent': this});
+          return;
+        }
         Navigator.of(context).pushNamed('/chwActionsSwipper', arguments: { 'data': widget.item, 'parent': this});
       },
       child: Container(
@@ -305,96 +316,7 @@ class _ActionItemState extends State<ActionItem> {
               ],
             ),
             SizedBox(height: 20,),
-            // ...item['body']['components'].map((comp) {
-            //   if (comp['type'] == 'video') {
-            //     return Column(
-            //       crossAxisAlignment: CrossAxisAlignment.start,
-            //       children: <Widget>[
-            //         Container(
-            //           height: 130,
-            //           width: 250,
-            //           child: VideoPlayer(component: comp),
-            //         ),
-            //         Row(
-            //           children: <Widget>[
-            //             Checkbox(
-            //               activeColor: kPrimaryColor,
-            //               value: item['meta']['status'] == 'completed',
-            //               onChanged: (value) {
-            //                 setState(() {
-            //                   if (value) {
-            //                     item['meta']['status'] = 'completed';
-            //                   } else {
-            //                     item['meta']['status'] = 'pending';
-            //                   }
-            //                 });
-            //               },
-            //             ),
-            //             Text('Patient has watched at least one of these videos', style: TextStyle(fontSize: 16),)
-                        
-            //           ],
-            //         ),
-            //       ],
-            //     );
-            //   } else if (item['body']['title'] == 'Repeat measurement of BP in community') {
-            //     return Container(
-            //       margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                     
-            //       child: Form(
-            //         child: Column(
-            //           crossAxisAlignment: CrossAxisAlignment.start,
-            //           children: <Widget>[
-            //             SizedBox(height: 20,),
-            //             Container(
-            //               child: Wrap(
-            //                 children: <Widget>[
-            //                   Container(
-            //                     width: 200,
-            //                     child: PrimaryTextField(
-            //                       hintText: 'Systolic',
-            //                       topPaadding: 10,
-            //                       bottomPadding: 10,
-            //                     ),
-            //                   ),
-            //                   SizedBox(width: 20,),
-            //                   Container(
-            //                     width: 200,
-            //                     child: PrimaryTextField(
-            //                       hintText: 'DIastolic',
-            //                       topPaadding: 10,
-            //                       bottomPadding: 10,
-            //                     ),
-            //                   ),
-            //                   Container(
-            //                     width: 200,
-            //                     child: PrimaryTextField(
-            //                       hintText: 'Pulse',
-            //                       topPaadding: 10,
-            //                       bottomPadding: 10,
-            //                     ),
-            //                   ),
-            //                   SizedBox(width: 20,),
-            //                 ],
-            //               ),
-            //             ),
-            //             Container(
-            //               alignment: Alignment.center,
-            //               child: PrimaryTextField(
-            //                 hintText: 'Select a device',
-            //                 topPaadding: 10,
-            //                 bottomPadding: 10,
-            //               ),
-            //             ),
-
-            //           ],
-            //         ),
-            //       )
-            //     );
-            //   } else {
-            //     return Container();
-            //   }
-            // })
-          
+            
           ],
         ),
       ),

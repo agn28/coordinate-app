@@ -17,11 +17,15 @@ bool isOther = false;
 final otherReasonController = TextEditingController();
 
 class BloodTestScreen extends CupertinoPageRoute {
-  BloodTestScreen()
-      : super(builder: (BuildContext context) => new BloodTests());
+  final communityClinic;
+
+  BloodTestScreen({this.communityClinic})
+      : super(builder: (BuildContext context) => new BloodTests(communityClinic: communityClinic));
 }
 
 class BloodTests extends StatefulWidget {
+  final communityClinic;
+  BloodTests({this.communityClinic});
 
   @override
   _BloodTestsState createState() => _BloodTestsState();
@@ -157,12 +161,11 @@ class _BloodTestsState extends State<BloodTests> {
                     name: 'blood_glucose'
                   ),
                   
-                  authUser['role'] != 'chw' ?
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_glucose.png'),
                     text: AppLocalizations.of(context).translate('randomBloodSugar'),
                     name: 'blood_sugar'
-                  ) : Container(),
+                  ),
                 ],
               )
             ),

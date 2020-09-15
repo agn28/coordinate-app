@@ -1324,14 +1324,76 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
           ),
         ),
       ),
-      floatingActionButton: widget.checkInState == null ? FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.of(context).pushNamed('/verifyPatient');
+      floatingActionButton: GestureDetector(
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context){
+              return Stack(
+                children: <Widget>[
+                  Positioned(
+                    bottom: 50,
+                    right: 0,
+                    child: AlertDialog(
+                      contentPadding: EdgeInsets.all(0),
+                      elevation: 0,
+                      content: Container(
+                        alignment: Alignment.bottomRight,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: <Widget>[
+                            FloatingButton(text: AppLocalizations.of(context).translate('newCommunityClinicVisit'), onPressed: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pushNamed('/patientFeeling', arguments: {'communityClinic': true});
+                            }, ),
+
+                            FloatingButton(text: AppLocalizations.of(context).translate('newCommunityVisit'), onPressed: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pushNamed('/verifyPatient');
+                            },),
+                          ],
+                        ),
+                      ),
+                      backgroundColor: Colors.transparent,
+                    ),
+                  )
+                ],
+              );
+            }
+          );
         },
-        icon: Icon(Icons.add),
-        label: Text(AppLocalizations.of(context).translate('newCommunityVisit')),
-        backgroundColor: kPrimaryColor,
-      ) : Container(),
+        // icon: Icon(Icons.add),
+        // label: null,
+        // backgroundColor: kPrimaryColor,
+        child: Container(
+          height: 50,
+          width: 50,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(50),
+            color: kPrimaryColor,
+            boxShadow: [
+              new BoxShadow(
+                offset: Offset(0.0, 1.0),
+                color: Color(0xFF000000),
+                blurRadius: 2.0,
+              ),
+            ],
+          ),
+          child: Center(
+            child: Icon(Icons.add, color: Colors.white,),
+          ),
+        ),
+      ),
+
+      
+      // floatingActionButton: widget.checkInState == null ? FloatingActionButton.extended(
+      //   onPressed: () {
+      //     Navigator.of(context).pushNamed('/verifyPatient');
+      //   },
+      //   icon: Icon(Icons.add),
+      //   label: Text(AppLocalizations.of(context).translate('newCommunityVisit')),
+      //   backgroundColor: kPrimaryColor,
+      // ) : Container(),
     );
   }
 }

@@ -16,6 +16,7 @@ import 'package:nhealth/widgets/primary_textfield_widget.dart';
 
 
 class CreateReferralScreen extends StatefulWidget {
+  static const path = '/createReferral';
   CreateReferralScreen({this.referralData});
   var referralData;
   @override
@@ -37,7 +38,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
-
+    print(widget.referralData);
   }
 
   _checkAvatar() async {
@@ -208,7 +209,6 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                                 data['body']['location']['clinic_name'] = clinicNameController.text;
 
                                 print(data);
-
 
                                 setState(() {
                                   isLoading = true;

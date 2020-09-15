@@ -424,24 +424,24 @@ class _PatientDetailsState extends State<PatientDetails> {
     print(allUpazilas);
   }
   Widget _customPopupItemBuilderExample2(
-        BuildContext context, item, bool isSelected) {
-      return SingleChildScrollView(
-              child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 8),
-          decoration: !isSelected
-              ? null
-              : BoxDecoration(
-                  border: Border.all(color: Theme.of(context).primaryColor),
-                  borderRadius: BorderRadius.circular(5),
-                  color: Colors.white,
-                ),
-          child: ListTile(
-            selected: isSelected,
-            title: Text(item['name']),
-          ),
+      BuildContext context, item, bool isSelected) {
+    return SingleChildScrollView(
+            child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 8),
+        decoration: !isSelected
+            ? null
+            : BoxDecoration(
+                border: Border.all(color: Theme.of(context).primaryColor),
+                borderRadius: BorderRadius.circular(5),
+                color: Colors.white,
+              ),
+        child: ListTile(
+          selected: isSelected,
+          title: Text(item['name']),
         ),
-      );
-    }
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     

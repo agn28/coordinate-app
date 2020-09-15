@@ -8,11 +8,14 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/chw/unwell/create_referral_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
 
 class MedicalRecommendationScreen extends StatefulWidget {
+  static const path = '/medicalRecommendation';
+
   MedicalRecommendationScreen({this.referralData});
   var referralData;
   @override
@@ -104,7 +107,7 @@ class _MedicalRecommendationState extends State<MedicalRecommendationScreen> {
                             child: FlatButton(
                               onPressed: () async {
                                 // Navigator.of(context).pushNamed('/chwNavigation',);
-                                Navigator.of(context).pushNamed('/createReferral', arguments: widget.referralData);
+                                Navigator.of(context).pushNamed(CreateReferralScreen.path, arguments: widget.referralData);
                               },
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               child: Text(AppLocalizations.of(context).translate('referralCreate').toUpperCase(), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)

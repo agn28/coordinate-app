@@ -18,6 +18,7 @@ import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chw/encounters/observations/questionnaire/questionnaires_screen.dart';
+import 'package:nhealth/screens/chw/unwell/create_referral_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-test/blood_test_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/body-measurements/measurements_screen.dart';
@@ -28,22 +29,15 @@ import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-class NewChwEncounterScreen extends CupertinoPageRoute {
-
+class NewChwEncounterScreen extends StatefulWidget {
   EncounterDetailsState encounterDetailsState;
-  NewChwEncounterScreen({this.encounterDetailsState})
-      : super(builder: (BuildContext context) => new NewChwEncounter(encounterDetailsState: encounterDetailsState));
-
-}
-
-class NewChwEncounter extends StatefulWidget {
-  EncounterDetailsState encounterDetailsState;
-  NewChwEncounter({this.encounterDetailsState});
+  final communityClinic;
+  NewChwEncounterScreen({this.encounterDetailsState, this.communityClinic});
   @override
   _NewChwEncounterState createState() => _NewChwEncounterState();
 }
 
-class _NewChwEncounterState extends State<NewChwEncounter> {
+class _NewChwEncounterState extends State<NewChwEncounterScreen> {
   String selectedType = 'In-clinic Screening';
   final commentController = TextEditingController();
   bool _dataSaved = false;
@@ -114,7 +108,9 @@ class _NewChwEncounterState extends State<NewChwEncounter> {
       key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('createNewEncounter'), style: TextStyle(color: Colors.white),),
+        title: Text(
+          widget.communityClinic == null ? AppLocalizations.of(context).translate('createNewEncounter') : AppLocalizations.of(context).translate('newCommunityClinicVisitExam'), 
+          style: TextStyle(color: Colors.white),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -174,10 +170,11 @@ class _NewChwEncounterState extends State<NewChwEncounter> {
                       status: Helpers().getBtStatus(),
                       onTap: () {
                         FocusScope.of(context).requestFocus(new FocusNode());
-                        Navigator.of(context).push(BloodTestScreen());
+                        Navigator.of(context).push(BloodTestScreen(communityClinic: true));
                       }
                     ),
 
+                    widget.communityClinic == null ?
                     EncounnterSteps(
                       icon: Image.asset('assets/images/icons/questionnaire.png'),
                       text: Text('Questionnaire', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
@@ -186,7 +183,7 @@ class _NewChwEncounterState extends State<NewChwEncounter> {
                         FocusScope.of(context).requestFocus(new FocusNode());
                         Navigator.of(context).push(QuestionnairesScreen());
                       }
-                    ),
+                    ) : Container(),
                   ],
                 )
               ),
@@ -296,6 +293,98 @@ class _NewChwEncounterState extends State<NewChwEncounter> {
                     var qt = Questionnaire().qnItems;
                     var bm = BodyMeasurement().bmItems;
 
+                    
+
+                    if (widget.communityClinic != null) {
+                      
+
+                      var bpWarning = bp.where((item) => item['body']['data']['systolic'] > 180 || item['body']['data']['diastolic'] > 110);
+                      var btWarning; 
+                      bt.forEach((item) {
+                        if (item['body']['data']['name'] == 'blood_glucose') {
+                          // print(item['body']['data']);
+                          if (item['body']['data']['unit'] == 'mmol/L' ) {
+                            print(item['body']['data']);
+                            if (item['body']['data']['value'] > 13.99) {
+                              btWarning = item;
+                              return;
+                            }
+                          } else {
+                            if (item['body']['data']['value'] > 252) {
+                              btWarning = item;
+                              return;
+                            }
+                          }
+                          
+                        } else if (item['body']['data']['name'] == 'blood_sugar') {
+                          // print(item['body']['data']);
+                          if (item['body']['data']['unit'] == 'mmol/L' ) {
+                            print(item['body']['data']);
+                            if (item['body']['data']['value'] > 17.99) {
+                              btWarning = item;
+                              return;
+                            }
+                            
+                          } else {
+                            if (item['body']['data']['value'] > 324) {
+                              btWarning = item;
+                              return;
+                            }
+                          }
+                        } 
+                      });
+
+                      bp.forEach((item) async  {
+                        if (item['body']['data']['systolic'] > 180 || item['body']['data']['diastolic'] > 110) {
+                          
+                        }
+                      });
+                      // print(bt);
+                      print(btWarning.isEmpty);
+                      if (bpWarning.isNotEmpty || btWarning != null ) {
+                        var data = {
+                          'meta': {
+                            'patient_id': Patient().getPatient()['uuid'],
+                            "collected_by": Auth().getAuth()['uid'],
+                            "status": "pending"
+                          },
+                          'body': {}
+                        };
+
+                        setState(() {
+                          isLoading = true;
+                        });
+
+                        var response;
+                        response = await AssessmentController().create('community-clinic', '', commentController.text);
+                        setState(() {
+                          isLoading = false;
+                        });
+
+                        if (response == 'success') {
+                          Navigator.of(_scaffoldKey.currentContext).pushNamed(CreateReferralScreen.path, arguments: data);
+                          return;
+                        }
+                      }
+                      setState(() {
+                        isLoading = true;
+                      });
+
+                      var response;
+                      response = await AssessmentController().create('community-clinic', '', commentController.text);
+
+                      setState(() {
+                        isLoading = false;
+                      });
+
+                      if (response == 'success') {
+                        Navigator.of(_scaffoldKey.currentContext).pushNamed('/patientOverview');
+                        return;
+                      }
+                      return;
+                      
+                    }
+
                     if (bp.isEmpty || bt.isEmpty || qt.isEmpty || bm.isEmpty) {
                       return await showDialog(
                         context: _scaffoldKey.currentContext,
@@ -386,12 +475,6 @@ class _NewChwEncounterState extends State<NewChwEncounter> {
 
                     if (result == 'success') {
                       Navigator.of(_scaffoldKey.currentContext).pushNamed('/patientOverview');
-                      // _scaffoldKey.currentState.showSnackBar(
-                      //   SnackBar(
-                      //     content: Text(AppLocalizations.of(context).translate('dataSaved')),
-                      //     backgroundColor: Color(0xFF4cAF50),
-                      //   )
-                      // );
 
                       if (widget.encounterDetailsState != null) {
                         widget.encounterDetailsState.setState(() async {
@@ -433,7 +516,7 @@ class MedicalRecommendationWidget extends StatefulWidget {
 
   final TextEditingController commentController;
   final String selectedType;
-  final NewChwEncounter widget;
+  final NewChwEncounterScreen widget;
   final _NewChwEncounterState parent;
 
   @override
