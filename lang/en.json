@@ -97,7 +97,7 @@
   "createNewEncounter": "Create a New Encounter",
   "completeAllSections": "Complete all the sections that are applicable",
   "comments": "Comments/Notes (optional)",
-  "clinincScreening": "In-clininc Screening",
+  "clinicScreening": "In-clininc Screening",
   "confirmSave": "Confirm Save",
   "missingSections": "You have missing sections for this encounter. Are you sure you want to save?",
   "dataSaved": "Data saved successfully!",
@@ -332,5 +332,6 @@
   "emailAddressOptional": "Email Address (optional)",
   "fathersName": "Father's Name",
   "completeCounselling": "Complete Counselling",
-  "completeAction": "Complete Action"
+  "completeAction": "Complete Action",
+  "noAnswer": "No answer added"
 }

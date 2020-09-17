@@ -62,7 +62,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
-    print(_patient['meta']);
     dueCarePlans = [];
     completedCarePlans = [];
     upcomingCarePlans = [];
@@ -85,7 +84,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   }
 
   getAssessmentDueDate() {
-    print(DateFormat("MMMM d, y").format(DateTime.parse(_patient['data']['next_assignment']['body']['activityDuration']['start'])));
+    // print(DateFormat("MMMM d, y").format(DateTime.parse(_patient['data']['next_assignment']['body']['activityDuration']['start'])));
 
     if (_patient != null && _patient['data']['next_assignment'] != null && _patient['data']['next_assignment']['body']['activityDuration']['start'] != null) {
       setState(() {
@@ -137,16 +136,11 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   }
 
   getUser(uid) {
-    print('uid');
-    print(users.length);
     var user = users.where((user) => user['uid'] == uid);
     if (user.isNotEmpty) {
-      print(user.first['name']);
       return user.first['name'];
     }
 
-    print('user not found');
-    print(users[10]);
     return '';
   }
 
@@ -186,7 +180,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
 
     var data = await FollowupController().getFollowupsByPatient(patientID);
 
-    print('referrals');
     
     if (data['error'] == true) {
 
@@ -208,7 +201,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
       }
     });
 
-    print(pendingReferral);
 
   }
 
@@ -388,6 +380,8 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
       // print( data['data']);
       // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
       carePlans = data['data'];
+      print('carePlans');
+      print(carePlans);
       data['data'].forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");
         var endDate = format.parse(item['body']['activityDuration']['end']);
@@ -774,6 +768,212 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                   ) : Container(),
 
                   SizedBox(height: 15,),
+
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    child: Table(
+                      children: [
+                        TableRow( 
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 9),
+                              child: Text(AppLocalizations.of(context).translate('lastEncounterDate'), style: TextStyle(fontSize: 17,),),
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 9),
+                              child: Text(lastEncounterdDate, style: TextStyle(fontSize: 17,),),
+                            ),
+                          ]
+                        ),
+
+                        TableRow( 
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 9),
+                              child: Text(AppLocalizations.of(context).translate('nextAssessmentDate'), style: TextStyle(fontSize: 17,),),
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 9),
+                              child: Text(dueDate != null ? dueDate : '', style: TextStyle(fontSize: 17,),),
+                            ),
+                          ],
+                        ),
+                        TableRow( 
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 9),
+                              child: Text(AppLocalizations.of(context).translate('currentConditions'), style: TextStyle(fontSize: 17,),),
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 9),
+                              child: Wrap(
+                                children: <Widget>[
+                                  Container(),
+                                  ...conditions.map((item) {
+                                    return Text(item + '${conditions.length - 1 == conditions.indexOf(item) ? '' : ', '}', style: TextStyle(fontSize: 17,));
+                                  }).toList()
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        TableRow( 
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 9),
+                              child: Text(AppLocalizations.of(context).translate('medicationsTitle'), style: TextStyle(fontSize: 17,),),
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 9),
+                              child: Wrap(
+                                children: <Widget>[
+                                  Container(),
+                                  ...medications.map((item) {
+                                    return Text(item + '${medications.length - 1 == medications.indexOf(item) ? '' : ', '}', style: TextStyle(fontSize: 17,));
+                                  }).toList()
+                                ],
+                              ),
+                            ),
+                          ]
+                        ),
+                      ]
+                    ),
+                  ),
+
+                  report != null && report['body']['result']['assessments']['cvd'] != null ?
+                    Container(
+                      padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          top: BorderSide(color: kBorderLighter)
+                        )
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text('CVD Risk', style: TextStyle(fontSize: 17)),
+                            ],
+                          ),
+                            // SizedBox(height: 20,),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text('${report['body']['result']['assessments']['cvd']['value']}   ${report['body']['result']['assessments']['cvd']['eval']}',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: ColorUtils.statusColor[report['body']['result']['assessments']['cvd']['tfl']] ?? Colors.black
+                                    ),
+                                  ),
+                                ]
+                              ),
+                              SizedBox(width: 30,),
+                              Container(
+                                margin: EdgeInsets.only(top: 10),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Container(
+                                          margin: EdgeInsets.only(right: 10),
+                                          color: kPrimaryBlueColor,
+                                          height: 6,
+                                          width: 30,
+                                        ),
+                                        report['body']['result']['assessments']['cvd']['tfl'] == 'BLUE' ?
+                                        Container(
+                                          child: Icon(Icons.arrow_drop_up, size: 20, color: kPrimaryBlueColor,),
+                                        ) :
+                                        Container(),
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Container(
+                                          margin: EdgeInsets.only(right: 10),
+                                          color: kGreenColor,
+                                          height: 6,
+                                          width: 30,
+                                        ),
+                                        report['body']['result']['assessments']['cvd']['tfl'] == 'GREEN' ?
+                                        Container(
+                                          child: Icon(Icons.arrow_drop_up, size: 20, color: kGreenColor,),
+                                        ) :
+                                        Container(),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: <Widget>[
+                                        Container(
+                                          margin: EdgeInsets.only(right: 10),
+                                          color: kPrimaryAmberColor,
+                                          height: 6,
+                                          width: 30,
+                                        ),
+                                        report['body']['result']['assessments']['cvd']['tfl'] == 'AMBER' ?
+                                        Container(
+                                          child: Icon(Icons.arrow_drop_up, size: 20, color: kPrimaryAmberColor,),
+                                        ) :
+                                        Container(),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: <Widget>[
+                                        Container(
+                                          color: kRedColor,
+                                          height: 6,
+                                          width: 30,
+                                          margin: EdgeInsets.only(right: 10),
+                                        ),
+                                        report['body']['result']['assessments']['cvd']['tfl'] == 'RED' ||  report['body']['result']['assessments']['blood_pressure']['tfl'] == 'DEEP-RED' ?
+                                        Container(
+                                          child: Icon(Icons.arrow_drop_up, size: 20, color: kRedColor,),
+                                        ) :
+                                        Container(),
+                                      ],
+                                    ),
+
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Container(
+                                          margin: EdgeInsets.only(right: 10),
+                                          color: kPrimaryDeepRedColor,
+                                          height: 6,
+                                          width: 30,
+                                        ),
+                                        report['body']['result']['assessments']['cvd']['tfl'] == 'DEEP-RED' || report['body']['result']['assessments']['cvd']['tfl'] == 'DARK-RED' ?
+                                        Container(
+                                          child: Icon(Icons.arrow_drop_up, size: 20, color: kPrimaryDeepRedColor,),
+                                        ) :
+                                        Container(),
+                                      ],
+                                    ),
+
+                                  ],
+                                ),
+                              ),
+                            
+                            ],
+                          ),
+                          SizedBox(height: 25,),
+
+                        ],
+                      ),
+                    ) : Container(),
+
                   
 
 

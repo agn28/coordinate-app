@@ -213,7 +213,7 @@ class _NewEncounterState extends State<NewEncounter> {
                         _changeType(value);
                       },
                     ),
-                    Text(AppLocalizations.of(context).translate("clinincScreening"), style: TextStyle(color: Colors.black)),
+                    Text(AppLocalizations.of(context).translate("clinicScreening"), style: TextStyle(color: Colors.black)),
 
                     Radio(
                       value: 'Home Visit',

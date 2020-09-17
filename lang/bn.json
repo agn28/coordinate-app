@@ -97,7 +97,7 @@
   "createNewEncounter": "একটি নতুন ভিজিট শুরু করুন",
   "completeAllSections": "প্রযোজ্য হয় এমন সবকটি অনুচ্ছেদ সম্পূর্ণ করুন",
   "comments": "মন্তব্য/ নোটস (ঐচ্ছিক)",
-  "clinincScreening": "সেবাকেন্দ্রের ভিতরে পরীক্ষা",
+  "clinicScreening": "সেবাকেন্দ্রের ভিতরে পরীক্ষা",
   "confirmSave": "সংরক্ষণ নিশ্চিত করুন",
   "missingSections": "আপনার এই ভিজিটে কিছু অনুচ্ছেদ অনুপস্থিত। আপনি কি তারপরেও সংরক্ষণ করতে চান?",
   "dataSaved": "সফলভাবে তথ্য সংরক্ষণ করা হয়েছে",
@@ -330,5 +330,6 @@
   "completeQuestionnaire": "প্রশ্নপত্র সম্পুর্ন করুন",
   "fathersName": "পিতার নাম",
   "completeCounselling": "কাউন্সেলিং সম্পন্ন করুন",
-  "completeAction": "একশন সম্পন্ন করুন"
+  "completeAction": "একশন সম্পন্ন করুন",
+  "noAnswer": "কোন উত্তর দেননি"
 }

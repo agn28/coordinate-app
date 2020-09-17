@@ -1043,7 +1043,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: <Widget>[
-                            FloatingButton(text: 'IN-FIELD SCREENING', onPressed: () {
+                            FloatingButton(text: AppLocalizations.of(context).translate('clinicScreening'), onPressed: () {
                               Navigator.of(context).pushNamed('/chwNewEncounter');
                             }, active: true,),
                           ],

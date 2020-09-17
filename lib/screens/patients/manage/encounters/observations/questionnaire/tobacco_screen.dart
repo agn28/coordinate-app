@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/custom-classes/custom_stepper.dart';
+import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
@@ -12,8 +13,8 @@ import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
 int selectedOption = -1;
 var _questions = {};
-int _secondQuestionOption = 1;
-int _firstQuestionOption = 1;
+int _secondQuestionOption = 0;
+int _firstQuestionOption = 0;
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
 class TobaccoScreen extends CupertinoPageRoute {
@@ -39,8 +40,8 @@ class _TobaccoState extends State<Tobacco> {
     super.initState();
     setState(() {
       _questions = Questionnaire().questions['tobacco'];
-      _firstQuestionOption = 1;
-      _secondQuestionOption = 1;
+      _firstQuestionOption = -1;
+      _secondQuestionOption = -1;
     });
   }
 
@@ -232,6 +233,10 @@ class _TobaccoState extends State<Tobacco> {
                         child: FlatButton(
                           onPressed: () async {
                             var answers = [];
+                            if (_firstQuestionOption == -1 && _secondQuestionOption == -1) {
+                              Toast.show('No answer given', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+                              return;
+                            }
                             answers.add(_questions['items'][0]['options'][_firstQuestionOption]);
                             answers.add(_questions['items'][1]['options'][_secondQuestionOption]);
                             var result = Questionnaire().addTobacco('tobacco', answers);
