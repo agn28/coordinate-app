@@ -317,7 +317,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    Text(nextText, style: TextStyle(fontSize: 20)),
+                    Text(AppLocalizations.of(context).translate('next'), style: TextStyle(fontSize: 20)),
                     Icon(Icons.chevron_right)
                   ],
                 ),
