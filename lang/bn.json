@@ -331,5 +331,17 @@
   "fathersName": "পিতার নাম",
   "completeCounselling": "কাউন্সেলিং সম্পন্ন করুন",
   "completeAction": "একশন সম্পন্ন করুন",
-  "noAnswer": "কোন উত্তর দেননি"
+  "noAnswer": "কোন উত্তর দেননি",
+  "Incomplete": "অসম্পূর্ণ",
+  "Complete": "সম্পূর্ণ",
+  "dateOfReferral": "Date of Referral",
+  "reason": "Reason",
+  "referralLocation": "Referral Location",
+  "referredBy": "Referred By",
+  "referredOutcome": "Referred Outcome",
+  "cvdRisk": "CVD Risk",
+  "referralPatients": "Referral Patients",
+  "location": "Location",
+  "generatePatientCard": "Generate Patient card",
+  "upComing": "Up Coming"
 }

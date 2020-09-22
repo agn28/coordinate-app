@@ -147,7 +147,7 @@ class _NewChwEncounterState extends State<NewChwEncounterScreen> {
                   children: <Widget>[
                     EncounnterSteps(
                       icon: Image.asset('assets/images/icons/blood_pressure.png'),
-                      text: Text('Blood Pressure', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                      text: Text(AppLocalizations.of(context).translate('bloodPressure'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
                       status: Helpers().getBpStatus(),
                       onTap: () {
                         FocusScope.of(context).requestFocus(new FocusNode());
@@ -156,7 +156,7 @@ class _NewChwEncounterState extends State<NewChwEncounterScreen> {
                     ),
                     EncounnterSteps(
                       icon: Image.asset('assets/images/icons/body_measurements.png'),
-                      text: Text('Body Measurements', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                      text: Text(AppLocalizations.of(context).translate('bodyMeasurements'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
                       status: Helpers().getBmStatus(),
                       onTap: () {
                         FocusScope.of(context).requestFocus(new FocusNode());
@@ -166,7 +166,7 @@ class _NewChwEncounterState extends State<NewChwEncounterScreen> {
 
                     EncounnterSteps(
                       icon: Image.asset('assets/images/icons/blood_test.png'),
-                      text: Text('Blood Test', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                      text: Text(AppLocalizations.of(context).translate('bloodTests'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
                       status: Helpers().getBtStatus(),
                       onTap: () {
                         FocusScope.of(context).requestFocus(new FocusNode());
@@ -177,7 +177,7 @@ class _NewChwEncounterState extends State<NewChwEncounterScreen> {
                     widget.communityClinic == null ?
                     EncounnterSteps(
                       icon: Image.asset('assets/images/icons/questionnaire.png'),
-                      text: Text('Questionnaire', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                      text: Text(AppLocalizations.of(context).translate('questionnaire'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
                       status: Helpers().getQnStatus(),
                       onTap: () {
                         FocusScope.of(context).requestFocus(new FocusNode());
@@ -655,7 +655,7 @@ class EncounnterSteps extends StatelessWidget {
             ),
             Expanded(
               flex: 2,
-              child: Text(status, style: TextStyle(
+              child: Text(AppLocalizations.of(context).translate(status), style: TextStyle(
                 color: status == 'Complete' ? kPrimaryGreenColor : kPrimaryRedColor,
                 fontSize: 18,
                 fontWeight: FontWeight.bold),),

@@ -105,6 +105,7 @@
   "updateAssessment": "Update Assessment",
   "saveAssessment": "Save Assessment",
   "incomplete": "Incomplete",
+
   "pastAssessments": "Past Encounters",
   "dateEncounter": "Date",
   "type": "Type",
@@ -333,5 +334,18 @@
   "fathersName": "Father's Name",
   "completeCounselling": "Complete Counselling",
   "completeAction": "Complete Action",
-  "noAnswer": "No answer added"
+  "noAnswer": "No answer added",
+  "Incomplete": "Incomplete",
+  "Complete": "Complete",
+  "dateOfReferral": "Date of Referral",
+  "reason": "Reason",
+  "referralLocation": "Referral Location",
+  "referredBy": "Referred By",
+  "referredOutcome": "Referred Outcome",
+  "cvdRisk": "CVD Risk",
+  "referralPatients": "Referral Patients",
+  "location": "Location",
+  "generatePatientCard": "Generate Patient card",
+  "upComing": "Up Coming"
+
 }

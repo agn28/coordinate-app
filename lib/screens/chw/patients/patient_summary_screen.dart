@@ -726,7 +726,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
 
                         Row(
                           children: <Widget>[
-                            Text('Date of referral: ', style: TextStyle(fontSize: 16),),
+                            Text(AppLocalizations.of(context).translate('dateOfReferral')+": ", style: TextStyle(fontSize: 16),),
                             Text(convertDateFromSeconds(pendingReferral['meta']['created_at']), style: TextStyle(fontSize: 16)),
                           ],
                         ),
@@ -734,7 +734,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
 
                         Row(
                           children: <Widget>[
-                            Text('Reason: ', style: TextStyle(fontSize: 16)),
+                            Text(AppLocalizations.of(context).translate('reason')+": ", style: TextStyle(fontSize: 16)),
                             Text(pendingReferral['body']['reason'] ?? '', style: TextStyle(fontSize: 16)),
                           ],
                         ),
@@ -743,7 +743,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
 
                         Row(
                           children: <Widget>[
-                            Text('Referral Location: ', style: TextStyle(fontSize: 16)),
+                            Text(AppLocalizations.of(context).translate('referralLocation')+": ", style: TextStyle(fontSize: 16)),
                             Text(pendingReferral['body']['location'] != null && pendingReferral['body']['location']['clinic_name'] != null ? pendingReferral['body']['location']['clinic_name'] : '', style: TextStyle(fontSize: 16)),
                           ],
                         ),
@@ -751,7 +751,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
 
                         Row(
                           children: <Widget>[
-                            Text('Referred By: ', style: TextStyle(fontSize: 16)),
+                            Text(AppLocalizations.of(context).translate('referredBy')+": ", style: TextStyle(fontSize: 16)),
                             Text(getUser(pendingReferral['meta']['collected_by']), style: TextStyle(fontSize: 16)),
                           ],
                         ),
@@ -759,7 +759,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
 
                         Row(
                           children: <Widget>[
-                            Text('Referred Outcome: ', style: TextStyle(fontSize: 16)),
+                            Text(AppLocalizations.of(context).translate('referredOutcome')+": ", style: TextStyle(fontSize: 16)),
                             Text(pendingReferral['body']['outcome'] ?? '', style: TextStyle(fontSize: 16)),
                           ],
                         ),
@@ -854,7 +854,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              Text('CVD Risk', style: TextStyle(fontSize: 17)),
+                              Text(AppLocalizations.of(context).translate('cvdRisk')+": ", style: TextStyle(fontSize: 17)),
                             ],
                           ),
                             // SizedBox(height: 20,),
@@ -1011,9 +1011,9 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                           ),
                         ),
                         
-                        dueCarePlans.length > 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: dueCarePlans, text: 'Due Today') : Container(),
-                        upcomingCarePlans.length > 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: upcomingCarePlans, text: 'Upcoming') : Container(),
-                        completedCarePlans.length> 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: completedCarePlans, text: 'Completed') : Container(),
+                        dueCarePlans.length > 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: dueCarePlans, text: AppLocalizations.of(context).translate('dueToday')) : Container(),
+                        upcomingCarePlans.length > 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: upcomingCarePlans, text: AppLocalizations.of(context).translate('upComing')) : Container(),
+                        completedCarePlans.length> 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: completedCarePlans, text: AppLocalizations.of(context).translate('complete')) : Container(),
 
 
                         SizedBox(height: 30,),

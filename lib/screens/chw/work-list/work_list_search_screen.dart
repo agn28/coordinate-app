@@ -775,7 +775,7 @@ class _PatientItemState extends State<PatientItem> {
 
                             Row(
                               children: <Widget>[
-                                Text('Village: ', style: TextStyle(fontSize: 16, color: Colors.black87),),
+                                Text(AppLocalizations.of(context).translate('village') + ': ', style: TextStyle(fontSize: 16, color: Colors.black87),),
                                 Text(widget.item['body']['address']['village'] + ',', style: TextStyle(fontSize: 16, color: Colors.black87),),
 
                                 widget.item['body']['address']['ward'] != null ?

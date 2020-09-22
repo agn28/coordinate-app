@@ -53,7 +53,8 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
   TabController _tabController;
   int selectedTab = 0;
 
-  var sortList = ['patient', 'date', 'location', 'reason'];
+  var sortListEn = ['patient', 'date', 'location', 'reason'];
+  var sortListBn = ['রোগী', 'তারিখ', 'অবস্থান', 'কারণ'];
   var selectedSort;
 
   @override
@@ -159,7 +160,6 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
   convertDateFromSeconds(date) {
     if (date['_seconds'] != null) {
       var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
-
       return DateFormat("MMMM d, y").format(parsedDate).toString();
     }
     return '';
@@ -172,7 +172,7 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
       resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Referral Patients'),
+        title: Text(AppLocalizations.of(context).translate('referralPatients')),
         elevation: 0,
         actions: <Widget>[
           PopupMenuButton(
@@ -233,11 +233,11 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           child: Row(
                             children: <Widget>[
-                              Text(AppLocalizations.of(context).translate('sortBy') + ':', style: TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.w500)),
+                              Text(AppLocalizations.of(context).translate('sortBy') + ': ', style: TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.w500)),
                               SizedBox(width: 20,),
                               Container(
                                 width: 200,
-                                child: DropdownButtonFormField(
+                                child:AppLocalizations.of(context).translate('sortBy')=="সাজান"? DropdownButtonFormField(
                                   // hint: Text('', style: TextStyle(fontSize: 20, color: kTextGrey),),
                                   
                                   decoration: InputDecoration(
@@ -253,11 +253,41 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
                                   ),
                                   ),
                                   items: [
-                                    ...sortList.map((item) =>
+                                    ...sortListBn.map((item) =>
                                       DropdownMenuItem(
                                         child: Text(StringUtils.capitalize(item)),
-                                        value: sortList.indexOf(item) 
+                                        value: sortListBn.indexOf(item)
                                       )
+                                    ).toList(),
+                                  ],
+                                  value: selectedSort,
+                                  isExpanded: true,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedSort = value;
+                                    });
+                                  },
+                                ):DropdownButtonFormField(
+                                  // hint: Text('', style: TextStyle(fontSize: 20, color: kTextGrey),),
+
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: kSecondaryTextField,
+                                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                                    border: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.white),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(4),
+                                          topRight: Radius.circular(4),
+                                        )
+                                    ),
+                                  ),
+                                  items: [
+                                    ...sortListEn.map((item) =>
+                                        DropdownMenuItem(
+                                            child: Text(StringUtils.capitalize(item)),
+                                            value: sortListEn.indexOf(item)
+                                        )
                                     ).toList(),
                                   ],
                                   value: selectedSort,
@@ -286,25 +316,25 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
                               children: <Widget>[
                                 Expanded(
                                   flex: 3,
-                                  child: Text('Patient',
+                                  child: Text(AppLocalizations.of(context).translate('patients'),
                                     style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.w500),
                                   )
                                 ),
                                 Expanded(
                                   flex: 2,
-                                  child: Text('Date',
+                                  child: Text(AppLocalizations.of(context).translate('date'),
                                         style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.w500),
                                       )
                                 ),
                                 Expanded(
                                   flex: 2,
-                                  child: Text('Location',
+                                  child: Text(AppLocalizations.of(context).translate('location'),
                                     style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.w500),
                                   )
                                 ),
                                 Expanded(
                                   flex: 2,
-                                  child: Text('Reason',
+                                  child: Text(AppLocalizations.of(context).translate('location'),
                                     style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.w500),
                                   )
                                 ),

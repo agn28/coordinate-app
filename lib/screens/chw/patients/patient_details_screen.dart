@@ -427,7 +427,6 @@ class _PatientItemState extends State<PatientItem> {
                             Row(
                               children: <Widget>[
 
-
                                 widget.item['body']['assessments'] != null && widget.item['body']['assessments']['body_composition']['components']['bmi'] != null ?
                                 Container(
                                   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),

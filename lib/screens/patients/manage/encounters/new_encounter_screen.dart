@@ -130,7 +130,7 @@ class _NewEncounterState extends State<NewEncounter> {
                   children: <Widget>[
                     EncounnterSteps(
                       icon: Image.asset('assets/images/icons/blood_pressure.png'),
-                      text: Text('Blood Pressure', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                      text: Text(AppLocalizations.of(context).translate('bloodPressure'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
                       status: Helpers().getBpStatus(),
                       onTap: () {
                         FocusScope.of(context).requestFocus(new FocusNode());
@@ -139,7 +139,7 @@ class _NewEncounterState extends State<NewEncounter> {
                     ),
                     EncounnterSteps(
                       icon: Image.asset('assets/images/icons/body_measurements.png'),
-                      text: Text('Body Measurements', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                      text: Text(AppLocalizations.of(context).translate('bodyMeasurements'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
                       status: Helpers().getBmStatus(),
                       onTap: () {
                         FocusScope.of(context).requestFocus(new FocusNode());
@@ -149,7 +149,7 @@ class _NewEncounterState extends State<NewEncounter> {
 
                     EncounnterSteps(
                       icon: Image.asset('assets/images/icons/blood_test.png'),
-                      text: Text('Blood Test', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                      text: Text(AppLocalizations.of(context).translate('bloodTests'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
                       status: Helpers().getBtStatus(),
                       onTap: () {
                         FocusScope.of(context).requestFocus(new FocusNode());
@@ -159,7 +159,7 @@ class _NewEncounterState extends State<NewEncounter> {
 
                     EncounnterSteps(
                       icon: Image.asset('assets/images/icons/questionnaire.png'),
-                      text: Text('Questionnaire', style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
+                      text: Text(AppLocalizations.of(context).translate('questionnaire'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
                       status: Helpers().getQnStatus(),
                       onTap: () {
                         FocusScope.of(context).requestFocus(new FocusNode());
