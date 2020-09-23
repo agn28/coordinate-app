@@ -96,15 +96,15 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
 
   }
 
-  getPatients() async {
+  // getPatients() async {
     
-    var data = await PatientController().getAllPatients();
+  //   var data = await PatientController().getAllPatients();
 
-    setState(() {
-      allNewPatients = data;
-      newPatients = allNewPatients;
-    });
-  }
+  //   setState(() {
+  //     allNewPatients = data;
+  //     newPatients = allNewPatients;
+  //   });
+  // }
  
 
   getLivePatients() async {
@@ -116,7 +116,7 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
     var data = await PatientController().getNewPatients();
     var existingData = await PatientController().getExistingPatients();
     print('hello');
-    print(existingData);
+    
 
     if (data['message'] == 'Unauthorized') {
       Helpers().logout(context);
@@ -126,6 +126,7 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
     var parsedExistingPatients = [];
 
     for(var item in data['data']) {
+      print(item['body']['last_name']);
       parsedNewPatients.add({
         'uuid': item['id'],
         'data': item['body'],
@@ -807,7 +808,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
   }
 
   applyFilter() async {
-    await this.widget.parent.getPatients();
+    // await this.widget.parent.getPatients();
     var birthDate = '';
     if (birthDateController.text != '' && birthMonthController.text != '' && birthYearController.text != '') {
       birthDate = birthYearController.text + '-' + birthMonthController.text + '-' + birthDateController.text;

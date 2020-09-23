@@ -293,11 +293,10 @@ class _NewChwEncounterState extends State<NewChwEncounterScreen> {
                     var qt = Questionnaire().qnItems;
                     var bm = BodyMeasurement().bmItems;
 
-                    
+                    // print(bm);
 
                     if (widget.communityClinic != null) {
                       
-
                       var bpWarning = bp.where((item) => item['body']['data']['systolic'] > 180 || item['body']['data']['diastolic'] > 110);
                       var btWarning; 
                       bt.forEach((item) {
@@ -340,7 +339,7 @@ class _NewChwEncounterState extends State<NewChwEncounterScreen> {
                         }
                       });
                       // print(bt);
-                      print(btWarning.isEmpty);
+                      // print(btWarning.isEmpty);
                       if (bpWarning.isNotEmpty || btWarning != null ) {
                         var data = {
                           'meta': {

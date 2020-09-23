@@ -243,9 +243,8 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                                     },
                                   );
                                 } else {
-                                  Navigator.of(context).pushNamed('/chwNavigation',);
+                                  Navigator.of(context).pushNamed('/chwHome',);
                                 }
-                                 
                               },
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               child: Text(AppLocalizations.of(context).translate('referralCreate').toUpperCase(), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)

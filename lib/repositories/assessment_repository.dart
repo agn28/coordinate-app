@@ -19,7 +19,8 @@ class AssessmentRepository {
       },
       body: json.encode(data)
     ).then((response) {
-      
+      print('assessment created');
+      print(response.body);
     }).catchError((error) {
       print('error ' + error.toString());
     });

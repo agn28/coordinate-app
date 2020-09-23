@@ -6,6 +6,7 @@ import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/chw/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
+import 'package:nhealth/screens/chw/new_patient_questionnairs/new_questionnaire_feeling_screen.dart';
 import 'package:nhealth/screens/home_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
@@ -169,7 +170,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                       ),
                     ),
                   ) : GestureDetector(
-                    onTap: () => Navigator.of(context).pushNamed(NewPatientQuestionnaireScreen.path),
+                    onTap: () => Navigator.of(context).pushNamed(NewQuestionnaireFeelingScreen.path),
                     child: Container(
                       // height: 190,
                       width: double.infinity,

@@ -8,17 +8,20 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/chw/new_patient_questionnairs/new_questionnaire_acute_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
-class PatientFeelingScreen extends StatefulWidget {
+class NewQuestionnaireFeelingScreen extends StatefulWidget {
+  static const path = 'newQuestionnaireFeelingScreen';
+
   final communityClinic;
-  PatientFeelingScreen({this.communityClinic});
+  NewQuestionnaireFeelingScreen({this.communityClinic});
   @override
-  _PatientFeelingState createState() => _PatientFeelingState();
+  _NewQuestionnaireFeelingScreenState createState() => _NewQuestionnaireFeelingScreenState();
 }
 
-class _PatientFeelingState extends State<PatientFeelingScreen> {
+class _NewQuestionnaireFeelingScreenState extends State<NewQuestionnaireFeelingScreen> {
   var _patient;
   bool isLoading = false;
   bool avatarExists = false;
@@ -45,27 +48,10 @@ class _PatientFeelingState extends State<PatientFeelingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text(AppLocalizations.of(context).translate('newCommunityVisit'), style: TextStyle(color: Colors.white, fontSize: 20),),
+        title: new Text(AppLocalizations.of(context).translate('newPatientQuestionnaire'), style: TextStyle(color: Colors.white, fontSize: 20),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
-        actions: <Widget>[
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(RegisterPatientScreen(isEdit: true));
-            },
-            child: Container(
-              margin: EdgeInsets.only(right: 30),
-              child: Row(
-                children: <Widget>[
-                  Icon(Icons.edit, color: Colors.white,),
-                  SizedBox(width: 10),
-                  Text(AppLocalizations.of(context).translate('viewOrEditPatient'), style: TextStyle(color: Colors.white))
-                ],
-              )
-            )
-          )
-        ],
       ),
       body: isLoading ? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
         child: SingleChildScrollView(
@@ -98,15 +84,7 @@ class _PatientFeelingState extends State<PatientFeelingScreen> {
                                 ),
                                 child: FlatButton(
                                   onPressed: () async {
-                                    print('hello');
-                                    // return;
-                                    // Navigator.of(context).pushNamed(NewPatientQuestionnaireScreen.path);
-                                    if (widget.communityClinic != null) {
-                                      Navigator.of(context).pushNamed('/chwNewEncounter', arguments: { 'communityClinic': true });
-                                      return;
-                                    }
-                                    
-                                    Navigator.of(context).pushNamed('/chwPatientSummary', arguments: true);
+                                    Navigator.of(context).pushNamed('/chwHome');
                                   },
                                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   child: Column(
@@ -132,7 +110,7 @@ class _PatientFeelingState extends State<PatientFeelingScreen> {
                                 ),
                                 child: FlatButton(
                                   onPressed: () async {
-                                    Navigator.of(context).pushNamed('/chwFollowup');
+                                    Navigator.of(context).pushNamed(NewQuestionnaireAcuteScreen.path);
                                   },
                                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   child: Column(

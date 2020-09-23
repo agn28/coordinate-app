@@ -20,8 +20,6 @@ class ObservationRepository {
   }
 
   create(data) async {
-    print('questionnaire data');
-    print(data);
     await http.post(
       apiUrl + 'observations',
       headers: {
@@ -30,7 +28,8 @@ class ObservationRepository {
       },
       body: json.encode(data)
     ).then((response) {
-      
+      print('observation created');
+      print(response.body);
     }).catchError((error) {
       print('error ' + error.toString());
     });
