@@ -54,6 +54,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
   var bp;
   var cvd;
   var dueDate;
+  var role = '';
 
   @override
   void initState() {
@@ -61,6 +62,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
     _patient = Patient().getPatient();
     _checkAvatar();
     _checkAuth();
+    _getAuthData();
     _getCarePlan();
     getEncounters();
     getAssessments();
@@ -68,6 +70,17 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
     getMedicationsConditions();
     getReport();
     getUsers();
+  }
+
+  _getAuthData() async {
+    var data = await Auth().getStorageAuth();
+    if (!data['status']) {
+      Helpers().logout(context);
+    }
+    // Navigator.of(context).pushNamed('/login',);
+    setState(() {
+      role = data['role'];
+    });
   }
 
   getAssessmentDueDate() {
@@ -1046,32 +1059,45 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: <Widget>[
-                            encounters.length > 0 ? 
-                            Column(
+                            
+                            role == 'chw' ? Column(
                               children: <Widget>[
+                                encounters.length > 0 ? 
+                                Column(
+                                  children: <Widget>[
+                                    FloatingButton(
+                                      text: AppLocalizations.of(context).translate('newCommunityClinicVisit'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        Navigator.of(context).pushNamed('/patientFeeling', arguments: {'communityClinic': true});
+                                      },
+                                      active: true,
+                                    ),
+                                    FloatingButton(
+                                      text: AppLocalizations.of(context).translate('newCommunityVisit'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        Navigator.of(context).pushNamed('/verifyPatient');
+                                      },
+                                      active: true,
+                                    ),
+                                  ],
+                                ) :
                                 FloatingButton(
-                                  text: AppLocalizations.of(context).translate('newCommunityClinicVisit'),
+                                  text: AppLocalizations.of(context).translate('newPatientQuestionnaire'),
                                   onPressed: () {
                                     Navigator.of(context).pop();
-                                    Navigator.of(context).pushNamed('/patientFeeling', arguments: {'communityClinic': true});
-                                  },
-                                  active: true,
-                                ),
-                                FloatingButton(
-                                  text: AppLocalizations.of(context).translate('newCommunityVisit'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                    Navigator.of(context).pushNamed('/verifyPatient');
+                                    Navigator.of(context).pushNamed(NewQuestionnaireFeelingScreen.path);
                                   },
                                   active: true,
                                 ),
                               ],
-                            ) :
+                            ) : 
                             FloatingButton(
-                              text: AppLocalizations.of(context).translate('newPatientQuestionnaire'),
+                              text: AppLocalizations.of(context).translate('clinicScreening'),
                               onPressed: () {
                                 Navigator.of(context).pop();
-                                Navigator.of(context).pushNamed(NewQuestionnaireFeelingScreen.path);
+                                Navigator.of(context).push(NewEncounterScreen());
                               },
                               active: true,
                             ),
