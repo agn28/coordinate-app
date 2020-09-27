@@ -768,8 +768,8 @@ class _SeventhQuestionState extends State<SeventhQuestion> {
               margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
               width: 250,
               child: PrimaryTextField(
-                topPaadding: 15,
-                bottomPadding: 15,
+                topPaadding: 8,
+                bottomPadding: 8,
                 hintText: 'Write your problem',
                 controller: _seventhQuestionController,
               )

@@ -695,8 +695,8 @@ class _FiltersDialogState extends State<FiltersDialog> {
                       children: <Widget>[
                         Expanded(
                           child: PrimaryTextField(
-                            topPaadding: 18,
-                            bottomPadding: 18,
+                            topPaadding: 10,
+                            bottomPadding: 10,
                             hintText: 'dd',
                             controller: birthDateController,
                             name: "Date",
@@ -707,8 +707,8 @@ class _FiltersDialogState extends State<FiltersDialog> {
                         SizedBox(width: 20,),
                         Expanded(
                           child: PrimaryTextField(
-                            topPaadding: 18,
-                            bottomPadding: 18,
+                            topPaadding: 10,
+                            bottomPadding: 10,
                             hintText: 'mm',
                             controller: birthMonthController,
                             name: "Month",
@@ -719,8 +719,8 @@ class _FiltersDialogState extends State<FiltersDialog> {
                         SizedBox(width: 20,),
                         Expanded(
                           child: PrimaryTextField(
-                            topPaadding: 18,
-                            bottomPadding: 18,
+                            topPaadding: 10,
+                            bottomPadding: 10,
                             hintText: 'yyyy',
                             controller: birthYearController,
                             name: "Year",

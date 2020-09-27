@@ -216,6 +216,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).translate('registerNewPatient')),
@@ -231,7 +232,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
         child: CustomStepper(
           physics: ClampingScrollPhysics(),
           type: CustomStepperType.horizontal,
-          
+
           controlsBuilder: (BuildContext context, {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
           return Row();
         },
@@ -253,7 +254,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
             Expanded(
               child: _currentStep != 0 ? FlatButton(
                 onPressed: () {
-                  
+
                   setState(() {
                     _currentStep = _currentStep - 1;
                     nextText = AppLocalizations.of(context).translate('next');
@@ -305,7 +306,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
                         _patientFormKey.currentState.validate();
                         return;
                       }
-                      
+
                       if (_patientFormKey.currentState.validate()) {
                         // If the form is valid, display a Snackbar.
                         _currentStep = _currentStep + 1;
@@ -459,8 +460,8 @@ class _PatientDetailsState extends State<PatientDetails> {
               children: <Widget>[
                 Expanded(
                   child: PrimaryTextField(
-                    topPaadding: 18,
-                    bottomPadding: 18,
+                    topPaadding: 10,
+                    bottomPadding: 10,
                     hintText: AppLocalizations.of(context).translate('firstName'),
                     controller: firstNameController,
                     name: AppLocalizations.of(context).translate('firstName'),
@@ -470,8 +471,8 @@ class _PatientDetailsState extends State<PatientDetails> {
                 SizedBox(width: 20,),
                 Expanded(
                   child: PrimaryTextField(
-                    topPaadding: 18,
-                    bottomPadding: 18,
+                    topPaadding: 10,
+                    bottomPadding: 10,
                     hintText: AppLocalizations.of(context).translate('lastName'),
                     controller: lastNameController,
                     name: AppLocalizations.of(context).translate('firstName'),
@@ -483,8 +484,8 @@ class _PatientDetailsState extends State<PatientDetails> {
 
             SizedBox(height: 10,),
             PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
+              topPaadding: 10,
+              bottomPadding: 10,
               hintText: AppLocalizations.of(context).translate('fathersName'),
               controller: fatherNameController,
               name: AppLocalizations.of(context).translate('fathersName'),
@@ -599,7 +600,7 @@ class _PatientDetailsState extends State<PatientDetails> {
             DropdownSearch(
               validator: (v) => v == null ? "required field" : null,
               hint: AppLocalizations.of(context).translate('district'),
-              mode: Mode.MENU,
+              mode: Mode.BOTTOM_SHEET,
               items: districts,
               // showClearButton: true,
               dropdownSearchDecoration: InputDecoration(
@@ -614,7 +615,7 @@ class _PatientDetailsState extends State<PatientDetails> {
                     topRight: Radius.circular(4),
                   )
                 ),
-              
+
                 hintText: 'District',
                 hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
               ),
@@ -636,7 +637,7 @@ class _PatientDetailsState extends State<PatientDetails> {
             DropdownSearch(
               validator: (v) => v == null ? "required field" : null,
               hint: AppLocalizations.of(context).translate('upazila'),
-              mode: Mode.MENU,
+              mode: Mode.BOTTOM_SHEET,
               items: filteredUpazilas,
               // showClearButton: true,
               dropdownSearchDecoration: InputDecoration(
@@ -864,8 +865,8 @@ class _PatientDetailsState extends State<PatientDetails> {
             // ),
             SizedBox(height: 10,),
             PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
+                topPaadding: 10,
+                bottomPadding: 10,
               hintText: AppLocalizations.of(context).translate('postalCode'),
               controller: postalCodeController,
               name: AppLocalizations.of(context).translate('postalCode'),
@@ -883,8 +884,8 @@ class _PatientDetailsState extends State<PatientDetails> {
             // ),
             SizedBox(height: 10,),
             PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
+              topPaadding: 10,
+              bottomPadding: 10,
               hintText: AppLocalizations.of(context).translate('village'),
               controller: villageController,
               name: AppLocalizations.of(context).translate('village'),
@@ -892,8 +893,8 @@ class _PatientDetailsState extends State<PatientDetails> {
             ),
             SizedBox(height: 10,),
             PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
+              topPaadding: 10,
+              bottomPadding: 10,
               hintText: AppLocalizations.of(context).translate('streetName'),
               controller: streetNameController,
               name: AppLocalizations.of(context).translate('streetName'),
@@ -902,8 +903,8 @@ class _PatientDetailsState extends State<PatientDetails> {
             Divider(),
             SizedBox(height: 20,),
             PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
+              topPaadding: 10,
+              bottomPadding: 10,
               prefixIcon: Icon(Icons.phone),
               hintText: AppLocalizations.of(context).translate('mobile'),
               controller: mobilePhoneController,
@@ -913,8 +914,8 @@ class _PatientDetailsState extends State<PatientDetails> {
             ),
             SizedBox(height: 10,),
             PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
+              topPaadding: 10,
+              bottomPadding: 10,
               prefixIcon: Icon(Icons.phone),
               hintText: AppLocalizations.of(context).translate('homePhone'),
               controller: homePhoneController,
@@ -922,8 +923,8 @@ class _PatientDetailsState extends State<PatientDetails> {
             ),
             SizedBox(height: 10,),
             PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
+              topPaadding: 10,
+              bottomPadding: 10,
               prefixIcon: Icon(Icons.email),
               hintText: AppLocalizations.of(context).translate('emailAddressOptional'),
               name: AppLocalizations.of(context).translate('nationalId'),
@@ -931,8 +932,8 @@ class _PatientDetailsState extends State<PatientDetails> {
             ),
             SizedBox(height: 10,),
             PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
+              topPaadding: 10,
+              bottomPadding: 10,
               hintText: AppLocalizations.of(context).translate('nationalId'),
               controller: nidController,
               name: AppLocalizations.of(context).translate('nationalId'),
@@ -1039,8 +1040,8 @@ class _ContactDetailsState extends State<ContactDetails> {
               children: <Widget>[
                 Expanded(
                   child: PrimaryTextField(
-                    topPaadding: 18,
-                    bottomPadding: 18,
+                    topPaadding: 7,
+                    bottomPadding: 7,
                     hintText: AppLocalizations.of(context).translate("contactFirstName"),
                     controller: contactFirstNameController,
                     name: AppLocalizations.of(context).translate("contactFirstName"),
@@ -1050,8 +1051,8 @@ class _ContactDetailsState extends State<ContactDetails> {
                 SizedBox(width: 20,),
                 Expanded(
                   child: PrimaryTextField(
-                    topPaadding: 18,
-                    bottomPadding: 18,
+                    topPaadding: 7,
+                    bottomPadding: 7,
                     hintText: AppLocalizations.of(context).translate("contactLastName"),
                     controller: contactLastNameController,
                     name: AppLocalizations.of(context).translate("contactLastName"),
@@ -1066,6 +1067,7 @@ class _ContactDetailsState extends State<ContactDetails> {
 
             Container(
               child: DropdownButtonFormField(
+
                 hint: Text(AppLocalizations.of(context).translate('relationship'), style: TextStyle(fontSize: 20, color: kTextGrey),),
                 validator: (value) {
                   if (value == null) {
@@ -1107,8 +1109,8 @@ class _ContactDetailsState extends State<ContactDetails> {
 
             SizedBox(height: 20,),
             PrimaryTextField(
-              topPaadding: 18,
-              bottomPadding: 18,
+              topPaadding: 7,
+              bottomPadding: 7,
               prefixIcon: Icon(Icons.phone),
               hintText: AppLocalizations.of(context).translate("contactMobilePhone"),
               controller: contactMobilePhoneController,
@@ -1416,7 +1418,7 @@ class _ViewSummaryState extends State<ViewSummary> {
           SizedBox(height: 10,),
 
           Container(
-            height: 250,
+            height: 300,
             // width: 200,
             // alignment: Alignment.topCenter,
             decoration: BoxDecoration(

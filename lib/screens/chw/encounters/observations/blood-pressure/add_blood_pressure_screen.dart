@@ -361,8 +361,8 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                                         flex: 2,
                                                         child: PrimaryTextField(
                                                           hintText: AppLocalizations.of(context).translate('systolic'),
-                                                          topPaadding: 20,
-                                                          bottomPadding: 20,
+                                                          topPaadding: 12,
+                                                          bottomPadding: 12,
                                                           controller: systolicController,
                                                           name:AppLocalizations.of(context).translate('systolic'),
                                                           validation: true,
@@ -379,8 +379,8 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                                         flex: 2,
                                                         child: PrimaryTextField(
                                                           hintText: AppLocalizations.of(context).translate('diastolic'),
-                                                          topPaadding: 20,
-                                                          bottomPadding: 20,
+                                                          topPaadding: 12,
+                                                          bottomPadding: 12,
                                                           controller: diastolicController,
                                                           name:AppLocalizations.of(context).translate('diastolic'),
                                                           validation: true,
@@ -400,8 +400,9 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                                                   width: 175,
                                                   child: PrimaryTextField(
                                                     hintText: AppLocalizations.of(context).translate('pulseRate'),
-                                                    topPaadding: 20,
-                                                    bottomPadding: 20,
+                                                    topPaadding: 12
+                                                      ,
+                                                    bottomPadding: 12,
                                                     controller: pulseController,
                                                     name:AppLocalizations.of(context).translate('pulseRate'),
                                                     validation: true,
@@ -755,8 +756,8 @@ class _SkipAlertState extends State<SkipAlert> {
                   child: PrimaryTextField(
                     hintText: 'Other reason',
                     controller: skipReasonController,
-                    topPaadding: 15,
-                    bottomPadding: 15,
+                    topPaadding: 8,
+                    bottomPadding: 8,
                     validation: true,
                   ),
                 ),

@@ -458,8 +458,8 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                         width: 200,
                         child: PrimaryTextField(
                           hintText: widget.title,
-                          topPaadding: 15,
-                          bottomPadding: 15,
+                          topPaadding: 8,
+                          bottomPadding: 8,
                           controller: valueController,
                           validation: true,
                           type: TextInputType.number
@@ -745,8 +745,8 @@ class _SkipAlertState extends State<SkipAlert> {
                   child: PrimaryTextField(
                     hintText: 'Other reason',
                     controller: otherReasonController,
-                    topPaadding: 15,
-                    bottomPadding: 15,
+                    topPaadding: 8,
+                    bottomPadding: 8,
                   ),
                 ),
               ) : Container(),

@@ -32,7 +32,7 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
       validator: widget.validation != null && widget.validation ? (value) => _validateInputs(value) : null,
       autovalidate: _autoValidate,
       onChanged: (value) => {
-          setState(() => _autoValidate = true)
+        setState(() => _autoValidate = true)
       },
       keyboardType: widget.type,
       inputFormatters: widget.type != null ? _getInputFormatters() : null,
@@ -43,15 +43,16 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
         filled: true,
         fillColor: kSecondaryTextField,
         border: new UnderlineInputBorder(
-          borderSide: new BorderSide(color: Colors.white),
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(4),
-            topRight: Radius.circular(4),
-          )
+            borderSide: new BorderSide(color: Colors.white),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(4),
+              topRight: Radius.circular(4),
+            )
         ),
-      
-        hintText: widget.hintText,
+
+        // hintText: widget.hintText,
         hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+        labelText:widget.hintText,
       ),
     );
   }
@@ -92,7 +93,7 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
     if (value.toString().length > 1 && '${value[0]}${value[1]}' == '88') {
       pattern = r'(^(?:[+0]9)?[0-9]{13}$)';
     }
-    
+
     RegExp regExp = new RegExp(pattern);
     if (!regExp.hasMatch(value)) {
       return 'Please enter valid mobile number';

@@ -375,8 +375,8 @@ class _AddDialogueState extends State<AddDialogue> {
                       width: 150,
                       child: PrimaryTextField(
                         hintText: widget.title,
-                        topPaadding: 15,
-                        bottomPadding: 15,
+                        topPaadding: 8,
+                        bottomPadding: 8,
                         validation: true,
                         type: TextInputType.number,
                         controller: valueController,
@@ -411,8 +411,8 @@ class _AddDialogueState extends State<AddDialogue> {
                 width: double.infinity,
                 child: PrimaryTextField(
                   hintText: AppLocalizations.of(context).translate('selectDevice'),
-                  topPaadding: 15,
-                  bottomPadding: 15,
+                  topPaadding: 8,
+                  bottomPadding: 8,
                   controller: deviceController,
                 ),
               ),

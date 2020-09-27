@@ -162,8 +162,8 @@ class _AlcoholState extends State<Alcohol> {
                           margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
                           width: 200,
                           child: PrimaryTextField(
-                            topPaadding: 15,
-                            bottomPadding: 15,
+                            topPaadding: 8,
+                            bottomPadding: 8,
                             hintText: 'Number of days',
                             validation: true,
                             type: TextInputType.number,
@@ -180,8 +180,8 @@ class _AlcoholState extends State<Alcohol> {
                           margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
                           width: 200,
                           child: PrimaryTextField(
-                            topPaadding: 15,
-                            bottomPadding: 15,
+                            topPaadding: 8,
+                            bottomPadding: 8,
                             hintText: 'Number of units',
                             validation: true,
                             type: TextInputType.number,
