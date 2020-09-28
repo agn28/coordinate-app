@@ -84,7 +84,7 @@ class _NewQuestionnaireFeelingScreenState extends State<NewQuestionnaireFeelingS
                                 ),
                                 child: FlatButton(
                                   onPressed: () async {
-                                    Navigator.of(context).pushNamed('/chwHome');
+                                    Navigator.of(context).pushNamed('/chwNewEncounter', arguments: { 'communityClinic': true });
                                   },
                                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   child: Column(

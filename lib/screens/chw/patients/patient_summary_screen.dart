@@ -668,7 +668,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                     ),
                                     
                                     SizedBox(width: 100,),
-                                    _patient['meta']['has_pending'] != null &&  _patient['meta']['has_pending'] ? Container(
+                                    _patient['meta']['referral_required'] != null &&  _patient['meta']['referral_required'] ? Container(
                                       alignment: Alignment.centerRight,
                                       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                                       decoration: BoxDecoration(

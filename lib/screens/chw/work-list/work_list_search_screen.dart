@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -965,7 +967,9 @@ class _PatientItemState extends State<PatientItem> {
                         ) : Container(),
                         SizedBox(height: 10,),
 
-                        Text(AppLocalizations.of(context).translate('pendingReferral'), style: TextStyle(fontSize: 15, color: kPrimaryYellowColor),),
+                        widget.item['meta']['referral_required'] != null && widget.item['meta']['referral_required'] ? 
+                        Text(AppLocalizations.of(context).translate('pendingReferral'), style: TextStyle(fontSize: 15, color: kPrimaryYellowColor),) :
+                        Container()
                         
                       ],
                     ),
