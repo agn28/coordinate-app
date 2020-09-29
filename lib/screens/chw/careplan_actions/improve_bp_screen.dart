@@ -1,7 +1,8 @@
 import 'dart:io';
-import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -34,6 +35,10 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
   bool isLoading = false;
   bool avatarExists = false;
   String videoId = '';
+
+  var bloodPressures = [];
+
+  var reports = [];
   List<YoutubePlayerController> _youtubeControllers = [];
 
   @override
@@ -41,7 +46,54 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
     super.initState();
     _patient = Patient().getPatient();
     btnDisabled = true;
+
     // _getVideoUrl();
+
+    getReports();
+
+  }
+
+  loadingState(value) {
+    setState(() {
+      isLoading = value;
+    });
+  }
+
+  getReports() async {
+    if (Auth().isExpired()) {
+      Auth().logout();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    }
+
+    loadingState(true);
+    // var data;
+    // var data = await HealthReportController().getReports();
+    var data = await HealthReportController().getReports();
+    loadingState(false);
+    if (data['message'] == 'Unauthorized') {
+      await Helpers().logout(context);
+    } else {
+      setState(() {
+        reports = data['data'];
+      });
+    }
+
+    print('reports');
+    print(reports);
+    reports.forEach((report) {
+      var data = {};
+      print(report['result']);
+      if (report['result']['assessments']['blood_pressure'] != null) {
+        print('hello');
+        var parsedDate = DateTime.fromMillisecondsSinceEpoch(report['report_date']['_seconds'] * 1000);
+        var date = DateFormat('MMM d, y').format(parsedDate);
+        data = report['result']['assessments']['blood_pressure'];
+        data['date'] = date;
+        bloodPressures.add(data);
+      }
+    });
+
+    print(bloodPressures);
 
   }
   getCount() {
@@ -145,97 +197,31 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
                     ),
                     child: Row(
                       children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.only(left: 20, right: 20, bottom: 15,),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              right: BorderSide(color: kBorderLighter)
-                            )
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text('Jan 05 2020',style: TextStyle(color: kTextGrey),),
-                              SizedBox(height: 7,),
-                              Row(
-                                children: <Widget>[
-                                  Text('140/99',style: TextStyle(color: kPrimaryRedColor, fontSize: 18,),),
-                                  SizedBox(width: 5,),
-                                  Icon(Icons.arrow_downward, size: 14, color: kPrimaryRedColor,)
-                                ],
-                              ),
-                              SizedBox(height: 7,),
-                              Text('mmHg',style: TextStyle(color: kTextGrey),),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(left: 20, right: 20, bottom: 15),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              right: BorderSide(color: kBorderLighter)
-                            )
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text('Jan 05 2020',style: TextStyle(color: kTextGrey),),
-                              SizedBox(height: 7,),
-                              Row(
-                                children: <Widget>[
-                                  Text('140/99',style: TextStyle(color: kPrimaryRedColor, fontSize: 18,),),
-                                  SizedBox(width: 5,),
-                                  Icon(Icons.arrow_downward, size: 14, color: kPrimaryRedColor,)
-                                ],
-                              ),
-                              SizedBox(height: 7,),
-                              Text('mmHg',style: TextStyle(color: kTextGrey),),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(left: 20, right: 20, bottom: 15),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              right: BorderSide(color: kBorderLighter)
-                            )
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text('Jan 05 2020',style: TextStyle(color: kTextGrey),),
-                              SizedBox(height: 7,),
-                              Row(
-                                children: <Widget>[
-                                  Text('140/99',style: TextStyle(color: kPrimaryAmberColor, fontSize: 18,),),
-                                  SizedBox(width: 5,),
-                                  Icon(Icons.arrow_downward, size: 14, color: kPrimaryAmberColor,)
-                                ],
-                              ),
-                              SizedBox(height: 7,),
-                              Text('mmHg',style: TextStyle(color: kTextGrey),),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(left: 20, right: 20, bottom: 15),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text('Jan 05 2020',style: TextStyle(color: kTextGrey),),
-                              SizedBox(height: 7,),
-                              Row(
-                                children: <Widget>[
-                                  Text('140/99',style: TextStyle(color: kPrimaryGreenColor, fontSize: 18,),),
-                                  SizedBox(width: 5,),
-                                  Icon(Icons.arrow_downward, size: 14, color: kPrimaryGreenColor,)
-                                ],
-                              ),
-                              SizedBox(height: 7,),
-                              Text('mmHg',style: TextStyle(color: kTextGrey),),
-                            ],
-                          ),
-                        )
+                        ...bloodPressures.map((bp) {
+                          return Container(
+                            padding: EdgeInsets.only(left: 20, right: 20, bottom: 15,),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                right: BorderSide(color: kBorderLighter)
+                              )
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(bp['date'],style: TextStyle(color: kTextGrey),),
+                                SizedBox(height: 7,),
+                                Row(
+                                  children: <Widget>[
+                                    Text(bp['value'],style: TextStyle(color: ColorUtils.statusColor[bp['tfl']], fontSize: 18,),),
+                                    SizedBox(width: 5,),
+                                    Icon(Icons.arrow_downward, size: 14, color: ColorUtils.statusColor[bp['tfl']],)
+                                  ],
+                                ),
+                                SizedBox(height: 12,),
+                              ],
+                            ),
+                          );
+                        }).toList()
                       ],
                     ),
                   ),
@@ -433,7 +419,7 @@ class _ActionItemState extends State<ActionItem> {
                   children: <Widget>[
                     Text(widget.item['body']['title'] ?? '', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),),
                     SizedBox(height: 15,),
-                    Text(StringUtils.capitalize(status), style: TextStyle(fontSize: 14, color: status == 'completed' ? kPrimaryGreenColor : kPrimaryRedColor),),
+                    Text("${status[0].toUpperCase()}${status.substring(1)}", style: TextStyle(fontSize: 14, color: status == 'completed' ? kPrimaryGreenColor : kPrimaryRedColor),),
                   ],
                 ),
                 

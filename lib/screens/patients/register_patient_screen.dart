@@ -1443,7 +1443,7 @@ class _ViewSummaryState extends State<ViewSummary> {
                 Row(
                   children: <Widget>[
                     Text(AppLocalizations.of(context).translate('dateOfBirth') + ': ', style: TextStyle(fontSize: 18),),
-                    Text(DateFormat('yyyy-MM-dd').format(selectedDate), style: TextStyle(fontSize: 18),),
+                    Text(birthDateController.text + '-' + birthMonthController.text + '-' + birthYearController.text, style: TextStyle(fontSize: 18),),
                   ],
                 ),
                 SizedBox(height: 7,),

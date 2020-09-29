@@ -18,8 +18,6 @@ import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
-import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/chw/patients/patient_summary_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 
@@ -47,18 +45,19 @@ class ChwPatientSearchScreen extends StatefulWidget {
   @override
   _PatientSearchState createState() => _PatientSearchState();
 }
-
+int selectedTab = 0;
 class _PatientSearchState extends State<ChwPatientSearchScreen> {
   bool isLoading = true;
   var test = '';
   var authUser;
   TabController _tabController;
-  int selectedTab = 0;
+  
 
   @override
   initState() {
     super.initState();
     // getPatients();
+    selectedTab = 0;
     _getAuthUser();
     getLivePatients();
   }
@@ -70,7 +69,7 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
   }
 
   _getAuthUser() async {
-    var data = await Auth().getStorageAuth() ;
+    var data = await Auth().getStorageAuth();
     if (!data['status']) {
       Helpers().logout(context);
     }
@@ -116,6 +115,7 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
     var data = await PatientController().getNewPatients();
     var existingData = await PatientController().getExistingPatients();
     print('hello');
+    print(existingData['data'].length);
     
 
     if (data['message'] == 'Unauthorized') {
@@ -142,6 +142,8 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
       });
     }
 
+
+
     setState(() {
       allNewPatients = parsedNewPatients;
       newPatients = allNewPatients;
@@ -153,18 +155,35 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
   }
 
   search(query) {
-    var modifiedPatients = [...allNewPatients].map((item)  {
-      item['data']['name'] = '${item['data']['first_name']} ${item['data']['last_name']}' ;
-      return item;
-    }).toList();
 
-    setState(() {
-      newPatients = modifiedPatients
-        .where((item) => item['data']['name']
-        .toLowerCase()
-        .contains(query.toLowerCase()))
-        .toList();
-    });
+    if (selectedTab == 0) {
+      var modifiedPatients = [...allNewPatients].map((item)  {
+        item['data']['name'] = '${item['data']['first_name']} ${item['data']['last_name']}' ;
+        return item;
+      }).toList();
+
+      setState(() {
+        newPatients = modifiedPatients
+          .where((item) => item['data']['name']
+          .toLowerCase()
+          .contains(query.toLowerCase()))
+          .toList();
+      });
+    } else if (selectedTab == 1) {
+      var modifiedPatients = [...allExistingPatients].map((item)  {
+        item['data']['name'] = '${item['data']['first_name']} ${item['data']['last_name']}' ;
+        return item;
+      }).toList();
+
+      setState(() {
+        existingPatients = modifiedPatients
+          .where((item) => item['data']['name']
+          .toLowerCase()
+          .contains(query.toLowerCase()))
+          .toList();
+      });
+    }
+    
   }
 
   LeaderBoard _selectedItem;
@@ -304,8 +323,9 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
 
                 Container(
                   height: MediaQuery.of(context).size.height,
+                  padding: EdgeInsets.only(bottom: 220),
                   decoration: BoxDecoration(
-                  color: kPrimaryColor,
+                  // color: kPrimaryColor,
                     border: Border.all(width: 0, color: kPrimaryColor)
                   ),
                   child: DefaultTabController(
@@ -825,17 +845,32 @@ class _FiltersDialogState extends State<FiltersDialog> {
 
       var filteredAssessments = assessments.where((item) => item['data']['assessment_date'] == lastVisitDateController.text).toList();
       var filteredPatients = [];
-      newPatients.forEach((patient) { 
-        filteredAssessments.forEach((assessment) {
-          if (assessment['data']['patient_id'] == patient['uuid']) {
-            filteredPatients.add(patient);
-          } 
+      
+      if (selectedTab == 0) {
+        allNewPatients.forEach((patient) { 
+          filteredAssessments.forEach((assessment) {
+            if (assessment['data']['patient_id'] == patient['uuid']) {
+              filteredPatients.add(patient);
+            } 
+          });
         });
-      });
 
-      this.widget.parent.setState(() => {
-        newPatients = filteredPatients
-      });
+        this.widget.parent.setState(() => {
+          newPatients = filteredPatients
+        });
+      } else if (selectedTab == 1) {
+        allExistingPatients.forEach((patient) { 
+          filteredAssessments.forEach((assessment) {
+            if (assessment['data']['patient_id'] == patient['uuid']) {
+              filteredPatients.add(patient);
+            } 
+          });
+        });
+
+        this.widget.parent.setState(() => {
+          existingPatients = filteredPatients
+        });
+      }
     }
   }
 

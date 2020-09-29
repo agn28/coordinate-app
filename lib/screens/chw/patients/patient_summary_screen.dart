@@ -152,7 +152,12 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     goal['items'].forEach((item) {
       // print(item['body']['activityDuration']['end']);
       DateFormat format = new DateFormat("E LLL d y");
-      var endDate = format.parse(item['body']['activityDuration']['end']);
+      var endDate;
+      try {
+        endDate = format.parse(item['body']['activityDuration']['end']);
+      } catch(err) {
+        endDate = DateTime.parse(item['body']['activityDuration']['end']);
+      }
       // print(endDate);
       date = endDate;
       if (date != null) {
@@ -385,14 +390,37 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
       print(carePlans);
       data['data'].forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");
-        var endDate = format.parse(item['body']['activityDuration']['end']);
-        var startDate = format.parse(item['body']['activityDuration']['start']);
+        
         var todayDate = DateTime.now();
-        // print(endDate);
-        // print(todayDate.isBefore(endDate));
-        // print(todayDate.isAfter(startDate));
 
-        //check due careplans
+        var endDate;
+        var startDate;
+
+        try {
+          endDate = format.parse(item['body']['activityDuration']['end']);
+          startDate = format.parse(item['body']['activityDuration']['start']);
+        } catch(err) {
+          print(item['body']['activityDuration']['start']);
+          print(item['body']['activityDuration']['end']);
+          // print('failed: ' );
+          print(err);
+          DateFormat newFormat = new DateFormat("yyyy-MM-dd");
+          endDate = DateTime.parse(item['body']['activityDuration']['end']);
+          startDate = DateTime.parse(item['body']['activityDuration']['start']);
+          // startDate = DateTime.parse(item['body']['activityDuration']['start']);
+          
+        }
+
+        print('endDate');
+        print(endDate);
+        print(startDate);
+
+
+        print(endDate);
+        print(todayDate.isBefore(endDate));
+        print(todayDate.isAfter(startDate));
+
+        // check due careplans
         if (item['meta']['status'] == 'pending') {
           if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
             var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
@@ -1668,7 +1696,12 @@ class _GoalItemState extends State<GoalItem> {
     goal['items'].forEach((item) {
       // print(item['body']['activityDuration']['end']);
       DateFormat format = new DateFormat("E LLL d y");
-      var endDate = format.parse(item['body']['activityDuration']['end']);
+      var endDate;
+        try {
+          endDate = format.parse(item['body']['activityDuration']['end']);
+        } catch(err) {
+          endDate = DateTime.parse(item['body']['activityDuration']['end']);
+        }
       // print(endDate);
       date = endDate;
       if (date != null) {
@@ -1783,7 +1816,13 @@ class _CareplanActionState extends State<CareplanAction> {
       // print(item['body']['activityDuration']['end']);
       if (item['meta']['status'] != 'completed') {
         DateFormat format = new DateFormat("E LLL d y");
-        var endDate = format.parse(item['body']['activityDuration']['end']);
+        var endDate;
+        try {
+          endDate = format.parse(item['body']['activityDuration']['end']);
+        } catch(err) {
+          endDate = DateTime.parse(item['body']['activityDuration']['end']);
+        }
+        
         // print(endDate);
         date = endDate;
         if (date != null) {

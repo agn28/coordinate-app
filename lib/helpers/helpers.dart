@@ -45,10 +45,10 @@ class Helpers {
   }
 
   /// Find if any body measurement is added
-  getBmStatus() {
+  getBmStatus(count) {
     var data = BodyMeasurement().bmItems;
 
-    if (data.length >= 3) {
+    if (data.length >= count) {
       return 'Complete';
     } else if (data.length > 0) {
       if (data[0]['body']['data']['skip'] != null && data[0]['body']['data']['skip'] == true) {
@@ -59,10 +59,10 @@ class Helpers {
   }
 
   /// Find if any blood test is added
-  getBtStatus() {
+  getBtStatus(count) {
     var data = BloodTest().btItems;
 
-    if (data.length >= 7) {
+    if (data.length >= count) {
       return 'Complete';
     } else if (data.length > 0) {
       if (data[0]['body']['data']['skip'] != null && data[0]['body']['data']['skip'] == true) {

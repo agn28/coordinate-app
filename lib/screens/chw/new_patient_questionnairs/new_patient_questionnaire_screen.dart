@@ -12,6 +12,8 @@ import 'package:nhealth/models/devices.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/chw/unwell/create_referral_screen.dart';
+import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import '../../../custom-classes/custom_stepper.dart';
@@ -132,9 +134,14 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
     });
   }
 
-  goToHome() {
-    Navigator.of(context).pushNamed('/chwHome',);
+  goToHome(recommendation, data) {
+    if (recommendation) {
+      Navigator.of(context).pushReplacementNamed(MedicalRecommendationScreen.path, arguments: data);
+    } else {
+      Navigator.of(context).pushNamed('/chwHome',);
+    }
   }
+    
 
   checkData() async {
     int temp = 0;
@@ -1124,13 +1131,35 @@ class _InitialCounsellingState extends State<InitialCounselling> {
 
                                     widget.parent.setLoader(true);
 
+                                    var patient = Patient().getPatient();
+
+                                    print(patient['data']['age']);
                                     var response = await AssessmentController().createOnlyAssessment('new patient questionnaire', '', '');
-                                    
+
                                     widget.parent.setLoader(false);
+
+                                    if (patient['data']['age'] != null && patient['data']['age'] > 40) {
+                                      var data = {
+                                        'meta': {
+                                          'patient_id': Patient().getPatient()['uuid'],
+                                          "collected_by": Auth().getAuth()['uid'],
+                                          "status": "pending"
+                                        },
+                                        'body': {},
+                                        'referred_from': 'new questionnaire'
+                                      };
+                                      widget.parent.goToHome(true, data);
+
+                                      return;
+                                    }
+
+                                    widget.parent.goToHome(false, null);
+                                      
+
                                     print('response');
                                     print(response);
 
-                                    widget.parent.goToHome();
+                                    
                                     
                                   },
                                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

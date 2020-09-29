@@ -59,7 +59,7 @@ class _ChwQuestionnairesState extends State<ChwQuestionnaires> {
       key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Questionnaire', style: TextStyle(color: kPrimaryColor),),
+        title: Text(AppLocalizations.of(context).translate('questionnaire'), style: TextStyle(color: kPrimaryColor),),
         backgroundColor: Colors.white,
         elevation: 0.0,
         iconTheme: IconThemeData(color: kPrimaryColor),
@@ -80,7 +80,7 @@ class _ChwQuestionnairesState extends State<ChwQuestionnaires> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Complete all the sections that are applicable', style: TextStyle(fontSize: 22),)
+              child: Text(AppLocalizations.of(context).translate('completeAllSections'), style: TextStyle(fontSize: 22),)
             ),
             
             Container(

@@ -346,6 +346,7 @@
   "referralPatients": "Referral Patients",
   "location": "Location",
   "generatePatientCard": "Generate Patient card",
-  "upComing": "Up Coming"
+  "upComing": "Up Coming",
+  "status": "Status"
 
 }

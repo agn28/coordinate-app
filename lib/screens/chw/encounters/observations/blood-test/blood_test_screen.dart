@@ -346,7 +346,7 @@ class _EncounnterStepsState extends State<EncounnterSteps> {
             ),
             Expanded(
               flex: 2,
-              child: Text(status, style: TextStyle(color: status == 'Complete' ? kPrimaryGreenColor  : kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.bold),),
+              child: Text(AppLocalizations.of(context).translate(status), style: TextStyle(color: status == 'Complete' ? kPrimaryGreenColor  : kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.bold),),
             ),
             
             Expanded(

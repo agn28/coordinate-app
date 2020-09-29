@@ -34,13 +34,18 @@ final otherReasonController = TextEditingController();
 String selectedRightArmReason = rightArmReason[0];
 
 class AddBloodPressureScreen extends CupertinoPageRoute {
-  AddBloodPressureScreen()
-      : super(builder: (BuildContext context) => new AddBloodPressure());
+  final parent;
+
+  AddBloodPressureScreen({this.parent})
+      : super(builder: (BuildContext context) => new AddBloodPressure(parent: parent));
 
 }
 
 class AddBloodPressure extends StatefulWidget {
-  
+  final parent;
+
+  AddBloodPressure({this.parent});
+
   @override
   _AddBloodPressureState createState() => _AddBloodPressureState();
 }
@@ -587,6 +592,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                   onPressed: () async {
                     var formData = _prepareFormData();
                     var result = BloodPressure().addBloodPressure(formData);
+                    widget.parent.setState((){});
                     if (result.toString() == 'success') {
                       _scaffoldKey.currentState.showSnackBar(
                         SnackBar(

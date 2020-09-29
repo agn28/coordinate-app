@@ -151,7 +151,7 @@ class _ChwReferralListScreenState extends State<ChwReferralListScreen> {
       resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Referral Patients'),
+        title: Text(AppLocalizations.of(context).translate('referralList')),
         elevation: 0,
         actions: <Widget>[
           PopupMenuButton(
@@ -216,7 +216,7 @@ class _ChwReferralListScreenState extends State<ChwReferralListScreen> {
                             children: <Widget>[
                               Row(
                                 children: <Widget>[
-                                  Text('Date of referral: ', style: TextStyle(fontSize: 16),),
+                                  Text(AppLocalizations.of(context).translate('dateOfReferral') + ': ', style: TextStyle(fontSize: 16),),
                                   Text(convertDateFromSeconds(referral['meta']['created_at']), style: TextStyle(fontSize: 16)),
                                 ],
                               ),
@@ -224,7 +224,7 @@ class _ChwReferralListScreenState extends State<ChwReferralListScreen> {
 
                               Row(
                                 children: <Widget>[
-                                  Text('Reason: ', style: TextStyle(fontSize: 16)),
+                                  Text(AppLocalizations.of(context).translate('reason') + ': ', style: TextStyle(fontSize: 16)),
                                   Text(referral['body']['reason'] ?? '', style: TextStyle(fontSize: 16)),
                                 ],
                               ),
@@ -232,7 +232,7 @@ class _ChwReferralListScreenState extends State<ChwReferralListScreen> {
 
                               Row(
                                 children: <Widget>[
-                                  Text('Status: ', style: TextStyle(fontSize: 16)),
+                                  Text(AppLocalizations.of(context).translate('status') + ': ', style: TextStyle(fontSize: 16)),
                                   Text(referral['meta']['status'] != null ? StringUtils.capitalize(referral['meta']['status']) : '', style: TextStyle(fontSize: 16)),
                                 ],
                               ),
@@ -240,7 +240,7 @@ class _ChwReferralListScreenState extends State<ChwReferralListScreen> {
 
                               Row(
                                 children: <Widget>[
-                                  Text('Referral Location: ', style: TextStyle(fontSize: 16)),
+                                  Text(AppLocalizations.of(context).translate('referralLocation') + ': ', style: TextStyle(fontSize: 16)),
                                   Text(referral['body']['location'] != null && referral['body']['location']['clinic_name'] != null ? referral['body']['location']['clinic_name'] : '', style: TextStyle(fontSize: 16)),
                                 ],
                               ),
@@ -248,7 +248,7 @@ class _ChwReferralListScreenState extends State<ChwReferralListScreen> {
 
                               Row(
                                 children: <Widget>[
-                                  Text('Referred By: ', style: TextStyle(fontSize: 16)),
+                                  Text(AppLocalizations.of(context).translate('referredBy') + ': ', style: TextStyle(fontSize: 16)),
                                   Text('', style: TextStyle(fontSize: 16)),
                                 ],
                               ),
@@ -256,7 +256,7 @@ class _ChwReferralListScreenState extends State<ChwReferralListScreen> {
 
                               Row(
                                 children: <Widget>[
-                                  Text('Referred Outcome: ', style: TextStyle(fontSize: 16)),
+                                  Text(AppLocalizations.of(context).translate('referredOutcome') + ': ', style: TextStyle(fontSize: 16)),
                                   Text(referral['body']['outcome'] ?? '', style: TextStyle(fontSize: 16)),
                                 ],
                               ),

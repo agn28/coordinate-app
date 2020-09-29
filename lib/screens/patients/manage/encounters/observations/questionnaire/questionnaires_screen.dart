@@ -21,13 +21,15 @@ import 'package:nhealth/widgets/primary_textfield_widget.dart';
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
 class QuestionnairesScreen extends CupertinoPageRoute {
-  QuestionnairesScreen()
-      : super(builder: (BuildContext context) => new Questionnaires());
+  final parent;
+  QuestionnairesScreen({this.parent})
+      : super(builder: (BuildContext context) => new Questionnaires(parent: parent));
 
 }
 
 class Questionnaires extends StatefulWidget {
-
+  final parent;
+  Questionnaires({this.parent});
   @override
   _QuestionnairesState createState() => _QuestionnairesState();
 }
@@ -59,7 +61,7 @@ class _QuestionnairesState extends State<Questionnaires> {
       key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Questionnaire', style: TextStyle(color: kPrimaryColor),),
+        title: Text(AppLocalizations.of(context).translate('questionnaire'), style: TextStyle(color: kPrimaryColor),),
         backgroundColor: Colors.white,
         elevation: 0.0,
         iconTheme: IconThemeData(color: kPrimaryColor),
@@ -80,7 +82,7 @@ class _QuestionnairesState extends State<Questionnaires> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Complete all the sections that are applicable', style: TextStyle(fontSize: 22),)
+              child: Text(AppLocalizations.of(context).translate('completeAllSections'), style: TextStyle(fontSize: 22),)
             ),
             
             Container(
@@ -89,7 +91,7 @@ class _QuestionnairesState extends State<Questionnaires> {
                 children: <Widget>[
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_pressure.png'),
-                    text: 'Tobacco',
+                    text: AppLocalizations.of(context).translate('tobacco'),
                     // goTo: TobaccoScreen(),
                     onTap: () {
                       // Navigator.of(context).push(TobaccoScreen(parent: ));
@@ -98,15 +100,16 @@ class _QuestionnairesState extends State<Questionnaires> {
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/blood_test.png'),
-                    text: 'Alcohol',
+                    text: AppLocalizations.of(context).translate('alcohol'),
                     onTap: () {
+                      print('adslsalkd');
                       Navigator.of(context).push(AlcoholScreen());
                     },
                   ),
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/questionnaire.png'),
-                    text: 'Diet',
+                    text: AppLocalizations.of(context).translate('diet'),
                     onTap: () {
                       Navigator.of(context).push(DietScreen());
                     },
@@ -114,7 +117,7 @@ class _QuestionnairesState extends State<Questionnaires> {
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/questionnaire.png'),
-                    text: 'Physical Activity',
+                    text: AppLocalizations.of(context).translate('physicalActivity'),
                     onTap: () {
                       Navigator.of(context).push(PhysicalActivityScreen());
                     },
@@ -122,7 +125,7 @@ class _QuestionnairesState extends State<Questionnaires> {
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/questionnaire.png'),
-                    text: 'Current Medication',
+                    text: AppLocalizations.of(context).translate('currentMedication'),
                     onTap: () {
                       Navigator.of(context).push(CurrentMedicationScreen());
                     },
@@ -130,7 +133,7 @@ class _QuestionnairesState extends State<Questionnaires> {
 
                   EncounnterSteps(
                     icon: Image.asset('assets/images/icons/questionnaire.png'),
-                    text: 'Medical History',
+                    text: AppLocalizations.of(context).translate('medicalHistory'),
                     onTap: () {
                       Navigator.of(context).push(MedicalHistoryScreen());
                     },
@@ -175,7 +178,7 @@ class _QuestionnairesState extends State<Questionnaires> {
                     );
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('UNABLE TO PERFORM', style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
+                  child: Text(AppLocalizations.of(context).translate('unablePerform'), style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
                 ),
               )
             ),
@@ -189,6 +192,7 @@ class _QuestionnairesState extends State<Questionnaires> {
                 ),
                 child: FlatButton(
                   onPressed: () {
+                    widget.parent.setState((){});
                     Navigator.of(context).pop();
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
@@ -223,7 +227,7 @@ class EncounnterStepsState extends State<EncounnterSteps> {
   void initState() {
     super.initState();
     _checkAvatar();
-    setStatus();
+    // setStatus();
   }
 
   _checkAvatar() async {
@@ -233,25 +237,26 @@ class EncounnterStepsState extends State<EncounnterSteps> {
     });
   }
 
-  setStatus() {
-    status = Questionnaire().isCompleted(widget.text) ? 'Complete' : 'Incomplete';
+  setStatus(value) {
+    print(AppLocalizations.of(context).locale);
+    status = Questionnaire().isCompleted(value) ? 'Complete' : 'Incomplete';
   }
 
   @override
   Widget build(BuildContext context) {
     return FlatButton(
       onPressed: () {
-        if (widget.text.toString() == 'Tobacco') {
+        if (widget.text.toString() == 'Tobacco' || widget.text.toString() == 'তামাক') {
           Navigator.of(context).push(TobaccoScreen(parent: this));
-        } else if (widget.text.toString() == 'Alcohol') {
+        } else if (widget.text.toString() == 'Alcohol' || widget.text.toString() == 'মদ') {
           Navigator.of(context).push(AlcoholScreen(parent: this));
-        } else if (widget.text.toString() == 'Diet') {
+        } else if (widget.text.toString() == 'Diet' || widget.text.toString() == 'খাবার-দাবার') {
           Navigator.of(context).push(DietScreen(parent: this));
-        } else if (widget.text.toString() == 'Physical Activity') {
+        } else if (widget.text.toString() == 'Physical Activity' || widget.text.toString() == 'শারীরিক পরিশ্র্রম') {
           Navigator.of(context).push(PhysicalActivityScreen(parent: this));
-        } else if (widget.text.toString() == 'Medical History') {
+        } else if (widget.text.toString() == 'Medical History' || widget.text.toString() == 'চিকিৎসার ইতিবৃত্ত') {
           Navigator.of(context).push(MedicalHistoryScreen(parent: this));
-        } else if (widget.text.toString() == 'Current Medication') {
+        } else if (widget.text.toString() == 'Current Medication' || widget.text.toString() == 'চলতি ওষুধপত্র') {
           Navigator.of(context).push(CurrentMedicationScreen(parent: this));
         }
       },
@@ -279,7 +284,7 @@ class EncounnterStepsState extends State<EncounnterSteps> {
             ),
             Expanded(
               flex: 2,
-              child: Text(status, style: TextStyle(color: status == 'Complete' ? kPrimaryGreenColor : kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.w500),),
+              child: Text(AppLocalizations.of(context).translate(status), style: TextStyle(color: status == 'Complete' ? kPrimaryGreenColor : kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.w500),),
             ),
             
             Expanded(

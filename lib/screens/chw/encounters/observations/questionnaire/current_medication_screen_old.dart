@@ -151,7 +151,7 @@ class _CurrentMedicationState extends State<CurrentMedication> {
                       )
                     );
                     this.widget.parent.setState(() {
-                      this.widget.parent.setStatus();
+                      this.widget.parent.setStatus('Current Medication');
                     });
                     await Future.delayed(const Duration(seconds: 1));
                     Navigator.of(context).pop();

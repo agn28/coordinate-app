@@ -69,6 +69,10 @@ class _NewChwEncounterState extends State<NewChwEncounterScreen> {
     });
   }
 
+  rebuildState() {
+    setState((){});
+  }
+
   getAuth() async {
     var data = await Auth().getStorageAuth();
     setState(() {
@@ -151,26 +155,26 @@ class _NewChwEncounterState extends State<NewChwEncounterScreen> {
                       status: Helpers().getBpStatus(),
                       onTap: () {
                         FocusScope.of(context).requestFocus(new FocusNode());
-                        Navigator.of(context).push(AddBloodPressureScreen());
+                        Navigator.of(context).push(AddBloodPressureScreen(parent: this));
                       }
                     ),
                     EncounnterSteps(
                       icon: Image.asset('assets/images/icons/body_measurements.png'),
                       text: Text(AppLocalizations.of(context).translate('bodyMeasurements'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                      status: Helpers().getBmStatus(),
+                      status: Helpers().getBmStatus(2),
                       onTap: () {
                         FocusScope.of(context).requestFocus(new FocusNode());
-                        Navigator.of(context).push(MeasurementsScreen());
+                        Navigator.of(context).push(MeasurementsScreen(parent: this));
                       }
                     ),
 
                     EncounnterSteps(
                       icon: Image.asset('assets/images/icons/blood_test.png'),
                       text: Text(AppLocalizations.of(context).translate('bloodTests'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
-                      status: Helpers().getBtStatus(),
+                      status: Helpers().getBtStatus(2),
                       onTap: () {
                         FocusScope.of(context).requestFocus(new FocusNode());
-                        Navigator.of(context).push(BloodTestScreen(communityClinic: true));
+                        Navigator.of(context).push(BloodTestScreen(parent: this, communityClinic: true));
                       }
                     ),
 

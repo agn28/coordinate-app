@@ -251,7 +251,7 @@ class _AlcoholState extends State<Alcohol> {
                               )
                             );
                             this.widget.parent.setState(() {
-                              this.widget.parent.setStatus();
+                              this.widget.parent.setStatus('Alcohol');
                             });
                             await Future.delayed(const Duration(seconds: 1));
                             Navigator.of(context).pop();

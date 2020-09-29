@@ -82,23 +82,34 @@ class _MedicalRecommendationState extends State<MedicalRecommendationScreen> {
                   children: <Widget>[
                     PatientTopbar(),
                     SizedBox(height: 60,),
+
+                    widget.referralData['referred_from'] != null &&  widget.referralData['referred_from'] == 'new questionnaire' ? 
                     Container(
-                      child: Image.asset(
-                        'assets/images/icons/unwell_red.png',
-                        height: 70,
-                      ),
+                      margin: EdgeInsets.only(left: 50, right: 50),
+                      child: Text('Based on guidelines, the patient requires a referral for NCD screening', textAlign: TextAlign.center, style: TextStyle( color: kPrimaryRedColor, fontSize: 22, fontWeight: FontWeight.w400),),
+                    ) : 
+                    Column(
+                      children: <Widget>[
+                        Container(
+                          child: Image.asset(
+                            'assets/images/icons/unwell_red.png',
+                            height: 70,
+                          ),
+                        ),
+                        SizedBox(height: 30,),
+                        Text('The patients seems to be severly unwell', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),),
+                        SizedBox(height: 15,),
+                        Text('Recommend seeking medical attention', style: TextStyle(color: kPrimaryRedColor, fontSize: 22, fontWeight: FontWeight.w400),),
+                      ],
                     ),
-                    SizedBox(height: 30,),
-                    Text('The patients seems to be severly unwell', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),),
-                    SizedBox(height: 15,),
-                    Text('Recommend seeking medical attention', style: TextStyle(color: kPrimaryRedColor, fontSize: 22, fontWeight: FontWeight.w400),),
+                    
                     SizedBox(height: 30,),
                     Row(
                       children: <Widget>[
                         Expanded(
                           child: Container(
                             width: double.infinity,
-                            margin: EdgeInsets.only(left: 30, right: 10),
+                            margin: EdgeInsets.only(left: 30, right: 30),
                             height: 50,
                             decoration: BoxDecoration(
                               color: kPrimaryColor,
@@ -107,6 +118,10 @@ class _MedicalRecommendationState extends State<MedicalRecommendationScreen> {
                             child: FlatButton(
                               onPressed: () async {
                                 // Navigator.of(context).pushNamed('/chwNavigation',);
+                                var data = widget.referralData;
+                                if (data['referred_from'] != null) {
+                                  data.remove('referred_from');
+                                }
                                 Navigator.of(context).pushNamed(CreateReferralScreen.path, arguments: widget.referralData);
                               },
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

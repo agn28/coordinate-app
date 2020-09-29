@@ -524,6 +524,7 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
                 
                 Container(
                   height: MediaQuery.of(context).size.height,
+                  padding: EdgeInsets.only(bottom: 210),
                   decoration: BoxDecoration(
                   color: kPrimaryColor,
                     border: Border.all(width: 0, color: kPrimaryColor)

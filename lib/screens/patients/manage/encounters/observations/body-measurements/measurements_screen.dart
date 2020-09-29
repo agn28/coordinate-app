@@ -15,12 +15,15 @@ import 'package:nhealth/app_localizations.dart';
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
 class MeasurementsScreen extends CupertinoPageRoute {
-  MeasurementsScreen()
-      : super(builder: (BuildContext context) => new Measurements());
+  final parent;
+  MeasurementsScreen({this.parent})
+      : super(builder: (BuildContext context) => new Measurements(parent: parent));
 
 }
 
 class Measurements extends StatefulWidget {
+  final parent;
+  Measurements({this.parent});
 
   @override
   MeasurementsState createState() => MeasurementsState();
@@ -169,6 +172,7 @@ class MeasurementsState extends State<Measurements> {
                 child: FlatButton(
                   onPressed: () async {
                     var result = BodyMeasurement().addBmItem();
+                    widget.parent.setState((){});
                     if (result == 'success') {
                       _scaffoldKey.currentState.showSnackBar(
                         SnackBar(
@@ -262,7 +266,7 @@ class EncounnterStepsState extends State<EncounnterSteps> {
             ),
             Expanded(
               flex: 2,
-              child: Text(status, style: TextStyle(color: status == 'Complete' ? kPrimaryGreenColor : kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.bold),),
+              child: Text(AppLocalizations.of(context).translate(status), style: TextStyle(color: status == 'Complete' ? kPrimaryGreenColor : kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.bold),),
             ),
             
             Expanded(
@@ -360,7 +364,7 @@ class _AddDialogueState extends State<AddDialogue> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text('Add ' + widget.title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                Text(widget.title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                 SizedBox(height: 20,),
                 Container(
                   // margin: EdgeInsets.symmetric(horizontal: 30),
@@ -515,7 +519,7 @@ class _AddDialogueState extends State<AddDialogue> {
                                 _clearDialogForm();
                               }
                             },
-                            child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
+                            child: Text(AppLocalizations.of(context).translate('add'), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
                           ),
                         ],
                       )

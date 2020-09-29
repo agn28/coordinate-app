@@ -283,7 +283,7 @@
   "dueToday": "আজ যা করণীয়",
   "viewEncounterDetails": "ভিজিটের বিবরণ দেখুন",
   "newCommunityVisit": "নতুুন কমিউনিটি ভিজিট",
-  "newCommunityClinicVisitExam": "New Community Clinic Physical Exam",
+  "newCommunityClinicVisitExam": "কমিউনিটি ক্লিনিকে নতুন শারীরিক পরীক্ষা ",
   "newCommunityClinicVisit": "নতুুন কমিউনিটি ক্লিনিক পরীক্ষা",
   "verifyPatient": "রোগী যাচাইকরণ",
   "confirmAndContinue": "রোগী নিশ্চিতকরণ ও সামনে আগান",
@@ -343,5 +343,6 @@
   "referralPatients": "রেফারকৃত রোগী ",
   "location": "স্থান ",
   "generatePatientCard": "রোগী কার্ড তৈরি করুন",
-  "upComing": "আসন্ন"
+  "upComing": "আসন্ন",
+  "status": "অবস্থা"
 }

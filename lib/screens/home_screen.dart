@@ -308,6 +308,36 @@ class _HomeState extends State<HomeScreen> {
                             ),
                           ),
                         ),
+                        
+                        SizedBox(height: 20,),
+
+                        InkWell(
+                          onTap: () => Navigator.of(context).pushNamed('/chwReferralPatients'),
+                          child: Container(
+                            height: 190,
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            child: Card(
+                              elevation: 2,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Image.asset('assets/images/icons/questionnaire.png'),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(AppLocalizations.of(context).translate('referralList'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),

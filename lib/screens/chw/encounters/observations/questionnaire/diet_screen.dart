@@ -328,7 +328,7 @@ class _DietState extends State<Diet> {
                               )
                             );
                             this.widget.parent.setState(() {
-                              this.widget.parent.setStatus();
+                              this.widget.parent.setStatus('Diet');
                             });
                             await Future.delayed(const Duration(seconds: 1));
                             Navigator.of(context).pop();

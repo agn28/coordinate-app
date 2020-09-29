@@ -119,7 +119,7 @@ class _UpdateReferralScreenState extends State<UpdateReferralScreen> {
                     SizedBox(height: 30,),
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Text('Reason for referral', style: TextStyle(fontSize: 20),)
+                      child: Text(AppLocalizations.of(context).translate('reason'), style: TextStyle(fontSize: 20),)
                     ),
                     SizedBox(height: 10,),
                     Container(
@@ -159,14 +159,13 @@ class _UpdateReferralScreenState extends State<UpdateReferralScreen> {
                     SizedBox(height: 30,),
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Text('Referral location', style: TextStyle(fontSize: 20),)
+                      child: Text(AppLocalizations.of(context).translate('referralLocation'), style: TextStyle(fontSize: 20),)
                     ),
                     SizedBox(height: 10,),
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 20),
                       color: kSecondaryTextField,
                       child: DropdownButtonFormField(
-                        hint: Text('Clinic type *', style: TextStyle(fontSize: 20, color: kTextGrey),),
                         decoration: InputDecoration(
                           fillColor: kSecondaryTextField,
                           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
@@ -203,7 +202,6 @@ class _UpdateReferralScreenState extends State<UpdateReferralScreen> {
                         controller: clinicNameController,
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.only(left: 10, right: 10),
-                          hintText: 'Name of Clinic',
                           hintStyle: TextStyle(fontSize: 18)
                         ),
                       )
@@ -213,7 +211,7 @@ class _UpdateReferralScreenState extends State<UpdateReferralScreen> {
 
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Text('Status', style: TextStyle(fontSize: 20),)
+                      child: Text(AppLocalizations.of(context).translate('status'), style: TextStyle(fontSize: 20),)
                     ),
                     SizedBox(height: 10,),
 
@@ -221,7 +219,7 @@ class _UpdateReferralScreenState extends State<UpdateReferralScreen> {
                       margin: EdgeInsets.symmetric(horizontal: 20),
                       color: kSecondaryTextField,
                       child: DropdownButtonFormField(
-                        hint: Text('Status *', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                        hint: Text(AppLocalizations.of(context).translate('status'), style: TextStyle(fontSize: 20, color: kTextGrey),),
                         decoration: InputDecoration(
                           fillColor: kSecondaryTextField,
                           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
@@ -254,7 +252,7 @@ class _UpdateReferralScreenState extends State<UpdateReferralScreen> {
 
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Text('Outcome', style: TextStyle(fontSize: 20),)
+                      child: Text(AppLocalizations.of(context).translate('referredOutcome'), style: TextStyle(fontSize: 20),)
                     ),
                     SizedBox(height: 10,),
 
@@ -266,7 +264,6 @@ class _UpdateReferralScreenState extends State<UpdateReferralScreen> {
                         controller: outcomeController,
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-                          hintText: 'Outcome',
                           hintStyle: TextStyle(fontSize: 18)
                         ),
                       )
@@ -276,7 +273,7 @@ class _UpdateReferralScreenState extends State<UpdateReferralScreen> {
 
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Text('Date of Completion', style: TextStyle(fontSize: 20),)
+                      child: Text(AppLocalizations.of(context).translate('dateOfReferral'), style: TextStyle(fontSize: 20),)
                     ),
                     SizedBox(height: 10,),
 
@@ -289,7 +286,6 @@ class _UpdateReferralScreenState extends State<UpdateReferralScreen> {
                         style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
                         decoration: InputDecoration(
                           suffixIcon: IconButton(icon: Icon(Icons.close), onPressed: () {}, color: kSecondaryTextField,),
-                          hintText: 'Select a date',
                           hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                           contentPadding: EdgeInsets.only(top: 18, bottom: 18, left: 10, right: 10),
                           // prefixIcon: Icon(Icons.date_range),
