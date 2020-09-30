@@ -60,7 +60,7 @@ class _CurrentMedicationState extends State<CurrentMedication> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Questionnaire', style: TextStyle(color: kPrimaryColor)),
+        title: Text(AppLocalizations.of(context).translate("questionnaire"), style: TextStyle(color: kPrimaryColor)),
         backgroundColor: Colors.white,
         elevation: 0.0,
         bottomOpacity: 0.0,

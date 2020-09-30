@@ -64,7 +64,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Questionnaire', style: TextStyle(color: kPrimaryColor)),
+        title: Text(AppLocalizations.of(context).translate("questionnaire"), style: TextStyle(color: kPrimaryColor)),
         backgroundColor: Colors.white,
         elevation: 0.0,
         bottomOpacity: 0.0,
@@ -156,7 +156,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                   if (result == 'success') {
                     _scaffoldKey.currentState.showSnackBar(
                       SnackBar(
-                        content: Text('Data saved successfully!'),
+                        content: Text(AppLocalizations.of(context).translate("dataSavedSuccessfully")),
                         backgroundColor: Color(0xFF4cAF50),
                       )
                     );
@@ -174,7 +174,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                     );
                   }
                 },
-                child: Text('COMPLETE', style: TextStyle(fontSize: 20, color: kPrimaryColor))
+                child: Text(AppLocalizations.of(context).translate("completed"), style: TextStyle(fontSize: 20, color: kPrimaryColor))
               )
             ),
           ],
@@ -186,42 +186,42 @@ class _MedicalHistoryState extends State<MedicalHistory> {
   List<CustomStep> _mySteps() {
     List<CustomStep> _steps = [
       CustomStep(
-        title: Text('Photo'),
+        title: Text(AppLocalizations.of(context).translate("photo")),
         content: FirstQuestion(),
         isActive: _currentStep >= 2,
       ),
       CustomStep(
-        title: Text('Thumbprint'),
+        title: Text(AppLocalizations.of(context).translate("thumbprint")),
         content: SecondQuestion(),
         isActive: _currentStep >= 2,
       ),
       CustomStep(
-        title: Text('Thumbprint'),
+        title: Text(AppLocalizations.of(context).translate("thumbprint")),
         content: ThirdQuestion(),
         isActive: _currentStep >= 2,
       ),
       CustomStep(
-        title: Text('Thumbprint'),
+        title: Text(AppLocalizations.of(context).translate("thumbprint")),
         content: FourthQuestion(),
         isActive: _currentStep >= 2,
       ),
       CustomStep(
-        title: Text('Thumbprint'),
+        title: Text(AppLocalizations.of(context).translate("thumbprint")),
         content: FifthQuestion(),
         isActive: _currentStep >= 2,
       ),
       CustomStep(
-        title: Text('Thumbprint'),
+        title: Text(AppLocalizations.of(context).translate("thumbprint")),
         content: SixthQuestion(),
         isActive: _currentStep >= 2,
       ),
       CustomStep(
-        title: Text('Thumbprint'),
+        title: Text(AppLocalizations.of(context).translate("thumbprint")),
         content: SeventhQuestion(),
         isActive: _currentStep >= 2,
       ),
       CustomStep(
-        title: Text('Thumbprint'),
+        title: Text(AppLocalizations.of(context).translate("thumbprint")),
         content: EighthQuestion(),
         isActive: _currentStep >= 2,
       ),
@@ -269,7 +269,7 @@ class _FirstQuestionState extends State<FirstQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Medical History', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate("medicalHistory"), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
@@ -288,7 +288,7 @@ class _FirstQuestionState extends State<FirstQuestion> {
                   Icon(Icons.error_outline, color: Color(0x87000000), size: 40,),
                   SizedBox(width: 10,),
                   Expanded(
-                    child: Text('Do you have a history of (or has ever been told they have) (select all that apply)', style: TextStyle(fontSize: 19),),
+                    child: Text(AppLocalizations.of(context).translate("doYouHave"), style: TextStyle(fontSize: 19),),
                   )
                 ],
               )
@@ -370,7 +370,7 @@ class _SecondQuestionState extends State<SecondQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Medical History', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate("medicalHistory"), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
@@ -447,7 +447,7 @@ class _ThirdQuestionState extends State<ThirdQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Medical History', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate("medicalHistory"), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
@@ -524,7 +524,7 @@ class _FourthQuestionState extends State<FourthQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Medical History', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate("medicalHistory"), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
@@ -601,7 +601,7 @@ class _FifthQuestionState extends State<FifthQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Medical History', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate("medicalHistory"), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
@@ -678,7 +678,7 @@ class _SixthQuestionState extends State<SixthQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Medical History', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate("medicalHistory"), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
@@ -755,7 +755,7 @@ class _SeventhQuestionState extends State<SeventhQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Medical History', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate("medicalHistory"), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
@@ -855,7 +855,7 @@ class _EighthQuestionState extends State<EighthQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Medical History', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate("medicalHistory") ,style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
@@ -906,7 +906,7 @@ class _EighthQuestionState extends State<EighthQuestion> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text('Select Allergies', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),),
+                          Text(AppLocalizations.of(context).translate("selectAllergies"), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),),
                         ],
                       ),
                     ),

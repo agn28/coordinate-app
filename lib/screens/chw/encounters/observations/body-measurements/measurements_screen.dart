@@ -392,7 +392,7 @@ class _AddDialogueState extends State<AddDialogue> {
                                 _changeUnit(val);
                               },
                             ),
-                            Text('kg', style: TextStyle(color: Colors.black)),
+                            Text(AppLocalizations.of(context).translate("kg"), style: TextStyle(color: Colors.black)),
                             SizedBox(width: 20,),
                             Radio(
                               activeColor: kPrimaryColor,
@@ -402,7 +402,7 @@ class _AddDialogueState extends State<AddDialogue> {
                                 _changeUnit(val);
                               },
                             ),
-                            Text('pound',),
+                            Text(AppLocalizations.of(context).translate("pound"),),
                           ],
                         ) :
                         Row(
@@ -415,7 +415,7 @@ class _AddDialogueState extends State<AddDialogue> {
                                 _changeUnit(val);
                               },
                             ),
-                            Text('cm', style: TextStyle(color: Colors.black)),
+                            Text(AppLocalizations.of(context).translate("cm"), style: TextStyle(color: Colors.black)),
                             SizedBox(width: 20,),
                             Radio(
                               activeColor: kPrimaryColor,
@@ -425,7 +425,7 @@ class _AddDialogueState extends State<AddDialogue> {
                                 _changeUnit(val);
                               },
                             ),
-                            Text('inch',),
+                            Text(AppLocalizations.of(context).translate("inch"),),
                           ],
                         )
                       ),
@@ -436,7 +436,7 @@ class _AddDialogueState extends State<AddDialogue> {
                 Container(
                   color: kSecondaryTextField,
                   child: DropdownButtonFormField(
-                    hint: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                    hint: Text(AppLocalizations.of(context).translate("selectDevice"), style: TextStyle(fontSize: 20, color: kTextGrey),),
                     decoration: InputDecoration(
                       fillColor: kSecondaryTextField,
                       contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
@@ -515,7 +515,7 @@ class _AddDialogueState extends State<AddDialogue> {
                                 _clearDialogForm();
                               }
                             },
-                            child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
+                            child: Text(AppLocalizations.of(context).translate("add"), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
                           ),
                         ],
                       )

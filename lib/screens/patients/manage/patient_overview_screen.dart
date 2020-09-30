@@ -1113,7 +1113,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
           );
         },
         icon: Icon(Icons.add),
-        label: Text("NEW ENCOUNTER"),
+        label: Text(AppLocalizations.of(context).translate("newEncounter")),
         backgroundColor: kPrimaryColor,
       ),
     );

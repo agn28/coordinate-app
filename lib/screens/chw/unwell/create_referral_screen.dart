@@ -228,11 +228,11 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                                     builder: (BuildContext context) {
                                       // return object of type Dialog
                                       return AlertDialog(
-                                        content: new Text("Referral already exists!", style: TextStyle(fontSize: 20),),
+                                        content: new Text(AppLocalizations.of(context).translate("referralAlreadyExists"), style: TextStyle(fontSize: 20),),
                                         actions: <Widget>[
                                           // usually buttons at the bottom of the dialog
                                           new FlatButton(
-                                            child: new Text("Update Referral", style: TextStyle(color: kPrimaryColor)),
+                                            child: new Text(AppLocalizations.of(context).translate("referralUpdate"), style: TextStyle(color: kPrimaryColor)),
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                               Navigator.of(context).pushNamed('/referralList',);

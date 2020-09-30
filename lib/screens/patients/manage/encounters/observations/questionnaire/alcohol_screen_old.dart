@@ -62,7 +62,7 @@ class _AlcoholState extends State<Alcohol> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Alcohol', style: TextStyle(color: kPrimaryColor)),
+        title: Text(AppLocalizations.of(context).translate("alcohol"), style: TextStyle(color: kPrimaryColor)),
         backgroundColor: Colors.white,
         elevation: 0.0,
         bottomOpacity: 0.0,
@@ -91,7 +91,7 @@ class _AlcoholState extends State<Alcohol> {
                   Icon(Icons.error_outline, color: Color(0x87000000), size: 40,),
                   SizedBox(width: 10,),
                   Expanded(
-                    child: Text('Now I am going to ask you some questions about alcohol use.', style: TextStyle(fontSize: 19),),
+                    child: Text(AppLocalizations.of(context).translate("questionsAboutalcohol"), style: TextStyle(fontSize: 19),),
                   )
                 ],
               )
@@ -246,7 +246,7 @@ class _AlcoholState extends State<Alcohol> {
                           if (result == 'success') {
                             _scaffoldKey.currentState.showSnackBar(
                               SnackBar(
-                                content: Text('Data saved successfully!'),
+                                content: Text(AppLocalizations.of(context).translate("dataSaved")),
                                 backgroundColor: Color(0xFF4cAF50),
                               )
                             );
@@ -284,7 +284,7 @@ class _AlcoholState extends State<Alcohol> {
   List<CustomStep> _mySteps() {
     List<CustomStep> _steps = [
       CustomStep(
-        title: Text('Photo'),
+        title: Text(AppLocalizations.of(context).translate("photo")),
         content: FirstQuestion(),
         isActive: _currentStep >= 2,
       ),
@@ -330,7 +330,7 @@ class _FirstQuestionState extends State<FirstQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Alcohol', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate("alcohol"), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
@@ -349,7 +349,7 @@ class _FirstQuestionState extends State<FirstQuestion> {
                   Icon(Icons.error_outline, color: Color(0x87000000), size: 40,),
                   SizedBox(width: 10,),
                   Expanded(
-                    child: Text('Now I am going to ask you some questions about alcohol use.', style: TextStyle(fontSize: 19),),
+                    child: Text(AppLocalizations.of(context).translate("questionsAboutalcohol"), style: TextStyle(fontSize: 19),),
                   )
                 ],
               )
