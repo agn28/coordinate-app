@@ -157,18 +157,18 @@ class EncounterDetailsState extends State<EncounterDetailsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('Community Visits', style: TextStyle(fontSize: 20, ),),
+                      Text(AppLocalizations.of(context).translate("communityVisits"), style: TextStyle(fontSize: 20, ),),
                       Text(item['body']['data']['title'], style: TextStyle(fontSize: 22, height: 1.7, fontWeight: FontWeight.w600),),
                       Row(
                         children: <Widget>[
-                          Text('Video Watched: ', style: TextStyle(fontSize: 20, height: 1.6),),
+                          Text(AppLocalizations.of(context).translate("videoWatched"), style: TextStyle(fontSize: 20, height: 1.6),),
                           Text(StringUtils.capitalize(item['body']['data']['video_watched'].toString()), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, height: 1.6),),
                         ],
                       ),
 
                       Row(
                         children: <Widget>[
-                          Text('Date: ', style: TextStyle(fontSize: 20, height: 1.6),),
+                          Text(AppLocalizations.of(context).translate("date")+":", style: TextStyle(fontSize: 20, height: 1.6),),
                           Text(item['meta']['created_at'], style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, height: 1.6),),
                         ],
                       ),

@@ -518,7 +518,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                 Container(
                   color: kSecondaryTextField,
                   child: DropdownButtonFormField(
-                    hint: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                    hint: Text(AppLocalizations.of(context).translate("selectDevice"), style: TextStyle(fontSize: 20, color: kTextGrey),),
                     decoration: InputDecoration(
                       fillColor: kSecondaryTextField,
                       contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
@@ -746,7 +746,7 @@ class _SkipAlertState extends State<SkipAlert> {
                 child: Form(
                   key: _skipForm,
                   child: PrimaryTextField(
-                    hintText: 'Other reason',
+                    hintText: AppLocalizations.of(context).translate("OtherReason"),
                     controller: otherReasonController,
                     topPaadding: 8,
                     bottomPadding: 8,

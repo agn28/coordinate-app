@@ -86,7 +86,7 @@ class _MobileAuthState extends State<MobileAuth> {
                         SizedBox(width: 15,),
                         Container(
                           margin: EdgeInsets.only(top: 12),
-                          child: Text('Coordinate', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500, fontFamily: 'Roboto')),
+                          child: Text(AppLocalizations.of(context).translate("coordinate"), style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500, fontFamily: 'Roboto')),
                         )
                       ],
                     )

@@ -171,7 +171,7 @@ class _CurrentMedicationState extends State<CurrentMedication> {
                     child: PrimaryTextField(
                       topPaadding: 8,
                       bottomPadding: 8,
-                      hintText: 'Write your problem',
+                      hintText: AppLocalizations.of(context).translate("writeYourProblem"),
                       controller: problemController,
                     )
                   ),
@@ -392,7 +392,7 @@ class _MedicationListState extends State<MedicationList> {
                           topRight: Radius.circular(4),
                         )
                       ),
-                      hintText: 'Search',
+                      hintText: AppLocalizations.of(context).translate("search"),
                       hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                     )
                   )

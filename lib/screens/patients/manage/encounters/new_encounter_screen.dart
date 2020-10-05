@@ -203,7 +203,7 @@ class _NewEncounterState extends State<NewEncounter> {
                 margin: EdgeInsets.symmetric(horizontal: 30),
                 child: Row(
                   children: <Widget>[
-                    Text('Encounter Type', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                    Text(AppLocalizations.of(context).translate("encounterType"), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                     SizedBox(width: 20,),
                     Radio(
                       value: 'In-clinic Screening',

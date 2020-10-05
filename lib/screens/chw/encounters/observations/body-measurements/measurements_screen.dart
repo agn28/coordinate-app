@@ -360,7 +360,7 @@ class _AddDialogueState extends State<AddDialogue> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text('Add ' + widget.title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                Text(AppLocalizations.of(context).translate("add") + widget.title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                 SizedBox(height: 20,),
                 Container(
                   // margin: EdgeInsets.symmetric(horizontal: 30),
@@ -657,7 +657,7 @@ class _SkipAlertState extends State<SkipAlert> {
                 child: Form(
                   key: _skipForm,
                   child: PrimaryTextField(
-                    hintText: 'Other reason',
+                    hintText: AppLocalizations.of(context).translate("OtherReason"),
                     controller: skipReasonController,
                     topPaadding: 8,
                     bottomPadding: 8,

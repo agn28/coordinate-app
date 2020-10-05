@@ -63,7 +63,7 @@ class _CounsellingFrameworkScreenState extends State<CounsellingFrameworkScreen>
                 SizedBox(height: 30,),
                 Container(
                   margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
-                  child: Text('Deliver counselling for risk behavior', style: TextStyle(fontSize: 18,),),
+                  child: Text(AppLocalizations.of(context).translate("deliverCounsellingRiskBehavior"), style: TextStyle(fontSize: 18,),),
                 ),
                 SizedBox(height: 20,),
 
@@ -115,7 +115,7 @@ class _CounsellingFrameworkScreenState extends State<CounsellingFrameworkScreen>
                                                 SizedBox(height: 15,),
                                                 Container(
                                                   padding: EdgeInsets.only(left: 16),
-                                                  child: Text('Ask important aspects of behavioural risk factor', style: TextStyle( fontSize: 17)),
+                                                  child: Text(AppLocalizations.of(context).translate("behaviouralRiskFactor"), style: TextStyle( fontSize: 17)),
                                                 ),
                                                 Row(
                                                   children: <Widget>[
@@ -128,7 +128,7 @@ class _CounsellingFrameworkScreenState extends State<CounsellingFrameworkScreen>
                                                         });
                                                       },
                                                     ),
-                                                    Text('Completed', style: TextStyle(color: Colors.black, fontSize: 17)),
+                                                    Text(AppLocalizations.of(context).translate("completed"), style: TextStyle(color: Colors.black, fontSize: 17)),
                                                   ],
                                                 ),
                                               ],
@@ -205,7 +205,7 @@ class _CounsellingFrameworkScreenState extends State<CounsellingFrameworkScreen>
                                                       
                                                       },
                                                     ),
-                                                    Text('Completed', style: TextStyle(color: Colors.black, fontSize: 17)),
+                                                    Text(AppLocalizations.of(context).translate("completed"), style: TextStyle(color: Colors.black, fontSize: 17)),
                                                   ],
                                                 ),
                                               ],
@@ -282,7 +282,7 @@ class _CounsellingFrameworkScreenState extends State<CounsellingFrameworkScreen>
                                                       
                                                       },
                                                     ),
-                                                    Text('Completed', style: TextStyle(color: Colors.black, fontSize: 17)),
+                                                    Text(AppLocalizations.of(context).translate("completed"), style: TextStyle(color: Colors.black, fontSize: 17)),
                                                   ],
                                                 ),
                                               ],
@@ -358,7 +358,7 @@ class _CounsellingFrameworkScreenState extends State<CounsellingFrameworkScreen>
                                                       
                                                       },
                                                     ),
-                                                    Text('Completed', style: TextStyle(color: Colors.black, fontSize: 18)),
+                                                    Text(AppLocalizations.of(context).translate("completed"), style: TextStyle(color: Colors.black, fontSize: 18)),
                                                   ],
                                                 ), 
                                               ],
@@ -435,7 +435,7 @@ class _CounsellingFrameworkScreenState extends State<CounsellingFrameworkScreen>
                                                       
                                                       },
                                                     ),
-                                                    Text('Completed', style: TextStyle(color: Colors.black, fontSize: 18)),
+                                                    Text(AppLocalizations.of(context).translate("completed"), style: TextStyle(color: Colors.black, fontSize: 18)),
                                                   ],
                                                 ),
                                               

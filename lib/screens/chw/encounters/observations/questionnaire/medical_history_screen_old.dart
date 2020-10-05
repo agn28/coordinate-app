@@ -64,7 +64,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Questionnaire', style: TextStyle(color: kPrimaryColor)),
+        title: Text(AppLocalizations.of(context).translate("questionnaire"), style: TextStyle(color: kPrimaryColor)),
         backgroundColor: Colors.white,
         elevation: 0.0,
         bottomOpacity: 0.0,
@@ -156,7 +156,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                   if (result == 'success') {
                     _scaffoldKey.currentState.showSnackBar(
                       SnackBar(
-                        content: Text('Data saved successfully!'),
+                        content: Text(AppLocalizations.of(context).translate("dataSaved")),
                         backgroundColor: Color(0xFF4cAF50),
                       )
                     );
@@ -174,7 +174,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                     );
                   }
                 },
-                child: Text('COMPLETE', style: TextStyle(fontSize: 20, color: kPrimaryColor))
+                child: Text(AppLocalizations.of(context).translate("completed"), style: TextStyle(fontSize: 20, color: kPrimaryColor))
               )
             ),
           ],
@@ -186,42 +186,42 @@ class _MedicalHistoryState extends State<MedicalHistory> {
   List<CustomStep> _mySteps() {
     List<CustomStep> _steps = [
       CustomStep(
-        title: Text('Photo'),
+        title: Text(AppLocalizations.of(context).translate('photo')),
         content: FirstQuestion(),
         isActive: _currentStep >= 2,
       ),
       CustomStep(
-        title: Text('Thumbprint'),
+        title: Text(AppLocalizations.of(context).translate("thumbprint")),
         content: SecondQuestion(),
         isActive: _currentStep >= 2,
       ),
       CustomStep(
-        title: Text('Thumbprint'),
+        title: Text(AppLocalizations.of(context).translate("thumbprint")),
         content: ThirdQuestion(),
         isActive: _currentStep >= 2,
       ),
       CustomStep(
-        title: Text('Thumbprint'),
+        title: Text(AppLocalizations.of(context).translate("thumbprint")),
         content: FourthQuestion(),
         isActive: _currentStep >= 2,
       ),
       CustomStep(
-        title: Text('Thumbprint'),
+        title: Text(AppLocalizations.of(context).translate("thumbprint")),
         content: FifthQuestion(),
         isActive: _currentStep >= 2,
       ),
       CustomStep(
-        title: Text('Thumbprint'),
+        title: Text(AppLocalizations.of(context).translate("thumbprint")),
         content: SixthQuestion(),
         isActive: _currentStep >= 2,
       ),
       CustomStep(
-        title: Text('Thumbprint'),
+        title: Text(AppLocalizations.of(context).translate("thumbprint")),
         content: SeventhQuestion(),
         isActive: _currentStep >= 2,
       ),
       CustomStep(
-        title: Text('Thumbprint'),
+        title: Text(AppLocalizations.of(context).translate("thumbprint")),
         content: EighthQuestion(),
         isActive: _currentStep >= 2,
       ),
@@ -269,7 +269,7 @@ class _FirstQuestionState extends State<FirstQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Medical History', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate("medicalHistory"), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
@@ -770,7 +770,7 @@ class _SeventhQuestionState extends State<SeventhQuestion> {
               child: PrimaryTextField(
                 topPaadding: 8,
                 bottomPadding: 8,
-                hintText: 'Write your problem',
+                hintText:AppLocalizations.of(context).translate("writeYourProblem"),
                 controller: _seventhQuestionController,
               )
             ),
@@ -979,7 +979,7 @@ class _EighthQuestionState extends State<EighthQuestion> {
                                   topRight: Radius.circular(4),
                                 )
                               ),
-                              hintText: 'Search',
+                              hintText: AppLocalizations.of(context).translate("search"),
                               hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                             )
                           )

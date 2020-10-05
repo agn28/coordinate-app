@@ -286,7 +286,7 @@ class _PatientRecordsState extends State<PatientRecordsScreenOld> {
                                         children: <Widget>[
                                           Icon(Icons.add, color: kPrimaryColor, size: 30,),
                                           SizedBox(width: 20),
-                                          Text('Create a New Encounter', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500, color: kPrimaryColor), textAlign: TextAlign.right,)
+                                          Text(AppLocalizations.of(context).translate("createNewEncounter"), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500, color: kPrimaryColor), textAlign: TextAlign.right,)
                                         ],
                                       ),
                                     ),

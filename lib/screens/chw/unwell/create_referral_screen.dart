@@ -92,7 +92,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                     SizedBox(height: 30,),
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Text('Reason for referral', style: TextStyle(fontSize: 20),)
+                      child: Text(AppLocalizations.of(context).translate("reasonForReferral"), style: TextStyle(fontSize: 20),)
                     ),
                     SizedBox(height: 10,),
                     Container(
@@ -132,14 +132,14 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                     SizedBox(height: 30,),
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Text('Referral location', style: TextStyle(fontSize: 20),)
+                      child: Text(AppLocalizations.of(context).translate("referralLocation"), style: TextStyle(fontSize: 20),)
                     ),
                     SizedBox(height: 10,),
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 20),
                       color: kSecondaryTextField,
                       child: DropdownButtonFormField(
-                        hint: Text('Clinic type *', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                        hint: Text(AppLocalizations.of(context).translate("clinicType"), style: TextStyle(fontSize: 20, color: kTextGrey),),
                         decoration: InputDecoration(
                           fillColor: kSecondaryTextField,
                           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),

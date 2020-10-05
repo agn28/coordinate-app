@@ -550,7 +550,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                     // crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      Text('BMI', style: TextStyle(fontSize: 18, height: 1.4, fontWeight: FontWeight.w500),),
+                                      Text(AppLocalizations.of(context).translate("Total Cholesterol"), style: TextStyle(fontSize: 18, height: 1.4, fontWeight: FontWeight.w500),),
                                       canEdit ? GestureDetector(
                                         child: Icon(Icons.edit, color: kPrimaryColor,),
                                         onTap: () {}
@@ -711,7 +711,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Text('Blood Pressure', style: TextStyle(fontSize: 24)),
+                                Text(AppLocalizations.of(context).translate("bmi"), style: TextStyle(fontSize: 24)),
                                 canEdit ? GestureDetector(
                                   child: Icon(Icons.edit, color: kPrimaryColor,),
                                   onTap: () {}
@@ -996,7 +996,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Text('Cholesterol', style: TextStyle(fontSize: 24)),
+                                Text(AppLocalizations.of(context).translate("cholesterol"), style: TextStyle(fontSize: 24)),
                                 canEdit ? GestureDetector(
                                   child: Icon(Icons.edit, color: kPrimaryColor,),
                                   onTap: () {}
@@ -1139,7 +1139,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Text('Cardiovascular Risk', style: TextStyle(fontSize: 24)),
+                                Text(AppLocalizations.of(context).translate("cardiovascularRisk"), style: TextStyle(fontSize: 24)),
                                 canEdit ? GestureDetector(
                                   child: Icon(Icons.edit, color: kPrimaryColor,),
                                   onTap: () {}
@@ -1392,7 +1392,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                 }
                               },
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              child: confirmLoading ? CircularProgressIndicator() : Text('CONFIRM ASSESSMENT', style: TextStyle(fontSize: 14, color: Colors.white),),
+                              child: confirmLoading ? CircularProgressIndicator() : Text(AppLocalizations.of(context).translate("confirmAssessment"), style: TextStyle(fontSize: 14, color: Colors.white),),
                             ),
                           ),
 
@@ -1424,7 +1424,7 @@ class _CreateHealthReportState extends State<CreateHealthReport> {
                                 }
                               },
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              child: reviewLoading ? CircularProgressIndicator() : Text('SEND FOR DOCTOR REVIEW', style: TextStyle(fontSize: 14, color: Colors.white),)
+                              child: reviewLoading ? CircularProgressIndicator() : Text(AppLocalizations.of(context).translate("doctorReview"), style: TextStyle(fontSize: 14, color: Colors.white),)
                             ),
                           ),
                         ],

@@ -62,7 +62,7 @@ class _CurrentMedicationState extends State<CurrentMedication> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Current Medication', style: TextStyle(color: kPrimaryColor)),
+        title: Text(AppLocalizations.of(context).translate("currentMedication"), style: TextStyle(color: kPrimaryColor)),
         backgroundColor: Colors.white,
         elevation: 0.0,
         bottomOpacity: 0.0,
@@ -171,7 +171,7 @@ class _CurrentMedicationState extends State<CurrentMedication> {
                     child: PrimaryTextField(
                       topPaadding: 8,
                       bottomPadding: 8,
-                      hintText: 'Write your problem',
+                      hintText: AppLocalizations.of(context).translate("writeYourProblem"),
                       controller: problemController,
                     )
                   ),
@@ -221,7 +221,7 @@ class _CurrentMedicationState extends State<CurrentMedication> {
                           if (result == 'success') {
                             _scaffoldKey.currentState.showSnackBar(
                               SnackBar(
-                                content: Text('Data saved successfully!'),
+                                content: Text(AppLocalizations.of(context).translate("dataSaved")),
                                 backgroundColor: Color(0xFF4cAF50),
                               )
                             );
@@ -319,7 +319,7 @@ class _MedicationListState extends State<MedicationList> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text('Select Medications', style: TextStyle(fontSize: 18, ),),
+                  Text(AppLocalizations.of(context).translate("selectMedications"), style: TextStyle(fontSize: 18, ),),
                 ],
               ),
             ),
@@ -392,7 +392,7 @@ class _MedicationListState extends State<MedicationList> {
                           topRight: Radius.circular(4),
                         )
                       ),
-                      hintText: 'Search',
+                      hintText: AppLocalizations.of(context).translate("search"),
                       hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                     )
                   )

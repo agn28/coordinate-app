@@ -164,7 +164,7 @@ class _AlcoholState extends State<Alcohol> {
                           child: PrimaryTextField(
                             topPaadding: 8,
                             bottomPadding: 8,
-                            hintText: 'Number of days',
+                            hintText: AppLocalizations.of(context).translate("numberOfDays"),
                             validation: true,
                             type: TextInputType.number,
                             controller: daysController,
@@ -182,7 +182,7 @@ class _AlcoholState extends State<Alcohol> {
                           child: PrimaryTextField(
                             topPaadding: 8,
                             bottomPadding: 8,
-                            hintText: 'Number of units',
+                            hintText: AppLocalizations.of(context).translate("numberOfUnits"),
                             validation: true,
                             type: TextInputType.number,
                             controller: unitsController,

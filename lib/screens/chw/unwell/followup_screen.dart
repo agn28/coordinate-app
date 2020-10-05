@@ -250,28 +250,28 @@ class _ChwFollowupState extends State<ChwFollowupScreen> {
   List<CustomStep> _mySteps() {
     List<CustomStep> _steps = [
       CustomStep(
-        title: Text('Causes', textAlign: TextAlign.center,),
+        title: Text(AppLocalizations.of(context).translate("causes"), textAlign: TextAlign.center,),
         content: UnwellCauses(),
         isActive: _currentStep >= 0,
       ),
       CustomStep(
-        title: Text('Permission', textAlign: TextAlign.center,),
+        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
         content: Temperature(parent: this),
         isActive: _currentStep >= 1,
       ),
       CustomStep(
-        title: Text('Permission', textAlign: TextAlign.center,),
+        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
         content: BloodPressure(parent: this),
         isActive: _currentStep >= 2,
       ),
 
       CustomStep(
-        title: Text('Permission', textAlign: TextAlign.center,),
+        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
         content: Glucose(parent: this),
         isActive: _currentStep >= 4,
       ),
       CustomStep(
-        title: Text('Permission', textAlign: TextAlign.center,),
+        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
         content: AcuteIssues(parent: this),
         isActive: _currentStep >= 5,
       ),
@@ -471,7 +471,7 @@ class _TemperatureState extends State<Temperature> {
             SizedBox(height: 30,),
             Container(
               alignment: Alignment.center,
-              child: Text('What is patient\'s temperature?', style: TextStyle(fontSize: 21),),
+              child: Text(AppLocalizations.of(context).translate("whatIsPatientTem"), style: TextStyle(fontSize: 21),),
             ),
             SizedBox(height: 30,),
             Container(
@@ -526,7 +526,7 @@ class _BloodPressureState extends State<BloodPressure> {
             SizedBox(height: 30,),
             Container(
               alignment: Alignment.center,
-              child: Text('What is blood pressure?', style: TextStyle(fontSize: 21),),
+              child: Text(AppLocalizations.of(context).translate("whatPressure"), style: TextStyle(fontSize: 21),),
             ),
             SizedBox(height: 30,),
             Container(
@@ -547,7 +547,7 @@ class _BloodPressureState extends State<BloodPressure> {
                       });
                     },
                   ),
-                  Text('Left Arm', style: TextStyle(color: Colors.black)),
+                  Text(AppLocalizations.of(context).translate("leftArm"), style: TextStyle(color: Colors.black)),
                   SizedBox(width: 30,),
                   Radio(
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -560,7 +560,7 @@ class _BloodPressureState extends State<BloodPressure> {
                       });
                     },
                   ),
-                  Text('Right Arm', style: TextStyle(color: Colors.black)),
+                  Text(AppLocalizations.of(context).translate("rightArm"), style: TextStyle(color: Colors.black)),
                 ],
                   ),
             ),
@@ -814,7 +814,7 @@ class _GlucoseState extends State<Glucose> {
             SizedBox(height: 30,),
             Container(
               alignment: Alignment.center,
-              child: Text('What is blood glucose level?', style: TextStyle(fontSize: 21),),
+              child: Text(AppLocalizations.of(context).translate("bloodGlucoseLevel"), style: TextStyle(fontSize: 21),),
             ),
             SizedBox(height: 30,),
             Container(
@@ -902,7 +902,7 @@ class _GlucoseState extends State<Glucose> {
               color: kSecondaryTextField,
               margin: EdgeInsets.symmetric(horizontal: 100),
               child: DropdownButtonFormField(
-                hint: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                hint: Text(AppLocalizations.of(context).translate("selectDevice"), style: TextStyle(fontSize: 20, color: kTextGrey),),
                 decoration: InputDecoration(
                   fillColor: kSecondaryTextField,
                   contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),

@@ -86,7 +86,7 @@ class _MedicalRecommendationState extends State<MedicalRecommendationScreen> {
                     widget.referralData['referred_from'] != null &&  widget.referralData['referred_from'] == 'new questionnaire' ? 
                     Container(
                       margin: EdgeInsets.only(left: 50, right: 50),
-                      child: Text('Based on guidelines, the patient requires a referral for NCD screening', textAlign: TextAlign.center, style: TextStyle( color: kPrimaryRedColor, fontSize: 22, fontWeight: FontWeight.w400),),
+                      child: Text(AppLocalizations.of(context).translate("NCDscreening"), textAlign: TextAlign.center, style: TextStyle( color: kPrimaryRedColor, fontSize: 22, fontWeight: FontWeight.w400),),
                     ) : 
                     Column(
                       children: <Widget>[
@@ -97,9 +97,9 @@ class _MedicalRecommendationState extends State<MedicalRecommendationScreen> {
                           ),
                         ),
                         SizedBox(height: 30,),
-                        Text('The patients seems to be severly unwell', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),),
+                        Text(AppLocalizations.of(context).translate('patientsUnwell'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),),
                         SizedBox(height: 15,),
-                        Text('Recommend seeking medical attention', style: TextStyle(color: kPrimaryRedColor, fontSize: 22, fontWeight: FontWeight.w400),),
+                        Text(AppLocalizations.of(context).translate("seekingMedicalAttention"), style: TextStyle(color: kPrimaryRedColor, fontSize: 22, fontWeight: FontWeight.w400),),
                       ],
                     ),
                     

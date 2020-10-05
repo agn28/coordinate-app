@@ -130,7 +130,7 @@ class _ChwQuestionnairesState extends State<ChwQuestionnaires> {
 
                   EncounnterStepsChw(
                     icon: Image.asset('assets/images/icons/questionnaire.png'),
-                    text: 'Medical History',
+                    text: AppLocalizations.of(context).translate("medicalHistory"),
                     onTap: () {
                       Navigator.of(context).push(MedicalHistoryScreen());
                     },

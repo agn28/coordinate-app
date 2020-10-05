@@ -92,7 +92,7 @@ class _CarePlanGenerateState extends State<CarePlanGenerate> {
                       });
                     },
                   ),
-                  Text('Smoking cessation advise provided to patient', style: TextStyle(fontSize: 16),)
+                  Text(AppLocalizations.of(context).translate("smokingCessation"), style: TextStyle(fontSize: 16),)
                 ],
               ),
             ),

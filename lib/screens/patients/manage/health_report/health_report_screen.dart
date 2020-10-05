@@ -146,7 +146,7 @@ class HealthReport extends StatelessWidget {
                                       child: Image.asset('assets/images/icons/alcohol.png', )
                                     ),
                                     SizedBox(height: 7,),
-                                    Text('Alcohol \n Consumption', style: TextStyle(fontSize: 18, height: 1.4), textAlign: TextAlign.center,),
+                                    Text(AppLocalizations.of(context).translate("alcoholConsumption"), style: TextStyle(fontSize: 18, height: 1.4), textAlign: TextAlign.center,),
                                     Text(AppLocalizations.of(context).translate("medium"), style: TextStyle(fontSize: 18, color: kPrimaryYellowColor, height: 2),),
                                   ],
                                 )
@@ -185,7 +185,7 @@ class HealthReport extends StatelessWidget {
                                       child: Image.asset('assets/images/icons/vegetables.png', )
                                     ),
                                     SizedBox(height: 7,),
-                                    Text('Vegetable \n Consumption', style: TextStyle(fontSize: 18, height: 1.4), textAlign: TextAlign.center,),
+                                    Text(AppLocalizations.of(context).translate("vegetableConsumption"), style: TextStyle(fontSize: 18, height: 1.4), textAlign: TextAlign.center,),
                                     Text(AppLocalizations.of(context).translate("height"), style: TextStyle(fontSize: 18, color: kPrimaryGreenColor, height: 2),),
                                   ],
                                 )
@@ -458,7 +458,7 @@ class HealthReport extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text('Eat a balanced diet', style: TextStyle(fontSize: 18,),),
+                              Text(AppLocalizations.of(context).translate("eatBalancedDiet"), style: TextStyle(fontSize: 18,),),
                             ],
                           ),
                         )
@@ -478,7 +478,7 @@ class HealthReport extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text('Blood Pressure', style: TextStyle(fontSize: 24)),
+                        Text(AppLocalizations.of(context).translate("bloodPressure"), style: TextStyle(fontSize: 24)),
                         SizedBox(height: 20,),
 
                         Container(
@@ -595,7 +595,7 @@ class HealthReport extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Text('Blood Sugar', style: TextStyle(fontSize: 20, height: 1.4, fontWeight: FontWeight.w500),),
+                                    Text(AppLocalizations.of(context).translate("bloodSugar"), style: TextStyle(fontSize: 20, height: 1.4, fontWeight: FontWeight.w500),),
                                     Text('5.9 Pre-diabetes', style: TextStyle(fontSize: 18, height: 1.8, color: kPrimaryYellowColor),),
                                     Text('5.2 to 5.5', style: TextStyle(fontSize: 18, color: kTextGrey, height: 1.6),),
                                     SizedBox(height: 20,),
@@ -689,7 +689,7 @@ class HealthReport extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text('Cholesterol', style: TextStyle(fontSize: 24)),
+                        Text(AppLocalizations.of(context).translate("cholesterol"), style: TextStyle(fontSize: 24)),
                         SizedBox(height: 20,),
 
                         Container(
@@ -701,7 +701,7 @@ class HealthReport extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Text('Total Cholesterol', style: TextStyle(fontSize: 20, height: 1.4, fontWeight: FontWeight.w500),),
+                                    Text(AppLocalizations.of(context).translate("totalCholesterol"), style: TextStyle(fontSize: 20, height: 1.4, fontWeight: FontWeight.w500),),
                                     Text('55 mmol/L', style: TextStyle(fontSize: 18, height: 1.8, color: kPrimaryRedColor),),
                                     Text('18.5 t 24.9', style: TextStyle(fontSize: 18, color: kTextGrey, height: 1.6),),
                                     SizedBox(height: 20,),
@@ -795,7 +795,7 @@ class HealthReport extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text('Cardiovascular Risk', style: TextStyle(fontSize: 24)),
+                        Text(AppLocalizations.of(context).translate("cardiovascularRisk"), style: TextStyle(fontSize: 24)),
                         SizedBox(height: 20,),
 
                         Container(
@@ -807,7 +807,7 @@ class HealthReport extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Text('Your 10 years risk', style: TextStyle(fontSize: 20, height: 1.4, fontWeight: FontWeight.w500),),
+                                    Text(AppLocalizations.of(context).translate("10YearRisk"), style: TextStyle(fontSize: 20, height: 1.4, fontWeight: FontWeight.w500),),
                                     Text('20% Low', style: TextStyle(fontSize: 18, height: 1.8, color: kPrimaryRedColor),),
                                     Text('20-30%', style: TextStyle(fontSize: 18, color: kTextGrey, height: 1.6),),
                                     SizedBox(height: 20,),
@@ -881,7 +881,7 @@ class HealthReport extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text("This means that over the next 10 years, your risk of having a heart attack or stroke is approximately 10%, putting you in the low risk population", style: TextStyle(fontSize: 18, height: 1.5),),
+                              Text(AppLocalizations.of(context).translate("strokeApproximately"), style: TextStyle(fontSize: 18, height: 1.5),),
                             ],
                           ),
                         )
@@ -976,7 +976,7 @@ class HealthReport extends StatelessWidget {
                 child: FlatButton(
                   onPressed: () => Navigator.of(context).push(HealthReportSuccessScreen()),
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('SUBMIT FOR CONFIRMATION', style: TextStyle(fontSize: 17, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
+                  child: Text(AppLocalizations.of(context).translate("submitConfirmation"), style: TextStyle(fontSize: 17, color: Colors.white, fontWeight: FontWeight.w400), textAlign: TextAlign.center,),
                 ),
               )
             )

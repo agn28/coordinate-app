@@ -426,7 +426,7 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
               new PopupMenuItem<String>(
                   
                   child: Container(
-                    child: Text('Logout'),
+                    child: Text(AppLocalizations.of(context).translate("logout")),
                   ),
                   value: 'logout'),
               ],

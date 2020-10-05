@@ -26,7 +26,7 @@ class NewObservationScreen extends StatelessWidget {
                   SizedBox(height: 40,),
                   Text(AppLocalizations.of(context).translate('enterObservations'), style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                   SizedBox(height: 10,),
-                  Text('Select encounter type', style: TextStyle(fontSize: 20)),
+                  Text(AppLocalizations.of(context).translate("selectEncounterType"), style: TextStyle(fontSize: 20)),
                   SizedBox(height: 50,),
                   Row(
                     children: <Widget>[
