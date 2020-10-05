@@ -759,7 +759,7 @@ class _SkipAlertState extends State<SkipAlert> {
                 child: Form(
                   key: _skipForm,
                   child: PrimaryTextField(
-                    hintText: 'Other reason',
+                    hintText: AppLocalizations.of(context).translate("OtherReason"),
                     controller: skipReasonController,
                     topPaadding: 8,
                     bottomPadding: 8,

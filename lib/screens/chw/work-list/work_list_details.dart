@@ -455,7 +455,7 @@ class VideoConfirmForm extends StatelessWidget {
                         // });
                       },
                     ),
-                    Text('Yes', style: TextStyle(fontSize: 15),),
+                    Text(AppLocalizations.of(context).translate("yes"), style: TextStyle(fontSize: 15),),
 
                     Radio(
                       activeColor: kPrimaryColor,

@@ -103,7 +103,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                         // crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text('BMI', style: TextStyle(fontSize: 18, height: 1.4, fontWeight: FontWeight.w500),),
+                          Text(AppLocalizations.of(context).translate("bmi"), style: TextStyle(fontSize: 18, height: 1.4, fontWeight: FontWeight.w500),),
                           canEdit ? GestureDetector(
                             child: Icon(Icons.edit, color: kPrimaryColor,),
                             onTap: () {}
@@ -344,7 +344,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                         // crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text('Blood Pressure', style: TextStyle(fontSize: 18, height: 1.4, fontWeight: FontWeight.w500),),
+                          Text(AppLocalizations.of(context).translate("bloodPressure"), style: TextStyle(fontSize: 18, height: 1.4, fontWeight: FontWeight.w500),),
                           canEdit ? GestureDetector(
                             child: Icon(Icons.edit, color: kPrimaryColor,),
                             onTap: () {}
@@ -614,7 +614,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                   widget.reports['input'] != null && widget.reports['input']['params']['components']['biological-samples'] != null ?
                                   Row(
                                     children: <Widget>[
-                                      Text('Blood Glucose: ' + getGlucoseData(widget.reports['input']['params']['components']['biological-samples']),
+                                      Text(AppLocalizations.of(context).translate("bloodGlucose")+ ":" + getGlucoseData(widget.reports['input']['params']['components']['biological-samples']),
                                         style: TextStyle(
                                           fontSize: 15,
 
@@ -802,13 +802,13 @@ class _MeasurementsState extends State<MeasurementsTab> {
                                         SizedBox(height: 4,),
                                         Row(
                                           children: <Widget>[
-                                            Text('Glucose: ',style: TextStyle(color: kTextGrey, fontSize: 12),),
+                                            Text(AppLocalizations.of(context).translate("glucose")+":",style: TextStyle(color: kTextGrey, fontSize: 12),),
                                             Text(getGlucoseData(item['input']['params']['components']['biological-samples']),style: TextStyle(color: kTextGrey, fontSize: 12, fontWeight: FontWeight.w500),),
                                           ],
                                         ),
                                         Row(
                                           children: <Widget>[
-                                            Text('HbA1c: ',style: TextStyle(color: kTextGrey, fontSize: 12),),
+                                            Text(AppLocalizations.of(context).translate("hba1c")+":",style: TextStyle(color: kTextGrey, fontSize: 12),),
                                             Text(getA1cData(item['input']['params']['components']['biological-samples']),style: TextStyle(color: kTextGrey, fontSize: 12, fontWeight: FontWeight.w500),),
                                           ],
                                         ),
@@ -864,7 +864,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                         // crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text('Total Cholesterol', style: TextStyle(fontSize: 18, height: 1.4, fontWeight: FontWeight.w500),),
+                          Text(AppLocalizations.of(context).translate("totalCholesterol")+":", style: TextStyle(fontSize: 18, height: 1.4, fontWeight: FontWeight.w500),),
                           canEdit ? GestureDetector(
                             child: Icon(Icons.edit, color: kPrimaryColor,),
                             onTap: () {}
@@ -1105,7 +1105,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
                         // crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text('CVD', style: TextStyle(fontSize: 18, height: 1.4, fontWeight: FontWeight.w500),),
+                          Text(AppLocalizations.of(context).translate("cvd"), style: TextStyle(fontSize: 18, height: 1.4, fontWeight: FontWeight.w500),),
                           canEdit ? GestureDetector(
                             child: Icon(Icons.edit, color: kPrimaryColor,),
                             onTap: () {}

@@ -133,7 +133,7 @@ class _PhysicalActivityState extends State<PhysicalActivity> {
                   if (result == 'success') {
                     _scaffoldKey.currentState.showSnackBar(
                       SnackBar(
-                        content: Text('Data saved successfully!'),
+                        content: Text(AppLocalizations.of(context).translate("dataSavedSuccessfully")),
                         backgroundColor: Color(0xFF4cAF50),
                       )
                     );
@@ -151,7 +151,7 @@ class _PhysicalActivityState extends State<PhysicalActivity> {
                     );
                   }
                 },
-                child: Text('COMPLETE', style: TextStyle(fontSize: 20, color: kPrimaryColor))
+                child: Text(AppLocalizations.of(context).translate('complete'), style: TextStyle(fontSize: 20, color: kPrimaryColor))
               )
             ),
           ],
@@ -163,12 +163,12 @@ class _PhysicalActivityState extends State<PhysicalActivity> {
   List<CustomStep> _mySteps() {
     List<CustomStep> _steps = [
       CustomStep(
-        title: Text('Photo'),
+        title: Text(AppLocalizations.of(context).translate('photo')),
         content: FirstQuestion(),
         isActive: _currentStep >= 2,
       ),
       CustomStep(
-        title: Text('Thumbprint'),
+        title: Text(AppLocalizations.of(context).translate('useThumbprint')),
         content: SecondQuestion(),
         isActive: _currentStep >= 2,
       ),
@@ -235,7 +235,7 @@ class _FirstQuestionState extends State<FirstQuestion> {
                   Icon(Icons.error_outline, color: Color(0x87000000), size: 40,),
                   SizedBox(width: 10,),
                   Expanded(
-                    child: Text('Now I am going to ask you some questions about your physical activity.', style: TextStyle(fontSize: 19),),
+                    child: Text(AppLocalizations.of(context).translate("questionsAboutPhysicalActivity"), style: TextStyle(fontSize: 19),),
                   )
                 ],
               )

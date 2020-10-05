@@ -64,7 +64,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Medical History', style: TextStyle(color: kPrimaryColor)),
+        title: Text(AppLocalizations.of(context).translate("medicalHistory"), style: TextStyle(color: kPrimaryColor)),
         backgroundColor: Colors.white,
         elevation: 0.0,
         bottomOpacity: 0.0,
@@ -93,7 +93,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                   Icon(Icons.error_outline, color: Color(0x87000000), size: 40,),
                   SizedBox(width: 10,),
                   Expanded(
-                    child: Text('Do you have a history of (or has ever been told they have) (select all that apply)', style: TextStyle(fontSize: 19),),
+                    child: Text(AppLocalizations.of(context).translate("doYouHave"), style: TextStyle(fontSize: 19),),
                   )
                 ],
               )
@@ -157,7 +157,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                           if (result == 'success') {
                             _scaffoldKey.currentState.showSnackBar(
                               SnackBar(
-                                content: Text('Data saved successfully!'),
+                                content: Text(AppLocalizations.of(context).translate("dataSaved")),
                                 backgroundColor: Color(0xFF4cAF50),
                               )
                             );
@@ -668,7 +668,7 @@ class _SeventhQuestionState extends State<SeventhQuestion> {
               child: PrimaryTextField(
                 topPaadding: 8,
                 bottomPadding: 8,
-                hintText: 'Write your problem',
+                hintText: AppLocalizations.of(context).translate("writeYourProblem"),
                 controller: _seventhQuestionController,
               )
             ),
@@ -798,7 +798,7 @@ class _EighthQuestionState extends State<EighthQuestion> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text('Select Allergies', style: TextStyle(fontSize: 18,),),
+                          Text(AppLocalizations.of(context).translate("selectAllergies"), style: TextStyle(fontSize: 18,),),
                         ],
                       ),
                     ),
@@ -871,7 +871,7 @@ class _EighthQuestionState extends State<EighthQuestion> {
                                   topRight: Radius.circular(4),
                                 )
                               ),
-                              hintText: 'Search',
+                              hintText: AppLocalizations.of(context).translate("search"),
                               hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                             )
                           )

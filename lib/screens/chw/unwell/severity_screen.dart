@@ -102,7 +102,7 @@ class _SeverityScreenState extends State<SeverityScreen> {
                                 Navigator.of(context).pushNamed('/chwPatientSummary', arguments: true);
                               },
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              child: Text('YES', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                              child: Text(AppLocalizations.of(context).translate("yes"), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
                             ),
                           ),
                         ),
@@ -120,7 +120,7 @@ class _SeverityScreenState extends State<SeverityScreen> {
                                 Navigator.of(context).pushNamed('/chwWorklistSearch');
                               },
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              child: Text('NO', style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                              child: Text(AppLocalizations.of(context).translate("NO"), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
                             ),
                           ),
                         ),

@@ -334,23 +334,23 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
   List<CustomStep> _mySteps() {
     List<CustomStep> _steps = [
       CustomStep(
-        title: Text('Causes', textAlign: TextAlign.center,),
+        title: Text(AppLocalizations.of(context).translate("causes"), textAlign: TextAlign.center,),
         content: MedicalHistory(),
         isActive: _currentStep >= 0,
       ),
       CustomStep(
-        title: Text('Permission', textAlign: TextAlign.center,),
+        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
         content: Medication(),
         isActive: _currentStep >= 1,
       ),
       CustomStep(
-        title: Text('Permission', textAlign: TextAlign.center,),
+        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
         content: RiskFactors(),
         isActive: _currentStep >= 2,
       ),
 
       CustomStep(
-        title: Text('Permission', textAlign: TextAlign.center,),
+        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
         content: InitialCounselling(parent: this),
         isActive: _currentStep >= 3,
       ),
@@ -712,7 +712,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
             Container(
               // alignment: Alignment.center,
               margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
-              child: Text('Based on patients responses, the patient requires advice in the following areas.', style: TextStyle(fontSize: 18,),),
+              child: Text(AppLocalizations.of(context).translate("requiredDevice"), style: TextStyle(fontSize: 18,),),
             ),
             SizedBox(height: 20,),
 
@@ -771,7 +771,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                          
                                                   },
                                                 ),
-                                                Text('Provide material on harms of smoking', style: TextStyle(color: Colors.black, fontSize: 18)),
+                                                Text(AppLocalizations.of(context).translate("harmSmoking"), style: TextStyle(color: Colors.black, fontSize: 18)),
                                               ],
                                             ),
 
@@ -784,13 +784,13 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                          
                                                   },
                                                 ),
-                                                Text('Discuss strategis to stop smoking', style: TextStyle(color: Colors.black, fontSize: 18)),
+                                                Text(AppLocalizations.of(context).translate("stopSmoking"), style: TextStyle(color: Colors.black, fontSize: 18)),
                                               ],
                                             ),
 
                                             SizedBox(height: 20,),
 
-                                            Text('Counselling was given to patients?', style: TextStyle(color: Colors.black, fontSize: 18)),
+                                            Text(AppLocalizations.of(context).translate("givenPatient"), style: TextStyle(color: Colors.black, fontSize: 18)),
 
                                             SizedBox(height: 20,),
                                             Container(
@@ -813,7 +813,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                                           });
                                                         },
                                                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                        child: Text('YES',
+                                                        child: Text(AppLocalizations.of(context).translate("yes"),
                                                           style: TextStyle(color:  kPrimaryColor),
                                                         ),
                                                       ),
@@ -836,7 +836,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                                           });
                                                         },
                                                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                        child: Text('NO',
+                                                        child: Text(AppLocalizations.of(context).translate("no"),
                                                           style: TextStyle(color:  null),
                                                         ),
                                                       ),
@@ -1210,7 +1210,7 @@ class _TemperatureState extends State<Temperature> {
             SizedBox(height: 30,),
             Container(
               alignment: Alignment.center,
-              child: Text('What is patient\'s temperature?', style: TextStyle(fontSize: 21),),
+              child: Text(AppLocalizations.of(context).translate("patientTemperature"), style: TextStyle(fontSize: 21),),
             ),
             SizedBox(height: 30,),
             Container(
@@ -1265,7 +1265,7 @@ class _BloodPressureState extends State<BloodPressure> {
             SizedBox(height: 30,),
             Container(
               alignment: Alignment.center,
-              child: Text('What is blood pressure?', style: TextStyle(fontSize: 21),),
+              child: Text(AppLocalizations.of(context).translate("whatPressure"), style: TextStyle(fontSize: 21),),
             ),
             SizedBox(height: 30,),
             Container(
@@ -1286,7 +1286,7 @@ class _BloodPressureState extends State<BloodPressure> {
                       });
                     },
                   ),
-                  Text('Left Arm', style: TextStyle(color: Colors.black)),
+                  Text(AppLocalizations.of(context).translate("leftArm"), style: TextStyle(color: Colors.black)),
                   SizedBox(width: 30,),
                   Radio(
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -1299,7 +1299,7 @@ class _BloodPressureState extends State<BloodPressure> {
                       });
                     },
                   ),
-                  Text('Right Arm', style: TextStyle(color: Colors.black)),
+                  Text(AppLocalizations.of(context).translate("leftArm"), style: TextStyle(color: Colors.black)),
                 ],
                   ),
             ),
@@ -1553,7 +1553,7 @@ class _GlucoseState extends State<Glucose> {
             SizedBox(height: 30,),
             Container(
               alignment: Alignment.center,
-              child: Text('What is blood glucose level?', style: TextStyle(fontSize: 21),),
+              child: Text(AppLocalizations.of(context).translate("bloodGlucoseLevel"), style: TextStyle(fontSize: 21),),
             ),
             SizedBox(height: 30,),
             Container(
@@ -1641,7 +1641,7 @@ class _GlucoseState extends State<Glucose> {
               color: kSecondaryTextField,
               margin: EdgeInsets.symmetric(horizontal: 100),
               child: DropdownButtonFormField(
-                hint: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                hint: Text(AppLocalizations.of(context).translate("selectDevice"), style: TextStyle(fontSize: 20, color: kTextGrey),),
                 decoration: InputDecoration(
                   fillColor: kSecondaryTextField,
                   contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),

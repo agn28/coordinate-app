@@ -180,7 +180,7 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
               new PopupMenuItem<String>(
                   
                   child: Container(
-                    child: Text('Logout'),
+                    child: Text(AppLocalizations.of(context).translate("logout")),
                   ),
                     value: 'logout'),
               ],

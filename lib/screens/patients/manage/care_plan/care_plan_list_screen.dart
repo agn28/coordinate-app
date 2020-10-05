@@ -97,10 +97,10 @@ class CarePlanList extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
                         Expanded(
-                          child: Text('Action', style: TextStyle(fontSize: 17),),
+                          child: Text(AppLocalizations.of(context).translate("action"), style: TextStyle(fontSize: 17),),
                         ),
                         Expanded(
-                          child: Text('Status', style: TextStyle(fontSize: 17,),),
+                          child: Text(AppLocalizations.of(context).translate("status"), style: TextStyle(fontSize: 17,),),
                         ),
                         Expanded(
                           child: Text('')
@@ -198,7 +198,7 @@ class CarePlanList extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
                           Expanded(
-                            child: Text('3 month follow-up', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
+                            child: Text(AppLocalizations.of(context).translate("3monthFollowup"), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
                           ),
                           Expanded(
                             child: Text(AppLocalizations.of(context).translate('pending'), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400, color: kPrimaryRedColor),),
@@ -223,7 +223,7 @@ class CarePlanList extends StatelessWidget {
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
               child: PrimaryButton(
                 onTap: () {},
-                text: Text('GENERATE PATIENT CARD', style: TextStyle(color: Colors.white, fontSize: 16),),
+                text: Text(AppLocalizations.of(context).translate("generatePatientCard"), style: TextStyle(color: Colors.white, fontSize: 16),),
               ),
             ),
           ],

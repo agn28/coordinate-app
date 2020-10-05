@@ -299,7 +299,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
                       if (birthDateController.text == null || birthDateController.text == '') {
                         _scaffoldKey.currentState.showSnackBar(
                           SnackBar(
-                            content: Text('Please input birthday'),
+                            content: Text(AppLocalizations.of(context).translate("inputBirthday")),
                             backgroundColor: kPrimaryRedColor,
                           )
                         );
@@ -1274,7 +1274,7 @@ class _AddPhotoState extends State<AddPhoto> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Icon(Icons.error),
-                        Text('Image not found')
+                        Text(AppLocalizations.of(context).translate("imageNotFound"))
                       ],
                     )
                   ),
@@ -1475,7 +1475,7 @@ class _ViewSummaryState extends State<ViewSummary> {
                 Row(
                   children: <Widget>[
                     // Text(AppLocalizations.of(context).translate('contactName') + ': ', style: TextStyle(fontSize: 18),),
-                    Text('Contact Name' + ': ', style: TextStyle(fontSize: 18),),
+                    Text(AppLocalizations.of(context).translate("contactname") + ': ', style: TextStyle(fontSize: 18),),
                     Text(contactFirstNameController.text + ' ' + contactLastNameController.text, style: TextStyle(fontSize: 18),),
                   ],
                 ),

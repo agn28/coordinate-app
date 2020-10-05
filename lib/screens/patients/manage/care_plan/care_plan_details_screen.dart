@@ -96,7 +96,7 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Care Plan', style: TextStyle(color: Colors.white),),
+        title: Text(AppLocalizations.of(context).translate("carePlan"), style: TextStyle(color: Colors.white),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -150,7 +150,7 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        Text('Fat', style: TextStyle(fontSize: 19),),
+                                        Text(AppLocalizations.of(context).translate("fat"), style: TextStyle(fontSize: 19),),
                                         SizedBox(height: 10,),
                                         Row(
                                           children: <Widget>[
@@ -263,7 +263,7 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        Text('CVD Risk', style: TextStyle(fontSize: 19),),
+                                        Text(AppLocalizations.of(context).translate("cvdRisk"), style: TextStyle(fontSize: 19),),
                                         SizedBox(height: 10,),
                                         Row(
                                           children: <Widget>[
@@ -301,7 +301,7 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        Text('BMI', style: TextStyle(fontSize: 19),),
+                                        Text(AppLocalizations.of(context).translate("bmi"), style: TextStyle(fontSize: 19),),
                                         SizedBox(height: 10,),
                                         Row(
                                           children: <Widget>[
@@ -358,7 +358,7 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        Text('Blood Pressure', style: TextStyle(fontSize: 19),),
+                                        Text(AppLocalizations.of(context).translate("bloodPressure"), style: TextStyle(fontSize: 19),),
                                         SizedBox(height: 10,),
                                         Row(
                                           children: <Widget>[
@@ -390,7 +390,7 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        Text('Total Cholesterol', style: TextStyle(fontSize: 19),),
+                                        Text(AppLocalizations.of(context).translate("totalCholesterol"), style: TextStyle(fontSize: 19),),
                                         SizedBox(height: 10,),
                                         Row(
                                           children: <Widget>[
@@ -635,7 +635,7 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
                                                       mainAxisAlignment: MainAxisAlignment.start,
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: <Widget>[
-                                                        Text('Goals', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                                                        Text(AppLocalizations.of(context).translate("goals"), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
                                                         SizedBox(width: 50,),
                                                         Container(
                                                           child: Column(
@@ -645,7 +645,7 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
                                                                 children: <Widget>[
                                                                   Icon(Icons.lens, size: 8, color: kPrimaryColor),
                                                                   SizedBox(width: 10,),
-                                                                  Text('Improve glycemic control', style: TextStyle(fontSize: 16,))
+                                                                  Text(AppLocalizations.of(context).translate("improveGlycemic"), style: TextStyle(fontSize: 16,))
                                                                 ],
                                                               ),
                                                               SizedBox(height: 10,),
@@ -653,7 +653,7 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
                                                                 children: <Widget>[
                                                                   Icon(Icons.lens, size: 8, color: kPrimaryColor),
                                                                   SizedBox(width: 10,),
-                                                                  Text('Medication adherence', style: TextStyle(fontSize: 16,))
+                                                                  Text(AppLocalizations.of(context).translate("medicationAdherence"), style: TextStyle(fontSize: 16,))
                                                                 ],
                                                               ),
                                                             ],
@@ -1098,7 +1098,7 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
                     child: FlatButton(
                       onPressed: () {},
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      child: Text('GENERATE PATIENT CARD', style: TextStyle(fontSize: 15, color: Colors.white),)
+                      child: Text(AppLocalizations.of(context).translate("generatePatientCard"), style: TextStyle(fontSize: 15, color: Colors.white),)
                     ),
                   ),
                 )
@@ -1215,7 +1215,7 @@ class InterventionsState extends State<Interventions> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text('Goal', style: TextStyle(color: kTextGrey),),
+                Text(AppLocalizations.of(context).translate("goals"), style: TextStyle(color: kTextGrey),),
                 SizedBox(height: 10,),
                 Text(widget.carePlan['title'], style: TextStyle(fontSize: 19),),
               ],
@@ -1226,7 +1226,7 @@ class InterventionsState extends State<Interventions> {
           SizedBox(height: 30,),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 25,),
-            child: Text('Intervention', style: TextStyle(color: kTextGrey),),
+            child: Text(AppLocalizations.of(context).translate("interventions"), style: TextStyle(color: kTextGrey),),
           ),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 25,),

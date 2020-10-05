@@ -79,7 +79,7 @@ class _PhysicalActivityState extends State<PhysicalActivity> {
                     Icon(Icons.error_outline, color: Color(0x87000000), size: 40,),
                     SizedBox(width: 10,),
                     Expanded(
-                      child: Text('Now I am going to ask you some questions about your physical activity.', style: TextStyle(fontSize: 19),),
+                      child: Text(AppLocalizations.of(context).translate("questionsAboutPhysicalActivity"), style: TextStyle(fontSize: 19),),
                     )
                   ],
                 )
@@ -223,7 +223,7 @@ class _PhysicalActivityState extends State<PhysicalActivity> {
                             if (result == 'success') {
                               _scaffoldKey.currentState.showSnackBar(
                                 SnackBar(
-                                  content: Text('Data saved successfully!'),
+                                  content: Text(AppLocalizations.of(context).translate("dataSaved")),
                                   backgroundColor: Color(0xFF4cAF50),
                                 )
                               );

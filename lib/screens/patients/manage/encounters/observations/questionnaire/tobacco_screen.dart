@@ -56,7 +56,7 @@ class _TobaccoState extends State<Tobacco> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Tobacco', style: TextStyle(color: kPrimaryColor)),
+        title: Text(AppLocalizations.of(context).translate("tobacco"), style: TextStyle(color: kPrimaryColor)),
         backgroundColor: Colors.white,
         elevation: 0.0,
         bottomOpacity: 0.0,
@@ -243,7 +243,7 @@ class _TobaccoState extends State<Tobacco> {
                             if (result == 'success') {
                               _scaffoldKey.currentState.showSnackBar(
                                 SnackBar(
-                                  content: Text('Data saved successfully!'),
+                                  content: Text(AppLocalizations.of(context).translate("dataSaved")),
                                   backgroundColor: Color(0xFF4cAF50),
                                 )
                               );

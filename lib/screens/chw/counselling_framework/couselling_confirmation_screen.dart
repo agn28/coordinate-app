@@ -30,7 +30,7 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Quite tabacco use"),),
+      appBar: AppBar(title: Text(AppLocalizations.of(context).translate("quiteTabaccoUse")),),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
             child: Container(
@@ -49,7 +49,7 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                      Text("Confirm how counselling was provided:",style: TextStyle(color: Colors.black,fontSize: 18),),
+                      Text(AppLocalizations.of(context).translate("confirmHowCounsellingWasProvided"),style: TextStyle(color: Colors.black,fontSize: 18),),
 
                       Row(
                         children: [
@@ -63,7 +63,7 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
                             });
                           },
                           ),
-                          Text('With 5A Farmwork', style: TextStyle(fontSize: 17),),
+                          Text(AppLocalizations.of(context).translate("with5AFarmework"), style: TextStyle(fontSize: 17),),
                         ],
                       ),
                       Row(
@@ -78,7 +78,7 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
                               });
                             },
                           ),
-                        Text('Without 5A Farmwork', style: TextStyle(fontSize: 17),),
+                        Text(AppLocalizations.of(context).translate("with5AFarmework"), style: TextStyle(fontSize: 17),),
                         ],
                       ),
 

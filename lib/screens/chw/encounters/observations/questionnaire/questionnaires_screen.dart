@@ -130,7 +130,7 @@ class _ChwQuestionnairesState extends State<ChwQuestionnaires> {
 
                   EncounnterStepsChw(
                     icon: Image.asset('assets/images/icons/questionnaire.png'),
-                    text: 'Medical History',
+                    text: AppLocalizations.of(context).translate("medicalHistory"),
                     onTap: () {
                       Navigator.of(context).push(MedicalHistoryScreen());
                     },
@@ -175,7 +175,7 @@ class _ChwQuestionnairesState extends State<ChwQuestionnaires> {
                     );
                   },
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text('UNABLE TO PERFORM', style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
+                  child: Text(AppLocalizations.of(context).translate("unablePerform"), style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
                 ),
               )
             ),

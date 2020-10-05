@@ -225,7 +225,7 @@ class _NewChwEncounterState extends State<NewChwEncounterScreen> {
                 margin: EdgeInsets.symmetric(horizontal: 30),
                 child: Row(
                   children: <Widget>[
-                    Text('Encounter Type', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                    Text(AppLocalizations.of(context).translate("encounterType"), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                     SizedBox(width: 20,),
                     Radio(
                       value: 'In-clinic Screening',
@@ -420,7 +420,7 @@ class _NewChwEncounterState extends State<NewChwEncounterScreen> {
                                               onTap: () {
                                                 Navigator.of(context).pop();
                                               },
-                                              child: Text('OK', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                                              child: Text(AppLocalizations.of(context).translate("ok"), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
                                             ),
                                           ],
                                         )
@@ -540,9 +540,9 @@ class _MedicalRecommendationWidgetState extends State<MedicalRecommendationWidge
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text('The patients seems to be severly unwell', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),),
+            Text(AppLocalizations.of(context).translate("patientsUnwell"), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),),
             SizedBox(height: 15,),
-            Text('Recommend seeking medical attention', style: TextStyle(color: kPrimaryRedColor, fontSize: 22, fontWeight: FontWeight.w400),),
+            Text(AppLocalizations.of(context).translate("seekingMedicalAttention"), style: TextStyle(color: kPrimaryRedColor, fontSize: 22, fontWeight: FontWeight.w400),),
 
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -606,7 +606,7 @@ class _MedicalRecommendationWidgetState extends State<MedicalRecommendationWidge
                             // );
                           }
                         },
-                        child: Text('SUBMIT FOR REFERRAL', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                        child: Text(AppLocalizations.of(context).translate("submitForReferral"), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
                       ),
                     ],
                   )

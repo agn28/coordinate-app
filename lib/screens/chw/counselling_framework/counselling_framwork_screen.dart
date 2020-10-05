@@ -63,7 +63,7 @@ class _CounsellingFrameworkScreenState extends State<CounsellingFrameworkScreen>
                 SizedBox(height: 30,),
                 Container(
                   margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
-                  child: Text('Deliver counselling for risk behavior', style: TextStyle(fontSize: 18,),),
+                  child: Text(AppLocalizations.of(context).translate("deliverCounsellingRiskBehavior"), style: TextStyle(fontSize: 18,),),
                 ),
                 SizedBox(height: 20,),
 
@@ -115,7 +115,7 @@ class _CounsellingFrameworkScreenState extends State<CounsellingFrameworkScreen>
                                                 SizedBox(height: 15,),
                                                 Container(
                                                   padding: EdgeInsets.only(left: 16),
-                                                  child: Text('Ask important aspects of behavioural risk factor', style: TextStyle( fontSize: 17)),
+                                                  child: Text(AppLocalizations.of(context).translate("behaviouralRiskFactor"), style: TextStyle( fontSize: 17)),
                                                 ),
                                                 Row(
                                                   children: <Widget>[
@@ -128,7 +128,7 @@ class _CounsellingFrameworkScreenState extends State<CounsellingFrameworkScreen>
                                                         });
                                                       },
                                                     ),
-                                                    Text('Completed', style: TextStyle(color: Colors.black, fontSize: 17)),
+                                                    Text(AppLocalizations.of(context).translate("completed"), style: TextStyle(color: Colors.black, fontSize: 17)),
                                                   ],
                                                 ),
                                               ],
@@ -190,7 +190,7 @@ class _CounsellingFrameworkScreenState extends State<CounsellingFrameworkScreen>
                                                 SizedBox(height: 15,),
                                                 Container(
                                                   padding: EdgeInsets.only(left: 16),
-                                                  child: Text("Provide important key message on the risk factor ", style: TextStyle(fontSize: 17),),
+                                                  child: Text(AppLocalizations.of(context).translate("provideImportantKeyMessageOnTheRiskFactor"), style: TextStyle(fontSize: 17),),
                                                 ),
                                                 
                                                 Row(
@@ -205,7 +205,7 @@ class _CounsellingFrameworkScreenState extends State<CounsellingFrameworkScreen>
                                                       
                                                       },
                                                     ),
-                                                    Text('Completed', style: TextStyle(color: Colors.black, fontSize: 17)),
+                                                    Text(AppLocalizations.of(context).translate("completed"), style: TextStyle(color: Colors.black, fontSize: 17)),
                                                   ],
                                                 ),
                                               ],
@@ -267,7 +267,7 @@ class _CounsellingFrameworkScreenState extends State<CounsellingFrameworkScreen>
                                                 SizedBox(height: 15,),
                                                 Container(
                                                   padding: EdgeInsets.only(left: 16),
-                                                  child: Text("Determine if patinet is ready for information and assistance ", style: TextStyle(fontSize: 17),),
+                                                  child: Text(AppLocalizations.of(context).translate("determinePatient"), style: TextStyle(fontSize: 17),),
                                                 ),
 
                                                 Row(
@@ -282,7 +282,7 @@ class _CounsellingFrameworkScreenState extends State<CounsellingFrameworkScreen>
                                                       
                                                       },
                                                     ),
-                                                    Text('Completed', style: TextStyle(color: Colors.black, fontSize: 17)),
+                                                    Text(AppLocalizations.of(context).translate("completed"), style: TextStyle(color: Colors.black, fontSize: 17)),
                                                   ],
                                                 ),
                                               ],
@@ -344,7 +344,7 @@ class _CounsellingFrameworkScreenState extends State<CounsellingFrameworkScreen>
                                                 SizedBox(height: 15,),
                                                 Container(
                                                   padding: EdgeInsets.only(left: 16),
-                                                  child: Text("Provide in-depth counselling and assistance", style: TextStyle(fontSize: 17),),
+                                                  child: Text(AppLocalizations.of(context).translate("provideCounsellingAssistance"), style: TextStyle(fontSize: 17),),
                                                 ),
                                                 Row(
                                                   children: <Widget>[
@@ -358,7 +358,7 @@ class _CounsellingFrameworkScreenState extends State<CounsellingFrameworkScreen>
                                                       
                                                       },
                                                     ),
-                                                    Text('Completed', style: TextStyle(color: Colors.black, fontSize: 18)),
+                                                    Text(AppLocalizations.of(context).translate("completed"), style: TextStyle(color: Colors.black, fontSize: 18)),
                                                   ],
                                                 ), 
                                               ],
@@ -420,7 +420,7 @@ class _CounsellingFrameworkScreenState extends State<CounsellingFrameworkScreen>
                                                 SizedBox(height: 15,),
                                                 Container(
                                                   padding: EdgeInsets.only(left: 16),
-                                                  child: Text("Provide guideance on referral and follow-up actions", style: TextStyle(fontSize: 17),),
+                                                  child: Text(AppLocalizations.of(context).translate("provideGuideanceActions"), style: TextStyle(fontSize: 17),),
                                                 ),
 
                                                 Row(
@@ -435,7 +435,7 @@ class _CounsellingFrameworkScreenState extends State<CounsellingFrameworkScreen>
                                                       
                                                       },
                                                     ),
-                                                    Text('Completed', style: TextStyle(color: Colors.black, fontSize: 18)),
+                                                    Text(AppLocalizations.of(context).translate("completed"), style: TextStyle(color: Colors.black, fontSize: 18)),
                                                   ],
                                                 ),
                                               
@@ -519,7 +519,7 @@ class Alert extends StatelessWidget {
   Widget build(BuildContext context) {
     return     AlertDialog(
       title: Icon(Icons.warning,size: 40,color: Colors.orange,),
-      content: Text("Please ensure all sections are completed before proceeding",
+      content: Text(AppLocalizations.of(context).translate("ensureAllSections"),
       style: TextStyle(fontSize: 17,color: Colors.black),),
     
       actions: [

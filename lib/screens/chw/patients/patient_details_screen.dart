@@ -434,7 +434,7 @@ class _PatientItemState extends State<PatientItem> {
                                     border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['body_composition']['components']['bmi']['tfl']]),
                                     borderRadius: BorderRadius.circular(2)
                                   ),
-                                  child: Text('BMI',style: TextStyle(
+                                  child: Text(AppLocalizations.of(context).translate("bmi"),style: TextStyle(
                                       color: ColorUtils.statusColor[widget.item['body']['assessments']['body_composition']['components']['bmi']['tfl']],
                                       fontWeight: FontWeight.w500
                                     )  
@@ -450,7 +450,7 @@ class _PatientItemState extends State<PatientItem> {
                                     border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['blood_pressure']['tfl']]),
                                     borderRadius: BorderRadius.circular(2)
                                   ),
-                                  child: Text('BP',style: TextStyle(
+                                  child: Text(AppLocalizations.of(context).translate("bp"),style: TextStyle(
                                       color: ColorUtils.statusColor[widget.item['body']['assessments']['blood_pressure']['tfl']],
                                       fontWeight: FontWeight.w500
                                     )  
@@ -466,7 +466,7 @@ class _PatientItemState extends State<PatientItem> {
                                     border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['cvd']['tfl']]),
                                     borderRadius: BorderRadius.circular(2)
                                   ),
-                                  child: Text('CVD Risk',style: TextStyle(
+                                  child: Text(AppLocalizations.of(context).translate("cvdRisk"),style: TextStyle(
                                       color: ColorUtils.statusColor[widget.item['body']['assessments']['cvd']['tfl']],
                                       fontWeight: FontWeight.w500
                                     )  
@@ -482,7 +482,7 @@ class _PatientItemState extends State<PatientItem> {
                                     border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['cholesterol']['components']['total_cholesterol']['tfl']]),
                                     borderRadius: BorderRadius.circular(2)
                                   ),
-                                  child: Text('Cholesterol',style: TextStyle(
+                                  child: Text(AppLocalizations.of(context).translate("cholesterol"),style: TextStyle(
                                       color: ColorUtils.statusColor[widget.item['body']['assessments']['cholesterol']['components']['total_cholesterol']['tfl']],
                                       fontWeight: FontWeight.w500
                                     )  

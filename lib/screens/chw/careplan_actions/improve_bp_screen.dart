@@ -180,7 +180,7 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text('BP Readings', style: TextStyle(fontSize: 16),),
+                        Text(AppLocalizations.of(context).translate("bpReadings"), style: TextStyle(fontSize: 16),),
                         
                       ],
                     ),

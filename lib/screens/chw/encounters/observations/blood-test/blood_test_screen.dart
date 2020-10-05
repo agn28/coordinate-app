@@ -444,7 +444,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text('Set ${widget.title}', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                Text('${widget.title}', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                 SizedBox(height: 20,),
                 Container(
                   // margin: EdgeInsets.symmetric(horizontal: 30),
@@ -512,7 +512,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                 Container(
                   color: kSecondaryTextField,
                   child: DropdownButtonFormField(
-                    hint: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                    hint: Text(AppLocalizations.of(context).translate("selectDevice"), style: TextStyle(fontSize: 20, color: kTextGrey),),
                     decoration: InputDecoration(
                       fillColor: kSecondaryTextField,
                       contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
@@ -579,7 +579,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                               onTap: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text('UNABLE TO PERFORM', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
+                              child: Text(AppLocalizations.of(context).translate("unablePerform"), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500),)
                             ),
                           ),
                           SizedBox(width: 30,),
@@ -598,7 +598,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                                 _clearDialogForm();
                               }
                             },
-                            child: Text('ADD', style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
+                            child: Text(AppLocalizations.of(context).translate("add"), style: TextStyle(color: kPrimaryColor, fontSize: 16, fontWeight: FontWeight.w500))
                           ),
                         ],
                       )
@@ -740,7 +740,7 @@ class _SkipAlertState extends State<SkipAlert> {
                 child: Form(
                   key: _skipForm,
                   child: PrimaryTextField(
-                    hintText: 'Other reason',
+                    hintText: AppLocalizations.of(context).translate("OtherReason"),
                     controller: otherReasonController,
                     topPaadding: 8,
                     bottomPadding: 8,

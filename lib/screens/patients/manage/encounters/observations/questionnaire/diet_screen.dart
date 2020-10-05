@@ -52,7 +52,7 @@ class _DietState extends State<Diet> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Diet', style: TextStyle(color: kPrimaryColor)),
+        title: Text(AppLocalizations.of(context).translate("diet"), style: TextStyle(color: kPrimaryColor)),
         backgroundColor: Colors.white,
         elevation: 0.0,
         bottomOpacity: 0.0,
@@ -82,7 +82,7 @@ class _DietState extends State<Diet> {
                   Icon(Icons.error_outline, color: Color(0x87000000), size: 40,),
                   SizedBox(width: 10,),
                   Expanded(
-                    child: Text('Now I am going to ask you some questions about your diet.', style: TextStyle(fontSize: 19),),
+                    child: Text(AppLocalizations.of(context).translate("questionsAboutDiet"), style: TextStyle(fontSize: 19),),
                   )
                 ],
               )
@@ -323,7 +323,7 @@ class _DietState extends State<Diet> {
                           if (result == 'success') {
                             _scaffoldKey.currentState.showSnackBar(
                               SnackBar(
-                                content: Text('Data saved successfully!'),
+                                content: Text(AppLocalizations.of(context).translate("dataSaved")),
                                 backgroundColor: Color(0xFF4cAF50),
                               )
                             );

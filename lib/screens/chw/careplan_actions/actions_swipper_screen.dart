@@ -277,7 +277,7 @@ class _Form4State extends State<Form4> {
                           });
                         },
                       ),
-                      Text('Left Arm', style: TextStyle(fontSize: 15),),
+                      Text(AppLocalizations.of(context).translate("leftArm"), style: TextStyle(fontSize: 15),),
 
                       Radio(
                         activeColor: kPrimaryColor,
@@ -325,7 +325,7 @@ class _Form4State extends State<Form4> {
                     alignment: Alignment.centerLeft,
                     margin: EdgeInsets.symmetric(horizontal: 100),
                     child: DropdownButtonFormField(
-                      hint: Text('Select Device', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                      hint: Text(AppLocalizations.of(context).translate("selectDevice"), style: TextStyle(fontSize: 20, color: kTextGrey),),
                       decoration: InputDecoration(
                         fillColor: kSecondaryTextField,
                         contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
@@ -370,7 +370,7 @@ class _Form4State extends State<Form4> {
                         if (result == 'success') {
                           _scaffoldKey.currentState.showSnackBar(
                             SnackBar(
-                              content: Text('Data added'),
+                              content: Text(AppLocalizations.of(context).translate("dataAdded")),
                               backgroundColor: Color(0xFF4cAF50),
                             )
                           );
@@ -573,7 +573,7 @@ class VideoConfirmForm extends StatelessWidget {
                         // });
                       },
                     ),
-                    Text('Yes', style: TextStyle(fontSize: 15),),
+                    Text(AppLocalizations.of(context).translate("yes"), style: TextStyle(fontSize: 15),),
 
                     Radio(
                       activeColor: kPrimaryColor,
@@ -690,7 +690,7 @@ class _CommentContainerState extends State<CommentContainer> {
                 } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
                 
               },
-              text: isLoading ? CircularProgressIndicator() : Text('COMPLETE ACTION', style: TextStyle(color: Colors.white, fontSize: 16),),
+              text: isLoading ? CircularProgressIndicator() : Text(AppLocalizations.of(context).translate("completeAction"), style: TextStyle(color: Colors.white, fontSize: 16),),
             ),
           ),
           
@@ -841,7 +841,7 @@ class _VideoContainerState extends State<VideoContainer> {
                   Questionnaire().addVideoSurvey(videoUrl, widget.carePlan);
                 },
               ),
-              Text('Yes', style: TextStyle(fontSize: 15),),
+              Text(AppLocalizations.of(context).translate("yes"), style: TextStyle(fontSize: 15),),
             ],
           ),
 
@@ -857,7 +857,7 @@ class _VideoContainerState extends State<VideoContainer> {
                   });
                 },
               ),
-              Text('No', style: TextStyle(fontSize: 15),),
+              Text(AppLocalizations.of(context).translate("no"), style: TextStyle(fontSize: 15),),
             ],
           )
         ],

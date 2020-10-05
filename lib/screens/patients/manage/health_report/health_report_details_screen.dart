@@ -375,7 +375,7 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text('Body Composition', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500)),
+                            Text(AppLocalizations.of(context).translate("bodyComposition"), style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500)),
                             SizedBox(height: 30,),
 
                             widget.reports['assessments']['body_composition']['components']['hip_circ'] != null ? 
@@ -394,7 +394,7 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
                                     // crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      Text('Hip Circumference', style: TextStyle(fontSize: 18, height: 1.4, fontWeight: FontWeight.w500),),
+                                      Text(AppLocalizations.of(context).translate("hipCircumference"), style: TextStyle(fontSize: 18, height: 1.4, fontWeight: FontWeight.w500),),
                                       canEdit ? GestureDetector(
                                         child: Icon(Icons.edit, color: kPrimaryColor,),
                                         onTap: () {}
@@ -508,7 +508,7 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
                                     // crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      Text('BMI', style: TextStyle(fontSize: 18, height: 1.4, fontWeight: FontWeight.w500),),
+                                      Text(AppLocalizations.of(context).translate("weightReduction"), style: TextStyle(fontSize: 18, height: 1.4, fontWeight: FontWeight.w500),),
                                       canEdit ? GestureDetector(
                                         child: Icon(Icons.edit, color: kPrimaryColor,),
                                         onTap: () {}
@@ -647,7 +647,7 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
 
                             Container(
                               
-                              child: Text('Weight reduction', style: TextStyle(fontSize: 18,),),
+                              child: Text(AppLocalizations.of(context).translate("weightReduction"), style: TextStyle(fontSize: 18,),),
                             )
 
                           ],
@@ -669,7 +669,7 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Text('Blood Pressure', style: TextStyle(fontSize: 24)),
+                                Text(AppLocalizations.of(context).translate("bloodPressure"), style: TextStyle(fontSize: 24)),
                                 canEdit ? GestureDetector(
                                   child: Icon(Icons.edit, color: kPrimaryColor,),
                                   onTap: () {}
@@ -955,7 +955,7 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Text('Cholesterol', style: TextStyle(fontSize: 24)),
+                                Text(AppLocalizations.of(context).translate("cholesterol"), style: TextStyle(fontSize: 24)),
                                 canEdit ? GestureDetector(
                                   child: Icon(Icons.edit, color: kPrimaryColor,),
                                   onTap: () {}
@@ -1098,7 +1098,7 @@ class _HealthReportDetailsState extends State<HealthReportDetails> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Text('Cardiovascular Risk', style: TextStyle(fontSize: 24)),
+                                Text(AppLocalizations.of(context).translate("cardiovascularRisk"), style: TextStyle(fontSize: 24)),
                                 canEdit ? GestureDetector(
                                   child: Icon(Icons.edit, color: kPrimaryColor,),
                                   onTap: () {}

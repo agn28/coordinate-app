@@ -557,7 +557,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                                 border: Border.all(width: 1, color: ColorUtils.statusColor[bmi['tfl']]),
                                                 borderRadius: BorderRadius.circular(2)
                                               ),
-                                              child: Text('BMI',style: TextStyle(
+                                              child: Text(AppLocalizations.of(context).translate("bmi"),style: TextStyle(
                                                   color: ColorUtils.statusColor[bmi['tfl']],
                                                   fontWeight: FontWeight.w500
                                                 )  
@@ -572,7 +572,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                                 border: Border.all(width: 1, color: ColorUtils.statusColor[bp['tfl']]),
                                                 borderRadius: BorderRadius.circular(2)
                                               ),
-                                              child: Text('BP',style: TextStyle(
+                                              child: Text(AppLocalizations.of(context).translate("bp"),style: TextStyle(
                                                   color: ColorUtils.statusColor[bp['tfl']],
                                                   fontWeight: FontWeight.w500
                                                 )  
@@ -600,7 +600,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                                 border: Border.all(width: 1, color: ColorUtils.statusColor[cholesterol['tfl']]),
                                                 borderRadius: BorderRadius.circular(2)
                                               ),
-                                              child: Text('Cholesterol',style: TextStyle(
+                                              child: Text(AppLocalizations.of(context).translate("cholesterol"),style: TextStyle(
                                                   color: ColorUtils.statusColor[cholesterol['tfl']],
                                                   fontWeight: FontWeight.w500
                                                 )  
@@ -841,7 +841,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                                               children: <Widget>[
                                                                 Image.asset('assets/images/icons/body_measurements.png', width: 20,),
                                                                 SizedBox(height: 10,),
-                                                                Text('Body\nMeasurement', textAlign: TextAlign.center,)
+                                                                Text(AppLocalizations.of(context).translate("body") +"\n"+AppLocalizations.of(context).translate("bMeasurements"), textAlign: TextAlign.center,)
                                                               ],
                                                             ),
                                                           ) : Container(),
@@ -853,7 +853,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                                               children: <Widget>[
                                                                 Image.asset('assets/images/icons/blood_pressure.png', width: 20,),
                                                                 SizedBox(height: 10,),
-                                                                Text('Blood\nPressure', textAlign: TextAlign.center,)
+                                                                Text(AppLocalizations.of(context).translate("blood") +"\n"+AppLocalizations.of(context).translate("pressure"), textAlign: TextAlign.center,)
                                                               ],
                                                             ),
                                                           ) : Container(),
@@ -865,7 +865,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                                               children: <Widget>[
                                                                 Image.asset('assets/images/icons/blood_test.png', width: 20,),
                                                                 SizedBox(height: 10,),
-                                                                Text('Blood\nTest', textAlign: TextAlign.center,)
+                                                                Text(AppLocalizations.of(context).translate("blood") +"\n"+AppLocalizations.of(context).translate("test"), textAlign: TextAlign.center,)
                                                               ],
                                                             ),
                                                           ) : Container(),
@@ -877,7 +877,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                                               children: <Widget>[
                                                                 Image.asset('assets/images/icons/blood_glucose.png', width: 20,),
                                                                 SizedBox(height: 10,),
-                                                                Text('Medical\nHistory', textAlign: TextAlign.center,)
+                                                                Text(AppLocalizations.of(context).translate("medical") +"\n"+AppLocalizations.of(context).translate("history"), textAlign: TextAlign.center,)
                                                               ],
                                                             ),
                                                           ): Container()
@@ -1113,7 +1113,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
           );
         },
         icon: Icon(Icons.add),
-        label: Text("NEW ENCOUNTER"),
+        label: Text(AppLocalizations.of(context).translate("newEncounter")),
         backgroundColor: kPrimaryColor,
       ),
     );
@@ -1402,7 +1402,7 @@ class _OverviewInterventionState extends State<OverviewIntervention> {
                   children: <Widget>[
                     Text(widget.carePlan['body']['goal']['title'], style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400,)),
                     SizedBox(height: 15,),
-                    Text('Intervention: ${widget.carePlan['body']['title']}', overflow: TextOverflow.fade, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400,)),
+                    Text(AppLocalizations.of(context).translate("intervention")+ ': ${widget.carePlan['body']['title']}', overflow: TextOverflow.fade, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400,)),
                     SizedBox(height: 15,),
                     Text('${status != 'pending' ? status[0].toUpperCase() + status.substring(1) : 'Pending'}', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: status != 'pending' ? kPrimaryGreenColor : kPrimaryRedColor)),
                   ],

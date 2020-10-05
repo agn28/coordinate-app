@@ -203,7 +203,7 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
               new PopupMenuItem<String>(
                   
                   child: Container(
-                    child: Text('Logout'),
+                    child: Text(AppLocalizations.of(context).translate("logout")),
                   ),
                     value: 'logout'),
               ],
@@ -922,7 +922,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text('Date of Birth', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),),
+                    Text(AppLocalizations.of(context).translate("dateOfBirth"), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),),
                     SizedBox(height: 20,),
                     Row(
                       children: <Widget>[

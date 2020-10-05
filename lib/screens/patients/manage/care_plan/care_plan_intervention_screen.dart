@@ -133,7 +133,7 @@ class _CarePlanInterventionState extends State<CarePlanInterventionScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Care Plan', style: TextStyle(color: Colors.white),),
+        title: Text(AppLocalizations.of(context).translate("carePlan"), style: TextStyle(color: Colors.white),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -218,7 +218,7 @@ class Form4 extends StatelessWidget {
                       child: PrimaryTextField(
                         topPaadding: 10,
                         bottomPadding: 10,
-                        hintText: 'Diastolic',
+                        hintText: AppLocalizations.of(context).translate("diastolic"),
                         type: TextInputType.number
                       ),
                     ),
@@ -457,7 +457,7 @@ class VideoConfirmForm extends StatelessWidget {
                         // });
                       },
                     ),
-                    Text('Yes', style: TextStyle(fontSize: 15),),
+                    Text(AppLocalizations.of(context).translate("yes"), style: TextStyle(fontSize: 15),),
 
                     Radio(
                       activeColor: kPrimaryColor,
@@ -573,7 +573,7 @@ class _CommentContainerState extends State<CommentContainer> {
                 } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
                 
               },
-              text: isLoading ? CircularProgressIndicator() : Text('MARK AS COMPLETE', style: TextStyle(color: Colors.white, fontSize: 16),),
+              text: isLoading ? CircularProgressIndicator() : Text(AppLocalizations.of(context).translate("markAsComplete"), style: TextStyle(color: Colors.white, fontSize: 16),),
             ),
           ),
           
@@ -602,7 +602,7 @@ class VideoContainer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            child: Text('Watch the video', style: TextStyle(fontSize: 17),),
+            child: Text(AppLocalizations.of(context).translate("watchTheVideo"), style: TextStyle(fontSize: 17),),
           ),
           SizedBox(height: 20,),
 

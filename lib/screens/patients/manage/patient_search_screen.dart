@@ -498,7 +498,7 @@ class _DiseasesDialogState extends State<DiseasesDialog> {
                             topRight: Radius.circular(4),
                           )
                         ),
-                        hintText: 'Search',
+                        hintText: AppLocalizations.of(context).translate("search"),
                         hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                       )
                     )
@@ -689,7 +689,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text('Date of Birth', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),),
+                    Text(AppLocalizations.of(context).translate("dateOfBirth"), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),),
                     SizedBox(height: 20,),
                     Row(
                       children: <Widget>[
@@ -697,7 +697,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
                           child: PrimaryTextField(
                             topPaadding: 10,
                             bottomPadding: 10,
-                            hintText: 'dd',
+                            hintText: AppLocalizations.of(context).translate("dd"),
                             controller: birthDateController,
                             name: "Date",
                             validation: true,
@@ -709,7 +709,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
                           child: PrimaryTextField(
                             topPaadding: 10,
                             bottomPadding: 10,
-                            hintText: 'mm',
+                            hintText: AppLocalizations.of(context).translate("mm"),
                             controller: birthMonthController,
                             name: "Month",
                             validation: true,
@@ -721,7 +721,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
                           child: PrimaryTextField(
                             topPaadding: 10,
                             bottomPadding: 10,
-                            hintText: 'yyyy',
+                            hintText:AppLocalizations.of(context).translate("yy"),
                             controller: birthYearController,
                             name: "Year",
                             validation: true,
@@ -785,7 +785,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
                   format: format,
                   controller: lastVisitDateController,
                   decoration: InputDecoration(
-                    hintText: 'Last Visit Date',
+                    hintText: AppLocalizations.of(context).translate("lastVisitDate"),
                     hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                     contentPadding: EdgeInsets.only(top: 18, bottom: 18),
                     prefixIcon: Icon(Icons.date_range),

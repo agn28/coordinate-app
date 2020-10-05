@@ -60,7 +60,7 @@ class _CurrentMedicationState extends State<CurrentMedication> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Questionnaire', style: TextStyle(color: kPrimaryColor)),
+        title: Text(AppLocalizations.of(context).translate("questionnaire"), style: TextStyle(color: kPrimaryColor)),
         backgroundColor: Colors.white,
         elevation: 0.0,
         bottomOpacity: 0.0,
@@ -146,7 +146,7 @@ class _CurrentMedicationState extends State<CurrentMedication> {
                   if (result == 'success') {
                     _scaffoldKey.currentState.showSnackBar(
                       SnackBar(
-                        content: Text('Data saved successfully!'),
+                        content: Text(AppLocalizations.of(context).translate("questionnaire")),
                         backgroundColor: Color(0xFF4cAF50),
                       )
                     );
@@ -165,7 +165,7 @@ class _CurrentMedicationState extends State<CurrentMedication> {
                   }
                   
                 },
-                child: Text('COMPLETE', style: TextStyle(fontSize: 20, color: kPrimaryColor))
+                child: Text(AppLocalizations.of(context).translate("complete"), style: TextStyle(fontSize: 20, color: kPrimaryColor))
               )
             ),
           ],
@@ -177,17 +177,17 @@ class _CurrentMedicationState extends State<CurrentMedication> {
   List<CustomStep> _mySteps() {
     List<CustomStep> _steps = [
       CustomStep(
-        title: Text('Photo'),
+        title: Text(AppLocalizations.of(context).translate("photo")),
         content: FirstQuestion(),
         isActive: _currentStep >= 2,
       ),
       CustomStep(
-        title: Text('Photo'),
+        title: Text(AppLocalizations.of(context).translate("photo")),
         content: SecondQuestion(),
         isActive: _currentStep >= 2,
       ),
       CustomStep(
-        title: Text('Photo'),
+        title: Text(AppLocalizations.of(context).translate("photo")),
         content: ThirdQuestion(),
         isActive: _currentStep >= 2,
       ),
@@ -233,7 +233,7 @@ class _FirstQuestionState extends State<FirstQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Current Medication', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate("selectMedications"), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
@@ -282,7 +282,7 @@ class _SecondQuestionState extends State<SecondQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Current Medication', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate("selectMedications"), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
@@ -348,7 +348,7 @@ class _ThirdQuestionState extends State<ThirdQuestion> {
                   bottom: BorderSide(width: .5, color: Color(0x50000000))
                 )
               ),
-              child: Text('Current Medication', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
+              child: Text(AppLocalizations.of(context).translate("selectMedications"), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),)
             ),
 
             Container(
@@ -363,7 +363,7 @@ class _ThirdQuestionState extends State<ThirdQuestion> {
               child: PrimaryTextField(
                 topPaadding: 8,
                 bottomPadding: 8,
-                hintText: 'Write your problem',
+                hintText: AppLocalizations.of(context).translate("writeYourProblem"),
                 controller: problemController,
               )
             ),
@@ -439,7 +439,7 @@ class _MedicationListState extends State<MedicationList> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text('Select Medications', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+                  Text(AppLocalizations.of(context).translate("selectMedications"), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
                 ],
               ),
             ),
@@ -512,7 +512,7 @@ class _MedicationListState extends State<MedicationList> {
                           topRight: Radius.circular(4),
                         )
                       ),
-                      hintText: 'Search',
+                      hintText: AppLocalizations.of(context).translate("search"),
                       hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                     )
                   )
