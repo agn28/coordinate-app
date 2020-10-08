@@ -107,8 +107,8 @@ class PatientController {
 
   /// Create a new patient
   /// [formData] is required as parameter.
-  update(formData) async {
-    final data = _prepareData(formData);
+  update(formData, prepared) async {
+    final data = prepared ? formData : _prepareData(formData);
     await PatientReposioryLocal().update(data);
 
     return 'success';

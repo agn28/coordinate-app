@@ -56,7 +56,7 @@ class PatientTopbar extends StatelessWidget {
             child: Text(Helpers().getPatientAgeAndGender(Patient().getPatient()), style: TextStyle(fontSize: 18), textAlign: TextAlign.center,)
           ),
           Expanded(
-            child: Text('PID: N-121933421', style: TextStyle(fontSize: 18))
+            child: Text(Helpers().getPatientPid(Patient().getPatient()), style: TextStyle(fontSize: 18))
           )
         ],
       ),

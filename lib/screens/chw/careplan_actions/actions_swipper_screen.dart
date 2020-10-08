@@ -96,7 +96,7 @@ class _ActionsSwipperState extends State<ActionsSwipperScreen> {
     if (widget.carePlan['body']['id'] == 'a4') {
       setState(() {
         pages.add(
-          Form4()
+          Form4(actionsState: widget.parent)
         );
       });
     }
@@ -228,9 +228,8 @@ class _ActionsSwipperState extends State<ActionsSwipperScreen> {
 }
 
 class Form4 extends StatefulWidget {
-  const Form4({
-    Key key,
-  }) : super(key: key);
+  Form4({this.actionsState});
+  final actionsState;
 
   @override
   _Form4State createState() => _Form4State();
@@ -375,6 +374,11 @@ class _Form4State extends State<Form4> {
                             )
                           );
                           await Future.delayed(const Duration(seconds: 1));
+                            widget.actionsState.setState(() {
+                              widget.actionsState.setStatus();
+                            });
+                           Navigator.of(context).pop();
+                            
                           // Navigator.of(context).pop();
                         } else {
                           _scaffoldKey.currentState.showSnackBar(
@@ -676,8 +680,8 @@ class _CommentContainerState extends State<CommentContainer> {
                 setState(() {
                   isLoading = true;
                 });
-                var response = 'success';
-                // var response = await CarePlanController().update(widget.widget.carePlan, widget.commentController.text);
+                var response = '';
+                response = await CarePlanController().update(widget.widget.carePlan, widget.commentController.text);
                 setState(() {
                   isLoading = false;
                 });

@@ -90,6 +90,21 @@ class EncounterDetailsState extends State<EncounterDetailsScreen> {
     return StringUtils.capitalize(obs['data']['name'].replaceAll('_', ' '));
   }
 
+  getCommunityVisitContent(item) {
+    print('community visit');
+    print(item);
+    if (item['body']['data']['5a_framework'] != null) {
+      return [
+        Text('5A framework completed: ', style: TextStyle(fontSize: 20, height: 1.6),),
+
+        Text(item['body']['data']['5a_framework'] ? 'Yes' : 'No', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, height: 1.6),)
+      ];
+    }
+    
+
+    return <Widget>[];
+  }
+
   /// Populate observation widgets form observations list.
   _getItem() {
     bloodTestItems = [];
@@ -160,15 +175,13 @@ class EncounterDetailsState extends State<EncounterDetailsScreen> {
                       Text(AppLocalizations.of(context).translate("communityVisits"), style: TextStyle(fontSize: 20, ),),
                       Text(item['body']['data']['title'], style: TextStyle(fontSize: 22, height: 1.7, fontWeight: FontWeight.w600),),
                       Row(
-                        children: <Widget>[
-                          Text(AppLocalizations.of(context).translate("videoWatched"), style: TextStyle(fontSize: 20, height: 1.6),),
-                          Text(StringUtils.capitalize(item['body']['data']['video_watched'].toString()), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, height: 1.6),),
-                        ],
+                        children:
+                          getCommunityVisitContent(item)
                       ),
 
                       Row(
                         children: <Widget>[
-                          Text(AppLocalizations.of(context).translate("date")+":", style: TextStyle(fontSize: 20, height: 1.6),),
+                          Text(AppLocalizations.of(context).translate("date") + ": ", style: TextStyle(fontSize: 20, height: 1.6),),
                           Text(item['meta']['created_at'], style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, height: 1.6),),
                         ],
                       ),
@@ -232,22 +245,22 @@ class EncounterDetailsState extends State<EncounterDetailsScreen> {
                             Expanded(
                               child: Text(StringUtils.capitalize(widget.encounter['data']['type']), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),),
                             ),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  AssessmentController().edit(widget.encounter, _observations);
-                                  Navigator.of(context).push(NewEncounterScreen(encounterDetailsState: this));
-                                },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: <Widget>[
-                                    Icon(Icons.edit, color: kPrimaryColor,),
-                                    SizedBox(width: 10),
-                                    Text(AppLocalizations.of(context).translate('editEncounter'), style: TextStyle(color: kPrimaryColor))
-                                  ],
-                                ),
-                              )
-                            )
+                            // Expanded(
+                            //   child: GestureDetector(
+                            //     onTap: () {
+                            //       AssessmentController().edit(widget.encounter, _observations);
+                            //       Navigator.of(context).push(NewEncounterScreen(encounterDetailsState: this));
+                            //     },
+                            //     child: Row(
+                            //       mainAxisAlignment: MainAxisAlignment.end,
+                            //       children: <Widget>[
+                            //         Icon(Icons.edit, color: kPrimaryColor,),
+                            //         SizedBox(width: 10),
+                            //         Text(AppLocalizations.of(context).translate('editEncounter'), style: TextStyle(color: kPrimaryColor))
+                            //       ],
+                            //     ),
+                            //   )
+                            // )
                           ],
                         )
                       )

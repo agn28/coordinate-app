@@ -38,7 +38,7 @@
   "contact'sAddress": "Contact's Address",
   "takePhoto": "Take a Photo of the Patient",
   "addPhoto": "Add a Photo",
-  "updatePatient": "UPDATE PATIENT",
+  "updatePatient": "Update Patient",
   "completeRegistration": "COMPLETE REGISTRATION",
   "next": "NEXT",
   "back": "BACK",
@@ -357,6 +357,7 @@
 
   "dataSavedSuccessfully": "Data Save Successfully",
   "with5AFarmework": "With 5A Farmwork",
+  "without5AFarmework": "Without 5A Farmwork",
   "dataAdded": "Data Added",
   "bpRating": "BP Rating",
   "questionsAboutPhysicalActivity": "Now I am going to ask you some questions about your physical activity.",

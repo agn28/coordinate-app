@@ -89,7 +89,13 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
 
     if (_patient != null && _patient['data']['next_assignment'] != null && _patient['data']['next_assignment']['body']['activityDuration']['start'] != null) {
       setState(() {
-        dueDate = DateFormat("MMMM d, y").format(DateTime.parse(_patient['data']['next_assignment']['body']['activityDuration']['start']));
+        DateFormat format = new DateFormat("E LLL d y");
+        
+        try {
+          dueDate = DateFormat("MMMM d, y").format(format.parse(_patient['data']['next_assignment']['body']['activityDuration']['start']));
+        } catch(err) {
+          dueDate = DateFormat("MMMM d, y").format(DateTime.parse(_patient['data']['next_assignment']['body']['activityDuration']['start']));
+        }
       });
     }
     
@@ -206,8 +212,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
         });
       }
     });
-
-
   }
 
   getReport() async {
@@ -725,7 +729,12 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                   
                   pendingReferral != null ? 
                   Container(
-                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(width: 1, color: kBorderLighter)
+                      )
+                    ),
                     child: Column(
                       children: <Widget>[
                         Row(
@@ -796,7 +805,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                     )
                   ) : Container(),
 
-                  SizedBox(height: 15,),
 
                   Container(
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -1692,7 +1700,7 @@ class _GoalItemState extends State<GoalItem> {
   getCompletedDate(goal) {
     var data = '';
     DateTime date;
-    // print(goal['items']);
+    print('asdknas');
     goal['items'].forEach((item) {
       // print(item['body']['activityDuration']['end']);
       DateFormat format = new DateFormat("E LLL d y");

@@ -107,6 +107,7 @@ class BloodPressure {
     };
 
     _bpItems.add(data);
+    print(_bpItems);
 
     return 'success';
   }

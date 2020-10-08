@@ -352,6 +352,32 @@ class Questionnaire {
     return 'success';
   }
 
+  addCounselling(withFramework, careplan) {
+
+    var data = {
+      "meta": {
+        "performed_by": Auth().getAuth()['uid'],
+        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
+      },
+      "body": {
+        "type": "survey",
+        "data": {
+          '5a_framework': withFramework,
+          'care_plan_id': careplan['id'],
+          'title': careplan['body']['title']
+        },
+        "patient_id": Patient().getPatient()['uuid'],
+      }
+    };
+    // _questionnaireItems = [];
+    // print(data['body']['data']['url']);
+
+    _questionnaireItems.add(data);
+    
+    print(_questionnaireItems);
+    return 'success';
+  }
+
   addDiet(type, answers) {
     var questions = Questionnaire().questions[type];
     var updated = false;

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/helpers/helpers.dart';
+import 'package:nhealth/screens/chw/counselling_framework/counselling_framwork_screen.dart';
+import 'package:nhealth/screens/chw/counselling_framework/couselling_confirmation_screen.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 
@@ -240,7 +242,7 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
                   Column(
                     children: <Widget>[
                       ...widget.data['items'].map((item) {
-                        return ActionItem(item: item,);
+                        return ActionItem(item: item, parent: this);
                         }).toList(),
 
                     ],
@@ -309,7 +311,7 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
                                     setState(() {
                                       isLoading = true;
                                     });
-                                    var response = '';
+                                    var response = 'success';
                                     await Future.forEach(widget.data['items'], (item) async {
                                       if (item['meta']['status'] == 'pending') {
                                         response = await CarePlanController().update(item, '');
@@ -363,10 +365,12 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
 
 class ActionItem extends StatefulWidget {
   const ActionItem({
-    this.item
+    this.item,
+    this.parent
   });
 
   final item;
+  final parent;
 
   @override
   _ActionItemState createState() => _ActionItemState();
@@ -387,11 +391,17 @@ class _ActionItemState extends State<ActionItem> {
     });
   }
 
+  isCounselling() {
+    print(widget.item['body']['title']);
+    return widget.item['body']['title'].split(" ").contains('Counseling') || widget.item['body']['title'].split(" ").contains('Counselling');
+  }
+
   setStatus() {
     setState(() {
       btnDisabled = false;
       status = 'completed';
     });
+    widget.parent.setState(() {});
   }
 
   @override
@@ -399,6 +409,10 @@ class _ActionItemState extends State<ActionItem> {
     return InkWell(
       onTap: () {
         print(widget.item['body']);
+        if (isCounselling()) {
+          Navigator.of(context).pushNamed(CounsellingFrameworkScreen.path, arguments: { 'data': widget.item, 'parent': this});
+          return;
+        }
         Navigator.of(context).pushNamed('/chwActionsSwipper', arguments: { 'data': widget.item, 'parent': this});
       },
       child: Container(

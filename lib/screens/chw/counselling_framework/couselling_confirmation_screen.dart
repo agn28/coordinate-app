@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/care_plan_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
+import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import '../../../app_localizations.dart';
 
 class CounsellingConfirmation extends StatefulWidget {
   static const path = '/counsellingConfirm';
   var data;
-  CounsellingConfirmation({this.data});
+  var actionsState;
+  CounsellingConfirmation({this.data, this.actionsState});
 
   @override
   _CounsellingConfirmationState createState() => _CounsellingConfirmationState();
@@ -17,7 +19,7 @@ class CounsellingConfirmation extends StatefulWidget {
 class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
   String selectedWith5A = 'with5A';
   String selectedWithout5A = 'without5A';
-  bool withFramework = false;
+  bool withFramework = true;
   bool isLoading = false;
   
   bool checkValue = false;
@@ -30,7 +32,7 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context).translate("quiteTabaccoUse")),),
+      appBar: AppBar(title: Text(widget.data['body']['goal']['title']),),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
             child: Container(
@@ -78,7 +80,7 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
                               });
                             },
                           ),
-                        Text(AppLocalizations.of(context).translate("with5AFarmework"), style: TextStyle(fontSize: 17),),
+                        Text(AppLocalizations.of(context).translate("without5AFarmework"), style: TextStyle(fontSize: 17),),
                         ],
                       ),
 
@@ -97,12 +99,18 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
                               ),
                               child: FlatButton(
                                 onPressed: () async {
-                                  // widget.parent.setState(() {
-                                  //   widget.parent.setStatus();
-                                  // });
+                                  widget.actionsState.setState(() {
+                                    widget.actionsState.setStatus();
+                                  });
                                   setState(() {
                                     isLoading = true;
                                   });
+                                  var result = await Questionnaire().addCounselling(withFramework, widget.data);
+                                  print('result');
+                                  print(result);
+                                  print('widget.data');
+                                  print(widget.data);
+
                                   var response = await CarePlanController().update(widget.data, '');
                                   Navigator.of(context).pop();
                                   if (response == 'success') {

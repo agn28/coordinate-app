@@ -10,19 +10,17 @@ import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/care_plan_controller.dart';
+import 'package:nhealth/controllers/followup_controller.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/controllers/observation_controller.dart';
 import 'package:nhealth/controllers/user_controller.dart';
-import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
-import 'package:nhealth/repositories/user_repository.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/chw/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
 import 'package:nhealth/screens/chw/new_patient_questionnairs/new_questionnaire_feeling_screen.dart';
-import 'package:nhealth/screens/patients/manage/care_plan/care_plan_intervention_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.dart';
+import 'package:nhealth/screens/patients/patient_update_summary_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 
 
@@ -55,6 +53,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
   var cvd;
   var dueDate;
   var role = '';
+  var pendingReferral;
 
   @override
   void initState() {
@@ -69,7 +68,41 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
     getAssessmentDueDate();
     getMedicationsConditions();
     getReport();
+    getReferrals();
     getUsers();
+  }
+
+  getReferrals() async {
+    
+    var referrals = [];
+    setState(() {
+      isLoading = true;
+    });
+
+    var patientID = Patient().getPatient()['uuid'];
+
+    var data = await FollowupController().getFollowupsByPatient(patientID);
+
+    
+    if (data['error'] == true) {
+
+      // Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+    } else if (data['message'] == 'Unauthorized') {
+      Auth().logout();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    } else {
+      setState(() {
+        referrals = data['data'];
+      });
+    }
+
+    referrals.forEach((referral) {
+      if (referral['meta']['status'] == 'pending') {
+        setState(() {
+          pendingReferral = referral;
+        });
+      }
+    });
   }
 
   _getAuthData() async {
@@ -437,7 +470,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
         actions: <Widget>[
           GestureDetector(
             onTap: () {
-              Navigator.of(context).push(RegisterPatientScreen(isEdit: true));
+              Navigator.of(context).pushNamed(PatientUpdateSummary.path);
             },
             child: Container(
               margin: EdgeInsets.only(right: 30),
@@ -629,6 +662,86 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                       ],
                     ),
                   ),
+
+                  pendingReferral != null ? 
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(width: 1, color: kBorderLighter)
+                      )
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(AppLocalizations.of(context).translate('pendingReferral'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500,)),
+                            Container(
+                              width: 200,
+                              margin: EdgeInsets.only(top: 20),
+                              height: 30,
+                              decoration: BoxDecoration(
+                                color: kPrimaryColor,
+                                borderRadius: BorderRadius.circular(3)
+                              ),
+                              child: FlatButton(
+                                onPressed: () async {
+                                  // Navigator.of(context).pushNamed('/chwNavigation',);
+                                  Navigator.of(context).pushNamed('/referralList');
+                                  // Navigator.of(context).pushNamed('/updateReferral', arguments: referral);
+                                },
+                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                child: Text(AppLocalizations.of(context).translate('reviewReferral').toUpperCase(), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                              ),
+                            )
+                          ],
+                        ),
+
+                        Row(
+                          children: <Widget>[
+                            Text(AppLocalizations.of(context).translate('dateOfReferral')+": ", style: TextStyle(fontSize: 16),),
+                            Text(Helpers().convertDateFromSeconds(pendingReferral['meta']['created_at']), style: TextStyle(fontSize: 16)),
+                          ],
+                        ),
+                        SizedBox(height: 5,),
+
+                        Row(
+                          children: <Widget>[
+                            Text(AppLocalizations.of(context).translate('reason')+": ", style: TextStyle(fontSize: 16)),
+                            Text(pendingReferral['body']['reason'] ?? '', style: TextStyle(fontSize: 16)),
+                          ],
+                        ),
+
+                        SizedBox(height: 5,),
+
+                        Row(
+                          children: <Widget>[
+                            Text(AppLocalizations.of(context).translate('referralLocation')+": ", style: TextStyle(fontSize: 16)),
+                            Text(pendingReferral['body']['location'] != null && pendingReferral['body']['location']['clinic_name'] != null ? pendingReferral['body']['location']['clinic_name'] : '', style: TextStyle(fontSize: 16)),
+                          ],
+                        ),
+                        SizedBox(height: 5,),
+
+                        Row(
+                          children: <Widget>[
+                            Text(AppLocalizations.of(context).translate('referredBy')+": ", style: TextStyle(fontSize: 16)),
+                            Text(getUser(pendingReferral['meta']['collected_by']), style: TextStyle(fontSize: 16)),
+                          ],
+                        ),
+                        SizedBox(height: 5,),
+
+                        Row(
+                          children: <Widget>[
+                            Text(AppLocalizations.of(context).translate('referredOutcome')+": ", style: TextStyle(fontSize: 16)),
+                            Text(pendingReferral['body']['outcome'] ?? '', style: TextStyle(fontSize: 16)),
+                          ],
+                        ),
+                      ],
+                    )
+                  ) : Container(),
+
+
                   
                   Container(
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),

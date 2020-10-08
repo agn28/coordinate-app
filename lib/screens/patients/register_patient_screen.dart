@@ -379,7 +379,6 @@ class _RegisterPatientState extends State<RegisterPatient> {
       'birth_month': birthMonthController.text,
       'birth_year': birthYearController.text,
       'nid': nidController.text,
-      'pid': 'PA-19284921',
       'registration_date': DateFormat('y-MM-dd').format(DateTime.now()),
       'address': {
         'district': selectedDistrict['name'],
@@ -1509,7 +1508,7 @@ class _ViewSummaryState extends State<ViewSummary> {
               var url = await uploadImage();
               var formData = _RegisterPatientState()._prepareFormData();
               print('formdata');
-              var response = isEditState != null ? await PatientController().update(formData) : await PatientController().create(formData);
+              var response = isEditState != null ? await PatientController().update(formData, false) : await PatientController().create(formData);
               setState(() {
                 isLoading = false;
               });

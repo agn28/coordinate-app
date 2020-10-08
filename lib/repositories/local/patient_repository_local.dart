@@ -51,11 +51,11 @@ class PatientReposioryLocal {
   Future<void> update(data) async {
     var uuid = Patient().getPatient()['uuid'];
 
-    final sql = '''UPDATE ${DatabaseCreator.patientTable} SET
-      data = ?
-      WHERE uuid = ?''';
-    List<dynamic> params = [jsonEncode(data), uuid];
-    final result = await db.rawUpdate(sql, params);
+    // final sql = '''UPDATE ${DatabaseCreator.patientTable} SET
+    //   data = ?
+    //   WHERE uuid = ?''';
+    // List<dynamic> params = [jsonEncode(data), uuid];
+    // final result = await db.rawUpdate(sql, params);
 
     var patient = {
       'uuid': uuid,
@@ -63,12 +63,11 @@ class PatientReposioryLocal {
       'meta': data['meta']
     };
 
-    data['id'] = uuid;
+    // data['id'] = uuid;
 
     PatientRepository().update(data);
 
     await Patient().setPatient(patient);
-    DatabaseCreator.databaseLog('Update patient', sql, null, result, params);
   }
 
 }

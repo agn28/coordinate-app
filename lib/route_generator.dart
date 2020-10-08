@@ -27,12 +27,14 @@ import 'package:nhealth/screens/chw/unwell/severity_screen.dart';
 import 'package:nhealth/screens/chw/unwell/update_referral_screen.dart';
 import 'package:nhealth/screens/chw/work-list/chw_navigation_screen.dart';
 import 'package:nhealth/screens/home_screen.dart';
+import 'package:nhealth/screens/patients/edit_patient_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_details_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_intervention_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/encounter_details_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_overview_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_overview_screen_old.dart';
 import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
+import 'package:nhealth/screens/patients/patient_update_summary_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic>  generarteRoute(RouteSettings settings) {
@@ -90,7 +92,7 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => CounsellingFrameworkScreen(data: data['data'], parent: data['parent']));
       case CounsellingConfirmation.path:
       var data = settings.arguments as Map;
-        return CupertinoPageRoute(builder: (_) => CounsellingConfirmation(data: data['data']));
+        return CupertinoPageRoute(builder: (_) => CounsellingConfirmation(data: data['data'], actionsState: data['actionsState']));
 
       case MedicalRecommendationScreen.path:
         var data = settings.arguments;
@@ -128,6 +130,11 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => NewQuestionnaireFeelingScreen());
       case NewQuestionnaireAcuteScreen.path:
         return CupertinoPageRoute(builder: (_) => NewQuestionnaireAcuteScreen());
+
+      case PatientUpdateSummary.path:
+        return CupertinoPageRoute(builder: (_) => PatientUpdateSummary());
+      case EditPatientScreen.path:
+        return CupertinoPageRoute(builder: (_) => EditPatientScreen());
     }
   }
 }

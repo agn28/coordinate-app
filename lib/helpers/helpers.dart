@@ -130,6 +130,15 @@ class Helpers {
     return '${patient["data"]["age"]}Y ${StringUtils.capitalize(patient["data"]["gender"])}';
   }
 
+  getPatientPid(patient) {
+    print('patient topbar');
+    if (patient["data"]["pid"] != null && patient["data"]["pid"] != '') {
+      print(patient["data"]["pid"]);
+      return 'PID:  ${patient["data"]["pid"]}';
+    }
+    return '';
+  }
+
   logout(context) async {
     showDialog(
       context: context,

@@ -45,7 +45,6 @@ class AssessmentRepositoryLocal {
 
     print('after assessment');
 
-
     Future.forEach(bloodPressures, (item) async {
       print('into observations');
       var codings = await _getCodings(item);

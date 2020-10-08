@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:nhealth/models/auth.dart';
+import 'package:nhealth/models/patient.dart';
 import '../constants/constants.dart';
 import 'dart:convert';
 
@@ -141,8 +142,11 @@ class PatientRepository {
   update(data) async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
+    var uuid = Patient().getPatient()['uuid'];
+    print('token');
+    print(data);
     await http.put(
-      apiUrl + 'patients/' + data['id'],
+      apiUrl + 'patients/' + uuid,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -150,7 +154,7 @@ class PatientRepository {
       },
       body: json.encode(data)
     ).then((response) {
-      
+      print(response.body);
     }).catchError((error) {
       print('error ' + error.toString());
     });

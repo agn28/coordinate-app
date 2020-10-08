@@ -139,7 +139,7 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
                   Column(
                     children: <Widget>[
                       ...widget.data['items'].map((item) {
-                        return ActionItem(item: item);
+                        return ActionItem(item: item, parent: this);
                       }).toList(),
 
                     ],
@@ -241,10 +241,12 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
 
 class ActionItem extends StatefulWidget {
   const ActionItem({
-    this.item
+    this.item,
+    this.parent
   });
 
   final item;
+  final parent;
 
   @override
   _ActionItemState createState() => _ActionItemState();
@@ -275,6 +277,8 @@ class _ActionItemState extends State<ActionItem> {
       btnDisabled = false;
       status = 'completed';
     });
+
+    widget.parent.setState(() {});
   }
 
   @override

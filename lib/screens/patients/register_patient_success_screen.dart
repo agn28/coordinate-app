@@ -92,7 +92,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                       children: <Widget>[
                         Text(Helpers().getPatientAgeAndGender(Patient().getPatient()), style: TextStyle(fontSize: 18),),
                         SizedBox(width: 30,),
-                        Text('PID: N-1213244232', style: TextStyle(fontSize: 18),),
+                        Text(Helpers().getPatientPid(Patient().getPatient()), style: TextStyle(fontSize: 18),),
                       ],
                     )
                   ),
