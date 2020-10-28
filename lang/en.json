@@ -354,6 +354,8 @@
   "test": "Test",
   "medical": "Medical",
 
+
+
   "dataSavedSuccessfully": "Data Save Successfully",
   "with5AFarmework": "With 5A Farmwork",
   "without5AFarmework": "Without 5A Farmwork",
@@ -402,7 +404,6 @@
   "selectEncounterType": "Select encounter type",
   "patientsUnwell": "The patients seems to be severly unwell",
   "seekingMedicalAttention'": "Recommend seeking medical attention",
-
   "submitForReferral": "SUBMIT FOR REFERRAL",
   "action": "Action",
   "haveHistory": "Do you have a history of (or has ever been told they have) (select all that apply)'",
