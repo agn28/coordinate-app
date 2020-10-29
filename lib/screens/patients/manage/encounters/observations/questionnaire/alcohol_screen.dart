@@ -109,7 +109,7 @@ class _AlcoholState extends State<Alcohol> {
                 children: <Widget>[
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-                    child: Text(_questions['items'][0]['question'],
+                    child: Text(Helpers().getQuestionText(context, _questions['items'][0]),
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                     )
                   ),
@@ -134,7 +134,7 @@ class _AlcoholState extends State<Alcohol> {
                                   _changeOption(_questions['items'][0]['options'].indexOf(option));
                                 },
                                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                child: Text(StringUtils.capitalize(option),
+                                child: Text(Helpers().getOptionText(context, _questions['items'][0], option),
                                   style: TextStyle(color: _selectedOption == _questions['items'][0]['options'].indexOf(option) ? kPrimaryColor : null),
                                 ),
                               ),
@@ -154,7 +154,7 @@ class _AlcoholState extends State<Alcohol> {
                       children: <Widget>[
                         Container(
                           margin: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-                          child: Text(_questions['items'][1]['question'],
+                          child: Text(Helpers().getQuestionText(context, _questions['items'][1]),
                             style: TextStyle(fontSize: 18),
                           )
                         ),
@@ -172,7 +172,7 @@ class _AlcoholState extends State<Alcohol> {
                         ),
                         Container(
                           margin: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-                          child: Text(_questions['items'][2]['question'],
+                          child: Text(Helpers().getQuestionText(context, _questions['items'][2]),
                             style: TextStyle(fontSize: 18),
                           )
                         ),

@@ -161,4 +161,28 @@ class Helpers {
     );
     
   }
+
+getQuestionText(context, question) {
+  var locale = Localizations.localeOf(context);
+
+  if (locale == Locale('bn', 'BN')) {
+    print('true');
+    return question['question_bn'];
+  }
+  return question['question'];
+}
+
+getOptionText(context, question, option) {
+  var locale = Localizations.localeOf(context);
+
+  if (locale == Locale('bn', 'BN')) {
+    if (question['options_bn'] != null) {
+      return question['options_bn'][question['options'].indexOf(option)];
+    }
+    return option;
+    
+  }
+  return StringUtils.capitalize(option);
+}
+
 }

@@ -228,7 +228,7 @@ class _FirstQuestionState extends State<FirstQuestion> {
 
             Container(
               margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-              child: Text(_questions['items'][0]['question'],
+              child: Text(Helpers().getQuestionText(context, _questions['items'][0]),
                 style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
               )
             ),
@@ -253,7 +253,7 @@ class _FirstQuestionState extends State<FirstQuestion> {
                             _changeOption(_questions['items'][0]['options'].indexOf(option));
                           },
                           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          child: Text(option.toUpperCase(),
+                          child: Text(Helpers().getOptionText(context, _questions['items'][0], option),
                             style: TextStyle(color: _firstQuestionOption == _questions['items'][0]['options'].indexOf(option) ? kPrimaryColor : null),
                           ),
                         ),
@@ -301,7 +301,7 @@ class _SecondQuestionState extends State<SecondQuestion> {
         children: <Widget>[
           Container(
             margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-            child: Text(_questions['items'][1]['question'],
+            child: Text(Helpers().getQuestionText(context, _questions['items'][1]),
               style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
             )
           ),
@@ -326,7 +326,7 @@ class _SecondQuestionState extends State<SecondQuestion> {
                           _changeOption(_questions['items'][0]['options'].indexOf(option));
                         },
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        child: Text(option.toUpperCase(),
+                        child: Text(Helpers().getOptionText(context, _questions['items'][1], option),
                           style: TextStyle(color: _secondQuestionOption == _questions['items'][0]['options'].indexOf(option) ? kPrimaryColor : null),
                         ),
                       ),
@@ -373,7 +373,7 @@ class _ThirdQuestionState extends State<ThirdQuestion> {
 
             Container(
               margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-              child: Text(_questions['items'][2]['question'],
+              child: Text(Helpers().getQuestionText(context, _questions['items'][2]),
                 style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
               )
             ),
@@ -398,7 +398,7 @@ class _ThirdQuestionState extends State<ThirdQuestion> {
                             _changeOption(_questions['items'][2]['options'].indexOf(option));
                           },
                           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          child: Text(option.toUpperCase(),
+                          child: Text(Helpers().getOptionText(context, _questions['items'][2], option),
                             style: TextStyle(color: _thirdQuestionOption == _questions['items'][0]['options'].indexOf(option) ? kPrimaryColor : null),
                           ),
                         ),
@@ -444,7 +444,7 @@ class _FourthQuestionState extends State<FourthQuestion> {
 
             Container(
               margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-              child: Text(_questions['items'][3]['question'],
+              child: Text(Helpers().getQuestionText(context, _questions['items'][3]),
                 style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
               )
             ),
@@ -469,7 +469,7 @@ class _FourthQuestionState extends State<FourthQuestion> {
                             _changeOption(_questions['items'][3]['options'].indexOf(option));
                           },
                           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          child: Text(option.toUpperCase(),
+                          child: Text(Helpers().getOptionText(context, _questions['items'][3], option),
                             style: TextStyle(color: _fourthQuestionOption == _questions['items'][0]['options'].indexOf(option) ? kPrimaryColor : null),
                           ),
                         ),
@@ -515,7 +515,7 @@ class _FifthQuestionState extends State<FifthQuestion> {
 
             Container(
               margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-              child: Text(_questions['items'][4]['question'],
+              child: Text(Helpers().getQuestionText(context, _questions['items'][4]),
                 style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
               )
             ),
@@ -540,7 +540,7 @@ class _FifthQuestionState extends State<FifthQuestion> {
                             _changeOption(_questions['items'][4]['options'].indexOf(option));
                           },
                           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          child: Text(option.toUpperCase(),
+                          child: Text(Helpers().getOptionText(context, _questions['items'][4], option),
                             style: TextStyle(color: _fifthQuestionOption == _questions['items'][0]['options'].indexOf(option) ? kPrimaryColor : null),
                           ),
                         ),
@@ -586,7 +586,7 @@ class _SixthQuestionState extends State<SixthQuestion> {
 
             Container(
               margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-              child: Text(_questions['items'][5]['question'],
+              child: Text(Helpers().getQuestionText(context, _questions['items'][5]),
                 style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
               )
             ),
@@ -596,7 +596,7 @@ class _SixthQuestionState extends State<SixthQuestion> {
               width: MediaQuery.of(context).size.width * .5,
               child: Row(
                 children: <Widget>[
-                  ..._questions['items'][4]['options'].map((option) => 
+                  ..._questions['items'][5]['options'].map((option) => 
                     Expanded(
                       child: Container(
                         height: 40,
@@ -611,7 +611,7 @@ class _SixthQuestionState extends State<SixthQuestion> {
                             _changeOption(_questions['items'][5]['options'].indexOf(option));
                           },
                           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          child: Text(option.toUpperCase(),
+                          child: Text(Helpers().getOptionText(context, _questions['items'][5], option),
                             style: TextStyle(color: _sixthQuestionOption == _questions['items'][5]['options'].indexOf(option) ? kPrimaryColor : null),
                           ),
                         ),
@@ -657,7 +657,7 @@ class _SeventhQuestionState extends State<SeventhQuestion> {
 
             Container(
               margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-              child: Text(_questions['items'][6]['question'],
+              child: Text(Helpers().getQuestionText(context, _questions['items'][6]),
                 style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
               )
             ),
@@ -750,7 +750,7 @@ class _EighthQuestionState extends State<EighthQuestion> {
 
             Container(
               margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-              child: Text(_questions['items'][7]['question'],
+              child: Text(Helpers().getQuestionText(context, _questions['items'][7]),
                 style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
               )
             ),
@@ -775,7 +775,7 @@ class _EighthQuestionState extends State<EighthQuestion> {
                             _changeOption(_questions['items'][7]['options'].indexOf(option));
                           },
                           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          child: Text(option.toUpperCase(),
+                          child: Text(Helpers().getOptionText(context, _questions['items'][7], option),
                             style: TextStyle(color: _eightsQuestionOption == _questions['items'][7]['options'].indexOf(option) ? kPrimaryColor : null),
                           ),
                         ),

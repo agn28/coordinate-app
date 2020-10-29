@@ -7,13 +7,15 @@ var _questions = {
       'items' : [
         {
           'question': 'Have you used tobacco (all forms – cigarettes, biri, chewing tobacco, zarda, gul) during the past 12 months?',
-          'bn': 'আপনি কি গত ১২ মাসে তামাক (সমস্ত ধরণের - সিগারেট, বিড়ি, তামাকপাতা, জর্দা, গুল) ব্যবহার করেছেন?',
-          'options': ['yes', 'no']
+          'question_bn': 'আপনি কি গত ১২ মাসে তামাক (সমস্ত ধরণের - সিগারেট, বিড়ি, তামাকপাতা, জর্দা, গুল) ব্যবহার করেছেন?',
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         },
         {
           'question': 'Were you regularly exposed to secondhand tobacco smoke in the past 12 months?',
-          'bn': 'আপনি কি গত ১২ মাসে নিয়মিতভাবে তামাকের ধোঁয়ার সংস্পর্শে এসেছিলেন?',
-          'options': ['yes', 'no']
+          'question_bn': 'আপনি কি গত ১২ মাসে নিয়মিতভাবে তামাকের ধোঁয়ার সংস্পর্শে এসেছিলেন?',
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         }
       ]
     },
@@ -21,18 +23,21 @@ var _questions = {
       'items' : [
         {
           'question': 'Did you drink any alcohol in the last 30 days?',
-          'bn': 'আপনি গত ৩০ দিনে কোনও অ্যালকোহল পান করেছেন?',
-          'options': ['yes', 'no']
+          'question_bn': 'আপনি গত ৩০ দিনে কোনও অ্যালকোহল পান করেছেন?',
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         },
         {
           'question': 'How many days in the last 30 days?',
-          'bn': 'গত ৩০ দিনের মধ্যে কত দিন?',
-          'options': ['yes', 'no']
+          'question_bn': 'গত ৩০ দিনের মধ্যে কত দিন?',
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         },
         {
           'question': 'How many standard drinks units per day?',
-          'bn': 'প্রতিদিন কত স্ট্যান্ডার্ড পানীয় ইউনিট?',
-          'options': ['yes', 'no']
+          'question_bn': 'প্রতিদিন কত স্ট্যান্ডার্ড পানীয় ইউনিট?',
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         }
       ]
     },
@@ -40,23 +45,27 @@ var _questions = {
       'items' : [
         {
           'question': 'Do you eat at least 5 portions of fruit and vegetables (excluding starchy vegetables) daily? (1 serving = 0.5 cup cooked vegetables or 1 cup raw vegetables; 1 orange, apple, banana, mango)',
-          'bn': 'আপনি কি প্রতিদিন কমপক্ষে ৫ ভাগ ফলমূল এবং শাকসব্জি (স্টার্চযুক্ত সবজি বাদে) খান? (১পরিবেশন = ০.৫ কাপ রান্না করা শাকসব্জী বা ১ কাপ কাঁচা শাকসব্জী; ১ কমলা, আপেল, কলা, আমের)',
-          'options': ['yes', 'no']
+          'question_bn': 'আপনি কি প্রতিদিন কমপক্ষে ৫ ভাগ ফলমূল এবং শাকসব্জি (স্টার্চযুক্ত সবজি বাদে) খান? (১পরিবেশন = ০.৫ কাপ রান্না করা শাকসব্জী বা ১ কাপ কাঁচা শাকসব্জী; ১ কমলা, আপেল, কলা, আমের)',
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         },
         {
           'question': 'Do you eat red meat, fried foods, canned or other processed foods on most days?',
-          'bn': 'আপনি কি বেশিরভাগ দিন লাল মাংস, ভাজা খাবার, টিনজাত বা অন্যান্য প্রক্রিয়াজাত খাবার খান?',
-          'options': ['yes', 'no']
+          'question_bn': 'আপনি কি বেশিরভাগ দিন লাল মাংস, ভাজা খাবার, টিনজাত বা অন্যান্য প্রক্রিয়াজাত খাবার খান?',
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         },
         {
           'question': 'Do you have sugary drinks (for example, soda, juice, sweetened milk) on most days?',
-          'bn': 'আপনার কি বেশিরভাগ দিন মিষ্টি পানীয় (যেমন - সোডা, জুস, মিষ্টি দুধ) পান করেন?',
-          'options': ['yes', 'no']
+          'question_bn': 'আপনার কি বেশিরভাগ দিন মিষ্টি পানীয় (যেমন - সোডা, জুস, মিষ্টি দুধ) পান করেন?',
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         },
         {
           'question': 'Do you add extra salt to your meals?',
-          'bn': 'আপনি কি আপনার খাবারে অতিরিক্ত লবণ খান?',
-          'options': ['yes', 'no']
+          'question_bn': 'আপনি কি আপনার খাবারে অতিরিক্ত লবণ খান?',
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         }
       ],
     },
@@ -64,13 +73,15 @@ var _questions = {
       'items' : [
         {
           'question': 'Do you do physical activity of moderate intensity i.e. you get a little bit out of breath, for at least 30 minutes per day on 5 days per week, or for 150 minutes per week?',
-          'bn': 'আপনি কি প্রতি সপ্তাহে ৫ দিন প্রতিদিন কমপক্ষে ৩০ মিনিট, বা প্রতি সপ্তাহে ১৫০ মিনিট তীব্র মাত্রার শারীরিক পরিশ্রম করেন যেখানে শ্বাসপ্রশ্বাস দ্রুত হয়?',
-          'options': ['yes', 'no']
+          'question_bn': 'আপনি কি প্রতি সপ্তাহে ৫ দিন প্রতিদিন কমপক্ষে ৩০ মিনিট, বা প্রতি সপ্তাহে ১৫০ মিনিট তীব্র মাত্রার শারীরিক পরিশ্রম করেন যেখানে শ্বাসপ্রশ্বাস দ্রুত হয়?',
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         },
         {
           'question': 'Do you spend more than 5 hours sitting down every day?',
-          'bn': 'আপনি কি প্রতিদিন ৫ ঘন্টার বেশি সময় বসে কাটান বা বসে বসে কাজ করেন?',
-          'options': ['yes', 'no']
+          'question_bn': 'আপনি কি প্রতিদিন ৫ ঘন্টার বেশি সময় বসে কাটান বা বসে বসে কাজ করেন?',
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         },
       ]
     },
@@ -79,18 +90,21 @@ var _questions = {
       'items' : [
         {
           'question': 'What medications are you taking (including over-the-counter /herbal /traditional remedies/recreational)?',
-          'bn': 'আপনি কী কী ওষুধ খাচ্ছেন (ফার্মেসী থেকে কেনা / ভেষজ / প্রচলিত ওষুধ / বিনোদনমূলক)?',
-          'options': ['yes', 'no']
+          'question_bn': 'আপনি কী কী ওষুধ খাচ্ছেন (ফার্মেসী থেকে কেনা / ভেষজ / প্রচলিত ওষুধ / বিনোদনমূলক)?',
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         },
         {
           'question': 'Are you taking your medications exactly as prescribed?',
-          'bn': 'আপনি কি ওষুধগুলি প্রেসক্রিপশনে দেয়া নিয়ম অনুযায়ী খাচ্ছেন?',
-          'options': ['yes', 'no']
+          'question_bn': 'আপনি কি ওষুধগুলি প্রেসক্রিপশনে দেয়া নিয়ম অনুযায়ী খাচ্ছেন?',
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         },
         {
           'question': 'What problems have you had taking your medicines?',
-          'bn': 'ওষুধ সেবন করতে আপনার কি কি সমস্যা হচ্ছে?',
-          'options': ['yes', 'no']
+          'question_bn': 'ওষুধ সেবন করতে আপনার কি কি সমস্যা হচ্ছে?',
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         },
       ]
     },
@@ -99,44 +113,52 @@ var _questions = {
       'items' : [
         {
           'question': 'Heart attack/angina/other heart diseases (e.g. heart failure, rheumatic heart disease)',
-          'bn': 'হার্ট অ্যাটাক / এনযাইনা / অন্যান্য হৃদরোগ (যেমনঃ হার্ট ফেইলিউর, রিউম্যাটিক হার্ট ডিজিজ)',
-          'options': ['yes', 'no']
+          'question_bn': 'হার্ট অ্যাটাক / এনযাইনা / অন্যান্য হৃদরোগ (যেমনঃ হার্ট ফেইলিউর, রিউম্যাটিক হার্ট ডিজিজ)',
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         },
         {
           'question': 'Stroke/ transient ischaemic attack (TIA)',
-          'bn': 'স্ট্রোক / টিআইএ',
-          'options': ['yes', 'no']
+          'question_bn': 'স্ট্রোক / টিআইএ',
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         },
         {
           'question': 'High blood pressure (hypertension)',
-          'bn': 'উচ্চ রক্তচাপ (হাইপারটেনশন)',
-          'options': ['yes', 'no']
+          'question_bn': 'উচ্চ রক্তচাপ (হাইপারটেনশন)',
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         },
         {
           'question': 'High blood sugar (diabetes)',
-          'bn': 'রক্তে উচ্চ শর্করা (ডায়াবেটিস)',
-          'options': ['yes', 'no']
+          'question_bn': 'রক্তে উচ্চ শর্করা (ডায়াবেটিস)',
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         },
         {
           'question': 'High blood cholesterol or dyslipidemia',
-          'bn': 'রক্তের উচ্চ  কোলেস্টেরল বা ডিসলিপিডেমিয়া',
-          'options': ['yes', 'no']
+          'question_bn': 'রক্তের উচ্চ  কোলেস্টেরল বা ডিসলিপিডেমিয়া',
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         },
         {
           'question': 'Kidney disease',
-          'bn': 'কিডনী রোগ',
-          'options': ['yes', 'no']
+          'question_bn': 'কিডনী রোগ',
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         },
         {
           'question': 'Other illnesses such as tuberculosis, HIV (confirm HIV status, testing as per national guidelines)',
-          'bn': 'অন্যান্য অসুস্থতা যেমন- যক্ষ্মা, এইচআইভি  (এইচআইভি আছে কিনা নিশ্চিত হন, জাতীয় নির্দেশিকা অনুযায়ী পরীক্ষা করা হয়েছে কিনা)',
-          'options': ['yes', 'no']
+          'question_bn': 'অন্যান্য অসুস্থতা যেমন- যক্ষ্মা, এইচআইভি  (এইচআইভি আছে কিনা নিশ্চিত হন, জাতীয় নির্দেশিকা অনুযায়ী পরীক্ষা করা হয়েছে কিনা)',
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         },
         {
           'question': 'Do you have any allergies?',
-          'bn': 'আপনার কি কোনও এলার্জি আছে??',
+          'question_bn': 'আপনার কি কোনও এলার্জি আছে??',
           'type': 'allergy',
-          'options': ['yes', 'no']
+          'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
         },
       ]
     },
@@ -146,38 +168,45 @@ var _questions = {
         'items' : [
           {
             'question': 'Have you ever been diagnosed with Diabetes?',
-            'bn': 'আপনার কি কখনও ডায়াবেটিস ধরা পড়েছে?',
-            'options': ['yes', 'no']
+            'question_bn': 'আপনার কি কখনও ডায়াবেটিস ধরা পড়েছে?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
           },
           {
             'question': 'Have you ever been diagnosed with Stroke?',
-            'bn': 'আপনার কি কখনও স্ট্রোক হয়েছে?',
-            'options': ['yes', 'no']
+            'question_bn': 'আপনার কি কখনও স্ট্রোক হয়েছে?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
           },
           {
             'question': 'Have you ever been diagnosed with heart attack?',
-            'bn': 'আপনার কি কখনও হার্ট অ্যাটাক হয়েছে?',
-            'options': ['yes', 'no']
+            'question_bn': 'আপনার কি কখনও হার্ট অ্যাটাক হয়েছে?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
           },
           {
             'question': 'Have you ever been diagnosed with asthma/COPD?',
-            'bn': 'আপনার কি কখনও হাঁপানি / সিওপিডি (ফুস্ফুসের দীর্ঘমেয়াদী শ্বাসকষ্টজনিত রোগ ধরা পড়েছে?',
-            'options': ['yes', 'no']
+            'question_bn': 'আপনার কি কখনও হাঁপানি / সিওপিডি (ফুস্ফুসের দীর্ঘমেয়াদী শ্বাসকষ্টজনিত রোগ ধরা পড়েছে?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
           },
           {
             'question': 'Have you ever been diagnosed with chronic kidney disease?',
-            'bn': 'আপনার কি কখনও দীর্ঘস্থায়ী কিডনি রোগ ধরা পড়েছে?',
-            'options': ['yes', 'no']
+            'question_bn': 'আপনার কি কখনও দীর্ঘস্থায়ী কিডনি রোগ ধরা পড়েছে?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
           },
           {
             'question': 'Have you ever been diagnosed with Cancer?',
-            'bn': 'আপনার কি কখনও ক্যান্সার ধরা পড়েছে?',
-            'options': ['yes', 'no']
+            'question_bn': 'আপনার কি কখনও ক্যান্সার ধরা পড়েছে?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
           },
           {
             'question': 'Have you ever been diagnosed with hypertension?',
-            'bn': 'আপনার কি কখনও উচ্চ রক্তচাপ ধরা পড়েছে?',
+            'question_bn': 'আপনার কি কখনও উচ্চ রক্তচাপ ধরা পড়েছে?',
             'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
           },
         ]
       },
@@ -185,28 +214,33 @@ var _questions = {
         'items' : [
           {
             'question': 'Are you taking any medicines for hypertension?',
-            'bn': 'আপনি ব্লাড-প্রেসার বা উচ্চ রক্তচাপের জন্য কোনও ওষুধ খাচ্ছেন?',
-            'options': ['yes', 'no']
+            'question_bn': 'আপনি ব্লাড-প্রেসার বা উচ্চ রক্তচাপের জন্য কোনও ওষুধ খাচ্ছেন?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
           },
           {
             'question': 'Are you taking any medicines for diabetes?',
-            'bn': 'আপনি কি ডায়াবেটিসের কোনও ওষুধ খাচ্ছেন?',
-            'options': ['yes', 'no']
+            'question_bn': 'আপনি কি ডায়াবেটিসের কোনও ওষুধ খাচ্ছেন?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
           },
           {
             'question': 'Are you taking any aspirin/clopidegrol?',
-            'bn': 'আপনি কি কোনও অ্যাসপিরিন / ক্লপিডগ্রেল জাতীয় ওষুধ খাচ্ছেন?',
-            'options': ['yes', 'no']
+            'question_bn': 'আপনি কি কোনও অ্যাসপিরিন / ক্লপিডগ্রেল জাতীয় ওষুধ খাচ্ছেন?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
           },
           {
             'question': 'Are you taking any anti cholesterol drug?',
-            'bn': 'আপনি কি কোনও এন্টি কোলেস্টেরল (রক্তে চর্বি কমায় এমন)  ওষুধ গ্রহণ করছেন?',
-            'options': ['yes', 'no']
+            'question_bn': 'আপনি কি কোনও এন্টি কোলেস্টেরল (রক্তে চর্বি কমায় এমন)  ওষুধ গ্রহণ করছেন?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
           },
           {
             'question': 'Are you taking the medicines regularly?',
-            'bn': 'আপনি কি নিয়মিত ওষুধ খাচ্ছেন?',
-            'options': ['yes', 'no']
+            'question_bn': 'আপনি কি নিয়মিত ওষুধ খাচ্ছেন?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
           } 
         ]
 
@@ -216,48 +250,57 @@ var _questions = {
         'items' : [
           {
             'question': 'Do you currently smoke?',
-            'bn': 'আপনি কি বর্তমানে ধূমপান করেন?',
-            'options': ['yes', 'no']
+            'question_bn': 'আপনি কি বর্তমানে ধূমপান করেন?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
           },
           {
             'question': 'Do you currently consume any smokeless tobacco?',
-            'bn': 'আপনি বর্তমানে কোনও ধোঁয়াবিহীন  তামাক সেবন করেন?',
-            'options': ['yes', 'no']
+            'question_bn': 'আপনি বর্তমানে কোনও ধোঁয়াবিহীন  তামাক সেবন করেন?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
           },
           {
             'question': 'Do you currently drink alcohol?',
-            'bn': 'আপনি কি বর্তমানে মদ পান করেন?',
-            'options': ['yes', 'no']
+            'question_bn': 'আপনি কি বর্তমানে মদ পান করেন?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
           },
           {
             'question': 'Do you eat atleast 5 portions of fruits and vegetables daily?',
-            'bn': 'আপনি কি প্রতিদিন কমপক্ষে ৫ ভাগ ফল এবং শাকসব্জী খান?',
-            'options': ['yes', 'no']
+            'question_bn': 'আপনি কি প্রতিদিন কমপক্ষে ৫ ভাগ ফল এবং শাকসব্জী খান?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
           },
           {
             'question': 'Do you eat any red meat, fried foods, canned or processed food on most days?',
-            'bn': 'আপনি কি বেশিরভাগ দিন কোনও লাল মাংস, ভাজা খাবার, টিনজাত বা প্রক্রিয়াজাত খাবার খান?',
-            'options': ['yes', 'no']
+            'question_bn': 'আপনি কি বেশিরভাগ দিন কোনও লাল মাংস, ভাজা খাবার, টিনজাত বা প্রক্রিয়াজাত খাবার খান?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
           },
           {
             'question': 'Do you have sugery drinks on most days?',
-            'bn': 'আপনি কি বেশিরভাগ সময়ে চিনিযুক্ত পানীয় পান করেন?',
-            'options': ['yes', 'no']
+            'question_bn': 'আপনি কি বেশিরভাগ সময়ে চিনিযুক্ত পানীয় পান করেন?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
           },
           {
             'question': 'Do you add extra salt to your meals or have excess salt or salty foods on most days?',
-            'bn': 'আপনি কি আপনার খাবারে অতিরিক্ত লবণ যুক্ত করেন বা বেশিরভাগ দিন অতিরিক্ত লবণ বা নোনতা খাবার খান?',
-            'options': ['yes', 'no']
+            'question_bn': 'আপনি কি আপনার খাবারে অতিরিক্ত লবণ যুক্ত করেন বা বেশিরভাগ দিন অতিরিক্ত লবণ বা নোনতা খাবার খান?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
           },
           {
             'question': 'Do you do physical activity or moderate intensity (you get a little bit out of breath) for atleast 30 minutes per day on 5 days per week or 150 minutes per week?',
-            'bn': 'আপনি কি প্রতি সপ্তাহে ৫ দিন প্রতিদিন কমপক্ষে ৩০ মিনিট, বা প্রতি সপ্তাহে ১৫০ মিনিট মাঝারি থেকে তীব্র মাত্রার শারীরিক পরিশ্রম করেন যেখানে শ্বাসপ্রশ্বাস দ্রুত হয়?',
-            'options': ['yes', 'no']
+            'question_bn': 'আপনি কি প্রতি সপ্তাহে ৫ দিন প্রতিদিন কমপক্ষে ৩০ মিনিট, বা প্রতি সপ্তাহে ১৫০ মিনিট মাঝারি থেকে তীব্র মাত্রার শারীরিক পরিশ্রম করেন যেখানে শ্বাসপ্রশ্বাস দ্রুত হয়?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
           },
           {
             'question': 'Do you do physical activity of high intensity (you get out of breath) for at least 15 minutes per day on 5 days per week, or 75 minutes per week?',
-            'bn': 'আপনি কি প্রতি সপ্তাহে ৫ দিন প্রতিদিন কমপক্ষে ১৫ মিনিট, বা প্রতি সপ্তাহে ৭৫ মিনিট তীব্র মাত্রার শারীরিক পরিশ্রম করেন যেখানে শ্বাসপ্রশ্বাস দ্রুত হয়?',
-            'options': ['yes', 'no']
+            'question_bn': 'আপনি কি প্রতি সপ্তাহে ৫ দিন প্রতিদিন কমপক্ষে ১৫ মিনিট, বা প্রতি সপ্তাহে ৭৫ মিনিট তীব্র মাত্রার শারীরিক পরিশ্রম করেন যেখানে শ্বাসপ্রশ্বাস দ্রুত হয়?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না']
           },
         ]
       }

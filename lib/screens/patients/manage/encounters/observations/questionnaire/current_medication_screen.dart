@@ -87,7 +87,7 @@ class _CurrentMedicationState extends State<CurrentMedication> {
                 children: <Widget>[
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-                    child: Text(_questions['items'][0]['question'],
+                    child: Text(Helpers().getQuestionText(context, _questions['items'][0]),
                       style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
                     )
                   ),
@@ -113,7 +113,7 @@ class _CurrentMedicationState extends State<CurrentMedication> {
                 children: <Widget>[
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-                    child: Text(_questions['items'][1]['question'],
+                    child: Text(Helpers().getQuestionText(context, _questions['items'][1]),
                       style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
                     )
                   ),
@@ -135,7 +135,7 @@ class _CurrentMedicationState extends State<CurrentMedication> {
                                   });
                                 },
                               ),
-                              Text(StringUtils.capitalize(option), style: TextStyle(color: Colors.black, fontSize: 18)),
+                              Text(Helpers().getOptionText(context, _questions['items'][1], option), style: TextStyle(color: Colors.black, fontSize: 18)),
                             ],
                           ),
                         ).toList(),
@@ -160,7 +160,7 @@ class _CurrentMedicationState extends State<CurrentMedication> {
                 children: <Widget>[
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-                    child: Text(_questions['items'][2]['question'],
+                    child: Text(Helpers().getQuestionText(context, _questions['items'][2]),
                       style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
                     )
                   ),
