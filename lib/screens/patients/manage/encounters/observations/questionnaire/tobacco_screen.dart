@@ -103,7 +103,7 @@ class _TobaccoState extends State<Tobacco> {
                 children: <Widget>[
                   Container(
                     margin: EdgeInsets.symmetric( horizontal: 30),
-                    child: Text(_questions['items'][0]['question'],
+                    child: Text(Helpers().getQuestionText(context, _questions['items'][0]),
                       style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500,),
                     )
                   ),
@@ -131,7 +131,7 @@ class _TobaccoState extends State<Tobacco> {
                                   });
                                 },
                                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                child: Text(StringUtils.capitalize(option),
+                                child: Text(Helpers().getOptionText(context, _questions['items'][0], option),
                                   style: TextStyle(color: _firstQuestionOption == _questions['items'][0]['options'].indexOf(option) ? kPrimaryColor : null),
                                 ),
                               ),
@@ -157,7 +157,7 @@ class _TobaccoState extends State<Tobacco> {
                 children: <Widget>[
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-                    child: Text(_questions['items'][1]['question'],
+                    child: Text( Helpers().getQuestionText(context, _questions['items'][1]),
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                     )
                   ),
@@ -184,7 +184,7 @@ class _TobaccoState extends State<Tobacco> {
                                   });
                                 },
                                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                child: Text(StringUtils.capitalize(option),
+                                child: Text(Helpers().getOptionText(context, _questions['items'][1], option),
                                   style: TextStyle(color: _secondQuestionOption == _questions['items'][0]['options'].indexOf(option) ? kPrimaryColor : null),
                                 ),
                               ),

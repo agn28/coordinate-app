@@ -9,6 +9,7 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/devices.dart';
+import 'package:nhealth/models/language.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
@@ -17,6 +18,7 @@ import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import '../../../custom-classes/custom_stepper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final GlobalKey<FormState> _patientFormKey = new GlobalKey<FormState>();
 final GlobalKey<FormState> _causesFormKey = new GlobalKey<FormState>();
@@ -51,6 +53,29 @@ int _thirdQuestionOption = 1;
 int _fourthQuestionOption = 1;
 bool isLoading = false;
 
+getQuestionText(context, question) {
+  var locale = Localizations.localeOf(context);
+
+  if (locale == Locale('bn', 'BN')) {
+    print('true');
+    return question['question_bn'];
+  }
+  return question['question'];
+}
+
+getOptionText(context, question, option) {
+  var locale = Localizations.localeOf(context);
+
+  if (locale == Locale('bn', 'BN')) {
+    if (question['options_bn'] != null) {
+      return question['options_bn'][question['options'].indexOf(option)];
+    }
+    return option;
+    
+  }
+  return StringUtils.capitalize(option);
+}
+
 
 class NewPatientQuestionnaireScreen extends StatefulWidget {
 
@@ -73,9 +98,24 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
     clearForm();
     isLoading = false;
 
+    
+    
+    print(Language().getLanguage());
+
     prepareQuestions();
     prepareAnswers();
+
+    getLanguage();
   }
+
+  getLanguage() async {
+    print('language s');
+    final prefs = await SharedPreferences.getInstance();
+
+    print(Localizations.localeOf(context));
+  }
+
+  
 
   prepareQuestions() {
     medicalHistoryQuestions = Questionnaire().questions['new_patient']['medical_history'];
@@ -378,6 +418,8 @@ class MedicalHistory extends StatefulWidget {
 }
 
 class _MedicalHistoryState extends State<MedicalHistory> {
+
+
   
   @override
   Widget build(BuildContext context) {
@@ -417,7 +459,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Container(
-                                child: Text(question['question'],
+                                child: Text(getQuestionText(context, question),
                                   style: TextStyle(fontSize: 18, height: 1.7),
                                 )
                               ),
@@ -445,7 +487,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                                               });
                                             },
                                             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                            child: Text(StringUtils.capitalize(option),
+                                            child: Text(getOptionText(context, question, option),
                                               style: TextStyle(color: medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? kPrimaryColor : null),
                                             ),
                                           ),
@@ -523,7 +565,7 @@ class _MedicationState extends State<Medication> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Container(
-                                child: Text(question['question'],
+                                child: Text(getQuestionText(context, question),
                                   style: TextStyle(fontSize: 18, height: 1.7),
                                 )
                               ),
@@ -551,7 +593,7 @@ class _MedicationState extends State<Medication> {
                                               });
                                             },
                                             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                            child: Text(StringUtils.capitalize(option),
+                                            child: Text(getOptionText(context, question, option),
                                               style: TextStyle(color: medicationAnswers[medicationQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? kPrimaryColor : null),
                                             ),
                                           ),
@@ -630,7 +672,7 @@ class _RiskFactorsState extends State<RiskFactors> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Container(
-                                child: Text(question['question'],
+                                child: Text(getQuestionText(context, question),
                                   style: TextStyle(fontSize: 18, height: 1.7),
                                 )
                               ),
@@ -657,7 +699,7 @@ class _RiskFactorsState extends State<RiskFactors> {
                                               });
                                             },
                                             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                            child: Text(StringUtils.capitalize(option),
+                                            child: Text(getOptionText(context, question, option),
                                               style: TextStyle(color: riskAnswers[riskQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? kPrimaryColor : null),
                                             ),
                                           ),
@@ -752,7 +794,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
                                               Text(
-                                                'Smoking Cessation',
+                                                AppLocalizations.of(context).translate('smokingCessation'),
                                                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
                                               ),
                                             ],
@@ -896,7 +938,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
                                               Text(
-                                                'Diet',
+                                                AppLocalizations.of(context).translate("diet"),
                                                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
                                               ),
                                             ],
@@ -957,7 +999,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
                                               Text(
-                                                'Physical Activity',
+                                                AppLocalizations.of(context).translate("physicalActivity"),
                                                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
                                               ),
                                             ],
@@ -1018,7 +1060,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
                                               Text(
-                                                'Medication Adherence',
+                                                AppLocalizations.of(context).translate("medicationAdherence"),
                                                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
                                               ),
                                             ],
@@ -1079,7 +1121,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
                                               Text(
-                                                'Alcohol Reduction',
+                                                AppLocalizations.of(context).translate("alcohol"),
                                                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
                                               ),
                                             ],

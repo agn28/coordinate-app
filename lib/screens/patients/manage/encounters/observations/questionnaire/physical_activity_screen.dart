@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/questionnaires_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
@@ -98,7 +99,7 @@ class _PhysicalActivityState extends State<PhysicalActivity> {
                   children: <Widget>[
                     Container(
                       margin: EdgeInsets.symmetric( horizontal: 30),
-                      child: Text(_questions['items'][0]['question'],
+                      child: Text(Helpers().getQuestionText(context, _questions['items'][0]),
                         style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
                       )
                     ),
@@ -124,7 +125,7 @@ class _PhysicalActivityState extends State<PhysicalActivity> {
                                     _changeOption(_questions['items'][0]['options'].indexOf(option));
                                   },
                                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  child: Text(StringUtils.capitalize(option),
+                                  child: Text(Helpers().getOptionText(context, _questions['items'][0], option),
                                     style: TextStyle(color: _firstQuestionOption == _questions['items'][0]['options'].indexOf(option) ? kPrimaryColor : null),
                                   ),
                                 ),
@@ -150,7 +151,7 @@ class _PhysicalActivityState extends State<PhysicalActivity> {
                   children: <Widget>[
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-                      child: Text(_questions['items'][1]['question'],
+                      child: Text(Helpers().getQuestionText(context, _questions['items'][1]),
                         style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
                       )
                     ),
@@ -172,7 +173,7 @@ class _PhysicalActivityState extends State<PhysicalActivity> {
                                     });
                                   },
                                 ),
-                                Text(StringUtils.capitalize(option), style: TextStyle(color: Colors.black, fontSize: 18)),
+                                Text(Helpers().getOptionText(context, _questions['items'][1], option), style: TextStyle(color: Colors.black, fontSize: 18)),
                               ],
                             ),
                           ).toList(),

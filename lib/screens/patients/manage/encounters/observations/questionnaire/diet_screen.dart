@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/custom-classes/custom_stepper.dart';
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/questionnaire/questionnaires_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
@@ -100,7 +101,7 @@ class _DietState extends State<Diet> {
                 children: <Widget>[
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-                    child: Text(_questions['items'][0]['question'],
+                    child: Text(Helpers().getQuestionText(context, _questions['items'][0]),
                       style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
                     )
                   ),
@@ -127,7 +128,7 @@ class _DietState extends State<Diet> {
                                   });
                                 },
                                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                child: Text(StringUtils.capitalize(option),
+                                child: Text(Helpers().getOptionText(context, _questions['items'][0], option),
                                   style: TextStyle(color: _firstQuestionOption == _questions['items'][0]['options'].indexOf(option) ? kPrimaryColor : null),
                                 ),
                               ),
@@ -154,7 +155,7 @@ class _DietState extends State<Diet> {
                 children: <Widget>[
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-                    child: Text(_questions['items'][1]['question'],
+                    child: Text(Helpers().getQuestionText(context, _questions['items'][1]),
                       style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
                     )
                   ),
@@ -176,7 +177,7 @@ class _DietState extends State<Diet> {
                                   });
                                 },
                               ),
-                              Text(StringUtils.capitalize(option), style: TextStyle(color: Colors.black, fontSize: 18)),
+                              Text(Helpers().getOptionText(context, _questions['items'][1], option), style: TextStyle(color: Colors.black, fontSize: 18)),
                             ],
                           ),
                         ).toList(),
@@ -200,7 +201,7 @@ class _DietState extends State<Diet> {
                 children: <Widget>[
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-                    child: Text(_questions['items'][2]['question'],
+                    child: Text(Helpers().getQuestionText(context, _questions['items'][2]),
                       style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
                     )
                   ),
@@ -222,7 +223,7 @@ class _DietState extends State<Diet> {
                                   });
                                 },
                               ),
-                              Text(StringUtils.capitalize(option), style: TextStyle(color: Colors.black, fontSize: 18)),
+                              Text(Helpers().getOptionText(context, _questions['items'][2], option), style: TextStyle(color: Colors.black, fontSize: 18)),
                             ],
                           ),
                         ).toList(),
@@ -246,7 +247,7 @@ class _DietState extends State<Diet> {
                 children: <Widget>[
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-                    child: Text(_questions['items'][3]['question'],
+                    child: Text(Helpers().getQuestionText(context, _questions['items'][3]),
                       style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
                     )
                   ),
@@ -268,7 +269,7 @@ class _DietState extends State<Diet> {
                                   });
                                 },
                               ),
-                              Text(StringUtils.capitalize(option), style: TextStyle(color: Colors.black, fontSize: 18)),
+                              Text(Helpers().getOptionText(context, _questions['items'][3], option), style: TextStyle(color: Colors.black, fontSize: 18)),
                             ],
                           ),
                         ).toList(),
