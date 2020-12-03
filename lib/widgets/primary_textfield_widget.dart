@@ -61,15 +61,15 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
     if (value.isEmpty) {
       String field = widget.name != null ? widget.name : 'This field';
       return '$field is required';
-    } else if (widget.name == 'Date') {
+    } else if (widget.name == 'Date' || widget.name == 'তারিখ') {
       return _validateDate(value);
-    } else if (widget.name == 'Month') {
+    } else if (widget.name == 'Month' || widget.name == 'মাস') {
       return _validateMonth(value);
-    } else if (widget.name == 'Year') {
+    } else if (widget.name == 'Year' || widget.name == 'বছর') {
       return _validateYear(value);
-    } else if (widget.name == 'National ID') {
+    } else if (widget.name == 'National ID' || widget.name == 'জাতীয় পরিচয়পত্র নম্বর') {
       return _validateNid(value);
-    } else if (widget.name == 'Mobile Phone') {
+    } else if (widget.name == 'Mobile Phone' || widget.name == 'মোবাইল নম্বর' ) {
       return _validateMobile(value);
     }
     return null;

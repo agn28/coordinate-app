@@ -238,7 +238,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
         },
           onStepTapped: (step) {
             setState(() {
-              _currentStep = step;
+             // _currentStep = step;
             });
           },
           steps: _mySteps(),
@@ -288,12 +288,11 @@ class _RegisterPatientState extends State<RegisterPatient> {
             Expanded(
               child: _currentStep < _mySteps().length - 1 ? FlatButton(
                 onPressed: () {
+
                   setState(() {
                     if (_currentStep == 1) {
-                      if (_contactFormKey.currentState.validate()) {
                         _currentStep = _currentStep + 1;
                         nextText = AppLocalizations.of(context).translate('finish');
-                      }
                     }
                     if (_currentStep < 1) {
                       if (birthDateController.text == null || birthDateController.text == '') {
@@ -303,12 +302,12 @@ class _RegisterPatientState extends State<RegisterPatient> {
                             backgroundColor: kPrimaryRedColor,
                           )
                         );
+
                         _patientFormKey.currentState.validate();
                         return;
                       }
 
                       if (_patientFormKey.currentState.validate()) {
-                        // If the form is valid, display a Snackbar.
                         _currentStep = _currentStep + 1;
                       }
                     }
@@ -337,20 +336,20 @@ class _RegisterPatientState extends State<RegisterPatient> {
         content: PatientDetails(),
         isActive: _currentStep >= 0,
       ),
-      CustomStep(
-        title: Text(AppLocalizations.of(context).translate('contactDetails')),
-        content: ContactDetails(),
-        isActive: _currentStep >= 1,
-      ),
+      // CustomStep(
+      //   title: Text(AppLocalizations.of(context).translate('contactDetails')),
+      //   content: ContactDetails(),
+      //   isActive: _currentStep >= 1,
+      // ),
       CustomStep(
         title: Text(AppLocalizations.of(context).translate('photo')),
         content: AddPhoto(parent: this),
-        isActive: _currentStep >= 2,
+        isActive: _currentStep >= 1,
       ),
       CustomStep(
         title: Text(AppLocalizations.of(context).translate('viewSummary')),
         content: ViewSummary(),
-        isActive: _currentStep >= 3,
+        isActive: _currentStep >= 2,
       ),
     ];
 
@@ -359,7 +358,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
         CustomStep(
           title: Text(AppLocalizations.of(context).translate('thumbprint')),
           content: Text(''),
-          isActive: _currentStep >= 4,
+          isActive: _currentStep >= 3,
         )
       );
     }
@@ -541,58 +540,33 @@ class _PatientDetailsState extends State<PatientDetails> {
               Row(
               children: <Widget>[
                 Expanded(
-                  child: DatePicker(controller: birthDateController, hintText: 'dd'),
+                  child: DatePicker(
+                    controller: birthDateController,
+                    hintText: AppLocalizations.of(context).translate('dd'),
+                    levelText: AppLocalizations.of(context).translate('date'),
+                  ),
                 ),
-                SizedBox(width: 20,),
+                SizedBox(width: 10,),
                 Expanded(
-                  child: DatePicker(controller: birthMonthController, hintText: 'mm'),
+                  child: DatePicker(
+                      controller: birthMonthController,
+                      hintText: AppLocalizations.of(context).translate('mm'),
+                      levelText: AppLocalizations.of(context).translate('month'),
+                  ),
                 ),
-                SizedBox(width: 20,),
+                SizedBox(width: 10,),
                 Expanded(
-                  child: DatePicker(controller: birthYearController, hintText: 'yy'),
+                  child: DatePicker(
+                    controller: birthYearController,
+                    hintText: AppLocalizations.of(context).translate('yy'),
+                    levelText: AppLocalizations.of(context).translate('year'),
                 ),
-                // Expanded(
-                //   child: PrimaryTextField(
-                //     topPaadding: 18,
-                //     bottomPadding: 18,
-                //     hintText: AppLocalizations.of(context).translate('dd'),
-                //     controller: birthDateController,
-                //     name: AppLocalizations.of(context).translate('date'),
-                //     validation: true,
-                //     type: TextInputType.number,
-                //   ),
-                // ),
-                // SizedBox(width: 20,),
-                // Expanded(
-                //   child: PrimaryTextField(
-                //     topPaadding: 18,
-                //     bottomPadding: 18,
-                //     hintText: AppLocalizations.of(context).translate('mm'),
-                //     controller: birthMonthController,
-                //     name: AppLocalizations.of(context).translate('month'),
-                //     validation: true,
-                //     type: TextInputType.number
-                //   ),
-                // ),
-                // SizedBox(width: 20,),
-                // Expanded(
-                //   child: PrimaryTextField(
-                //     topPaadding: 18,
-                //     bottomPadding: 18,
-                //     hintText: AppLocalizations.of(context).translate('yy'),
-                //     controller: birthYearController,
-                //     name: AppLocalizations.of(context).translate('year'),
-                //     validation: true,
-                //     type: TextInputType.number
-                //   ),
-                // ),
+                ),
               ],
             ),
             SizedBox(height: 10,),
             Divider(),
-
             SizedBox(height: 20,),
-
             Text(AppLocalizations.of(context).translate('address'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
             SizedBox(height: 20,),
 
@@ -651,14 +625,14 @@ class _PatientDetailsState extends State<PatientDetails> {
                     topRight: Radius.circular(4),
                   )
                 ),
-              
+
                 hintText: 'Upazilas',
                 hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
               ),
               onChanged: (value) {
                 setState(() {
                   selectedUpazila = value;
-                  
+
                   // districtController.text = value;
                 });
               },
@@ -708,7 +682,7 @@ class _PatientDetailsState extends State<PatientDetails> {
             //               topRight: Radius.circular(4),
             //             )
             //           ),
-                    
+
             //           hintText: AppLocalizations.of(context).translate('district'),
             //           hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
             //         )
@@ -803,7 +777,7 @@ class _PatientDetailsState extends State<PatientDetails> {
             //               topRight: Radius.circular(4),
             //             )
             //           ),
-                    
+
             //           hintText: AppLocalizations.of(context).translate('upazila'),
             //           hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
             //         )
@@ -938,129 +912,33 @@ class _PatientDetailsState extends State<PatientDetails> {
               name: AppLocalizations.of(context).translate('nationalId'),
               validation: true,
             ),
-          ],
-        ),
-      )
-    );
-  }
-}
-
-class DatePicker extends StatefulWidget {
-  DatePicker({
-   this.controller,
-   this.hintText
-  });
-
-  final controller;
-  String hintText = '';
-
-  @override
-  _DatePickerState createState() => _DatePickerState();
-}
-bool autoValidate = false;
-class _DatePickerState extends State<DatePicker> {
-  final format = DateFormat("yyyy-MM-dd");
-
-  var selectedDate;
-
-  
-
-  setDate(date) {
-    if (date != null) {
-      
-      selectedDate = date;
-      birthDateController.text = DateFormat('dd').format(date);
-      birthMonthController.text = DateFormat('MM').format(date);
-      birthYearController.text = DateFormat('y').format(date);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return DateTimeField(
-    format: format,
-    controller: widget.controller,
-    style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
-    decoration: InputDecoration(
-      suffixIcon: IconButton(icon: Icon(Icons.close), onPressed: () {}, color: kSecondaryTextField,),
-      hintText: widget.hintText,
-      hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
-      contentPadding: EdgeInsets.only(top: 18, bottom: 18, left: 10, right: 10),
-      // prefixIcon: Icon(Icons.date_range),
-      filled: true,
-      fillColor: kSecondaryTextField,
-      border: new UnderlineInputBorder(
-        borderSide: new BorderSide(color: Colors.white),
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(4),
-          topRight: Radius.circular(4),
-        )
-      ),
-    ),
-
-    onChanged: (date) {
-      setDate(date);
-
-    },
-    
-    onShowPicker: (context, currentValue) {
-      return showDatePicker(
-        context: context,
-        firstDate: DateTime(1900),
-        initialDate: selectedDate ?? DateTime.now(),
-        lastDate: DateTime(2021)
-      );
-    },
-    );
-  }
-}
-
-class ContactDetails extends StatefulWidget {
-
-  @override
-  _ContactDetailsState createState() => _ContactDetailsState();
-}
-
-class _ContactDetailsState extends State<ContactDetails> {
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-      child: Form(
-        key: _contactFormKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(AppLocalizations.of(context).translate('contactDetails'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
             SizedBox(height: 20,),
             Row(
               children: <Widget>[
                 Expanded(
                   child: PrimaryTextField(
-                    topPaadding: 7,
-                    bottomPadding: 7,
-                    hintText: AppLocalizations.of(context).translate("contactFirstName"),
-                    controller: contactFirstNameController,
-                    name: AppLocalizations.of(context).translate("contactFirstName"),
-                    validation: true
+                      topPaadding: 7,
+                      bottomPadding: 7,
+                      hintText: AppLocalizations.of(context).translate("contactFirstName"),
+                      controller: contactFirstNameController,
+                      name: AppLocalizations.of(context).translate("contactFirstName"),
+                      validation: true
                   ),
                 ),
                 SizedBox(width: 20,),
                 Expanded(
                   child: PrimaryTextField(
-                    topPaadding: 7,
-                    bottomPadding: 7,
-                    hintText: AppLocalizations.of(context).translate("contactLastName"),
-                    controller: contactLastNameController,
-                    name: AppLocalizations.of(context).translate("contactLastName"),
-                    validation: true
+                      topPaadding: 7,
+                      bottomPadding: 7,
+                      hintText: AppLocalizations.of(context).translate("contactLastName"),
+                      controller: contactLastNameController,
+                      name: AppLocalizations.of(context).translate("contactLastName"),
+                      validation: true
                   ),
                 ),
               ],
             ),
-            
+
 
             SizedBox(height: 10,),
 
@@ -1072,25 +950,26 @@ class _ContactDetailsState extends State<ContactDetails> {
                   if (value == null) {
                     return AppLocalizations.of(context).translate('relationshipRequired');
                   }
+                  // return '';
                 },
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: kSecondaryTextField,
                   contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                   border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(4),
-                    topRight: Radius.circular(4),
-                  )
-                ),
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(4),
+                        topRight: Radius.circular(4),
+                      )
+                  ),
                 ),
                 items: [
                   ...relationships.map((item) =>
-                    DropdownMenuItem(
-                      child: Text(StringUtils.capitalize(item)),
-                      value: relationships.indexOf(item) 
-                    )
+                      DropdownMenuItem(
+                          child: Text(StringUtils.capitalize(item)),
+                          value: relationships.indexOf(item)
+                      )
                   ).toList(),
                 ],
                 value: selectedRelation,
@@ -1108,23 +987,194 @@ class _ContactDetailsState extends State<ContactDetails> {
 
             SizedBox(height: 20,),
             PrimaryTextField(
-              topPaadding: 7,
-              bottomPadding: 7,
-              prefixIcon: Icon(Icons.phone),
-              hintText: AppLocalizations.of(context).translate("contactMobilePhone"),
-              controller: contactMobilePhoneController,
-              name: AppLocalizations.of(context).translate("mobile"),
-              validation: true,
-              type: TextInputType.number
+                topPaadding: 7,
+                bottomPadding: 7,
+                prefixIcon: Icon(Icons.phone),
+                hintText: AppLocalizations.of(context).translate("contactMobilePhone"),
+                controller: contactMobilePhoneController,
+                name: AppLocalizations.of(context).translate("mobile"),
+                validation: true,
+                type: TextInputType.number
             ),
             SizedBox(height: 30,),
-            
           ],
         ),
+      )
+    );
+  }
+}
+
+class DatePicker extends StatefulWidget {
+  DatePicker({
+   this.controller,
+   this.hintText,
+    this.levelText
+  });
+
+  final controller;
+  String hintText = '';
+  String levelText = '';
+
+
+
+  @override
+  _DatePickerState createState() => _DatePickerState();
+}
+bool autoValidate = false;
+class _DatePickerState extends State<DatePicker> {
+
+  final format = DateFormat("yyyy-MM-dd");
+  var selectedDate;
+  setDate(date) {
+    if (date != null) {
+      selectedDate = date;
+      birthDateController.text = DateFormat('dd').format(date);
+      birthMonthController.text = DateFormat('MM').format(date);
+      birthYearController.text = DateFormat('y').format(date);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: kSecondaryTextField,
+      ),
+      child:  TextFormField(
+        controller: widget.controller,
+        decoration: InputDecoration(
+          labelText:widget.levelText,
+          hintText:widget.hintText,
+          contentPadding: EdgeInsets.only(left: 15,top: 10,bottom: 10)
+        ),
+        autovalidate: true,
+
+        onTap: () async{
+          DateTime date = DateTime(1900);
+          FocusScope.of(context).requestFocus(new FocusNode());
+          date = await showDatePicker(
+              context: context,
+              firstDate: DateTime(1900),
+              initialDate: selectedDate ?? DateTime.now(),
+              lastDate: DateTime(2030)
+          );
+          setDate(date);
+        },
       ),
     );
   }
 }
+
+// class ContactDetails extends StatefulWidget {
+//
+//   @override
+//   _ContactDetailsState createState() => _ContactDetailsState();
+// }
+//
+// class _ContactDetailsState extends State<ContactDetails> {
+//
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       margin: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+//       child: Form(
+//         key: _contactFormKey,
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: <Widget>[
+//             Text(AppLocalizations.of(context).translate('contactDetails'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
+//             SizedBox(height: 20,),
+//             Row(
+//               children: <Widget>[
+//                 Expanded(
+//                   child: PrimaryTextField(
+//                     topPaadding: 7,
+//                     bottomPadding: 7,
+//                     hintText: AppLocalizations.of(context).translate("contactFirstName"),
+//                     controller: contactFirstNameController,
+//                     name: AppLocalizations.of(context).translate("contactFirstName"),
+//                     validation: true
+//                   ),
+//                 ),
+//                 SizedBox(width: 20,),
+//                 Expanded(
+//                   child: PrimaryTextField(
+//                     topPaadding: 7,
+//                     bottomPadding: 7,
+//                     hintText: AppLocalizations.of(context).translate("contactLastName"),
+//                     controller: contactLastNameController,
+//                     name: AppLocalizations.of(context).translate("contactLastName"),
+//                     validation: true
+//                   ),
+//                 ),
+//               ],
+//             ),
+//
+//
+//             SizedBox(height: 10,),
+//
+//             Container(
+//               child: DropdownButtonFormField(
+//
+//                 hint: Text(AppLocalizations.of(context).translate('relationship'), style: TextStyle(fontSize: 20, color: kTextGrey),),
+//                 validator: (value) {
+//                   if (value == null) {
+//                     return AppLocalizations.of(context).translate('relationshipRequired');
+//                   }
+//                 },
+//                 decoration: InputDecoration(
+//                   filled: true,
+//                   fillColor: kSecondaryTextField,
+//                   contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+//                   border: UnderlineInputBorder(
+//                   borderSide: BorderSide(color: Colors.white),
+//                   borderRadius: BorderRadius.only(
+//                     topLeft: Radius.circular(4),
+//                     topRight: Radius.circular(4),
+//                   )
+//                 ),
+//                 ),
+//                 items: [
+//                   ...relationships.map((item) =>
+//                     DropdownMenuItem(
+//                       child: Text(StringUtils.capitalize(item)),
+//                       value: relationships.indexOf(item)
+//                     )
+//                   ).toList(),
+//                 ],
+//                 value: selectedRelation,
+//                 isExpanded: true,
+//                 onChanged: (value) {
+//                   setState(() {
+//                     selectedRelation = value;
+//                   });
+//                 },
+//               ),
+//             ),
+//
+//             SizedBox(height: 20,),
+//             Divider(),
+//
+//             SizedBox(height: 20,),
+//             PrimaryTextField(
+//               topPaadding: 7,
+//               bottomPadding: 7,
+//               prefixIcon: Icon(Icons.phone),
+//               hintText: AppLocalizations.of(context).translate("contactMobilePhone"),
+//               controller: contactMobilePhoneController,
+//               name: AppLocalizations.of(context).translate("mobile"),
+//               validation: true,
+//               type: TextInputType.number
+//             ),
+//             SizedBox(height: 30,),
+//
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class AddPhoto extends StatefulWidget {
   AddPhoto({

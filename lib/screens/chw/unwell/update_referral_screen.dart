@@ -34,7 +34,7 @@ class _UpdateReferralScreenState extends State<UpdateReferralScreen> {
 
   List referralReasons = ['urgent medical attempt required', 'NCD screening required'];
   var selectedReason;
-  List clinicTypes = ['community clinic', 'upazila health complex', 'hospital'];
+  List clinicTypes = ['community clinic', 'upazila health complex', 'hospital','Refer from CHW','Refer from Paramedics'];
   var selectedtype;
   List status = ['pending', 'completed'];
   var selectedStatus;
@@ -187,7 +187,10 @@ class _UpdateReferralScreenState extends State<UpdateReferralScreen> {
                         value: selectedtype,
                         isExpanded: true,
                         onChanged: (value) {
+
                           setState(() {
+                            print("selectedtype");
+                            print(value);
                             selectedtype = value;
                           });
                         },

@@ -16,6 +16,8 @@ class AuthRepository {
         'password': password
       })
     ).then((response) {
+      print('response');
+      print(response.body);
       return json.decode(response.body);
       
     }).catchError((error) {

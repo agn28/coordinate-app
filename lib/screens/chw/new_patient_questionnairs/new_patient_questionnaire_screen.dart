@@ -144,6 +144,7 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
         _currentStep = _currentStep + 1;
         nextText = 'COMPLETE';
       } else if (_currentStep == 4) {
+        print("sttep4");
         checkData();
       } else {
         _currentStep = _currentStep + 1;
@@ -322,7 +323,7 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
             ),
             Expanded(
               child: _currentStep < _mySteps().length || nextHide ? FlatButton(
-                onPressed: () {
+                onPressed: ()async {
                   setState(() {
                     print(_currentStep);
                     if (_currentStep == 0) {
@@ -340,7 +341,9 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
                       print(Questionnaire().qnItems);
                     }
                     if (nextText =='COMPLETE') {
-
+                      print("hell ");
+                      print("hello");
+                      _completeSteep();
                     }
                     if (_currentStep == 2) {
                       print('asdas');
@@ -369,6 +372,35 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
         )
       ),
     );
+  }
+
+  Future _completeSteep()async{
+
+    setLoader(true);
+
+    var patient = Patient().getPatient();
+
+    print(patient['data']['age']);
+    var response = await AssessmentController().createOnlyAssessment('new patient questionnaire', '', '');
+
+    setLoader(false);
+
+    if (patient['data']['age'] != null && patient['data']['age'] > 40) {
+      var data = {
+        'meta': {
+          'patient_id': Patient().getPatient()['uuid'],
+          "collected_by": Auth().getAuth()['uid'],
+          "status": "pending"
+        },
+        'body': {},
+        'referred_from': 'new questionnaire'
+      };
+      goToHome(true, data);
+
+      return;
+    }
+
+    goToHome(false, null);
   }
 
   List<CustomStep> _mySteps() {
@@ -1170,6 +1202,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                 ),
                                 child: FlatButton(
                                   onPressed: () async {
+                                    print("hello");
 
                                     widget.parent.setLoader(true);
 
@@ -1196,13 +1229,10 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                     }
 
                                     widget.parent.goToHome(false, null);
-                                      
+
 
                                     print('response');
                                     print(response);
-
-                                    
-                                    
                                   },
                                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   child: Text(AppLocalizations.of(context).translate('completeQuestionnaire').toUpperCase(), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
