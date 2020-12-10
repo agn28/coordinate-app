@@ -115,31 +115,35 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
     var data = await PatientController().getNewPatients();
     var existingData = await PatientController().getExistingPatients();
     print('hello');
-    print(existingData['data'].length);
+    // print(existingData['data'].length);
     
 
-    if (data['message'] == 'Unauthorized') {
+    if (data != null && data['message'] == 'Unauthorized') {
       Helpers().logout(context);
     }
 
     var parsedNewPatients = [];
     var parsedExistingPatients = [];
 
-    for(var item in data['data']) {
-      print(item['body']['last_name']);
-      parsedNewPatients.add({
-        'uuid': item['id'],
-        'data': item['body'],
-        'meta': item['meta']
-      });
+    if (data != null && data['data'] != null) {
+      for(var item in data['data']) {
+        print(item['body']['last_name']);
+        parsedNewPatients.add({
+          'uuid': item['id'],
+          'data': item['body'],
+          'meta': item['meta']
+        });
+      }
     }
 
-    for(var item in existingData['data']) {
-      parsedExistingPatients.add({
-        'uuid': item['id'],
-        'data': item['body'],
-        'meta': item['meta']
-      });
+    if (existingData != null && existingData['data'] != null) {
+      for(var item in existingData['data']) {
+        parsedExistingPatients.add({
+          'uuid': item['id'],
+          'data': item['body'],
+          'meta': item['meta']
+        });
+      }
     }
 
 
