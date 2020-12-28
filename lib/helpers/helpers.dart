@@ -27,6 +27,15 @@ class Helpers {
     return age;
   }
 
+  calculateAgeFromDate(date) {
+    final birthDay = DateFormat("dd/MM/yyyy").parse(date);
+    final now = DateTime.now();
+    final ageInDays = now.difference(birthDay).inDays;
+    final age = (ageInDays/365).floor();
+
+    return age;
+  }
+
   /// Convert [type] to lowercase and replace ' ' with '_'
   getType(type) {
     return type.toLowerCase().replaceAll(' ', '_');

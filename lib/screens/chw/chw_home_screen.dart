@@ -221,129 +221,134 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                         
                         SizedBox(height: 60,),
 
-                        InkWell(
-                          
-                          onTap: () async {
-                            // await Auth().isExpired();
-                            // return;
-                            Navigator.of(context).pushNamed('/chwNavigation',);
-                            // Navigator.of(context).push(PatientSearchScreen());
-                          },
-                          child: Container(
-                            height: 190,
-                            width: double.infinity,
-                            child: Card(
-                              elevation: 2,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Image.asset('assets/images/icons/inventory.png', width: 70,),
-                                  SizedBox(height: 10,),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Text(AppLocalizations.of(context).translate('gotoMyWorklist'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
-                                      Container(
-                                        alignment: Alignment.center,
-                                        child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
-                                      )
-                                    ],
+                        Row(
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                
+                                onTap: () async {
+                                  // await Auth().isExpired();
+                                  // return;
+                                  Navigator.of(context).pushNamed('/chwNavigation',);
+                                  // Navigator.of(context).push(PatientSearchScreen());
+                                },
+                                child: Container(
+                                  height: 150,
+                                  width: double.infinity,
+                                  child: Card(
+                                    elevation: 2,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Image.asset('assets/images/icons/inventory.png', width: 70,),
+                                        SizedBox(height: 10,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text(AppLocalizations.of(context).translate('gotoMyWorklist'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 22),),
+                                            
+                                          ],
+                                        ),
+                                      ],
+                                    )
                                   ),
-                                ],
-                              )
+                                ),
+                              ),
                             ),
-                          ),
+                            SizedBox(width: 20,),
+                            Expanded(
+                              child: InkWell(
+                                onTap: () => Navigator.of(context).pushNamed('/chwNavigation', arguments: 1),
+                                child: Container(
+                                  height: 150,
+                                  width: double.infinity,
+                                  alignment: Alignment.center,
+                                  child: Card(
+                                    elevation: 2,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Image.asset('assets/images/icons/manage_patient.png'),
+                                        SizedBox(height: 10,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            
+                                            Text(AppLocalizations.of(context).translate('viewExistingPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 22),),
+                                            
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
                         ),
+                        
                         
                         SizedBox(height: 20,),
 
-                        InkWell(
-                          onTap: () => Navigator.of(context).pushNamed('/chwNavigation', arguments: 1),
-                          child: Container(
-                            height: 190,
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            child: Card(
-                              elevation: 2,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Image.asset('assets/images/icons/manage_patient.png'),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Text(AppLocalizations.of(context).translate('viewExistingPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
-                                      )
-                                    ],
+                        Row(
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: () => Navigator.of(context).push(RegisterPatientScreen()),
+                                child: Container(
+                                  height: 140,
+                                  width: double.infinity,
+                                  alignment: Alignment.center,
+                                  child: Card(
+                                    elevation: 2,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Image.asset('assets/images/icons/register_patient.png'),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text(AppLocalizations.of(context).translate('registerNewPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 22),),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
+                                ),
                               ),
                             ),
-                          ),
+                            SizedBox(width: 20,),
+                            Expanded(
+                              child: InkWell(
+                                onTap: () => Navigator.of(context).pushNamed('/chwReferralPatients'),
+                                child: Container(
+                                  height: 140,
+                                  width: double.infinity,
+                                  alignment: Alignment.center,
+                                  child: Card(
+                                    elevation: 2,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Image.asset('assets/images/icons/questionnaire.png'),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text(AppLocalizations.of(context).translate('referralList'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 22),),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
 
                         SizedBox(height: 20,),
 
-                        InkWell(
-                          onTap: () => Navigator.of(context).push(RegisterPatientScreen()),
-                          child: Container(
-                            height: 190,
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            child: Card(
-                              elevation: 2,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Image.asset('assets/images/icons/register_patient.png'),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Text(AppLocalizations.of(context).translate('registerNewPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(height: 20,),
-
-                        InkWell(
-                          onTap: () => Navigator.of(context).pushNamed('/chwReferralPatients'),
-                          child: Container(
-                            height: 190,
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            child: Card(
-                              elevation: 2,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Image.asset('assets/images/icons/questionnaire.png'),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Text(AppLocalizations.of(context).translate('referralList'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+                        
 
                       ],
                     ),

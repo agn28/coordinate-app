@@ -8,6 +8,7 @@ class AssessmentRepository {
 
   create(data) async {
     var authData = await Auth().getStorageAuth() ;
+    print('after get token');
     var token = authData['accessToken'];
     
     await http.post(

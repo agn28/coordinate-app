@@ -41,6 +41,7 @@ const kBorderGrey = Color(0x54000000);
 
 const kLightBlack = Colors.black87;
 const kWarningColor = Color(0xFFFFF8E1);
+Color kBtnOrangeColor = Color(0xFFFF781f);
 
 class ColorUtils {
   static var statusColor = {

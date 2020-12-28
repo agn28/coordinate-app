@@ -52,9 +52,12 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
 
         // hintText: widget.hintText,
         hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
-        labelText:widget.hintText,
+        labelText: widget.hintText + getAsterix(),
       ),
     );
+  }
+  getAsterix() {
+    return widget.validation != null && widget.validation ? ' *' : '';
   }
 
   _validateInputs(value) {
@@ -71,6 +74,8 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
       return _validateNid(value);
     } else if (widget.name == 'Mobile Phone' || widget.name == 'মোবাইল নম্বর' ) {
       return _validateMobile(value);
+    } else if (widget.name == 'Dob') {
+      return _validateDob(value);
     }
     return null;
   }
@@ -135,5 +140,14 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
     if (int.parse(value) > 31) {
       return "Date should be under 31";
     }
+  }
+
+  _validateDob(value) {
+    String pattern = r'(^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$)';
+    RegExp regExp = new RegExp(pattern);
+    if (!regExp.hasMatch(value)) {
+      return 'Date format should be dd/mm/yyyy';
+    }
+    return null;
   }
 }

@@ -28,6 +28,7 @@ final firstNameController = TextEditingController();
 final lastNameController = TextEditingController();
 final fatherNameController = TextEditingController();
 // final gender = TextEditingController();
+final dobController = TextEditingController();
 final birthDateController = TextEditingController();
 final birthMonthController = TextEditingController();
 final birthYearController = TextEditingController();
@@ -38,7 +39,6 @@ final upazilaController = TextEditingController();
 final villageController = TextEditingController();
 final streetNameController = TextEditingController();
 final mobilePhoneController = TextEditingController();
-final homePhoneController = TextEditingController();
 final emailController = TextEditingController();
 final nidController = TextEditingController();
 
@@ -52,6 +52,7 @@ final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 String uploadedImageUrl = '';
 bool isEditState = false;
 String selectedGender = 'male';
+String selectedGuardian = 'father';
 List relationships = [
   'father',
   'mother',
@@ -106,6 +107,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
 
 
   String nextText = 'NEXT';
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -125,13 +127,31 @@ class _RegisterPatientState extends State<RegisterPatient> {
   }
 
   getAddresses() async {
-    var districtsData = await DefaultAssetBundle.of(context).loadString('assets/districts.json');
-    var upazilasData = await DefaultAssetBundle.of(context).loadString('assets/upazilas.json');
+
     setState(() {
-      districts = json.decode(districtsData);
+      isLoading = true;
+    });
+    var locationData = await PatientController().getLocations();
+    var districtsData = [];
+    if (locationData['error'] != null && !locationData['error']) {
+      districtsData =  locationData['data'][0]['districts'];
+    }
+
+
+
+    setState(() {
+      isLoading = false;
+    });
+
+    // return;
+
+    print(districts);
+
+    setState(() {
+      districts = districtsData;
       allDestricts = districts;
-      upazilas = json.decode(upazilasData);
-      allUpazilas = upazilas;
+      // upazilas = json.decode(upazilasData);
+      // allUpazilas = upazilas;
     });
     print(districts);
   }
@@ -177,7 +197,6 @@ class _RegisterPatientState extends State<RegisterPatient> {
     villageController.text = patient['data']['address']['village'];
     streetNameController.text = patient['data']['address']['street_name'];
     mobilePhoneController.text = patient['data']['mobile'];
-    homePhoneController.text = patient['data']['phone'];
     emailController.text = patient['data']['email'];
     nidController.text = patient['data']['nid'];   
     contactFirstNameController.text = patient['data']['contact']['first_name'];
@@ -192,6 +211,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     firstNameController.clear();
     lastNameController .clear();
     fatherNameController .clear();
+    dobController.clear();
     birthDateController.clear();
     birthMonthController.clear();
     birthYearController.clear();
@@ -201,7 +221,6 @@ class _RegisterPatientState extends State<RegisterPatient> {
     villageController.clear();
     streetNameController.clear();
     mobilePhoneController.clear();
-    homePhoneController.clear();
     emailController.clear();
     nidController.clear();
     contactFirstNameController.clear();
@@ -211,6 +230,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     _image = null;
 
     selectedRelation = null;
+    selectedGuardian = 'father';
   }
   
   @override
@@ -221,7 +241,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).translate('registerNewPatient')),
       ),
-      body: GestureDetector(
+      body: isLoading ? Center(child: CircularProgressIndicator()) : GestureDetector(
         onTap: () {
           setState(() {
             showItems = false;
@@ -288,6 +308,8 @@ class _RegisterPatientState extends State<RegisterPatient> {
             Expanded(
               child: _currentStep < _mySteps().length - 1 ? FlatButton(
                 onPressed: () {
+                  // Navigator.of(context).push(RegisterPatientSuccessScreen());
+                  // return;
 
                   setState(() {
                     if (_currentStep == 1) {
@@ -367,10 +389,10 @@ class _RegisterPatientState extends State<RegisterPatient> {
   }
 
   _prepareFormData() {
-    return {
+    var data =  {
       'first_name': firstNameController.text,
       'last_name': lastNameController.text,
-      'father_name': fatherNameController.text,
+      'father_name': '',
       'gender': selectedGender,
       'avatar': uploadedImageUrl,
       'age': 26, //age needs to be calculated
@@ -387,7 +409,6 @@ class _RegisterPatientState extends State<RegisterPatient> {
         'street_name': streetNameController.text,
       },
       'mobile': mobilePhoneController.text,
-      'phone': homePhoneController.text,
       'email': emailController.text,
       'contact': {
         'first_name': contactFirstNameController.text,
@@ -397,6 +418,15 @@ class _RegisterPatientState extends State<RegisterPatient> {
       },
 
     };
+
+    if (selectedGuardian == 'husband') {
+      data['husband_name'] = fatherNameController.text;
+    } else {
+      data['father_name'] = fatherNameController.text;
+    }
+
+    return data;
+
   }
   
 }
@@ -418,7 +448,7 @@ class _PatientDetailsState extends State<PatientDetails> {
     // print(district);
     setState(() {
       upazilaController.text = '';
-      filteredUpazilas = allUpazilas.where((upazila) { return upazila['district_id'] == district['id'];}).toList();
+      filteredUpazilas = district['thanas'];
     });
     print(allUpazilas);
   }
@@ -480,11 +510,96 @@ class _PatientDetailsState extends State<PatientDetails> {
               ],
             ),
 
+
+            SizedBox(height: 20,),
+
+            Container(
+              // margin: EdgeInsets.symmetric(horizontal: 30),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(AppLocalizations.of(context).translate('gender'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                  Row(
+                    children: <Widget>[
+                      // SizedBox(width: 20,),
+                      Radio(
+                        activeColor: kPrimaryColor,
+                        value: 'male',
+                        groupValue: selectedGender,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedGender = value;
+                            selectedGuardian = 'father';
+                          });
+                        },
+                      ),
+                      Text(AppLocalizations.of(context).translate('male'), style: TextStyle(color: Colors.black)),
+
+                      Radio(
+                        activeColor: kPrimaryColor,
+                        value: 'female',
+                        groupValue: selectedGender,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedGender = value;
+                          });
+                        },
+                      ),
+                      Text(
+                        AppLocalizations.of(context).translate('female'),
+                      ),
+                    ],
+                  ),
+                ],
+              )
+            ),
+
+            SizedBox(height: 20,),
+
+            selectedGender == 'female' ? Container(
+              // margin: EdgeInsets.symmetric(horizontal: 30),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      // SizedBox(width: 20,),
+                      Radio(
+                        activeColor: kPrimaryColor,
+                        value: 'father',
+                        groupValue: selectedGuardian,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedGuardian = value;
+                          });
+                        },
+                      ),
+                      Text(AppLocalizations.of(context).translate('fathersName'), style: TextStyle(color: Colors.black)),
+
+                      Radio(
+                        activeColor: kPrimaryColor,
+                        value: 'husband',
+                        groupValue: selectedGuardian,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedGuardian = value;
+                          });
+                        },
+                      ),
+                      Text(
+                        AppLocalizations.of(context).translate('husbandsName'),
+                      ),
+                    ],
+                  ),
+                ],
+              )
+            ) : Container(),
+            
             SizedBox(height: 10,),
             PrimaryTextField(
               topPaadding: 10,
               bottomPadding: 10,
-              hintText: AppLocalizations.of(context).translate('fathersName'),
+              hintText: AppLocalizations.of(context).translate(selectedGuardian + 'sName'),
               controller: fatherNameController,
               name: AppLocalizations.of(context).translate('fathersName'),
               validation: true,
@@ -492,78 +607,55 @@ class _PatientDetailsState extends State<PatientDetails> {
 
             SizedBox(height: 20,),
 
-            Container(
-                // margin: EdgeInsets.symmetric(horizontal: 30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('gender'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-                    Row(
-                      children: <Widget>[
-                        // SizedBox(width: 20,),
-                        Radio(
-                          activeColor: kPrimaryColor,
-                          value: 'male',
-                          groupValue: selectedGender,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedGender = value;
-                            });
-                          },
-                        ),
-                        Text(AppLocalizations.of(context).translate('male'), style: TextStyle(color: Colors.black)),
+            Row(
+              children: [
+                Text(AppLocalizations.of(context).translate('dateOfBirth'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                SizedBox(width: 10,),
+                Text('(DD/MM/YYYY)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),),
+              ],
+            ),
+            SizedBox(height: 20,),
 
-                        Radio(
-                          activeColor: kPrimaryColor,
-                          value: 'female',
-                          groupValue: selectedGender,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedGender = value;
-                            });
-                          },
-                        ),
-                        Text(
-                          AppLocalizations.of(context).translate('female'),
-                        ),
-                      ],
-                    ),
-                  ],
-                )
-              ),
-
-              SizedBox(height: 20,),
-
-              Text(AppLocalizations.of(context).translate('dateOfBirth'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-              SizedBox(height: 20,),
-
-              Row(
-              children: <Widget>[
+            Row(
+              children: [
                 Expanded(
-                  child: DatePicker(
-                    controller: birthDateController,
+                  child: PrimaryTextField(
+                    topPaadding: 10,
+                    bottomPadding: 10,
                     hintText: AppLocalizations.of(context).translate('dd'),
-                    levelText: AppLocalizations.of(context).translate('date'),
+                    controller: birthDateController,
+                    name: 'Date',
+                    type: TextInputType.number,
+                    validation: true,
                   ),
                 ),
-                SizedBox(width: 10,),
+                SizedBox(width: 15),
                 Expanded(
-                  child: DatePicker(
-                      controller: birthMonthController,
-                      hintText: AppLocalizations.of(context).translate('mm'),
-                      levelText: AppLocalizations.of(context).translate('month'),
+                  child: PrimaryTextField(
+                    topPaadding: 10,
+                    bottomPadding: 10,
+                    hintText: AppLocalizations.of(context).translate('mm'),
+                    controller: birthMonthController,
+                    type: TextInputType.number,
+                    name: 'Month',
+                    validation: true,
                   ),
                 ),
-                SizedBox(width: 10,),
+                SizedBox(width: 15),
                 Expanded(
-                  child: DatePicker(
-                    controller: birthYearController,
+                  child: PrimaryTextField(
+                    topPaadding: 10,
+                    bottomPadding: 10,
                     hintText: AppLocalizations.of(context).translate('yy'),
-                    levelText: AppLocalizations.of(context).translate('year'),
-                ),
+                    controller: birthYearController,
+                    name: 'Year',
+                    type: TextInputType.number,
+                    validation: true,
+                  ),
                 ),
               ],
             ),
+
             SizedBox(height: 10,),
             Divider(),
             SizedBox(height: 20,),
@@ -641,201 +733,6 @@ class _PatientDetailsState extends State<PatientDetails> {
               showSearchBox: true,
             ),
 
-            // Container(
-            //   // color: Colors.red,
-            //   child: Column(
-            //     children: <Widget>[
-            //       TextField(
-            //         style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
-            //         onChanged: (value) => {
-            //           setState(() {
-            //             districts = allDestricts
-            //               .where((district) => district['name']
-            //               .toLowerCase()
-            //               .contains(value.toLowerCase()))
-            //               .toList();
-
-            //               showItems = true;
-            //               showUpazilaItems = false;
-            //             })
-            //         },
-            //         onEditingComplete: () {
-            //           setState(() {
-            //             showItems = false;
-            //           });
-            //         },
-            //         onTap: () {
-            //           setState(() {
-            //             showUpazilaItems = false;
-            //           });
-            //         },
-            //         controller: districtController,
-            //         decoration: InputDecoration(
-            //           counterText: ' ',
-            //           contentPadding: EdgeInsets.only(top: 18.0, bottom: 18, left: 10, right: 10),
-            //           filled: true,
-            //           fillColor: kSecondaryTextField,
-            //           border: new UnderlineInputBorder(
-            //             borderSide: new BorderSide(color: Colors.white),
-            //             borderRadius: BorderRadius.only(
-            //               topLeft: Radius.circular(4),
-            //               topRight: Radius.circular(4),
-            //             )
-            //           ),
-
-            //           hintText: AppLocalizations.of(context).translate('district'),
-            //           hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
-            //         )
-            //       ),
-            //       showItems ? Container(
-            //         height: 200,
-            //         margin: EdgeInsets.only(top: 0),
-            //         decoration: BoxDecoration(
-            //           boxShadow: [
-            //             BoxShadow(
-            //               color: Colors.grey.withOpacity(0.3),
-            //               spreadRadius: 0.2,
-            //               blurRadius: 20,
-            //               offset: Offset(0, 5), // changes position of shadow
-            //             ),
-            //           ],
-            //         ),
-            //         child: Card(
-            //           elevation: 0,
-            //           child: ListView(
-            //             shrinkWrap: true,
-            //             children: <Widget>[
-            //               ...districts.map((district) {
-            //                 return InkWell(
-            //                   onTap: () {
-            //                     // _addSelectedItem(item, _medications.indexOf(item));
-            //                     setState(() {
-            //                       districtController.text = district['name'];
-            //                       showItems = false;
-            //                       updateUpazilas(district);
-            //                     });
-            //                   },
-            //                   child: Container(
-            //                     height: 50,
-            //                     child: Row(
-            //                       children: <Widget>[
-            //                         SizedBox(width: 20,),
-            //                         Text(district['name'], style: TextStyle(fontSize: 17),)
-            //                       ],
-            //                     )
-            //                   ),
-            //                 );
-            //               }).toList()
-            //             ],
-            //           ),
-            //         )
-            //       ) : Container(),
-            //     ],
-            //   ),
-            // ),
-
-            // Container(
-            //   // color: Colors.red,
-            //   child: Column(
-            //     children: <Widget>[
-            //       TextField(
-            //         style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
-            //         onChanged: (value) => {
-            //           setState(() {
-            //             upazilas = filteredUpazilas
-            //               .where((upazila) => upazila['name']
-            //               .toLowerCase()
-            //               .contains(value.toLowerCase()))
-            //               .toList();
-
-            //               showUpazilaItems = true;
-            //               showItems = false;
-            //             })
-            //         },
-            //         onEditingComplete: () {
-            //           print('asdas');
-            //           setState(() {
-            //             showItems = false;
-            //           });
-            //         },
-            //         onTap: () {
-            //           setState(() {
-            //             showItems = false;
-            //             // showUpazilaItems = true;
-            //           });
-            //         },
-            //         controller: upazilaController,
-            //         decoration: InputDecoration(
-            //           counterText: ' ',
-            //           contentPadding: EdgeInsets.only(top: 18.0, bottom: 18, left: 10, right: 10),
-            //           filled: true,
-            //           fillColor: kSecondaryTextField,
-            //           border: new UnderlineInputBorder(
-            //             borderSide: new BorderSide(color: Colors.white),
-            //             borderRadius: BorderRadius.only(
-            //               topLeft: Radius.circular(4),
-            //               topRight: Radius.circular(4),
-            //             )
-            //           ),
-
-            //           hintText: AppLocalizations.of(context).translate('upazila'),
-            //           hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
-            //         )
-            //       ),
-            //       showUpazilaItems ? Container(
-            //         height: 200,
-            //         margin: EdgeInsets.only(top: 0),
-            //         decoration: BoxDecoration(
-            //           boxShadow: [
-            //             BoxShadow(
-            //               color: Colors.grey.withOpacity(0.3),
-            //               spreadRadius: 0.2,
-            //               blurRadius: 20,
-            //               offset: Offset(0, 5), // changes position of shadow
-            //             ),
-            //           ],
-            //         ),
-            //         child: Card(
-            //           elevation: 0,
-            //           child: ListView(
-            //             shrinkWrap: true,
-            //             children: <Widget>[
-            //               ...upazilas.map((upazila) {
-            //                 return InkWell(
-            //                   onTap: () {
-            //                     // _addSelectedItem(item, _medications.indexOf(item));
-            //                     setState(() {
-            //                       upazilaController.text = upazila['name'];
-            //                       showUpazilaItems = false;
-            //                     });
-            //                   },
-            //                   child: Container(
-            //                     height: 50,
-            //                     child: Row(
-            //                       children: <Widget>[
-            //                         SizedBox(width: 20,),
-            //                         Text(upazila['name'], style: TextStyle(fontSize: 17),)
-            //                       ],
-            //                     )
-            //                   ),
-            //                 );
-            //               }).toList()
-            //             ],
-            //           ),
-            //         )
-            //       ) : Container(),
-            //     ],
-            //   ),
-            // ),
-
-            // PrimaryTextField(
-            //   topPaadding: 18,
-            //   bottomPadding: 18,
-            //   hintText: AppLocalizations.of(context).translate('district'),
-            //   controller: districtController,
-            //   name: AppLocalizations.of(context).translate('district'),
-            //   validation: true,
-            // ),
             SizedBox(height: 10,),
             PrimaryTextField(
                 topPaadding: 10,
@@ -843,18 +740,8 @@ class _PatientDetailsState extends State<PatientDetails> {
               hintText: AppLocalizations.of(context).translate('postalCode'),
               controller: postalCodeController,
               name: AppLocalizations.of(context).translate('postalCode'),
-              validation: true,
               type: TextInputType.number
             ),
-            // SizedBox(height: 10,),
-            // PrimaryTextField(
-            //   topPaadding: 18,
-            //   bottomPadding: 18,
-            //   hintText: AppLocalizations.of(context).translate('town'),
-            //   controller: townController,
-            //   name: AppLocalizations.of(context).translate('town'),
-            //   validation: true,
-            // ),
             SizedBox(height: 10,),
             PrimaryTextField(
               topPaadding: 10,
@@ -862,7 +749,6 @@ class _PatientDetailsState extends State<PatientDetails> {
               hintText: AppLocalizations.of(context).translate('village'),
               controller: villageController,
               name: AppLocalizations.of(context).translate('village'),
-              validation: true,
             ),
             SizedBox(height: 10,),
             PrimaryTextField(
@@ -871,7 +757,6 @@ class _PatientDetailsState extends State<PatientDetails> {
               hintText: AppLocalizations.of(context).translate('streetName'),
               controller: streetNameController,
               name: AppLocalizations.of(context).translate('streetName'),
-              validation: true,
             ),
             Divider(),
             SizedBox(height: 20,),
@@ -883,15 +768,6 @@ class _PatientDetailsState extends State<PatientDetails> {
               controller: mobilePhoneController,
               name: AppLocalizations.of(context).translate('mobile'),
               validation: true,
-              type: TextInputType.number
-            ),
-            SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 10,
-              bottomPadding: 10,
-              prefixIcon: Icon(Icons.phone),
-              hintText: AppLocalizations.of(context).translate('homePhone'),
-              controller: homePhoneController,
               type: TextInputType.number
             ),
             SizedBox(height: 10,),
@@ -1064,117 +940,6 @@ class _DatePickerState extends State<DatePicker> {
     );
   }
 }
-
-// class ContactDetails extends StatefulWidget {
-//
-//   @override
-//   _ContactDetailsState createState() => _ContactDetailsState();
-// }
-//
-// class _ContactDetailsState extends State<ContactDetails> {
-//
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       margin: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-//       child: Form(
-//         key: _contactFormKey,
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: <Widget>[
-//             Text(AppLocalizations.of(context).translate('contactDetails'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
-//             SizedBox(height: 20,),
-//             Row(
-//               children: <Widget>[
-//                 Expanded(
-//                   child: PrimaryTextField(
-//                     topPaadding: 7,
-//                     bottomPadding: 7,
-//                     hintText: AppLocalizations.of(context).translate("contactFirstName"),
-//                     controller: contactFirstNameController,
-//                     name: AppLocalizations.of(context).translate("contactFirstName"),
-//                     validation: true
-//                   ),
-//                 ),
-//                 SizedBox(width: 20,),
-//                 Expanded(
-//                   child: PrimaryTextField(
-//                     topPaadding: 7,
-//                     bottomPadding: 7,
-//                     hintText: AppLocalizations.of(context).translate("contactLastName"),
-//                     controller: contactLastNameController,
-//                     name: AppLocalizations.of(context).translate("contactLastName"),
-//                     validation: true
-//                   ),
-//                 ),
-//               ],
-//             ),
-//
-//
-//             SizedBox(height: 10,),
-//
-//             Container(
-//               child: DropdownButtonFormField(
-//
-//                 hint: Text(AppLocalizations.of(context).translate('relationship'), style: TextStyle(fontSize: 20, color: kTextGrey),),
-//                 validator: (value) {
-//                   if (value == null) {
-//                     return AppLocalizations.of(context).translate('relationshipRequired');
-//                   }
-//                 },
-//                 decoration: InputDecoration(
-//                   filled: true,
-//                   fillColor: kSecondaryTextField,
-//                   contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-//                   border: UnderlineInputBorder(
-//                   borderSide: BorderSide(color: Colors.white),
-//                   borderRadius: BorderRadius.only(
-//                     topLeft: Radius.circular(4),
-//                     topRight: Radius.circular(4),
-//                   )
-//                 ),
-//                 ),
-//                 items: [
-//                   ...relationships.map((item) =>
-//                     DropdownMenuItem(
-//                       child: Text(StringUtils.capitalize(item)),
-//                       value: relationships.indexOf(item)
-//                     )
-//                   ).toList(),
-//                 ],
-//                 value: selectedRelation,
-//                 isExpanded: true,
-//                 onChanged: (value) {
-//                   setState(() {
-//                     selectedRelation = value;
-//                   });
-//                 },
-//               ),
-//             ),
-//
-//             SizedBox(height: 20,),
-//             Divider(),
-//
-//             SizedBox(height: 20,),
-//             PrimaryTextField(
-//               topPaadding: 7,
-//               bottomPadding: 7,
-//               prefixIcon: Icon(Icons.phone),
-//               hintText: AppLocalizations.of(context).translate("contactMobilePhone"),
-//               controller: contactMobilePhoneController,
-//               name: AppLocalizations.of(context).translate("mobile"),
-//               validation: true,
-//               type: TextInputType.number
-//             ),
-//             SizedBox(height: 30,),
-//
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class AddPhoto extends StatefulWidget {
   AddPhoto({
@@ -1385,7 +1150,6 @@ class _AddPhotoState extends State<AddPhoto> {
           GestureDetector(
             onTap: () async {
               print(_currentStep);
-
               widget.parent.nextStep();
               
             },

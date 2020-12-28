@@ -341,9 +341,7 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
                       print(Questionnaire().qnItems);
                     }
                     if (nextText =='COMPLETE') {
-                      print("hell ");
-                      print("hello");
-                      _completeSteep();
+                      _completeStep();
                     }
                     if (_currentStep == 2) {
                       print('asdas');
@@ -374,7 +372,7 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
     );
   }
 
-  Future _completeSteep()async{
+  Future _completeStep()async{
 
     setLoader(true);
 
@@ -1209,9 +1207,12 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                     var patient = Patient().getPatient();
 
                                     print(patient['data']['age']);
+                                    // return;
                                     var response = await AssessmentController().createOnlyAssessment('new patient questionnaire', '', '');
 
                                     widget.parent.setLoader(false);
+                                    print('successss');
+                                    return;
 
                                     if (patient['data']['age'] != null && patient['data']['age'] > 40) {
                                       var data = {

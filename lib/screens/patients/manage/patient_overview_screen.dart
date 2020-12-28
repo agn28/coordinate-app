@@ -741,8 +741,6 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                     )
                   ) : Container(),
 
-
-                  
                   Container(
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                     child: Table(
@@ -998,49 +996,6 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                                       ),
                                                       
                                                       SizedBox(height: 20,),
-                                                      // Row(
-                                                      //   children: <Widget>[
-                                                      //     Container(
-                                                      //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                                      //       decoration: BoxDecoration(
-                                                      //         border: Border.all(width: 1, color: kPrimaryRedColor),
-                                                      //         borderRadius: BorderRadius.circular(2)
-                                                      //       ),
-                                                      //       child: Text('BMI',style: TextStyle(
-                                                      //           color: kPrimaryRedColor,
-                                                      //           fontWeight: FontWeight.w500
-                                                      //         )  
-                                                      //       ),
-                                                      //     ),
-                                                      //     SizedBox(width: 7,),
-                                                      //     Container(
-                                                      //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                                      //       decoration: BoxDecoration(
-                                                      //         border: Border.all(width: 1, color: kPrimaryRedColor),
-                                                      //         borderRadius: BorderRadius.circular(2)
-                                                      //       ),
-                                                      //       child: Text('CVD Risk',style: TextStyle(
-                                                      //           color: kPrimaryRedColor,
-                                                      //           fontWeight: FontWeight.w500
-                                                      //         )  
-                                                      //       ),
-                                                      //     ),
-                                                      //     SizedBox(width: 7,),
-                                                      //     Container(
-                                                      //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                                      //       decoration: BoxDecoration(
-                                                      //         border: Border.all(width: 1, color: kPrimaryAmberColor),
-                                                      //         borderRadius: BorderRadius.circular(2)
-                                                      //       ),
-                                                      //       child: Text('Cholesterol',style: TextStyle(
-                                                      //           color: kPrimaryAmberColor,
-                                                      //           fontWeight: FontWeight.w500
-                                                      //         )  
-                                                      //       ),
-                                                      //     ),
-                                                      //   ],
-                                                      // ),
-                                                      // SizedBox(height: 20),
                                                       GestureDetector(
                                                         onTap: () {
                                                           Navigator.of(context).pushNamed('/encounterDetails', arguments: encounter);
@@ -1048,25 +1003,6 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                                         child: Text(AppLocalizations.of(context).translate('viewEncounterDetails'), style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w400, fontSize: 16),)
                                                       ),
                                                       SizedBox(height: 20,),
-                                                      // Container(
-                                                      //   padding: EdgeInsets.only(top: 20),
-                                                      //   width: double.infinity,
-                                                      //   decoration: BoxDecoration(
-                                                      //     border: Border(
-                                                      //       top: BorderSide(width: 1, color: kBorderLighter),
-                                                      //     ),
-                                                      //   ),
-                                                      //   child: Column(
-                                                      //     crossAxisAlignment: CrossAxisAlignment.start,
-                                                      //     children: <Widget>[
-                                                      //       Text(AppLocalizations.of(context).translate('interventions'), style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),),
-                                                      //       SizedBox(height: 15,),
-                                                      //       Text('Counselling on smoking cessation', style: TextStyle(fontSize: 16),),
-                                                      //       SizedBox(height: 15,),
-                                                      //       Text('Intimate METFORMIN 250 - 500 mg once daily', style: TextStyle(fontSize: 16),),
-                                                      //     ],
-                                                      //   ),
-                                                      // ),
                                                     ],
                                                   ),
                                                 )
@@ -1192,6 +1128,8 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                         Navigator.of(context).pop();
                                         Navigator.of(context).pushNamed('/verifyPatient');
                                       },
+                                      color: kBtnOrangeColor,
+                                      textColor: Colors.white,
                                       active: true,
                                     ),
                                   ],
@@ -1415,15 +1353,23 @@ class FloatingButton extends StatelessWidget {
   final String text;
   final Function onPressed;
   bool active = true;
-  FloatingButton({this.text, this.onPressed, this.active});
+  Color color;
+  var textColor;
+  FloatingButton({this.text, this.onPressed, this.active, this.color, this.textColor});
 
+  getColor() {
+    if (color != null) {
+      return color;
+    }
+    return active ? Colors.white : Color(0xFFdbdbdb);
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 15),
       width: 300,
       child: RaisedButton(
-        color: active ? Colors.white : Color(0xFFdbdbdb),
+        color: getColor(),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),
         ),
@@ -1431,9 +1377,9 @@ class FloatingButton extends StatelessWidget {
         onPressed: onPressed,
         child: Row(
           children: <Widget>[
-            Icon(Icons.add),
+            Icon(Icons.add, color: textColor ?? Colors.black,),
             SizedBox(width: 10,),
-            Text(text, style: TextStyle(fontSize: 17),)
+            Text(text, style: TextStyle(fontSize: 17, color: textColor ?? Colors.black),)
           ],
         ),
       )

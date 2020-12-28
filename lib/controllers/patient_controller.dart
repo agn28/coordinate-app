@@ -25,6 +25,12 @@ class PatientController {
     return data;
   }
 
+  getLocations() async {
+    var response = await PatientRepository().getLocations();
+
+    return response;
+  }
+
   
 
   getPatient(patientId) async {

@@ -136,6 +136,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                           children: <Widget>[
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 25, horizontal: 30),
+                              color: kBtnOrangeColor,
                               child: Row(
                                 children: <Widget>[
                                   Expanded(
@@ -147,7 +148,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            Text(AppLocalizations.of(context).translate('screenPatient'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
+                                            Text(AppLocalizations.of(context).translate('screenPatient'), style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w600),),
                                             SizedBox(height: 10,),
                                             Text(AppLocalizations.of(context).translate('newAssessment'), style: TextStyle(color: kTextGrey, fontSize: 14,),),
                                           ],
@@ -158,7 +159,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                                   Expanded(
                                     child: Container(
                                       alignment: Alignment.topRight,
-                                      child: Icon(Icons.chevron_right, size: 40, color: kPrimaryColor,),
+                                      child: Icon(Icons.chevron_right, size: 40, color: Colors.white),
                                     )
                                   )
                                 ],
@@ -190,6 +191,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                           children: <Widget>[
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 25, horizontal: 30),
+                              color: kBtnOrangeColor,
                               child: Row(
                                 children: <Widget>[
                                   Expanded(
@@ -201,7 +203,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            Text(AppLocalizations.of(context).translate('newPatientQuestionnaire'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
+                                            Text(AppLocalizations.of(context).translate('newPatientQuestionnaire'), style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w600),),
                                           ],
                                         )
                                       ],
@@ -210,7 +212,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                                   Expanded(
                                     child: Container(
                                       alignment: Alignment.topRight,
-                                      child: Icon(Icons.chevron_right, size: 40, color: kPrimaryColor,),
+                                      child: Icon(Icons.chevron_right, size: 40, color: Colors.white)
                                     )
                                   )
                                 ],

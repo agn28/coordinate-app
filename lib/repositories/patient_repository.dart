@@ -26,6 +26,21 @@ class PatientRepository {
     });
   }
 
+  getLocations() async {
+    return http.get(
+      apiUrl + 'locations',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    ).then((response) {
+      return json.decode(response.body);
+      
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
+  }
+
   getPatient(patientId) async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];

@@ -216,21 +216,28 @@ class EncounnterSteps extends StatefulWidget {
 
 class EncounnterStepsState extends State<EncounnterSteps> {
   String status = 'Incomplete';
+  var valueController =  TextEditingController(); 
   
   @override
   void initState() {
     super.initState();
     setStatus();
+    valueController.text = BodyMeasurement().getItem(widget.name)['value'] != null ? BodyMeasurement().getItem(widget.name)['value'].toString() : '';
   }
 
   setStatus() {
     status = BodyMeasurement().hasItem(widget.name) ? 'Complete' : 'Incomplete';
   }
 
+  _addItem(value, unit) {
+    BodyMeasurement().addItem(widget.name, value, unit, "", "");
+  }
+
   @override
   Widget build(BuildContext context) {
     return FlatButton(
       onPressed: () {
+        return;
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -264,15 +271,38 @@ class EncounnterStepsState extends State<EncounnterSteps> {
                 child: Text(widget.text, style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w500),),
               )
             ),
+            // Expanded(
+            //   flex: 2,
+            //   child: Text(AppLocalizations.of(context).translate(status), style: TextStyle(color: status == 'Complete' ? kPrimaryGreenColor : kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.bold),),
+            // ),
+
             Expanded(
-              flex: 2,
-              child: Text(AppLocalizations.of(context).translate(status), style: TextStyle(color: status == 'Complete' ? kPrimaryGreenColor : kPrimaryRedColor, fontSize: 18, fontWeight: FontWeight.bold),),
+              child: Container(
+                height: 40,
+                width: 40,
+                child: TextFormField(
+                  textAlign: TextAlign.center,
+                  controller: valueController,
+                  onChanged: (value) {
+                    print('value' + value);
+                    _addItem(value, widget.name == 'weight' ? 'kg' : 'cm');
+                  },
+                  decoration: InputDecoration(
+                    
+                    contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                    border: new OutlineInputBorder(
+                      borderSide: new BorderSide(color: Colors.red, width: 0.0)
+                    ), 
+                  ),
+                ),
+              )
             ),
             
             Expanded(
               flex: 1,
               child: Container(
-                child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 50,),
+                margin: EdgeInsets.only(left: 15),
+                child: Text(widget.name == 'weight' ? 'kg' : 'cm', style: TextStyle(fontSize: 16, color: Colors.black54),),
               ),
             )
           ],

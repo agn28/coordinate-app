@@ -246,7 +246,7 @@ class _HomeState extends State<HomeScreen> {
                         
                         SizedBox(height: 60,),
 
-                        GestureDetector(
+                        InkWell(
                           
                           onTap: () async {
                             // await Auth().isExpired();
@@ -255,7 +255,7 @@ class _HomeState extends State<HomeScreen> {
                             // Navigator.of(context).push(PatientSearchScreen());
                           },
                           child: Container(
-                            height: 190,
+                            height: 140,
                             width: double.infinity,
                             child: Card(
                               elevation: 2,
@@ -281,10 +281,10 @@ class _HomeState extends State<HomeScreen> {
                         
                         SizedBox(height: 20,),
 
-                        GestureDetector(
+                        InkWell(
                           onTap: () => Navigator.of(context).push(RegisterPatientScreen()),
                           child: Container(
-                            height: 190,
+                            height: 140,
                             width: double.infinity,
                             alignment: Alignment.center,
                             child: Card(
@@ -314,7 +314,7 @@ class _HomeState extends State<HomeScreen> {
                         InkWell(
                           onTap: () => Navigator.of(context).pushNamed('/chwReferralPatients'),
                           child: Container(
-                            height: 190,
+                            height: 140,
                             width: double.infinity,
                             alignment: Alignment.center,
                             child: Card(
