@@ -5,7 +5,7 @@ import 'dart:convert';
 class AuthRepository {
     login(email, password) async {
 
-      return await http.post(
+    return await http.post(
       apiUrl + 'users/login',
       headers: {
         'Accept': 'application/json',

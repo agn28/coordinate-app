@@ -1221,6 +1221,34 @@ class _ViewSummaryState extends State<ViewSummary> {
     }
   }
 
+  getAddress() {
+
+    var address = '';
+    if (streetNameController.text != '' && streetNameController.text != null) {
+      print('hi');
+      address = streetNameController.text;
+    }
+    if (villageController.text != '' && villageController.text != null) {
+      print('hello');
+      address = address + ', ' + villageController.text;
+    }
+    if (selectedUpazila['name'] != null) {
+      address = address + ', ' + selectedUpazila['name'];
+    }
+    if (selectedDistrict['name'] != null) {
+      address = address + ', ' + selectedDistrict['name'];
+    }
+    if (postalCodeController.text != '') {
+      address = address + ', ' + postalCodeController.text;
+    }
+
+    if (address[0] == ',') {
+      address = address.substring(1);
+    }
+
+    return address;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -1264,7 +1292,7 @@ class _ViewSummaryState extends State<ViewSummary> {
                 Row(
                   children: <Widget>[
                     Text(AppLocalizations.of(context).translate('address') + ': ', style: TextStyle(fontSize: 18),),
-                    Text(streetNameController.text + ', ' + villageController.text + ', ' + upazilaController.text + ', ' + districtController.text + ' ' + postalCodeController.text, style: TextStyle(fontSize: 18),),
+                    Text(getAddress(), style: TextStyle(fontSize: 18),),
                   ],
                 ),
                 SizedBox(height: 7,),
