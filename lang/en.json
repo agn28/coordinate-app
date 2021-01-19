@@ -28,6 +28,7 @@
   "searchHere": "Search Here...",
   "patientDetails": "Patient Details",
   "contactDetails": "Contact Details",
+  "emergencyContact": "Emergency Contact",
   "thumbprint": "Thumbprint",
   "gender": "Gender",
   "male": "Male",
@@ -430,7 +431,9 @@
   "checkInComplete":"Check in Complete",
   "version": "Version",
   "intervention": "Intervention",
-  "actions":"Actions"
+  "actions":"Actions",
+  "nidValidation":"Patient already exists. Please check the NID.",
+  "somethingWrong":"Something went wrong."
 
   
   

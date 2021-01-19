@@ -282,6 +282,7 @@ class EncounnterStepsState extends State<EncounnterSteps> {
                 width: 40,
                 child: TextFormField(
                   textAlign: TextAlign.center,
+                  keyboardType: TextInputType.number,
                   controller: valueController,
                   onChanged: (value) {
                     print('value' + value);

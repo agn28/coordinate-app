@@ -191,7 +191,7 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                       sortAscending: true,
                     ),
                   ),
-                  SizedBox(height: 30,),
+                  SizedBox(height: 50,),
 
                   BloodPressure().items.length > 0 ? Container(
                     color: kWarningColor,
@@ -464,19 +464,19 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
                           },
                         );
                       },
-                      padding: EdgeInsets.symmetric(vertical: 17),
+                      padding: EdgeInsets.symmetric(vertical: 24),
                       child: Text(AppLocalizations.of(context).translate('addBpMeasurement'), style: TextStyle(fontSize: 16, color: kPrimaryColor, fontWeight: FontWeight.w600), textAlign: TextAlign.center,),
                     ),
                   ),
 
-                  SizedBox(height: 35,),
+                  SizedBox(height: 100,),
 
                   Container(
                     // margin: EdgeInsets.symmetric(horizontal: 10),
                     child: TextField(
                       
                       keyboardType: TextInputType.multiline,
-                      maxLines: 5,
+                      maxLines: 2,
                       style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
                       controller: commentController,
 

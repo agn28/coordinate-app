@@ -9,8 +9,7 @@ class PatientRepository {
   create(data) async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
-    print(token);
-    await http.post(
+    return await http.post(
       apiUrl + 'patients',
       headers: {
         'Accept': 'application/json',
@@ -21,6 +20,7 @@ class PatientRepository {
     ).then((response) {
       print('response');
       print(response.body);
+      return json.decode(response.body);
     }).catchError((error) {
       print('error ' + error.toString());
     });

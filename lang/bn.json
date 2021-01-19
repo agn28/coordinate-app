@@ -28,6 +28,7 @@
   "searchHere": "এখানে খুঁজুন...",
   "patientDetails": "রোগীর বিস্তারিত",
   "contactDetails": "বিস্তারিত যোগাযোগের ঠিকানা",
+  "emergencyContact": "জরুরী যোগাযোগ",
   "thumbprint": "বৃদ্ধাঙ্গুলির ছাপ",
   "gender": "লিঙ্গ",
   "male": "পুরুষ",
@@ -431,7 +432,9 @@
   "checkInComplete":"চেক ইন সম্পূর্ণ হয়েছে",
   "version": "সংস্করণ",
   "intervention": "ব্যবস্থাসমুহ",
-  "actions":"করণীয় সমূহ"
+  "actions":"করণীয় সমূহ",
+  "nidValidation":"রোগী ইতিমধ্যে বিদ্যমান। দয়া করে এনআইডি চেক করুন।",
+  "somethingWrong":"কোন সমস্যা হয়েছে"
 
 
 }

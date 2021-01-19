@@ -11,6 +11,7 @@ import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
@@ -95,6 +96,8 @@ class _PatientSearchState extends State<PatientSearchScreen> {
   }
 
   search(query) {
+    var searchKey = Helpers().isNumeric(query) ? 'mobile' : 'name';
+
     var modifiedPatients = [...allPatients].map((item)  {
       item['data']['name'] = '${item['data']['first_name']} ${item['data']['last_name']}' ;
       return item;
@@ -102,7 +105,7 @@ class _PatientSearchState extends State<PatientSearchScreen> {
 
     setState(() {
       patients = modifiedPatients
-        .where((item) => item['data']['name']
+        .where((item) => item['data'][searchKey]
         .toLowerCase()
         .contains(query.toLowerCase()))
         .toList();

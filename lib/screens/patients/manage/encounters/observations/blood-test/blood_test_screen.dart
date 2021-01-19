@@ -458,7 +458,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
                     children: <Widget>[
                       // SizedBox(width: 20,),
                       Container(
-                        width: 200,
+                        width: 150,
                         child: PrimaryTextField(
                           hintText: widget.title,
                           topPaadding: 8,

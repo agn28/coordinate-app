@@ -106,9 +106,10 @@ class PatientController {
   create(formData) async {
     final data = _prepareData(formData);
     print('create data');
-    await PatientReposioryLocal().create(data);
+    var response = await PatientReposioryLocal().create(data);
 
-    return 'success';
+
+    return response;
   }
 
   /// Create a new patient

@@ -160,19 +160,24 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
 
   search(query) {
 
+    var searchKey = Helpers().isNumeric(query) ? 'mobile' : 'name';
+
     if (selectedTab == 0) {
       var modifiedPatients = [...allNewPatients].map((item)  {
         item['data']['name'] = '${item['data']['first_name']} ${item['data']['last_name']}' ;
         return item;
       }).toList();
 
+
       setState(() {
         newPatients = modifiedPatients
-          .where((item) => item['data']['name']
+          .where((item) => item['data'][searchKey]
           .toLowerCase()
           .contains(query.toLowerCase()))
           .toList();
       });
+
+      
     } else if (selectedTab == 1) {
       var modifiedPatients = [...allExistingPatients].map((item)  {
         item['data']['name'] = '${item['data']['first_name']} ${item['data']['last_name']}' ;
@@ -181,7 +186,7 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
 
       setState(() {
         existingPatients = modifiedPatients
-          .where((item) => item['data']['name']
+          .where((item) => item['data'][searchKey]
           .toLowerCase()
           .contains(query.toLowerCase()))
           .toList();
