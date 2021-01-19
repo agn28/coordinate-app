@@ -113,8 +113,6 @@ class _RegisterPatientState extends State<RegisterPatient> {
   @override
   void initState() {
     super.initState();
-    debugPrint('hello test');
-
     getAddresses();
     _prepareState();
     _checkAuth();
@@ -123,7 +121,6 @@ class _RegisterPatientState extends State<RegisterPatient> {
     _currentStep = 0;
 
     // fillDummyData(); //Remove this
-
   }
   nextStep() {
     setState(() {
@@ -1420,7 +1417,6 @@ class _ViewSummaryState extends State<ViewSummary> {
               setState(() {
                 isLoading = false;
               });
-              print(response);
 
               if (response != null) {
 

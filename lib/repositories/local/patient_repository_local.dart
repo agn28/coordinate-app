@@ -43,10 +43,6 @@ class PatientReposioryLocal {
 
     var response = await PatientRepository().create(data);
 
-    print('response local');
-    print(response);
-
-
     await Patient().setPatient(patient);
     DatabaseCreator.databaseLog('Add patient', sql, null, result, params);
     return response;
