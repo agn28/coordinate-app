@@ -449,8 +449,6 @@ class MedicalHistory extends StatefulWidget {
 
 class _MedicalHistoryState extends State<MedicalHistory> {
 
-
-  
   @override
   Widget build(BuildContext context) {
     
@@ -573,7 +571,6 @@ class _MedicationState extends State<Medication> {
               margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
               child: Text(AppLocalizations.of(context).translate('medicationTitle'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
             ),
-            SizedBox(height: 20,),
 
             Container(
               margin: EdgeInsets.symmetric(horizontal: 20),
@@ -680,7 +677,6 @@ class _RiskFactorsState extends State<RiskFactors> {
               margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
               child: Text(AppLocalizations.of(context).translate('riskFactors'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
             ),
-            SizedBox(height: 20,),
 
             Container(
               margin: EdgeInsets.symmetric(horizontal: 20),

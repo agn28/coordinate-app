@@ -41,11 +41,15 @@ class PatientReposioryLocal {
 
     print('live patient create');
 
-    PatientRepository().create(data);
+    var response = await PatientRepository().create(data);
+
+    print('response local');
+    print(response);
 
 
     await Patient().setPatient(patient);
     DatabaseCreator.databaseLog('Add patient', sql, null, result, params);
+    return response;
   }
 
   Future<void> update(data) async {

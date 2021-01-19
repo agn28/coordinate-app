@@ -17,6 +17,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
@@ -112,12 +113,16 @@ class _RegisterPatientState extends State<RegisterPatient> {
   @override
   void initState() {
     super.initState();
+    debugPrint('hello test');
+
     getAddresses();
     _prepareState();
     _checkAuth();
     selectedDistrict = {};
     selectedUpazila = {};
     _currentStep = 0;
+
+    // fillDummyData(); //Remove this
 
   }
   nextStep() {
@@ -158,8 +163,8 @@ class _RegisterPatientState extends State<RegisterPatient> {
 
   _checkAuth() {
     if (Auth().isExpired()) {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+      Helpers().logout(context);
+      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
     } 
   }
 
@@ -207,6 +212,31 @@ class _RegisterPatientState extends State<RegisterPatient> {
 
   }
 
+  fillDummyData() {
+    firstNameController.text = 'Dummy';
+    fatherNameController.text = 'Father test';
+    lastNameController.text = 'Test';
+    // setState(() {
+    //   _image = File(patient['data']['avatar']);
+    // });
+    birthDateController.text = '11';
+    birthMonthController.text = '10';
+    birthYearController.text = '1990';
+    // districtController.text = patient['data']['address']['district'];
+    postalCodeController.text = '1216';
+    villageController.text = 'Test';
+    streetNameController.text = '1234';
+    mobilePhoneController.text = '01960229599';
+    emailController.text = 'rasel@augnitive.com';
+    nidController.text = '1111111111';   
+    contactFirstNameController.text = 'Contact';
+    contactLastNameController.text = 'Test';
+    contactRelationshipController.text = 'Brother';
+    contactMobilePhoneController.text = '01960229599';
+    selectedRelation = 1;
+
+  }
+
   _clearForm() {
     firstNameController.clear();
     lastNameController .clear();
@@ -231,6 +261,19 @@ class _RegisterPatientState extends State<RegisterPatient> {
 
     selectedRelation = null;
     selectedGuardian = 'father';
+  }
+
+  goBack() {
+    setState(() {
+      _currentStep = _currentStep - 1;
+      nextText = AppLocalizations.of(context).translate('next');
+    });
+  }
+  goBackToEdit() {
+    setState(() {
+      _currentStep = _currentStep - 2;
+      nextText = AppLocalizations.of(context).translate('next');
+    });
   }
   
   @override
@@ -275,10 +318,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
               child: _currentStep != 0 ? FlatButton(
                 onPressed: () {
 
-                  setState(() {
-                    _currentStep = _currentStep - 1;
-                    nextText = AppLocalizations.of(context).translate('next');
-                  });
+                  goBack();
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -370,7 +410,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
       ),
       CustomStep(
         title: Text(AppLocalizations.of(context).translate('viewSummary')),
-        content: ViewSummary(),
+        content: ViewSummary(parent: this),
         isActive: _currentStep >= 2,
       ),
     ];
@@ -789,6 +829,9 @@ class _PatientDetailsState extends State<PatientDetails> {
               validation: true,
             ),
             SizedBox(height: 20,),
+
+            Text(AppLocalizations.of(context).translate('emergencyContact'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
+            SizedBox(height: 20,),
             Row(
               children: <Widget>[
                 Expanded(
@@ -1171,10 +1214,10 @@ class _AddPhotoState extends State<AddPhoto> {
 }
 
 class ViewSummary extends StatefulWidget {
-  const ViewSummary({
-    Key key,
-  }) : super(key: key);
-
+  final _RegisterPatientState parent;
+  ViewSummary({
+    this.parent
+  });
   @override
   _ViewSummaryState createState() => _ViewSummaryState();
 }
@@ -1271,6 +1314,24 @@ class _ViewSummaryState extends State<ViewSummary> {
                   children: <Widget>[
                     Text(AppLocalizations.of(context).translate('patientName') + ': ', style: TextStyle(fontSize: 18),),
                     Text(firstNameController.text + ' ' + lastNameController.text, style: TextStyle(fontSize: 18),),
+                    Spacer(),
+                    ClipOval(
+                      child: Material(
+                        child: InkWell(
+                          onTap: () {
+                            widget.parent.goBackToEdit();
+                          },
+                          child: Container(
+                            height: 30,
+                            width: 30,
+                            decoration: BoxDecoration(
+                              color: kPrimaryColor
+                            ),
+                            child: Icon(Icons.edit, color: Colors.white, size: 18,),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
                 SizedBox(height: 7,),
@@ -1344,6 +1405,11 @@ class _ViewSummaryState extends State<ViewSummary> {
           
           GestureDetector(
             onTap: () async {
+              if (Auth().isExpired()) {
+                Helpers().logout(context);
+                return;
+                // Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+              }
               setState(() {
                 isLoading = true;
               });
@@ -1354,7 +1420,40 @@ class _ViewSummaryState extends State<ViewSummary> {
               setState(() {
                 isLoading = false;
               });
-              if (response == 'success') {
+              print(response);
+
+              if (response != null) {
+
+                if (response['error'] != null && response['error']) {
+                  if (response['message'] == 'Patient already exists.') {
+                    _scaffoldKey.currentState.showSnackBar(
+                      SnackBar(
+                        content: Text(AppLocalizations.of(context).translate('nidValidation')),
+                        backgroundColor: kPrimaryRedColor,
+                      )
+                    );
+                    return;
+                  }
+
+                  _scaffoldKey.currentState.showSnackBar(
+                    SnackBar(
+                      content: Text(AppLocalizations.of(context).translate('somethingWrong')),
+                      backgroundColor: kPrimaryRedColor,
+                    )
+                  );
+
+                  return;
+                  
+                }
+
+                if (response['id'] != null ) {
+                  _RegisterPatientState()._clearForm();
+                  Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen(isEditState: isEditState));
+                  return;
+                }
+
+                
+              } else if (response == 'success') {
                 _RegisterPatientState()._clearForm();
                 Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen(isEditState: isEditState));
               }

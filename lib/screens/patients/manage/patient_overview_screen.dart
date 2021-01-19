@@ -523,11 +523,11 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                       radius: 30,
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(30.0),
-                                        // child: Image.network(
-                                        //   Patient().getPatient()['data']['avatar'],
-                                        //   height: 70.0,
-                                        //   width: 70.0,
-                                        // ),
+                                        child: Image.network(
+                                          Patient().getPatient()['data']['avatar'],
+                                          height: 70.0,
+                                          width: 70.0,
+                                        ),
                                       ),
                                       backgroundImage: AssetImage('assets/images/avatar.png'),
                                     ),
