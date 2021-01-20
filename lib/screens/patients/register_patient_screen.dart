@@ -1402,11 +1402,6 @@ class _ViewSummaryState extends State<ViewSummary> {
           
           GestureDetector(
             onTap: () async {
-              if (Auth().isExpired()) {
-                Helpers().logout(context);
-                return;
-                // Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-              }
               setState(() {
                 isLoading = true;
               });
@@ -1414,12 +1409,13 @@ class _ViewSummaryState extends State<ViewSummary> {
               var formData = _RegisterPatientState()._prepareFormData();
               print('formdata');
               var response = isEditState != null ? await PatientController().update(formData, false) : await PatientController().create(formData);
+              print('response');
+              print(response);
               setState(() {
                 isLoading = false;
               });
 
               if (response != null) {
-
                 if (response['error'] != null && response['error']) {
                   if (response['message'] == 'Patient already exists.') {
                     _scaffoldKey.currentState.showSnackBar(
@@ -1440,6 +1436,11 @@ class _ViewSummaryState extends State<ViewSummary> {
 
                   return;
                   
+                }
+
+                if (response['message'] != null && response['message'] == 'Unauthorized') {
+                  Helpers().logout(context);
+                  return;
                 }
 
                 if (response['id'] != null ) {
