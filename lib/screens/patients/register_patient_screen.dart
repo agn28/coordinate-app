@@ -1409,8 +1409,6 @@ class _ViewSummaryState extends State<ViewSummary> {
               var formData = _RegisterPatientState()._prepareFormData();
               print('formdata');
               var response = isEditState != null ? await PatientController().update(formData, false) : await PatientController().create(formData);
-              print('response');
-              print(response);
               setState(() {
                 isLoading = false;
               });
