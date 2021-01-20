@@ -214,7 +214,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                   ),
                   Container(
                     alignment: Alignment.center,
-                    margin: EdgeInsets.only(left: 40, right: 40),
+                    margin: EdgeInsets.only(left: 25, right: 25),
                     width: double.infinity,
                     child: Column(
                       children: <Widget>[
@@ -240,12 +240,12 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
-                                        Image.asset('assets/images/icons/inventory.png', width: 70,),
-                                        SizedBox(height: 10,),
+                                        Image.asset('assets/images/icons/inventory.png', width: 50,),
+                                        SizedBox(height: 15,),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
-                                            Text(AppLocalizations.of(context).translate('gotoMyWorklist'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 22),),
+                                            Text(AppLocalizations.of(context).translate('gotoMyWorklist'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
                                             
                                           ],
                                         ),
@@ -268,13 +268,13 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
-                                        Image.asset('assets/images/icons/manage_patient.png'),
+                                        Icon(Icons.group, color: kPrimaryColor, size: 60),
                                         SizedBox(height: 10,),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
                                             
-                                            Text(AppLocalizations.of(context).translate('viewExistingPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 22),),
+                                            Text(AppLocalizations.of(context).translate('viewExistingPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
                                             
                                           ],
                                         ),
@@ -298,17 +298,16 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                                 child: Container(
                                   height: 140,
                                   width: double.infinity,
-                                  alignment: Alignment.center,
                                   child: Card(
                                     elevation: 2,
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
-                                        Image.asset('assets/images/icons/register_patient.png'),
+                                        Icon(Icons.add, color: kPrimaryColor, size: 70,),
+                                        SizedBox(height: 5),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
-                                            Text(AppLocalizations.of(context).translate('registerNewPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 22),),
+                                            Text(AppLocalizations.of(context).translate('registerNewPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
                                           ],
                                         ),
                                       ],
@@ -331,10 +330,11 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
                                         Image.asset('assets/images/icons/questionnaire.png'),
+                                        SizedBox(height: 10,),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
-                                            Text(AppLocalizations.of(context).translate('referralList'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 22),),
+                                            Text(AppLocalizations.of(context).translate('referralList'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
                                           ],
                                         ),
                                       ],
