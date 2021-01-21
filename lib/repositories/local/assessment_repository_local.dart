@@ -248,7 +248,6 @@ class AssessmentRepositoryLocal {
     apiData.addAll(data);
 
     print('before encounter');
-    return;
     await AssessmentRepository().create(apiData);
 
     print('into encounter');
