@@ -23,6 +23,8 @@ import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_success_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
+import 'package:connectivity/connectivity.dart';
+
 import '../../custom-classes/custom_stepper.dart';
 
 final firstNameController = TextEditingController();
@@ -120,7 +122,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     selectedUpazila = {};
     _currentStep = 0;
 
-    // fillDummyData(); //Remove this
+    fillDummyData(); //Remove this
   }
   nextStep() {
     setState(() {
@@ -1265,11 +1267,9 @@ class _ViewSummaryState extends State<ViewSummary> {
 
     var address = '';
     if (streetNameController.text != '' && streetNameController.text != null) {
-      print('hi');
       address = streetNameController.text;
     }
     if (villageController.text != '' && villageController.text != null) {
-      print('hello');
       address = address + ', ' + villageController.text;
     }
     if (selectedUpazila['name'] != null) {
@@ -1408,7 +1408,10 @@ class _ViewSummaryState extends State<ViewSummary> {
               var url = await uploadImage();
               var formData = _RegisterPatientState()._prepareFormData();
               print('formdata');
+              var connectivityResult = await (Connectivity().checkConnectivity());
+
               var response = isEditState != null ? await PatientController().update(formData, false) : await PatientController().create(formData);
+              
               setState(() {
                 isLoading = false;
               });

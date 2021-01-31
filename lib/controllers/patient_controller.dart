@@ -2,6 +2,7 @@ import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/repositories/local/patient_repository_local.dart';
 import 'dart:convert';
+import 'package:connectivity/connectivity.dart';
 
 import 'package:nhealth/repositories/patient_repository.dart';
 
@@ -106,8 +107,32 @@ class PatientController {
   create(formData) async {
     final data = _prepareData(formData);
     print('create data');
-    var response = await PatientReposioryLocal().create(data);
 
+    var apiResponse;
+    var response;
+
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+      // I am connected to a mobile network.
+
+      print('connected');
+      // return;
+
+      apiResponse = await PatientRepository().create(data);
+      print('apiResponse');
+      print(apiResponse);
+      // response = await PatientReposioryLocal().create(data);
+
+    } else {
+      print('not connected');
+      return;
+      response = await PatientReposioryLocal().create(data);
+    }
+
+
+    
+
+    
 
     return response;
   }

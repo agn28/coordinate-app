@@ -302,7 +302,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                                     elevation: 2,
                                     child: Column(
                                       children: <Widget>[
-                                        Icon(Icons.add, color: kPrimaryColor, size: 70,),
+                                        Icon(Icons.person_add_alt_1, color: kPrimaryColor, size: 70,),
                                         SizedBox(height: 5),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,

@@ -1,6 +1,8 @@
 import 'package:http/http.dart' as http;
+import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/services/api_service.dart';
 import '../constants/constants.dart';
 import 'dart:convert';
 
@@ -9,6 +11,26 @@ class PatientRepository {
   create(data) async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
+    var  api = ApiService();
+
+    var response;
+
+    // response = await api.post('patients', data);
+
+    // print('response');
+    // print(response.body);
+    // if (isNotNull(response)) {
+    //   // return json.decode(response.body);
+    // }
+
+    // return;
+
+    // try {
+
+    // } catch() {
+      
+    // }
+    print('asdasdd');
     return await http.post(
       apiUrl + 'patients',
       headers: {

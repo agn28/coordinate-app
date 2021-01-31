@@ -29,7 +29,8 @@ class DatabaseCreator {
     (
       uuid TEXT PRIMARY KEY,
       data TEXT,
-      status TEXT
+      status TEXT,
+      synced BOOLEAN,
     )''';
 
     await db.execute(sql);

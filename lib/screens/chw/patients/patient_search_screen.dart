@@ -535,7 +535,6 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
                       var result = await BarcodeScanner.scan();
                       matchBarcodeData(result);
                     } catch (e) {
-                      print('hi');
                       print(e);
                     }
                   },
