@@ -1410,7 +1410,7 @@ class _ViewSummaryState extends State<ViewSummary> {
               print('formdata');
               var connectivityResult = await (Connectivity().checkConnectivity());
 
-              var response = isEditState != null ? await PatientController().update(formData, false) : await PatientController().create(formData);
+              var response = isEditState != null ? await PatientController().update(formData, false) : await PatientController().create(context, formData);
               
               setState(() {
                 isLoading = false;

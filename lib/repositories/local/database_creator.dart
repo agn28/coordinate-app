@@ -30,7 +30,7 @@ class DatabaseCreator {
       uuid TEXT PRIMARY KEY,
       data TEXT,
       status TEXT,
-      synced BOOLEAN,
+      isSynced BOOLEAN,
     )''';
 
     await db.execute(sql);
@@ -41,7 +41,8 @@ class DatabaseCreator {
     (
       uuid TEXT PRIMARY KEY,
       data TEXT,
-      status TEXT
+      status TEXT,
+      isSynced BOOLEAN,
     )''';
 
     await db.execute(sql);
@@ -52,7 +53,8 @@ class DatabaseCreator {
     (
       uuid TEXT PRIMARY KEY,
       data TEXT,
-      status TEXT
+      status TEXT,
+      isSynced BOOLEAN,
     )''';
 
     await db.execute(sql);
@@ -63,7 +65,7 @@ class DatabaseCreator {
     (
       uuid TEXT PRIMARY KEY,
       codings TEXT,
-      status TEXT
+      status TEXT,
     )''';
 
     await db.execute(sql);

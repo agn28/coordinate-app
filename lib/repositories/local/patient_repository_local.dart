@@ -18,17 +18,18 @@ class PatientReposioryLocal {
 
   /// Create a patient.
   /// Patient [data] is required as parameter.
-  create(data) async {
+  create(data, synced) async {
     var uuid = Uuid().v4();
 
     final sql = '''INSERT INTO ${DatabaseCreator.patientTable}
     (
       uuid,
       data,
-      status
+      status,
+      synced
     )
     VALUES (?,?,?)''';
-    List<dynamic> params = [uuid, jsonEncode(data), 'not synced'];
+    List<dynamic> params = [uuid, jsonEncode(data), 'not synced', synced];
     final result = await db.rawInsert(sql, params);
 
     var patient = {
@@ -41,11 +42,11 @@ class PatientReposioryLocal {
 
     print('live patient create');
 
-    var response = await PatientRepository().create(data);
+    // var response = await PatientRepository().create(data);
 
     await Patient().setPatient(patient);
     DatabaseCreator.databaseLog('Add patient', sql, null, result, params);
-    return response;
+    return result;
   }
 
   Future<void> update(data) async {

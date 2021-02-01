@@ -1,10 +1,16 @@
+import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/repositories/local/patient_repository_local.dart';
 import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/material.dart';
 
 import 'package:nhealth/repositories/patient_repository.dart';
+import 'package:uuid/uuid.dart';
+
+import '../app_localizations.dart';
 
 class PatientController {
 
@@ -104,7 +110,8 @@ class PatientController {
 
   /// Create a new patient
   /// [formData] is required as parameter.
-  create(formData) async {
+  create(context, formData) async {
+    var uuid = Uuid().v4();
     final data = _prepareData(formData);
     print('create data');
 
@@ -117,22 +124,48 @@ class PatientController {
 
       print('connected');
       // return;
+      data['id'] = uuid;
+
+      print('live patient create');
 
       apiResponse = await PatientRepository().create(data);
+
+      if (isNull(data)) {
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text("Error: ${AppLocalizations.of(context).translate('somethingWrong')}"), backgroundColor: kPrimaryRedColor,));
+        return;
+      }
+
+      if (apiResponse['exception'] != null) {
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Error: ${apiResponse['message']}'), backgroundColor: kPrimaryRedColor,));
+        if (apiResponse['type']  == 'unknown') {
+          return;
+        }
+
+        response = await PatientReposioryLocal().create(data, false);
+        return response;
+      }
+
+        if (apiResponse['error'] != null && apiResponse['error']) {
+          if (apiResponse['message'] == 'Patient already exists.') {
+            
+            Scaffold.of(context).showSnackBar(SnackBar(content: Text("Error: ${AppLocalizations.of(context).translate('nidValidation')}"), backgroundColor: kPrimaryRedColor,));
+            return;
+          } else {
+            Scaffold.of(context).showSnackBar(SnackBar(content: Text("Error: ${apiResponse['message']}"), backgroundColor: kPrimaryRedColor,));
+            return;
+          }
+        }
+        
       print('apiResponse');
+
       print(apiResponse);
       // response = await PatientReposioryLocal().create(data);
 
     } else {
       print('not connected');
       return;
-      response = await PatientReposioryLocal().create(data);
+      response = await PatientReposioryLocal().create(data, false);
     }
-
-
-    
-
-    
 
     return response;
   }

@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/models/auth.dart';
@@ -15,37 +18,47 @@ class PatientRepository {
 
     var response;
 
-    // response = await api.post('patients', data);
+    print(data);
+    print(apiUrl + 'patients');
 
-    // print('response');
-    // print(response.body);
-    // if (isNotNull(response)) {
-    //   // return json.decode(response.body);
-    // }
+    try {
+      response =  await http.post(
+        apiUrl + 'patients',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: json.encode(data)
+      ).timeout(Duration(seconds: 15));
 
-    // return;
-
-    // try {
-
-    // } catch() {
-      
-    // }
-    print('asdasdd');
-    return await http.post(
-      apiUrl + 'patients',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: json.encode(data)
-    ).then((response) {
-      print('response');
       print(response.body);
       return json.decode(response.body);
-    }).catchError((error) {
-      print('error ' + error.toString());
-    });
+      
+    } on SocketException {
+      // showErrorSnackBar('Error', 'socketError'.tr);
+      print('socket exception');
+      return {
+        'exception': true,
+        'message': 'No internet'
+      };
+    } on TimeoutException {
+      // showErrorSnackBar('Error', 'timeoutError'.tr);
+      print('timeout error');
+      return {
+        'exception': true,
+        'message': 'Slow internet'
+      };
+    } on Error catch(err) {
+      print('test error');
+      print(err);
+      // showErrorSnackBar('Error', 'unknownError'.tr);
+      return {
+        'exception': true,
+        'type': 'unknown',
+        'message': 'Something went wrong'
+      };
+    }
   }
 
   getLocations() async {

@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:nhealth/constants/constants.dart';
-import 'package:http/http.dart' as client;
+import 'package:http/http.dart' as http;
 import 'package:nhealth/models/auth.dart';
 
 
 class ApiService {
-  // var client = http.Client();
+  var client = http.Client();
   int timeout = 15;
 
   var defaultHeaders = {
