@@ -130,32 +130,39 @@ class PatientController {
 
       apiResponse = await PatientRepository().create(data);
 
-      if (isNull(data)) {
+      if (isNull(apiResponse)) {
         Scaffold.of(context).showSnackBar(SnackBar(content: Text("Error: ${AppLocalizations.of(context).translate('somethingWrong')}"), backgroundColor: kPrimaryRedColor,));
         return;
       }
 
-      if (apiResponse['exception'] != null) {
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Error: ${apiResponse['message']}'), backgroundColor: kPrimaryRedColor,));
+      else if (apiResponse['exception'] != null) {
+        
         if (apiResponse['type']  == 'unknown') {
+          Scaffold.of(context).showSnackBar(SnackBar(content: Text('Error: ${apiResponse['message']}'), backgroundColor: kPrimaryRedColor,));
           return;
         }
 
-        response = await PatientReposioryLocal().create(data, false);
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Warning: ${apiResponse['message']}. Using offline...'), backgroundColor: kPrimaryYellowColor,));
+
+        response = await PatientReposioryLocal().create(context, data, false);
         return response;
       }
 
-        if (apiResponse['error'] != null && apiResponse['error']) {
-          if (apiResponse['message'] == 'Patient already exists.') {
-            
-            Scaffold.of(context).showSnackBar(SnackBar(content: Text("Error: ${AppLocalizations.of(context).translate('nidValidation')}"), backgroundColor: kPrimaryRedColor,));
-            return;
-          } else {
-            Scaffold.of(context).showSnackBar(SnackBar(content: Text("Error: ${apiResponse['message']}"), backgroundColor: kPrimaryRedColor,));
-            return;
-          }
+      else if (apiResponse['error'] != null && apiResponse['error']) {
+        if (apiResponse['message'] == 'Patient already exists.') {
+          
+          Scaffold.of(context).showSnackBar(SnackBar(content: Text("Error: ${AppLocalizations.of(context).translate('nidValidation')}"), backgroundColor: kPrimaryRedColor,));
+          return;
+        } else {
+          Scaffold.of(context).showSnackBar(SnackBar(content: Text("Error: ${apiResponse['message']}"), backgroundColor: kPrimaryRedColor,));
+          return;
         }
-        
+      }
+
+      else if (isNotNull(apiResponse['id'])) {
+        response = await PatientReposioryLocal().create(context, data, true);
+      }
+      
       print('apiResponse');
 
       print(apiResponse);
@@ -163,8 +170,8 @@ class PatientController {
 
     } else {
       print('not connected');
-      return;
-      response = await PatientReposioryLocal().create(data, false);
+      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Warning: No Internet. Using offline...'), backgroundColor: kPrimaryYellowColor,));
+      response = await PatientReposioryLocal().create(context, data, false);
     }
 
     return response;

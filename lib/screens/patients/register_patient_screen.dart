@@ -1417,7 +1417,11 @@ class _ViewSummaryState extends State<ViewSummary> {
               });
 
               if (response != null) {
-                if (response['error'] != null && response['error']) {
+                if (response == 'success') {
+                  _RegisterPatientState()._clearForm();
+                  Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen(isEditState: isEditState));
+                }
+                else if (response['error'] != null && response['error']) {
                   if (response['message'] == 'Patient already exists.') {
                     _scaffoldKey.currentState.showSnackBar(
                       SnackBar(
@@ -1435,26 +1439,24 @@ class _ViewSummaryState extends State<ViewSummary> {
                     )
                   );
 
+
                   return;
                   
                 }
 
-                if (response['message'] != null && response['message'] == 'Unauthorized') {
+                else if (response['message'] != null && response['message'] == 'Unauthorized') {
                   Helpers().logout(context);
                   return;
                 }
 
-                if (response['id'] != null ) {
+                else if (response['id'] != null ) {
                   _RegisterPatientState()._clearForm();
                   Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen(isEditState: isEditState));
                   return;
                 }
 
                 
-              } else if (response == 'success') {
-                _RegisterPatientState()._clearForm();
-                Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen(isEditState: isEditState));
-              }
+              } 
             },
             child: Container(
               width: double.infinity,
