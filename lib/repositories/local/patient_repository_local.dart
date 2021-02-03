@@ -1,211 +1,134 @@
-import 'dart:async';
-import 'dart:io';
-
-import 'package:http/http.dart' as http;
-import 'package:nhealth/helpers/functions.dart';
-import 'package:nhealth/models/auth.dart';
-import 'package:nhealth/models/patient.dart';
-import 'package:nhealth/services/api_service.dart';
-import '../constants/constants.dart';
 import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/repositories/patient_repository.dart';
+import 'package:nhealth/helpers/functions.dart';
+import './database_creator.dart';
+import 'package:uuid/uuid.dart';
+import '../../app_localizations.dart';
 
-class PatientRepository {
+class PatientReposioryLocal {
 
-  create(data) async {
-    var authData = await Auth().getStorageAuth() ;
-    var token = authData['accessToken'];
-    var  api = ApiService();
+  /// Get all patietns
+  getAllPatients() async {
+    final sql = '''SELECT * FROM ${DatabaseCreator.patientTable}''';
+    final data = await db.rawQuery(sql);
+    
+    return data;
+  }
 
+  /// Create a patient.
+  /// Patient [data] is required as parameter.
+  create(context, data, synced) async {
+    var uuid = Uuid().v4();
+
+    var allPatients = await getAllPatients();
+    print(allPatients);
+
+    if (!synced) {
+      print('not synced');
+      print(data);
+      final sql = '''SELECT * FROM ${DatabaseCreator.patientTable} WHERE nid="${data['body']['nid']}"''';
+      var existingPatient;
+
+      try {
+        existingPatient = await db.rawQuery(sql);
+        print('existingPatient');
+        print(existingPatient);
+        print(sql);
+      } catch(err) {
+        print(err);
+        return;
+      }
+
+      print(existingPatient);
+
+      if (isNotNull(existingPatient) && existingPatient.isNotEmpty) {
+        // await delete(existingPatient[0]['uuid']);
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text("Error: ${AppLocalizations.of(context).translate('nidValidation')}"), backgroundColor: kPrimaryRedColor,));
+        return;
+      }
+      
+    }
+
+    final sql = '''INSERT INTO ${DatabaseCreator.patientTable}
+    (
+      uuid,
+      data,
+      nid,
+      status,
+      isSynced
+    )
+    VALUES (?,?,?,?,?)''';
+    List<dynamic> params = [uuid, jsonEncode(data),data['body']['nid'], '', synced];
     var response;
 
-    print(data);
-    print(apiUrl + 'patients');
+    try {
+      response = await db.rawInsert(sql, params);
+    } catch(err) {
+      print(err);
+
+      return;
+    }
+
+    if (isNull(response)) {
+      Scaffold.of(context).showSnackBar(SnackBar(content: Text("Error: ${AppLocalizations.of(context).translate('somethingWrong')}"), backgroundColor: kPrimaryRedColor,));
+      return;
+    }
+
+
+    print('result 1');
+    print(response);
+    var patient = {
+      'uuid': uuid,
+      'data': data['body'],
+      'meta': data['meta']
+    };
+
+    data['id'] = uuid;
+    print('result 2');
+    await Patient().setPatient(patient);
+    print('result 3');
+    print(response);
+    // DatabaseCreator.databaseLog('Add patient', sql, null, response, params);
+    return 'success';
+  }
+
+  Future<void> update(data) async {
+    var uuid = Patient().getPatient()['uuid'];
+
+    // final sql = '''UPDATE ${DatabaseCreator.patientTable} SET
+    //   data = ?
+    //   WHERE uuid = ?''';
+    // List<dynamic> params = [jsonEncode(data), uuid];
+    // final result = await db.rawUpdate(sql, params);
+
+    var patient = {
+      'uuid': uuid,
+      'data': data['body'],
+      'meta': data['meta']
+    };
+
+    // data['id'] = uuid;
+
+    PatientRepository().update(data);
+
+    await Patient().setPatient(patient);
+  }
+
+  delete(id) async {
+    var response;
 
     try {
-      response =  await http.post(
-        apiUrl + 'patients',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
-        },
-        body: json.encode(data)
-      ).timeout(Duration(seconds: 15));
-
-      print(response.body);
-      return json.decode(response.body);
-      
-    } on SocketException {
-      // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
-      return {
-        'exception': true,
-        'message': 'No internet'
-      };
-    } on TimeoutException {
-      // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
-      return {
-        'exception': true,
-        'message': 'Slow internet'
-      };
-    } on Error catch(err) {
-      print('test error');
+      response = await db.rawQuery('DELETE FROM ${DatabaseCreator.patientTable} WHERE uuid = ?', [id]);
+    } catch(err) {
       print(err);
-      // showErrorSnackBar('Error', 'unknownError'.tr);
-      return {
-        'exception': true,
-        'type': 'unknown',
-        'message': 'Something went wrong'
-      };
+      return;
     }
+
+    print(response);
+    return response;
   }
 
-  getLocations() async {
-    return http.get(
-      apiUrl + 'locations',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-    ).then((response) {
-      return json.decode(response.body);
-      
-    }).catchError((error) {
-      print('error ' + error.toString());
-    });
-  }
-
-  getPatient(patientId) async {
-    var authData = await Auth().getStorageAuth() ;
-    var token = authData['accessToken'];
-    return http.get(
-      apiUrl + 'patients/' + patientId,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-    ).then((response) {
-      return json.decode(response.body);
-      
-    }).catchError((error) {
-      print('error ' + error.toString());
-    });
-  }
-
-  getPatients() async {
-    var authData = await Auth().getStorageAuth() ;
-    var token = authData['accessToken'];
-    return http.get(
-      apiUrl + 'patients',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-    ).then((response) {
-      return json.decode(response.body);
-      
-    }).catchError((error) {
-      print('error ' + error.toString());
-    });
-  }
-
-  getNewPatients() async {
-    var authData = await Auth().getStorageAuth() ;
-    var token = authData['accessToken'];
-    return http.get(
-      apiUrl + 'patients/new',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-    ).then((response) {
-      print("json.decode(response.body)['data'].length");
-      return json.decode(response.body);
-      
-    }).catchError((error) {
-      print('error ' + error.toString());
-    });
-  }
-
-  getExistingPatients() async {
-    var authData = await Auth().getStorageAuth() ;
-    var token = authData['accessToken'];
-    return http.get(
-      apiUrl + 'patients/existing',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-    ).then((response) {
-      return json.decode(response.body);
-      
-    }).catchError((error) {
-      print('error ' + error.toString());
-    });
-  }
-
-  getReferralPatients() async {
-    var authData = await Auth().getStorageAuth() ;
-    var token = authData['accessToken'];
-    return http.get(
-      apiUrl + 'patients?type=referral',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-    ).then((response) {
-      return json.decode(response.body);
-      
-    }).catchError((error) {
-      print('error ' + error.toString());
-    });
-  }
-
-  getPatientsWorklist(type) async {
-    var authData = await Auth().getStorageAuth() ;
-    var token = authData['accessToken'];
-    print('type ' + type);
-    return http.get(
-      apiUrl + 'patients?type=' + type,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-    ).then((response) {
-      // print(json.decode(response.body));
-      return json.decode(response.body);
-      
-    }).catchError((error) {
-      print('error ' + error.toString());
-    });
-  }
-
-  update(data) async {
-    var authData = await Auth().getStorageAuth() ;
-    var token = authData['accessToken'];
-    var uuid = Patient().getPatient()['uuid'];
-    print('token');
-    print(data);
-    await http.put(
-      apiUrl + 'patients/' + uuid,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: json.encode(data)
-    ).then((response) {
-      print(response.body);
-    }).catchError((error) {
-      print('error ' + error.toString());
-    });
-  }
-  
 }
