@@ -11,6 +11,8 @@ class DatabaseCreator {
   static const observationTable = 'observations';
   static const conceptManagerTable = 'concept_manager';
   static const observationConceptsTable = 'observation_concepts';
+  static const syncTable = 'syncs';
+  static const locationTable = 'locations';
 
   static void databaseLog(String functionName, String sql,
       [List<Map<String, dynamic>> selectQueryResult, int insertAndUpdateQueryResult, List<dynamic> params]) {
@@ -59,6 +61,33 @@ class DatabaseCreator {
     )''';
 
     await db.execute(sql);
+  }
+
+  Future<void> createSyncsTable(Database db) async {
+    final sql = '''CREATE TABLE $syncTable
+    (
+      uuid TEXT PRIMARY KEY,
+      data TEXT,
+      key TEXT,
+      status TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )''';
+
+    await db.execute(sql);
+    print('${syncTable} table created');
+  }
+
+  Future<void> createLocationsTable(Database db) async {
+    final sql = '''CREATE TABLE $locationTable
+    (
+      uuid TEXT PRIMARY KEY,
+      data TEXT,
+      status TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )''';
+
+    await db.execute(sql);
+    print('${locationTable} table created');
   }
 
   Future<void> createConceptManagerTable(Database db) async {
@@ -111,6 +140,8 @@ class DatabaseCreator {
     await createPatientsTable(db);
     await createAssessmentsTable(db);
     await createObservationsTable(db);
+    await createSyncsTable(db);
+    await createLocationsTable(db);
     await createConceptManagerTable(db);
     await createObservationConceptsTable(db);
   }

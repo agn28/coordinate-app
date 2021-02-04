@@ -1,8 +1,10 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/controllers/sync_controller.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
@@ -16,12 +18,14 @@ class ChwHomeScreen extends StatefulWidget {
 }
 
 class _ChwHomeState extends State<ChwHomeScreen> {
+  final syncController = Get.put(SyncController());
   String userName = '';
   String role = '';
   @override
   initState() {
     _getAuthData();
     super.initState();
+    syncController.getLocalNotSyncedPatient();
   }
   
 
@@ -38,10 +42,12 @@ class _ChwHomeState extends State<ChwHomeScreen> {
   }
 
   getRole(role) {
+    if (role == '') {
+      return '';
+    }
     if (role == 'chw') {
       return 'Community Health Worker';
     }
-
     return StringUtils.capitalize(role);
   }
 
@@ -82,7 +88,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                   ),
                   SizedBox(height: 30,),
                   Text(userName, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
-                  Text(role != null ? StringUtils.capitalize(role) : '', style: TextStyle(fontSize: 17, height: 1.8),),
+                  Text(role != null ? role : '', style: TextStyle(fontSize: 17, height: 1.8),),
                   GestureDetector(
                     onTap: () {},
                     child: Text(AppLocalizations.of(context).translate('gotoProfile'), style: TextStyle(fontSize: 17, height: 2.5, color: kPrimaryColor),),
@@ -348,8 +354,15 @@ class _ChwHomeState extends State<ChwHomeScreen> {
 
                         SizedBox(height: 20,),
 
-                        
-
+                        Obx(() => 
+                          Column(
+                            children: [
+                              Text('Updates in server: ${syncController.syncs.value.length}', style: TextStyle(fontSize: 20),),
+                              Text('Updates in Local: ${syncController.localPatients.value.length}', style: TextStyle(fontSize: 20),)
+                            ],
+                          ),
+                          
+                        ),
                       ],
                     ),
                   ),
