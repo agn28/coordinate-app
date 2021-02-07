@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nhealth/concept-manager/concept_manager.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:nhealth/controllers/sync_controller.dart';
 import 'package:nhealth/models/language.dart';
 import 'package:nhealth/route_generator.dart';
 import 'app_localizations.dart';
@@ -12,12 +13,15 @@ import 'package:nhealth/repositories/local/observation_concepts_repository_local
 import './repositories/local/database_creator.dart';
 import './screens/auth_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:get/get.dart';
 
 Locale appLocale = Locale('en', 'EN');
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DatabaseCreator().initDatabase();
+  final syncController = Get.put(SyncController());
 
   // Load exsiting lang
   final prefs = await SharedPreferences.getInstance();
@@ -29,7 +33,7 @@ void main() async {
   }
 
   runApp(MyApp());
-
+  Connectivity().onConnectivityChanged.listen(syncController.checkConnection);
   print(DatabaseCreator().dBCreatedStatus());
 
   if (DatabaseCreator().dBCreatedStatus()) {
@@ -55,6 +59,7 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
+  final syncController = Get.put(SyncController());
   changeLanguage(Locale locale) {
     setState(() {
       appLocale = locale;

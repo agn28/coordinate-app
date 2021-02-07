@@ -18,6 +18,21 @@ class PatientReposioryLocal {
     return data;
   }
 
+  getNotSyncedPatients() async {
+    final sql = '''SELECT * FROM ${DatabaseCreator.patientTable} WHERE isSynced=0''';
+    var response = await db.rawQuery(sql);
+
+    try {
+      response = await db.rawQuery(sql);
+    } catch(error) {
+      print('error');
+      print(error);
+      return;
+    }
+    
+    return response;
+  }
+
   /// Create a patient.
   /// Patient [data] is required as parameter.
   create(context, data, synced) async {
@@ -93,6 +108,32 @@ class PatientReposioryLocal {
     print(response);
     // DatabaseCreator.databaseLog('Add patient', sql, null, response, params);
     return 'success';
+  }
+
+  createFromLive(id, data) async {
+    var allPatients = await getAllPatients();
+    print(allPatients);
+
+    final sql = '''INSERT INTO ${DatabaseCreator.patientTable}
+    (
+      uuid,
+      data,
+      nid,
+      status,
+      isSynced
+    )
+    VALUES (?,?,?,?,?)''';
+    List<dynamic> params = [id, jsonEncode(data), data['body']['nid'], '', true];
+    var response;
+
+    try {
+      response = await db.rawInsert(sql, params);
+    } catch(err) {
+      print(err);
+      return;
+    }
+
+    return response;
   }
 
   Future<void> update(data) async {

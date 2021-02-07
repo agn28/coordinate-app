@@ -106,11 +106,11 @@ class RegisterPatient extends StatefulWidget {
 int _currentStep = 0;
 
 class _RegisterPatientState extends State<RegisterPatient> {
-  
-
 
   String nextText = 'NEXT';
   bool isLoading = false;
+
+  var subscription;
 
   @override
   void initState() {
@@ -123,6 +123,8 @@ class _RegisterPatientState extends State<RegisterPatient> {
     _currentStep = 0;
 
     fillDummyData(); //Remove this
+
+    
   }
   nextStep() {
     setState(() {
