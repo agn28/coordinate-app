@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 //urls
-const String apiUrl = 'http://c44a15445173.ngrok.io/api/v1/';
+const String apiUrl = 'http://2aa79c80ae0d.ngrok.io/api/v1/';
 //const String apiUrl = 'https://coordinate-api.monarko.com/api/v1/';
 // const String apiUrl = 'https://brac-api.ghrucoordinate.com/api/v1/';
 

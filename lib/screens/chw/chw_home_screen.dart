@@ -10,6 +10,7 @@ import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:nhealth/screens/settings/settings_screen.dart';
 import 'package:nhealth/app_localizations.dart';
+import 'package:connectivity/connectivity.dart';
 
 
 class ChwHomeScreen extends StatefulWidget {
@@ -25,6 +26,8 @@ class _ChwHomeState extends State<ChwHomeScreen> {
   initState() {
     _getAuthData();
     super.initState();
+    Connectivity().onConnectivityChanged.listen(syncController.checkConnection);
+
     syncController.getLocalNotSyncedPatient();
   }
   

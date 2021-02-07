@@ -9,27 +9,27 @@ import 'package:uuid/uuid.dart';
 import '../../app_localizations.dart';
 
 class PatientReposioryLocal {
-
   /// Get all patietns
   getAllPatients() async {
     final sql = '''SELECT * FROM ${DatabaseCreator.patientTable}''';
     final data = await db.rawQuery(sql);
-    
+
     return data;
   }
 
   getNotSyncedPatients() async {
-    final sql = '''SELECT * FROM ${DatabaseCreator.patientTable} WHERE isSynced=0''';
+    final sql =
+        '''SELECT * FROM ${DatabaseCreator.patientTable} WHERE isSynced=0''';
     var response = await db.rawQuery(sql);
 
     try {
       response = await db.rawQuery(sql);
-    } catch(error) {
+    } catch (error) {
       print('error');
       print(error);
       return;
     }
-    
+
     return response;
   }
 
@@ -44,7 +44,8 @@ class PatientReposioryLocal {
     if (!synced) {
       print('not synced');
       print(data);
-      final sql = '''SELECT * FROM ${DatabaseCreator.patientTable} WHERE nid="${data['body']['nid']}"''';
+      final sql =
+          '''SELECT * FROM ${DatabaseCreator.patientTable} WHERE nid="${data['body']['nid']}"''';
       var existingPatient;
 
       try {
@@ -52,7 +53,7 @@ class PatientReposioryLocal {
         print('existingPatient');
         print(existingPatient);
         print(sql);
-      } catch(err) {
+      } catch (err) {
         print(err);
         return;
       }
@@ -61,10 +62,13 @@ class PatientReposioryLocal {
 
       if (isNotNull(existingPatient) && existingPatient.isNotEmpty) {
         // await delete(existingPatient[0]['uuid']);
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text("Error: ${AppLocalizations.of(context).translate('nidValidation')}"), backgroundColor: kPrimaryRedColor,));
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text(
+              "Error: ${AppLocalizations.of(context).translate('nidValidation')}"),
+          backgroundColor: kPrimaryRedColor,
+        ));
         return;
       }
-      
     }
 
     final sql = '''INSERT INTO ${DatabaseCreator.patientTable}
@@ -76,30 +80,35 @@ class PatientReposioryLocal {
       isSynced
     )
     VALUES (?,?,?,?,?)''';
-    List<dynamic> params = [uuid, jsonEncode(data),data['body']['nid'], '', synced];
+    List<dynamic> params = [
+      uuid,
+      jsonEncode(data),
+      data['body']['nid'],
+      '',
+      synced
+    ];
     var response;
 
     try {
       response = await db.rawInsert(sql, params);
-    } catch(err) {
+    } catch (err) {
       print(err);
 
       return;
     }
 
     if (isNull(response)) {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text("Error: ${AppLocalizations.of(context).translate('somethingWrong')}"), backgroundColor: kPrimaryRedColor,));
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text(
+            "Error: ${AppLocalizations.of(context).translate('somethingWrong')}"),
+        backgroundColor: kPrimaryRedColor,
+      ));
       return;
     }
 
-
     print('result 1');
     print(response);
-    var patient = {
-      'uuid': uuid,
-      'data': data['body'],
-      'meta': data['meta']
-    };
+    var patient = {'uuid': uuid, 'data': data['body'], 'meta': data['meta']};
 
     data['id'] = uuid;
     print('result 2');
@@ -123,12 +132,18 @@ class PatientReposioryLocal {
       isSynced
     )
     VALUES (?,?,?,?,?)''';
-    List<dynamic> params = [id, jsonEncode(data), data['body']['nid'], '', true];
+    List<dynamic> params = [
+      id,
+      jsonEncode(data),
+      data['body']['nid'],
+      '',
+      true
+    ];
     var response;
 
     try {
       response = await db.rawInsert(sql, params);
-    } catch(err) {
+    } catch (err) {
       print(err);
       return;
     }
@@ -145,11 +160,7 @@ class PatientReposioryLocal {
     // List<dynamic> params = [jsonEncode(data), uuid];
     // final result = await db.rawUpdate(sql, params);
 
-    var patient = {
-      'uuid': uuid,
-      'data': data['body'],
-      'meta': data['meta']
-    };
+    var patient = {'uuid': uuid, 'data': data['body'], 'meta': data['meta']};
 
     // data['id'] = uuid;
 
@@ -158,12 +169,33 @@ class PatientReposioryLocal {
     await Patient().setPatient(patient);
   }
 
+    Future<void> updateLocalStatus(uuid, isSynced) async {
+    var uuid = Patient().getPatient()['uuid'];
+
+    final sql = '''UPDATE ${DatabaseCreator.patientTable} SET
+      isSynced = ?
+      WHERE uuid = ?''';
+    List<dynamic> params = [uuid, isSynced];
+    var response;
+
+    try {
+      response = await db.rawUpdate(sql, params);
+    } catch(error) {
+      print('error');
+      print(error);
+      return;
+    }
+    return response;
+
+  }
+
   delete(id) async {
     var response;
 
     try {
-      response = await db.rawQuery('DELETE FROM ${DatabaseCreator.patientTable} WHERE uuid = ?', [id]);
-    } catch(err) {
+      response = await db.rawQuery(
+          'DELETE FROM ${DatabaseCreator.patientTable} WHERE uuid = ?', [id]);
+    } catch (err) {
       print(err);
       return;
     }
@@ -172,4 +204,18 @@ class PatientReposioryLocal {
     return response;
   }
 
+  getLocations() async {
+    final sql = '''SELECT * FROM ${DatabaseCreator.locationTable}''';
+    var response;
+
+    try {
+      response = await db.rawQuery(sql);
+    } catch (error) {
+      print('error');
+      print(error);
+      return;
+    }
+
+    return response;
+  }
 }

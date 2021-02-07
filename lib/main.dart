@@ -33,7 +33,7 @@ void main() async {
   }
 
   runApp(MyApp());
-  Connectivity().onConnectivityChanged.listen(syncController.checkConnection);
+  // Connectivity().onConnectivityChanged.listen(syncController.checkConnection);
   print(DatabaseCreator().dBCreatedStatus());
 
   if (DatabaseCreator().dBCreatedStatus()) {
@@ -80,8 +80,8 @@ class MyAppState extends State<MyApp> {
         }
       },
       child: MaterialApp(
-        theme:
-            ThemeData(primaryColor: kPrimaryColor, backgroundColor: Colors.white),
+        theme: ThemeData(
+            primaryColor: kPrimaryColor, backgroundColor: Colors.white),
         // List all of the app's supported locales here
         supportedLocales: [
           Locale('en', 'EN'),
@@ -112,7 +112,7 @@ class MyAppState extends State<MyApp> {
           return supportedLocales.first;
         },
 
-        onGenerateRoute: RouteGenerator.generarteRoute ,
+        onGenerateRoute: RouteGenerator.generarteRoute,
 
         initialRoute: '/',
 
@@ -120,7 +120,6 @@ class MyAppState extends State<MyApp> {
       ),
     );
   }
-
 }
 
 class CheckAuth extends StatelessWidget {

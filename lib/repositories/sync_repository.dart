@@ -90,6 +90,23 @@ class SyncRepository {
     return response;
   }
 
+  updateLatestLocalSyncKey(key) async {
+
+      final updateSql = '''UPDATE ${DatabaseCreator.syncTable}
+      SET key = ?''';
+      List<dynamic> params = [key];
+      var updateResponse;
+
+      try {
+        updateResponse = await db.rawUpdate(updateSql, params);
+      } catch (error) {
+        print('error');
+        print(error);
+        return;
+      }
+      return updateResponse;
+  }
+
   updateLocalSyncKey(newKey, oldKey) async {
 
     if (oldKey != '') {
@@ -123,7 +140,7 @@ class SyncRepository {
     } catch(error) {
       return;
     }
-    DatabaseCreator.databaseLog('Add locations', createSql, null, createResponse, params);
+    DatabaseCreator.databaseLog('Create sync key', createSql, null, createResponse, params);
     return createResponse;
   }
 

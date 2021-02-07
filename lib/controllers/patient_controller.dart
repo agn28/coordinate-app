@@ -13,7 +13,6 @@ import 'package:uuid/uuid.dart';
 import '../app_localizations.dart';
 
 class PatientController {
-
   /// Get all the patients
   getAllPatients() async {
     var patients = await PatientReposioryLocal().getAllPatients();
@@ -35,10 +34,23 @@ class PatientController {
   getLocations() async {
     var response = await PatientRepository().getLocations();
 
-    return response;
-  }
+    if (isNotNull(response) && isNull(response['exception'])) {
+      return response;
+    }
 
-  
+    var localResponse = await PatientReposioryLocal().getLocations();
+
+    print('local lcations');
+    print(localResponse);
+    if (isNotNull(localResponse) && localResponse.isNotEmpty) {
+      print('into local if');
+      var locations = {'data': jsonDecode(localResponse[0]['data'])};
+      print(locations);
+      return locations;
+    }
+
+    return;
+  }
 
   getPatient(patientId) async {
     var response = await PatientRepository().getPatient(patientId);
@@ -66,7 +78,7 @@ class PatientController {
     //     'meta': parsedData['meta']
     //   });
     // });
-    
+
     if (response['message'] != null && response['message'] == 'Unauthorized') {
       await Helpers().logout(context);
     }
@@ -119,7 +131,8 @@ class PatientController {
     var response;
 
     var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
       // I am connected to a mobile network.
 
       print('connected');
@@ -131,38 +144,47 @@ class PatientController {
       apiResponse = await PatientRepository().create(data);
 
       if (isNull(apiResponse)) {
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text("Error: ${AppLocalizations.of(context).translate('somethingWrong')}"), backgroundColor: kPrimaryRedColor,));
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text(
+              "Error: ${AppLocalizations.of(context).translate('somethingWrong')}"),
+          backgroundColor: kPrimaryRedColor,
+        ));
         return;
-      }
-
-      else if (apiResponse['exception'] != null) {
-        
-        if (apiResponse['type']  == 'unknown') {
-          Scaffold.of(context).showSnackBar(SnackBar(content: Text('Error: ${apiResponse['message']}'), backgroundColor: kPrimaryRedColor,));
+      } else if (apiResponse['exception'] != null) {
+        if (apiResponse['type'] == 'unknown') {
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text('Error: ${apiResponse['message']}'),
+            backgroundColor: kPrimaryRedColor,
+          ));
           return;
         }
 
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Warning: ${apiResponse['message']}. Using offline...'), backgroundColor: kPrimaryYellowColor,));
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text('Warning: ${apiResponse['message']}. Using offline...'),
+          backgroundColor: kPrimaryYellowColor,
+        ));
 
         response = await PatientReposioryLocal().create(context, data, false);
         return response;
-      }
-
-      else if (apiResponse['error'] != null && apiResponse['error']) {
+      } else if (apiResponse['error'] != null && apiResponse['error']) {
         if (apiResponse['message'] == 'Patient already exists.') {
-          
-          Scaffold.of(context).showSnackBar(SnackBar(content: Text("Error: ${AppLocalizations.of(context).translate('nidValidation')}"), backgroundColor: kPrimaryRedColor,));
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text(
+                "Error: ${AppLocalizations.of(context).translate('nidValidation')}"),
+            backgroundColor: kPrimaryRedColor,
+          ));
           return;
         } else {
-          Scaffold.of(context).showSnackBar(SnackBar(content: Text("Error: ${apiResponse['message']}"), backgroundColor: kPrimaryRedColor,));
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text("Error: ${apiResponse['message']}"),
+            backgroundColor: kPrimaryRedColor,
+          ));
           return;
         }
-      }
-
-      else if (isNotNull(apiResponse['id'])) {
+      } else if (isNotNull(apiResponse['id'])) {
         response = await PatientReposioryLocal().create(context, data, true);
       }
-      
+
       print('apiResponse');
 
       print(apiResponse);
@@ -170,7 +192,10 @@ class PatientController {
 
     } else {
       print('not connected');
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Warning: No Internet. Using offline...'), backgroundColor: kPrimaryYellowColor,));
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text('Warning: No Internet. Using offline...'),
+        backgroundColor: kPrimaryYellowColor,
+      ));
       response = await PatientReposioryLocal().create(context, data, false);
     }
 
@@ -188,14 +213,19 @@ class PatientController {
 
   /// Prepare data to create a new patient.
   _prepareData(formData) {
-    final age = Helpers().calculateAge(formData['birth_year'], formData['birth_month'], formData['birth_date']);
-    String birthDate = formData['birth_year'] + '-' + formData['birth_month'] + '-' + formData['birth_date'];
+    final age = Helpers().calculateAge(formData['birth_year'],
+        formData['birth_month'], formData['birth_date']);
+    String birthDate = formData['birth_year'] +
+        '-' +
+        formData['birth_month'] +
+        '-' +
+        formData['birth_date'];
     formData.remove('birth_date');
     formData.remove('birth_month');
     formData.remove('birth_year');
     formData['age'] = age;
     formData['birth_date'] = birthDate;
-    
+
     var data = {
       "meta": {
         "collected_by": Auth().getAuth()['uid'],
@@ -205,5 +235,4 @@ class PatientController {
     };
     return data;
   }
-
 }
