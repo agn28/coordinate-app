@@ -17,6 +17,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
+import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
@@ -140,9 +141,14 @@ class _RegisterPatientState extends State<RegisterPatient> {
     var locationData = await PatientController().getLocations();
     var districtsData = [];
     if (locationData['error'] != null && !locationData['error']) {
-      districtsData =  locationData['data'][0]['districts'];
+      setState(() {
+        districtsData =  locationData['data'][0]['district'];
+      });
+    } else if (isNotNull(locationData['data'])) {
+      setState(() {
+        districtsData =  locationData['data'][0]['district'];
+      });
     }
-
 
 
     setState(() {
@@ -150,8 +156,6 @@ class _RegisterPatientState extends State<RegisterPatient> {
     });
 
     // return;
-
-    print(districts);
 
     setState(() {
       districts = districtsData;

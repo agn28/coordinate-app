@@ -91,20 +91,22 @@ class SyncRepository {
   }
 
   updateLatestLocalSyncKey(key) async {
+    print('into update sync key');
+    final updateSql = '''UPDATE ${DatabaseCreator.syncTable}
+    SET key = ?''';
+    List<dynamic> params = [key];
+    var updateResponse;
 
-      final updateSql = '''UPDATE ${DatabaseCreator.syncTable}
-      SET key = ?''';
-      List<dynamic> params = [key];
-      var updateResponse;
-
-      try {
-        updateResponse = await db.rawUpdate(updateSql, params);
-      } catch (error) {
-        print('error');
-        print(error);
-        return;
-      }
-      return updateResponse;
+    try {
+      updateResponse = await db.rawUpdate(updateSql, params);
+      print('update sync response');
+      print(updateResponse);
+    } catch (error) {
+      print('error');
+      print(error);
+      return;
+    }
+    return updateResponse;
   }
 
   updateLocalSyncKey(newKey, oldKey) async {

@@ -13,6 +13,8 @@ var bloodPressures = [];
 class SyncController extends GetxController {
   var syncs = [].obs;
   var localPatients = [].obs;
+  var livePatientsAll = [].obs;
+  var localPatientsAll = [].obs;
   var syncRepo = SyncRepository();
   var patientRepoLocal = PatientReposioryLocal();
   var patientRepo = PatientRepository();
@@ -30,6 +32,14 @@ class SyncController extends GetxController {
     print('into not synce patient info');
     print(localPatients);
     var response = await patientRepoLocal.getNotSyncedPatients();
+    var allLocalPatients = await patientRepoLocal.getAllPatients();
+    var allLivePatients = await patientRepo.getPatients();
+
+    if (isNotNull(allLivePatients) && isNotNull(allLivePatients['data'])) {
+      livePatientsAll.value = allLivePatients['data'];
+    }
+    
+    localPatientsAll.value = allLocalPatients;
 
     print('not synced patient response');
     print(response);
@@ -64,6 +74,7 @@ class SyncController extends GetxController {
 
   syncPatientsToLive() async {
     print('syncing local patient');
+    print(localPatients);
     localPatients.forEach( (patient) async {
 
       print(localPatients);
@@ -78,12 +89,15 @@ class SyncController extends GetxController {
       };
 
       var response = await patientRepo.create(data);
+      print('patient create resposne');
+      print(response);
+      
       if (isNotNull(response) && isNotNull(response['error']) && !response['error']) {
         print('patient created');
 
         if (isNotNull(response['data']['sync']) && isNotNull(response['data']['sync']['key'])) {
-          patientRepoLocal.updateLocalStatus(patient['uuid'], true);
-          syncRepo.updateLatestLocalSyncKey(response['data']['sync']['key']);
+          await patientRepoLocal.updateLocalStatus(patient['uuid'], 1);
+          await syncRepo.updateLatestLocalSyncKey(response['data']['sync']['key']);
         }
 
         // patientRepoLocal.updateLocalStatus(patient['uuid'], true);
@@ -92,6 +106,9 @@ class SyncController extends GetxController {
       } else {
         print('patient not synced');
         print(response);
+        if (isNotNull(response) && response['message'] == 'Unauthorized') {
+          showWarningSnackBar('Error', 'Session is expired. Login again to sync data');
+        }
       }
 
     });
@@ -142,12 +159,17 @@ class SyncController extends GetxController {
       data['key'] = key;
     }
 
+    print('sync key ' + key);
+
     var response = await syncRepo.getLatestSyncInfo(data);
     print('getLatestSyncInfo');
+    print(response);
     if (isNotNull(response) &&
         isNotNull(response['error']) &&
         !response['error']) {
       syncs.value = response['data'];
+      print('syncs');
+      print(syncs.value);
       updateLocalDataFromLive();
     }
     print('syncs.length');
@@ -177,6 +199,7 @@ class SyncController extends GetxController {
               print('updating synnc key');
               var updateSync = await updateLocalSyncKey(item['key']);
               print('after updating sync key');
+              print(item['key']);
               print(updateSync);
               if (isNotNull(updateSync)) {
                 print(syncs.value.length);

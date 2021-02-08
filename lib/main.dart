@@ -79,7 +79,7 @@ class MyAppState extends State<MyApp> {
           currentFocus.unfocus();
         }
       },
-      child: MaterialApp(
+      child: GetMaterialApp(
         theme: ThemeData(
             primaryColor: kPrimaryColor, backgroundColor: Colors.white),
         // List all of the app's supported locales here

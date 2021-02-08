@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 //urls
-const String apiUrl = 'http://2aa79c80ae0d.ngrok.io/api/v1/';
+const String apiUrl = 'http://16143da4f2f9.ngrok.io/api/v1/';
 //const String apiUrl = 'https://coordinate-api.monarko.com/api/v1/';
 // const String apiUrl = 'https://brac-api.ghrucoordinate.com/api/v1/';
 
-const String gsBucket = 'gs://brac-coordinate.appspot.com';
+// const String gsBucket = 'gs://brac-coordinate.appspot.com';
+const String gsBucket = 'gs://nhealth-demo.appspot.com';
 
 var httpRequestTimeout = 15;
 

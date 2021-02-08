@@ -44,7 +44,7 @@ class PatientController {
     print(localResponse);
     if (isNotNull(localResponse) && localResponse.isNotEmpty) {
       print('into local if');
-      var locations = {'data': jsonDecode(localResponse[0]['data'])};
+      var locations = {'data': jsonDecode(localResponse[0]['data']), 'error': false};
       print(locations);
       return locations;
     }

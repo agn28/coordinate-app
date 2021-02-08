@@ -17,7 +17,6 @@ class PatientRepository {
 
     var response;
 
-    print(data);
     print(apiUrl + 'patients');
 
     try {
@@ -31,7 +30,6 @@ class PatientRepository {
               body: json.encode(data))
           .timeout(Duration(seconds: 15));
 
-      print(response.body);
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);

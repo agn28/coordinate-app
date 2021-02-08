@@ -170,16 +170,19 @@ class PatientReposioryLocal {
   }
 
     Future<void> updateLocalStatus(uuid, isSynced) async {
-    var uuid = Patient().getPatient()['uuid'];
+      print('into updating patient status');
+      print('uuid ' + uuid);
 
     final sql = '''UPDATE ${DatabaseCreator.patientTable} SET
       isSynced = ?
       WHERE uuid = ?''';
-    List<dynamic> params = [uuid, isSynced];
+    List<dynamic> params = [isSynced, uuid];
     var response;
 
     try {
       response = await db.rawUpdate(sql, params);
+      print('update local response');
+      print(response);
     } catch(error) {
       print('error');
       print(error);
