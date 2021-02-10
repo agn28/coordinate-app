@@ -8,7 +8,7 @@ class UserController {
     // await patients.forEach((patient) {
     //   parsedData = jsonDecode(patient['data']);
     //   data.add({
-    //     'uuid': patient['uuid'],
+    //     'id': patient['id'],
     //     'data': parsedData['body'],
     //     'meta': parsedData['meta']
     //   });

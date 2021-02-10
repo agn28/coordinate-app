@@ -10,7 +10,7 @@ class Patient {
     var response = await PatientController().getPatient(patientId);
     if (response['error'] != null && response['error'] == false) {
       _patient = {
-        'uuid': response['data']['id'],
+        'id': response['data']['id'],
         'data': response['data']['body']
       };
     }
@@ -19,7 +19,7 @@ class Patient {
 
   setPatientModify(patient) {
     _patient = {
-      'uuid': patient['id'],
+      'id': patient['id'],
       'data': patient['body'],
       'meta': patient['meta']
     };

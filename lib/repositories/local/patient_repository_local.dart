@@ -17,9 +17,16 @@ class PatientReposioryLocal {
     return data;
   }
 
+  getNewPatients() async {
+    final sql = '''SELECT * FROM ${DatabaseCreator.patientTable}''';
+    final data = await db.rawQuery(sql);
+
+    return data;
+  }
+
   getNotSyncedPatients() async {
     final sql =
-        '''SELECT * FROM ${DatabaseCreator.patientTable} WHERE isSynced=0''';
+        '''SELECT * FROM ${DatabaseCreator.patientTable} WHERE is_synced=0''';
     var response = await db.rawQuery(sql);
 
     try {
@@ -61,7 +68,7 @@ class PatientReposioryLocal {
       print(existingPatient);
 
       if (isNotNull(existingPatient) && existingPatient.isNotEmpty) {
-        // await delete(existingPatient[0]['uuid']);
+        // await delete(existingPatient[0]['id']);
         Scaffold.of(context).showSnackBar(SnackBar(
           content: Text(
               "Error: ${AppLocalizations.of(context).translate('nidValidation')}"),
@@ -73,11 +80,11 @@ class PatientReposioryLocal {
 
     final sql = '''INSERT INTO ${DatabaseCreator.patientTable}
     (
-      uuid,
+      id,
       data,
       nid,
       status,
-      isSynced
+      is_synced
     )
     VALUES (?,?,?,?,?)''';
     List<dynamic> params = [
@@ -108,7 +115,7 @@ class PatientReposioryLocal {
 
     print('result 1');
     print(response);
-    var patient = {'uuid': uuid, 'data': data['body'], 'meta': data['meta']};
+    var patient = {'id': uuid, 'data': data['body'], 'meta': data['meta']};
 
     data['id'] = uuid;
     print('result 2');
@@ -125,11 +132,11 @@ class PatientReposioryLocal {
 
     final sql = '''INSERT INTO ${DatabaseCreator.patientTable}
     (
-      uuid,
+      id,
       data,
       nid,
       status,
-      isSynced
+      is_synced
     )
     VALUES (?,?,?,?,?)''';
     List<dynamic> params = [
@@ -152,7 +159,7 @@ class PatientReposioryLocal {
   }
 
   Future<void> update(data) async {
-    var uuid = Patient().getPatient()['uuid'];
+    var uuid = Patient().getPatient()['id'];
 
     // final sql = '''UPDATE ${DatabaseCreator.patientTable} SET
     //   data = ?
@@ -160,7 +167,7 @@ class PatientReposioryLocal {
     // List<dynamic> params = [jsonEncode(data), uuid];
     // final result = await db.rawUpdate(sql, params);
 
-    var patient = {'uuid': uuid, 'data': data['body'], 'meta': data['meta']};
+    var patient = {'id': uuid, 'data': data['body'], 'meta': data['meta']};
 
     // data['id'] = uuid;
 
@@ -174,7 +181,7 @@ class PatientReposioryLocal {
       print('uuid ' + uuid);
 
     final sql = '''UPDATE ${DatabaseCreator.patientTable} SET
-      isSynced = ?
+      is_synced = ?
       WHERE uuid = ?''';
     List<dynamic> params = [isSynced, uuid];
     var response;

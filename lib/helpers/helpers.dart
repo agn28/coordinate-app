@@ -13,6 +13,8 @@ import 'package:nhealth/models/blood_test.dart';
 import 'package:nhealth/models/body_measurement.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:get/get.dart';
 
 class Helpers {
 
@@ -149,6 +151,26 @@ class Helpers {
   }
 
   logout(context) async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult != ConnectivityResult.wifi && connectivityResult != ConnectivityResult.mobile) {
+      Get.dialog(
+        AlertDialog(
+          title: Text('You can not logout in offline mode.', style: TextStyle(fontWeight: FontWeight.w500),),
+          // content: Text(AppLocalizations.of(context).translate('sessionExpiredDetails')),
+          actions: [
+            FlatButton(
+              child: Text('Ok', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500, color: kPrimaryColor),),
+              onPressed:  () async {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        )
+      );
+
+      return;
+    }
+
     showDialog(
       context: context,
       barrierDismissible: false,

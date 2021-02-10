@@ -8,17 +8,21 @@ import 'package:nhealth/repositories/local/patient_repository_local.dart';
 import 'package:nhealth/repositories/patient_repository.dart';
 import 'package:nhealth/repositories/sync_repository.dart';
 
+import 'assessment_controller.dart';
+
 var bloodPressures = [];
 
 class SyncController extends GetxController {
   var syncs = [].obs;
-  var localPatients = [].obs;
+  var localNotSyncedPatients = [].obs;
   var livePatientsAll = [].obs;
   var localPatientsAll = [].obs;
+  var localAssessments = [].obs;
   var syncRepo = SyncRepository();
   var patientRepoLocal = PatientReposioryLocal();
   var patientRepo = PatientRepository();
   var patientController = PatientController();
+  var assessmentController = AssessmentController();
 
   /// Create assessment.
   /// Assessment [type] and [comment] is required as parameter.
@@ -30,27 +34,29 @@ class SyncController extends GetxController {
 
   getLocalNotSyncedPatient() async {
     print('into not synce patient info');
-    print(localPatients);
+    print(localNotSyncedPatients);
     var response = await patientRepoLocal.getNotSyncedPatients();
-    var allLocalPatients = await patientRepoLocal.getAllPatients();
+    var allLocalPatients = await patientController.getAllLocalPatients();
     var allLivePatients = await patientRepo.getPatients();
+    
 
     if (isNotNull(allLivePatients) && isNotNull(allLivePatients['data'])) {
       livePatientsAll.value = allLivePatients['data'];
     }
     
     localPatientsAll.value = allLocalPatients;
+    print(localPatientsAll);
 
     print('not synced patient response');
     print(response);
 
     if (isNotNull(response)) {
-      localPatients.value = [];
+      localNotSyncedPatients.value = [];
       response.forEach((patient) {
         var parsedData = jsonDecode(patient['data']);
 
-        localPatients.value.add({
-          'uuid': patient['uuid'],
+        localNotSyncedPatients.value.add({
+          'id': patient['id'],
           'data': parsedData['body'],
           'meta': parsedData['meta']
         });
@@ -74,16 +80,16 @@ class SyncController extends GetxController {
 
   syncPatientsToLive() async {
     print('syncing local patient');
-    print(localPatients);
-    localPatients.forEach( (patient) async {
+    print(localNotSyncedPatients);
+    localNotSyncedPatients.forEach( (patient) async {
 
-      print(localPatients);
+      print(localNotSyncedPatients);
 
       print('local patient');
       print(patient['data']);
       print(patient['meta']);
       var data = {
-        'id': patient['uuid'],
+        'id': patient['id'],
         'body': patient['data'],
         'meta': patient['meta']
       };
@@ -96,11 +102,11 @@ class SyncController extends GetxController {
         print('patient created');
 
         if (isNotNull(response['data']['sync']) && isNotNull(response['data']['sync']['key'])) {
-          await patientRepoLocal.updateLocalStatus(patient['uuid'], 1);
+          await patientRepoLocal.updateLocalStatus(patient['id'], 1);
           await syncRepo.updateLatestLocalSyncKey(response['data']['sync']['key']);
         }
 
-        // patientRepoLocal.updateLocalStatus(patient['uuid'], true);
+        // patientRepoLocal.updateLocalStatus(patient['id'], true);
         // syncRepo.updateLatestLocalSyncKey(key);
 
       } else {
@@ -127,6 +133,17 @@ class SyncController extends GetxController {
     }
 
     getLatestSyncInfo(key);
+  }
+
+  getLocalAssessments() async {
+    var response = await assessmentController.getAssessmentsByPatients([]);
+
+    print('local key response');
+
+    var key = '';
+    if (isNotNull(response) && response.isNotEmpty) {
+      key = response[0]['key'];
+    }
   }
 
   checkLocationData() async {

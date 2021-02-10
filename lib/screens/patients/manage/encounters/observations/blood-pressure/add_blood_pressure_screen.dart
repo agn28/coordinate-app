@@ -627,7 +627,7 @@ _prepareFormData() {
   return {
     'items': _AddBloodPressureState().bpItems,
     'comment': commentController.text,
-    'patient_id': Patient().getPatient()['uuid'],
+    'patient_id': Patient().getPatient()['id'],
     'device': devices[selectedDevice]['id'],
     'performed_by': 'Md. Feroj Bepari',
   };

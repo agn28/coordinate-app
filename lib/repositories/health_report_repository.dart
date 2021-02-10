@@ -9,7 +9,7 @@ class HealthReportRepository {
   getReport() async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
-    var patientID = Patient().getPatient()['uuid'];
+    var patientID = Patient().getPatient()['id'];
     return await http.post(
       apiUrl + 'health-reports/generate/' + patientID,
       headers: {
@@ -30,7 +30,7 @@ class HealthReportRepository {
   getLastReport() async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
-    var patientID = Patient().getPatient()['uuid'];
+    var patientID = Patient().getPatient()['id'];
     return await http.get(
       apiUrl + 'health-reports/patient/' + patientID + '?filter=last' ,
       headers: {
@@ -49,7 +49,7 @@ class HealthReportRepository {
   getReports() async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
-    var patientID = Patient().getPatient()['uuid'];
+    var patientID = Patient().getPatient()['id'];
     return await http.get(
       apiUrl + 'health-reports/patient/' + patientID,
       headers: {

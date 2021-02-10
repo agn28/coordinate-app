@@ -82,7 +82,7 @@ class _PatientSearchState extends State<PatientSearchScreen> {
 
     for(var item in data['data']) {
       parsedPatients.add({
-        'uuid': item['id'],
+        'id': item['id'],
         'data': item['body'],
         'meta': item['meta']
       });
@@ -632,7 +632,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
       var filteredPatients = [];
       patients.forEach((patient) { 
         filteredAssessments.forEach((assessment) {
-          if (assessment['data']['patient_id'] == patient['uuid']) {
+          if (assessment['data']['patient_id'] == patient['id']) {
             filteredPatients.add(patient);
           } 
         });

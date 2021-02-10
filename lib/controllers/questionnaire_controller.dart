@@ -27,7 +27,7 @@ class QuestionnaireController {
           'question': item['question'],
           'answer': answers[questions['items'].indexOf(item)]
         },
-        "patient_id": Patient().getPatient()['uuid'],
+        "patient_id": Patient().getPatient()['id'],
         "assessment_id": "264d9d80-1b17-11ea-9ddd-117747515bf8"
       }
     };

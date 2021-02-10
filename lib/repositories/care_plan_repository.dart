@@ -10,7 +10,7 @@ class CarePlanRepository {
   getCarePlan() async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
-    var patientID = Patient().getPatient()['uuid'];
+    var patientID = Patient().getPatient()['id'];
     return await http.get(
       apiUrl + 'care-plans/patient/' + patientID,
       headers: {
@@ -29,7 +29,7 @@ class CarePlanRepository {
   getReports() async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
-    var patientID = Patient().getPatient()['uuid'];
+    var patientID = Patient().getPatient()['id'];
     return await http.get(
       apiUrl + 'health-reports/',
       headers: {

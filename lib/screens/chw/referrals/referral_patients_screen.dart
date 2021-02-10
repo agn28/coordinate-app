@@ -128,7 +128,7 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
 
     for(var item in data['data']) {
       parsedNewPatients.add({
-        'uuid': item['id'],
+        'id': item['id'],
         'data': item['body'],
         'meta': item['meta']
       });

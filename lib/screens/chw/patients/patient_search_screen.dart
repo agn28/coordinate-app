@@ -14,12 +14,15 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:nhealth/controllers/sync_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
+import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
+import 'package:get/get.dart';
 
 import '../../../app_localizations.dart';
 
@@ -47,11 +50,12 @@ class ChwPatientSearchScreen extends StatefulWidget {
 }
 int selectedTab = 0;
 class _PatientSearchState extends State<ChwPatientSearchScreen> {
+  final syncController = Get.put(SyncController());
+
   bool isLoading = true;
   var test = '';
   var authUser;
   TabController _tabController;
-  
 
   @override
   initState() {
@@ -125,21 +129,30 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
     var parsedNewPatients = [];
     var parsedExistingPatients = [];
 
-    if (data != null && data['data'] != null) {
+    if (isNull(data) || isNotNull(data['exception']))  {
+      setState(() {
+        allNewPatients = syncController.localPatientsAll.value;
+        newPatients = allNewPatients; 
+      });
+    } else if (data['data'] != null) {
       for(var item in data['data']) {
         print(item['body']['last_name']);
         parsedNewPatients.add({
-          'uuid': item['id'],
+          'id': item['id'],
           'data': item['body'],
           'meta': item['meta']
         });
       }
+      setState(() {
+        allNewPatients = parsedNewPatients;
+        newPatients = allNewPatients;
+      });
     }
 
     if (existingData != null && existingData['data'] != null) {
       for(var item in existingData['data']) {
         parsedExistingPatients.add({
-          'uuid': item['id'],
+          'id': item['id'],
           'data': item['body'],
           'meta': item['meta']
         });
@@ -149,8 +162,7 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
 
 
     setState(() {
-      allNewPatients = parsedNewPatients;
-      newPatients = allNewPatients;
+      
 
       allExistingPatients = parsedExistingPatients;
       existingPatients = allExistingPatients;
@@ -857,7 +869,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
       if (selectedTab == 0) {
         allNewPatients.forEach((patient) { 
           filteredAssessments.forEach((assessment) {
-            if (assessment['data']['patient_id'] == patient['uuid']) {
+            if (assessment['data']['patient_id'] == patient['id']) {
               filteredPatients.add(patient);
             } 
           });
@@ -869,7 +881,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
       } else if (selectedTab == 1) {
         allExistingPatients.forEach((patient) { 
           filteredAssessments.forEach((assessment) {
-            if (assessment['data']['patient_id'] == patient['uuid']) {
+            if (assessment['data']['patient_id'] == patient['id']) {
               filteredPatients.add(patient);
             } 
           });

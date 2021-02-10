@@ -14,6 +14,8 @@ import '../app_localizations.dart';
 
 class PatientController {
   /// Get all the patients
+  var patientRepoLocal = PatientReposioryLocal();
+
   getAllPatients() async {
     var patients = await PatientReposioryLocal().getAllPatients();
     var data = [];
@@ -22,7 +24,24 @@ class PatientController {
     await patients.forEach((patient) {
       parsedData = jsonDecode(patient['data']);
       data.add({
-        'uuid': patient['uuid'],
+        'id': patient['id'],
+        'data': parsedData['body'],
+        'meta': parsedData['meta']
+      });
+    });
+
+    return data;
+  }
+
+  getAllLocalPatients() async {
+    var patients = await PatientReposioryLocal().getAllPatients();
+    var data = [];
+    var parsedData;
+
+    await patients.forEach((patient) {
+      parsedData = jsonDecode(patient['data']);
+      data.add({
+        'id': patient['id'],
         'data': parsedData['body'],
         'meta': parsedData['meta']
       });
@@ -58,7 +77,7 @@ class PatientController {
     // await patients.forEach((patient) {
     //   parsedData = jsonDecode(patient['data']);
     //   data.add({
-    //     'uuid': patient['uuid'],
+    //     'id': patient['id'],
     //     'data': parsedData['body'],
     //     'meta': parsedData['meta']
     //   });
@@ -73,7 +92,7 @@ class PatientController {
     // await patients.forEach((patient) {
     //   parsedData = jsonDecode(patient['data']);
     //   data.add({
-    //     'uuid': patient['uuid'],
+    //     'id': patient['id'],
     //     'data': parsedData['body'],
     //     'meta': parsedData['meta']
     //   });
@@ -92,7 +111,7 @@ class PatientController {
     // await patients.forEach((patient) {
     //   parsedData = jsonDecode(patient['data']);
     //   data.add({
-    //     'uuid': patient['uuid'],
+    //     'id': patient['id'],
     //     'data': parsedData['body'],
     //     'meta': parsedData['meta']
     //   });
@@ -104,6 +123,10 @@ class PatientController {
   /// Get all the patients
   getNewPatients() async {
     var response = await PatientRepository().getNewPatients();
+
+    if (isNull(response) || isNotNull(response['exception'])) {
+      var localResponse = await patientRepoLocal.getAllPatients();
+    }
 
     return response;
   }

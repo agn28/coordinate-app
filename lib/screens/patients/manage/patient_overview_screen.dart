@@ -79,7 +79,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
       isLoading = true;
     });
 
-    var patientID = Patient().getPatient()['uuid'];
+    var patientID = Patient().getPatient()['id'];
 
     var data = await FollowupController().getFollowupsByPatient(patientID);
 

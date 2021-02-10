@@ -29,11 +29,11 @@ class DatabaseCreator {
   Future<void> createPatientsTable(Database db) async {
     final sql = '''CREATE TABLE $patientTable
     (
-      uuid TEXT PRIMARY KEY,
+      id TEXT PRIMARY KEY,
       data TEXT,
       nid,
       status TEXT,
-      isSynced BOOLEAN
+      is_synced BOOLEAN
     )''';
 
     await db.execute(sql);
@@ -42,10 +42,12 @@ class DatabaseCreator {
   Future<void> createAssessmentsTable(Database db) async {
     final sql = '''CREATE TABLE $assessmentTable
     (
-      uuid TEXT PRIMARY KEY,
+      id TEXT PRIMARY KEY,
       data TEXT,
+      patient_id TEXT,
       status TEXT,
-      isSynced BOOLEAN
+      is_synced BOOLEAN,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )''';
 
     await db.execute(sql);
@@ -54,10 +56,12 @@ class DatabaseCreator {
   Future<void> createObservationsTable(Database db) async {
     final sql = '''CREATE TABLE $observationTable
     (
-      uuid TEXT PRIMARY KEY,
+      id TEXT PRIMARY KEY,
       data TEXT,
+      patient_id TEXT,
       status TEXT,
-      isSynced BOOLEAN
+      is_synced BOOLEAN,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )''';
 
     await db.execute(sql);
@@ -66,7 +70,7 @@ class DatabaseCreator {
   Future<void> createSyncsTable(Database db) async {
     final sql = '''CREATE TABLE $syncTable
     (
-      uuid TEXT PRIMARY KEY,
+      id TEXT PRIMARY KEY,
       data TEXT,
       key TEXT,
       status TEXT,
@@ -80,7 +84,7 @@ class DatabaseCreator {
   Future<void> createLocationsTable(Database db) async {
     final sql = '''CREATE TABLE $locationTable
     (
-      uuid TEXT PRIMARY KEY,
+      id TEXT PRIMARY KEY,
       data TEXT,
       status TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -93,7 +97,7 @@ class DatabaseCreator {
   Future<void> createConceptManagerTable(Database db) async {
     final sql = '''CREATE TABLE $conceptManagerTable
     (
-      uuid TEXT PRIMARY KEY,
+      id TEXT PRIMARY KEY,
       codings TEXT,
       status TEXT
     )''';
@@ -104,7 +108,7 @@ class DatabaseCreator {
   Future<void> createObservationConceptsTable(Database db) async {
     final sql = '''CREATE TABLE $observationConceptsTable
     (
-      uuid TEXT PRIMARY KEY,
+      id TEXT PRIMARY KEY,
       type TEXT,
       concept_id TEXT NULL
     )''';

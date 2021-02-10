@@ -20,6 +20,21 @@ class AssessmentRepositoryLocal {
     return assessments;
   }
 
+    /// Get all assessments.
+  getAssessmentsByPatients(patientIds) async {
+    final sql = '''SELECT * FROM ${DatabaseCreator.assessmentTable}''';
+    var assessments;
+
+    try {
+      assessments = await db.rawQuery(sql);
+    } catch(error) {
+      print('error');
+      print(error);
+      return;
+    }
+    return assessments;
+  }
+
   /// Get all observations.
   getAllObservations() async {
     final sqlObservations = '''SELECT * FROM ${DatabaseCreator.observationTable}''';
@@ -120,7 +135,7 @@ class AssessmentRepositoryLocal {
 
   update(data) async {
     var assessment = Assessment().getSelectedAssessment();
-    var assessmentId = assessment['uuid'];
+    var assessmentId = assessment['id'];
     var bloodPressures = BloodPressure().bpItems;
     var bloodTests = BloodTest().btItems;
     var bodyMeasurements = BodyMeasurement().bmItems;
@@ -145,22 +160,22 @@ class AssessmentRepositoryLocal {
       } else {
       }
       // item['body']['assessment_id'] = assessmentId;
-      // item['uuid'] != null ? _updateObservations(item) : _createObservations(item);
+      // item['id'] != null ? _updateObservations(item) : _createObservations(item);
     });
 
     bloodTests.forEach((item) {
       item['body']['assessment_id'] = assessmentId;
-      item['uuid'] != null ? _updateObservations(item) : _createObservations(item);
+      item['id'] != null ? _updateObservations(item) : _createObservations(item);
     });
 
     bodyMeasurements.forEach((item) {
       item['body']['assessment_id'] = assessmentId;
-      item['uuid'] != null ? _updateObservations(item) : _createObservations(item);
+      item['id'] != null ? _updateObservations(item) : _createObservations(item);
     });
 
     questionnaires.forEach((item) async {
       item['body']['assessment_id'] = assessmentId;
-      item['uuid'] != null ? _updateObservations(item) : _createObservations(item);
+      item['id'] != null ? _updateObservations(item) : _createObservations(item);
     });
 
     return 'success';
@@ -170,8 +185,8 @@ class AssessmentRepositoryLocal {
   ///Update observations.
   /// Observations [data] is required as parameter
   _updateObservations(data) async {
-    String id = data['uuid'];
-    data.remove('uuid');
+    String id = data['id'];
+    data.remove('id');
     final sql = '''UPDATE ${DatabaseCreator.observationTable}
     SET data = ?
     WHERE uuid = ?''';
@@ -208,7 +223,7 @@ class AssessmentRepositoryLocal {
     String id = Uuid().v4();
     final sql = '''INSERT INTO ${DatabaseCreator.observationTable}
     (
-      uuid,
+      id,
       data,
       status
     )
@@ -231,7 +246,7 @@ class AssessmentRepositoryLocal {
   _createAssessment(id, data) async {
     final sql = '''INSERT INTO ${DatabaseCreator.assessmentTable}
     (
-      uuid,
+      id,
       data,
       status
     )

@@ -100,7 +100,7 @@ class BloodTest {
       "body": {
         "type": "blood_test",
         "data": item,
-        "patient_id": Patient().getPatient()['uuid'],
+        "patient_id": Patient().getPatient()['id'],
       }
     };
 

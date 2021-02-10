@@ -13,7 +13,7 @@ class ObservationController {
       return data;
     }
     await observations['data'].forEach((obs) {
-      if (obs['body']['patient_id'] == Patient().getPatient()['uuid'] && obs['body']['type'] == 'survey') {
+      if (obs['body']['patient_id'] == Patient().getPatient()['id'] && obs['body']['type'] == 'survey') {
         data.add(obs['body']);
       }
     });

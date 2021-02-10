@@ -131,7 +131,7 @@ class SyncRepository {
     String id = Uuid().v4();
     final createSql = '''INSERT INTO ${DatabaseCreator.syncTable}
     (
-      uuid,
+      id,
       key
     )
     VALUES (?,?)''';
@@ -150,7 +150,7 @@ class SyncRepository {
     String id = Uuid().v4();
     final sql = '''INSERT INTO ${DatabaseCreator.locationTable}
     (
-      uuid,
+      id,
       data,
       status
     )

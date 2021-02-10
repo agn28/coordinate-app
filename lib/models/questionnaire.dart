@@ -424,7 +424,7 @@ class Questionnaire {
           'care_plan_id': careplan['id'],
           'title': careplan['body']['title']
         },
-        "patient_id": Patient().getPatient()['uuid'],
+        "patient_id": Patient().getPatient()['id'],
       }
     };
     // _questionnaireItems = [];
@@ -453,7 +453,7 @@ class Questionnaire {
           'care_plan_id': careplan['id'],
           'title': careplan['body']['title']
         },
-        "patient_id": Patient().getPatient()['uuid'],
+        "patient_id": Patient().getPatient()['id'],
       }
     };
     // _questionnaireItems = [];
@@ -570,7 +570,7 @@ class Questionnaire {
           'as_prescribed': answers[1],
           'problems_by_taking_medicines': answers[2],
         },
-        "patient_id": Patient().getPatient()['uuid'],
+        "patient_id": Patient().getPatient()['id'],
       }
     };
 
@@ -589,7 +589,7 @@ class Questionnaire {
           'name': type,
           'last_30_days': answers[0],
         },
-        "patient_id": Patient().getPatient()['uuid'],
+        "patient_id": Patient().getPatient()['id'],
       }
     };
 
@@ -610,7 +610,7 @@ class Questionnaire {
           'days': int.parse(answers[1]),
           'units_per_day': int.parse(answers[2]),
         },
-        "patient_id": Patient().getPatient()['uuid'],
+        "patient_id": Patient().getPatient()['id'],
       }
     };
 
@@ -630,7 +630,7 @@ class Questionnaire {
           'last_12_months': answers[0],
           'secondhand_smoke': answers[1]
         },
-        "patient_id": Patient().getPatient()['uuid'],
+        "patient_id": Patient().getPatient()['id'],
       }
     };
 
@@ -653,7 +653,7 @@ class Questionnaire {
           'sugary_drinks': answers[2],
           'extra_salt': answers[3]
         },
-        "patient_id": Patient().getPatient()['uuid'],
+        "patient_id": Patient().getPatient()['id'],
       }
     };
 
@@ -679,7 +679,7 @@ class Questionnaire {
           'cancer': answers[5],
           'hypertension': answers[6],
         },
-        "patient_id": Patient().getPatient()['uuid'],
+        "patient_id": Patient().getPatient()['id'],
       }
     };
 
@@ -700,7 +700,7 @@ class Questionnaire {
           'physical_activity': answers[0],
           'sitting_more_than_5_hours': answers[1]
         },
-        "patient_id": Patient().getPatient()['uuid'],
+        "patient_id": Patient().getPatient()['id'],
       }
     };
 
@@ -728,7 +728,7 @@ class Questionnaire {
           'allergies': answers[7],
           'allergy_types': answers[8],
         },
-        "patient_id": Patient().getPatient()['uuid'],
+        "patient_id": Patient().getPatient()['id'],
       }
     };
 
@@ -752,7 +752,7 @@ class Questionnaire {
           'anti_cholesterol_drug': answers[3],
           'regular_medicine': answers[4],
         },
-        "patient_id": Patient().getPatient()['uuid'],
+        "patient_id": Patient().getPatient()['id'],
       }
     };
 
@@ -780,7 +780,7 @@ class Questionnaire {
           'physical_activity_moderate': answers[7],
           'physical_activity_high': answers[8],
         },
-        "patient_id": Patient().getPatient()['uuid'],
+        "patient_id": Patient().getPatient()['id'],
       }
     };
 
@@ -802,7 +802,7 @@ class Questionnaire {
           'question': item['question'],
           'answer': answers[questions['items'].indexOf(item)]
         },
-        "patient_id": Patient().getPatient()['uuid'],
+        "patient_id": Patient().getPatient()['id'],
       }
     };
 

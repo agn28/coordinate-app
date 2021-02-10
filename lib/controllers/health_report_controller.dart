@@ -58,7 +58,7 @@ class HealthReportController {
 
   _prepareReviewData(reports, comments) {
     var id = Uuid().v4();
-    var patietnId = Patient().getPatient()['uuid'];
+    var patietnId = Patient().getPatient()['id'];
 
     var data = {
       "id": id,
@@ -79,7 +79,7 @@ class HealthReportController {
 
   _prepareConfirmData(reports, comments) {
     var id = Uuid().v4();
-    var patietnId = Patient().getPatient()['uuid'];
+    var patietnId = Patient().getPatient()['id'];
 
     var data = {
       "id": id,

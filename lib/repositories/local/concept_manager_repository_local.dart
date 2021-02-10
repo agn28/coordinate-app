@@ -21,7 +21,7 @@ class ConceptManagerRepositoryLocal {
 
     final sql = '''INSERT INTO ${DatabaseCreator.conceptManagerTable}
     (
-      uuid,
+      id,
       codings,
       status
     )

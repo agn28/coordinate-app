@@ -361,7 +361,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                           Column(
                             children: [
                               Text('Updates in server: ${syncController.syncs.value.length}', style: TextStyle(fontSize: 20),),
-                              Text('Updates in Local: ${syncController.localPatients.value.length}', style: TextStyle(fontSize: 20),),
+                              Text('Updates in Local: ${syncController.localNotSyncedPatients.value.length}', style: TextStyle(fontSize: 20),),
                               SizedBox(height: 20,),
 
                               Text('Patients in server: ${syncController.livePatientsAll.value.length}', style: TextStyle(fontSize: 20),),

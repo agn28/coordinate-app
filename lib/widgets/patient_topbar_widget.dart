@@ -25,7 +25,7 @@ class PatientTopbar extends StatelessWidget {
             child: Container(
               child: Row(
                 children: <Widget>[
-                  Patient().getPatient()['data']['avatar'] == null ? 
+                  Patient().getPatient()['data']['avatar'] == null || Patient().getPatient()['data']['avatar'] ==  '' ? 
                   ClipRRect(
                     borderRadius: BorderRadius.circular(30.0),
                     child: Image.asset(

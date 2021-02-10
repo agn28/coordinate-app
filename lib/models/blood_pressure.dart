@@ -81,7 +81,7 @@ class BloodPressure {
   addBpItemsForEdit(observation) {
     _bpItems.add(observation);
     Map<String, dynamic> data = {
-      'id': observation['uuid']
+      'id': observation['id']
     };
     data.addAll(observation['body']['data']);
     _items.add(data);
@@ -102,7 +102,7 @@ class BloodPressure {
           'arm': arm
         },
         "comment": comment,
-        'patient_id': Patient().getPatient()['uuid'],
+        'patient_id': Patient().getPatient()['id'],
       }
     };
 
@@ -124,7 +124,7 @@ class BloodPressure {
         "type": "blood_pressure",
         "data": item,
         "comment": formData['comment'],
-        'patient_id': Patient().getPatient()['uuid'],
+        'patient_id': Patient().getPatient()['id'],
       }
     };
 

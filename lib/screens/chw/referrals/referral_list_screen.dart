@@ -70,7 +70,7 @@ class _ChwReferralListScreenState extends State<ChwReferralListScreen> {
       isLoading = true;
     });
 
-    var patientID = Patient().getPatient()['uuid'];
+    var patientID = Patient().getPatient()['id'];
 
     var data = await FollowupController().getFollowupsByPatient(patientID);
 
@@ -121,7 +121,7 @@ class _ChwReferralListScreenState extends State<ChwReferralListScreen> {
 
     for(var item in data['data']) {
       parsedNewPatients.add({
-        'uuid': item['id'],
+        'id': item['id'],
         'data': item['body'],
         'meta': item['meta']
       });

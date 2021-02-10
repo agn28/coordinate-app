@@ -60,7 +60,7 @@ class CarePlanController {
 
   _prepareReviewData(reports, comments) {
     var id = Uuid().v4();
-    var patietnId = Patient().getPatient()['uuid'];
+    var patietnId = Patient().getPatient()['id'];
     patietnId = 'cef20c27-8082-4776-8d39-c18e0cbfab55';
 
     var data = {
@@ -82,7 +82,7 @@ class CarePlanController {
 
   _prepareConfirmData(reports, comments) {
     var id = Uuid().v4();
-    var patietnId = Patient().getPatient()['uuid'];
+    var patietnId = Patient().getPatient()['id'];
     patietnId = 'cef20c27-8082-4776-8d39-c18e0cbfab55';
 
     var data = {

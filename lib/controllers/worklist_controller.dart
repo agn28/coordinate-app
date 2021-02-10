@@ -69,7 +69,7 @@ class WorklistController {
   //       "comment": comment,
   //       "performed_by": Auth().getAuth()['uid'],
   //       "assessment_date": DateFormat('y-MM-dd').format(DateTime.now()),
-  //       "patient_id": Patient().getPatient()['uuid']
+  //       "patient_id": Patient().getPatient()['id']
   //     }
   //   };
 

@@ -347,7 +347,7 @@ class _NewChwEncounterState extends State<NewChwEncounterScreen> {
                       if (bpWarning.isNotEmpty || btWarning != null ) {
                         var data = {
                           'meta': {
-                            'patient_id': Patient().getPatient()['uuid'],
+                            'patient_id': Patient().getPatient()['id'],
                             "collected_by": Auth().getAuth()['uid'],
                             "status": "pending"
                           },

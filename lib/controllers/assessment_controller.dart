@@ -24,9 +24,27 @@ class AssessmentController {
 
     await assessments.forEach((assessment) {
       parsedData = jsonDecode(assessment['data']);
-      if (parsedData['body']['patient_id'] == Patient().getPatient()['uuid']) {
+      if (parsedData['body']['patient_id'] == Patient().getPatient()['id']) {
         data.add({
-          'uuid': assessment['uuid'],
+          'id': assessment['id'],
+          'data': parsedData['body'],
+          'meta': parsedData['meta']
+        });
+      }
+    });
+    return data;
+  }
+
+  getAssessmentsByPatients(patientIds) async {
+    var assessments = await AssessmentRepositoryLocal().getAllAssessments();
+    var data = [];
+    var parsedData;
+
+    await assessments.forEach((assessment) {
+      parsedData = jsonDecode(assessment['data']);
+      if (parsedData['body']['patient_id'] == Patient().getPatient()['id']) {
+        data.add({
+          'id': assessment['id'],
           'data': parsedData['body'],
           'meta': parsedData['meta']
         });
@@ -45,7 +63,7 @@ class AssessmentController {
     if (assessments['error'] != null && !assessments['error']) {
       await assessments['data'].forEach((assessment) {
         data.add({
-          'uuid': assessment['id'],
+          'id': assessment['id'],
           'data': assessment['body'],
           'meta': assessment['meta']
         });
@@ -65,7 +83,7 @@ class AssessmentController {
     await assessments.forEach((assessment) {
       parsedData = jsonDecode(assessment['data']);
       data.add({
-        'uuid': assessment['uuid'],
+        'id': assessment['id'],
         'data': parsedData['body'],
         'meta': parsedData['meta']
       });
@@ -82,9 +100,9 @@ class AssessmentController {
 
     await observations.forEach((item) {
       parsedData = jsonDecode(item['data']);
-      if (parsedData['body']['patient_id'] == Patient().getPatient()['uuid'] && parsedData['body']['assessment_id'] == assessment['uuid']) {
+      if (parsedData['body']['patient_id'] == Patient().getPatient()['id'] && parsedData['body']['assessment_id'] == assessment['id']) {
         data.add({
-          'uuid': item['uuid'],
+          'id': item['id'],
           'body': {
             'type': parsedData['body']['type'],
             'data': parsedData['body']['data'],
@@ -102,13 +120,13 @@ class AssessmentController {
   /// Get observations under a specific assessment.
   /// [assessment] object is required as parameter.
   getLiveObservationsByAssessment(assessment) async {
-    var response = await AssessmentRepository().getObservationsByAssessment(assessment['uuid']);
+    var response = await AssessmentRepository().getObservationsByAssessment(assessment['id']);
     var data = [];
 
     if (response['error'] != null && !response['error']) {
       await response['data'].forEach((item) {
         data.add({
-          'uuid': item['id'],
+          'id': item['id'],
           'body': {
             'type': item['body']['type'],
             'data': item['body']['data'],
@@ -202,7 +220,7 @@ class AssessmentController {
         "comment": comment,
         "performed_by": Auth().getAuth()['uid'],
         "assessment_date": DateFormat('y-MM-dd').format(DateTime.now()),
-        "patient_id": Patient().getPatient()['uuid']
+        "patient_id": Patient().getPatient()['id']
       }
     };
 

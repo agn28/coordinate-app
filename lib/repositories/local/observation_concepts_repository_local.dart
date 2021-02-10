@@ -21,7 +21,7 @@ class ObservationConceptsRepositoryLocal {
     String uuid = Uuid().v4();
     final sql = '''INSERT INTO ${DatabaseCreator.observationConceptsTable}
     (
-      uuid,
+      id,
       type,
       concept_id
     )
