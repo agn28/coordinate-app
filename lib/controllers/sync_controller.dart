@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
@@ -15,7 +17,7 @@ var bloodPressures = [];
 class SyncController extends GetxController {
   var isPoorNetwork = false.obs;
   var isConnected = false.obs;
-  var isSyncToLive = true.obs;
+  var isSyncingToLive = false.obs;
 
   var syncs = [].obs;
   var localNotSyncedPatients = [].obs;
@@ -73,26 +75,40 @@ class SyncController extends GetxController {
     if (result == ConnectivityResult.wifi ||
         result == ConnectivityResult.mobile) {
       print('connected');
-      getLocalSyncKey();
-      checkLocationData();
       isConnected.value = true;
-
-      await Future.delayed(const Duration(seconds: 5));
-      //sync to live
-      await syncLivePatientsToLocal();
-
-      await Future.delayed(const Duration(seconds: 5));
-
-      syncLocalPatientsToLive();
+      initializeSync();
+      
     } else {
       isConnected.value = false;
       print('not connected');
     }
   }
 
+  initializeSync() async {
+    // retryForStableNetwork();
+    getLocalSyncKey();
+    checkLocationData();
+
+    
+    //sync to live
+    // if (!isPoorNetwork.value) {
+      await Future.delayed(const Duration(seconds: 2));
+      await syncLivePatientsToLocal();
+      await Future.delayed(const Duration(seconds: 2));
+      syncLocalPatientsToLive();
+    // }
+    
+
+    
+  }
+
   syncLocalPatientsToLive() async {
     print('syncing local patient');
+    if (localNotSyncedPatients.value.isEmpty) {
+      return;
+    } 
     print(localNotSyncedPatients);
+    isSyncingToLive.value = true;
     for (var patient in localNotSyncedPatients) {
       print(localNotSyncedPatients);
 
@@ -109,9 +125,12 @@ class SyncController extends GetxController {
       print('patient create resposne');
       print(response);
 
-      if (isNotNull(response['exception']) && response['type'] == 'poor_network') {
-        isPoorNetwork.value = true;
-      }
+      // if (isNotNull(response['exception']) && response['type'] == 'poor_network') {
+      //   isPoorNetwork.value = true;
+      //   showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
+      //   retryForStableNetwork();
+      //   break;
+      // }
       
       if (isNotNull(response) && isNotNull(response['error']) && !response['error']) {
         print('patient created');
@@ -132,18 +151,79 @@ class SyncController extends GetxController {
         }
       }
     }
+
+    await Future.delayed(const Duration(seconds: 5));
+
+    isSyncingToLive.value = false;
     // localNotSyncedPatients.forEach( (patient) async {
 
     // });
+    if (!isPoorNetwork.value) {
+      getLocalNotSyncedPatient();
+    }
+    
+  }
 
-    getLocalNotSyncedPatient();
+  retryForStableNetwork() async {
+    var retryCount = 10;
+    var count = 0;
+    var duration = Duration(seconds: 5);
+    Timer.periodic(duration, (timer) async {
+      count++;
+      print(timer);
+      print('retrying after $duration seconds');
+      try {
+        var response = await syncRepo.getLatestSyncInfo({ 'key': 'test'});
+        if (isNotNull(response) && isNotNull(response['error'])) {
+          isPoorNetwork.value = false;
+          isConnected.value = true;
+          initializeSync();
+          timer.cancel();
+        }
+        else if(isNotNull(response) && isNotNull(response['exception'] && response['type'] == 'no_internet')) {
+          isPoorNetwork.value = false;
+          isConnected.value = false;
+          timer.cancel();
+        }
+        if (count == retryCount) {
+          timer.cancel();
+        }
+
+      } catch(error) {
+        print('error');
+        print(error);
+        timer.cancel();
+      }
+      
+    });
+    return;
+    for (var i = 0; i <= retryCount; i++) {
+      print('retrying');
+       
+      // var response = await syncRepo.getLatestSyncInfo({ 'key': 'test'});
+      // if (isNotNull(response) && isNotNull(response['error'])) {
+      //   isPoorNetwork.value = false;
+      // }
+      // else if(isNotNull(response) && isNotNull(response['exception'] && response['type'] == 'no_internet')) {
+      //   isPoorNetwork.value = false;
+      //   isConnected.value = false;
+      //   break;
+      // }
+
+      // await Future.delayed(const Duration(seconds: 5));
+    }
   }
 
   syncLivePatientsToLocal() async {
+
+    if (syncs.value.isEmpty) {
+      return;
+    } 
     var tempSyncs = [...syncs.value];
 
     var removeItems = [];
-
+    
+    isSyncingToLive.value = true;
     for (var item in tempSyncs) {
       if (item['collection'] == 'patients') {
         if (item['action'] == 'create') {
@@ -175,8 +255,9 @@ class SyncController extends GetxController {
       }
     }
     
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 3));
     print('hello');
+    isSyncingToLive.value = false;
     getLocalNotSyncedPatient();
   }
 
@@ -238,6 +319,12 @@ class SyncController extends GetxController {
     print('sync key ' + key);
 
     var response = await syncRepo.getLatestSyncInfo(data);
+    if (isNotNull(response['exception']) && response['type'] == 'poor_network') {
+      // isPoorNetwork.value = true;
+      showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
+      // retryForStableNetwork();
+      // return;
+    }
     print('getLatestSyncInfo');
     print(response);
     if (isNotNull(response) &&

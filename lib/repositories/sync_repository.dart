@@ -24,7 +24,7 @@ class SyncRepository {
 
     var response;
 
-    print(apiUrl + 'patients');
+    print(apiUrl + 'syncs/verify');
 
     try {
       response =  await http.post(
@@ -45,6 +45,7 @@ class SyncRepository {
       print('socket exception');
       return {
         'exception': true,
+        'type': 'no_internet',
         'message': 'No internet'
       };
     } on TimeoutException {
@@ -52,6 +53,7 @@ class SyncRepository {
       print('timeout error');
       return {
         'exception': true,
+        'type': 'poor_network',
         'message': 'Slow internet'
       };
     } on Error catch(err) {

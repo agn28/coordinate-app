@@ -17,6 +17,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
+import 'package:nhealth/controllers/sync_controller.dart';
 import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
@@ -25,6 +26,7 @@ import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_success_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:get/get.dart';
 
 import '../../custom-classes/custom_stepper.dart';
 
@@ -99,6 +101,7 @@ class RegisterPatientScreen extends CupertinoPageRoute {
 
 
 class RegisterPatient extends StatefulWidget {
+  
   final isEdit;
   RegisterPatient({this.isEdit});
   @override
@@ -107,7 +110,7 @@ class RegisterPatient extends StatefulWidget {
 int _currentStep = 0;
 
 class _RegisterPatientState extends State<RegisterPatient> {
-
+  final syncController = Get.put(SyncController());
   String nextText = 'NEXT';
   bool isLoading = false;
 
@@ -123,7 +126,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     selectedUpazila = {};
     _currentStep = 0;
 
-    fillDummyData(); //Remove this
+    // fillDummyData(); //Remove this
 
     
   }
@@ -287,7 +290,31 @@ class _RegisterPatientState extends State<RegisterPatient> {
       resizeToAvoidBottomInset: true,
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('registerNewPatient')),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(AppLocalizations.of(context).translate('registerNewPatient')),
+            Obx(() =>
+              !syncController.isConnected.value ? 
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: kPrimaryRedColor
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.sentiment_very_dissatisfied, size: 20,),
+                    SizedBox(width: 5,),
+                    Text('You are offline', style: TextStyle(fontSize: 16),)
+                  ],
+                ),
+              ) :
+              Container()
+            )
+            
+          ],
+        )
       ),
       body: isLoading ? Center(child: CircularProgressIndicator()) : GestureDetector(
         onTap: () {
@@ -1017,6 +1044,10 @@ class _AddPhotoState extends State<AddPhoto> {
   }
 
   Future getImageFromCam() async {
+    var result = await (Connectivity().checkConnectivity());
+    if (result == ConnectivityResult.none) {
+      return;
+    }
     _image = await ImagePicker.pickImage(source: ImageSource.camera);
     // setState(() {
     //   _image = image;
