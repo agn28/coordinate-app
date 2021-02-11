@@ -2,14 +2,18 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:nhealth/controllers/sync_controller.dart';
 import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/services/api_service.dart';
 import '../constants/constants.dart';
 import 'dart:convert';
+import 'package:get/get.dart';
 
 class PatientRepository {
+  // var syncController = SyncController();
+
   create(data) async {
     var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
@@ -21,14 +25,14 @@ class PatientRepository {
 
     try {
       response = await http
-          .post(apiUrl + 'patients',
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-              },
-              body: json.encode(data))
-          .timeout(Duration(seconds: httpRequestTimeout));
+      .post(apiUrl + 'patients',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: json.encode(data))
+      .timeout(Duration(seconds: httpRequestTimeout));
 
       return json.decode(response.body);
     } on SocketException {
@@ -38,7 +42,7 @@ class PatientRepository {
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
       print('timeout error');
-      return {'exception': true, 'message': 'Slow internet'};
+      return {'exception': true, 'type': 'poor_network', 'message': 'Slow internet'};
     } on Error catch (err) {
       print('test error');
       print(err);

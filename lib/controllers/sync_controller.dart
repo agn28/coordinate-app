@@ -13,6 +13,10 @@ import 'assessment_controller.dart';
 var bloodPressures = [];
 
 class SyncController extends GetxController {
+  var isPoorNetwork = false.obs;
+  var isConnected = false.obs;
+  var isSyncToLive = true.obs;
+
   var syncs = [].obs;
   var localNotSyncedPatients = [].obs;
   var livePatientsAll = [].obs;
@@ -64,25 +68,32 @@ class SyncController extends GetxController {
     }
   }
 
-  checkConnection(result) {
+  checkConnection(result) async {
     print('connection status');
     if (result == ConnectivityResult.wifi ||
         result == ConnectivityResult.mobile) {
       print('connected');
       getLocalSyncKey();
       checkLocationData();
+      isConnected.value = true;
 
-      syncPatientsToLive();
+      await Future.delayed(const Duration(seconds: 5));
+      //sync to live
+      await syncLivePatientsToLocal();
+
+      await Future.delayed(const Duration(seconds: 5));
+
+      syncLocalPatientsToLive();
     } else {
+      isConnected.value = false;
       print('not connected');
     }
   }
 
-  syncPatientsToLive() async {
+  syncLocalPatientsToLive() async {
     print('syncing local patient');
     print(localNotSyncedPatients);
-    localNotSyncedPatients.forEach( (patient) async {
-
+    for (var patient in localNotSyncedPatients) {
       print(localNotSyncedPatients);
 
       print('local patient');
@@ -97,6 +108,10 @@ class SyncController extends GetxController {
       var response = await patientRepo.create(data);
       print('patient create resposne');
       print(response);
+
+      if (isNotNull(response['exception']) && response['type'] == 'poor_network') {
+        isPoorNetwork.value = true;
+      }
       
       if (isNotNull(response) && isNotNull(response['error']) && !response['error']) {
         print('patient created');
@@ -116,11 +131,55 @@ class SyncController extends GetxController {
           showWarningSnackBar('Error', 'Session is expired. Login again to sync data');
         }
       }
+    }
+    // localNotSyncedPatients.forEach( (patient) async {
 
-    });
+    // });
 
     getLocalNotSyncedPatient();
   }
+
+  syncLivePatientsToLocal() async {
+    var tempSyncs = [...syncs.value];
+
+    var removeItems = [];
+
+    for (var item in tempSyncs) {
+      if (item['collection'] == 'patients') {
+        if (item['action'] == 'create') {
+          var patient =
+              await PatientController().getPatient(item['document_id']);
+          print('patient');
+          print(patient);
+          if (isNotNull(patient) &&
+              isNotNull(patient['error']) &&
+              !patient['error'] &&
+              isNotNull(patient['data'])) {
+            print('creating local patient');
+            var localPatient = await PatientReposioryLocal()
+                .createFromLive(patient['data']['id'], patient['data']);
+            print('after creating local patient');
+
+            if (isNotNull(localPatient)) {
+              print('updating synnc key');
+              var updateSync = await updateLocalSyncKey(item['key']);
+              print('after updating sync key');
+              print(item['key']);
+              print(updateSync);
+              if (isNotNull(updateSync)) {
+                syncs.remove(item);
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    await Future.delayed(const Duration(seconds: 2));
+    print('hello');
+    getLocalNotSyncedPatient();
+  }
+
 
   getLocalSyncKey() async {
     var response = await syncRepo.getLocalSyncKey();
@@ -187,49 +246,14 @@ class SyncController extends GetxController {
       syncs.value = response['data'];
       print('syncs');
       print(syncs.value);
-      updateLocalDataFromLive();
+
+      // sync from live
+      // syncLivePatientsToLocal();
     }
     print('syncs.length');
     print(syncs.length);
   }
 
-  updateLocalDataFromLive() async {
-    var tempSyncs = syncs.value;
-
-    tempSyncs.forEach((item) async {
-      if (item['collection'] == 'patients') {
-        if (item['action'] == 'create') {
-          var patient =
-              await PatientController().getPatient(item['document_id']);
-          print('patient');
-          print(patient);
-          if (isNotNull(patient) &&
-              isNotNull(patient['error']) &&
-              !patient['error'] &&
-              isNotNull(patient['data'])) {
-            print('creating local patient');
-            var localPatient = await PatientReposioryLocal()
-                .createFromLive(patient['data']['id'], patient['data']);
-            print('after creating local patient');
-
-            if (isNotNull(localPatient)) {
-              print('updating synnc key');
-              var updateSync = await updateLocalSyncKey(item['key']);
-              print('after updating sync key');
-              print(item['key']);
-              print(updateSync);
-              if (isNotNull(updateSync)) {
-                print(syncs.value.length);
-                syncs.removeAt(tempSyncs.indexOf(item));
-                print('removing sync');
-                print(syncs.value.length);
-              }
-            }
-          }
-        }
-      }
-    });
-  }
 
   updateLocalSyncKey(key) async {
     var response = await syncRepo.getLocalSyncKey();

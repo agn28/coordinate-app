@@ -1,3 +1,4 @@
+import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/models/assessment.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
@@ -244,6 +245,19 @@ class AssessmentRepositoryLocal {
   /// Create assessment.
   /// Assessment uuid [id] and [data] are required as paremeter.
   _createAssessment(id, data) async {
+    Map<String, dynamic> apiData = {
+      'id': id
+    };
+
+    apiData.addAll(data);
+    var apiResponse = await AssessmentRepository().create(apiData);
+    if (isNotNull(apiResponse) && isNotNull(apiResponse['error'] &&  !apiResponse['error'])) {
+
+    }
+
+    return;
+
+
     final sql = '''INSERT INTO ${DatabaseCreator.assessmentTable}
     (
       id,
@@ -251,19 +265,15 @@ class AssessmentRepositoryLocal {
       status
     )
     VALUES (?,?,?)''';
+
     List<dynamic> params = [id, jsonEncode(data), 'not synced'];
     final result = await db.rawInsert(sql, params);
     DatabaseCreator.databaseLog('Add assessment', sql, null, result, params);
 
-    Map<String, dynamic> apiData = {
-      'id': id
-    };
-
-
-    apiData.addAll(data);
+    
 
     print('before encounter');
-    await AssessmentRepository().create(apiData);
+    
 
     print('into encounter');
   }

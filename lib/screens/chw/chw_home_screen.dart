@@ -59,11 +59,36 @@ class _ChwHomeState extends State<ChwHomeScreen> {
 
     return Scaffold(
       appBar: new AppBar(
-        title: new Text(AppLocalizations.of(context).translate('home'), style: TextStyle(color: Colors.white, fontSize: 22),),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(AppLocalizations.of(context).translate('home'), style: TextStyle(color: Colors.white, fontSize: 22),),
+            Obx(() =>
+              !syncController.isConnected.value ? 
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: kPrimaryRedColor
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.sentiment_very_dissatisfied, size: 20,),
+                    SizedBox(width: 5,),
+                    Text('You are offline', style: TextStyle(fontSize: 16),)
+                  ],
+                ),
+              ) :
+              Container()
+            )
+            
+          ],
+        ),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
         actions: <Widget>[
+          
           IconButton(
             icon: Icon(Icons.more_vert, color: Colors.white),
             onPressed: () {},
@@ -360,14 +385,90 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                         Obx(() => 
                           Column(
                             children: [
-                              Text('Updates in server: ${syncController.syncs.value.length}', style: TextStyle(fontSize: 20),),
-                              Text('Updates in Local: ${syncController.localNotSyncedPatients.value.length}', style: TextStyle(fontSize: 20),),
-                              SizedBox(height: 20,),
+                              SizedBox(height: 30,),
+                              Container(
+                                width: 230,
+                                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: kPrimaryAmberColor
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    syncController.isSyncToLive.value ? 
+                                    Column(
+                                      children: [
+                                        Text('Your data is syncing', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                                        
+                                      ],
+                                    ) :
+                                    Text('You have ${syncController.syncs.value.length} data left to sync', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),)
+                                  ],
+                                ),
+                              ),
 
-                              Text('Patients in server: ${syncController.livePatientsAll.value.length}', style: TextStyle(fontSize: 20),),
-                              Text('Patients in Local: ${syncController.localPatientsAll.value.length}', style: TextStyle(fontSize: 20),)
+                          //     Container(
+                          //       width: 240,
+                          //       padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                          //       decoration: BoxDecoration(
+                          //         borderRadius: BorderRadius.circular(5),
+                          //         color: Colors.greenAccent
+                          //       ),
+                          //       child: Row(
+                          //         mainAxisAlignment: MainAxisAlignment.center,
+                          //         children: [
+                          //           Icon(Icons.check),
+                          //           SizedBox(width: 10,),
+                          //           Text('All data has been synced', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                          //         ],
+                          //       ),
+                          //     ),
+                          //     SizedBox(height: 20,),
+                          //     // CircularProgressIndicator(),      
                             ],
-                          ),
+                          )
+
+                        //for development
+                          // Column(
+                          //   children: [
+                          //     Text('Updates in server: ${syncController.syncs.value.length}', style: TextStyle(fontSize: 20),),
+                          //     Text('Updates in Local: ${syncController.localNotSyncedPatients.value.length}', style: TextStyle(fontSize: 20),),
+                          //     SizedBox(height: 20,),
+
+                          //     Row(
+                          //       mainAxisAlignment: MainAxisAlignment.center,
+                          //       children: [
+                          //         Text('Patients in server: ${syncController.livePatientsAll.value.length}', style: TextStyle(fontSize: 20),),
+                          //         SizedBox(width: 20),
+                          //         FlatButton(
+                          //           color: kPrimaryColor,
+                          //           onPressed: () async {
+                          //             await syncController.syncLivePatientsToLocal();
+                          //             // Get.offAll(ChwHomeScreen());
+                          //           },
+                          //           child: Text('Sync', style: TextStyle(color: Colors.white),)
+                          //         )
+                          //       ],
+                          //     ),
+
+                          //     Row(
+                          //       mainAxisAlignment: MainAxisAlignment.center,
+                          //       children: [
+                          //         Text('Patients in Local: ${syncController.localPatientsAll.value.length}', style: TextStyle(fontSize: 20),),
+                          //         SizedBox(width: 20),
+                          //         FlatButton(
+                          //           color: kPrimaryColor,
+                          //           onPressed: () {
+                          //             syncController.syncLocalPatientsToLive();
+                          //           },
+                          //           child: Text('Sync', style: TextStyle(color: Colors.white),)
+                          //         )
+                          //       ],
+                          //     ),
+                              
+                          //   ],
+                          // ),
                           
                         ),
                       ],

@@ -4,6 +4,7 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/repositories/patient_repository.dart';
 import 'package:nhealth/helpers/functions.dart';
+import 'package:sqflite/sqflite.dart';
 import './database_creator.dart';
 import 'package:uuid/uuid.dart';
 import '../../app_localizations.dart';
@@ -150,8 +151,16 @@ class PatientReposioryLocal {
 
     try {
       response = await db.rawInsert(sql, params);
-    } catch (err) {
-      print(err);
+    } on DatabaseException catch(error) {
+      print('error');
+      print(error);
+      error.isUniqueConstraintError();
+      if (error.isUniqueConstraintError()) {
+        return {
+          'exception': true,
+          'type': 'uniqueConstraint'
+        };
+      }
       return;
     }
 
@@ -182,7 +191,7 @@ class PatientReposioryLocal {
 
     final sql = '''UPDATE ${DatabaseCreator.patientTable} SET
       is_synced = ?
-      WHERE uuid = ?''';
+      WHERE id = ?''';
     List<dynamic> params = [isSynced, uuid];
     var response;
 

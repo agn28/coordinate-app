@@ -1,4 +1,5 @@
 import 'package:nhealth/constants/constants.dart';
+import 'package:nhealth/controllers/sync_controller.dart';
 import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
@@ -8,6 +9,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 
 import 'package:nhealth/repositories/patient_repository.dart';
+import 'package:nhealth/repositories/sync_repository.dart';
 import 'package:uuid/uuid.dart';
 
 import '../app_localizations.dart';
@@ -165,6 +167,9 @@ class PatientController {
       print('live patient create');
 
       apiResponse = await PatientRepository().create(data);
+      print('apiResponse');
+
+      print(apiResponse);
 
       if (isNull(apiResponse)) {
         Scaffold.of(context).showSnackBar(SnackBar(
@@ -204,13 +209,24 @@ class PatientController {
           ));
           return;
         }
-      } else if (isNotNull(apiResponse['id'])) {
+      } else if (apiResponse['error'] != null && !apiResponse['error']) {
         response = await PatientReposioryLocal().create(context, data, true);
+
+        // response = await await PatientReposioryLocal()
+        //         .createFromLive(response['patient']['id'], data);
+
+        if (isNotNull(apiResponse['data']['sync']) && isNotNull(apiResponse['data']['sync']['key'])) {
+          var updateSync = await SyncRepository().updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
+          print('after updating sync key');
+          print(updateSync);
+        }
+        
+        
+ 
+        return response;
       }
 
-      print('apiResponse');
-
-      print(apiResponse);
+      
       // response = await PatientReposioryLocal().create(data);
 
     } else {

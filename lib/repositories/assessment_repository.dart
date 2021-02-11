@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
@@ -5,26 +8,45 @@ import '../constants/constants.dart';
 import 'dart:convert';
 
 class AssessmentRepository {
-
   create(data) async {
     var authData = await Auth().getStorageAuth() ;
     print('after get token');
     var token = authData['accessToken'];
     
-    await http.post(
-      apiUrl + 'assessments',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: json.encode(data)
-    ).then((response) {
+    var response;
+
+    try {
+      response = await http
+        .post(apiUrl + 'assessments',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: json.encode(data)
+        )
+        .timeout(Duration(seconds: httpRequestTimeout));
       print('assessment created');
       print(response.body);
-    }).catchError((error) {
-      print('error ' + error.toString());
-    });
+      return json.decode(response.body);
+    } on SocketException {
+      // showErrorSnackBar('Error', 'socketError'.tr);
+      print('socket exception');
+      return {'exception': true, 'message': 'No internet'};
+    } on TimeoutException {
+      // showErrorSnackBar('Error', 'timeoutError'.tr);
+      print('timeout error');
+      return {'exception': true, 'message': 'Slow internet'};
+    } on Error catch (err) {
+      print('test error');
+      print(err);
+      // showErrorSnackBar('Error', 'unknownError'.tr);
+      return {
+        'exception': true,
+        'type': 'unknown',
+        'message': 'Something went wrong'
+      };
+    }
   }
 
   getAllAssessments() async {
