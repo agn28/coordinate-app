@@ -161,7 +161,10 @@ class Helpers {
               child: Text(AppLocalizations.of(context).translate('logout'), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500, color: kPrimaryColor),),
               onPressed:  () async {
                 await Auth().logout();
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+              
+                Navigator.of(context)
+                  .pushAndRemoveUntil(MaterialPageRoute(builder: (ctx) => AuthScreen()), (Route<dynamic> route) => false);
+                // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
               },
             ),
           ],

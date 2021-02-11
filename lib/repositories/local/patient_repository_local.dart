@@ -29,7 +29,7 @@ class PatientReposioryLocal {
     )
     VALUES (?,?,?)''';
     List<dynamic> params = [uuid, jsonEncode(data), 'not synced'];
-    final result = await db.rawInsert(sql, params);
+    // final result = await db.rawInsert(sql, params);
 
     var patient = {
       'uuid': uuid,
@@ -44,7 +44,7 @@ class PatientReposioryLocal {
     var response = await PatientRepository().create(data);
 
     await Patient().setPatient(patient);
-    DatabaseCreator.databaseLog('Add patient', sql, null, result, params);
+    DatabaseCreator.databaseLog('Add patient', sql, null, null, params);
     return response;
   }
 
