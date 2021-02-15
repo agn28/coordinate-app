@@ -62,14 +62,14 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
     _checkAvatar();
     _checkAuth();
     _getAuthData();
-    _getCarePlan();
     getEncounters();
-    getAssessments();
-    getAssessmentDueDate();
-    getMedicationsConditions();
-    getReport();
-    getReferrals();
-    getUsers();
+    // _getCarePlan();
+    // getAssessments();
+    // getAssessmentDueDate();
+    // getMedicationsConditions();
+    // getReport();
+    // getReferrals();
+    // getUsers();
   }
 
   getReferrals() async {
@@ -271,19 +271,23 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
     setState(() {
       isLoading = true;
     });
+
+    print('before encounter');
     encounters = await AssessmentController().getLiveAllAssessmentsByPatient();
     print('encounters');
     print(encounters);
 
-    // setState(() {
-    //   isLoading = false;
-    // });
+    setState(() {
+      isLoading = false;
+    });
 
 
     if (encounters.isNotEmpty) {
       var allEncounters = encounters;
       await Future.forEach(allEncounters, (item) async {
-        var data = await getObservations(item);
+        var data = [];
+        //TODO: get observations for the assessment
+        // var data = await getObservations(item);
         var completed_observations = [];
         if (data.isNotEmpty) {
           data.forEach((obs) {
@@ -302,12 +306,14 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
         encounters[encounters.indexOf(item)]['completed_observations'] = completed_observations;
       });
       // print(encounters);
-      encounters.sort((a, b) {
-        return DateTime.parse(b['meta']['created_at']).compareTo(DateTime.parse(a['meta']['created_at']));
-      });
+      //TODO: fix the datetime for sorting
+      // encounters.sort((a, b) {
+      //   return DateTime.parse(b['meta']['created_at']).compareTo(DateTime.parse(a['meta']['created_at']));
+      // });
 
       setState(() {
         isLoading = false;
+        //TODO: fix the date format and add lastencounterdate
         lastEncounterdDate = DateFormat("MMMM d, y").format(DateTime.parse(encounters.first['meta']['created_at']));
       });
 
@@ -701,7 +707,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                         Row(
                           children: <Widget>[
                             Text(AppLocalizations.of(context).translate('dateOfReferral')+": ", style: TextStyle(fontSize: 16),),
-                            Text(Helpers().convertDateFromSeconds(pendingReferral['meta']['created_at']), style: TextStyle(fontSize: 16)),
+                            // Text(Helpers().convertDateFromSeconds(pendingReferral['meta']['created_at']), style: TextStyle(fontSize: 16)),
                           ],
                         ),
                         SizedBox(height: 5,),
@@ -917,7 +923,9 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                                   child: Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: <Widget>[
-                                                      Text(Helpers().convertDate(encounter['data']['assessment_date']), style: TextStyle(fontSize: 16)),
+                                                      //TODO: fix the date for dateformat
+                                                      // Text(Helpers().convertDate(encounter['data']['assessment_date']), style: TextStyle(fontSize: 16)),
+                                                      Text(encounter['data']['assessment_date'], style: TextStyle(fontSize: 16)),
                                                       SizedBox(height: 15,),
                                                       Text(getTitle(encounter) , style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
 

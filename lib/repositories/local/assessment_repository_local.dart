@@ -36,6 +36,37 @@ class AssessmentRepositoryLocal {
     return assessments;
   }
 
+  getAssessmentsByPatient(id) async {
+    print('patient id ' + id);
+    final sql = '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE patient_id=$id''';
+    var assessments;
+
+    try {
+      assessments = await db.rawQuery(sql);
+    } catch(error) {
+      print('error');
+      print(error);
+      return;
+    }
+    return assessments;
+  }
+
+  getNotSyncedAssessments() async {
+    final sql =
+        '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE is_synced=0''';
+    var response = await db.rawQuery(sql);
+
+    try {
+      response = await db.rawQuery(sql);
+    } catch (error) {
+      print('error');
+      print(error);
+      return;
+    }
+
+    return response;
+  }
+
   /// Get all observations.
   getAllObservations() async {
     final sqlObservations = '''SELECT * FROM ${DatabaseCreator.observationTable}''';
@@ -91,6 +122,10 @@ class AssessmentRepositoryLocal {
 
     return 'success';
     
+  }
+
+  createFromLive(id, data) {
+
   }
 
   _getCodings(item) async {
@@ -278,6 +313,33 @@ class AssessmentRepositoryLocal {
     print('into encounter');
   }
 
+  createLocalAssessment(id, data, isSynced) async {
+    print('into local assessment create '+ isSynced.toString());
+    print('create patient id ' + data['body']['patient_id']);
+    // print('create patient body ' + data['body']);
+    final sql = '''INSERT INTO ${DatabaseCreator.assessmentTable}
+    (
+      id,
+      data,
+      patient_id,
+      status,
+      is_synced
+    )
+    VALUES (?,?,?,?,?)''';
+
+    List<dynamic> params = [id, jsonEncode(data), data['body']['patient_id'], '', isSynced];
+    var response; 
+
+    try {
+      response = await db.rawInsert(sql, params);
+    } catch(error) {
+      print('local assessment error');
+      print(error);
+    }
+    DatabaseCreator.databaseLog('Add assessment', sql, null, response, params);
+    return response;
+  }
+
   /// Create assessment.
   /// Assessment uuid [id] and [data] are required as paremeter.
   _updateAssessment(id, data) async {
@@ -295,6 +357,29 @@ class AssessmentRepositoryLocal {
 
     apiData.addAll(data);
     AssessmentRepository().update(id, apiData);
+  }
+
+  Future<void> updateLocalStatus(uuid, isSynced) async {
+    print('into updating assessment status');
+    print('uuid ' + uuid);
+
+    final sql = '''UPDATE ${DatabaseCreator.assessmentTable} SET
+      is_synced = ?
+      WHERE id = ?''';
+    List<dynamic> params = [isSynced, uuid];
+    var response;
+
+    try {
+      response = await db.rawUpdate(sql, params);
+      print('update local response');
+      print(response);
+    } catch(error) {
+      print('error');
+      print(error);
+      return;
+    }
+    return response;
+
   }
   
 }

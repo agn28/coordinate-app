@@ -162,4 +162,16 @@ class SyncRepository {
     DatabaseCreator.databaseLog('Add locations', sql, null, result, params);
 
   }
+
+  emptyDatabase() async {
+    final patient = await db.rawQuery('''DELETE FROM ${DatabaseCreator.patientTable}''');
+    final syncs = await db.rawQuery('''DELETE FROM ${DatabaseCreator.syncTable}''');
+    final assessments = await db.rawQuery('''DELETE FROM ${DatabaseCreator.assessmentTable}''');
+    final observations = await db.rawQuery('''DELETE FROM ${DatabaseCreator.observationTable}''');
+    print('patient table deleted: ' + patient.toString());
+    print('sync table deleted: ' + syncs.toString());
+    print('assessments table deleted: ' + assessments.toString());
+    print('observations table deleted: ' + observations.toString());
+
+  }
 }

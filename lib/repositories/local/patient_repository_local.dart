@@ -185,9 +185,9 @@ class PatientReposioryLocal {
     await Patient().setPatient(patient);
   }
 
-    Future<void> updateLocalStatus(uuid, isSynced) async {
-      print('into updating patient status');
-      print('uuid ' + uuid);
+  Future<void> updateLocalStatus(uuid, isSynced) async {
+    print('into updating patient status');
+    print('uuid ' + uuid);
 
     final sql = '''UPDATE ${DatabaseCreator.patientTable} SET
       is_synced = ?

@@ -4,9 +4,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:nhealth/controllers/observation_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:nhealth/helpers/functions.dart';
+import 'package:nhealth/repositories/assessment_repository.dart';
+import 'package:nhealth/repositories/local/assessment_repository_local.dart';
+import 'package:nhealth/repositories/local/observation_repository_local.dart';
 import 'package:nhealth/repositories/local/patient_repository_local.dart';
+import 'package:nhealth/repositories/observation_repository.dart';
 import 'package:nhealth/repositories/patient_repository.dart';
 import 'package:nhealth/repositories/sync_repository.dart';
 
@@ -23,12 +28,20 @@ class SyncController extends GetxController {
   var localNotSyncedPatients = [].obs;
   var livePatientsAll = [].obs;
   var localPatientsAll = [].obs;
-  var localAssessments = [].obs;
+  var localAssessmentsAll = [].obs;
+  var localNotSyncedAssessments = [].obs;
+  var localObservationsAll = [].obs;
+  var localNotSyncedObservations = [].obs;
   var syncRepo = SyncRepository();
   var patientRepoLocal = PatientReposioryLocal();
   var patientRepo = PatientRepository();
   var patientController = PatientController();
   var assessmentController = AssessmentController();
+  var assessmentRepoLocal = AssessmentRepositoryLocal();
+  var assessmentRepo = AssessmentRepository();
+  var observationController = ObservationController();
+  var observationRepoLocal = ObservationRepositoryLocal();
+  var observationRepo = ObservationRepository();
 
   /// Create assessment.
   /// Assessment [type] and [comment] is required as parameter.
@@ -38,20 +51,31 @@ class SyncController extends GetxController {
   /// Assessment [type] and [comment] is required as parameter.
   createOnlyAssessment(type, screening_type, comment) async {}
 
-  getLocalNotSyncedPatient() async {
-    print('into not synce patient info');
-    print(localNotSyncedPatients);
-    var response = await patientRepoLocal.getNotSyncedPatients();
+
+  getAllStatsData() async {
+    getLocalNotSyncedPatient();
+    getLocalNotSyncedAssessments();
+    getLocalNotSyncedObservations();
+
     var allLocalPatients = await patientController.getAllLocalPatients();
+    var allLocalAssessments = await assessmentController.getAllLocalAssessments();
+    var allLocalObservations = await observationController.getAllLocalObservations();
+
     var allLivePatients = await patientRepo.getPatients();
-    
 
     if (isNotNull(allLivePatients) && isNotNull(allLivePatients['data'])) {
       livePatientsAll.value = allLivePatients['data'];
     }
     
     localPatientsAll.value = allLocalPatients;
-    print(localPatientsAll);
+    localAssessmentsAll.value = allLocalAssessments;
+    localObservationsAll.value = allLocalObservations;
+
+  }
+
+  getLocalNotSyncedPatient() async {
+    print(localNotSyncedPatients);
+    var response = await patientRepoLocal.getNotSyncedPatients();
 
     print('not synced patient response');
     print(response);
@@ -64,6 +88,54 @@ class SyncController extends GetxController {
         localNotSyncedPatients.value.add({
           'id': patient['id'],
           'data': parsedData['body'],
+          'meta': parsedData['meta']
+        });
+      });
+    }
+  }
+
+  getLocalNotSyncedAssessments() async {
+    print(localNotSyncedPatients);
+    var response = await assessmentRepoLocal.getNotSyncedAssessments();
+
+    print('not synced patient response');
+    print(response);
+
+    if (isNotNull(response)) {
+      localNotSyncedAssessments.value = [];
+
+      response.forEach((assessment) {
+        var parsedData = jsonDecode(assessment['data']);
+        localNotSyncedAssessments.add({
+          'id': assessment['id'],
+          'data': parsedData['body'],
+          'meta': parsedData['meta']
+        });
+      });
+    }
+  }
+
+  getLocalNotSyncedObservations() async {
+    print(localNotSyncedPatients);
+    var response = await observationRepoLocal.getNotSyncedObservations();
+
+    print('not synced patient response');
+    print(response);
+
+    if (isNotNull(response)) {
+      localNotSyncedObservations.value = [];
+
+      response.forEach((item) {
+        var parsedData = jsonDecode(item['data']);
+        localNotSyncedObservations.add({
+          'id': item['id'],
+          'body': {
+            'type': parsedData['body']['type'],
+            'data': parsedData['body']['data'],
+            'comment': parsedData['body']['comment'],
+            'patient_id': parsedData['body']['patient_id'],
+            'assessment_id': parsedData['body']['assessment_id'],
+          },
           'meta': parsedData['meta']
         });
       });
@@ -86,8 +158,8 @@ class SyncController extends GetxController {
 
   initializeSync() async {
     // retryForStableNetwork();
-    getLocalSyncKey();
-    checkLocationData();
+    await getLocalSyncKey();
+    await checkLocationData();
 
     
     //sync to live
@@ -104,9 +176,9 @@ class SyncController extends GetxController {
 
   syncLocalPatientsToLive() async {
     print('syncing local patient');
-    if (localNotSyncedPatients.value.isEmpty) {
-      return;
-    } 
+    // if (localNotSyncedPatients.value.isEmpty) {
+    //   return;
+    // } 
     print(localNotSyncedPatients);
     isSyncingToLive.value = true;
     for (var patient in localNotSyncedPatients) {
@@ -125,12 +197,13 @@ class SyncController extends GetxController {
       print('patient create resposne');
       print(response);
 
-      // if (isNotNull(response['exception']) && response['type'] == 'poor_network') {
-      //   isPoorNetwork.value = true;
-      //   showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
-      //   retryForStableNetwork();
-      //   break;
-      // }
+      if (isNotNull(response['exception']) && response['type'] == 'poor_network') {
+        isPoorNetwork.value = true;
+        isSyncingToLive.value = false;
+        showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
+        retryForStableNetwork();
+        break;
+      }
       
       if (isNotNull(response) && isNotNull(response['error']) && !response['error']) {
         print('patient created');
@@ -152,6 +225,99 @@ class SyncController extends GetxController {
       }
     }
 
+    for (var assessment in localNotSyncedAssessments) {
+
+      print('into local assessments');
+      print(assessment['data']);
+      print(assessment['meta']);
+      var data = {
+        'id': assessment['id'],
+        'body': assessment['data'],
+        'meta': assessment['meta']
+      };
+
+      var response = await assessmentRepo.create(data);
+      print('assessment create resposne');
+      print(response);
+
+      //TODO: check slow network
+
+      // if (isNotNull(response['exception']) && response['type'] == 'poor_network') {
+      //   isPoorNetwork.value = true;
+      //   isSyncingToLive.value = false;
+      //   showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
+      //   retryForStableNetwork();
+      //   break;
+      // }
+      
+      if (isNotNull(response) && isNotNull(response['error']) && !response['error']) {
+        print('observation created');
+
+        if (isNotNull(response['data']['sync']) && isNotNull(response['data']['sync']['key'])) {
+          await assessmentRepoLocal.updateLocalStatus(assessment['id'], 1);
+          await syncRepo.updateLatestLocalSyncKey(response['data']['sync']['key']);
+        }
+
+        // patientRepoLocal.updateLocalStatus(patient['id'], true);
+        // syncRepo.updateLatestLocalSyncKey(key);
+
+      } else {
+        print('assessment not synced');
+        print(response);
+        if (isNotNull(response) && response['message'] == 'Unauthorized') {
+          showWarningSnackBar('Error', 'Session is expired. Login again to sync data');
+        }
+      }
+    }
+
+    for (var observation in localNotSyncedObservations) {
+
+      print('into local observations');
+      print(observation['data']);
+      print(observation['meta']);
+      var data = {
+        'id': observation['id'],
+        'body': observation['body'],
+        'meta': observation['meta']
+      };
+
+      var response = await observationRepo.create(data);
+      print('observation create resposne');
+      print(response);
+
+      //TODO: check slow network
+
+      // if (isNotNull(response['exception']) && response['type'] == 'poor_network') {
+      //   isPoorNetwork.value = true;
+      //   isSyncingToLive.value = false;
+      //   showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
+      //   retryForStableNetwork();
+      //   break;
+      // }
+      
+      if (isNotNull(response) && isNotNull(response['error']) && !response['error']) {
+        print('observation created');
+
+        if (isNotNull(response['data']['sync']) && isNotNull(response['data']['sync']['key'])) {
+          await observationRepoLocal.updateLocalStatus(observation['id'], 1);
+          await syncRepo.updateLatestLocalSyncKey(response['data']['sync']['key']);
+        }
+
+        // patientRepoLocal.updateLocalStatus(patient['id'], true);
+        // syncRepo.updateLatestLocalSyncKey(key);
+
+      } else {
+        print('observaton not synced');
+        print(response);
+        if (isNotNull(response) && response['message'] == 'Unauthorized') {
+          showWarningSnackBar('Error', 'Session is expired. Login again to sync data');
+        }
+      }
+    }
+
+
+
+
     await Future.delayed(const Duration(seconds: 5));
 
     isSyncingToLive.value = false;
@@ -159,7 +325,7 @@ class SyncController extends GetxController {
 
     // });
     if (!isPoorNetwork.value) {
-      getLocalNotSyncedPatient();
+      getAllStatsData();
     }
     
   }
@@ -167,7 +333,7 @@ class SyncController extends GetxController {
   retryForStableNetwork() async {
     var retryCount = 10;
     var count = 0;
-    var duration = Duration(seconds: 5);
+    var duration = Duration(seconds: 60);
     Timer.periodic(duration, (timer) async {
       count++;
       print(timer);
@@ -219,6 +385,10 @@ class SyncController extends GetxController {
     if (syncs.value.isEmpty) {
       return;
     } 
+
+    if (isPoorNetwork.value) {
+      return;
+    }
     var tempSyncs = [...syncs.value];
 
     var removeItems = [];
@@ -227,21 +397,64 @@ class SyncController extends GetxController {
     for (var item in tempSyncs) {
       if (item['collection'] == 'patients') {
         if (item['action'] == 'create') {
-          var patient =
-              await PatientController().getPatient(item['document_id']);
+          var patient = await PatientController().getPatient(item['document_id']);
           print('patient');
           print(patient);
-          if (isNotNull(patient) &&
-              isNotNull(patient['error']) &&
-              !patient['error'] &&
-              isNotNull(patient['data'])) {
+          if (isNotNull(patient) && isNotNull(patient['error']) && !patient['error'] && isNotNull(patient['data'])) {
             print('creating local patient');
-            var localPatient = await PatientReposioryLocal()
-                .createFromLive(patient['data']['id'], patient['data']);
+            var localPatient = await PatientReposioryLocal().createFromLive(patient['data']['id'], patient['data']);
             print('after creating local patient');
 
             if (isNotNull(localPatient)) {
               print('updating synnc key');
+              var updateSync = await updateLocalSyncKey(item['key']);
+              print('after updating sync key');
+              print(item['key']);
+              print(updateSync);
+              if (isNotNull(updateSync)) {
+                syncs.remove(item);
+              }
+            }
+          }
+        }
+      }
+
+      else if (item['collection'] == 'assessments') {
+        if (item['action'] == 'create') {
+          var assessment = await assessmentController.getAssessmentById(item['document_id']);
+          print('assessment');
+          print(assessment);
+          if (isNotNull(assessment) && isNotNull(assessment['error']) && !assessment['error'] && isNotNull(assessment['data'])) {
+            print('creating local assessment');
+            var localAssessment = await assessmentRepoLocal.createLocalAssessment(assessment['data']['id'], assessment['data'], true);
+            print('after creating local assessment');
+
+            if (isNotNull(localAssessment)) {
+              print('updating sync key');
+              var updateSync = await updateLocalSyncKey(item['key']);
+              print('after updating sync key');
+              print(item['key']);
+              print(updateSync);
+              if (isNotNull(updateSync)) {
+                syncs.remove(item);
+              }
+            }
+          }
+        }
+      }
+
+      else if (item['collection'] == 'observations') {
+        if (item['action'] == 'create') {
+          var observation = await observationController.getLiveObservationsById(item['document_id']);
+          print('observations');
+          print(observation);
+          if (isNotNull(observation) && isNotNull(observation['error']) && !observation['error'] && isNotNull(observation['data'])) {
+            print('creating local observation');
+            var localObservation = await observationRepoLocal.create(observation['data']['id'], observation['data'], true);
+            print('after creating local observation');
+
+            if (isNotNull(localObservation)) {
+              print('updating sync key');
               var updateSync = await updateLocalSyncKey(item['key']);
               print('after updating sync key');
               print(item['key']);
@@ -258,7 +471,7 @@ class SyncController extends GetxController {
     await Future.delayed(const Duration(seconds: 3));
     print('hello');
     isSyncingToLive.value = false;
-    getLocalNotSyncedPatient();
+    getAllStatsData();
   }
 
 
@@ -272,18 +485,13 @@ class SyncController extends GetxController {
       key = response[0]['key'];
     }
 
-    getLatestSyncInfo(key);
+    await getLatestSyncInfo(key);
   }
 
   getLocalAssessments() async {
-    var response = await assessmentController.getAssessmentsByPatients([]);
-
-    print('local key response');
-
-    var key = '';
-    if (isNotNull(response) && response.isNotEmpty) {
-      key = response[0]['key'];
-    }
+    var response = await assessmentController.getAllLocalAssessments();
+    print('local assessments');
+    print(response);
   }
 
   checkLocationData() async {
@@ -320,10 +528,11 @@ class SyncController extends GetxController {
 
     var response = await syncRepo.getLatestSyncInfo(data);
     if (isNotNull(response['exception']) && response['type'] == 'poor_network') {
-      // isPoorNetwork.value = true;
+      isPoorNetwork.value = true;
+      isSyncingToLive.value = false;
       showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
-      // retryForStableNetwork();
-      // return;
+      retryForStableNetwork();
+      return;
     }
     print('getLatestSyncInfo');
     print(response);
@@ -350,5 +559,10 @@ class SyncController extends GetxController {
       oldKey = response[0]['key'];
     }
     return await syncRepo.updateLocalSyncKey(key, oldKey);
+  }
+
+  emptyLocalDatabase() async {
+    await syncRepo.emptyDatabase();
+    getAllStatsData();
   }
 }

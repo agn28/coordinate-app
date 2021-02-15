@@ -1,4 +1,9 @@
+import 'package:connectivity/connectivity.dart';
+import 'package:flutter/material.dart';
+import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
+import 'package:nhealth/controllers/observation_controller.dart';
+import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/assessment.dart';
 import 'package:nhealth/models/auth.dart';
@@ -11,10 +16,17 @@ import 'package:nhealth/repositories/assessment_repository.dart';
 import 'package:nhealth/repositories/local/assessment_repository_local.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:nhealth/repositories/observation_repository.dart';
+import 'package:nhealth/repositories/sync_repository.dart';
+import 'package:uuid/uuid.dart';
+
+import '../app_localizations.dart';
 
 var bloodPressures = [];
 
 class AssessmentController {
+
+  var assesmentRepoLocal = AssessmentRepositoryLocal();
 
   /// Get all the assessments.
   getAllAssessmentsByPatient() async {
@@ -54,14 +66,40 @@ class AssessmentController {
   }
 
   getLiveAllAssessmentsByPatient() async {
-    var assessments = await AssessmentRepository().getAllAssessments();
+    var response = await AssessmentRepository().getAllAssessments();
+
+    print('encounter respose ' + response.toString());
     var data = [];
-    if (assessments == null) {
+    // if (response == null) {
+    //   return data;
+    // }
+
+    if (isNull(response) || isNotNull(response['exception'])) {
+      print('into exception');
+      var patientId = Patient().getPatient()['id'];
+      var localResponse = await AssessmentRepositoryLocal().getAssessmentsByPatient(patientId);
+      print('localResponse');
+      print(localResponse);
+      if (isNotNull(localResponse)) {
+        localResponse.forEach((assessment) {
+
+          var parseData = json.decode(assessment['data']);
+          
+          data.add({
+            'id': assessment['id'],
+            'data': parseData['body'],
+            'meta': parseData['meta']
+          });
+        });
+        
+      }
+
       return data;
+
     }
 
-    if (assessments['error'] != null && !assessments['error']) {
-      await assessments['data'].forEach((assessment) {
+    if (response['error'] != null && !response['error']) {
+      await response['data'].forEach((assessment) {
         data.add({
           'id': assessment['id'],
           'data': assessment['body'],
@@ -74,8 +112,40 @@ class AssessmentController {
     return data;
   }
 
+  getAssessmentById(id) async {
+    var assessment = await AssessmentRepository().getAssessmentsById(id);
+
+    var data;
+
+    // if (assessment['error'] != null && !assessment['error']) {
+    //   data = {
+    //     'id': assessment['data']['id'],
+    //     'data': assessment['data']['body'],
+    //     'meta': assessment['data']['meta']
+    //   };
+    // }
+
+    return assessment;
+  }
+
   /// Get all the assessments.
   getAllAssessments() async {
+    var assessments = await AssessmentRepositoryLocal().getAllAssessments();
+    var data = [];
+    var parsedData;
+
+    await assessments.forEach((assessment) {
+      parsedData = jsonDecode(assessment['data']);
+      data.add({
+        'id': assessment['id'],
+        'data': parsedData['body'],
+        'meta': parsedData['meta']
+      });
+    });
+    return data;
+  }
+
+  getAllLocalAssessments() async {
     var assessments = await AssessmentRepositoryLocal().getAllAssessments();
     var data = [];
     var parsedData;
@@ -178,6 +248,124 @@ class AssessmentController {
 
     return status;
   }
+
+
+
+  createSyncAssessment(context, type, screening_type, comment) async {
+
+    var data = _prepareData(type, screening_type, comment);
+
+    var assessmentId = Uuid().v4();
+    
+    Map<String, dynamic> apiData = {
+      'id': assessmentId
+    };
+
+    apiData.addAll(data);
+
+    var response = await createAssessment(context, assessmentId, data, apiData);
+
+    if (isNotNull(response)) {
+      await ObservationController().prepareAndCreateObservations(context, assessmentId);
+    }
+    
+
+
+  }
+
+  createAssessment(context, assessmentId, data, apiData) async {
+
+    var response;
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+      // I am connected to a mobile network.
+
+      print('connected');
+      // return;
+
+      print('live assessment create');
+
+      var apiResponse = await AssessmentRepository().create(apiData);
+      print('apiResponse');
+
+      print(apiResponse);
+
+      if (isNull(apiResponse)) {
+        
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text(
+              "Error: ${AppLocalizations.of(context).translate('somethingWrong')}"),
+          backgroundColor: kPrimaryRedColor,
+        ));
+        return;
+      } else if (apiResponse['exception'] != null) {
+        if (apiResponse['type'] == 'unknown') {
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text('Error: ${apiResponse['message']}'),
+            backgroundColor: kPrimaryRedColor,
+          ));
+          return;
+        }
+
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text('Warning: ${apiResponse['message']}. Using offline...'),
+          backgroundColor: kPrimaryYellowColor,
+        ));
+
+        response = await assesmentRepoLocal.createLocalAssessment(assessmentId, data, false);
+        return response;
+      } else if (apiResponse['error'] != null && apiResponse['error']) {
+        //TODO: need to change the logic
+        if (apiResponse['message'] == 'Patient already exists.') {
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text(
+                "Error: ${AppLocalizations.of(context).translate('nidValidation')}"),
+            backgroundColor: kPrimaryRedColor,
+          ));
+          return;
+        } else {
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text("Error: ${apiResponse['message']}"),
+            backgroundColor: kPrimaryRedColor,
+          ));
+          return;
+        }
+      } else if (apiResponse['error'] != null && !apiResponse['error']) {
+        print('into success');
+        response = await assesmentRepoLocal.createLocalAssessment(assessmentId, data, true);
+
+        // response = await await PatientReposioryLocal()
+        //         .createFromLive(response['patient']['id'], data);
+
+
+        if (isNotNull(apiResponse['data']['sync']) && isNotNull(apiResponse['data']['sync']['key'])) {
+          print('into assessment sync update');
+          var updateSync = await SyncRepository().updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
+          print('after updating sync key');
+          print(updateSync);
+        }
+        
+ 
+        return response;
+      }
+
+      return response;
+      // response = await PatientReposioryLocal().create(data);
+
+    } else {
+      print('not connected');
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text('Warning: No Internet. Using offline...'),
+        backgroundColor: kPrimaryYellowColor,
+      ));
+      response = await assesmentRepoLocal.createLocalAssessment(assessmentId, data, false);
+      return response;
+    }
+  }
+
+
+
+
 
   update(type, comment) {
     var data = _prepareUpdateData(type, comment);

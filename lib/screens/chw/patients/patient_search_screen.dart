@@ -383,7 +383,7 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
                         controller: _tabController,
                                         
                         children: [
-                          Container(
+                          SingleChildScrollView(
                             child: Column(
                               children: <Widget>[
                                 // SizedBox(height: 20,),

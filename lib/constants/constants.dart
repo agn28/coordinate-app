@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 //urls
-// const String apiUrl = 'http://ca5327b5edab.ngrok.io/api/v1/';
+// const String apiUrl = 'http://3be5841fab07.ngrok.io/api/v1/';
 const String apiUrl = 'https://coordinate-api.monarko.com/api/v1/';
 // const String apiUrl = 'https://brac-api.ghrucoordinate.com/api/v1/';
 
 // const String gsBucket = 'gs://brac-coordinate.appspot.com';
 const String gsBucket = 'gs://nhealth-demo.appspot.com';
 
-var httpRequestTimeout = 15;
+var httpRequestTimeout = 5;
 
 const kTextInputColorGrey = Color(0xFFE5E5E5);
 const kPrimaryColor = Color(0xFF01579B);

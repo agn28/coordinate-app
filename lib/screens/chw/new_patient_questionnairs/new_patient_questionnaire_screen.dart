@@ -22,7 +22,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 final GlobalKey<FormState> _patientFormKey = new GlobalKey<FormState>();
 final GlobalKey<FormState> _causesFormKey = new GlobalKey<FormState>();
-final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 final _temperatureController = TextEditingController();
 final _systolicController = TextEditingController();
 final _diastolicController = TextEditingController();
@@ -176,6 +175,7 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
   }
 
   goToHome(recommendation, data) {
+    print('into go to home ' + recommendation.toString());
     if (recommendation) {
       Navigator.of(context).pushReplacementNamed(MedicalRecommendationScreen.path, arguments: data);
     } else {
@@ -248,7 +248,6 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).translate('newPatientQuestionnaire')),
       ),
@@ -341,6 +340,7 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
                       print(Questionnaire().qnItems);
                     }
                     if (nextText =='COMPLETE') {
+                      //TODO: remove the complete button
                       _completeStep();
                     }
                     if (_currentStep == 2) {
@@ -357,13 +357,13 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
                   });
                 },
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                child: Row(
+                child: _currentStep < 3 ? Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     Text(nextText, style: TextStyle(fontSize: 20)),
                     Icon(Icons.chevron_right)
                   ],
-                ),
+                ) : Container(),
               ) : Container()
             ),
           ],
@@ -372,16 +372,20 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
     );
   }
 
-  Future _completeStep()async{
+  Future _completeStep() async {
 
     setLoader(true);
 
     var patient = Patient().getPatient();
 
     print(patient['data']['age']);
-    var response = await AssessmentController().createOnlyAssessment('new patient questionnaire', '', '');
+    // var response = await AssessmentController().createOnlyAssessment('new patient questionnaire', '', '');
+    var response = await AssessmentController().createSyncAssessment(context, 'new patient questionnaire', '', '');
 
     setLoader(false);
+
+    print('response');
+    print(response);
 
     if (patient['data']['age'] != null && patient['data']['age'] > 40) {
       var data = {
@@ -1204,11 +1208,11 @@ class _InitialCounsellingState extends State<InitialCounselling> {
 
                                     print(patient['data']['age']);
                                     // return;
-                                    var response = await AssessmentController().createOnlyAssessment('new patient questionnaire', '', '');
+                                    // var response = await AssessmentController().createOnlyAssessment('new patient questionnaire', '', '');
+                                    var response = await AssessmentController().createSyncAssessment(context, 'new patient questionnaire', '', '');
 
                                     widget.parent.setLoader(false);
                                     print('successss');
-                                    return;
 
                                     if (patient['data']['age'] != null && patient['data']['age'] > 40) {
                                       var data = {
