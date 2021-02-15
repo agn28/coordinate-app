@@ -77,7 +77,7 @@ class AssessmentController {
     if (isNull(response) || isNotNull(response['exception'])) {
       print('into exception');
       var patientId = Patient().getPatient()['id'];
-      var localResponse = await AssessmentRepositoryLocal().getAssessmentsByPatient(patientId);
+      var localResponse = await AssessmentRepositoryLocal().getAssessmentsByPatients(patientId);
       print('localResponse');
       print(localResponse);
       if (isNotNull(localResponse)) {
