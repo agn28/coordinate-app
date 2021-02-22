@@ -7,6 +7,7 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/followup_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
@@ -73,13 +74,14 @@ class _ChwReferralListScreenState extends State<ChwReferralListScreen> {
     var patientID = Patient().getPatient()['id'];
 
     var data = await FollowupController().getFollowupsByPatient(patientID);
-
+    print('DATA');
+    print(data);
     
 
-    if (data['message'] == 'Unauthorized') {
-      Helpers().logout(context);
-    }
-    print(data['data'][0]);
+    // if (data['message'] == 'Unauthorized') {
+    //   Helpers().logout(context);
+    // }
+    // print(data['data'][0]);
 
     setState(() {
       referrals = data['data'];
@@ -136,11 +138,15 @@ class _ChwReferralListScreenState extends State<ChwReferralListScreen> {
   }
 
   convertDateFromSeconds(date) {
-    if (date['_seconds'] != null) {
-      var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
-
-      return DateFormat("MMMM d, y").format(parsedDate).toString();
+    if (isNotNull(date)) {
+      if (date is String) {
+        return date;
+      } else if (date['_seconds'] != null) {
+        var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
+        return DateFormat("MMMM d, y").format(parsedDate).toString();
+      }
     }
+
     return '';
   }
 

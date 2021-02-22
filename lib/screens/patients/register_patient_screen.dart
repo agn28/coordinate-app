@@ -126,7 +126,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     selectedUpazila = {};
     _currentStep = 0;
 
-    // fillDummyData(); //Remove this
+    fillDummyData(); //Remove this
 
     
   }
@@ -229,7 +229,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     // });
     birthDateController.text = '11';
     birthMonthController.text = '10';
-    birthYearController.text = '1990';
+    birthYearController.text = '1960';
     // districtController.text = patient['data']['address']['district'];
     postalCodeController.text = '1216';
     villageController.text = 'Test';
@@ -1448,6 +1448,8 @@ class _ViewSummaryState extends State<ViewSummary> {
               var connectivityResult = await (Connectivity().checkConnectivity());
 
               var response = isEditState != null ? await PatientController().update(formData, false) : await PatientController().create(context, formData);
+
+              print('after create patient');
               
               setState(() {
                 isLoading = false;
@@ -1455,6 +1457,7 @@ class _ViewSummaryState extends State<ViewSummary> {
 
               if (response != null) {
                 if (response == 'success') {
+                  print('into success');
                   _RegisterPatientState()._clearForm();
                   Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen(isEditState: isEditState));
                 }
@@ -1487,6 +1490,7 @@ class _ViewSummaryState extends State<ViewSummary> {
                 }
 
                 else if (response['id'] != null ) {
+                  print('into id');
                   _RegisterPatientState()._clearForm();
                   Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen(isEditState: isEditState));
                   return;

@@ -140,7 +140,17 @@ class PatientController {
   }
 
   getReferralPatients() async {
-    var response = await PatientRepository().getReferralPatients();
+    var response;
+
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+      var apiResponse = await PatientRepository().getReferralPatients();
+
+      return apiResponse;
+    
+    } else {
+      response = PatientReposioryLocal().getReferralPatients();
+    }
 
     return response;
   }
@@ -165,7 +175,7 @@ class PatientController {
       data['id'] = uuid;
 
       print('live patient create');
-
+      print('before create patient id ' + uuid.toString());
       apiResponse = await PatientRepository().create(data);
       print('apiResponse');
 
@@ -192,7 +202,7 @@ class PatientController {
           backgroundColor: kPrimaryYellowColor,
         ));
 
-        response = await PatientReposioryLocal().create(context, data, false);
+        response = await PatientReposioryLocal().create(context, uuid, data, false);
         return response;
       } else if (apiResponse['error'] != null && apiResponse['error']) {
         if (apiResponse['message'] == 'Patient already exists.') {
@@ -210,7 +220,7 @@ class PatientController {
           return;
         }
       } else if (apiResponse['error'] != null && !apiResponse['error']) {
-        response = await PatientReposioryLocal().create(context, data, true);
+        response = await PatientReposioryLocal().create(context, uuid, data, true);
 
         // response = await await PatientReposioryLocal()
         //         .createFromLive(response['patient']['id'], data);
@@ -235,7 +245,7 @@ class PatientController {
         content: Text('Warning: No Internet. Using offline...'),
         backgroundColor: kPrimaryYellowColor,
       ));
-      response = await PatientReposioryLocal().create(context, data, false);
+      response = await PatientReposioryLocal().create(context, uuid, data, false);
     }
 
     return response;

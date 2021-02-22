@@ -8,11 +8,15 @@ import 'package:nhealth/controllers/observation_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/repositories/assessment_repository.dart';
+import 'package:nhealth/repositories/care_plan_repository.dart';
 import 'package:nhealth/repositories/local/assessment_repository_local.dart';
+import 'package:nhealth/repositories/local/care_plan_repository_local.dart';
 import 'package:nhealth/repositories/local/observation_repository_local.dart';
 import 'package:nhealth/repositories/local/patient_repository_local.dart';
+import 'package:nhealth/repositories/local/referral_repository_local.dart';
 import 'package:nhealth/repositories/observation_repository.dart';
 import 'package:nhealth/repositories/patient_repository.dart';
+import 'package:nhealth/repositories/referral_repository.dart';
 import 'package:nhealth/repositories/sync_repository.dart';
 
 import 'assessment_controller.dart';
@@ -32,6 +36,9 @@ class SyncController extends GetxController {
   var localNotSyncedAssessments = [].obs;
   var localObservationsAll = [].obs;
   var localNotSyncedObservations = [].obs;
+  var localNotSyncedReferrals = [].obs;
+  var localCareplansAll = [].obs;
+  var localNotSyncedCareplans = [].obs;
   var syncRepo = SyncRepository();
   var patientRepoLocal = PatientReposioryLocal();
   var patientRepo = PatientRepository();
@@ -42,6 +49,10 @@ class SyncController extends GetxController {
   var observationController = ObservationController();
   var observationRepoLocal = ObservationRepositoryLocal();
   var observationRepo = ObservationRepository();
+  var referralRepo = ReferralRepository();
+  var referralRepoLocal = ReferralRepositoryLocal();
+  var careplanRepo = CarePlanRepository();
+  var careplanRepoLocal = CarePlanRepositoryLocal();
 
   /// Create assessment.
   /// Assessment [type] and [comment] is required as parameter.
@@ -56,10 +67,12 @@ class SyncController extends GetxController {
     getLocalNotSyncedPatient();
     getLocalNotSyncedAssessments();
     getLocalNotSyncedObservations();
+    getLocalNotSyncedReferrals();
 
     var allLocalPatients = await patientController.getAllLocalPatients();
     var allLocalAssessments = await assessmentController.getAllLocalAssessments();
     var allLocalObservations = await observationController.getAllLocalObservations();
+    var allLocalCareplans = await careplanRepoLocal.getAllCareplans();
 
     var allLivePatients = await patientRepo.getPatients();
 
@@ -70,6 +83,7 @@ class SyncController extends GetxController {
     localPatientsAll.value = allLocalPatients;
     localAssessmentsAll.value = allLocalAssessments;
     localObservationsAll.value = allLocalObservations;
+    localCareplansAll.value = allLocalCareplans;
 
   }
 
@@ -136,6 +150,27 @@ class SyncController extends GetxController {
             'patient_id': parsedData['body']['patient_id'],
             'assessment_id': parsedData['body']['assessment_id'],
           },
+          'meta': parsedData['meta']
+        });
+      });
+    }
+  }
+
+  getLocalNotSyncedReferrals() async {
+    print(localNotSyncedPatients);
+    var response = await referralRepoLocal.getNotSyncedReferrals();
+
+    print('not synced referral response');
+    // print(response);
+
+    if (isNotNull(response)) {
+      localNotSyncedReferrals.value = [];
+
+      response.forEach((item) {
+        var parsedData = jsonDecode(item['data']);
+        localNotSyncedReferrals.add({
+          'id': item['id'],
+          'body': parsedData['body'],
           'meta': parsedData['meta']
         });
       });
@@ -315,7 +350,50 @@ class SyncController extends GetxController {
       }
     }
 
+    for (var referral in localNotSyncedReferrals) {
 
+      print('into local observations');
+      print(referral['data']);
+      print(referral['meta']);
+      var data = {
+        'id': referral['id'],
+        'body': referral['body'],
+        'meta': referral['meta']
+      };
+
+      var response = await referralRepo.create(data);
+      print('observation create resposne');
+      print(response);
+
+      //TODO: check slow network
+
+      // if (isNotNull(response['exception']) && response['type'] == 'poor_network') {
+      //   isPoorNetwork.value = true;
+      //   isSyncingToLive.value = false;
+      //   showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
+      //   retryForStableNetwork();
+      //   break;
+      // }
+      
+      if (isNotNull(response) && isNotNull(response['error']) && !response['error']) {
+        print('referral created');
+
+        if (isNotNull(response['data']['sync']) && isNotNull(response['data']['sync']['key'])) {
+          await referralRepoLocal.updateLocalStatus(referral['id'], 1);
+          await syncRepo.updateLatestLocalSyncKey(response['data']['sync']['key']);
+        }
+
+        // patientRepoLocal.updateLocalStatus(patient['id'], true);
+        // syncRepo.updateLatestLocalSyncKey(key);
+
+      } else {
+        print('referral not synced');
+        print(response);
+        if (isNotNull(response) && response['message'] == 'Unauthorized') {
+          showWarningSnackBar('Error', 'Session is expired. Login again to sync data');
+        }
+      }
+    }
 
 
     await Future.delayed(const Duration(seconds: 5));
@@ -419,6 +497,7 @@ class SyncController extends GetxController {
         }
       }
 
+      //TODO: refactor this repeated process
       else if (item['collection'] == 'assessments') {
         if (item['action'] == 'create') {
           var assessment = await assessmentController.getAssessmentById(item['document_id']);
@@ -454,6 +533,53 @@ class SyncController extends GetxController {
             print('after creating local observation');
 
             if (isNotNull(localObservation)) {
+              print('updating sync key');
+              var updateSync = await updateLocalSyncKey(item['key']);
+              print('after updating sync key');
+              print(item['key']);
+              print(updateSync);
+              if (isNotNull(updateSync)) {
+                syncs.remove(item);
+              }
+            }
+          }
+        }
+      }
+
+      else if (item['collection'] == 'referrals') {
+        if (item['action'] == 'create') {
+          var referral = await referralRepo.getReferralById(item['document_id']);
+          print('referrals');
+          print(referral);
+          if (isNotNull(referral) && isNotNull(referral['error']) && !referral['error'] && isNotNull(referral['data'])) {
+            print('creating local referral');
+            var localReferral = await referralRepoLocal.create(referral['data']['id'], referral['data'], true);
+            print('after creating local observation');
+
+            if (isNotNull(localReferral)) {
+              print('updating sync key');
+              var updateSync = await updateLocalSyncKey(item['key']);
+              print('after updating sync key');
+              print(item['key']);
+              print(updateSync);
+              if (isNotNull(updateSync)) {
+                syncs.remove(item);
+              }
+            }
+          }
+        }
+      }
+      else if (item['collection'] == 'care_plans') {
+        if (item['action'] == 'create') {
+          var careplan = await careplanRepo.getCarePlanById(item['document_id']);
+          print('careplan');
+          print(careplan);
+          if (isNotNull(careplan) && isNotNull(careplan['error']) && !careplan['error'] && isNotNull(careplan['data'])) {
+            print('creating local referral');
+            var localCareplan = await careplanRepoLocal.create(careplan['data']['id'], careplan['data'], true);
+            print('after creating local careplan');
+
+            if (isNotNull(localCareplan)) {
               print('updating sync key');
               var updateSync = await updateLocalSyncKey(item['key']);
               print('after updating sync key');

@@ -1,4 +1,10 @@
+import 'dart:convert';
+
+import 'package:connectivity/connectivity.dart';
+import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/repositories/followup_repository.dart';
+import 'package:nhealth/repositories/local/referral_repository_local.dart';
+import 'package:nhealth/repositories/referral_repository.dart';
 
 
 class FollowupController {
@@ -17,7 +23,43 @@ class FollowupController {
   }
 
   getFollowupsByPatient(patientID) async {
-    var response = await FollowupRepository().getFollowupsByPatient(patientID);
+    var response;
+
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+      var apiResponse = await FollowupRepository().getFollowupsByPatient(patientID);
+
+      return apiResponse;
+    
+    } else {
+      response = await ReferralRepositoryLocal().getReferralsByPatient(patientID);
+
+      print('no internet');
+      print(response);
+
+      var data;
+
+      if (isNotNull(response)) {
+        data = {
+          'data': []
+        };
+
+        response.forEach((referral) {
+          var parsedData = json.decode(referral['data']);
+
+          data['data'].add({
+            'id': referral['id'],
+            'body': parsedData['body'],
+            'meta': parsedData['meta']
+          });
+        });
+        print('data');
+        print(data);
+
+        return data;
+        
+      }
+    }
 
     return response;
   }

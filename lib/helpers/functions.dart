@@ -14,3 +14,10 @@ showErrorSnackBar(title, message) {
 showWarningSnackBar(title, message) {
   Get.snackbar(title, message, backgroundColor: kPrimaryYellowColor, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15), margin: EdgeInsets.all(0), borderRadius: 2);
 }
+
+bool isNumeric(s) {
+  if(s == null) {
+    return false;
+  }
+  return double.parse(s, (e) => null) != null;
+}

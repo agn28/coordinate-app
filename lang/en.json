@@ -405,7 +405,7 @@
   "behaviouralRiskFactor": "Ask important aspects of behavioural risk factor",
   "selectEncounterType": "Select encounter type",
   "patientsUnwell": "The patients seems to be severly unwell",
-  "seekingMedicalAttention'": "Recommend seeking medical attention",
+  "seekingMedicalAttention": "Recommend seeking medical attention",
   "submitForReferral": "SUBMIT FOR REFERRAL",
   "action": "Action",
   "haveHistory": "Do you have a history of (or has ever been told they have) (select all that apply)'",

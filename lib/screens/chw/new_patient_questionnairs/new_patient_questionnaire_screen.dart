@@ -321,50 +321,52 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
               ),
             ),
             Expanded(
-              child: _currentStep < _mySteps().length || nextHide ? FlatButton(
-                onPressed: ()async {
-                  setState(() {
-                    print(_currentStep);
-                    if (_currentStep == 0) {
-                      Questionnaire().addNewMedicalHistory('medical_history', medicalHistoryAnswers);
-                      print(Questionnaire().qnItems);
-                    }
-
-                    if (_currentStep == 1) {
-                      Questionnaire().addNewMedication('medication', medicationAnswers);
-                      print(Questionnaire().qnItems);
-                    }
-
-                    if (_currentStep == 2) {
-                      Questionnaire().addNewRiskFactors('risk_factors', riskAnswers);
-                      print(Questionnaire().qnItems);
-                    }
-                    if (nextText =='COMPLETE') {
-                      //TODO: remove the complete button
-                      _completeStep();
-                    }
-                    if (_currentStep == 2) {
-                      print('asdas');
+              child: _currentStep < 3 ? Container(
+                child: _currentStep < _mySteps().length || nextHide ? FlatButton(
+                  onPressed: ()async {
+                    setState(() {
                       print(_currentStep);
-                      nextHide = true;
-                      nextText = 'COMPLETE';
-                    }
-                    if (_currentStep < 4) {
-                     
-                        // If the form is valid, display a Snackbar.
-                        _currentStep = _currentStep + 1;
-                    }
-                  });
-                },
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                child: _currentStep < 3 ? Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Text(nextText, style: TextStyle(fontSize: 20)),
-                    Icon(Icons.chevron_right)
-                  ],
-                ) : Container(),
-              ) : Container()
+                      if (_currentStep == 0) {
+                        Questionnaire().addNewMedicalHistory('medical_history', medicalHistoryAnswers);
+                        print(Questionnaire().qnItems);
+                      }
+
+                      if (_currentStep == 1) {
+                        Questionnaire().addNewMedication('medication', medicationAnswers);
+                        print(Questionnaire().qnItems);
+                      }
+
+                      if (_currentStep == 2) {
+                        Questionnaire().addNewRiskFactors('risk_factors', riskAnswers);
+                        print(Questionnaire().qnItems);
+                      }
+                      if (nextText =='COMPLETE') {
+                        //TODO: remove the complete button
+                        _completeStep();
+                      }
+                      if (_currentStep == 2) {
+                        print('asdas');
+                        print(_currentStep);
+                        nextHide = true;
+                        nextText = 'COMPLETE';
+                      }
+                      if (_currentStep < 4) {
+                       
+                          // If the form is valid, display a Snackbar.
+                          _currentStep = _currentStep + 1;
+                      }
+                    });
+                  },
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  child:  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Text(nextText, style: TextStyle(fontSize: 20)),
+                      Icon(Icons.chevron_right)
+                    ],
+                  ),
+                ): Container(),
+              ) : Container() 
             ),
           ],
         )
@@ -392,7 +394,8 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
         'meta': {
           'patient_id': Patient().getPatient()['id'],
           "collected_by": Auth().getAuth()['uid'],
-          "status": "pending"
+          "status": "pending",
+          "created_at": DateTime.now().toString()
         },
         'body': {},
         'referred_from': 'new questionnaire'

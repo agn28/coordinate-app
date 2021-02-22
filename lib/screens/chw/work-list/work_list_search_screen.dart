@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -87,35 +88,42 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
   /// Get all the worklist
   _getPatients() async {
 
-    var pending = await PatientController().getPatientsWorklist(context, 'pending');
-    var completed = await PatientController().getPatientsWorklist(context, 'completed');
-    var past = await PatientController().getPatientsWorklist(context, 'past');
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+      var pending = await PatientController().getPatientsWorklist(context, 'pending');
+      var completed = await PatientController().getPatientsWorklist(context, 'completed');
+      var past = await PatientController().getPatientsWorklist(context, 'past');
+      print('pending');
+      print(pending);
 
-    if (pending['error'] != null && !pending['error']) {
+      if (pending['error'] != null && !pending['error']) {
+        setState(() {
+          allPendingPatients = pending['data'];
+          pendingPatientsSort();
+          pendingPatients = allPendingPatients;
+          print(pendingPatients[0]['body']);
+        });
+      }
+      if (completed['error'] != null && !completed['error']) {
+        setState(() {
+          allCompletedPatients = completed['data'];
+          completedPatientsSort();
+          completedPatients = allCompletedPatients;
+        });
+      }
+      if (past['error'] != null && !past['error']) {
+        setState(() {
+          allPastPatients = past['data'];
+          pastPatientsSort();
+          pastPatients = allPastPatients;
+        });
+      }
       setState(() {
-        allPendingPatients = pending['data'];
-        pendingPatientsSort();
-        pendingPatients = allPendingPatients;
-        print(pendingPatients[0]['body']);
+        isLoading = false;
       });
     }
-    if (completed['error'] != null && !completed['error']) {
-      setState(() {
-        allCompletedPatients = completed['data'];
-        completedPatientsSort();
-        completedPatients = allCompletedPatients;
-      });
-    }
-    if (past['error'] != null && !past['error']) {
-      setState(() {
-        allPastPatients = past['data'];
-        pastPatientsSort();
-        pastPatients = allPastPatients;
-      });
-    }
-    setState(() {
-      isLoading = false;
-    });
+
+
 
   }
 

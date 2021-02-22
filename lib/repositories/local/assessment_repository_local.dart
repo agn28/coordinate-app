@@ -38,13 +38,13 @@ class AssessmentRepositoryLocal {
 
   getAssessmentsByPatient(id) async {
     print('patient id ' + id);
-    final sql = '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE patient_id=$id''';
+    final sql = '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE patient_id="$id"''';
     var assessments;
 
     try {
       assessments = await db.rawQuery(sql);
     } catch(error) {
-      print('error');
+      print('errors');
       print(error);
       return;
     }

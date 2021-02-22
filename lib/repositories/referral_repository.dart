@@ -2,50 +2,31 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import '../constants/constants.dart';
 import 'dart:convert';
 
-class CarePlanRepository {
+class ReferralRepository {
 
-  getCarePlan() async {
-    var authData = await Auth().getStorageAuth() ;
-    var token = authData['accessToken'];
-    var patientID = Patient().getPatient()['id'];
-    return await http.get(
-      apiUrl + 'care-plans/patient/' + patientID,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-    ).then((response) {
-      return json.decode(response.body);
-      
-    }).catchError((error) {
-      print('error ' + error.toString());
-    });
-  }
-
-  getCarePlanById(id) async {
+  create(data) async {
+    print('referral called');
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
 
     var response;
 
-    print(apiUrl + 'care-plans/' + id,);
+    print(apiUrl + 'patients');
 
     try {
       response = await http
-      .get(apiUrl + 'care-plans/' + id,
+      .post(apiUrl + 'followups',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + token
-        },)
-        
+        },
+        body: json.encode(data))
       .timeout(Duration(seconds: httpRequestTimeout));
 
       return json.decode(response.body);
@@ -69,30 +50,12 @@ class CarePlanRepository {
     }
   }
 
-  getReports() async {
+  update(data) async {
+    print('folowup called');
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
-    var patientID = Patient().getPatient()['id'];
-    return await http.get(
-      apiUrl + 'health-reports/',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-    ).then((response) {
-      return json.decode(response.body);
-      
-    }).catchError((error) {
-      print('error ' + error.toString());
-    });
-  }
-
-  create(data) async {
-    var authData = await Auth().getStorageAuth() ;
-    var token = authData['accessToken'];
-    return await http.post(
-      apiUrl + 'health-reports',
+    return await http.put(
+      apiUrl + 'followups/' + data['id'],
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -101,32 +64,67 @@ class CarePlanRepository {
       body: json.encode(data)
     ).then((response) {
       return json.decode(response.body);
-      
     }).catchError((error) {
       print('error ' + error.toString());
     });
   }
 
-  update(data, comment) async {
+  getFollowupsByPatient(patientID) async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
-    return await http.put(
-      apiUrl + 'care-plans/' + data['id'],
+    return await http.get(
+      apiUrl + 'patients/' + patientID + '/followups',
       headers: {
-        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
       },
-      body: json.encode({
-        "status": "completed",
-        "comment": comment,
-        "completed_at": DateFormat('y-MM-d').format(DateTime.now())
-      })
     ).then((response) {
+      print(json.decode(response.body));
       return json.decode(response.body);
-      
     }).catchError((error) {
       print('error ' + error.toString());
     });
   }
+
+  getReferralById(id) async {
+    var authData = await Auth().getStorageAuth() ;
+    var token = authData['accessToken'];
+
+    var response;
+
+    print(apiUrl + 'followups/' + id);
+
+    try {
+      response = await http
+      .get(apiUrl + 'followups/' + id,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        })
+      .timeout(Duration(seconds: httpRequestTimeout));
+
+      return json.decode(response.body);
+    } on SocketException {
+      // showErrorSnackBar('Error', 'socketError'.tr);
+      print('socket exception');
+      return {'exception': true, 'message': 'No internet'};
+    } on TimeoutException {
+      // showErrorSnackBar('Error', 'timeoutError'.tr);
+      print('timeout error');
+      return {'exception': true, 'type': 'poor_network', 'message': 'Slow internet'};
+    } on Error catch (err) {
+      print('test error');
+      print(err);
+      // showErrorSnackBar('Error', 'unknownError'.tr);
+      return {
+        'exception': true,
+        'type': 'unknown',
+        'message': 'Something went wrong'
+      };
+    }
+  }
+
   
 }

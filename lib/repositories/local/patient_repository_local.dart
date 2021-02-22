@@ -41,10 +41,87 @@ class PatientReposioryLocal {
     return response;
   }
 
+  getReferralPatients() async {
+    final referralSql = '''SELECT * FROM ${DatabaseCreator.referralTable}''';
+
+    var referrals;
+    var patients;
+
+    try {
+      referrals = await db.rawQuery(referralSql);
+    } catch (error) {
+      print('error');
+      print(error);
+      return;
+    }
+
+    if (isNotNull(referrals) && referrals.isNotEmpty) {
+      var patientIds = referrals.map((item) => '"${item['patient_id']}"').toList();
+
+      final patientSql = '''SELECT * FROM ${DatabaseCreator.patientTable} WHERE id IN (${patientIds.join(', ')})''';
+      print(patientSql);
+
+      try {
+        patients = await db.rawQuery(patientSql);
+      } catch (error) {
+        print('error');
+        print(error);
+        return;
+      }
+
+      if (isNotNull(patients) && patients.isNotEmpty) {
+        var responseData = [];
+        var tempPatients = patients;
+
+        for(var patient in patients) {
+          print(patients.indexOf(patient));
+          print(patient);
+          print('patient loop');
+          var matchedReferral = referrals.where((ref) => ref['patient_id'] == patient['id']).first;
+          var copyPatient = new Map.from(patient);
+          var parsedPatientData = jsonDecode(copyPatient['data']);
+          var patientData = {
+            'id': copyPatient['id'],
+            'body': parsedPatientData['body'],
+            'meta': parsedPatientData['meta']
+          };
+          var parsedData = json.decode(matchedReferral['data']);
+          patientData['body']['pending_referral'] = {
+            'id': matchedReferral['id'],
+            'body': parsedData['body'],
+            'meta': parsedData['meta']
+          };
+          responseData.add(patientData);
+        }
+        // tempPatients.forEach((patient, index) {
+        //   var matchedReferral = referrals.where((ref) => ref['patient_id'] == patient['id']).first;
+        //   var data = patients[index];
+        //   var parsedData = json.decode(matchedReferral['data']);
+        //   data['pending_referral'] = {
+        //     'id': matchedReferral['id'],
+        //     'body': parsedData['body'],
+        //     'meta': parsedData['meta']
+        //   };
+        //   responseData.add(data);
+        // });
+
+        print('response data');
+        print(responseData);
+
+        return {
+          'data': responseData
+        };
+      } 
+
+
+    }
+
+    return [];
+  }
+
   /// Create a patient.
   /// Patient [data] is required as parameter.
-  create(context, data, synced) async {
-    var uuid = Uuid().v4();
+  create(context, id, data, synced) async {
 
     var allPatients = await getAllPatients();
     print(allPatients);
@@ -89,7 +166,7 @@ class PatientReposioryLocal {
     )
     VALUES (?,?,?,?,?)''';
     List<dynamic> params = [
-      uuid,
+      id,
       jsonEncode(data),
       data['body']['nid'],
       '',
@@ -116,9 +193,9 @@ class PatientReposioryLocal {
 
     print('result 1');
     print(response);
-    var patient = {'id': uuid, 'data': data['body'], 'meta': data['meta']};
+    var patient = {'id': id, 'data': data['body'], 'meta': data['meta']};
 
-    data['id'] = uuid;
+    data['id'] = id;
     print('result 2');
     await Patient().setPatient(patient);
     print('result 3');

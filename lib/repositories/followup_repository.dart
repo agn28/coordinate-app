@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
@@ -47,19 +50,42 @@ class FollowupRepository {
   getFollowupsByPatient(patientID) async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
-    return await http.get(
-      apiUrl + 'patients/' + patientID + '/followups',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-    ).then((response) {
-      print(json.decode(response.body));
+
+    var response;
+
+    print(apiUrl + 'patients');
+
+    try {
+      response = await http
+      .get(apiUrl + 'patients/' + patientID + '/followups',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },)
+      .timeout(Duration(seconds: httpRequestTimeout));
+
       return json.decode(response.body);
-    }).catchError((error) {
-      print('error ' + error.toString());
-    });
+    } on SocketException {
+      // showErrorSnackBar('Error', 'socketError'.tr);
+      print('socket exception');
+      return {'exception': true, 'message': 'No internet'};
+    } on TimeoutException {
+      // showErrorSnackBar('Error', 'timeoutError'.tr);
+      print('timeout error');
+      return {'exception': true, 'type': 'poor_network', 'message': 'Slow internet'};
+    } on Error catch (err) {
+      print('test error');
+      print(err);
+      // showErrorSnackBar('Error', 'unknownError'.tr);
+      return {
+        'exception': true,
+        'type': 'unknown',
+        'message': 'Something went wrong'
+      };
+    }
+
+    
   }
 
   

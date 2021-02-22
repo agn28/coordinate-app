@@ -168,10 +168,14 @@ class SyncRepository {
     final syncs = await db.rawQuery('''DELETE FROM ${DatabaseCreator.syncTable}''');
     final assessments = await db.rawQuery('''DELETE FROM ${DatabaseCreator.assessmentTable}''');
     final observations = await db.rawQuery('''DELETE FROM ${DatabaseCreator.observationTable}''');
+    final referrals = await db.rawQuery('''DELETE FROM ${DatabaseCreator.referralTable}''');
+    final care_plans = await db.rawQuery('''DELETE FROM ${DatabaseCreator.careplanTable}''');
     print('patient table deleted: ' + patient.toString());
     print('sync table deleted: ' + syncs.toString());
     print('assessments table deleted: ' + assessments.toString());
     print('observations table deleted: ' + observations.toString());
+    print('referrals table deleted: ' + referrals.toString());
+    print('care_plans table deleted: ' + care_plans.toString());
 
   }
 }

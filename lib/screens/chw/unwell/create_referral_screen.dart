@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/followup_controller.dart';
+import 'package:nhealth/controllers/referral_controller.dart';
+import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
@@ -60,23 +62,6 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
-        actions: <Widget>[
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(RegisterPatientScreen(isEdit: true));
-            },
-            child: Container(
-              margin: EdgeInsets.only(right: 30),
-              child: Row(
-                children: <Widget>[
-                  Icon(Icons.edit, color: Colors.white,),
-                  SizedBox(width: 10),
-                  Text(AppLocalizations.of(context).translate('viewOrEditPatient'), style: TextStyle(color: Colors.white))
-                ],
-              )
-            )
-          )
-        ],
       ),
       body: isLoading ? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
         child: SingleChildScrollView(
@@ -104,11 +89,11 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                           fillColor: kSecondaryTextField,
                           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                           border: UnderlineInputBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(4),
-                            topRight: Radius.circular(4),
-                          )
-                        ),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(4),
+                              topRight: Radius.circular(4),
+                            )
+                          ),
                         ),
                         items: [
                           ...referralReasons.map((item) =>
@@ -199,8 +184,6 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                               onPressed: () async {
                                 // Navigator.of(context).pushNamed('/chwNavigation',);
 
-                              
-
                                 var data = widget.referralData;
 
                                 data['body']['reason'] = selectedReason;
@@ -213,16 +196,18 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                                 setState(() {
                                   isLoading = true;
                                 });
-                                var response = await FollowupController().create(data);
+                                var response = await ReferralController().create(context, data);
                                 setState(() {
                                   isLoading = false;
                                 });
                                 print('response');
                                 print(response);
 
-                                // return;
+                                if (isNumeric(response.toString())) {
+                                  Navigator.of(context).pushNamed('/chwHome',);
+                                }
 
-                                if (response['error'] == true && response['message'] =='referral exists') {
+                                else if (response['error'] == true && response['message'] =='referral exists') {
                                   await showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
