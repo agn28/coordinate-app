@@ -167,12 +167,6 @@ var _questions = {
       'medical_history': {
         'items' : [
           {
-            'question': 'Have you ever been diagnosed with Diabetes?',
-            'question_bn': 'আপনার কি কখনও ডায়াবেটিস ধরা পড়েছে?',
-            'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না']
-          },
-          {
             'question': 'Have you ever been diagnosed with Stroke?',
             'question_bn': 'আপনার কি কখনও স্ট্রোক হয়েছে?',
             'options': ['yes', 'no'],
@@ -182,17 +176,26 @@ var _questions = {
             'question': 'Have you ever been diagnosed with heart attack?',
             'question_bn': 'আপনার কি কখনও হার্ট অ্যাটাক হয়েছে?',
             'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না']
+            'options_bn': ['হ্যা', 'না'],
+            'type': 'heart'
+          },
+          {
+            'question': 'Have you ever been diagnosed with hypertension?',
+            'question_bn': 'আপনার কি কখনও উচ্চ রক্তচাপ ধরা পড়েছে?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'type': 'blood_pressure'
+          },
+          {
+            'question': 'Have you ever been diagnosed with Diabetes?',
+            'question_bn': 'আপনার কি কখনও ডায়াবেটিস ধরা পড়েছে?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'type': 'diabetes'
           },
           {
             'question': 'Have you ever been diagnosed with asthma/COPD?',
             'question_bn': 'আপনার কি কখনও হাঁপানি / সিওপিডি (ফুস্ফুসের দীর্ঘমেয়াদী শ্বাসকষ্টজনিত রোগ ধরা পড়েছে?',
-            'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না']
-          },
-          {
-            'question': 'Have you ever been diagnosed with chronic kidney disease?',
-            'question_bn': 'আপনার কি কখনও দীর্ঘস্থায়ী কিডনি রোগ ধরা পড়েছে?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না']
           },
@@ -203,8 +206,8 @@ var _questions = {
             'options_bn': ['হ্যা', 'না']
           },
           {
-            'question': 'Have you ever been diagnosed with hypertension?',
-            'question_bn': 'আপনার কি কখনও উচ্চ রক্তচাপ ধরা পড়েছে?',
+            'question': 'Have you ever been diagnosed with chronic kidney disease?',
+            'question_bn': 'আপনার কি কখনও দীর্ঘস্থায়ী কিডনি রোগ ধরা পড়েছে?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না']
           },
@@ -216,32 +219,44 @@ var _questions = {
             'question': 'Are you taking any medicines for hypertension?',
             'question_bn': 'আপনি ব্লাড-প্রেসার বা উচ্চ রক্তচাপের জন্য কোনও ওষুধ খাচ্ছেন?',
             'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না']
-          },
-          {
-            'question': 'Are you taking any medicines for diabetes?',
-            'question_bn': 'আপনি কি ডায়াবেটিসের কোনও ওষুধ খাচ্ছেন?',
-            'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না']
-          },
-          {
-            'question': 'Are you taking any aspirin/clopidegrol?',
-            'question_bn': 'আপনি কি কোনও অ্যাসপিরিন / ক্লপিডগ্রেল জাতীয় ওষুধ খাচ্ছেন?',
-            'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না']
-          },
-          {
-            'question': 'Are you taking any anti cholesterol drug?',
-            'question_bn': 'আপনি কি কোনও এন্টি কোলেস্টেরল (রক্তে চর্বি কমায় এমন)  ওষুধ গ্রহণ করছেন?',
-            'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না']
+            'options_bn': ['হ্যা', 'না'],
+            'type': 'blood_pressure'
           },
           {
             'question': 'Are you taking the medicines regularly?',
             'question_bn': 'আপনি কি নিয়মিত ওষুধ খাচ্ছেন?',
             'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না']
-          } 
+            'options_bn': ['হ্যা', 'না'],
+            'type': 'blood_pressure_regular_medication'
+          },
+          {
+            'question': 'Are you taking any medicines for diabetes?',
+            'question_bn': 'আপনি কি ডায়াবেটিসের কোনও ওষুধ খাচ্ছেন?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'type': 'diabetes'
+          },
+          {
+            'question': 'Are you taking the medicines regularly?',
+            'question_bn': 'আপনি কি নিয়মিত ওষুধ খাচ্ছেন?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'type': 'diabetes_regular_medication'
+          },
+          {
+            'question': 'Are you taking any aspirin/clopidegrol?',
+            'question_bn': 'আপনি কি কোনও অ্যাসপিরিন / ক্লপিডগ্রেল জাতীয় ওষুধ খাচ্ছেন?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'type': 'heart'
+          },
+          {
+            'question': 'Are you taking any aspirin/clopidegrol?',
+            'question_bn': 'আপনি কি কোনও অ্যাসপিরিন / ক্লপিডগ্রেল জাতীয় ওষুধ খাচ্ছেন?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'type': 'heart_regular_medication'
+          },
         ]
 
       },
@@ -252,58 +267,182 @@ var _questions = {
             'question': 'Do you currently smoke?',
             'question_bn': 'আপনি কি বর্তমানে ধূমপান করেন?',
             'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না']
+            'options_bn': ['হ্যা', 'না'],
+            'group': 'tobacco',
+            'type': 'smoking'
           },
           {
             'question': 'Do you currently consume any smokeless tobacco?',
             'question_bn': 'আপনি বর্তমানে কোনও ধোঁয়াবিহীন  তামাক সেবন করেন?',
             'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না']
-          },
-          {
-            'question': 'Do you currently drink alcohol?',
-            'question_bn': 'আপনি কি বর্তমানে মদ পান করেন?',
-            'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না']
+            'options_bn': ['হ্যা', 'না'],
+            'group': 'tobacco',
+            'type': 'smokeless-tobacco'
           },
           {
             'question': 'Do you eat atleast 5 portions of fruits and vegetables daily?',
             'question_bn': 'আপনি কি প্রতিদিন কমপক্ষে ৫ ভাগ ফল এবং শাকসব্জী খান?',
             'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না']
+            'options_bn': ['হ্যা', 'না'],
+            'group': 'unhealth-diet',
+            'type': 'eat-vegetables'
           },
+          // {
+          //   'question': 'Do you eat any red meat, fried foods, canned or processed food on most days?',
+          //   'question_bn': 'আপনি কি বেশিরভাগ দিন কোনও লাল মাংস, ভাজা খাবার, টিনজাত বা প্রক্রিয়াজাত খাবার খান?',
+          //   'options': ['yes', 'no'],
+          //   'options_bn': ['হ্যা', 'না']
+          // },
           {
-            'question': 'Do you eat any red meat, fried foods, canned or processed food on most days?',
-            'question_bn': 'আপনি কি বেশিরভাগ দিন কোনও লাল মাংস, ভাজা খাবার, টিনজাত বা প্রক্রিয়াজাত খাবার খান?',
-            'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না']
-          },
-          {
-            'question': 'Do you have sugery drinks on most days?',
-            'question_bn': 'আপনি কি বেশিরভাগ সময়ে চিনিযুক্ত পানীয় পান করেন?',
-            'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না']
-          },
-          {
-            'question': 'Do you add extra salt to your meals or have excess salt or salty foods on most days?',
+            'question': 'Do you take added salt in your food?',
             'question_bn': 'আপনি কি আপনার খাবারে অতিরিক্ত লবণ যুক্ত করেন বা বেশিরভাগ দিন অতিরিক্ত লবণ বা নোনতা খাবার খান?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না']
           },
           {
+            'question': 'Do you frequently eat salty foods such as sauce, achar, singara, samucha, etc?',
+            'question_bn': 'Do you frequently eat salty foods such as sauce, achar, singara, samucha, etc?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'group': 'unhealth-diet',
+            'type': 'salt'
+          },
+          {
+            'question': 'Do you have sugery drinks on most days?',
+            'question_bn': 'আপনি কি বেশিরভাগ সময়ে চিনিযুক্ত পানীয় পান করেন?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'group': 'unhealth-diet',
+            'type': 'suger'
+          },
+          {
+            'question': 'Do you frequently eat processed food such as chips, chanachur, biscuit, noodles etc?',
+            'question_bn': 'আপনি কি নিয়মিত প্রক্রিয়াজাত খাবার খান (যেমন চিপস, চানাচুর, বিস্কুট ইত্যাদি?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'group': 'unhealth-diet',
+            'type': 'processed-food'
+          },
+          {
+            'question': 'Do you frequently eat redmeat?',
+            'question_bn': 'আপনি কি নিয়মিত লাল গোস্ত খান?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'group': 'unhealth-diet',
+            'type': 'red-meat'
+          },
+          {
             'question': 'Do you do physical activity or moderate intensity (you get a little bit out of breath) for atleast 30 minutes per day on 5 days per week or 150 minutes per week?',
             'question_bn': 'আপনি কি প্রতি সপ্তাহে ৫ দিন প্রতিদিন কমপক্ষে ৩০ মিনিট, বা প্রতি সপ্তাহে ১৫০ মিনিট মাঝারি থেকে তীব্র মাত্রার শারীরিক পরিশ্রম করেন যেখানে শ্বাসপ্রশ্বাস দ্রুত হয়?',
             'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না']
+            'options_bn': ['হ্যা', 'না'],
+            'group': 'physical-activity',
+            'type': 'physical-activity-high'
           },
           {
             'question': 'Do you do physical activity of high intensity (you get out of breath) for at least 15 minutes per day on 5 days per week, or 75 minutes per week?',
             'question_bn': 'আপনি কি প্রতি সপ্তাহে ৫ দিন প্রতিদিন কমপক্ষে ১৫ মিনিট, বা প্রতি সপ্তাহে ৭৫ মিনিট তীব্র মাত্রার শারীরিক পরিশ্রম করেন যেখানে শ্বাসপ্রশ্বাস দ্রুত হয়?',
             'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না']
+            'options_bn': ['হ্যা', 'না'],
+            'group': 'physical-activity',
+            'type': 'physical-activity-moderate'
+          },
+          {
+            'question': 'Do you currently drink alcohol?',
+            'question_bn': 'আপনি কি বর্তমানে মদ পান করেন?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'group': 'alcohol',
+            'type': 'alcohol-status'
+          },
+        ]
+      },
+
+      'counselling_provided': {
+        'items' : [
+          {
+            'question': 'Smoking',
+            'question_bn': 'ধূমপান',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'group': 'tobacco',
+            'type': 'smoking'
+          },
+          {
+            'question': 'Smokeless Tobacco',
+            'question_bn': 'Smokeless Tobacco',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'group': 'tobacco',
+            'type': 'smokeless-tobacco'
+          },
+          {
+            'question': 'Vegetable',
+            'question_bn': 'শাকসবজি',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'group': 'unhealthy-diet',
+            'type': 'eat-vegetables'
+          },
+          {
+            'question': 'Salt',
+            'question_bn': 'লবণ',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'group': 'unhealthy-diet',
+            'type': 'salt'
+          },
+          {
+            'question': 'Sugar',
+            'question_bn': 'চিনি',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'group': 'unhealthy-diet',
+            'type': 'suger'
+          },
+          {
+            'question': 'Processed food',
+            'question_bn': 'প্রক্রিয়াজাত খাবার',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'group': 'unhealth-diet',
+            'type': 'processed-food'
+          },
+          {
+            'question': 'Red meat',
+            'question_bn': 'লাল গোস্ত',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'group': 'unhealthy-diet',
+            'type': 'red-meat'
+          },
+          {
+            'question': 'Physical activity',
+            'question_bn': 'শারীরিক পরিশ্রম',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'group': 'physical-activity',
+            'type': 'physical-activity-high'
+          },
+          {
+            'question': 'Medical adherence',
+            'question_bn': 'চিকিৎসা-পরামর্শ',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'group': 'medical-adherence',
+            'type': 'medical-adherence'
+          },
+          {
+            'question': 'Alcohol consumption',
+            'question_bn': 'মদ পান',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'group': 'alcohol',
+            'type': 'alcohol-status'
           },
         ]
       }
+    
     }
     
 };
@@ -555,6 +694,25 @@ class Questionnaire {
     return 'success';
   }
 
+  addNewCounselling(type, answers) {
+    var questions = Questionnaire().questions['new_patient'][type];
+    var updated = false;
+
+    for (var qn in _questionnaireItems) {
+      if (qn['body']['data']['name'] == type) {
+        _questionnaireItems[_questionnaireItems.indexOf(qn)] = _prepareNewCounsellingData(questions, answers, type);
+        updated = true;
+      }
+    }
+
+    if (!updated) {
+      _questionnaireItems.add(_prepareNewCounsellingData(questions, answers, type));
+    }
+    print(_prepareNewCounsellingData(questions, answers, type));
+    
+    return 'success';
+  }
+
   /// Prepare questionnaire data
   _prepareCurrentMedicationData(questions, answers, type) {
     var data = {
@@ -747,10 +905,11 @@ class Questionnaire {
         "data": {
           'name': type,
           'hypertension_medicine': answers[0],
-          'diabetes_medicine': answers[1],
-          'aspirin': answers[2],
-          'anti_cholesterol_drug': answers[3],
-          'regular_medicine': answers[4],
+          'hypertension_regular_medicine': answers[1],
+          'diabetes_medicine': answers[2],
+          'diabetes_regular_medicine': answers[3],
+          'aspirin': answers[4],
+          'aspirin_regular_medicine': answers[5],
         },
         "patient_id": Patient().getPatient()['uuid'],
       }
@@ -779,6 +938,34 @@ class Questionnaire {
           'extra_salt': answers[6],
           'physical_activity_moderate': answers[7],
           'physical_activity_high': answers[8],
+        },
+        "patient_id": Patient().getPatient()['uuid'],
+      }
+    };
+
+    return data;
+  }
+
+  _prepareNewCounsellingData(questions, answers, type) {
+    var data = {
+      "meta": {
+        "performed_by": Auth().getAuth()['uid'],
+        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
+      },
+      "body": {
+        "type": "survey",
+        "data": {
+          'name': type,
+          'smoking': answers[0],
+          'smokeless_tobacco': answers[1],
+          'fruits_vegitables_daily': answers[2],
+          'extra_salt': answers[3],
+          'sugary_drinks': answers[4],
+          'processed_foods': answers[5],
+          'red_meat': answers[6],
+          'physical_activity_moderate': answers[7],
+          'medical_adherence': answers[9],
+          'alcohol': answers[9],
         },
         "patient_id": Patient().getPatient()['uuid'],
       }

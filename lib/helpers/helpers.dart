@@ -27,6 +27,14 @@ class Helpers {
     return age;
   }
 
+  calculateDobFromAge(int age) {
+    var date = DateTime.now();
+    var newDate = DateTime(date.year - age, date.month, date.day);
+    var birthDay = DateFormat("y-MM-dd").format(newDate);
+
+    return birthDay;
+  }
+
   calculateAgeFromDate(date) {
     final birthDay = DateFormat("dd/MM/yyyy").parse(date);
     final now = DateTime.now();

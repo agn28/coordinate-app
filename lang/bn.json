@@ -5,6 +5,9 @@
   "manageExistingPatient": "একজন বর্তমান রোগীর চিকিৎসা করুন",
   "viewExistingPatient": "বর্তমান রোগীগুলো",
   "registerNewPatient": "রোগী নিবন্ধন",
+  "newRegistration": "নতুন নিবন্ধন",
+  "allRegistered": "সকল নিবন্ধনকৃত",
+  "register": "নিবন্ধন করুন",
   "gotoProfile": "প্রোফাইলে যান",
   "patients": "রোগী",
   "workList": "কাজের তালিকা",
@@ -149,6 +152,7 @@
   "lipidProfile": "লিপিড প্রোফাইল",
   "totalCholesterol": "টোটাল কোলেস্টেরল",
   "hdl": "HDL",
+  "ldl": "LDL",
   "triglycerides": "ট্রাইগ্লিসারাইডস",
   "blood": "রক্ত",
   "fastingBloodGlucose": "ফাস্টিং ব্লাড সুগার",
@@ -262,7 +266,7 @@
   "patientSummary": "রোগীর সারসংক্ষেপ",
   "fasting": "ফাস্টিং",
   "random": "র‍্যান্ডম",
-  "yes": "Yes",
+  "yes": "হ্যা",
   "secondReadingBP": "রক্তচাপের দ্বিতীয় পরিমাপ ",
   "thirdReadingBP": "রক্তচাপের তৃতীয় পরিমাপ",
   "healthAssesmentCreated": "স্বাস্থ্য পরিক্ষা শুরু হয়েছে",
@@ -434,7 +438,15 @@
   "intervention": "ব্যবস্থাসমুহ",
   "actions":"করণীয় সমূহ",
   "nidValidation":"রোগী ইতিমধ্যে বিদ্যমান। দয়া করে এনআইডি চেক করুন।",
-  "somethingWrong":"কোন সমস্যা হয়েছে"
-
-
+  "somethingWrong":"কোন সমস্যা হয়েছে",
+  "registrationCompleted": "নিবন্ধন সম্পন্ন হয়েছে",
+  "newQuestionnaire": "নতুন প্রশ্নপত্র",
+  "alternativePhone": "বিকল্প ফোন নম্বর",
+  "noQuestionFound": "কোন প্রশ্ন পাওয়া যায় নি।",
+  "goToNextStep": "পরবর্তী পদক্ষেপে যান।",
+  "serum": "সিরাম",
+  "creatinine": "ক্রিয়েটিনাইন",
+  "age": "বয়স",
+  "unhealthyDiet": "অস্বাস্থ্যকর ডায়েট",
+  "wasCounsellingProvided": "পরামর্শ দেওয়া হয়েছে?"
 }

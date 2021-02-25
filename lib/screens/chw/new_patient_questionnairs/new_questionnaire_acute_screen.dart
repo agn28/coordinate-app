@@ -52,7 +52,7 @@ class _NewQuestionnaireAcuteScreenState extends State<NewQuestionnaireAcuteScree
 
     return Scaffold(
       appBar: new AppBar(
-        title: new Text(AppLocalizations.of(context).translate('newPatientQuestionnaire'), style: TextStyle(color: Colors.white, fontSize: 20),),
+        title: new Text(AppLocalizations.of(context).translate('newQuestionnaire'), style: TextStyle(color: Colors.white, fontSize: 20),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),

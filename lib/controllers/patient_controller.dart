@@ -123,8 +123,17 @@ class PatientController {
 
   /// Prepare data to create a new patient.
   _prepareData(formData) {
-    final age = Helpers().calculateAge(formData['birth_year'], formData['birth_month'], formData['birth_date']);
-    String birthDate = formData['birth_year'] + '-' + formData['birth_month'] + '-' + formData['birth_date'];
+    var age;
+    var birthDate;
+    if (formData['selected_dob_type'] == 'dob') {
+      age = Helpers().calculateAge(formData['birth_year'], formData['birth_month'], formData['birth_date']);
+      birthDate = formData['birth_year'] + '-' + formData['birth_month'] + '-' + formData['birth_date'];
+    } else {
+      age = int.tryParse(formData['age']);
+      birthDate = Helpers().calculateDobFromAge(age);
+
+    }
+    
     formData.remove('birth_date');
     formData.remove('birth_month');
     formData.remove('birth_year');

@@ -33,6 +33,7 @@ final dobController = TextEditingController();
 final birthDateController = TextEditingController();
 final birthMonthController = TextEditingController();
 final birthYearController = TextEditingController();
+final ageController = TextEditingController();
 final districtController = TextEditingController();
 final postalCodeController = TextEditingController();
 final townController = TextEditingController();
@@ -47,6 +48,7 @@ final contactFirstNameController = TextEditingController();
 final contactLastNameController = TextEditingController();
 final contactRelationshipController = TextEditingController();
 final contactMobilePhoneController = TextEditingController();
+final alternativePhoneController = TextEditingController();
 final GlobalKey<FormState> _patientFormKey = new GlobalKey<FormState>();
 final GlobalKey<FormState> _contactFormKey = new GlobalKey<FormState>();
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -204,7 +206,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     contactFirstNameController.text = patient['data']['contact']['first_name'];
     contactLastNameController.text = patient['data']['contact']['last_name'];
     contactRelationshipController.text = patient['data']['contact']['relationship'];
-    contactMobilePhoneController.text = patient['data']['contact']['mobile'];
+    alternativePhoneController.text = patient['data']['alternative_phone'];
     selectedRelation = relationships.indexOf(patient['data']['contact']['relationship']);
 
   }
@@ -229,7 +231,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     contactFirstNameController.text = 'Contact';
     contactLastNameController.text = 'Test';
     contactRelationshipController.text = 'Brother';
-    contactMobilePhoneController.text = '01960229599';
+    alternativePhoneController.text = '01960229599';
     selectedRelation = 1;
 
   }
@@ -253,7 +255,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     contactFirstNameController.clear();
     contactLastNameController.clear();
     contactRelationshipController.clear();
-    contactMobilePhoneController.clear();
+    alternativePhoneController.clear();
     _image = null;
 
     selectedRelation = null;
@@ -279,7 +281,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
       resizeToAvoidBottomInset: true,
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('registerNewPatient')),
+        title: Text(AppLocalizations.of(context).translate('register')),
       ),
       body: isLoading ? Center(child: CircularProgressIndicator()) : GestureDetector(
         onTap: () {
@@ -432,7 +434,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
       'father_name': '',
       'gender': selectedGender,
       'avatar': uploadedImageUrl,
-      'age': 26, //age needs to be calculated
+      'age': ageController.text, //age needs to be calculated
       'birth_date': birthDateController.text,
       'birth_month': birthMonthController.text,
       'birth_year': birthYearController.text,
@@ -445,15 +447,17 @@ class _RegisterPatientState extends State<RegisterPatient> {
         'village': villageController.text,
         'street_name': streetNameController.text,
       },
+      //TODO: remove validation from api for contact
+      'contact': {
+        'first_name': 'test',
+        'last_name': 'test',
+        'relationship': 'test',
+        'mobile': 'test'
+      },
       'mobile': mobilePhoneController.text,
       'email': emailController.text,
-      'contact': {
-        'first_name': contactFirstNameController.text,
-        'last_name': contactLastNameController.text,
-        'relationship': selectedRelation != null ? relationships[selectedRelation] : '', 
-        'mobile': contactMobilePhoneController.text,
-      },
-
+      'alternative_phone': alternativePhoneController.text,
+      'selected_dob_type': selectedDobType,
     };
 
     if (selectedGuardian == 'husband') {
@@ -475,6 +479,7 @@ class PatientDetails extends StatefulWidget {
 }
 
 DateTime selectedDate = DateTime.now();
+var selectedDobType = 'dob';
 
 class _PatientDetailsState extends State<PatientDetails> {
   
@@ -644,16 +649,51 @@ class _PatientDetailsState extends State<PatientDetails> {
 
             SizedBox(height: 20,),
 
+            
+
             Row(
               children: [
-                Text(AppLocalizations.of(context).translate('dateOfBirth'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-                SizedBox(width: 10,),
-                Text('(DD/MM/YYYY)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),),
+                // Text(AppLocalizations.of(context).translate('dateOfBirth'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                // SizedBox(width: 10,),
+                // Text('(DD/MM/YYYY)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),),
+
+                Row(
+                    children: <Widget>[
+                      // SizedBox(width: 20,),
+                      Radio(
+                        activeColor: kPrimaryColor,
+                        value: 'dob',
+                        groupValue: selectedDobType,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedDobType = value;
+                          });
+                        },
+                      ),
+                      Text(AppLocalizations.of(context).translate('dateOfBirth'), style: TextStyle(color: Colors.black)),
+                      SizedBox(width: 10,),
+                      Text('(DD/MM/YYYY)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),),
+
+                      Radio(
+                        activeColor: kPrimaryColor,
+                        value: 'age',
+                        groupValue: selectedDobType,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedDobType = value;
+                          });
+                        },
+                      ),
+                      Text(
+                        AppLocalizations.of(context).translate('age'),
+                      ),
+                    ],
+                  ),
               ],
             ),
             SizedBox(height: 20,),
 
-            Row(
+            selectedDobType == 'dob' ? Row(
               children: [
                 Expanded(
                   child: PrimaryTextField(
@@ -691,6 +731,15 @@ class _PatientDetailsState extends State<PatientDetails> {
                   ),
                 ),
               ],
+            ) : 
+            PrimaryTextField(
+              topPaadding: 10,
+              bottomPadding: 10,
+              hintText: AppLocalizations.of(context).translate('age'),
+              controller: ageController,
+              name: 'Age',
+              type: TextInputType.number,
+              validation: true,
             ),
 
             SizedBox(height: 10,),
@@ -807,6 +856,16 @@ class _PatientDetailsState extends State<PatientDetails> {
               validation: true,
               type: TextInputType.number
             ),
+            PrimaryTextField(
+              topPaadding: 7,
+              bottomPadding: 7,
+              prefixIcon: Icon(Icons.phone),
+              hintText: AppLocalizations.of(context).translate("alternativePhone"),
+              controller: alternativePhoneController,
+              name: AppLocalizations.of(context).translate("alternativePhone"),
+              validation: false,
+              type: TextInputType.number
+            ),
             SizedBox(height: 10,),
             PrimaryTextField(
               topPaadding: 10,
@@ -825,93 +884,7 @@ class _PatientDetailsState extends State<PatientDetails> {
               name: AppLocalizations.of(context).translate('nationalId'),
               validation: true,
             ),
-            SizedBox(height: 20,),
-
-            Text(AppLocalizations.of(context).translate('emergencyContact'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
-            SizedBox(height: 20,),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: PrimaryTextField(
-                      topPaadding: 7,
-                      bottomPadding: 7,
-                      hintText: AppLocalizations.of(context).translate("contactFirstName"),
-                      controller: contactFirstNameController,
-                      name: AppLocalizations.of(context).translate("contactFirstName"),
-                      validation: true
-                  ),
-                ),
-                SizedBox(width: 20,),
-                Expanded(
-                  child: PrimaryTextField(
-                      topPaadding: 7,
-                      bottomPadding: 7,
-                      hintText: AppLocalizations.of(context).translate("contactLastName"),
-                      controller: contactLastNameController,
-                      name: AppLocalizations.of(context).translate("contactLastName"),
-                      validation: true
-                  ),
-                ),
-              ],
-            ),
-
-
-            SizedBox(height: 10,),
-
-            Container(
-              child: DropdownButtonFormField(
-
-                hint: Text(AppLocalizations.of(context).translate('relationship'), style: TextStyle(fontSize: 20, color: kTextGrey),),
-                validator: (value) {
-                  if (value == null) {
-                    return AppLocalizations.of(context).translate('relationshipRequired');
-                  }
-                  // return '';
-                },
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: kSecondaryTextField,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                  border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(4),
-                        topRight: Radius.circular(4),
-                      )
-                  ),
-                ),
-                items: [
-                  ...relationships.map((item) =>
-                      DropdownMenuItem(
-                          child: Text(StringUtils.capitalize(item)),
-                          value: relationships.indexOf(item)
-                      )
-                  ).toList(),
-                ],
-                value: selectedRelation,
-                isExpanded: true,
-                onChanged: (value) {
-                  setState(() {
-                    selectedRelation = value;
-                  });
-                },
-              ),
-            ),
-
-            SizedBox(height: 20,),
-            Divider(),
-
-            SizedBox(height: 20,),
-            PrimaryTextField(
-                topPaadding: 7,
-                bottomPadding: 7,
-                prefixIcon: Icon(Icons.phone),
-                hintText: AppLocalizations.of(context).translate("contactMobilePhone"),
-                controller: contactMobilePhoneController,
-                name: AppLocalizations.of(context).translate("mobile"),
-                validation: true,
-                type: TextInputType.number
-            ),
+            
             SizedBox(height: 30,),
           ],
         ),
@@ -1369,29 +1342,13 @@ class _ViewSummaryState extends State<ViewSummary> {
                     Text(nidController.text, style: TextStyle(fontSize: 18),),
                   ],
                 ),
+                
                 SizedBox(height: 7,),
 
                 Row(
                   children: <Widget>[
-                    // Text(AppLocalizations.of(context).translate('contactName') + ': ', style: TextStyle(fontSize: 18),),
-                    Text(AppLocalizations.of(context).translate("contactname") + ': ', style: TextStyle(fontSize: 18),),
-                    Text(contactFirstNameController.text + ' ' + contactLastNameController.text, style: TextStyle(fontSize: 18),),
-                  ],
-                ),
-                SizedBox(height: 7,),
-
-                Row(
-                  children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('relationship') + ': ', style: TextStyle(fontSize: 18),),
-                    Text(StringUtils.capitalize(relationships[selectedRelation]), style: TextStyle(fontSize: 18),),
-                  ],
-                ),
-                SizedBox(height: 7,),
-
-                Row(
-                  children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('contactMobilePhone') + ': ', style: TextStyle(fontSize: 18),),
-                    Text(contactMobilePhoneController.text, style: TextStyle(fontSize: 18),),
+                    Text(AppLocalizations.of(context).translate('alternativePhone') + ': ', style: TextStyle(fontSize: 18),),
+                    Text(alternativePhoneController.text, style: TextStyle(fontSize: 18),),
                   ],
                 ),
               ],

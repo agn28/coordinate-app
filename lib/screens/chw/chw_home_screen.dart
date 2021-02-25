@@ -274,7 +274,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
                                             
-                                            Text(AppLocalizations.of(context).translate('viewExistingPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
+                                            Text(AppLocalizations.of(context).translate('allRegistered'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
                                             
                                           ],
                                         ),
@@ -307,7 +307,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
-                                            Text(AppLocalizations.of(context).translate('registerNewPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
+                                            Text(AppLocalizations.of(context).translate('newRegistration'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
                                           ],
                                         ),
                                       ],

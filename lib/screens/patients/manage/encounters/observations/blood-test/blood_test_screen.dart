@@ -130,6 +130,12 @@ class _BloodTestsState extends State<BloodTests> {
 
                       EncounnterSteps(
                         icon: Image.asset('assets/images/icons/blood_test_common.png'),
+                        text: AppLocalizations.of(context).translate('ldl'),
+                        name: 'ldl'
+                      ),
+
+                      EncounnterSteps(
+                        icon: Image.asset('assets/images/icons/blood_test_common.png'),
                         text: AppLocalizations.of(context).translate('triglycerides'),
                         name: 'tg'
                       ),
@@ -167,6 +173,16 @@ class _BloodTestsState extends State<BloodTests> {
                     icon: Image.asset('assets/images/icons/blood_glucose.png'),
                     text: AppLocalizations.of(context).translate('randomBloodSugar'),
                     name: 'blood_sugar'
+                  ),
+                  EncounnterSteps(
+                    icon: Image.asset('assets/images/icons/blood_glucose.png'),
+                    text: AppLocalizations.of(context).translate('serum'),
+                    name: 'serum'
+                  ),
+                  EncounnterSteps(
+                    icon: Image.asset('assets/images/icons/blood_glucose.png'),
+                    text: AppLocalizations.of(context).translate('creatinine'),
+                    name: 'creatinine'
                   ),
                 ],
               )
@@ -406,7 +422,7 @@ class _AddTestsDialogueState extends State<AddTestsDialogue> {
     }
   }
 
-  _addItem(){
+  _addItem() {
     BloodTest().addItem(widget.name, valueController.text, selectedUnit, commentController.text, devices[selectedDevice]);
     this.widget.parent.setState(() {
       this.widget.parent.setStatus();

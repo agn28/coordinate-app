@@ -43,7 +43,7 @@ class AssessmentRepositoryLocal {
 
     await _createAssessment(assessmentId, data);
 
-    print('after assessment');
+    print('after assessment ' + bloodPressures.length.toString());
 
     Future.forEach(bloodPressures, (item) async {
       print('into observations');
