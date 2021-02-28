@@ -746,54 +746,62 @@ checkMedicalHistoryAnswers(medicationQuestion) {
                           
                           if (checkMedicalHistoryAnswers(question)) {
                             isEmpty = false;
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Container(
-                                  child: Text(getQuestionText(context, question),
-                                    style: TextStyle(fontSize: 18, height: 1.7),
-                                  )
-                                ),
-                                SizedBox(height: 20,),
-                                Container(
-                                  width: MediaQuery.of(context).size.width * .5,
-                                  child: Row(
-                                    children: <Widget>[
-                                      ...question['options'].map((option) => 
-                                        Expanded(
-                                          child: Container(
-                                            height: 40,
-                                            margin: EdgeInsets.only(right: 20, left: 0),
-                                            decoration: BoxDecoration(
-                                              border: Border.all(width: 1, color: medicationQuestions[medicationQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFF01579B) : Colors.black),
-                                              borderRadius: BorderRadius.circular(3),
-                                              color: medicationAnswers[medicationQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFFE1F5FE) : null
-                                            ),
-                                            child: FlatButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  print(medicalHistoryAnswers);
-                                                  medicationAnswers[medicationQuestions['items'].indexOf(question)] = question['options'][question['options'].indexOf(option)];
-                                                  checkAnswer();
-                                                  // print(medicalHistoryAnswers);
-                                                  // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
-                                                });
-                                              },
-                                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                              child: Text(getOptionText(context, question, option),
-                                                style: TextStyle(color: medicationAnswers[medicationQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? kPrimaryColor : null),
+                            return Container(
+                              margin: question['category'] == 'sub' ? EdgeInsets.only(left: 40, bottom: 20) : null,
+                              padding: question['category'] == 'sub' ? EdgeInsets.symmetric(horizontal: 20,) : null,
+                              decoration: question['category'] == 'sub' ? BoxDecoration(
+                                border: Border.all(color: Colors.black12),
+                                borderRadius: BorderRadius.circular(3)
+                              ) : null,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Container(
+                                    child: Text(getQuestionText(context, question),
+                                      style: TextStyle(fontSize: 18, height: 1.7),
+                                    )
+                                  ),
+                                  SizedBox(height: 20,),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * .5,
+                                    child: Row(
+                                      children: <Widget>[
+                                        ...question['options'].map((option) => 
+                                          Expanded(
+                                            child: Container(
+                                              height: 40,
+                                              margin: EdgeInsets.only(right: 20, left: 0),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(width: 1, color: medicationQuestions[medicationQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFF01579B) : Colors.black),
+                                                borderRadius: BorderRadius.circular(3),
+                                                color: medicationAnswers[medicationQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFFE1F5FE) : null
                                               ),
-                                            ),
-                                          )
-                                        ),
-                                      ).toList()
-                                    ],
-                                  )
-                                ),
+                                              child: FlatButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    print(medicalHistoryAnswers);
+                                                    medicationAnswers[medicationQuestions['items'].indexOf(question)] = question['options'][question['options'].indexOf(option)];
+                                                    checkAnswer();
+                                                    // print(medicalHistoryAnswers);
+                                                    // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
+                                                  });
+                                                },
+                                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                child: Text(getOptionText(context, question, option),
+                                                  style: TextStyle(color: medicationAnswers[medicationQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? kPrimaryColor : null),
+                                                ),
+                                              ),
+                                            )
+                                          ),
+                                        ).toList()
+                                      ],
+                                    )
+                                  ),
 
-                                SizedBox(height: 20,),
+                                  SizedBox(height: 20,),
 
-                              ],
+                                ],
+                              ),
                             ); 
                           } else return Container();
                         }).toList(),
@@ -835,6 +843,18 @@ var bloodSugerEditingController = TextEditingController();
 
 class _MeasurementsState extends State<Measurements> {
 
+
+  calculateBmi() {
+    if (heightEditingController != '' && weightEditingController.text != '') {
+      var height = int.parse(heightEditingController.text) / 100;
+      var weight = int.parse(weightEditingController.text);
+
+      var bmi = weight / (height * height);
+
+      bmiEditingController.text = bmi.toStringAsFixed(2);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     
@@ -870,7 +890,7 @@ class _MeasurementsState extends State<Measurements> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(AppLocalizations.of(context).translate('systolic'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                                    SizedBox(width: 30,),
+                                    SizedBox(width: 20,),
                                     Container(
                                       width: 80,
                                       height: 40,
@@ -1032,7 +1052,7 @@ class _MeasurementsState extends State<Measurements> {
                                     keyboardType: TextInputType.number,
                                     controller: heightEditingController,
                                     onChanged: (value) {
-                                  
+                                      calculateBmi();
                                     },
                                     decoration: InputDecoration(  
                                       contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
@@ -1061,7 +1081,7 @@ class _MeasurementsState extends State<Measurements> {
                                     keyboardType: TextInputType.number,
                                     controller: weightEditingController,
                                     onChanged: (value) {
-                                  
+                                      calculateBmi();
                                     },
                                     decoration: InputDecoration(  
                                       contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
@@ -1110,6 +1130,8 @@ class _MeasurementsState extends State<Measurements> {
               ),
             ),
             SizedBox(height: 40,),
+            Text(AppLocalizations.of(context).translate("tests"), style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),),
+            SizedBox(height: 24), 
             Container(
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -1117,8 +1139,10 @@ class _MeasurementsState extends State<Measurements> {
                 borderRadius: BorderRadius.circular(10)
               ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  
                   Container(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,

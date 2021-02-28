@@ -220,14 +220,16 @@ var _questions = {
             'question_bn': 'আপনি ব্লাড-প্রেসার বা উচ্চ রক্তচাপের জন্য কোনও ওষুধ খাচ্ছেন?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
-            'type': 'blood_pressure'
+            'type': 'blood_pressure',
+            
           },
           {
             'question': 'Are you taking the medicines regularly?',
             'question_bn': 'আপনি কি নিয়মিত ওষুধ খাচ্ছেন?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
-            'type': 'blood_pressure_regular_medication'
+            'type': 'blood_pressure_regular_medication',
+            'category': 'sub'
           },
           {
             'question': 'Are you taking any medicines for diabetes?',
@@ -241,7 +243,8 @@ var _questions = {
             'question_bn': 'আপনি কি নিয়মিত ওষুধ খাচ্ছেন?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
-            'type': 'diabetes_regular_medication'
+            'type': 'diabetes_regular_medication',
+            'category': 'sub'
           },
           {
             'question': 'Are you taking any aspirin/clopidegrol?',
@@ -251,11 +254,12 @@ var _questions = {
             'type': 'heart'
           },
           {
-            'question': 'Are you taking any aspirin/clopidegrol?',
+            'question': 'Are you taking the medicines regularly?',
             'question_bn': 'আপনি কি কোনও অ্যাসপিরিন / ক্লপিডগ্রেল জাতীয় ওষুধ খাচ্ছেন?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
-            'type': 'heart_regular_medication'
+            'type': 'heart_regular_medication',
+            'category': 'sub'
           },
         ]
 

@@ -444,10 +444,11 @@
   "noQuestionFound": "No question found.",
   "goToNextStep": "Go to next step.",
   "serum": "Serum",
-  "creatinine": "creatinine",
+  "creatinine": "Creatinine",
   "age": "Age",
   "unhealthyDiet": "Unhealthy diet",
-  "wasCounsellingProvided": "Was counselling provided?"
+  "wasCounsellingProvided": "Was counselling provided?",
+  "tests": "Tests"
   
   
 
