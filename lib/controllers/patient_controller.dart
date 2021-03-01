@@ -165,7 +165,17 @@ class PatientController {
     var apiResponse;
     var response;
 
+    response = await PatientReposioryLocal().create(context, uuid, data, false);
+
     var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+      SyncController().initializeLocalToLiveSync();
+    }
+    
+    return response;
+
+
+    //TODO: checking the new process
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
       // I am connected to a mobile network.

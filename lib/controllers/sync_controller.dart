@@ -191,18 +191,47 @@ class SyncController extends GetxController {
     }
   }
 
+  initializeLocalToLiveSync() async {
+    print('sync initiated');
+    await getLocalNotSyncDataData();
+
+    if (!isSyncingToLive.value) {
+      isSyncingToLive.value = true;
+      
+      await syncLocalPatientsToLive();
+      isSyncingToLive.value = false;
+    }
+  }
+
+  getLocalNotSyncDataData() async {
+    await getLocalNotSyncedPatient();
+    await getLocalNotSyncedAssessments();
+    await getLocalNotSyncedObservations();
+    await getLocalNotSyncedReferrals();
+    return;
+  }
+
   initializeSync() async {
     // retryForStableNetwork();
-    await getLocalSyncKey();
-    await checkLocationData();
+
+    if (!isSyncingToLive.value) {
+      print('sync started');
+      isSyncingToLive.value = true;
+      await checkLocationData();
+      await getLocalSyncKey();
 
     
     //sync to live
     // if (!isPoorNetwork.value) {
+
+      
       await Future.delayed(const Duration(seconds: 2));
       await syncLivePatientsToLocal();
       await Future.delayed(const Duration(seconds: 2));
-      syncLocalPatientsToLive();
+      await syncLocalPatientsToLive();
+      isSyncingToLive.value = false;
+    }
+      
     // }
     
 
@@ -409,13 +438,15 @@ class SyncController extends GetxController {
   }
 
   retryForStableNetwork() async {
-    var retryCount = 10;
+    var retryCount = 100;
     var count = 0;
-    var duration = Duration(seconds: 60);
+    var duration = Duration(seconds: 5);
+    
     Timer.periodic(duration, (timer) async {
       count++;
       print(timer);
-      print('retrying after $duration seconds');
+      print('retrying at ' + TimeOfDay.now().toString());
+      print('retrying count $count');
       try {
         var response = await syncRepo.getLatestSyncInfo({ 'key': 'test'});
         if (isNotNull(response) && isNotNull(response['error'])) {
@@ -425,9 +456,9 @@ class SyncController extends GetxController {
           timer.cancel();
         }
         else if(isNotNull(response) && isNotNull(response['exception'] && response['type'] == 'no_internet')) {
-          isPoorNetwork.value = false;
-          isConnected.value = false;
-          timer.cancel();
+          // isPoorNetwork.value = false;
+          // isConnected.value = false;
+          // timer.cancel();
         }
         if (count == retryCount) {
           timer.cancel();
@@ -471,7 +502,7 @@ class SyncController extends GetxController {
 
     var removeItems = [];
     
-    isSyncingToLive.value = true;
+    
     for (var item in tempSyncs) {
       if (item['collection'] == 'patients') {
         if (item['action'] == 'create') {
@@ -596,7 +627,7 @@ class SyncController extends GetxController {
     
     await Future.delayed(const Duration(seconds: 3));
     print('hello');
-    isSyncingToLive.value = false;
+    // isSyncingToLive.value = false;
     getAllStatsData();
   }
 
@@ -656,6 +687,7 @@ class SyncController extends GetxController {
     if (isNotNull(response['exception']) && response['type'] == 'poor_network') {
       isPoorNetwork.value = true;
       isSyncingToLive.value = false;
+      // isConnected.value = false;
       showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
       retryForStableNetwork();
       return;

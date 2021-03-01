@@ -247,143 +247,144 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                       ],
                     ),
                   ),
-                  Container(
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.only(left: 25, right: 25),
-                    width: double.infinity,
-                    child: Column(
-                      children: <Widget>[
-                        
-                        SizedBox(height: 60,),
+                  Obx(() =>
+                    Container(
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.only(left: 25, right: 25),
+                      width: double.infinity,
+                      child: Column(
+                        children: <Widget>[
+                          
+                          SizedBox(height: 60,),
 
-                        Row(
-                          children: [
-                            Expanded(
-                              child: InkWell(
-                                
-                                onTap: () async {
-                                  // await Auth().isExpired();
-                                  // return;
-                                  Navigator.of(context).pushNamed('/chwNavigation',);
-                                  // Navigator.of(context).push(PatientSearchScreen());
-                                },
-                                child: Container(
-                                  height: 150,
-                                  width: double.infinity,
-                                  child: Card(
-                                    elevation: 2,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Image.asset('assets/images/icons/inventory.png', width: 50,),
-                                        SizedBox(height: 15,),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Text(AppLocalizations.of(context).translate('gotoMyWorklist'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
-                                            
-                                          ],
-                                        ),
-                                      ],
-                                    )
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 20,),
-                            Expanded(
-                              child: InkWell(
-                                onTap: () => Navigator.of(context).pushNamed('/chwNavigation', arguments: 1),
-                                child: Container(
-                                  height: 150,
-                                  width: double.infinity,
-                                  alignment: Alignment.center,
-                                  child: Card(
-                                    elevation: 2,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Icon(Icons.group, color: kPrimaryColor, size: 60),
-                                        SizedBox(height: 10,),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            
-                                            Text(AppLocalizations.of(context).translate('viewExistingPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
-                                            
-                                          ],
-                                        ),
-                                      ],
+                          Row(
+                            children: [
+                              Expanded(
+                                child: InkWell(
+                                  
+                                  onTap: () async {
+                                    // await Auth().isExpired();
+                                    // return;
+                                    Navigator.of(context).pushNamed('/chwNavigation',);
+                                    // Navigator.of(context).push(PatientSearchScreen());
+                                  },
+                                  child: Container(
+                                    height: 150,
+                                    width: double.infinity,
+                                    child: Card(
+                                      elevation: 2,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Image.asset('assets/images/icons/inventory.png', width: 50,),
+                                          SizedBox(height: 15,),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Text(AppLocalizations.of(context).translate('gotoMyWorklist'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
+                                              
+                                            ],
+                                          ),
+                                        ],
+                                      )
                                     ),
                                   ),
                                 ),
                               ),
-                            )
-                          ],
-                        ),
-                        
-                        
-                        SizedBox(height: 20,),
+                              SizedBox(width: 20,),
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () => Navigator.of(context).pushNamed('/chwNavigation', arguments: 1),
+                                  child: Container(
+                                    height: 150,
+                                    width: double.infinity,
+                                    alignment: Alignment.center,
+                                    child: Card(
+                                      elevation: 2,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Icon(Icons.group, color: kPrimaryColor, size: 60),
+                                          SizedBox(height: 10,),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              
+                                              Text(AppLocalizations.of(context).translate('viewExistingPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
+                                              
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          
+                          
+                          SizedBox(height: 20,),
 
-                        Row(
-                          children: [
-                            Expanded(
-                              child: InkWell(
-                                onTap: () => Navigator.of(context).push(RegisterPatientScreen()),
-                                child: Container(
-                                  height: 140,
-                                  width: double.infinity,
-                                  child: Card(
-                                    elevation: 2,
-                                    child: Column(
-                                      children: <Widget>[
-                                        Icon(Icons.person_add_alt_1, color: kPrimaryColor, size: 70,),
-                                        SizedBox(height: 5),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Text(AppLocalizations.of(context).translate('registerNewPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
-                                          ],
-                                        ),
-                                      ],
+                          Row(
+                            children: [
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () => syncController.isSyncingToLive.value ? null : Navigator.of(context).push(RegisterPatientScreen()),
+                                  child: Container(
+                                    height: 140,
+                                    width: double.infinity,
+                                    child: Card(
+                                      elevation: 2,
+                                      child: Column(
+                                        children: <Widget>[
+                                          Icon(Icons.person_add_alt_1, color: kPrimaryColor, size: 70,),
+                                          SizedBox(height: 5),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Text(AppLocalizations.of(context).translate('registerNewPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                            SizedBox(width: 20,),
-                            Expanded(
-                              child: InkWell(
-                                onTap: () => Navigator.of(context).pushNamed('/chwReferralPatients'),
-                                child: Container(
-                                  height: 140,
-                                  width: double.infinity,
-                                  alignment: Alignment.center,
-                                  child: Card(
-                                    elevation: 2,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Image.asset('assets/images/icons/questionnaire.png'),
-                                        SizedBox(height: 10,),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Text(AppLocalizations.of(context).translate('referralList'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
-                                          ],
-                                        ),
-                                      ],
+                              SizedBox(width: 20,),
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () => Navigator.of(context).pushNamed('/chwReferralPatients'),
+                                  child: Container(
+                                    height: 140,
+                                    width: double.infinity,
+                                    alignment: Alignment.center,
+                                    child: Card(
+                                      elevation: 2,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Image.asset('assets/images/icons/questionnaire.png'),
+                                          SizedBox(height: 10,),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Text(AppLocalizations.of(context).translate('referralList'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          ),
+                          
 
-                        SizedBox(height: 20,),
+                          SizedBox(height: 20,),
 
-                        Obx(() => 
                           Column(
                             children: [
                               SizedBox(height: 30,),
@@ -475,105 +476,105 @@ class _ChwHomeState extends State<ChwHomeScreen> {
 
 
                               //for development
-                              // Column(
-                              //   children: [
-                              //     Text('Updates in server: ${syncController.syncs.value.length}', style: TextStyle(fontSize: 20),),
-                              //     Text('Updates in Local: ${syncController.localNotSyncedPatients.value.length + syncController.localNotSyncedAssessments.value.length + syncController.localNotSyncedObservations.value.length + syncController.localNotSyncedReferrals.value.length}', style: TextStyle(fontSize: 20),),
-                              //     SizedBox(height: 20,),
+                              Column(
+                                children: [
+                                  Text('Updates in server: ${syncController.syncs.value.length}', style: TextStyle(fontSize: 20),),
+                                  Text('Updates in Local: ${syncController.localNotSyncedPatients.value.length + syncController.localNotSyncedAssessments.value.length + syncController.localNotSyncedObservations.value.length + syncController.localNotSyncedReferrals.value.length}', style: TextStyle(fontSize: 20),),
+                                  SizedBox(height: 20,),
 
-                              //     Row(
-                              //       mainAxisAlignment: MainAxisAlignment.center,
-                              //       children: [
-                              //         Text('Assessments Not synced in Local: ${syncController.localNotSyncedAssessments.value.length}', style: TextStyle(fontSize: 20),),
-                              //         SizedBox(width: 20),
-                              //       ],
-                              //     ),
-                              //     Row(
-                              //       mainAxisAlignment: MainAxisAlignment.center,
-                              //       children: [
-                              //         Text('Observations Not synced in Local: ${syncController.localNotSyncedObservations.value.length}', style: TextStyle(fontSize: 20),),
-                              //         SizedBox(width: 20),
-                              //       ],
-                              //     ),
-                              //     Row(
-                              //       mainAxisAlignment: MainAxisAlignment.center,
-                              //       children: [
-                              //         Text('Referrals Not synced in Local: ${syncController.localNotSyncedReferrals.value.length}', style: TextStyle(fontSize: 20),),
-                              //         SizedBox(width: 20),
-                              //       ],
-                              //     ),
-                              //     SizedBox(height: 20,),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('Assessments Not synced in Local: ${syncController.localNotSyncedAssessments.value.length}', style: TextStyle(fontSize: 20),),
+                                      SizedBox(width: 20),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('Observations Not synced in Local: ${syncController.localNotSyncedObservations.value.length}', style: TextStyle(fontSize: 20),),
+                                      SizedBox(width: 20),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('Referrals Not synced in Local: ${syncController.localNotSyncedReferrals.value.length}', style: TextStyle(fontSize: 20),),
+                                      SizedBox(width: 20),
+                                    ],
+                                  ),
+                                  SizedBox(height: 20,),
 
-                              //     Row(
-                              //       mainAxisAlignment: MainAxisAlignment.center,
-                              //       children: [
-                              //         Text('Patients in server: ${syncController.livePatientsAll.value.length}', style: TextStyle(fontSize: 20),),
-                              //         SizedBox(width: 20),
-                              //         // FlatButton(
-                              //         //   color: kPrimaryColor,
-                              //         //   onPressed: () async {
-                              //         //     await syncController.syncLivePatientsToLocal();
-                              //         //     // Get.offAll(ChwHomeScreen());
-                              //         //   },
-                              //         //   child: Text('Sync', style: TextStyle(color: Colors.white),)
-                              //         // )
-                              //       ],
-                              //     ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('Patients in server: ${syncController.livePatientsAll.value.length}', style: TextStyle(fontSize: 20),),
+                                      SizedBox(width: 20),
+                                      // FlatButton(
+                                      //   color: kPrimaryColor,
+                                      //   onPressed: () async {
+                                      //     await syncController.syncLivePatientsToLocal();
+                                      //     // Get.offAll(ChwHomeScreen());
+                                      //   },
+                                      //   child: Text('Sync', style: TextStyle(color: Colors.white),)
+                                      // )
+                                    ],
+                                  ),
 
-                              //     Row(
-                              //       mainAxisAlignment: MainAxisAlignment.center,
-                              //       children: [
-                              //         Text('Patients in Local: ${syncController.localPatientsAll.value.length}', style: TextStyle(fontSize: 20),),
-                              //         SizedBox(width: 20),
-                              //       ],
-                              //     ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('Patients in Local: ${syncController.localPatientsAll.value.length}', style: TextStyle(fontSize: 20),),
+                                      SizedBox(width: 20),
+                                    ],
+                                  ),
 
-                              //     Row(
-                              //       mainAxisAlignment: MainAxisAlignment.center,
-                              //       children: [
-                              //         Text('Assessments in Local: ${syncController.localAssessmentsAll.value.length}', style: TextStyle(fontSize: 20),),
-                              //         SizedBox(width: 20),
-                              //       ],
-                              //     ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('Assessments in Local: ${syncController.localAssessmentsAll.value.length}', style: TextStyle(fontSize: 20),),
+                                      SizedBox(width: 20),
+                                    ],
+                                  ),
 
-                              //     Row(
-                              //       mainAxisAlignment: MainAxisAlignment.center,
-                              //       children: [
-                              //         Text('Observations in Local: ${syncController.localObservationsAll.value.length}', style: TextStyle(fontSize: 20),),
-                              //         SizedBox(width: 20),
-                              //       ],
-                              //     ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('Observations in Local: ${syncController.localObservationsAll.value.length}', style: TextStyle(fontSize: 20),),
+                                      SizedBox(width: 20),
+                                    ],
+                                  ),
 
-                              //     Row(
-                              //       mainAxisAlignment: MainAxisAlignment.center,
-                              //       children: [
-                              //         Text('Careplans in Local: ${syncController.localCareplansAll.value.length}', style: TextStyle(fontSize: 20),),
-                              //         SizedBox(width: 20),
-                              //       ],
-                              //     ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('Careplans in Local: ${syncController.localCareplansAll.value.length}', style: TextStyle(fontSize: 20),),
+                                      SizedBox(width: 20),
+                                    ],
+                                  ),
 
-                              //     SizedBox(height: 30),
-                              //     FlatButton(
-                              //       color: kPrimaryRedColor,
-                              //       onPressed: () {
-                              //         syncController.emptyLocalDatabase();
-                              //       },
-                              //       child: Text('Empty Synced Databases', style: TextStyle(color: Colors.white),)
-                              //     ),
+                                  SizedBox(height: 30),
+                                  FlatButton(
+                                    color: kPrimaryRedColor,
+                                    onPressed: () {
+                                      syncController.emptyLocalDatabase();
+                                    },
+                                    child: Text('Empty Synced Databases', style: TextStyle(color: Colors.white),)
+                                  ),
 
-                              //     SizedBox(height: 20),
+                                  SizedBox(height: 20),
                                   
-                              //   ],
-                              // ),
-                             
+                                ],
+                              ),
+                              
                             ],
                           ),
 
                         
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
