@@ -448,7 +448,8 @@
   "age": "Age",
   "unhealthyDiet": "Unhealthy diet",
   "wasCounsellingProvided": "Was counselling provided?",
-  "tests": "Tests"
+  "tests": "Tests",
+  "inputAge": "Please input age"
   
   
 

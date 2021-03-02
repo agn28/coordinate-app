@@ -449,6 +449,7 @@
   "age": "বয়স",
   "unhealthyDiet": "অস্বাস্থ্যকর ডায়েট",
   "wasCounsellingProvided": "পরামর্শ দেওয়া হয়েছে?",
-  "tests": "পরীক্ষা"
+  "tests": "পরীক্ষা",
+  "inputAge": "দয়া করে বয়স লিখুন"
 
 }

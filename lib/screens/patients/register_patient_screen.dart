@@ -356,17 +356,32 @@ class _RegisterPatientState extends State<RegisterPatient> {
                         nextText = AppLocalizations.of(context).translate('finish');
                     }
                     if (_currentStep < 1) {
-                      if (birthDateController.text == null || birthDateController.text == '') {
-                        _scaffoldKey.currentState.showSnackBar(
-                          SnackBar(
-                            content: Text(AppLocalizations.of(context).translate("inputBirthday")),
-                            backgroundColor: kPrimaryRedColor,
-                          )
-                        );
+                      if (selectedDobType == 'dob') {
+                        if (birthDateController.text == null || birthDateController.text == '') {
+                          _scaffoldKey.currentState.showSnackBar(
+                            SnackBar(
+                              content: Text(AppLocalizations.of(context).translate("inputBirthday")),
+                              backgroundColor: kPrimaryRedColor,
+                            )
+                          );
 
-                        _patientFormKey.currentState.validate();
-                        return;
+                          _patientFormKey.currentState.validate();
+                          return;
+                        }
+                      } else {
+                        if (ageController.text == null || ageController.text == '') {
+                          _scaffoldKey.currentState.showSnackBar(
+                            SnackBar(
+                              content: Text(AppLocalizations.of(context).translate("inputAge")),
+                              backgroundColor: kPrimaryRedColor,
+                            )
+                          );
+
+                          _patientFormKey.currentState.validate();
+                          return;
+                        }
                       }
+                      
 
                       if (_patientFormKey.currentState.validate()) {
                         _currentStep = _currentStep + 1;
@@ -428,6 +443,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
   }
 
   _prepareFormData() {
+    
     var data =  {
       'first_name': firstNameController.text,
       'last_name': lastNameController.text,
@@ -1312,10 +1328,18 @@ class _ViewSummaryState extends State<ViewSummary> {
                   ],
                 ),
                 SizedBox(height: 7,),
+
+                selectedDobType == 'dob' ?
                 Row(
                   children: <Widget>[
                     Text(AppLocalizations.of(context).translate('dateOfBirth') + ': ', style: TextStyle(fontSize: 18),),
                     Text(birthDateController.text + '-' + birthMonthController.text + '-' + birthYearController.text, style: TextStyle(fontSize: 18),),
+                  ],
+                ) :  
+                Row(
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate('age') + ': ', style: TextStyle(fontSize: 18),),
+                    Text('${ageController.text}', style: TextStyle(fontSize: 18),),
                   ],
                 ),
                 SizedBox(height: 7,),
