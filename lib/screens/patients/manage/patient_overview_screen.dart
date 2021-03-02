@@ -1135,7 +1135,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                   ],
                                 ) :
                                 FloatingButton(
-                                  text: AppLocalizations.of(context).translate('newPatientQuestionnaire'),
+                                  text: AppLocalizations.of(context).translate('newQuestionnaire'),
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                     Navigator.of(context).pushNamed(NewQuestionnaireFeelingScreen.path);

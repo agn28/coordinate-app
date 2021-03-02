@@ -53,7 +53,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('patientRegComplete')),
+        title: Text(AppLocalizations.of(context).translate('registrationCompleted')),
         automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
@@ -78,7 +78,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                         child: Icon(Icons.done, size: 40, color: Colors.white,)
                       ),
                       SizedBox(width: 15,),
-                      Text(widget.isEditState != null && widget.isEditState ? AppLocalizations.of(context).translate('patientUpdated') : AppLocalizations.of(context).translate('patientRegistered'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500)),
+                      Text(widget.isEditState != null && widget.isEditState ? AppLocalizations.of(context).translate('patientUpdated') : AppLocalizations.of(context).translate('registrationCompleted'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500)),
                     ],
                   ),
                   SizedBox(height: 20,),
@@ -203,7 +203,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            Text(AppLocalizations.of(context).translate('newPatientQuestionnaire'), style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w600),),
+                                            Text(AppLocalizations.of(context).translate('newQuestionnaire'), style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w600),),
                                           ],
                                         )
                                       ],
@@ -262,7 +262,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            Text(AppLocalizations.of(context).translate('registerNewPatient'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
+                                            Text(AppLocalizations.of(context).translate('newRegistration'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
                                           ],
                                         )
                                       ],

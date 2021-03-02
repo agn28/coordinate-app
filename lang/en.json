@@ -5,6 +5,9 @@
   "manageExistingPatient": "Manage an Existing Patients",
   "viewExistingPatient": "Existing Patients",
   "registerNewPatient": "Register Patient",
+  "newRegistration": "New Registration",
+  "allRegistered": "All Registered",
+  "register": "Register",
   "gotoProfile": "Go to Profile",
   "patients": "Patients",
   "workList": "Work List",
@@ -149,6 +152,7 @@
   "lipidProfile": "Lipid Profile",
   "totalCholesterol": "Total Cholesterol",
   "hdl": "HDL",
+  "ldl": "HDL",
   "triglycerides": "Triglycerides",
   "blood": "Blood",
   "fastingBloodGlucose": "Fasting Blood Glucose",
@@ -433,8 +437,19 @@
   "intervention": "Intervention",
   "actions":"Actions",
   "nidValidation":"Patient already exists. Please check the NID.",
-  "somethingWrong":"Something went wrong."
-
+  "somethingWrong":"Something went wrong.",
+  "registrationCompleted": "Registration Completed",
+  "newQuestionnaire": "New Questionnaire",
+  "alternativePhone": "Alternative phone number",
+  "noQuestionFound": "No question found.",
+  "goToNextStep": "Go to next step.",
+  "serum": "Serum",
+  "creatinine": "Creatinine",
+  "age": "Age",
+  "unhealthyDiet": "Unhealthy diet",
+  "wasCounsellingProvided": "Was counselling provided?",
+  "tests": "Tests",
+  "inputAge": "Please input age"
   
   
 
