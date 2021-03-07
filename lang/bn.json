@@ -40,7 +40,7 @@
   "address": "ঠিকানা",
   "relationship": "রোগীর সাথে সম্পর্ক",
   "contact'sAddress": "যোগাযোগের জন্য নির্ধারিত ব্যক্তির ঠিকানা",
-  "takePhoto": "রোগীর ছবি তুলুন",
+  "takePhoto": "ছবি তুলুন",
   "addPhoto": "ছবি যুক্ত করুন",
   "updatePatient": "রোগীর তথ্য হালনাগাদ করুন",
   "completeRegistration": "নিবন্ধন সম্পন্ন করুন",
@@ -450,6 +450,21 @@
   "unhealthyDiet": "অস্বাস্থ্যকর ডায়েট",
   "wasCounsellingProvided": "পরামর্শ দেওয়া হয়েছে?",
   "tests": "পরীক্ষা",
-  "inputAge": "দয়া করে বয়স লিখুন"
+  "inputAge": "দয়া করে বয়স লিখুন",
+  "followupVisit": "Follow Up Visit",
+  "firstCenterAssessment": "First Center Assessment",
+  "details": "বিস্তারিত",
+  "ncdCenterAssessment": "NCD Center Assessment",
+  "2HABF": "2HABF",
+  "additional": "অতিরিক্ত",
+  "sodium": "সোডিয়াম",
+  "potassium": "পটাসিয়াম",
+  "ketones": "কেটোনেস",
+  "familyHistory": "ব্যক্তিগত/পারিবারিক ইতিহাস",
+  "religion": "Religion",
+  "occupation": "Occupation",
+  "ethnicity": "Ethnicity",
+  "incompleteNcd": "অসম্পূর্ণ ডেটা, মূল্যায়ন সংরক্ষণ করা হবে না",
+  "continue": "চালিয়ে যান"
 
 }

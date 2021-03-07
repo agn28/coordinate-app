@@ -28,6 +28,59 @@ class AssessmentRepositoryLocal {
     return observations;
   }
 
+    /// Create an assessment with observations.
+  /// observations [data] is required as parameter.
+  createOnlyAssessmentWithStatus(data) async {
+    var assessmentId = Uuid().v4();
+    var bloodPressures = BloodPressure().bpItems;
+    var bloodTests = BloodTest().btItems;
+    var bodyMeasurements = BodyMeasurement().bmItems;
+    var questionnaires = Questionnaire().qnItems;
+
+    // if (bloodPressures.isEmpty && bloodTests.isEmpty && bodyMeasurements.isEmpty && questionnaires.isEmpty) {
+    //   return 'No observations added';
+    // }
+
+    print('before assessment');
+    print(DateTime.now());
+
+    await _createOnlyAssessment(assessmentId, data);
+
+    print('after assessment ');
+    print(DateTime.now());
+
+    Future.forEach(bloodPressures, (item) async {
+      print('into observations');
+      var codings = await _getCodings(item);
+      item['body']['data']['codings'] = codings;
+      item['body']['assessment_id'] = assessmentId;
+      await _createObservations(item);
+    });
+
+    Future.forEach(bloodTests, (item) async {
+      var codings = await _getCodings(item);
+      item['body']['data']['codings'] = codings;
+      item['body']['assessment_id'] = assessmentId;
+      await _createObservations(item);
+    });
+
+    Future.forEach(bodyMeasurements, (item) async {
+      var codings = await _getCodings(item);
+      item['body']['data']['codings'] = codings;
+      item['body']['assessment_id'] = assessmentId;
+      await _createObservations(item);
+    });
+
+    Future.forEach(questionnaires, (item) async {
+      print('into questionnaire');
+      item['body']['assessment_id'] = assessmentId;
+      await _createObservations(item);
+    });
+
+    return 'success';
+    
+  }
+
   /// Create an assessment with observations.
   /// observations [data] is required as parameter.
   create(data) async {
@@ -41,9 +94,13 @@ class AssessmentRepositoryLocal {
       return 'No observations added';
     }
 
+    print('before assessment');
+    print(DateTime.now());
+
     await _createAssessment(assessmentId, data);
 
-    print('after assessment ' + bloodPressures.length.toString());
+    print('after assessment ');
+    print(DateTime.now());
 
     Future.forEach(bloodPressures, (item) async {
       print('into observations');
@@ -249,6 +306,31 @@ class AssessmentRepositoryLocal {
 
     print('before encounter');
     await AssessmentRepository().create(apiData);
+
+    print('into encounter');
+  }
+
+  _createOnlyAssessment(id, data) async {
+    final sql = '''INSERT INTO ${DatabaseCreator.assessmentTable}
+    (
+      uuid,
+      data,
+      status
+    )
+    VALUES (?,?,?)''';
+    List<dynamic> params = [id, jsonEncode(data), 'not synced'];
+    final result = await db.rawInsert(sql, params);
+    DatabaseCreator.databaseLog('Add assessment', sql, null, result, params);
+
+    Map<String, dynamic> apiData = {
+      'id': id
+    };
+
+
+    apiData.addAll(data);
+
+    print('before encounter');
+    await AssessmentRepository().createOnlyAssessment(apiData);
 
     print('into encounter');
   }

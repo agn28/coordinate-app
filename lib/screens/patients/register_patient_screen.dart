@@ -122,7 +122,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     selectedUpazila = {};
     _currentStep = 0;
 
-    // fillDummyData(); //Remove this
+    fillDummyData(); //Remove this
   }
   nextStep() {
     setState(() {
@@ -241,6 +241,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     lastNameController .clear();
     fatherNameController .clear();
     dobController.clear();
+    ageController.clear();
     birthDateController.clear();
     birthMonthController.clear();
     birthYearController.clear();
@@ -408,7 +409,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
   List<CustomStep> _mySteps() {
     List<CustomStep> _steps = [
       CustomStep(
-        title: Text(AppLocalizations.of(context).translate('patientDetails'), textAlign: TextAlign.center,),
+        title: Text(AppLocalizations.of(context).translate('details'), textAlign: TextAlign.center,),
         content: PatientDetails(),
         isActive: _currentStep >= 0,
       ),
@@ -539,7 +540,7 @@ class _PatientDetailsState extends State<PatientDetails> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(AppLocalizations.of(context).translate('patientDetails'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
+            Text(AppLocalizations.of(context).translate('details'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
             SizedBox(height: 20,),
 
             Row(
@@ -1422,7 +1423,7 @@ class _ViewSummaryState extends State<ViewSummary> {
                   return;
                 }
 
-                if (response['id'] != null ) {
+                if (response['error'] != null && response['error'] == false) {
                   _RegisterPatientState()._clearForm();
                   Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen(isEditState: isEditState));
                   return;

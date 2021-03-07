@@ -11,6 +11,8 @@ import 'package:nhealth/repositories/assessment_repository.dart';
 import 'package:nhealth/repositories/local/assessment_repository_local.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:nhealth/repositories/observation_repository.dart';
+import 'package:uuid/uuid.dart';
 
 var bloodPressures = [];
 
@@ -71,6 +73,12 @@ class AssessmentController {
       });
     });
     return data;
+  }
+
+  getIncompleteEncounterWithObservation(patientId) async {
+    var assessment = await AssessmentRepository().getIncompleteEncounterWithObservation(patientId);
+
+    return assessment;
   }
 
   /// Get observations under a specific assessment.
@@ -159,6 +167,177 @@ class AssessmentController {
     print('before health report');
 
     return status;
+  }
+
+  createOnlyAssessmentWithStatus(type, screening_type, comment, completeStatus) async {
+
+
+    var data = _prepareData(type, screening_type, comment,);
+    data['body']['status'] = completeStatus;
+    var status = await AssessmentRepositoryLocal().createOnlyAssessmentWithStatus(data);
+    if (status == 'success') {
+      Helpers().clearObservationItems();
+    }
+
+    print('before health report');
+
+    return status;
+  }
+
+  updateIncompleteAssessmentData(status, encounter, observations) async {
+
+    // var assessmentId = Uuid().v4();
+    var bloodPressures = BloodPressure().bpItems;
+    var bloodTests = BloodTest().btItems;
+    var bodyMeasurements = BodyMeasurement().bmItems;
+    var questionnaires = Questionnaire().qnItems;
+
+    // if (bloodPressures.isEmpty && bloodTests.isEmpty && bodyMeasurements.isEmpty && questionnaires.isEmpty) {
+    //   return 'No observations added';
+    // }
+
+    print('before assessment');
+    print(DateTime.now());
+
+    // await _createOnlyAssessment(assessmentId, data);
+
+    // print('after assessment ');
+    // print(DateTime.now());
+
+    // Future.forEach(bloodPressures, (item) async {
+    //   print('into observations');
+    //   var codings = await _getCodings(item);
+    //   item['body']['data']['codings'] = codings;
+    //   item['body']['assessment_id'] = assessmentId;
+    //   await _createObservations(item);
+    // });
+
+    // print(encounter);
+
+    // bloodPressures.forEach((element) { print(element); });
+    // bloodTests.forEach((element) { print(element); });
+    // bodyMeasurements.forEach((element) { print(element); });
+    encounter['body']['status'] = status;
+
+    
+    var obsRepo = ObservationRepository();
+
+    var bpUpdated = false;
+    var btUpdated = false;
+    var bmUpdated = false;
+    // return;
+    observations.forEach((obs) {
+      // print(obs);
+      if (obs['body']['type'] == 'survey') {
+        questionnaires.forEach((qstn) {
+          if (qstn['body']['data']['name'] == obs['body']['data']['name']) {
+            var apiData = {
+              'id': obs['id']
+            };
+            apiData.addAll(qstn);
+            apiData['body']['assessment_id'] = obs['body']['assessment_id'];
+            // obsRepo.create(apiData);
+          }
+        });
+      }
+
+      else if (obs['body']['type'] == 'blood_pressure') {
+        bloodPressures.forEach((bp) {
+          var apiData = {
+            'id': obs['id']
+          };
+          apiData.addAll(bp);
+          apiData['body']['assessment_id'] = obs['body']['assessment_id'];
+          obsRepo.create(apiData);
+          bpUpdated = true;
+        });
+      }
+
+      else if (obs['body']['type'] == 'blood_test') {
+        bloodTests.forEach((bp) {
+          var apiData = {
+            'id': obs['id']
+          };
+          apiData.addAll(bp);
+          apiData['body']['assessment_id'] = obs['body']['assessment_id'];
+          obsRepo.create(apiData);
+          btUpdated = true;
+        });
+      }
+      else if (obs['body']['type'] == 'body_measurement') {
+        bodyMeasurements.forEach((bp) {
+          var apiData = {
+            'id': obs['id']
+          };
+          apiData.addAll(bp);
+          apiData['body']['assessment_id'] = obs['body']['assessment_id'];
+          obsRepo.create(apiData);
+          bmUpdated = true;
+        });
+      }
+    });
+
+
+    if (!bpUpdated) {
+      bloodPressures.forEach((bp) {
+        // var id = Uuid().v4();
+        // print(id);
+        var id =  Uuid().v4();
+        Map<String, dynamic> apiData = {
+          'id': id
+        };
+        apiData.addAll(bp);
+        // apiData['id'] = 'adsa';
+        apiData['body']['assessment_id'] = encounter['id'];
+        print('bloodPressure $apiData');
+        obsRepo.create(apiData);
+      });
+    }
+    if (!btUpdated) {
+      bloodTests.forEach((bt) {
+        // var id = Uuid().v4();
+        // print(id);
+        var id =  Uuid().v4();
+        Map<String, dynamic> apiData = {
+          'id': id
+        };
+        apiData.addAll(bt);
+        // apiData['id'] = 'adsa';
+        apiData['body']['assessment_id'] = encounter['id'];
+        print('bloodPressure $apiData');
+        obsRepo.create(apiData);
+      });
+    }
+    if (!bmUpdated) {
+      bodyMeasurements.forEach((bm) {
+        // var id = Uuid().v4();
+        // print(id);
+        var id =  Uuid().v4();
+        Map<String, dynamic> apiData = {
+          'id': id
+        };
+        apiData.addAll(bm);
+        // apiData['id'] = 'adsa';
+        apiData['body']['assessment_id'] = encounter['id'];
+        print('bloodPressure $apiData');
+        obsRepo.create(apiData);
+      });
+    }
+    // var data = _prepareData(type, screening_type, comment,);
+    // data['body']['status'] = completeStatus;
+    // var status = await AssessmentRepositoryLocal().createOnlyAssessmentWithStatus(data);
+    // if (status == 'success') {
+    //   Helpers().clearObservationItems();
+    // }
+
+    print('before health report');
+    await AssessmentRepository().createOnlyAssessment(encounter);
+
+    if (status == 'success') {
+      Helpers().clearObservationItems();
+    }
+
+    return 'success';
   }
 
   update(type, comment) {

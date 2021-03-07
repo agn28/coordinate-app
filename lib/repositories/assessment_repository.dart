@@ -6,6 +6,27 @@ import 'dart:convert';
 
 class AssessmentRepository {
 
+  createOnlyAssessment(data) async {
+    var authData = await Auth().getStorageAuth() ;
+    print('after get token');
+    var token = authData['accessToken'];
+    
+    await http.post(
+      apiUrl + 'assessments/except-oha',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: json.encode(data)
+    ).then((response) {
+      print('assessment created');
+      print(response.body);
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
+  }
+
   create(data) async {
     var authData = await Auth().getStorageAuth() ;
     print('after get token');
@@ -34,6 +55,26 @@ class AssessmentRepository {
     
     return http.get(
       apiUrl + 'patients/' + patientId + '/assessments',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    ).then((response) {
+
+      return json.decode(response.body);
+      
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
+  }
+
+  getIncompleteEncounterWithObservation(patientId) async {
+    var authData = await Auth().getStorageAuth() ;
+    var token = authData['accessToken'];
+    
+    return http.get(
+      apiUrl + 'assessments/patients/' + patientId + '/incomplete-assessment',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',

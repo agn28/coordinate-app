@@ -167,24 +167,34 @@ var _questions = {
       'medical_history': {
         'items' : [
           {
+            'question': 'Does anyone in your family have high blood pressure or diabetes?',
+            'question_bn': 'আপনার পরিবারের কারও কি উচ্চ রক্তচাপ বা ডায়াবেটিস আছে?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'key': 'diabetes'
+          },
+          {
             'question': 'Have you ever been diagnosed with Stroke?',
             'question_bn': 'আপনার কি কখনও স্ট্রোক হয়েছে?',
             'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না']
+            'options_bn': ['হ্যা', 'না'],
+            'key': 'stroke'
           },
           {
             'question': 'Have you ever been diagnosed with heart attack?',
             'question_bn': 'আপনার কি কখনও হার্ট অ্যাটাক হয়েছে?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
-            'type': 'heart'
+            'type': 'heart',
+            'key': 'heart_attack'
           },
           {
             'question': 'Have you ever been diagnosed with hypertension?',
             'question_bn': 'আপনার কি কখনও উচ্চ রক্তচাপ ধরা পড়েছে?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
-            'type': 'blood_pressure'
+            'type': 'blood_pressure',
+            'key': 'hypertension'
           },
           {
             'question': 'Have you ever been diagnosed with Diabetes?',
@@ -197,19 +207,22 @@ var _questions = {
             'question': 'Have you ever been diagnosed with asthma/COPD?',
             'question_bn': 'আপনার কি কখনও হাঁপানি / সিওপিডি (ফুস্ফুসের দীর্ঘমেয়াদী শ্বাসকষ্টজনিত রোগ ধরা পড়েছে?',
             'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না']
+            'options_bn': ['হ্যা', 'না'],
+            'key': 'asthma'
           },
           {
             'question': 'Have you ever been diagnosed with Cancer?',
             'question_bn': 'আপনার কি কখনও ক্যান্সার ধরা পড়েছে?',
             'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না']
+            'options_bn': ['হ্যা', 'না'],
+            'key': 'cancer'
           },
           {
             'question': 'Have you ever been diagnosed with chronic kidney disease?',
             'question_bn': 'আপনার কি কখনও দীর্ঘস্থায়ী কিডনি রোগ ধরা পড়েছে?',
             'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না']
+            'options_bn': ['হ্যা', 'না'],
+            'key': 'kidney_disease'
           },
         ]
       },
@@ -221,6 +234,7 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'type': 'blood_pressure',
+            'key': 'hypertension_medicine'
             
           },
           {
@@ -229,14 +243,16 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'type': 'blood_pressure_regular_medication',
-            'category': 'sub'
+            'category': 'sub',
+            'key': 'hypertension_regular_medicine'
           },
           {
             'question': 'Are you taking any medicines for diabetes?',
             'question_bn': 'আপনি কি ডায়াবেটিসের কোনও ওষুধ খাচ্ছেন?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
-            'type': 'diabetes'
+            'type': 'diabetes',
+            'key': 'diabetes_medicine',
           },
           {
             'question': 'Are you taking the medicines regularly?',
@@ -244,14 +260,16 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'type': 'diabetes_regular_medication',
-            'category': 'sub'
+            'category': 'sub',
+            'key': 'diabetes_regular_medicine',
           },
           {
             'question': 'Are you taking any aspirin/clopidegrol?',
             'question_bn': 'আপনি কি কোনও অ্যাসপিরিন / ক্লপিডগ্রেল জাতীয় ওষুধ খাচ্ছেন?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
-            'type': 'heart'
+            'type': 'heart',
+            'key': 'aspirin',
           },
           {
             'question': 'Are you taking the medicines regularly?',
@@ -259,7 +277,8 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'type': 'heart_regular_medication',
-            'category': 'sub'
+            'category': 'sub',
+            'key': 'aspirin_regular_medicine',
           },
         ]
 
@@ -273,7 +292,8 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'tobacco',
-            'type': 'smoking'
+            'type': 'smoking',
+            'key': 'smoking'
           },
           {
             'question': 'Do you currently consume any smokeless tobacco?',
@@ -281,7 +301,8 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'tobacco',
-            'type': 'smokeless-tobacco'
+            'type': 'smokeless-tobacco',
+            'key': 'smokeless_tobacco'
           },
           {
             'question': 'Do you eat atleast 5 portions of fruits and vegetables daily?',
@@ -289,7 +310,8 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'unhealth-diet',
-            'type': 'eat-vegetables'
+            'type': 'eat-vegetables',
+            'key': 'fruits_vegetables_daily'
           },
           // {
           //   'question': 'Do you eat any red meat, fried foods, canned or processed food on most days?',
@@ -301,7 +323,8 @@ var _questions = {
             'question': 'Do you take added salt in your food?',
             'question_bn': 'আপনি কি আপনার খাবারে অতিরিক্ত লবণ যুক্ত করেন বা বেশিরভাগ দিন অতিরিক্ত লবণ বা নোনতা খাবার খান?',
             'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না']
+            'options_bn': ['হ্যা', 'না'],
+            'key': 'extra_salt'
           },
           {
             'question': 'Do you frequently eat salty foods such as sauce, achar, singara, samucha, etc?',
@@ -309,7 +332,8 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'unhealth-diet',
-            'type': 'salt'
+            'type': 'salt',
+            'key': 'salty_foods'
           },
           {
             'question': 'Do you have sugery drinks on most days?',
@@ -317,7 +341,8 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'unhealth-diet',
-            'type': 'suger'
+            'type': 'suger',
+            'key': 'sugary_drinks'
           },
           {
             'question': 'Do you frequently eat processed food such as chips, chanachur, biscuit, noodles etc?',
@@ -325,7 +350,8 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'unhealth-diet',
-            'type': 'processed-food'
+            'type': 'processed-food',
+            'key': 'processed_foods'
           },
           {
             'question': 'Do you frequently eat redmeat?',
@@ -333,7 +359,17 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'unhealth-diet',
-            'type': 'red-meat'
+            'type': 'red-meat',
+            'key': 'red_meat'
+          },
+          {
+            'question': 'Do you take betel nut  regularly?',
+            'question_bn': 'আপনি কি নিয়মিত সুপারি খান?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'group': 'unhealth-diet',
+            'type': 'rbetel-nut',
+            'key': 'betel_nut'
           },
           {
             'question': 'Do you do physical activity or moderate intensity (you get a little bit out of breath) for atleast 30 minutes per day on 5 days per week or 150 minutes per week?',
@@ -341,7 +377,8 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'physical-activity',
-            'type': 'physical-activity-high'
+            'type': 'physical-activity-high',
+            'key': 'physical_activity_high'
           },
           {
             'question': 'Do you do physical activity of high intensity (you get out of breath) for at least 15 minutes per day on 5 days per week, or 75 minutes per week?',
@@ -349,7 +386,8 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'physical-activity',
-            'type': 'physical-activity-moderate'
+            'type': 'physical-activity-moderate',
+            'key': 'physical_activity_moderate'
           },
           {
             'question': 'Do you currently drink alcohol?',
@@ -357,7 +395,8 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'alcohol',
-            'type': 'alcohol-status'
+            'type': 'alcohol-status',
+            'key': 'alcohol'
           },
         ]
       },
@@ -445,8 +484,57 @@ var _questions = {
             'type': 'alcohol-status'
           },
         ]
-      }
-    
+      },
+
+
+      'relative_problems': {
+        'items' : [
+          {
+            'question': 'Stroke',
+            'question_bn': 'স্ট্রোক',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'key': 'stroke'
+            
+          },
+          {
+            'question': 'Heart Attack',
+            'question_bn': 'হৃদপিন্ডে হঠাৎ আক্রমণ',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'key': 'heart_attack'
+          },
+          {
+            'question': 'High Blood Pressure',
+            'question_bn': 'উচ্চ্ রক্তচাপ',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'key': 'high_blood_pressure'
+          },
+          {
+            'question': 'Diabetes',
+            'question_bn': 'ডায়াবেটিস',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'key': 'diabetes'
+          },
+          {
+            'question': 'Asthma/COPD',
+            'question_bn': 'হাঁপানি / সিওপিডি',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'key': 'asthma'
+          },
+          {
+            'question': 'Cancer',
+            'question_bn': 'ক্যান্সার',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'key': 'cancer'
+          },
+        ]
+
+      },
     }
     
 };
@@ -717,6 +805,27 @@ class Questionnaire {
     return 'success';
   }
 
+  addNewPersonalHistory(type, answers, additionalData) {
+    var questions = Questionnaire().questions['new_patient'][type];
+    var updated = false;
+    var preparedData = _prepareRelativeData(questions, answers, type);
+    preparedData['body']['data'].addAll(additionalData);
+    for (var qn in _questionnaireItems) {
+      if (qn['body']['data']['name'] == type) {
+        
+        _questionnaireItems[_questionnaireItems.indexOf(qn)] = preparedData;
+        updated = true;
+      }
+    }
+
+    if (!updated) {
+      _questionnaireItems.add(preparedData);
+    }
+    print(preparedData);
+    
+    return 'success';
+  }
+
   /// Prepare questionnaire data
   _prepareCurrentMedicationData(questions, answers, type) {
     var data = {
@@ -970,6 +1079,29 @@ class Questionnaire {
           'physical_activity_moderate': answers[7],
           'medical_adherence': answers[9],
           'alcohol': answers[9],
+        },
+        "patient_id": Patient().getPatient()['uuid'],
+      }
+    };
+
+    return data;
+  }
+  _prepareRelativeData(questions, answers, type) {
+    var data = {
+      "meta": {
+        "performed_by": Auth().getAuth()['uid'],
+        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
+      },
+      "body": {
+        "type": "survey",
+        "data": {
+          'name': type,
+          'stroke': answers[0],
+          'heart_attack': answers[1],
+          'high_blood_pressure': answers[2],
+          'diabetes': answers[3],
+          'asthma': answers[4],
+          'cancer': answers[5]
         },
         "patient_id": Patient().getPatient()['uuid'],
       }
