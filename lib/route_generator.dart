@@ -27,6 +27,9 @@ import 'package:nhealth/screens/chw/unwell/severity_screen.dart';
 import 'package:nhealth/screens/chw/unwell/update_referral_screen.dart';
 import 'package:nhealth/screens/chw/work-list/chw_navigation_screen.dart';
 import 'package:nhealth/screens/home_screen.dart';
+import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
+import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_questionnaire_acute_screen.dart';
+import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_questionnaire_feeling_screen.dart';
 import 'package:nhealth/screens/patients/edit_patient_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_details_screen.dart';
 import 'package:nhealth/screens/patients/manage/care_plan/care_plan_intervention_screen.dart';
@@ -34,6 +37,9 @@ import 'package:nhealth/screens/patients/manage/encounters/encounter_details_scr
 import 'package:nhealth/screens/patients/manage/patient_overview_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_overview_screen_old.dart';
 import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
+import 'package:nhealth/screens/patients/ncd/edit_incomplete_encounter_screen.dart';
+import 'package:nhealth/screens/patients/ncd/ncd_patient_summary_screen.dart';
+import 'package:nhealth/screens/patients/ncd/search/first_center_search_screen.dart';
 import 'package:nhealth/screens/patients/patient_update_summary_screen.dart';
 
 class RouteGenerator {
@@ -46,10 +52,17 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => AuthScreen());
       case '/patientSearch':
         return CupertinoPageRoute(builder: (_) => PatientSearchScreen());
+      case '/firstCenterSearch':
+        return CupertinoPageRoute(builder: (_) => FirstCenterSearchScreen());
       case '/patientOverview':
         return CupertinoPageRoute(builder: (_) => PatientRecordsScreen());
+      case '/ncdPatientSummary':
+        return CupertinoPageRoute(builder: (_) => NcdPatientSummaryScreen());
       case '/patientOverviewOld':
         return CupertinoPageRoute(builder: (_) => PatientRecordsScreenOld());
+
+      case '/editIncompleteEncounter':
+        return CupertinoPageRoute(builder: (_) => EditIncompleteEncounterScreen());
         
       case '/carePlanDetails':
         var data = settings.arguments;
@@ -130,6 +143,13 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => NewQuestionnaireFeelingScreen());
       case NewQuestionnaireAcuteScreen.path:
         return CupertinoPageRoute(builder: (_) => NewQuestionnaireAcuteScreen());
+
+      case NewPatientQuestionnaireNurseScreen.path:
+        return CupertinoPageRoute(builder: (_) => NewPatientQuestionnaireNurseScreen());
+      case NewQuestionnaireFeelingNurseScreen.path:
+        return CupertinoPageRoute(builder: (_) => NewQuestionnaireFeelingNurseScreen());
+      case NewQuestionnaireAcuteNurseScreen.path:
+        return CupertinoPageRoute(builder: (_) => NewQuestionnaireAcuteNurseScreen());
 
       case PatientUpdateSummary.path:
         return CupertinoPageRoute(builder: (_) => PatientUpdateSummary());

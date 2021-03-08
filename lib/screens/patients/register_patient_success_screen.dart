@@ -8,6 +8,8 @@ import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/chw/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
 import 'package:nhealth/screens/chw/new_patient_questionnairs/new_questionnaire_feeling_screen.dart';
 import 'package:nhealth/screens/home_screen.dart';
+import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
+import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_questionnaire_feeling_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 
@@ -116,7 +118,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                   SizedBox(height: 40,),
 
                   role != 'chw' ? GestureDetector(
-                    onTap: () => Navigator.of(context).push(NewEncounterScreen()),
+                    onTap: () => Navigator.of(context).pushNamed(NewQuestionnaireFeelingNurseScreen.path),
                     child: Container(
                       // height: 190,
                       width: double.infinity,
@@ -148,9 +150,9 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            Text(AppLocalizations.of(context).translate('screenPatient'), style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w600),),
-                                            SizedBox(height: 10,),
-                                            Text(AppLocalizations.of(context).translate('newAssessment'), style: TextStyle(color: kTextGrey, fontSize: 14,),),
+                                            Text(AppLocalizations.of(context).translate('ncdCenterAssessment'), style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w600),),
+                                            // SizedBox(height: 10,),
+                                            // Text(AppLocalizations.of(context).translate('newAssessment'), style: TextStyle(color: Colors.white, fontSize: 14,),),
                                           ],
                                         )
                                       ],
