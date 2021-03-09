@@ -8,7 +8,6 @@ import 'package:nhealth/configs/configs.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
-import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
@@ -30,7 +29,6 @@ final _systolicController = TextEditingController();
 final _diastolicController = TextEditingController();
 final _pulseController = TextEditingController();
 final _glucoseController = TextEditingController();
-final _deviceController = TextEditingController();
 List causes = ['Fever', 'Shortness of breath', 'Feeling faint', 'Stomach discomfort'];
 List issues = ['Vision', 'Smell', 'Mental Health', 'Other'];
 List selectedCauses = [];
@@ -40,7 +38,6 @@ String selectedArm = 'left';
 String selectedGlucoseType = 'fasting';
 String selectedGlucoseUnit = 'mg/dL';
 
-var _questions = {};
 var medicalHistoryQuestions = {};
 var medicalHistoryAnswers = [];
 var medicationQuestions = {};
@@ -53,10 +50,6 @@ var relativeAnswers = [];
 var counsellingAnswers = [];
 var answers = [];
 
-int _firstQuestionOption = 1;
-int _secondQuestionOption = 1;
-int _thirdQuestionOption = 1;
-int _fourthQuestionOption = 1;
 bool isLoading = false;
 
 getQuestionText(context, question) {
@@ -83,20 +76,19 @@ getOptionText(context, question, option) {
 }
 
 
-class EditIncompleteEncounterScreen extends StatefulWidget {
+class FollowupVisitScreen extends StatefulWidget {
 
-  static const path = '/newPatientQuestionnaireNurse';
+  static const path = '/followupVisit';
   @override
-  _EditIncompleteEncounterScreenScreenState createState() => _EditIncompleteEncounterScreenScreenState();
+  _FollowupVisitScreenState createState() => _FollowupVisitScreenState();
 }
 
-class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEncounterScreen> {
+class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
   
   int _currentStep = 0;
 
   String nextText = 'NEXT';
   bool nextHide = false;
-  var encounter, observations = [];
 
   @override
   void initState() {
@@ -105,139 +97,16 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     clearForm();
     isLoading = false;
 
+    
+    
     print(Language().getLanguage());
 
     prepareQuestions();
     prepareAnswers();
 
     getLanguage();
-
-    getIncompleteAssessment();
   }
 
-
-  getIncompleteAssessment() async {
-    if (Auth().isExpired()) {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    }
-
-    setState(() {
-      isLoading = true;
-    });
-
-    var patientId = Patient().getPatient()['uuid'];
-
-    var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
-    setState(() {
-      isLoading = false;
-    });
-
-    if (data == null) {
-      return;
-    } else if (data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-      return;
-    } else if (data['error'] != null && data['error']) {
-      return;
-    }
-
-    setState(() {
-      encounter = data['data']['assessment'];
-      observations = data['data']['observations'];
-    });
-    
-    // for (var key in obs) {
-    //   print(key);
-    // }
-
-    // var keys = obs.keys();
-
-
-    populatePreviousAnswers();
-    
-    
-  }
-
-  populatePreviousAnswers() {
-    observations.forEach((obs) {
-      if (obs['body']['type'] == 'survey') {
-        print('into survey');
-        var obsData = obs['body']['data'];
-        if (obsData['name'] == 'medical_history') {
-          print('into medical history');
-          var keys = obsData.keys.toList();
-          print(keys);
-          keys.forEach((key) {
-            if (obsData[key] != '') {
-              print('into keys');
-              var matchedMhq = medicalHistoryQuestions['items'].where((mhq) => mhq['key'] == key);
-              if (matchedMhq.isNotEmpty) {
-                matchedMhq = matchedMhq.first;
-                setState(() {
-                  medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(matchedMhq)] = obsData[key];
-                });
-              }
-            }
-          });
-        }
-
-        else if (obsData['name'] == 'medication') {
-          print('into medical history');
-          var keys = obsData.keys.toList();
-          print(keys);
-          keys.forEach((key) {
-            if (obsData[key] != '') {
-              print('into keys');
-              var matchedMhq = medicationQuestions['items'].where((mhq) => mhq['key'] == key);
-              if (matchedMhq.isNotEmpty) {
-                matchedMhq = matchedMhq.first;
-                setState(() {
-                  medicationAnswers[medicationQuestions['items'].indexOf(matchedMhq)] = obsData[key];
-                });
-              }
-            }
-          });
-        }
-
-        else if (obsData['name'] == 'risk_factors') {
-          print('into medical history');
-          var keys = obsData.keys.toList();
-          print(keys);
-          keys.forEach((key) {
-            if (obsData[key] != '') {
-              print('into keys');
-              var matchedMhq = riskQuestions['items'].where((mhq) => mhq['key'] == key);
-              if (matchedMhq.isNotEmpty) {
-                matchedMhq = matchedMhq.first;
-                setState(() {
-                  riskAnswers[riskQuestions['items'].indexOf(matchedMhq)] = obsData[key];
-                });
-              }
-            }
-          });
-        }
-        else if (obsData['name'] == 'relative_problems') {
-          print('into medical history');
-          var keys = obsData.keys.toList();
-          print(keys);
-          keys.forEach((key) {
-            if (obsData[key] != '') {
-              print('into keys');
-              var matchedMhq = relativeQuestions['items'].where((mhq) => mhq['key'] == key);
-              if (matchedMhq.isNotEmpty) {
-                matchedMhq = matchedMhq.first;
-                setState(() {
-                  relativeAnswers[relativeQuestions['items'].indexOf(matchedMhq)] = obsData[key];
-                });
-              }
-            }
-          });
-        }
-      }
-    });
-  }
   getLanguage() async {
     print('language s');
     final prefs = await SharedPreferences.getInstance();
@@ -302,10 +171,6 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     systolicEditingController.text = '';
     diastolicEditingController.text = '';
     pulseRateEditingController.text = '';
-    heightEditingController.text = '';
-    weightEditingController.text = '';
-    waistEditingController.text = '';
-    hipEditingController.text = '';
 
     randomBloodController.text = '';
     fastingBloodController.text = '';
@@ -316,13 +181,11 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     hdlController.text = '';
     tgController.text = '';
     creatinineController.text = '';
-    sodiumController.text = '';
-    potassiumController.text = '';
-    ketonesController.text = '';
+
     occupationController.text = '';
     incomeController.text = '';
     educationController.text = '';
-
+    nextVisitDate = '';
   }
 
   _checkAuth() {
@@ -411,7 +274,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
 
     print('_currentStep $_currentStep');
     if (diastolicEditingController.text != '' && systolicEditingController.text != '') {
-    BloodPressure().addItem('left', int.parse(systolicEditingController.text), int.parse(diastolicEditingController.text), int.parse(pulseRateEditingController.text), null);
+      BloodPressure().addItem('left', int.parse(systolicEditingController.text), int.parse(diastolicEditingController.text), int.parse(pulseRateEditingController.text), null);
       var formData = {
         'items': BloodPressure().items,
         'comment': '',
@@ -421,21 +284,6 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
       };
       
       BloodPressure().addBloodPressure(formData);
-    }
-
-    
-
-    if (heightEditingController.text != '') {
-      BodyMeasurement().addItem('height', heightEditingController.text, 'cm', '', '');
-    }
-    if (weightEditingController.text != '') {
-      BodyMeasurement().addItem('weight', weightEditingController.text, 'kg', '', '');
-    }
-    if (waistEditingController.text != '') {
-      BodyMeasurement().addItem('waist', waistEditingController.text, 'cm', '', '');
-    }
-    if (hipEditingController.text != '') {
-      BodyMeasurement().addItem('hip', hipEditingController.text, 'cm', '', '');
     }
 
     BodyMeasurement().addBmItem();
@@ -469,17 +317,9 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     if (creatinineController.text != '') {
       BloodTest().addItem('creatinine', creatinineController.text, selectedCreatinineUnit, '', '');
     }
-    if (sodiumController.text != '') {
-      BloodTest().addItem('sodium', sodiumController.text, selectedSodiumUnit, '', '');
-    }
-    if (potassiumController.text != '') {
-      BloodTest().addItem('potassium', potassiumController.text, selectedPotassiumUnit, '', '');
-    }
-    if (ketonesController.text != '') {
-      BloodTest().addItem('ketones', ketonesController.text, selectedKetonesUnit, '', '');
-    }
 
     BloodTest().addBtItem();
+
 
 
     var relativeAdditionalData = {
@@ -500,7 +340,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Incomplete Encounter'),
+        title: Text(AppLocalizations.of(context).translate('followupVisit')),
       ),
       body: !isLoading ? GestureDetector(
         onTap: () {
@@ -576,29 +416,24 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                   setState(() {
                     print(_currentStep);
                     if (_currentStep == 0) {
-                      Questionnaire().addNewMedicalHistory('medical_history', medicalHistoryAnswers);
-                      print(Questionnaire().qnItems);
+                      
                     }
 
                     if (_currentStep == 1) {
-                      Questionnaire().addNewMedication('medication', medicationAnswers);
-                      print(Questionnaire().qnItems);
+
                     }
 
                     if (_currentStep == 2) {
-                      Questionnaire().addNewRiskFactors('risk_factors', riskAnswers);
-                      print(Questionnaire().qnItems);
+                      
                     }
                     
                     if (nextText =='COMPLETE') {
-                      Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);
+
                       _completeStep();
                       return;
                     }
-                    if (_currentStep == 5) {
+                    if (_currentStep == 1) {
                       print('hello');
-
-                      
                       createObservations();
                       nextText = 'COMPLETE';
                     }
@@ -654,10 +489,10 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     return response;
   }
 
+
   Future _completeStep() async {
     
     print('before missing popup');
-
     var hasMissingData = checkMissingData();
 
     if (hasMissingData) {
@@ -673,15 +508,9 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
 
     print(patient['data']['age']);
     var status = hasMissingData ? 'incomplete' : 'complete';
-    if (nextVisitDate != '') {
-      encounter['body']['next_visit_date'] = nextVisitDate;
-    }
-    var response = await AssessmentController().updateIncompleteAssessmentData(status, encounter, observations);
-    // var response = await AssessmentController().createOnlyAssessmentWithStatus('ncd center assessment', 'ncd', '', 'incomplete');
+    var response = await AssessmentController().createOnlyAssessmentWithStatus('follow up visit', 'ncd', '', status, nextVisitDate);
 
     setLoader(false);
-    return;
-
 
     // if age greater than 40 redirect to referral page
     // if (patient['data']['age'] != null && patient['data']['age'] > 40) {
@@ -719,21 +548,6 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
 
   List<CustomStep> _mySteps() {
     List<CustomStep> _steps = [
-      CustomStep(
-        title: Text(AppLocalizations.of(context).translate("causes"), textAlign: TextAlign.center,),
-        content: MedicalHistory(),
-        isActive: _currentStep >= 0,
-      ),
-      CustomStep(
-        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
-        content: Medication(),
-        isActive: _currentStep >= 1,
-      ),
-      CustomStep(
-        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
-        content: RiskFactors(),
-        isActive: _currentStep >= 2,
-      ),
 
       CustomStep(
         title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
@@ -743,12 +557,6 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
       CustomStep(
         title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
         content: BloodTests(),
-        isActive: _currentStep >= 2,
-      ),
-
-      CustomStep(
-        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
-        content: History(),
         isActive: _currentStep >= 2,
       ),
 
@@ -786,13 +594,6 @@ checkMissingData() {
     return true;
   }
 
-  
-
-  if (heightEditingController.text == '' || weightEditingController.text == '' || waistEditingController.text == '' || hipEditingController.text == '') {
-    print('height');
-    return true;
-  }
-
   if (
     randomBloodController.text == '' ||
     fastingBloodController.text == '' ||
@@ -809,6 +610,7 @@ checkMissingData() {
   return false;
 
 }
+
 
 class MedicalHistory extends StatefulWidget {
 
@@ -1125,26 +927,8 @@ var systolicEditingController = TextEditingController();
 var pulseRateEditingController = TextEditingController();
 var diastolicEditingController = TextEditingController();
 var commentsEditingController = TextEditingController();
-var heightEditingController = TextEditingController();
-var weightEditingController = TextEditingController();
-var waistEditingController = TextEditingController();
-var hipEditingController = TextEditingController();
-var bmiEditingController = TextEditingController();
-var bloodSugerEditingController = TextEditingController();
 
 class _MeasurementsState extends State<Measurements> {
-
-
-  calculateBmi() {
-    if (heightEditingController != '' && weightEditingController.text != '') {
-      var height = int.parse(heightEditingController.text) / 100;
-      var weight = int.parse(weightEditingController.text);
-
-      var bmi = weight / (height * height);
-
-      bmiEditingController.text = bmi.toStringAsFixed(2);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -1230,7 +1014,7 @@ class _MeasurementsState extends State<Measurements> {
                                       ),
                                     ),
                                   ],
-                                ),
+                                )
                               )
 
 
@@ -1311,147 +1095,6 @@ class _MeasurementsState extends State<Measurements> {
                 ],
               ),
             ),
-            SizedBox(height: 32,),
-            Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(AppLocalizations.of(context).translate("bodyMeasurements"), style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),),
-                  SizedBox(height: 24),
-                  Container(
-                    height: 230,
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 0.5, color: Colors.grey.shade400),
-                      borderRadius: BorderRadius.circular(10)
-                    ),
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(AppLocalizations.of(context).translate("height") + "*", style: TextStyle(color: Colors.black, fontSize: 16)),
-                                SizedBox(width: 20,),
-                                Container(
-                                  width: 80,
-                                  height: 40,
-                                  child: TextFormField(
-                                    textAlign: TextAlign.center,
-                                    keyboardType: TextInputType.number,
-                                    controller: heightEditingController,
-                                    onChanged: (value) {
-                                      calculateBmi();
-                                    },
-                                    decoration: InputDecoration(  
-                                      contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                      border: OutlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                      ), 
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 16,),
-                                Text(AppLocalizations.of(context).translate("cm"), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(AppLocalizations.of(context).translate("weight") + "*", style: TextStyle(color: Colors.black, fontSize: 16,)),
-                                SizedBox(width: 18,),
-                                Container(
-                                  width: 80,
-                                  height: 40,
-                                  child: TextFormField(
-                                    textAlign: TextAlign.center,
-                                    keyboardType: TextInputType.number,
-                                    controller: weightEditingController,
-                                    onChanged: (value) {
-                                      calculateBmi();
-                                    },
-                                    decoration: InputDecoration(  
-                                      contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                      border: OutlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                      ), 
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 16,),
-                                Text(AppLocalizations.of(context).translate("kg"), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(AppLocalizations.of(context).translate("waist"), style: TextStyle(color: Colors.black, fontSize: 16,)),
-                                SizedBox(width: 35,),
-                                Container(
-                                  width: 80,
-                                  height: 40,
-                                  child: TextFormField(
-                                    textAlign: TextAlign.center,
-                                    keyboardType: TextInputType.number,
-                                    controller: waistEditingController,
-                                    onChanged: (value) {
-                                      calculateBmi();
-                                    },
-                                    decoration: InputDecoration(  
-                                      contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                      border: OutlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                      ), 
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 16,),
-                                Text(AppLocalizations.of(context).translate("cm"), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(AppLocalizations.of(context).translate("hip") + " ", style: TextStyle(color: Colors.black, fontSize: 16,)),
-                                SizedBox(width: 47,),
-                                Container(
-                                  width: 80,
-                                  height: 40,
-                                  child: TextFormField(
-                                    textAlign: TextAlign.center,
-                                    keyboardType: TextInputType.number,
-                                    controller: hipEditingController,
-                                    onChanged: (value) {
-                                  
-                                    },
-                                    decoration: InputDecoration(  
-                                      contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                      border: OutlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                      ), 
-                                    ),
-                                  ),
-                                ),
-
-                                SizedBox(width: 16,),
-                                Text(AppLocalizations.of(context).translate("cm"), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
-                              ],
-                            ),
-                          ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
           ],
         ),
       )
@@ -1484,26 +1127,8 @@ var selectedTgUnit = 'mg/dL';
 var tgController = TextEditingController();
 var selectedCreatinineUnit = 'mg/dL';
 var creatinineController = TextEditingController();
-var selectedSodiumUnit = 'mg/dL';
-var sodiumController = TextEditingController();
-var selectedPotassiumUnit = 'mg/dL';
-var potassiumController = TextEditingController();
-var selectedKetonesUnit = 'mg/dL';
-var ketonesController = TextEditingController();
 
 class _BloodTestsState extends State<BloodTests> {
-
-
-  calculateBmi() {
-    if (heightEditingController != '' && weightEditingController.text != '') {
-      var height = int.parse(heightEditingController.text) / 100;
-      var weight = int.parse(weightEditingController.text);
-
-      var bmi = weight / (height * height);
-
-      bmiEditingController.text = bmi.toStringAsFixed(2);
-    }
-  }
 
 
 
@@ -1718,7 +1343,7 @@ class _BloodTestsState extends State<BloodTests> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(AppLocalizations.of(context).translate('hba1c'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                              SizedBox(width: 115,),
+                              SizedBox(width: 117,),
                               Container(
                                 width: 80,
                                 height: 40,
@@ -2126,184 +1751,6 @@ class _BloodTestsState extends State<BloodTests> {
                                 ),
                               ),
                             
-
-                              Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(AppLocalizations.of(context).translate('sodium'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                                    SizedBox(width: 50,),
-                                    Container(
-                                      width: 80,
-                                      height: 40,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.center,
-                                        keyboardType: TextInputType.number,
-                                        controller: sodiumController,
-                                        onChanged: (value) {
-                                      
-                                        },
-                                        decoration: InputDecoration(  
-                                          contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                          ), 
-                                        ),
-                                      ),
-                                    ),
-                                  
-                                    Row(
-                                      children: <Widget>[
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mg/dL',
-                                          groupValue: selectedSodiumUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedSodiumUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text("mg/dL", style: TextStyle(color: Colors.black)),
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mmol/L',
-                                          groupValue: selectedSodiumUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedSodiumUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text(
-                                          "mmol/L",
-                                        ),
-                                        
-                                        SizedBox(width: 20,),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            
-
-                              Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(AppLocalizations.of(context).translate('potassium'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                                    SizedBox(width: 28,),
-                                    Container(
-                                      width: 80,
-                                      height: 40,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.center,
-                                        keyboardType: TextInputType.number,
-                                        controller: potassiumController,
-                                        onChanged: (value) {
-                                      
-                                        },
-                                        decoration: InputDecoration(  
-                                          contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                          ), 
-                                        ),
-                                      ),
-                                    ),
-                                  
-                                    Row(
-                                      children: <Widget>[
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mg/dL',
-                                          groupValue: selectedPotassiumUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedPotassiumUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text("mg/dL", style: TextStyle(color: Colors.black)),
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mmol/L',
-                                          groupValue: selectedPotassiumUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedPotassiumUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text(
-                                          "mmol/L",
-                                        ),
-                                        
-                                        SizedBox(width: 20,),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-
-                              Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(AppLocalizations.of(context).translate('ketones'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                                    SizedBox(width: 45,),
-                                    Container(
-                                      width: 80,
-                                      height: 40,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.center,
-                                        keyboardType: TextInputType.number,
-                                        controller: ketonesController,
-                                        onChanged: (value) {
-                                      
-                                        },
-                                        decoration: InputDecoration(  
-                                          contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                          ), 
-                                        ),
-                                      ),
-                                    ),
-                                  
-                                    Row(
-                                      children: <Widget>[
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mg/dL',
-                                          groupValue: selectedKetonesUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedKetonesUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text("mg/dL", style: TextStyle(color: Colors.black)),
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mmol/L',
-                                          groupValue: selectedKetonesUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedKetonesUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text(
-                                          "mmol/L",
-                                        ),
-                                        
-                                        SizedBox(width: 20,),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
                             ],
                           ),
                         ),
@@ -2714,7 +2161,7 @@ class _HistoryState extends State<History> {
 
 
 class Followup extends StatefulWidget {
-  _EditIncompleteEncounterScreenScreenState parent;
+  _FollowupVisitScreenState parent;
   Followup({this.parent});
 
   @override
@@ -2730,8 +2177,6 @@ class _FollowupState extends State<Followup> {
   bool tobaccoTitleAdded = false;
   bool dietTitleAdded = false;
   bool activityTitleAdded = false;
-
-  
 
   checkCounsellingQuestions(counsellingQuestion) {
 
@@ -2808,7 +2253,6 @@ class _FollowupState extends State<Followup> {
     );
   }
 
-
   getNextVisitDate() {
     print(selectedFollowup);
     ['1 week', '2 weeks', '1 month', '2 months', '3 months', '6 months', '1 year'];
@@ -2834,7 +2278,6 @@ class _FollowupState extends State<Followup> {
       nextVisitDate = date;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -2890,7 +2333,7 @@ class _FollowupState extends State<Followup> {
                 ],
               ),
             ),
-
+            
             nextVisitDate != '' ? Container(
               margin: EdgeInsets.symmetric(vertical: 10),
               padding: EdgeInsets.symmetric(horizontal: 20),
@@ -2902,7 +2345,7 @@ class _FollowupState extends State<Followup> {
                 ]
               )
             ) : Container(),
-          
+
             Container(
               width: double.infinity,
               margin: EdgeInsets.only( top: 60, left: 50, right: 50),
@@ -3053,7 +2496,7 @@ class _RiskFactorsState extends State<RiskFactors> {
 }
 
 class InitialCounselling extends StatefulWidget {
-  _EditIncompleteEncounterScreenScreenState parent;
+  _FollowupVisitScreenState parent;
   InitialCounselling({this.parent});
   @override
   _InitialCounsellingState createState() => _InitialCounsellingState();

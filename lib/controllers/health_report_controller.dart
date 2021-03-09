@@ -14,6 +14,11 @@ class HealthReportController {
     return reports;
   }
 
+  generateReport(patientId) async {
+    var reports = await HealthReportRepository().generateReport(patientId);
+    return reports;
+  }
+
   getReports() async {
     var reports = await HealthReportRepository().getReports();
     return reports;

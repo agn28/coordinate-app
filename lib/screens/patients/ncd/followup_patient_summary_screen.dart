@@ -19,10 +19,8 @@ import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
-import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_questionnaire_acute_screen.dart';
-import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_questionnaire_feeling_screen.dart';
-import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.dart';
+
+import 'followup_feeling_screen.dart';
 
 var dueCarePlans = [];
 var completedCarePlans = [];
@@ -30,14 +28,16 @@ var upcomingCarePlans = [];
 var referrals = [];
 var pendingReferral;
 
-class NcdPatientSummaryScreen extends StatefulWidget {
+class FollowupPatientSummaryScreen extends StatefulWidget {
+  static const path = '/followupPatientSummary';
+
   var checkInState = false;
-  NcdPatientSummaryScreen({this.checkInState});
+  FollowupPatientSummaryScreen({this.checkInState});
   @override
-  _NcdPatientSummaryScreenState createState() => _NcdPatientSummaryScreenState();
+  _FollowupPatientSummaryScreenState createState() => _FollowupPatientSummaryScreenState();
 }
 
-class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
+class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScreen> {
   var _patient;
   bool isLoading = true;
   var carePlans = [];
@@ -219,7 +219,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
   }
 
   getReport() async {
-
+    // return;
     setState(() {
       isLoading = true;
     });
@@ -240,10 +240,10 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
       });
     }
     setState(() {
-      bmi = report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ? report['body']['result']['assessments']['body_composition']['components']['bmi'] : null;
-      cvd = report['body']['result']['assessments']['cvd'] != null ? report['body']['result']['assessments']['cvd'] : null;
-      bp = report['body']['result']['assessments']['blood_pressure'] != null ? report['body']['result']['assessments']['blood_pressure'] : null;
-      cholesterol = report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ? report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] : null;
+      // bmi = report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ? report['body']['result']['assessments']['body_composition']['components']['bmi'] : null;
+      // cvd = report['body']['result']['assessments']['cvd'] != null ? report['body']['result']['assessments']['cvd'] : null;
+      // bp = report['body']['result']['assessments']['blood_pressure'] != null ? report['body']['result']['assessments']['blood_pressure'] : null;
+      // cholesterol = report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ? report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] : null;
     });
 
   }
@@ -325,6 +325,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     });
     encounters = await AssessmentController().getLiveAllAssessmentsByPatient();
 
+    print('encounters $encounters');
 
     if (encounters.isNotEmpty) {
       var allEncounters = encounters;
@@ -537,6 +538,31 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     return 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
   }
 
+  String getLastVisitDate() {
+    var date = '';
+
+    if (encounters.length > 0) {
+      var lastEncounter = encounters[0];
+      var parsedDate = DateTime.tryParse(lastEncounter['meta']['created_at']);
+      if (parsedDate != null) {
+        date = DateFormat('yyyy-MM-dd').format(parsedDate);
+      }
+    }
+
+    return date;
+  }
+  String getNextVisitDate() {
+    var date = '';
+
+    if (encounters.length > 0) {
+    print('encounters ${encounters[0]}');
+      var lastEncounter = encounters[0];
+      date = lastEncounter['data']['next_visit_date'] ?? '';
+    }
+
+    return date;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -697,17 +723,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                                     ),
                                     
                                     SizedBox(width: 100,),
-
-                                    // _patient['data']['incomplete_encounter'] != null &&  _patient['data']['incomplete_encounter'] ?
-                                    // Container(
-                                    //   alignment: Alignment.centerRight,
-                                    //   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                                    //   decoration: BoxDecoration(
-                                    //     color: kPrimaryRedColor,
-                                    //     borderRadius: BorderRadius.circular(3)
-                                    //   ),
-                                    //   child: Text('Incomplete Encounter', style: TextStyle(fontSize: 14, color: Colors.white,)),
-                                    // ) : Container(),
 
                                     //previous referral required flag
                                     // _patient['meta']['referral_required'] != null &&  _patient['meta']['referral_required'] ? Container(
@@ -888,22 +903,10 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                   //   ),
                   // ),
 
-                  _patient['data']['incomplete_encounter'] != null &&  _patient['data']['incomplete_encounter'] ?
-                  Container(
-                    padding: EdgeInsets.only(left: 20, right: 20, top: 15),
-                    alignment: Alignment.centerLeft,
-                    child: FlatButton(
-                      onPressed: () {
-                        print('hello');
-                        Navigator.of(context).pushNamed('/editIncompleteEncounter',);
-                      },
-                      color: kPrimaryColor,
-                      child: Text('Complete Previous Encounter', style: TextStyle(color: Colors.white),),
-                    ),
-                  ) : Container(),
 
+                  conditions.length > 0 ?
                   Container(
-                    padding: EdgeInsets.only(left: 20, right: 20, top: 15,),
+                    padding: EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 20),
                     
                     child: Row( 
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -924,12 +927,11 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                         ),
                       ],
                     ),
-                  ),
-                  SizedBox(height: 20,),
+                  ) : Container(),
 
                   report != null && report['body']['result']['assessments']['cvd'] != null ?
                     Container(
-                      padding: EdgeInsets.only(left: 20, right: 20),
+                      padding: EdgeInsets.only(left: 20, right: 20, top: 20,),
                       decoration: BoxDecoration(
                         border: Border(
                           // top: BorderSide(color: kBorderLighter)
@@ -1295,43 +1297,61 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                     ) : Container(),
 
 
-
+                  
                   Container(
                     decoration: BoxDecoration(
                       border: Border(
-                        top: BorderSide(width: 4, color: kBorderLighter)
+                        top: BorderSide(width: 2, color: kBorderLighter)
                       ),
                     ),
                     padding: EdgeInsets.only(top: 15, left: 10, right: 10),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
+
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 1, color: kBorderLighter),
+                          ),
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('NCD Center visits', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+                              SizedBox(height: 15,),
+                              Text('Next visit date: ${getNextVisitDate()}', style: TextStyle(fontSize: 17,)),
+                              SizedBox(height: 10,),
+                              Text('Last visit date: ${getLastVisitDate()}', style: TextStyle(fontSize: 17,))
+                            ],
+                          ),
+                        ),
+
+                        carePlans.length > 0 ?
                         Container(
                           padding: EdgeInsets.only(left: 10, right: 10, bottom: 5),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              //TODO: these are commented out for now
-                              // Text(AppLocalizations.of(context).translate('careplanAcions'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
-                             
-                              // Container(
-                              //   padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                              //   decoration: BoxDecoration(
-                              //     border: Border.all(color: kPrimaryColor),
-                              //     borderRadius: BorderRadius.circular(3)
-                              //   ),
-                              //   child: GestureDetector(
-                              //     onTap: () {
-                              //       if (!carePlansEmpty) {
-                              //         Navigator.of(context).pushNamed('/carePlanDetails', arguments: carePlans);
-                              //       }
-                              //     },
-                              //     child: Text(AppLocalizations.of(context).translate('viewCareplan'), style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w500),),
-                              //   ),
-                              // ),
-
+                              Text(AppLocalizations.of(context).translate('careplanAcions'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                              Container(
+                                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: kPrimaryColor),
+                                  borderRadius: BorderRadius.circular(3)
+                                ),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (!carePlansEmpty) {
+                                      Navigator.of(context).pushNamed('/carePlanDetails', arguments: carePlans);
+                                    }
+                                  },
+                                  child: Text(AppLocalizations.of(context).translate('viewCareplan'), style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w500),),
+                                ),
+                              ),
                             ],
                           ),
-                        ),
+                        ) : Container(),
                         
                         dueCarePlans.length > 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: dueCarePlans, text: AppLocalizations.of(context).translate('dueToday')) : Container(),
                         upcomingCarePlans.length > 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: upcomingCarePlans, text: AppLocalizations.of(context).translate('upComing')) : Container(),
@@ -1869,14 +1889,12 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                           children: <Widget>[
                             FloatingButton(text: 'New Visit', onPressed: () {
                               Navigator.of(context).pop();
-                              Navigator.of(context).pushNamed(NewQuestionnaireFeelingNurseScreen.path);
+                              Navigator.of(context).pushNamed(FollowupFeelingScreen.path);
                             }, ),
 
                             // FloatingButton(text: AppLocalizations.of(context).translate('newCommunityVisit'), onPressed: () {
                             //   Navigator.of(context).pop();
-                            //   //TODO: change the route
-                            //   // Navigator.of(context).pushNamed('/verifyPatient');
-                            //   Navigator.of(context).push(NewEncounterScreen());
+                            //   Navigator.of(context).pushNamed('/verifyPatient');
                             // },),
                           ],
                         ),
@@ -2295,3 +2313,11 @@ class CustomClipPath extends CustomClipper<Path> {
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
+
+
+
+
+
+
+
+

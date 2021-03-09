@@ -169,15 +169,13 @@ class AssessmentController {
     return status;
   }
 
-  createOnlyAssessmentWithStatus(type, screening_type, comment, completeStatus) async {
-
+  createOnlyAssessmentWithStatus(type, screening_type, comment, completeStatus, nextVisitDate) async {
 
     var data = _prepareData(type, screening_type, comment,);
     data['body']['status'] = completeStatus;
+    data['body']['next_visit_date'] = nextVisitDate;
     var status = await AssessmentRepositoryLocal().createOnlyAssessmentWithStatus(data);
-    if (status == 'success') {
-      Helpers().clearObservationItems();
-    }
+    Helpers().clearObservationItems();
 
     print('before health report');
 
@@ -333,9 +331,13 @@ class AssessmentController {
     print('before health report');
     await AssessmentRepository().createOnlyAssessment(encounter);
 
-    if (status == 'success') {
-      Helpers().clearObservationItems();
-    }
+    Future.delayed(const Duration(seconds: 5));
+    print('after health report');
+    print(bloodTests[0]);
+
+    HealthReportController().generateReport(encounter['body']['patient_id']);
+
+    Helpers().clearObservationItems();
 
     return 'success';
   }

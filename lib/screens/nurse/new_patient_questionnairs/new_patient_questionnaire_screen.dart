@@ -8,6 +8,7 @@ import 'package:nhealth/configs/configs.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
@@ -103,9 +104,8 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     super.initState();
     _checkAuth();
     clearForm();
+    Helpers().clearObservationItems();
     isLoading = false;
-
-    
     
     print(Language().getLanguage());
 
@@ -549,7 +549,7 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     var patient = Patient().getPatient();
 
     print(patient['data']['age']);
-    var response = await AssessmentController().createOnlyAssessmentWithStatus('ncd center assessment', 'ncd', '', 'incomplete');
+    var response = await AssessmentController().createOnlyAssessmentWithStatus('new ncd center assessment', 'ncd', '', 'incomplete', '');
 
     setLoader(false);
 
@@ -1584,11 +1584,12 @@ class _BloodTestsState extends State<BloodTests> {
                         ),
 
                         Container(
+                          margin: EdgeInsets.only(top: 5),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(AppLocalizations.of(context).translate('hba1c'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                              SizedBox(width: 115,),
+                              SizedBox(width: 117,),
                               Container(
                                 width: 80,
                                 height: 40,
@@ -1607,37 +1608,6 @@ class _BloodTestsState extends State<BloodTests> {
                                   ),
                                 ),
                               ),
-                            
-                              Row(
-                                children: <Widget>[
-                                  Radio(
-                                    activeColor: kPrimaryColor,
-                                    value: 'mg/dL',
-                                    groupValue: selectedHba1cUnit,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        selectedHba1cUnit = value;
-                                      });
-                                    },
-                                  ),
-                                  Text("mg/dL", style: TextStyle(color: Colors.black)),
-                                  Radio(
-                                    activeColor: kPrimaryColor,
-                                    value: 'mmol/L',
-                                    groupValue: selectedHba1cUnit,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        selectedHba1cUnit = value;
-                                      });
-                                    },
-                                  ),
-                                  Text(
-                                    "mmol/L",
-                                  ),
-                                  
-                                  SizedBox(width: 20,),
-                                ],
-                              )
                             ],
                           ),
                         ),
