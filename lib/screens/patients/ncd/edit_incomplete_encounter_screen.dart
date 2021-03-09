@@ -680,8 +680,6 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     // var response = await AssessmentController().createOnlyAssessmentWithStatus('ncd center assessment', 'ncd', '', 'incomplete');
 
     setLoader(false);
-    return;
-
 
     // if age greater than 40 redirect to referral page
     // if (patient['data']['age'] != null && patient['data']['age'] > 40) {

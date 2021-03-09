@@ -72,7 +72,7 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
       isLoading = true;
     });
 
-    var data = await PatientController().getAllLivePatients();
+    var data = await PatientController().getFollowupPatients();
 
     if (data['message'] == 'Unauthorized') {
       Auth().logout();

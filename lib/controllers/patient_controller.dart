@@ -25,6 +25,19 @@ class PatientController {
     return data;
   }
 
+
+  getFirstAssessmentPatients() async {
+    var response = await PatientRepository().getFirstAssessmentPatients();
+
+    return response;
+  }
+
+  getFollowupPatients() async {
+    var response = await PatientRepository().getFollowupPatients();
+
+    return response;
+  }
+
   getLocations() async {
     var response = await PatientRepository().getLocations();
 

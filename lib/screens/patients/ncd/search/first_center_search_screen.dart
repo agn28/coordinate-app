@@ -70,7 +70,7 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
       isLoading = true;
     });
 
-    var data = await PatientController().getAllLivePatients();
+    var data = await PatientController().getFirstAssessmentPatients();
 
     if (data['message'] == 'Unauthorized') {
       Auth().logout();
