@@ -1320,9 +1320,9 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                             children: [
                               Text('NCD Center visits', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
                               SizedBox(height: 15,),
-                              Text('Next visit date: ${getNextVisitDate()}', style: TextStyle(fontSize: 17,)),
+                              Text(AppLocalizations.of(context).translate('nextVisitDate') + '${getNextVisitDate()}', style: TextStyle(fontSize: 17,)),
                               SizedBox(height: 10,),
-                              Text('Last visit date: ${getLastVisitDate()}', style: TextStyle(fontSize: 17,))
+                              Text(AppLocalizations.of(context).translate('lastVisitDate') + ': ${getLastVisitDate()}', style: TextStyle(fontSize: 17,))
                             ],
                           ),
                         ),

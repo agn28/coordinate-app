@@ -464,7 +464,18 @@
   "occupation": "Occupation",
   "ethnicity": "Ethnicity",
   "incompleteNcd": "Incomplete data, assessment will not be generated.",
-  "continue": "CONTINUE"
+  "continue": "CONTINUE",
+  "napaStarted": "Napa 12 mg started",
+  "incompleteEncounter": "Incomplete Encounter",
+  "monthlyIncome": "Monthly Income",
+  "bloodGroup": "Blood Group",
+  "educationYear": "Education (years)",
+  "tribe": "Tribe",
+  "relativeHistory": "Does any of your blood relative such as father, mother, uncle, aunty had or have?",
+  "nextVisitDate": "Next visit date: ",
+  "editIncompleteEncounter": "Edit Incomplete Encounter",
+  "ncdCenterVisit": "NCD Center visit",
+  "completePrevEncounter": "Complete Previous Encounter"
   
   
 

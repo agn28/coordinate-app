@@ -301,7 +301,7 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
 
                             // padding: EdgeInsets.symmetric(vertical: 5),
                             color: Colors.red[400],
-                            child: Text("Incomplete Encounter",
+                            child: Text(AppLocalizations.of(context).translate('incompleteEncounter'),
                               style: TextStyle(color: Colors.white, fontSize: 15),
                             ),
                         ) : Container(),

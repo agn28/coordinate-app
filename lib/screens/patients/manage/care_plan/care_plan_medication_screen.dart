@@ -92,7 +92,7 @@ class _CarePlanMedicationState extends State<CarePlanMedication> {
                       });
                     },
                   ),
-                  Text("Napa 12 mg started", style: TextStyle(fontSize: 16),)
+                  Text(AppLocalizations.of(context).translate('napaStarted'), style: TextStyle(fontSize: 16),)
                 ],
               ),
             ),

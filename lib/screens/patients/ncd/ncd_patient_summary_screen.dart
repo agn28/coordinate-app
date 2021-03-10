@@ -898,7 +898,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                         Navigator.of(context).pushNamed('/editIncompleteEncounter',);
                       },
                       color: kPrimaryColor,
-                      child: Text('Complete Previous Encounter', style: TextStyle(color: Colors.white),),
+                      child: Text(AppLocalizations.of(context).translate('completePrevEncounter'), style: TextStyle(color: Colors.white),),
                     ),
                   ) : Container(),
 
