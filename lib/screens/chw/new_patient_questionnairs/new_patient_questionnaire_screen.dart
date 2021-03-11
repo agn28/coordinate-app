@@ -18,6 +18,7 @@ import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chw/unwell/create_referral_screen.dart';
 import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
+import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import '../../../custom-classes/custom_stepper.dart';
@@ -191,6 +192,8 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
       Navigator.of(context).pushNamed('/chwHome',);
     }
   }
+
+  
     
 
   checkData() async {
@@ -423,17 +426,75 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
     );
   }
 
-  Future _completeStep()async{
+  // Future _completeStep()async{
+
+  //   setLoader(true);
+
+  //   var patient = Patient().getPatient();
+
+  //   print(patient['data']['age']);
+  //   var response = await AssessmentController().createOnlyAssessment('new patient questionnaire', '', '');
+
+  //   setLoader(false);
+
+
+  //   // if age greater than 40 redirect to referral page
+  //   // if (patient['data']['age'] != null && patient['data']['age'] > 40) {
+  //   //   var data = {
+  //   //     'meta': {
+  //   //       'patient_id': Patient().getPatient()['uuid'],
+  //   //       "collected_by": Auth().getAuth()['uid'],
+  //   //       "status": "pending"
+  //   //     },
+  //   //     'body': {},
+  //   //     'referred_from': 'new questionnaire'
+  //   //   };
+  //   //   goToHome(true, data);
+
+  //   //   return;
+  //   // }
+
+  //   if (isReferralRequired) {
+  //     var data = {
+  //       'meta': {
+  //         'patient_id': Patient().getPatient()['uuid'],
+  //         "collected_by": Auth().getAuth()['uid'],
+  //         "status": "pending"
+  //       },
+  //       'body': {},
+  //       'referred_from': 'new questionnaire'
+  //     };
+  //     goToHome(true, data);
+
+  //     return;
+  //   }
+
+  //   goToHome(false, null);
+  // }
+
+
+
+  Future _completeStep() async {
+    
+    print('before missing popup');
+    var hasMissingData = checkMissingData();
+
+    if (hasMissingData) {
+      var continueMissing = await missingDataAlert();
+      if (!continueMissing) {
+        return;
+      }
+    }
 
     setLoader(true);
 
     var patient = Patient().getPatient();
 
     print(patient['data']['age']);
-    var response = await AssessmentController().createOnlyAssessment('new patient questionnaire', '', '');
+    var status = hasMissingData ? 'incomplete' : 'complete';
+    var response = await AssessmentController().createOnlyAssessmentWithStatus('follow up visit (center)', 'follow up center', '', status, nextVisitDate);
 
     setLoader(false);
-
 
     // if age greater than 40 redirect to referral page
     // if (patient['data']['age'] != null && patient['data']['age'] > 40) {
@@ -469,6 +530,35 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
     goToHome(false, null);
   }
 
+
+   missingDataAlert() async {
+   var response = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          content: new Text(AppLocalizations.of(context).translate("incompleteNcd"), style: TextStyle(fontSize: 20),),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            FlatButton(
+              child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(color: kPrimaryColor)),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            FlatButton(
+              child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      }
+    );
+    print("NoYes : $response");
+    return response;
+  }
   List<CustomStep> _mySteps() {
     List<CustomStep> _steps = [
       CustomStep(

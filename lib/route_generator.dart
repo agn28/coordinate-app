@@ -45,7 +45,9 @@ import 'package:nhealth/screens/patients/ncd/followup_visit_screen.dart';
 import 'package:nhealth/screens/patients/ncd/ncd_patient_summary_screen.dart';
 import 'package:nhealth/screens/patients/ncd/search/first_center_search_screen.dart';
 import 'package:nhealth/screens/patients/ncd/search/followup_search_screen.dart';
+import 'package:nhealth/screens/patients/ncd/search/unwell_followup_screen.dart';
 import 'package:nhealth/screens/patients/patient_update_summary_screen.dart';
+import 'package:nhealth/screens/chw/unwell/followup_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic>  generarteRoute(RouteSettings settings) {
@@ -73,6 +75,10 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => FollowupVisitScreen());
       case FollowupAcuteScreen.path:
         return CupertinoPageRoute(builder: (_) => FollowupAcuteScreen());
+      case ChwFollowupScreen.path:
+        return CupertinoPageRoute(builder: (_) => ChwFollowupScreen());
+      case UnwellFollowupScreen.path:
+      return CupertinoPageRoute(builder: (_) => UnwellFollowupScreen());
       case '/patientOverviewOld':
         return CupertinoPageRoute(builder: (_) => PatientRecordsScreenOld());
 

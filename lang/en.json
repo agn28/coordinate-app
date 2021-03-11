@@ -464,7 +464,13 @@
   "occupation": "Occupation",
   "ethnicity": "Ethnicity",
   "incompleteNcd": "Incomplete data, assessment will not be generated.",
-  "continue": "CONTINUE"
+  "continue": "CONTINUE",
+  "email": "Email",
+  "husbandName": "Husband Name",
+  "overview": "Overview",
+  "brackPatientId": "BRAC Patient Id",
+  "center": "Center",
+  "registerDetails": "Register Details"
   
   
 

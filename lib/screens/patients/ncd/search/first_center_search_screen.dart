@@ -117,7 +117,8 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      resizeToAvoidBottomPadding: false,
+      //resizeToAvoidBottomPadding: false,
+      //Migrate Projects
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).translate('patients')),

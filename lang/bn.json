@@ -465,6 +465,12 @@
   "occupation": "Occupation",
   "ethnicity": "Ethnicity",
   "incompleteNcd": "অসম্পূর্ণ ডেটা, মূল্যায়ন সংরক্ষণ করা হবে না",
-  "continue": "চালিয়ে যান"
+  "continue": "চালিয়ে যান",
+  "email": "ই-মেইল",
+  "husbandName": "স্বামীর নাম",
+  "overview": "পরিদর্শন",
+  "brackPatientId": "ব্র্যাক রোগীর আইডি",
+  "center": "কেন্দ্র",
+  "registerDetails": "নিবন্ধন করুন"
 
 }

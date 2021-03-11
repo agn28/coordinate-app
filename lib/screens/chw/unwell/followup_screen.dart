@@ -36,6 +36,7 @@ String selectedGlucoseUnit = 'mg/dL';
 
 
 class ChwFollowupScreen extends StatefulWidget {
+  static const path = '/chwFollowupScreen';
   @override
   _ChwFollowupState createState() => _ChwFollowupState();
 }
@@ -318,6 +319,8 @@ class _UnwellCausesState extends State<UnwellCauses> {
     }
   }
 
+  //bool checkBoxValue = false;
+ bool _checkboxListTile = false;
   @override
   Widget build(BuildContext context) {
     
@@ -335,40 +338,60 @@ class _UnwellCausesState extends State<UnwellCauses> {
               child: Text(AppLocalizations.of(context).translate('unwellCause'), style: TextStyle(fontSize: 21),),
             ),
             SizedBox(height: 30,),
-            ...causes.map((item) {
-              return Container(
-                width: double.infinity,
-                margin: EdgeInsets.only(left: 30, right: 30, bottom: 15),
-                height: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(3),
-                  border: Border.all(color: selectedCauses.contains(item) ? kPrimaryColor : kBorderGrey)
-                ),
-                child: FlatButton(
-                  onPressed: () async {
+             ...causes.map((item) {
+                return Container(
+                  alignment: Alignment.centerLeft,
+                  width: double.infinity,
+                    margin: EdgeInsets.only(left: 30, right: 30, bottom: 15),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(3),
+                      border: Border.all(color: selectedCauses.contains(item) ? kPrimaryColor : kBorderGrey)
+                    ),
+                  child: CheckboxListTile(
+                    controlAffinity: ListTileControlAffinity.leading,
+                    contentPadding: EdgeInsets.only(left: 5),
+                    title: Text(item, style: TextStyle(fontSize: 17, ),),
+                    value: selectedCauses.contains(item),
+                    onChanged: (value) {
+                      setState(() {
+                        checkCause(value, item);
+                      });
+                    },
+                  ),
+                );
+             }).toList(),
 
-                  },
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  child: Row(
-                    children: <Widget>[
-                      Checkbox(
-                        activeColor: kPrimaryColor,
-                        value: selectedCauses.contains(item),
-                        onChanged: (value) {
-                          setState(() {
-                            // widget.form = value;
-                            checkCause(value, item);
-                          });
-                        },
-                      ),
-                      Text(item, style: TextStyle(fontSize: 17, ),)
-                    ],
-                  )
-                ),
-              );
-            }).toList(),
+            // ...causes.map((item) {
+            //   return Container(
+            //     width: double.infinity,
+            //     margin: EdgeInsets.only(left: 30, right: 30, bottom: 15),
+            //     height: 50,
+            //     decoration: BoxDecoration(
+            //       borderRadius: BorderRadius.circular(3),
+            //       border: Border.all(color: selectedCauses.contains(item) ? kPrimaryColor : kBorderGrey)
+            //     ),
+            //     child: Row(
+            //       children: <Widget>[
+            //         Checkbox(
+            //           activeColor: kPrimaryColor,
+            //           value: selectedCauses.contains(item),
+            //           onChanged: (value) {
+            //             setState(() {
+            //               //checkBoxValue = value;
+            //               print("value : $value");
+            //               // widget.form = value;
+            //               checkCause(value, item);
+            //             });
+            //           },
+            //         ),
+            //         Text(item, style: TextStyle(fontSize: 17, ),)
+            //       ],
+            //     ),
+            //   );
+            // }).toList(),
 
-            SizedBox(height: 20,),
+            
+             SizedBox(height: 20,),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 30),
               child: Column(

@@ -2809,7 +2809,7 @@ class _FollowupState extends State<Followup> {
 
   getNextVisitDate() {
     print(selectedFollowup);
-    ['1 week', '2 weeks', '1 month', '2 months', '3 months', '6 months', '1 year'];
+    // ['1 week', '2 weeks', '1 month', '2 months', '3 months', '6 months', '1 year'];
     var date = '';
     if (selectedFollowup == '1 week') {
       date = DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: 7)));

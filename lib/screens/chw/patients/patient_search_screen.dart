@@ -201,7 +201,8 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      resizeToAvoidBottomPadding: false,
+      //Migrate Projects
+      //resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).translate('patients')),

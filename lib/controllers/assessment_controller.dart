@@ -333,7 +333,6 @@ class AssessmentController {
 
     Future.delayed(const Duration(seconds: 5));
     print('after health report');
-    print(bloodTests[0]);
 
     HealthReportController().generateReport(encounter['body']['patient_id']);
 
