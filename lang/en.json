@@ -470,7 +470,9 @@
   "overview": "Overview",
   "brackPatientId": "BRAC Patient Id",
   "center": "Center",
-  "registerDetails": "Register Details"
+  "registerDetails": "Register Details",
+  "name": "Name",
+  "deliverCarePlan": "Deliver care plan"
   
   
 

@@ -287,8 +287,8 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
   createObservations() {
 
     print('_currentStep $_currentStep');
-    if (diastolicEditingController.text != '' && systolicEditingController.text != '') {
-    BloodPressure().addItem('left', int.parse(systolicEditingController.text), int.parse(diastolicEditingController.text), int.parse(pulseRateEditingController.text), null);
+    if (diastolicEditingController.text != '' && systolicEditingController.text != '' && pulseRateEditingController.text != "") {
+    BloodPressure().addItem('left', int.parse(systolicEditingController.text), int.parse(diastolicEditingController.text), int.tryParse(pulseRateEditingController.text), null);
       var formData = {
         'items': BloodPressure().items,
         'comment': '',

@@ -513,6 +513,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
 
     if (selectedGuardian == 'husband') {
       data['husband_name'] = fatherNameController.text;
+      //print(data['husband_name']);
     } else {
       data['father_name'] = fatherNameController.text;
     }
@@ -675,6 +676,7 @@ class _PatientDetailsState extends State<PatientDetails> {
                         onChanged: (value) {
                           setState(() {
                             selectedGuardian = value;
+                            print("selectedGuardian: $selectedGuardian");
                           });
                         },
                       ),
@@ -1381,7 +1383,7 @@ class _ViewSummaryState extends State<ViewSummary> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('patientName') + ': ', style: TextStyle(fontSize: 18),),
+                    Text(AppLocalizations.of(context).translate('name') + ': ', style: TextStyle(fontSize: 18),),
                     Text(firstNameController.text + ' ' + lastNameController.text, style: TextStyle(fontSize: 18),),
                     Spacer(),
                     ClipOval(
@@ -1408,7 +1410,7 @@ class _ViewSummaryState extends State<ViewSummary> {
                 Row(
                   children: <Widget>[
                     selectedGuardian == 'husband' ? Text(AppLocalizations.of(context).translate('husbandName') + ': ', style: TextStyle(fontSize: 18),) :Text(AppLocalizations.of(context).translate('fathersName') + ': ', style: TextStyle(fontSize: 18),),
-                    Text(selectedGuardian, style: TextStyle(fontSize: 18),),
+                    Text(fatherNameController.text, style: TextStyle(fontSize: 18),),
                   ],
                 ),
                 SizedBox(height: 7,),

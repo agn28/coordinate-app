@@ -85,7 +85,7 @@ getOptionText(context, question, option) {
 
 class EditIncompleteEncounterScreen extends StatefulWidget {
 
-  static const path = '/newPatientQuestionnaireNurse';
+  static const path = '/editIncompleteEncounter';
   @override
   _EditIncompleteEncounterScreenScreenState createState() => _EditIncompleteEncounterScreenScreenState();
 }
@@ -96,11 +96,13 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
 
   String nextText = 'NEXT';
   bool nextHide = false;
-  var encounter, observations = [];
+  var encounter;
+  var observations = [];
 
   @override
   void initState() {
     super.initState();
+    print("Edit incomplete");
     _checkAuth();
     clearForm();
     isLoading = false;
@@ -111,12 +113,15 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     prepareAnswers();
 
     getLanguage();
-
+  
     getIncompleteAssessment();
   }
 
 
   getIncompleteAssessment() async {
+
+    print("getIncompleteAssessment");
+
     if (Auth().isExpired()) {
       Auth().logout();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
@@ -125,9 +130,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     setState(() {
       isLoading = true;
     });
-
     var patientId = Patient().getPatient()['uuid'];
-
     var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
     setState(() {
       isLoading = false;
@@ -145,7 +148,9 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
 
     setState(() {
       encounter = data['data']['assessment'];
+      print("encounter: $encounter");
       observations = data['data']['observations'];
+      print("observations: $observations");
     });
     
     // for (var key in obs) {
@@ -153,7 +158,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     // }
 
     // var keys = obs.keys();
-
+    print("observations: $observations");
 
     populatePreviousAnswers();
     
@@ -161,6 +166,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
   }
 
   populatePreviousAnswers() {
+    print("testest");
     observations.forEach((obs) {
       if (obs['body']['type'] == 'survey') {
         print('into survey');
@@ -189,12 +195,15 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
           print(keys);
           keys.forEach((key) {
             if (obsData[key] != '') {
-              print('into keys');
+              print('into keys');              
               var matchedMhq = medicationQuestions['items'].where((mhq) => mhq['key'] == key);
               if (matchedMhq.isNotEmpty) {
                 matchedMhq = matchedMhq.first;
                 setState(() {
+                  print("medication: ${obsData[key]}");
                   medicationAnswers[medicationQuestions['items'].indexOf(matchedMhq)] = obsData[key];
+                  print("medicationAnswers");
+                  //print(medicationAnswers[medicationQuestions['items'].indexOf(matchedMhq)]);
                 });
               }
             }
@@ -213,6 +222,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                 matchedMhq = matchedMhq.first;
                 setState(() {
                   riskAnswers[riskQuestions['items'].indexOf(matchedMhq)] = obsData[key];
+
                 });
               }
             }
@@ -940,7 +950,9 @@ checkMedicalHistoryAnswers(medicationQuestion) {
     var mainType = medicationQuestion['type'].replaceAll('_regular_medication', '');
     print('mainType ' + mainType);
     var matchedMedicationQuestion = medicationQuestions['items'].where((item) => item['type'] == mainType).first;
+    print("matchedMedicationQuestion: $matchedMedicationQuestion");
     var medicationAnswer = medicationAnswers[medicationQuestions['items'].indexOf(matchedMedicationQuestion)];
+     print("medicationAnswer: $medicationAnswer");
     if (medicationAnswer == 'yes') {
       return true;
     }
@@ -1084,7 +1096,6 @@ checkMedicalHistoryAnswers(medicationQuestion) {
                                       ],
                                     )
                                   ),
-
                                   SizedBox(height: 20,),
 
                                 ],

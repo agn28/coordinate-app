@@ -471,6 +471,8 @@
   "overview": "পরিদর্শন",
   "brackPatientId": "ব্র্যাক রোগীর আইডি",
   "center": "কেন্দ্র",
-  "registerDetails": "নিবন্ধন করুন"
+  "registerDetails": "নিবন্ধন করুন",
+  "name": "নাম",
+  "deliverCarePlan": "ডেলিভার কেয়ারপ্ল্যান"
 
 }
