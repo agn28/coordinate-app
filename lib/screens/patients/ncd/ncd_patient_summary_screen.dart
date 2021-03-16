@@ -593,6 +593,14 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                                           Patient().getPatient()['data']['avatar'],
                                           height: 70.0,
                                           width: 70.0,
+                                          errorBuilder: (BuildContext context,
+                                              Object exception, StackTrace stackTrace) {
+                                            return Image.asset(
+                                              'assets/images/avatar.png',
+                                              height: 70.0,
+                                              width: 70.0,
+                                            );
+                                          },
                                         ),
                                       ),
                                       backgroundImage: AssetImage('assets/images/avatar.png'),
