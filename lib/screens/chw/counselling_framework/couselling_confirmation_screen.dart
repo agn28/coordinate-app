@@ -3,6 +3,7 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/care_plan_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/models/questionnaire.dart';
+import 'package:nhealth/screens/chw/careplan_actions/careplan_delivery_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import '../../../app_localizations.dart';
 
@@ -111,11 +112,16 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
                                   print('widget.data');
                                   print(widget.data);
 
-                                  var response = await CarePlanController().update(widget.data, '');
-                                  Navigator.of(context).pop();
+                                  var response ='success';
+                                  // var response = await CarePlanController().update(widget.data, '');
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+                                  int count = 0;
+                                  Navigator.of(context).popUntil((_) => count++ >= 2);
                                   if (response == 'success') {
                                     
-                                    Navigator.of(context).pop();
+                                    // Navigator.of(context).pop();
                                   } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
                                   
                                 },
