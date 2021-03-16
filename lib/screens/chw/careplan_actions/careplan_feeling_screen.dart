@@ -8,18 +8,19 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/chw/careplan_actions/careplan_delivery_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
-class PatientFeelingScreen extends StatefulWidget {
-  static final String path = "/patientFeeling";
+class CareplanFeelingScreen extends StatefulWidget {
+  static const String path = "/careplanFeeling";
   final communityClinic;
-  PatientFeelingScreen({this.communityClinic});
+  CareplanFeelingScreen({this.communityClinic});
   @override
-  _PatientFeelingState createState() => _PatientFeelingState();
+  _CareplanFeelingScreenState createState() => _CareplanFeelingScreenState();
 }
 
-class _PatientFeelingState extends State<PatientFeelingScreen> {
+class _CareplanFeelingScreenState extends State<CareplanFeelingScreen> {
   var _patient;
   bool isLoading = false;
   bool avatarExists = false;
@@ -50,23 +51,6 @@ class _PatientFeelingState extends State<PatientFeelingScreen> {
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
-        actions: <Widget>[
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(RegisterPatientScreen(isEdit: true));
-            },
-            child: Container(
-              margin: EdgeInsets.only(right: 30),
-              child: Row(
-                children: <Widget>[
-                  Icon(Icons.edit, color: Colors.white,),
-                  SizedBox(width: 10),
-                  Text(AppLocalizations.of(context).translate('viewOrEditPatient'), style: TextStyle(color: Colors.white))
-                ],
-              )
-            )
-          )
-        ],
       ),
       body: isLoading ? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
         child: SingleChildScrollView(
@@ -102,12 +86,12 @@ class _PatientFeelingState extends State<PatientFeelingScreen> {
                                     print('hello');
                                     // return;
                                     // Navigator.of(context).pushNamed(NewPatientQuestionnaireScreen.path);
-                                    if (widget.communityClinic != null) {
-                                      Navigator.of(context).pushNamed('/chwNewEncounter', arguments: { 'communityClinic': true });
-                                      return;
-                                    }
+                                    // if (widget.communityClinic != null) {
+                                    //   Navigator.of(context).pushNamed(ChwCareplanDeliveryScreen.path, arguments: { 'communityClinic': true });
+                                    //   return;
+                                    // }
                                     
-                                    Navigator.of(context).pushNamed('/chwPatientSummary', arguments: true);
+                                    Navigator.of(context).pushNamed(ChwCareplanDeliveryScreen.path, arguments: true);
                                   },
                                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   child: Column(

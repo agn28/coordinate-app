@@ -10,6 +10,7 @@ import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chw/new_patient_questionnairs/new_questionnaire_acute_screen.dart';
 import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
+import 'package:nhealth/screens/patients/ncd/edit_incomplete_encounter_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
 class NewQuestionnaireFeelingNurseScreen extends StatefulWidget {

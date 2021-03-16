@@ -292,7 +292,7 @@
   "confirmAndContinue": "CONFIRM PATIENT & CONTINUE",
   "markAsUnsuccessful": "MARK AS UNSUCCESSFULL VISIT",
   "selectAReason": "Select a reason",
-  "howIsFeelingToday": "How is feeling today?",
+  "howIsFeelingToday": "How are you feeling today?",
   "well": "Well",
   "unwell": "Unwell",
   "issuesWith": "Issues with",
@@ -409,7 +409,7 @@
   "behaviouralRiskFactor": "Ask important aspects of behavioural risk factor",
   "selectEncounterType": "Select encounter type",
   "patientsUnwell": "The patients seems to be severly unwell",
-  "seekingMedicalAttention'": "Recommend seeking medical attention",
+  "seekingMedicalAttention": "Recommend seeking medical attention",
   "submitForReferral": "SUBMIT FOR REFERRAL",
   "action": "Action",
   "haveHistory": "Do you have a history of (or has ever been told they have) (select all that apply)'",
@@ -459,12 +459,23 @@
   "sodium": "Sodium",
   "potassium": "Potassium",
   "ketones": "Ketones",
+  "protein": "Protein",
   "familyHistory": "Personal/Family History",
   "religion": "Religion",
   "occupation": "Occupation",
   "ethnicity": "Ethnicity",
   "incompleteNcd": "Incomplete data, assessment will not be generated.",
-  "continue": "CONTINUE"
+  "continue": "CONTINUE",
+  "email": "Email",
+  "husbandName": "Husband Name",
+  "overview": "Overview",
+  "brackPatientId": "BRAC Patient Id",
+  "center": "Center",
+  "registerDetails": "Register Details",
+  "name": "Name",
+  "deliverCarePlan": "Deliver care plan",
+  "carePlanActionsNotCompleted": "Care plan actions not completed",
+  "confirm": "Confirm"
   
   
 

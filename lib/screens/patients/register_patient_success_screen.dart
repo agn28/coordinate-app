@@ -111,7 +111,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                         border: Border.all(width: 1, color: Colors.black54),
                         borderRadius: BorderRadius.circular(4)
                       ),
-                      child: Text(AppLocalizations.of(context).translate('patientOverview'), style: TextStyle(color: Colors.black87, fontSize: 15, fontWeight: FontWeight.w400))
+                      child: Text(AppLocalizations.of(context).translate('overview'), style: TextStyle(color: Colors.black87, fontSize: 15, fontWeight: FontWeight.w400))
                     ),
                   ),
 

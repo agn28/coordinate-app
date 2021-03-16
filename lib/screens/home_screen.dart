@@ -9,6 +9,7 @@ import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_questionnaire_feeling_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
+import 'package:nhealth/screens/patients/ncd/search/followup_search_screen.dart';
 import 'package:nhealth/screens/settings/settings_screen.dart';
 import 'package:nhealth/screens/work-list/work_list_search_screen.dart';
 import './patients/register_patient_screen.dart';
@@ -254,11 +255,7 @@ class _HomeState extends State<HomeScreen> {
                               child: InkWell(
                                 
                                 onTap: () async {
-                                  // await Auth().isExpired();
-                                  // return;
-                                  //TODO: add the route
-                                  // Navigator.of(context).pushNamed(NewQuestionnaireFeelingNurseScreen.path,);
-                                  // Navigator.of(context).push(PatientSearchScreen());
+                                  Navigator.of(context).pushNamed(FollowupSearchScreen.path);
                                 },
                                 child: Container(
                                   height: 150,

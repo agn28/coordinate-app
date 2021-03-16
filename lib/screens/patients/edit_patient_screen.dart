@@ -15,6 +15,7 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/followup_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
@@ -60,6 +61,7 @@ class _EditPatientScreenState extends State<EditPatientScreen> {
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
+    Helpers().clearObservationItems();
     setData();
   }
 

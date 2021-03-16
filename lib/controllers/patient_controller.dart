@@ -25,6 +25,19 @@ class PatientController {
     return data;
   }
 
+
+  getFirstAssessmentPatients() async {
+    var response = await PatientRepository().getFirstAssessmentPatients();
+
+    return response;
+  }
+
+  getFollowupPatients() async {
+    var response = await PatientRepository().getFollowupPatients();
+
+    return response;
+  }
+
   getLocations() async {
     var response = await PatientRepository().getLocations();
 
@@ -101,14 +114,21 @@ class PatientController {
     return response;
   }
 
+  getCenter() async {
+    var response = await PatientRepository().getCenter();
+
+    return response;
+  }
+
+
   /// Create a new patient
   /// [formData] is required as parameter.
   create(formData) async {
     final data = _prepareData(formData);
-    print('create data');
+    print('create data: $data');
     var response = await PatientReposioryLocal().create(data);
 
-
+    print("Create patient data : $response");
     return response;
   }
 

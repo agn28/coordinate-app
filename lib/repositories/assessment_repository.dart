@@ -72,7 +72,7 @@ class AssessmentRepository {
   getIncompleteEncounterWithObservation(patientId) async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
-    
+    print(patientId);
     return http.get(
       apiUrl + 'assessments/patients/' + patientId + '/incomplete-assessment',
       headers: {

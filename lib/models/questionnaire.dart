@@ -171,7 +171,7 @@ var _questions = {
             'question_bn': 'আপনার পরিবারের কারও কি উচ্চ রক্তচাপ বা ডায়াবেটিস আছে?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
-            'key': 'diabetes'
+            'key': 'relative_disease'
           },
           {
             'question': 'Have you ever been diagnosed with Stroke?',
@@ -201,7 +201,8 @@ var _questions = {
             'question_bn': 'আপনার কি কখনও ডায়াবেটিস ধরা পড়েছে?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
-            'type': 'diabetes'
+            'type': 'diabetes',
+            'key': 'diabetes'
           },
           {
             'question': 'Have you ever been diagnosed with asthma/COPD?',
@@ -372,13 +373,13 @@ var _questions = {
             'key': 'betel_nut'
           },
           {
-            'question': 'Do you do physical activity or moderate intensity (you get a little bit out of breath) for atleast 30 minutes per day on 5 days per week or 150 minutes per week?',
+            'question': 'Do you do physical activity of moderate intensity (you get a little bit out of breath) for atleast 30 minutes per day on 5 days per week or 150 minutes per week?',
             'question_bn': 'আপনি কি প্রতি সপ্তাহে ৫ দিন প্রতিদিন কমপক্ষে ৩০ মিনিট, বা প্রতি সপ্তাহে ১৫০ মিনিট মাঝারি থেকে তীব্র মাত্রার শারীরিক পরিশ্রম করেন যেখানে শ্বাসপ্রশ্বাস দ্রুত হয়?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'physical-activity',
             'type': 'physical-activity-high',
-            'key': 'physical_activity_high'
+            'key': 'physical_activity_moderate'
           },
           {
             'question': 'Do you do physical activity of high intensity (you get out of breath) for at least 15 minutes per day on 5 days per week, or 75 minutes per week?',
@@ -387,7 +388,7 @@ var _questions = {
             'options_bn': ['হ্যা', 'না'],
             'group': 'physical-activity',
             'type': 'physical-activity-moderate',
-            'key': 'physical_activity_moderate'
+            'key': 'physical_activity_high'
           },
           {
             'question': 'Do you currently drink alcohol?',
@@ -750,6 +751,25 @@ class Questionnaire {
     return 'success';
   }
 
+  addNewMedicalHistoryNcd(type, answers) {
+    var questions = Questionnaire().questions['new_patient'][type];
+    var updated = false;
+
+
+    for (var qn in _questionnaireItems) {
+      if (qn['body']['data']['name'] == type) {
+        _questionnaireItems[_questionnaireItems.indexOf(qn)] = _prepareNewMedicalDataNcd(questions, answers, type);
+        updated = true;
+      }
+    }
+
+    if (!updated) {
+      _questionnaireItems.add(_prepareNewMedicalDataNcd(questions, answers, type));
+    }
+    
+    return 'success';
+  }
+
   addNewMedication(type, answers) {
     var questions = Questionnaire().questions['new_patient'][type];
     var updated = false;
@@ -781,6 +801,24 @@ class Questionnaire {
 
     if (!updated) {
       _questionnaireItems.add(_prepareNewRiskData(questions, answers, type));
+    }
+    
+    return 'success';
+  }
+
+  addNewRiskFactorsNcd(type, answers) {
+    var questions = Questionnaire().questions['new_patient'][type];
+    var updated = false;
+
+    for (var qn in _questionnaireItems) {
+      if (qn['body']['data']['name'] == type) {
+        _questionnaireItems[_questionnaireItems.indexOf(qn)] = _prepareNewRiskDataNcd(questions, answers, type);
+        updated = true;
+      }
+    }
+
+    if (!updated) {
+      _questionnaireItems.add(_prepareNewRiskDataNcd(questions, answers, type));
     }
     
     return 'success';
@@ -957,6 +995,33 @@ class Questionnaire {
     return data;
   }
 
+  /// Prepare questionnaire data for NCD
+  _prepareNewMedicalDataNcd(questions, answers, type) {
+    var data = {
+      "meta": {
+        "performed_by": Auth().getAuth()['uid'],
+        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
+      },
+      "body": {
+        "type": "survey",
+        "data": {
+          'name': type,
+          'relative_disease': answers[0],
+          'stroke': answers[1],
+          'heart_attack': answers[2],
+          'hypertension': answers[3],
+          'diabetes': answers[4],
+          'asthma': answers[5],
+          'cancer': answers[6],
+          'kidney_disease': answers[7],
+        },
+        "patient_id": Patient().getPatient()['uuid'],
+      }
+    };
+
+    return data;
+  }
+
   /// Prepare questionnaire data
   _preparePhysicalActivityData(questions, answers, type) {
     var data = {
@@ -1051,6 +1116,37 @@ class Questionnaire {
           'extra_salt': answers[6],
           'physical_activity_moderate': answers[7],
           'physical_activity_high': answers[8],
+        },
+        "patient_id": Patient().getPatient()['uuid'],
+      }
+    };
+
+    return data;
+  }
+
+  /// Prepare questionnaire data for NCD
+  _prepareNewRiskDataNcd(questions, answers, type) {
+    var data = {
+      "meta": {
+        "performed_by": Auth().getAuth()['uid'],
+        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
+      },
+      "body": {
+        "type": "survey",
+        "data": {
+          'name': type,
+          'smoking': answers[0],
+          'smokeless_tobacco': answers[1],
+          'fruits_vegetables_daily': answers[2],
+          'extra_salt': answers[3],
+          'salty_foods': answers[4],
+          'sugary_drinks': answers[5],
+          'processed_foods': answers[6],
+          'red_meat': answers[7],
+          'betel_nut': answers[8],
+          'physical_activity_moderate': answers[9],
+          'physical_activity_high': answers[10],
+          'alcohol': answers[11],
         },
         "patient_id": Patient().getPatient()['uuid'],
       }

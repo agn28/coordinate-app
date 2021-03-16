@@ -8,6 +8,7 @@ import 'package:nhealth/configs/configs.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
@@ -103,9 +104,8 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     super.initState();
     _checkAuth();
     clearForm();
+    Helpers().clearObservationItems();
     isLoading = false;
-
-    
     
     print(Language().getLanguage());
 
@@ -196,6 +196,7 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     sodiumController.text = '';
     potassiumController.text = '';
     ketonesController.text = '';
+    proteinController.text = '';
 
     occupationController.text = '';
     incomeController.text = '';
@@ -287,8 +288,8 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
   createObservations() {
 
     print('_currentStep $_currentStep');
-    if (diastolicEditingController.text != '' && systolicEditingController.text != '') {
-    BloodPressure().addItem('left', int.parse(systolicEditingController.text), int.parse(diastolicEditingController.text), int.parse(pulseRateEditingController.text), null);
+    if (diastolicEditingController.text != '' && systolicEditingController.text != '' && pulseRateEditingController.text != "") {
+    BloodPressure().addItem('left', int.parse(systolicEditingController.text), int.parse(diastolicEditingController.text), int.tryParse(pulseRateEditingController.text), null);
       var formData = {
         'items': BloodPressure().items,
         'comment': '',
@@ -309,10 +310,10 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
       BodyMeasurement().addItem('weight', weightEditingController.text, 'kg', '', '');
     }
     if (waistEditingController.text != '') {
-      BodyMeasurement().addItem('waist', waistEditingController.text, '', '', '');
+      BodyMeasurement().addItem('waist', waistEditingController.text, 'cm', '', '');
     }
     if (hipEditingController.text != '') {
-      BodyMeasurement().addItem('hip', hipEditingController.text, '', '', '');
+      BodyMeasurement().addItem('hip', hipEditingController.text, 'cm', '', '');
     }
 
     BodyMeasurement().addBmItem();
@@ -354,6 +355,9 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     }
     if (ketonesController.text != '') {
       BloodTest().addItem('ketones', ketonesController.text, selectedKetonesUnit, '', '');
+    }
+    if (proteinController.text != '') {
+      BloodTest().addItem('protein', proteinController.text, selectedProteinUnit, '', '');
     }
 
     BloodTest().addBtItem();
@@ -454,7 +458,7 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
                   setState(() {
                     print(_currentStep);
                     if (_currentStep == 0) {
-                      Questionnaire().addNewMedicalHistory('medical_history', medicalHistoryAnswers);
+                      Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
                       print(Questionnaire().qnItems);
                     }
 
@@ -464,7 +468,7 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
                     }
 
                     if (_currentStep == 2) {
-                      Questionnaire().addNewRiskFactors('risk_factors', riskAnswers);
+                      Questionnaire().addNewRiskFactorsNcd('risk_factors', riskAnswers);
                       print(Questionnaire().qnItems);
                     }
                     
@@ -549,7 +553,7 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     var patient = Patient().getPatient();
 
     print(patient['data']['age']);
-    var response = await AssessmentController().createOnlyAssessmentWithStatus('ncd center assessment', 'ncd', '', 'incomplete');
+    var response = await AssessmentController().createOnlyAssessmentWithStatus('new ncd center assessment', 'ncd', '', 'incomplete', '');
 
     setLoader(false);
 
@@ -651,28 +655,24 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
 }
 
 checkMissingData() {
-  if (diastolicEditingController.text == '' || systolicEditingController.text == '') {
-    print('diatolic');
+  if (diastolicEditingController.text == '' || systolicEditingController.text == '' || pulseRateEditingController.text == '') {
+    print('blood pressure missing');
     return true;
   }
 
   
 
-  if (heightEditingController.text == '' || weightEditingController.text == '' || waistEditingController.text == '' || hipEditingController.text == '') {
-    print('height');
+  if (heightEditingController.text == '' || weightEditingController.text == '') {
+    print('body measurement missing');
     return true;
   }
 
   if (
-    randomBloodController.text == '' ||
-    fastingBloodController.text == '' ||
-    habfController.text == '' || hba1cController.text == ''||
-    cholesterolController.text == '' ||
-    ldlController.text == '' ||
-    hdlController.text == '' ||
-    tgController.text == '' ||
-    creatinineController.text == '') {
-    print('blood');
+    randomBloodController.text == '' &&
+    fastingBloodController.text == '' &&
+    habfController.text == '' && 
+    hba1cController.text == '') {
+    print('blood sugar missing');
     return true;
   }
 
@@ -1361,6 +1361,8 @@ var selectedPotassiumUnit = 'mg/dL';
 var potassiumController = TextEditingController();
 var selectedKetonesUnit = 'mg/dL';
 var ketonesController = TextEditingController();
+var selectedProteinUnit = 'mg/dL';
+var proteinController = TextEditingController();
 
 class _BloodTestsState extends State<BloodTests> {
 
@@ -1584,11 +1586,12 @@ class _BloodTestsState extends State<BloodTests> {
                         ),
 
                         Container(
+                          margin: EdgeInsets.only(top: 5),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(AppLocalizations.of(context).translate('hba1c'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                              SizedBox(width: 115,),
+                              SizedBox(width: 117,),
                               Container(
                                 width: 80,
                                 height: 40,
@@ -1607,37 +1610,6 @@ class _BloodTestsState extends State<BloodTests> {
                                   ),
                                 ),
                               ),
-                            
-                              Row(
-                                children: <Widget>[
-                                  Radio(
-                                    activeColor: kPrimaryColor,
-                                    value: 'mg/dL',
-                                    groupValue: selectedHba1cUnit,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        selectedHba1cUnit = value;
-                                      });
-                                    },
-                                  ),
-                                  Text("mg/dL", style: TextStyle(color: Colors.black)),
-                                  Radio(
-                                    activeColor: kPrimaryColor,
-                                    value: 'mmol/L',
-                                    groupValue: selectedHba1cUnit,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        selectedHba1cUnit = value;
-                                      });
-                                    },
-                                  ),
-                                  Text(
-                                    "mmol/L",
-                                  ),
-                                  
-                                  SizedBox(width: 20,),
-                                ],
-                              )
                             ],
                           ),
                         ),
@@ -2191,6 +2163,65 @@ class _BloodTestsState extends State<BloodTests> {
                                           onChanged: (value) {
                                             setState(() {
                                               selectedKetonesUnit = value;
+                                            });
+                                          },
+                                        ),
+                                        Text(
+                                          "mmol/L",
+                                        ),
+                                        
+                                        SizedBox(width: 20,),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+
+                              Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(AppLocalizations.of(context).translate('protein'), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                    SizedBox(width: 45,),
+                                    Container(
+                                      width: 80,
+                                      height: 40,
+                                      child: TextFormField(
+                                        textAlign: TextAlign.center,
+                                        keyboardType: TextInputType.number,
+                                        controller: proteinController,
+                                        onChanged: (value) {
+                                      
+                                        },
+                                        decoration: InputDecoration(  
+                                          contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                          border: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                          ), 
+                                        ),
+                                      ),
+                                    ),
+                                  
+                                    Row(
+                                      children: <Widget>[
+                                        Radio(
+                                          activeColor: kPrimaryColor,
+                                          value: 'mg/dL',
+                                          groupValue: selectedProteinUnit,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              selectedProteinUnit = value;
+                                            });
+                                          },
+                                        ),
+                                        Text("mg/dL", style: TextStyle(color: Colors.black)),
+                                        Radio(
+                                          activeColor: kPrimaryColor,
+                                          value: 'mmol/L',
+                                          groupValue: selectedProteinUnit,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              selectedProteinUnit = value;
                                             });
                                           },
                                         ),

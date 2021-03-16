@@ -15,6 +15,7 @@ import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/patients/ncd/followup_patient_summary_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 
@@ -35,12 +36,13 @@ bool isPendingRecommendation = false;
 
 // }
 
-class FirstCenterSearchScreen extends StatefulWidget {
+class FollowupSearchScreen extends StatefulWidget {
+  static const path = '/followupSearchScreen';
   @override
-  _FirstCenterSearchState createState() => _FirstCenterSearchState();
+  _FollowupSearchScreenState createState() => _FollowupSearchScreenState();
 }
 
-class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
+class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
   bool isLoading = false;
   @override
   initState() {
@@ -70,7 +72,7 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
       isLoading = true;
     });
 
-    var data = await PatientController().getFirstAssessmentPatients();
+    var data = await PatientController().getFollowupPatients();
 
     if (data['message'] == 'Unauthorized') {
       Auth().logout();
@@ -280,7 +282,7 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
                 ...patients.map((item) => GestureDetector(
                   onTap: () {
                     Patient().setPatient(item);
-                    Navigator.of(context).pushNamed('/ncdPatientSummary');
+                    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path);
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -593,7 +595,7 @@ class _DiseasesDialogState extends State<DiseasesDialog> {
 
 class FiltersDialog extends StatefulWidget {
   
-  _FirstCenterSearchState parent;
+  _FollowupSearchScreenState parent;
   FiltersDialog({this.parent});
 
   @override
