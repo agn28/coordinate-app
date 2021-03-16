@@ -229,7 +229,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
           });
         }
         else if (obsData['name'] == 'relative_problems') {
-          print('into medical history');
+          print('into relative problems');
           var keys = obsData.keys.toList();
           print(keys);
           keys.forEach((key) {
@@ -244,6 +244,151 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
               }
             }
           });
+        }
+      }
+      if (obs['body']['type'] == 'blood_pressure') {
+        print('into blood pressure');
+        var obsData = obs['body']['data'];
+        if (obsData.isNotEmpty) {
+          print('into obsData');
+          var systolicText = obsData['systolic'];
+          var diastolicText = obsData['diastolic'];
+          var pulseRateText = obsData['pulse_rate'];
+          systolicEditingController.text = '${obsData['systolic']}';
+          pulseRateEditingController.text = '${obsData['pulse_rate']}';
+          diastolicEditingController.text = '${obsData['diastolic']}';
+          print(systolicText);
+          print(diastolicText);
+          print(pulseRateText);
+        }
+      }
+      if (obs['body']['type'] == 'body_measurement') {
+        print('into body measurement');
+        var obsData = obs['body']['data'];
+        if (obsData.isNotEmpty) {
+          print(obsData['name']);
+          if (obsData['name'] == 'height' && obsData['value'] != '') {
+            print('into height');
+            var heightText = obsData['value'];
+            heightEditingController.text = '${obsData['value']}';
+            print(heightText);
+          }
+          if (obsData['name'] == 'weight' && obsData['value'] != '') {
+            print('into weight');
+            var weightText = obsData['value'];
+            weightEditingController.text = '${obsData['value']}';
+            print(weightText);
+          }
+          if (obsData['name'] == 'waist' && obsData['value'] != '') {
+            print('into waist');
+            var waistText = obsData['value'];
+            waistEditingController.text = '${obsData['value']}';
+            print(waistText);
+          }
+          if (obsData['name'] == 'hip' && obsData['value'] != '') {
+            print('into hip');
+            var hipText = obsData['value'];
+            hipEditingController.text = '${obsData['value']}';
+            print(hipText);
+          }
+        }
+      }
+      if (obs['body']['type'] == 'blood_test') {
+        print('into blood test');
+        var obsData = obs['body']['data'];
+        if (obsData.isNotEmpty) {
+          print(obsData['name']);
+          if (obsData['name'] == 'creatinine' && obsData['value'] != '') {
+            print('into creatinine');
+            var creatinineText = obsData['value'];
+            creatinineController.text = '${obsData['value']}';
+            selectedCreatinineUnit = obsData['unit'];
+            print(creatinineText);
+          }
+          if (obsData['name'] == 'a1c' && obsData['value'] != '') {
+            print('into a1c');
+            var hba1cText = obsData['value'];
+            hba1cController.text = '${obsData['value']}';
+            selectedHba1cUnit = obsData['unit'];
+            print(hba1cText);
+          }
+          if (obsData['name'] == 'total_cholesterol' && obsData['value'] != '') {
+            print('into total_cholesterol');
+            var totalCholesterolText = obsData['value'];
+            cholesterolController.text = '${obsData['value']}';
+            selectedCholesterolUnit = obsData['unit'];
+            print(totalCholesterolText);
+          }
+          if (obsData['name'] == 'potassium' && obsData['value'] != '') {
+            print('into potassium');
+            var potassiumText = obsData['value'];
+            potassiumController.text = '${obsData['value']}';
+            selectedPotassiumUnit = obsData['unit'];
+            print(potassiumText);
+          }
+          if (obsData['name'] == 'ldl' && obsData['value'] != '') {
+            print('into ldl');
+            var ldlText = obsData['value'];
+            ldlController.text = '${obsData['value']}';
+            selectedLdlUnit = obsData['unit'];
+            print(ldlText);
+          }
+          if (obsData['name'] == 'blood_sugar' && obsData['value'] != '') {
+            print('into blood_sugar');
+            var bloodSugarText = obsData['value'];
+            randomBloodController.text = '${obsData['value']}';
+            selectedRandomBloodUnit = obsData['unit'];
+            print(bloodSugarText);
+          }
+          if (obsData['name'] == 'hdl' && obsData['value'] != '') {
+            print('into hdl');
+            var hdlText = obsData['value'];
+            hdlController.text = '${obsData['value']}';
+            selectedHdlUnit = obsData['unit'];
+            print(hdlText);
+          }
+          if (obsData['name'] == 'ketones' && obsData['value'] != '') {
+            print('into ketones');
+            var ketonesText = obsData['value'];
+            ketonesController.text = '${obsData['value']}';
+            selectedKetonesUnit = obsData['unit'];
+            print(ketonesText);
+          }
+          if (obsData['name'] == 'protein' && obsData['value'] != '') {
+            print('into protein');
+            var proteinText = obsData['value'];
+            proteinController.text = '${obsData['value']}';
+            selectedProteinUnit = obsData['unit'];
+            print(proteinText);
+          }
+          if (obsData['name'] == 'sodium' && obsData['value'] != '') {
+            print('into sodium');
+            var sodiumText = obsData['value'];
+            sodiumController.text = '${obsData['value']}';
+            selectedSodiumUnit = obsData['unit'];
+            print(sodiumText);
+          }
+          if (obsData['name'] == 'blood_glucose' && obsData['value'] != '') {
+            print('into blood_glucose');
+            var bloodGlucoseText = obsData['value'];
+            fastingBloodController.text = '${obsData['value']}';
+            selectedFastingBloodUnit = obsData['unit'];
+            print(bloodGlucoseText);
+          }
+          if (obsData['name'] == 'triglycerides' && obsData['value'] != '') {
+            print('into triglycerides');
+            var triglyceridesText = obsData['value'];
+            tgController.text = '${obsData['value']}';
+            selectedTgUnit = obsData['unit'];
+            print(triglyceridesText);
+          }
+          if (obsData['name'] == '2habf' && obsData['value'] != '') {
+            print('into 2habf');
+            var habfText = obsData['value'];
+            habfController.text = '${obsData['value']}';
+            selectedHabfUnit = obsData['unit'];
+            print(habfText);
+          }         
         }
       }
     });
@@ -329,6 +474,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     sodiumController.text = '';
     potassiumController.text = '';
     ketonesController.text = '';
+    proteinController.text = '';
     occupationController.text = '';
     incomeController.text = '';
     educationController.text = '';
@@ -420,7 +566,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
   createObservations() {
 
     print('_currentStep $_currentStep');
-    if (diastolicEditingController.text != '' && systolicEditingController.text != '') {
+    if (diastolicEditingController.text != '' && systolicEditingController.text != '' && pulseRateEditingController.text != '') {
     BloodPressure().addItem('left', int.parse(systolicEditingController.text), int.parse(diastolicEditingController.text), int.parse(pulseRateEditingController.text), null);
       var formData = {
         'items': BloodPressure().items,
@@ -439,6 +585,8 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
       BodyMeasurement().addItem('height', heightEditingController.text, 'cm', '', '');
     }
     if (weightEditingController.text != '') {
+      print('weightEditingController.text');
+      print(weightEditingController.text);
       BodyMeasurement().addItem('weight', weightEditingController.text, 'kg', '', '');
     }
     if (waistEditingController.text != '') {
@@ -487,6 +635,9 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     }
     if (ketonesController.text != '') {
       BloodTest().addItem('ketones', ketonesController.text, selectedKetonesUnit, '', '');
+    }
+    if (proteinController.text != '') {
+      BloodTest().addItem('protein', proteinController.text, selectedProteinUnit, '', '');
     }
 
     BloodTest().addBtItem();
@@ -586,7 +737,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                   setState(() {
                     print(_currentStep);
                     if (_currentStep == 0) {
-                      Questionnaire().addNewMedicalHistory('medical_history', medicalHistoryAnswers);
+                      Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
                       print(Questionnaire().qnItems);
                     }
 
@@ -596,7 +747,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                     }
 
                     if (_currentStep == 2) {
-                      Questionnaire().addNewRiskFactors('risk_factors', riskAnswers);
+                      Questionnaire().addNewRiskFactorsNcd('risk_factors', riskAnswers);
                       print(Questionnaire().qnItems);
                     }
                     
@@ -789,28 +940,24 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
 }
 
 checkMissingData() {
-  if (diastolicEditingController.text == '' || systolicEditingController.text == '') {
-    print('diatolic');
+  if (diastolicEditingController.text == '' || systolicEditingController.text == '' || pulseRateEditingController.text == '') {
+    print('blood pressure missing');
     return true;
   }
 
   
 
-  if (heightEditingController.text == '' || weightEditingController.text == '' || waistEditingController.text == '' || hipEditingController.text == '') {
-    print('height');
+  if (heightEditingController.text == '' || weightEditingController.text == '') {
+    print('body measurement missing');
     return true;
   }
 
   if (
-    randomBloodController.text == '' ||
-    fastingBloodController.text == '' ||
-    habfController.text == '' || hba1cController.text == ''||
-    cholesterolController.text == '' ||
-    ldlController.text == '' ||
-    hdlController.text == '' ||
-    tgController.text == '' ||
-    creatinineController.text == '') {
-    print('blood');
+    randomBloodController.text == '' &&
+    fastingBloodController.text == '' &&
+    habfController.text == '' && 
+    hba1cController.text == '') {
+    print('blood sugar missing');
     return true;
   }
 
@@ -1499,6 +1646,8 @@ var selectedPotassiumUnit = 'mg/dL';
 var potassiumController = TextEditingController();
 var selectedKetonesUnit = 'mg/dL';
 var ketonesController = TextEditingController();
+var selectedProteinUnit = 'mg/dL';
+var proteinController = TextEditingController();
 
 class _BloodTestsState extends State<BloodTests> {
 
@@ -2300,6 +2449,65 @@ class _BloodTestsState extends State<BloodTests> {
                                           onChanged: (value) {
                                             setState(() {
                                               selectedKetonesUnit = value;
+                                            });
+                                          },
+                                        ),
+                                        Text(
+                                          "mmol/L",
+                                        ),
+                                        
+                                        SizedBox(width: 20,),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+
+                              Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(AppLocalizations.of(context).translate('protein'), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                    SizedBox(width: 45,),
+                                    Container(
+                                      width: 80,
+                                      height: 40,
+                                      child: TextFormField(
+                                        textAlign: TextAlign.center,
+                                        keyboardType: TextInputType.number,
+                                        controller: proteinController,
+                                        onChanged: (value) {
+                                      
+                                        },
+                                        decoration: InputDecoration(  
+                                          contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                          border: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                          ), 
+                                        ),
+                                      ),
+                                    ),
+                                  
+                                    Row(
+                                      children: <Widget>[
+                                        Radio(
+                                          activeColor: kPrimaryColor,
+                                          value: 'mg/dL',
+                                          groupValue: selectedProteinUnit,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              selectedProteinUnit = value;
+                                            });
+                                          },
+                                        ),
+                                        Text("mg/dL", style: TextStyle(color: Colors.black)),
+                                        Radio(
+                                          activeColor: kPrimaryColor,
+                                          value: 'mmol/L',
+                                          groupValue: selectedProteinUnit,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              selectedProteinUnit = value;
                                             });
                                           },
                                         ),

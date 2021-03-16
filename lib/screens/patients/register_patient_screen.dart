@@ -130,7 +130,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     selectedUpazila = {};
     _currentStep = 0;
 
-    //fillDummyData(); //Remove this
+    fillDummyData(); //Remove this
   }
   nextStep() {
     setState(() {

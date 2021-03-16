@@ -225,7 +225,7 @@ class AssessmentController {
     var bmUpdated = false;
     // return;
     observations.forEach((obs) {
-      // print(obs);
+      print('obs $obs');
       if (obs['body']['type'] == 'survey') {
         questionnaires.forEach((qstn) {
           if (qstn['body']['data']['name'] == obs['body']['data']['name']) {
@@ -234,93 +234,133 @@ class AssessmentController {
             };
             apiData.addAll(qstn);
             apiData['body']['assessment_id'] = obs['body']['assessment_id'];
-            // obsRepo.create(apiData);
+            obsRepo.create(apiData);
           }
         });
       }
 
       else if (obs['body']['type'] == 'blood_pressure') {
         bloodPressures.forEach((bp) {
-          var apiData = {
-            'id': obs['id']
-          };
-          apiData.addAll(bp);
-          apiData['body']['assessment_id'] = obs['body']['assessment_id'];
-          obsRepo.create(apiData);
-          bpUpdated = true;
+          print('obs $obs');
+          print('bp $bp');
+          if (obs['body']['data']['name'] == bp['body']['data']['name']){
+            var apiData = {
+              'id': obs['id']
+            };
+            apiData.addAll(bp);
+            apiData['body']['assessment_id'] = obs['body']['assessment_id'];
+            print('bloodPressure $apiData');
+            obsRepo.create(apiData);
+          }
+          else{
+            var id =  Uuid().v4();
+            Map<String, dynamic> apiData = {
+              'id': id
+            };
+            apiData.addAll(bp);
+            // apiData['id'] = 'adsa';
+            apiData['body']['assessment_id'] = encounter['id'];
+            print('bloodPressure $apiData');
+            obsRepo.create(apiData);
+          }
         });
       }
 
       else if (obs['body']['type'] == 'blood_test') {
         bloodTests.forEach((bp) {
-          var apiData = {
-            'id': obs['id']
-          };
-          apiData.addAll(bp);
-          apiData['body']['assessment_id'] = obs['body']['assessment_id'];
-          obsRepo.create(apiData);
-          btUpdated = true;
+          if (obs['body']['data']['name'] == bp['body']['data']['name']){
+            var apiData = {
+              'id': obs['id']
+            };
+            apiData.addAll(bp);
+            apiData['body']['assessment_id'] = obs['body']['assessment_id'];
+            obsRepo.create(apiData);
+          }
+          else{
+            var id =  Uuid().v4();
+            Map<String, dynamic> apiData = {
+              'id': id
+            };
+            apiData.addAll(bp);
+            // apiData['id'] = 'adsa';
+            apiData['body']['assessment_id'] = encounter['id'];
+            print('blood_test $apiData');
+            obsRepo.create(apiData);
+          }
+          
         });
       }
       else if (obs['body']['type'] == 'body_measurement') {
+
         bodyMeasurements.forEach((bp) {
-          var apiData = {
-            'id': obs['id']
-          };
-          apiData.addAll(bp);
-          apiData['body']['assessment_id'] = obs['body']['assessment_id'];
-          obsRepo.create(apiData);
-          bmUpdated = true;
+          if (obs['body']['data']['name'] == bp['body']['data']['name']) {
+            var apiData = {
+              'id': obs['id']
+            };
+            apiData.addAll(bp);
+            apiData['body']['assessment_id'] = obs['body']['assessment_id'];
+            obsRepo.create(apiData);
+          }
+          else{
+            var id =  Uuid().v4();
+            Map<String, dynamic> apiData = {
+              'id': id
+            };
+            apiData.addAll(bp);
+            apiData['body']['assessment_id'] = encounter['id'];
+            print('body Measurements $apiData');
+            obsRepo.create(apiData);
+          }
         });
       }
     });
 
 
-    if (!bpUpdated) {
-      bloodPressures.forEach((bp) {
-        // var id = Uuid().v4();
-        // print(id);
-        var id =  Uuid().v4();
-        Map<String, dynamic> apiData = {
-          'id': id
-        };
-        apiData.addAll(bp);
-        // apiData['id'] = 'adsa';
-        apiData['body']['assessment_id'] = encounter['id'];
-        print('bloodPressure $apiData');
-        obsRepo.create(apiData);
-      });
-    }
-    if (!btUpdated) {
-      bloodTests.forEach((bt) {
-        // var id = Uuid().v4();
-        // print(id);
-        var id =  Uuid().v4();
-        Map<String, dynamic> apiData = {
-          'id': id
-        };
-        apiData.addAll(bt);
-        // apiData['id'] = 'adsa';
-        apiData['body']['assessment_id'] = encounter['id'];
-        print('bloodPressure $apiData');
-        obsRepo.create(apiData);
-      });
-    }
-    if (!bmUpdated) {
-      bodyMeasurements.forEach((bm) {
-        // var id = Uuid().v4();
-        // print(id);
-        var id =  Uuid().v4();
-        Map<String, dynamic> apiData = {
-          'id': id
-        };
-        apiData.addAll(bm);
-        // apiData['id'] = 'adsa';
-        apiData['body']['assessment_id'] = encounter['id'];
-        print('bloodPressure $apiData');
-        obsRepo.create(apiData);
-      });
-    }
+    // if (!bpUpdated) {
+    //   bloodPressures.forEach((bp) {
+    //     // var id = Uuid().v4();
+    //     // print(id);
+    //     var id =  Uuid().v4();
+    //     Map<String, dynamic> apiData = {
+    //       'id': id
+    //     };
+    //     apiData.addAll(bp);
+    //     // apiData['id'] = 'adsa';
+    //     apiData['body']['assessment_id'] = encounter['id'];
+    //     print('bloodPressure $apiData');
+    //     obsRepo.create(apiData);
+    //   });
+    // }
+    // if (!btUpdated) {
+    //   bloodTests.forEach((bt) {
+    //     // var id = Uuid().v4();
+    //     // print(id);
+    //     var id =  Uuid().v4();
+    //     Map<String, dynamic> apiData = {
+    //       'id': id
+    //     };
+    //     apiData.addAll(bt);
+    //     // apiData['id'] = 'adsa';
+    //     apiData['body']['assessment_id'] = encounter['id'];
+    //     print('bloodPressure $apiData');
+    //     obsRepo.create(apiData);
+    //   });
+    // }
+    // if (!bmUpdated) {
+    //   bodyMeasurements.forEach((bm) {
+    //     // var id = Uuid().v4();
+    //     // print(id);
+    //     var id =  Uuid().v4();
+    //     Map<String, dynamic> apiData = {
+    //       'id': id
+    //     };
+    //     apiData.addAll(bm);
+    //     // apiData['id'] = 'adsa';
+    //     apiData['body']['assessment_id'] = encounter['id'];
+    //     print('body Measurements $apiData');
+    //     obsRepo.create(apiData);
+    //   });
+    // }
     // var data = _prepareData(type, screening_type, comment,);
     // data['body']['status'] = completeStatus;
     // var status = await AssessmentRepositoryLocal().createOnlyAssessmentWithStatus(data);
@@ -334,7 +374,7 @@ class AssessmentController {
     Future.delayed(const Duration(seconds: 5));
     print('after health report');
 
-    HealthReportController().generateReport(encounter['body']['patient_id']);
+    // HealthReportController().generateReport(encounter['body']['patient_id']);
 
     Helpers().clearObservationItems();
 

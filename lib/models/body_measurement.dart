@@ -26,7 +26,7 @@ class BodyMeasurement {
     _items.add({
       'name': name,
       'unit': unit,
-      'value': int.parse(value),
+      'value': value,
       'comment': comment,
       'device': device
     });

@@ -279,7 +279,8 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
       BodyMeasurement().addItem('weight', weightEditingController.text, 'kg', '', '');
     }
     if (bmiEditingController.text != '') {
-      BodyMeasurement().addItem('bmi', bmiEditingController.text, '', '', '');
+
+      BodyMeasurement().addItem('bmi', bmiEditingController.text.toString(), '', '', '');
     }
 
     BodyMeasurement().addBmItem();
@@ -307,7 +308,7 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
       ),
       body: !isLoading ? GestureDetector(
         onTap: () {
-          FocusScope.of(context).requestFocus(new FocusNode());
+          // FocusScope.of(context).requestFocus(new FocusNode());
         },
         child: CustomStepper(
           isHeader: false,
@@ -1198,6 +1199,8 @@ class _MeasurementsState extends State<Measurements> {
                                   child: TextFormField(
                                     textAlign: TextAlign.center,
                                     keyboardType: TextInputType.number,
+                                    readOnly: true, 
+                                    // enabled: false, 
                                     controller: bmiEditingController,
                                     onChanged: (value) {
                                   
@@ -1303,11 +1306,18 @@ class RecommendedCounselling extends StatefulWidget {
 }
 
 var isReferralRequired = false;
+bool dietTitleAdded = false;
 class _RecommendedCounsellingState extends State<RecommendedCounselling> {
 
   bool tobaccoTitleAdded = false;
-  bool dietTitleAdded = false;
+  
   bool activityTitleAdded = false;
+
+  @override
+  initState() {
+    super.initState();
+    dietTitleAdded = false;
+  }
 
   checkCounsellingQuestions(counsellingQuestion) {
 
@@ -1340,7 +1350,8 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
 
   addCounsellingGroupTitle(question) {
     if (question['group'] == 'unhealthy-diet') {
-      print('group');
+      print('unhealthy-diet');
+      print(dietTitleAdded);
       if (!dietTitleAdded) {
         dietTitleAdded = true;
         return Column(
@@ -1454,6 +1465,7 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
                                                 child: FlatButton(
                                                   onPressed: () {
                                                     setState(() {
+                                                      dietTitleAdded = false;
                                                       counsellingAnswers[counsellingQuestions['items'].indexOf(question)] = question['options'][question['options'].indexOf(option)];
                                                       // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
                                                     });
@@ -1510,9 +1522,8 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
                                             child: FlatButton(
                                               onPressed: () {
                                                 setState(() {
-                                                  setState(() {
-                                                    isReferralRequired = true;
-                                                  });
+                                                  dietTitleAdded = false;
+                                                  isReferralRequired = true;
                                                 });
                                               },
                                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -1536,9 +1547,8 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
                                             child: FlatButton(
                                               onPressed: () {
                                                 setState(() {
-                                                  setState(() {
-                                                    isReferralRequired = false;
-                                                  });
+                                                  dietTitleAdded = false;
+                                                  isReferralRequired = false;
                                                 });
                                               },
                                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
