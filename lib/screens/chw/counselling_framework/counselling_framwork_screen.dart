@@ -484,9 +484,9 @@ class _CounsellingFrameworkScreenState extends State<CounsellingFrameworkScreen>
                                     child: FlatButton(
                                       onPressed: ()  {
                                         
-                                        Navigator.push(context, MaterialPageRoute(builder: (_)=> ChwPatientRecordsScreen()));
+                                        // Navigator.push(context, MaterialPageRoute(builder: (_)=> ChwPatientRecordsScreen()));
 
-                                        //handleComplete();
+                                        handleComplete();
 
                                       // Route route = MaterialPageRoute(
                                       //   builder: (context) =>

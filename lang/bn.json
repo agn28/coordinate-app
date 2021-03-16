@@ -474,6 +474,8 @@
   "center": "কেন্দ্র",
   "registerDetails": "নিবন্ধন করুন",
   "name": "নাম",
-  "deliverCarePlan": "ডেলিভার কেয়ারপ্ল্যান"
+  "deliverCarePlan": "ডেলিভার কেয়ারপ্ল্যান",
+  "carePlanActionsNotCompleted": "Care plan actions not completed",
+  "confirm": "Confirm"
 
 }

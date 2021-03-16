@@ -49,6 +49,7 @@ var riskAnswers = [];
 var relativeAnswers = [];
 var counsellingAnswers = [];
 var answers = [];
+var authUser = {};
 
 bool isLoading = false;
 
@@ -97,6 +98,7 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
     clearForm();
     isLoading = false;
 
+    getAuth();
     
     
     print(Language().getLanguage());
@@ -105,6 +107,12 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
     prepareAnswers();
 
     getLanguage();
+  }
+  getAuth() async {
+    var data = await Auth().getStorageAuth();
+    setState(() {
+      authUser = data;
+    });
   }
 
   getLanguage() async {
@@ -202,9 +210,17 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
   }
 
   goToHome(recommendation, data) {
+    print('after complete');
+    
     if (recommendation) {
       Navigator.of(context).pushReplacementNamed(MedicalRecommendationScreen.path, arguments: data);
     } else {
+      if (authUser['role'] == 'chw') {
+        print('into chw');
+        Navigator.of(context).pushNamed('/chwPatientSummary');
+        return;
+      }
+      print('into nurse');
       Navigator.of(context).pushNamed('/home',);
     }
   }

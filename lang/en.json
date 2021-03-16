@@ -473,7 +473,9 @@
   "center": "Center",
   "registerDetails": "Register Details",
   "name": "Name",
-  "deliverCarePlan": "Deliver care plan"
+  "deliverCarePlan": "Deliver care plan",
+  "carePlanActionsNotCompleted": "Care plan actions not completed",
+  "confirm": "Confirm"
   
   
 

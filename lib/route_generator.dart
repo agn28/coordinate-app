@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chw/careplan_actions/actions_swipper_screen.dart';
+import 'package:nhealth/screens/chw/careplan_actions/careplan_delivery_screen.dart';
 import 'package:nhealth/screens/chw/careplan_actions/improve_bp_screen.dart';
 import 'package:nhealth/screens/chw/careplan_actions/other_actions_screen.dart';
 import 'package:nhealth/screens/chw/chw_home_screen.dart';
 import 'package:nhealth/screens/chw/counselling_framework/counselling_framwork_screen.dart';
 import 'package:nhealth/screens/chw/counselling_framework/couselling_confirmation_screen.dart';
 import 'package:nhealth/screens/chw/encounters/new_chw_encounter_screen.dart';
+import 'package:nhealth/screens/chw/careplan_actions/careplan_feeling_screen.dart';
 import 'package:nhealth/screens/chw/new_community_visit/patient_feeling_screen.dart';
 import 'package:nhealth/screens/chw/new_community_visit/verify_patient_screen.dart';
 import 'package:nhealth/screens/chw/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
@@ -85,6 +87,10 @@ class RouteGenerator {
       case '/editIncompleteEncounter':
         return CupertinoPageRoute(builder: (_) => EditIncompleteEncounterScreen());
         
+      case ChwCareplanDeliveryScreen.path:
+        return CupertinoPageRoute(builder: (_) => ChwCareplanDeliveryScreen());
+      case CareplanFeelingScreen.path:
+        return CupertinoPageRoute(builder: (_) => CareplanFeelingScreen());
       case '/carePlanDetails':
         var data = settings.arguments;
         return CupertinoPageRoute(builder: (_) => CarePlanDetailsScreen( carePlans: data));
