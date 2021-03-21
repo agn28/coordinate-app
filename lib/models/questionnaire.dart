@@ -16,7 +16,7 @@ var _questions = {
           'question_bn': 'আপনি কি গত ১২ মাসে নিয়মিতভাবে তামাকের ধোঁয়ার সংস্পর্শে এসেছিলেন?',
           'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না']
-        }
+        },
       ]
     },
     'alcohol': {
@@ -166,13 +166,13 @@ var _questions = {
     'new_patient': {
       'medical_history': {
         'items' : [
-          {
-            'question': 'Does anyone in your family have high blood pressure or diabetes?',
-            'question_bn': 'আপনার পরিবারের কারও কি উচ্চ রক্তচাপ বা ডায়াবেটিস আছে?',
-            'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না'],
-            'key': 'relative_disease'
-          },
+          // {
+          //   'question': 'Does anyone in your family have high blood pressure or diabetes?',
+          //   'question_bn': 'আপনার পরিবারের কারও কি উচ্চ রক্তচাপ বা ডায়াবেটিস আছে?',
+          //   'options': ['yes', 'no'],
+          //   'options_bn': ['হ্যা', 'না'],
+          //   'key': 'relative_disease'
+          // },
           {
             'question': 'Have you ever been diagnosed with Stroke?',
             'question_bn': 'আপনার কি কখনও স্ট্রোক হয়েছে?',
@@ -288,8 +288,8 @@ var _questions = {
       'risk_factors': {
         'items' : [
           {
-            'question': 'Do you currently smoke?',
-            'question_bn': 'আপনি কি বর্তমানে ধূমপান করেন?',
+            'question': 'Do you currently smoke biri or cigarate?*',
+            'question_bn': 'আপনি কি বর্তমানে সিগারেটে বিড়ি ধূমপান করেন?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'tobacco',
@@ -297,13 +297,22 @@ var _questions = {
             'key': 'smoking'
           },
           {
-            'question': 'Do you currently consume any smokeless tobacco?',
-            'question_bn': 'আপনি বর্তমানে কোনও ধোঁয়াবিহীন  তামাক সেবন করেন?',
+            'question': 'Do you currently consume any smokeless tobacco such as sada pata, jarda, gul, khaini etc?*',
+            'question_bn': 'আপনি বর্তমানে কোনও ধোঁয়াবিহীন তামাক (যেমন সাদ পাতা, জর্দা, গুল, খাইনি ইত্যাদি) সেবন করেন?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'tobacco',
             'type': 'smokeless-tobacco',
             'key': 'smokeless_tobacco'
+          },
+          {
+          'question': 'Do you take betel nut  regularly?',
+          'question_bn': 'আপনি কি নিয়মিত সুপারি খান?',
+          'options': ['yes', 'no'],
+          'options_bn': ['হ্যা', 'না'],
+          'group': 'unhealth-diet',
+          'type': 'rbetel-nut',
+          'key': 'betel_nut'
           },
           {
             'question': 'Do you eat atleast 5 portions of fruits and vegetables daily?',
@@ -362,15 +371,6 @@ var _questions = {
             'group': 'unhealth-diet',
             'type': 'red-meat',
             'key': 'red_meat'
-          },
-          {
-            'question': 'Do you take betel nut  regularly?',
-            'question_bn': 'আপনি কি নিয়মিত সুপারি খান?',
-            'options': ['yes', 'no'],
-            'options_bn': ['হ্যা', 'না'],
-            'group': 'unhealth-diet',
-            'type': 'rbetel-nut',
-            'key': 'betel_nut'
           },
           {
             'question': 'Do you do physical activity of moderate intensity (you get a little bit out of breath) for atleast 30 minutes per day on 5 days per week or 150 minutes per week?',
@@ -994,6 +994,16 @@ class Questionnaire {
 
     return data;
   }
+        //   "data": {
+        //   'name': type,
+        //   'diabetes': answers[0],
+        //   'stroke': answers[1],
+        //   'heart_attack': answers[2],
+        //   'asthma': answers[3],
+        //   'kidney_disease': answers[4],
+        //   'cancer': answers[5],
+        //   'hypertension': answers[6],
+        // },
 
   /// Prepare questionnaire data for NCD
   _prepareNewMedicalDataNcd(questions, answers, type) {
@@ -1006,14 +1016,13 @@ class Questionnaire {
         "type": "survey",
         "data": {
           'name': type,
-          'relative_disease': answers[0],
-          'stroke': answers[1],
-          'heart_attack': answers[2],
-          'hypertension': answers[3],
-          'diabetes': answers[4],
-          'asthma': answers[5],
-          'cancer': answers[6],
-          'kidney_disease': answers[7],
+          'stroke': answers[0],
+          'heart_attack': answers[1],
+          'hypertension': answers[2],
+          'diabetes': answers[3],
+          'asthma': answers[4],
+          'cancer': answers[5],
+          'kidney_disease': answers[6],
         },
         "patient_id": Patient().getPatient()['uuid'],
       }
@@ -1137,13 +1146,13 @@ class Questionnaire {
           'name': type,
           'smoking': answers[0],
           'smokeless_tobacco': answers[1],
-          'fruits_vegetables_daily': answers[2],
-          'extra_salt': answers[3],
-          'salty_foods': answers[4],
-          'sugary_drinks': answers[5],
-          'processed_foods': answers[6],
-          'red_meat': answers[7],
-          'betel_nut': answers[8],
+          'betel_nut': answers[2],
+          'fruits_vegetables_daily': answers[3],
+          'extra_salt': answers[4],
+          'salty_foods': answers[5],
+          'sugary_drinks': answers[6],
+          'processed_foods': answers[7],
+          'red_meat': answers[8],      
           'physical_activity_moderate': answers[9],
           'physical_activity_high': answers[10],
           'alcohol': answers[11],
@@ -1154,6 +1163,22 @@ class Questionnaire {
 
     return data;
   }
+
+        //  "data": {
+        //   'name': type,
+        //   'smoking': answers[0],
+        //   'smokeless_tobacco': answers[1],
+        //   'fruits_vegetables_daily': answers[2],
+        //   'extra_salt': answers[3],
+        //   'salty_foods': answers[4],
+        //   'sugary_drinks': answers[5],
+        //   'processed_foods': answers[6],
+        //   'red_meat': answers[7],
+        //   'betel_nut': answers[8],
+        //   'physical_activity_moderate': answers[9],
+        //   'physical_activity_high': answers[10],
+        //   'alcohol': answers[11],
+        // },
 
   _prepareNewCounsellingData(questions, answers, type) {
     var data = {

@@ -470,12 +470,16 @@
   "email": "ই-মেইল",
   "husbandName": "স্বামীর নাম",
   "overview": "পরিদর্শন",
-  "brackPatientId": "ব্র্যাক রোগীর আইডি",
+  "projectId": "প্রজেক্ট আইডি",
   "center": "কেন্দ্র",
   "registerDetails": "নিবন্ধন করুন",
   "name": "নাম",
   "deliverCarePlan": "ডেলিভার কেয়ারপ্ল্যান",
-  "carePlanActionsNotCompleted": "Care plan actions not completed",
-  "confirm": "Confirm"
+  "projectIdValidation": "প্রজেক্ট আইডি ইতিমধ্যে বিদ্যমান",
+  "carePlanActionsNotCompleted": "কেয়ার প্ল্যান  পরিকল্পনা ক্রিয়া সম্পন্ন হয়নি",
+  "confirm": "কনফার্ম",
+  "hhNumber": "এইচ এইচ নম্বর",
+  "serial": "সিরিয়াল",
+  "union": "ইউনিয়ন"
 
 }
