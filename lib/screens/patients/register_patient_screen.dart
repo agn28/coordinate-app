@@ -39,6 +39,9 @@ final postalCodeController = TextEditingController();
 final townController = TextEditingController();
 final upazilaController = TextEditingController();
 final villageController = TextEditingController();
+final hhNumberController = TextEditingController();
+final serialController = TextEditingController();
+final unionController = TextEditingController();
 final streetNameController = TextEditingController();
 final mobilePhoneController = TextEditingController();
 final emailController = TextEditingController();
@@ -130,7 +133,6 @@ class _RegisterPatientState extends State<RegisterPatient> {
     selectedUpazila = {};
     _currentStep = 0;
 
-    fillDummyData(); //Remove this
   }
   nextStep() {
     setState(() {
@@ -234,6 +236,9 @@ class _RegisterPatientState extends State<RegisterPatient> {
     nidController.text = patient['data']['nid'];   
     bracPatientIdContoller.text = patient['data']['brac_id'];
     //centers = patient['data']['centers'];
+    hhNumberController.text = patient['data']['hh_number'];
+    serialController.text = patient['data']['serial'];
+    unionController.text = patient['data']['union'];
     contactFirstNameController.text = patient['data']['contact']['first_name'];
     contactLastNameController.text = patient['data']['contact']['last_name'];
     contactRelationshipController.text = patient['data']['contact']['relationship'];
@@ -496,6 +501,9 @@ class _RegisterPatientState extends State<RegisterPatient> {
         'postal_code': postalCodeController.text,
         'upazila': selectedUpazila['name'],
         'village': villageController.text,
+        'hh_number': hhNumberController.text,
+        'serial': serialController.text,
+        'union':unionController.text,
         'street_name': streetNameController.text,
       },
       //TODO: remove validation from api for contact
@@ -812,6 +820,41 @@ class _PatientDetailsState extends State<PatientDetails> {
             Text(AppLocalizations.of(context).translate('address'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
             SizedBox(height: 20,),
 
+            PrimaryTextField(
+              topPaadding: 10,
+              bottomPadding: 10,
+              hintText: AppLocalizations.of(context).translate('village'),
+              controller: villageController,
+              name: AppLocalizations.of(context).translate('village'),
+            ),
+            SizedBox(height: 10,),
+            
+            PrimaryTextField(
+              topPaadding: 10,
+              bottomPadding: 10,
+              hintText: AppLocalizations.of(context).translate('hhNumber'),
+              controller: hhNumberController,
+              name: AppLocalizations.of(context).translate('hhNumber'),
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 10,
+              bottomPadding: 10,
+              hintText: AppLocalizations.of(context).translate('serial'),
+              controller: serialController,
+              name: AppLocalizations.of(context).translate('serial'),
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 10,
+              bottomPadding: 10,
+              hintText: AppLocalizations.of(context).translate('union'),
+              controller: unionController,
+              name: AppLocalizations.of(context).translate('union'),
+            ),
+
+            SizedBox(height: 10,),
+
             DropdownSearch(
               validator: (v) => v == null ? "required field" : null,
               hint: AppLocalizations.of(context).translate('district'),
@@ -892,14 +935,7 @@ class _PatientDetailsState extends State<PatientDetails> {
               name: AppLocalizations.of(context).translate('postalCode'),
               type: TextInputType.number
             ),
-            SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 10,
-              bottomPadding: 10,
-              hintText: AppLocalizations.of(context).translate('village'),
-              controller: villageController,
-              name: AppLocalizations.of(context).translate('village'),
-            ),
+
             SizedBox(height: 10,),
             PrimaryTextField(
               topPaadding: 10,
@@ -953,9 +989,9 @@ class _PatientDetailsState extends State<PatientDetails> {
             PrimaryTextField(
               topPaadding: 10,
               bottomPadding: 10,
-              hintText: AppLocalizations.of(context).translate('brackPatientId'),
+              hintText: AppLocalizations.of(context).translate('projectId'),
               controller: bracPatientIdContoller,
-              name: AppLocalizations.of(context).translate('brackPatientId'),
+              name: AppLocalizations.of(context).translate('projectId'),
             ),  
             SizedBox(height: 10,),    
             Container(
@@ -1373,7 +1409,7 @@ class _ViewSummaryState extends State<ViewSummary> {
           SizedBox(height: 10,),
 
           Container(
-            height: 350,
+            height: 420,
             // width: 200,
             // alignment: Alignment.topCenter,
             decoration: BoxDecoration(
@@ -1444,6 +1480,29 @@ class _ViewSummaryState extends State<ViewSummary> {
                   ],
                 ),
                 SizedBox(height: 7,),
+                
+                Row(
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate('hhNumber') + ': ', style: TextStyle(fontSize: 18),),
+                    Text(hhNumberController.text, style: TextStyle(fontSize: 18),),
+                  ],
+                ),
+                SizedBox(height: 7,),
+                
+                Row(
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate('serial') + ': ', style: TextStyle(fontSize: 18),),
+                    Text(serialController.text, style: TextStyle(fontSize: 18),),
+                  ],
+                ),
+                SizedBox(height: 7,),
+                Row(
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate('union') + ': ', style: TextStyle(fontSize: 18),),
+                    Text(unionController.text, style: TextStyle(fontSize: 18),),
+                  ],
+                ),
+                SizedBox(height: 7,),
                 emailController.text.isNotEmpty ? Row(
                   children: <Widget>[
                     Text(AppLocalizations.of(context).translate('email') + ": ", style: TextStyle(fontSize: 18),),
@@ -1478,7 +1537,7 @@ class _ViewSummaryState extends State<ViewSummary> {
               SizedBox(height: 7,),
                bracPatientIdContoller.text.isNotEmpty ? Row(
                   children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('brackPatientId') + ': ', style: TextStyle(fontSize: 18),),
+                    Text(AppLocalizations.of(context).translate('projectId') + ': ', style: TextStyle(fontSize: 18),),
                     Text(bracPatientIdContoller.text, style: TextStyle(fontSize: 18),),
                   ],
                 ) : Container(height: 0,),
@@ -1509,26 +1568,20 @@ class _ViewSummaryState extends State<ViewSummary> {
               });
 
               if (response != null) {
-                if (response['error'] != null && response['error']) {
-                  if (response['message'] == 'Patient already exists.') {
+                if (response['error'] != null && response['error']) {              
                     _scaffoldKey.currentState.showSnackBar(
                       SnackBar(
-                        content: Text(AppLocalizations.of(context).translate('nidValidation')),
+                        content: Text(response['message']),
                         backgroundColor: kPrimaryRedColor,
                       )
-                    );
-                    return;
-                  }
-
+                    );  
+                } else {                             
                   _scaffoldKey.currentState.showSnackBar(
                     SnackBar(
-                      content: Text(AppLocalizations.of(context).translate('somethingWrong')),
+                      content: Text(response['message']),
                       backgroundColor: kPrimaryRedColor,
                     )
                   );
-
-                  return;
-                  
                 }
 
                 if (response['message'] != null && response['message'] == 'Unauthorized') {

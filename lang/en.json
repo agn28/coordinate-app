@@ -469,13 +469,18 @@
   "email": "Email",
   "husbandName": "Husband Name",
   "overview": "Overview",
-  "brackPatientId": "BRAC Patient Id",
+  "projectId": "Project ID",
   "center": "Center",
   "registerDetails": "Register Details",
   "name": "Name",
   "deliverCarePlan": "Deliver care plan",
   "carePlanActionsNotCompleted": "Care plan actions not completed",
-  "confirm": "Confirm"
+  "confirm": "Confirm",
+  "projectIdValidation": "Project id already exists",
+  "hhNumber": "HH Number",
+  "serial": "Serial",
+  "union": "Union"
+
   
   
 

@@ -380,7 +380,7 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
                   setState(() {
                     print(_currentStep);
                     if (_currentStep == 0) {
-                      Questionnaire().addNewMedicalHistory('medical_history', medicalHistoryAnswers);
+                      Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
                       print(Questionnaire().qnItems);
                     }
 
@@ -744,7 +744,9 @@ checkMedicalHistoryAnswers(medicationQuestion) {
     var mainType = medicationQuestion['type'].replaceAll('_regular_medication', '');
     print('mainType ' + mainType);
     var matchedMedicationQuestion = medicationQuestions['items'].where((item) => item['type'] == mainType).first;
+    print('matchedMedicationQuestion ' + medicationQuestions['items'].toString());
     var medicationAnswer = medicationAnswers[medicationQuestions['items'].indexOf(matchedMedicationQuestion)];
+    //print('medicationAnswer ' + medicationAnswer);
     if (medicationAnswer == 'yes') {
       return true;
     }
@@ -762,7 +764,6 @@ checkMedicalHistoryAnswers(medicationQuestion) {
   
 
   if (matchedQuestion != null) {
-    // print(matchedQuestion.first);
     var answer = medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(matchedQuestion)];
     if (answer == 'yes') {
       return true;
@@ -1260,6 +1261,32 @@ class _MeasurementsState extends State<Measurements> {
                             ),
                           ),
                         ),
+                        Radio(
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          value: 'mg/dL',
+                          groupValue: selectedGlucoseUnit,
+                          
+                          activeColor: kPrimaryColor,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedGlucoseUnit = value;
+                            });
+                          },
+                        ),
+                        Text('mg/dL', style: TextStyle(color: Colors.black)),
+                        SizedBox(width: 20,),
+                        Radio(
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          value: 'mmol/L',
+                          groupValue: selectedGlucoseUnit,
+                          activeColor: kPrimaryColor,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedGlucoseUnit = value;
+                            });
+                          },
+                        ),
+                        Text('mmol/L', style: TextStyle(color: Colors.black)),
                       ],
                     ),
                   ),
