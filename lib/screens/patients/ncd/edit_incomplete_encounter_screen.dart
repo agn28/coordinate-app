@@ -243,6 +243,27 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                 });
               }
             }
+            if(key == 'religion'){
+              selectedReligion = obsData[key];
+            }
+            if(key == 'occupation'){
+              occupationController.text ='${obsData[key]}';
+            }
+            if(key == 'ethnicity'){
+              selectedEthnicity = obsData[key];
+            }
+            if(key == 'monthly_income'){
+              incomeController.text ='${obsData[key]}';
+            }
+            if(key == 'blood_group'){
+              selectedBloodGroup = obsData[key];
+            }
+            if(key == 'education'){
+              educationController.text ='${obsData[key]}';
+            }
+            if(key == 'tribe'){
+              isTribe = obsData[key];
+            }
           });
         }
       }
@@ -414,6 +435,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     medicalHistoryAnswers = [];
     medicationAnswers = [];
     riskAnswers = [];
+    relativeAnswers = [];
     counsellingAnswers = [];
     medicalHistoryQuestions['items'].forEach((qtn) {
       medicalHistoryAnswers.add('');
@@ -478,6 +500,20 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     occupationController.text = '';
     incomeController.text = '';
     educationController.text = '';
+
+    selectedRandomBloodUnit = 'mg/dL';
+    selectedFastingBloodUnit = 'mg/dL';
+    selectedHabfUnit = 'mg/dL';
+    selectedHba1cUnit = 'mg/dL';
+    selectedCholesterolUnit = 'mg/dL';
+    selectedLdlUnit = 'mg/dL';
+    selectedHdlUnit = 'mg/dL';
+    selectedTgUnit = 'mg/dL';
+    selectedCreatinineUnit = 'mg/dL';
+    selectedSodiumUnit = 'mg/dL';
+    selectedPotassiumUnit = 'mg/dL';
+    selectedKetonesUnit = 'mg/dL';
+    selectedProteinUnit = 'mg/dL';
 
   }
 
