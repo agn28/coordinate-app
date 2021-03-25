@@ -69,6 +69,32 @@ class AssessmentRepository {
     });
   }
 
+  getLastAssessment(followupType) async {
+    var authData = await Auth().getStorageAuth() ;
+    var token = authData['accessToken'];
+    var patientId = Patient().getPatient()['uuid'];
+    var followupTypeQp = '';
+
+    if(followupType != null){
+      followupTypeQp = '?followup_type=' + followupType;
+    }
+    
+    return http.get(
+      apiUrl + 'assessments/patients/' + patientId + '/last' + followupTypeQp,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    ).then((response) {
+
+      return json.decode(response.body);
+      
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
+  }
+
   getIncompleteEncounterWithObservation(patientId) async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];

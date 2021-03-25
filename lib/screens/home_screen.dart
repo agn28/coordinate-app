@@ -300,7 +300,7 @@ class _HomeState extends State<HomeScreen> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
                                             
-                                            Text(AppLocalizations.of(context).translate('firstCenterAssessment'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
+                                            Text(AppLocalizations.of(context).translate('fullCenterAssessment'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
                                             
                                           ],
                                         ),

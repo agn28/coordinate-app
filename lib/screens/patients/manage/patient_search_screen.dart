@@ -48,6 +48,9 @@ class _PatientSearchState extends State<PatientSearchScreen> {
     // getPatients();
     isLoading = true;
     getLivePatients();
+    setState(() {
+      searchController.text = '';
+    });
   }
 
   getPatients() async {

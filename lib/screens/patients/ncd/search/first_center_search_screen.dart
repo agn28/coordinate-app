@@ -45,6 +45,9 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
   @override
   initState() {
     super.initState();
+    setState(() {
+      searchController.text = '';
+    });
     // getPatients();
     isLoading = true;
     getLivePatients();
@@ -68,6 +71,7 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
 
     setState(() {
       isLoading = true;
+      searchController.text = '';
     });
 
     var data = await PatientController().getFirstAssessmentPatients();

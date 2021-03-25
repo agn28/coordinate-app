@@ -118,7 +118,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                   SizedBox(height: 40,),
 
                   role != 'chw' ? GestureDetector(
-                    onTap: () => Navigator.of(context).pushNamed(NewQuestionnaireFeelingNurseScreen.path),
+                    onTap: () => Navigator.of(context).pushNamed(NewPatientQuestionnaireNurseScreen.path),
                     child: Container(
                       // height: 190,
                       width: double.infinity,
@@ -173,7 +173,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                       ),
                     ),
                   ) : GestureDetector(
-                    onTap: () => Navigator.of(context).pushNamed(NewQuestionnaireFeelingScreen.path),
+                    onTap: () => Navigator.of(context).pushNamed(NewPatientQuestionnaireScreen.path),
                     child: Container(
                       // height: 190,
                       width: double.infinity,

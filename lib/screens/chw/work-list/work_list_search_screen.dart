@@ -51,6 +51,9 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
   @override
   initState() {
     super.initState();
+    setState(() {
+      searchController.text = '';
+    });
     allWorklist = [];
     worklist = [];
     _getAuthUser();

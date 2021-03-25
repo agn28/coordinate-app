@@ -8,6 +8,7 @@ import 'package:nhealth/configs/configs.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
+import 'package:nhealth/custom-classes/custom_stepper.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/blood_pressure.dart';
@@ -23,7 +24,6 @@ import 'package:nhealth/screens/patients/ncd/followup_patient_summary_screen.dar
 import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
-import '../../../custom-classes/custom_stepper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final GlobalKey<FormState> _patientFormKey = new GlobalKey<FormState>();
@@ -86,14 +86,14 @@ getOptionText(context, question, option) {
 }
 
 
-class NewPatientQuestionnaireNurseScreen extends StatefulWidget {
+class FullAssessmentScreen extends StatefulWidget {
 
   static const path = '/newPatientQuestionnaireNurse';
   @override
-  _NewPatientQuestionnaireNurseScreenState createState() => _NewPatientQuestionnaireNurseScreenState();
+  _FullAssessmentScreenState createState() => _FullAssessmentScreenState();
 }
 
-class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionnaireNurseScreen> {
+class _FullAssessmentScreenState extends State<FullAssessmentScreen> {
   
   int _currentStep = 0;
 
@@ -383,7 +383,7 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('newQuestionnaire')),
+        title: Text(AppLocalizations.of(context).translate('fullassessment')),
       ),
       body: !isLoading ? GestureDetector(
         onTap: () {
@@ -556,8 +556,8 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
 
     print(patient['data']['age']);
     var status = hasMissingData ? 'incomplete' : 'complete';
-    var response = await AssessmentController().createOnlyAssessmentWithStatus('new ncd center assessment', 'ncd', '', status, '');
-
+    var response = await AssessmentController().createFollowupAssessment('follow up visit (center)', 'follow up center', '', status, nextVisitDate, 'full');
+    !hasMissingData ? Patient().setPatientReviewRequiredTrue() : null;
     setLoader(false);
 
     // if age greater than 40 redirect to referral page
@@ -2660,7 +2660,7 @@ class _HistoryState extends State<History> {
 
 
 class Followup extends StatefulWidget {
-  _NewPatientQuestionnaireNurseScreenState parent;
+  _FullAssessmentScreenState parent;
   Followup({this.parent});
 
   @override
@@ -2995,7 +2995,7 @@ class _RiskFactorsState extends State<RiskFactors> {
 }
 
 class InitialCounselling extends StatefulWidget {
-  _NewPatientQuestionnaireNurseScreenState parent;
+  _FullAssessmentScreenState parent;
   InitialCounselling({this.parent});
   @override
   _InitialCounsellingState createState() => _InitialCounsellingState();
@@ -3442,7 +3442,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
 
                                     print(patient['data']['age']);
                                     // return;
-                                    var response = await AssessmentController().createOnlyAssessment('new patient questionnaire', '', '');
+                                    var response = await AssessmentController().createOnlyAssessment('follow up visit (center)', '', '');
 
                                     widget.parent.setLoader(false);
                                     print('successss');

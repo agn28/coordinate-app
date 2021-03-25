@@ -25,6 +25,10 @@ class Patient {
     };
   }
 
+  setPatientReviewRequiredTrue() {
+    _patient['meta']['review_required'] = true;
+  }
+
   getPatient() {
     return _patient;
   }

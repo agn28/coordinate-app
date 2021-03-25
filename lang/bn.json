@@ -257,7 +257,7 @@
   "whatBPReading": "আপনার ব্লাড প্রেসার কত?",
   "completeGoal": "লক্ষ্য সম্পূর্ণ করুন",
   "pendingActions": "অসম্পূর্ণ কাজসমূহ",
-  "followUp": "ফলো আপ",
+  "followUp": "নতুুন ফলো আপ",
   "ascending": "ঊর্ধ্বক্রম অনুসারে",
   "descending": "নিম্নক্রম অনুসারে",
   "clearSort": "সাজানো বাদ দিন",
@@ -275,7 +275,9 @@
   "healthHistory": "স্বাস্থ্য ইতিহাস",
   "measurements": "পরিমাপ সমূহ",
   "generateReferralTitle": "রেফারাল তৈরি করুন",
+  "encounterDate": "সাক্ষাতের তারিখঃ ",
   "lastEncounterDate": "সর্বশেষ সাক্ষাতের তারিখঃ ",
+  "lastEncounter": "সর্বশেষ সাক্ষাত: ",
   "nextAssessmentDate": "পরবর্তী সাক্ষাতের তারিখঃ ",
   "currentConditions": "বর্তমান অবস্থাঃ ",
   "currentConditionsTitle": "বর্তমান অবস্থা",
@@ -351,6 +353,7 @@
   "generatePatientCard": "রোগী কার্ড তৈরি করুন",
   "upComing": "আসন্ন",
   "status": "অবস্থা",
+  "fullassessment": "সম্পূর্ণ মূল্যায়ন",
 
 
   "body": "শারীরিক",
@@ -451,8 +454,9 @@
   "wasCounsellingProvided": "পরামর্শ দেওয়া হয়েছে?",
   "tests": "পরীক্ষা",
   "inputAge": "দয়া করে বয়স লিখুন",
-  "followupVisit": "Follow Up Visit",
+  "followupVisit": "ফলো আপ ভিসিট",
   "firstCenterAssessment": "First Center Assessment",
+  "fullCenterAssessment": "সম্পূর্ণ কেন্দ্রের মূল্যায়ন",
   "details": "বিস্তারিত",
   "ncdCenterAssessment": "NCD Center Assessment",
   "2HABF": "2HABF",
@@ -470,12 +474,16 @@
   "email": "ই-মেইল",
   "husbandName": "স্বামীর নাম",
   "overview": "পরিদর্শন",
-  "brackPatientId": "ব্র্যাক রোগীর আইডি",
+  "projectId": "প্রজেক্ট আইডি",
   "center": "কেন্দ্র",
   "registerDetails": "নিবন্ধন করুন",
   "name": "নাম",
   "deliverCarePlan": "ডেলিভার কেয়ারপ্ল্যান",
-  "carePlanActionsNotCompleted": "Care plan actions not completed",
-  "confirm": "Confirm"
+  "projectIdValidation": "প্রজেক্ট আইডি ইতিমধ্যে বিদ্যমান",
+  "carePlanActionsNotCompleted": "কেয়ার প্ল্যান  পরিকল্পনা ক্রিয়া সম্পন্ন হয়নি",
+  "confirm": "কনফার্ম",
+  "hhNumber": "এইচ এইচ নম্বর",
+  "serial": "সিরিয়াল",
+  "union": "ইউনিয়ন"
 
 }

@@ -256,7 +256,7 @@
   "whatBPReading": "What is your blood pressure reading?",
   "completeGoal": "Complete Goal",
   "pendingActions": "Pending Actions",
-  "followUp": "Follow up",
+  "followUp": "New Follow up",
   "ascending": "Ascending",
   "descending": "Descending",
   "clearSort": "CLEAR SORT",
@@ -274,7 +274,9 @@
   "healthHistory": "Health History",
   "measurements": "Measurements",
   "generateReferralTitle": "Generate Referral",
+  "encounterDate": "Encounter date: ",
   "lastEncounterDate": "Last Encounter date: ",
+  "lastEncounter": "Last Encounter: ",
   "nextAssessmentDate": "Next Assessment Due on: ",
   "currentConditions": "Current Conditions: ",
   "currentConditionsTitle": "Current Conditions",
@@ -352,6 +354,7 @@
   "generatePatientCard": "Generate Patient card",
   "upComing": "Up Coming",
   "status": "Status",
+  "fullassessment": "Full Assesment",
 
 
   "body": "Body",
@@ -452,6 +455,7 @@
   "inputAge": "Please input age",
   "followupVisit": "Follow Up Visit",
   "firstCenterAssessment": "First Center Assessment",
+  "fullCenterAssessment": "Full Center Assessment",
   "details": "Details",
   "ncdCenterAssessment": "NCD Center Assessment",
   "2HABF": "2HABF",
@@ -464,18 +468,23 @@
   "religion": "Religion",
   "occupation": "Occupation",
   "ethnicity": "Ethnicity",
-  "incompleteNcd": "Incomplete data, assessment will not be generated.",
+  "incompleteNcd": "Incomplete data, assessment will not be generated. Advise patient to visit NCD centre to complete assessment",
   "continue": "CONTINUE",
   "email": "Email",
   "husbandName": "Husband Name",
   "overview": "Overview",
-  "brackPatientId": "BRAC Patient Id",
+  "projectId": "Project ID",
   "center": "Center",
   "registerDetails": "Register Details",
   "name": "Name",
   "deliverCarePlan": "Deliver care plan",
   "carePlanActionsNotCompleted": "Care plan actions not completed",
-  "confirm": "Confirm"
+  "confirm": "Confirm",
+  "projectIdValidation": "Project id already exists",
+  "hhNumber": "HH Number",
+  "serial": "Serial",
+  "union": "Union"
+
   
   
 

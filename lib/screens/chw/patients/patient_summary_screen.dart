@@ -21,6 +21,7 @@ import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chw/careplan_actions/careplan_feeling_screen.dart';
+import 'package:nhealth/screens/chw/careplan_actions/careplan_delivery_screen.dart';
 import 'package:nhealth/screens/chw/counselling_framework/counselling_framwork_screen.dart';
 import 'package:nhealth/screens/patients/ncd/followup_feeling_screen.dart';
 
@@ -45,6 +46,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   
   bool avatarExists = false;
   var encounters = [];
+  String lastEncounterType = '';
   String lastEncounterdDate = '';
   String lastAssessmentdDate = '';
   String lastCarePlanDate = '';
@@ -66,6 +68,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
+    print(_patient['meta']['review_required']);
     dueCarePlans = [];
     completedCarePlans = [];
     upcomingCarePlans = [];
@@ -355,6 +358,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
       setState(() {
         isLoading = false;
         lastEncounterdDate = DateFormat("MMMM d, y").format(DateTime.parse(encounters.first['meta']['created_at']));
+        lastEncounterType = encounters.first['data']['type'];
       });
 
     }
@@ -394,8 +398,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
       // print( data['data']);
       // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
       carePlans = data['data'];
-      print('carePlans');
-      print(carePlans);
+      print('carePlans $carePlans');
       data['data'].forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");
         
@@ -970,6 +973,67 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                             ],
                           ),
                         ),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 1, color: kBorderLighter),
+                          ),
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(AppLocalizations.of(context).translate('lastEncounter')+'$lastEncounterType', style: TextStyle(fontSize: 17,)),
+                              SizedBox(height: 10,),
+                              Text(AppLocalizations.of(context).translate('lastEncounterDate')+'$dueDate', style: TextStyle(fontSize: 17,)),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide(width: 4, color: kBorderLighter)
+                            ),
+                          ),
+                          padding: EdgeInsets.only(top: 15, left: 10, right: 10),
+                          child: Column(
+                            children: <Widget>[
+                              
+                              Container(
+                                padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(AppLocalizations.of(context).translate('careplanAcions'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                                    if (_patient['meta']['review_required'] != null && _patient['meta']['review_required'])
+                                      Container(
+                                        padding: EdgeInsets.symmetric(vertical: 9),
+                                        child: Text('PENDING DOCTOR CONSULTATION', style: TextStyle(fontSize: 17, color: kPrimaryYellowColor, fontWeight: FontWeight.w500),)
+                                        ,
+                                      )
+                                    else if(carePlans.length > 0)
+                                      if(dueCarePlans.length > 0 || upcomingCarePlans.length > 0)
+                                        Container(
+                                          padding: EdgeInsets.symmetric(vertical: 9),
+                                          child: Text('PENDING', style: TextStyle(fontSize: 17, color: kPrimaryRedColor, fontWeight: FontWeight.w500),)
+                                          ,
+                                        )
+                                      else
+                                        Container(
+                                          padding: EdgeInsets.symmetric(vertical: 9),
+                                          child: Text('COMPLETED. PENDING FOLLOW UP', style: TextStyle(fontSize: 17, color: kPrimaryGreenColor, fontWeight: FontWeight.w500),)
+                                          ,
+                                        )
+                                    else Container(
+                                          padding: EdgeInsets.symmetric(vertical: 9),
+                                          child: Text('NONE', style: TextStyle(fontSize: 17, color: kPrimaryRedColor, fontWeight: FontWeight.w500),)
+                                          ,
+                                        ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        ), 
 
                         widget.checkInState != null && widget.checkInState ? Container(
                           width: double.infinity,
@@ -1112,7 +1176,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
 
                             FloatingButton(text: AppLocalizations.of(context).translate('deliverCarePlan'), onPressed: () {
                               Navigator.of(context).pop();
-                              Navigator.of(context).pushNamed(CareplanFeelingScreen.path);
+                              Navigator.of(context).pushNamed(ChwCareplanDeliveryScreen.path);
                             },),
                           ],
                         ),

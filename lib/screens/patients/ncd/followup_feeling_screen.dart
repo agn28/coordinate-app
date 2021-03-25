@@ -8,6 +8,7 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/chw/followup/well_followup_screen.dart';
 import 'package:nhealth/screens/chw/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
 import 'package:nhealth/screens/chw/new_patient_questionnairs/new_questionnaire_acute_screen.dart';
 import 'package:nhealth/screens/chw/unwell/followup_screen.dart';
@@ -88,7 +89,7 @@ class _FollowupFeelingScreenState extends State<FollowupFeelingScreen> {
                                 ),
                                 child: FlatButton(
                                   onPressed: () async {
-                                    Navigator.of(context).pushNamed(FollowupVisitScreen.path);
+                                    Navigator.of(context).pushNamed(WellFollowupScreen.path);
                                   },
                                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   child: Column(

@@ -409,7 +409,7 @@ class _UnwellCausesState extends State<UnwellCauses> {
             
              SizedBox(height: 20,),
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 30),
+              margin: EdgeInsets.only(left: 30),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -420,33 +420,24 @@ class _UnwellCausesState extends State<UnwellCauses> {
                     children: <Widget>[
                       ...issues.map((item) {
                         return Container(
-                          padding: EdgeInsets.only(right: 20),
-                          margin: EdgeInsets.only(right: 20,  bottom: 15),
-                          height: 50,
+                          width: MediaQuery.of(context).size.width / 2 - 45,
+                          margin: EdgeInsets.only(bottom: 15, right: 15),
+                          //height: 50,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(3),
                             border: Border.all(color: selectedIssues.contains(item) ? kPrimaryColor : kBorderGrey)
                           ),
-                          child: GestureDetector(
-                            onTap: () async {
-
+                          
+                          child: CheckboxListTile(
+                            controlAffinity: ListTileControlAffinity.leading,
+                            contentPadding: EdgeInsets.only(left: 5),
+                            title: Text(item, style: TextStyle(fontSize: 17, ),),
+                            value: selectedCauses.contains(item),
+                            onChanged: (value) {
+                              setState(() {
+                                checkCause(value, item);
+                              });
                             },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Checkbox(
-                                  activeColor: kPrimaryColor,
-                                  value: selectedIssues.contains(item),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      // widget.form = value;
-                                      checkIssue(value, item);
-                                    });
-                                  },
-                                ),
-                                Text(item, style: TextStyle(fontSize: 17, ),)
-                              ],
-                            )
                           ),
                         );
                       }).toList(),
@@ -518,6 +509,7 @@ class _TemperatureState extends State<Temperature> {
               child: PrimaryTextField(
                 hintText: AppLocalizations.of(context).translate('tempReading'),
                 controller: _temperatureController,
+                type: TextInputType.number,
                 topPaadding: 8,
                 bottomPadding: 8,
               ),
@@ -616,6 +608,7 @@ class _BloodPressureState extends State<BloodPressure> {
                     child: PrimaryTextField(
                       hintText: AppLocalizations.of(context).translate('systolic'),
                       controller: _systolicController,
+                      type: TextInputType.number,
                       topPaadding: 8,
                       bottomPadding: 8,
                     ),
@@ -627,6 +620,7 @@ class _BloodPressureState extends State<BloodPressure> {
                     child: PrimaryTextField(
                       hintText: AppLocalizations.of(context).translate('diastolic'),
                       controller: _diastolicController,
+                      type: TextInputType.number,
                       topPaadding: 8,
                       bottomPadding: 8,
                     ),
@@ -640,6 +634,7 @@ class _BloodPressureState extends State<BloodPressure> {
               child: PrimaryTextField(
                 hintText: 'Pulse Rate',
                 controller: _pulseController,
+                type: TextInputType.number,
                 topPaadding: 8,
                 bottomPadding: 8,
               ),
@@ -942,6 +937,7 @@ class _GlucoseState extends State<Glucose> {
                     child: PrimaryTextField(
                       hintText: 'Fasting Glucose',
                       controller: _glucoseController,
+                      type: TextInputType.number,
                       topPaadding: 8,
                       bottomPadding: 8,
                     ),
