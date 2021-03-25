@@ -51,7 +51,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
   String lastCarePlanDate = '';
   String incompleteEncounterDate = '';
   var performer;
-  String performerName = ''; 
+  String performerName = '';
   String performerRole = '';
   var conditions = [];
   var medications = [];
@@ -91,7 +91,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     getMedicationsConditions();
     getReport();
     getIncompleteAssessment();
-    
+
   }
 
   getAssessmentDueDate() {
@@ -196,8 +196,8 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
       return;
     } else if (data['error'] != null && data['error']) {
       return;
-    }    
-    
+    }
+
   }
 
   getCompletedDate(goal) {
@@ -375,7 +375,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
       setState(() {
         lastEncounterdDate = DateFormat("MMMM d, y").format(DateTime.parse(encounters.first['meta']['created_at']));
         lastEncounterType = encounters.first['data']['type'];
-        
+
       });
 
       var allEncounters = encounters;
@@ -954,10 +954,10 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                   // ),
 
                   _patient['data']['incomplete_encounter'] != null &&  _patient['data']['incomplete_encounter'] ?
-                  
+
                   Container(
                     padding: EdgeInsets.only(left: 20, right: 20, top: 15,),
-                    
+
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -970,7 +970,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                             SizedBox(height: 10,),
                           ],
                         ),
-                        Row( 
+                        Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
@@ -1001,8 +1001,8 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
 
                   // Container(
                   //   padding: EdgeInsets.only(left: 20, right: 20, top: 15,),
-                    
-                  //   child: Row( 
+
+                  //   child: Row(
                   //     crossAxisAlignment: CrossAxisAlignment.start,
                   //     children: [
                   //       Container(

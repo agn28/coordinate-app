@@ -698,7 +698,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Incomplete Encounter'),
+        title: Text(AppLocalizations.of(context).translate('editIncompleteEncounter')),
       ),
       body: !isLoading ? GestureDetector(
         onTap: () {
@@ -2734,7 +2734,7 @@ class _HistoryState extends State<History> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Text('Monthly Income', style: TextStyle(color: Colors.black, fontSize: 16)),
+                              Text(AppLocalizations.of(context).translate('monthlyIncome'), style: TextStyle(color: Colors.black, fontSize: 16)),
                               SizedBox(width: 27,),
                               Container(
                                 width: 110,
@@ -2765,7 +2765,7 @@ class _HistoryState extends State<History> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Text('Blood Group', style: TextStyle(color: Colors.black, fontSize: 16)),
+                              Text(AppLocalizations.of(context).translate('bloodGroup'), style: TextStyle(color: Colors.black, fontSize: 16)),
                               SizedBox(width: 53,),
                             
                               Container(
@@ -2795,7 +2795,7 @@ class _HistoryState extends State<History> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Text('Education (years)', style: TextStyle(color: Colors.black, fontSize: 16)),
+                              Text(AppLocalizations.of(context).translate('educationYear'), style: TextStyle(color: Colors.black, fontSize: 16)),
                               SizedBox(width: 18,),
                               Container(
                                 width: 110,
@@ -2826,7 +2826,7 @@ class _HistoryState extends State<History> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Text('Tribe', style: TextStyle(color: Colors.black, fontSize: 16)),
+                              Text(AppLocalizations.of(context).translate('tribe'), style: TextStyle(color: Colors.black, fontSize: 16)),
                               SizedBox(width: 110,),
                               Container(
                                 width: 200,
@@ -2903,7 +2903,7 @@ class _HistoryState extends State<History> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('Does any of your blood relative such as father, mother, uncle, aunty had or have?', style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),), 
+                  Text(AppLocalizations.of(context).translate('relativeHistory'), style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),), 
                   Container(
                     padding: EdgeInsets.only(bottom: 35, top: 20),
                     decoration: BoxDecoration(
@@ -3163,7 +3163,7 @@ class _FollowupState extends State<Followup> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text('Next visit date: $nextVisitDate', style: TextStyle(color: Colors.black, fontSize: 16)),
+                  Text(AppLocalizations.of(context).translate('nextVisitDate') + nextVisitDate, style: TextStyle(color: Colors.black, fontSize: 16)),
                   SizedBox(width: 30,),
                 ]
               )
