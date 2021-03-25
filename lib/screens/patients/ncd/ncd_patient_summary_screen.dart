@@ -45,9 +45,14 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
   
   bool avatarExists = false;
   var encounters = [];
+  String lastEncounterType = '';
   String lastEncounterdDate = '';
   String lastAssessmentdDate = '';
   String lastCarePlanDate = '';
+  String incompleteEncounterDate = '';
+  var performer;
+  String performerName = ''; 
+  String performerRole = '';
   var conditions = [];
   var medications = [];
   var allergies = [];
@@ -85,6 +90,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     getAssessments();
     getMedicationsConditions();
     getReport();
+    getIncompleteAssessment();
     
   }
 
@@ -153,6 +159,45 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     }
 
     return '';
+  }
+
+  getIncompleteAssessment() async {
+
+    print("getIncompleteAssessment");
+
+    if (Auth().isExpired()) {
+      Auth().logout();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+    var patientId = Patient().getPatient()['uuid'];
+    var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
+    // print('incompleteData ${data['data']['assessment']['body']['performed_by']}');
+    if(data['data']['assessment']['body']['performed_by'] != null)
+    {
+      performer = await getPerformer(data['data']['assessment']['body']['performed_by']);
+      print('performer $performer');
+    }
+    setState(() {
+      isLoading = false;
+      incompleteEncounterDate = DateFormat("MMMM d, y").format(DateTime.parse(data['data']['assessment']['meta']['created_at']));
+      performerName = performer.isNotEmpty ? performer['data']['name'] : '';
+      performerRole = performer.isNotEmpty ? performer['data']['role'] : '';
+    });
+
+    if (data == null) {
+      return;
+    } else if (data['message'] == 'Unauthorized') {
+      Auth().logout();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+      return;
+    } else if (data['error'] != null && data['error']) {
+      return;
+    }    
+    
   }
 
   getCompletedDate(goal) {
@@ -327,6 +372,12 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
 
 
     if (encounters.isNotEmpty) {
+      setState(() {
+        lastEncounterdDate = DateFormat("MMMM d, y").format(DateTime.parse(encounters.first['meta']['created_at']));
+        lastEncounterType = encounters.first['data']['type'];
+        
+      });
+
       var allEncounters = encounters;
       await Future.forEach(allEncounters, (item) async {
         var data = await getObservations(item);
@@ -354,11 +405,17 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
 
       setState(() {
         isLoading = false;
-        lastEncounterdDate = DateFormat("MMMM d, y").format(DateTime.parse(encounters.first['meta']['created_at']));
       });
 
     }
     
+  }
+
+  getPerformer(userId) async {
+    var data =  await UserController().getUser(userId);
+    print('getPerformer $data');
+    return data;
+
   }
 
   getObservations(assessment) async {
@@ -897,39 +954,88 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                   // ),
 
                   _patient['data']['incomplete_encounter'] != null &&  _patient['data']['incomplete_encounter'] ?
-                  Container(
-                    padding: EdgeInsets.only(left: 20, right: 20, top: 15),
-                    alignment: Alignment.centerLeft,
-                    child: FlatButton(
-                      onPressed: () {
-                        print('hello');
-                        Navigator.of(context).pushNamed('/editIncompleteEncounter',);
-                      },
-                      color: kPrimaryColor,
-                      child: Text('Complete Previous Encounter', style: TextStyle(color: Colors.white),),
-                    ),
-                  ) : Container(),
-
+                  
                   Container(
                     padding: EdgeInsets.only(left: 20, right: 20, top: 15,),
                     
-                    child: Row( 
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          child: Text(AppLocalizations.of(context).translate('currentConditions'), style: TextStyle(fontSize: 17,),),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(AppLocalizations.of(context).translate('encounterDate')+'$incompleteEncounterDate', style: TextStyle(fontSize: 17,),),
+                            SizedBox(height: 15,),
+                            Text('$performerRole: '+'$performerName', style: TextStyle(fontSize: 17,),),
+                            SizedBox(height: 10,),
+                          ],
                         ),
-                        SizedBox(width: 20),
-                        Expanded(
-                          // padding: EdgeInsets.symmetric(vertical: 9),
-                          child: Wrap(
-                            children: <Widget>[
-                              ...conditions.map((item) {
-                                return Text(item + '${conditions.length - 1 == conditions.indexOf(item) ? '' : ', '}', style: TextStyle(fontSize: 17,));
-                              }).toList()
-                            ],
-                          ),
+                        Row( 
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              child: FlatButton(
+                                onPressed: () {
+                                  print('hello');
+                                  print("patientDataincomplete ${_patient['data']} ");
+                                  Navigator.of(context).pushNamed('/editIncompleteEncounter',);
+                                },
+                                color: kPrimaryColor,
+                                child: Text('Complete Previous Encounter', style: TextStyle(color: Colors.white),),
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                          ]
                         ),
+                      ],
+                    )
+                    // child: FlatButton(
+                    //   onPressed: () {
+                    //     print('hello');
+                    //     Navigator.of(context).pushNamed('/editIncompleteEncounter',);
+                    //   },
+                    //   color: kPrimaryColor,
+                    //   child: Text('Complete Previous Encounter', style: TextStyle(color: Colors.white),),
+                    // ),
+                  ) : Container(),
+
+                  // Container(
+                  //   padding: EdgeInsets.only(left: 20, right: 20, top: 15,),
+                    
+                  //   child: Row( 
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     children: [
+                  //       Container(
+                  //         child: Text(AppLocalizations.of(context).translate('currentConditions'), style: TextStyle(fontSize: 17,),),
+                  //       ),
+                  //       SizedBox(width: 20),
+                  //       Expanded(
+                  //         // padding: EdgeInsets.symmetric(vertical: 9),
+                  //         child: Wrap(
+                  //           children: <Widget>[
+                  //             ...conditions.map((item) {
+                  //               return Text(item + '${conditions.length - 1 == conditions.indexOf(item) ? '' : ', '}', style: TextStyle(fontSize: 17,));
+                  //             }).toList()
+                  //           ],
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  SizedBox(height: 20,),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: kBorderLighter),
+                    ),
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(AppLocalizations.of(context).translate('lastEncounter')+'$lastEncounterType', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+                        SizedBox(height: 15,),
+                        Text(AppLocalizations.of(context).translate('lastEncounterDate')+'$lastEncounterdDate', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+                        SizedBox(height: 10,),
                       ],
                     ),
                   ),
@@ -1341,9 +1447,9 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                           ),
                         ),
                         
-                        dueCarePlans.length > 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: dueCarePlans, text: AppLocalizations.of(context).translate('dueToday')) : Container(),
-                        upcomingCarePlans.length > 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: upcomingCarePlans, text: AppLocalizations.of(context).translate('upComing')) : Container(),
-                        completedCarePlans.length> 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: completedCarePlans, text: AppLocalizations.of(context).translate('complete')) : Container(),
+                        // dueCarePlans.length > 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: dueCarePlans, text: AppLocalizations.of(context).translate('dueToday')) : Container(),
+                        // upcomingCarePlans.length > 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: upcomingCarePlans, text: AppLocalizations.of(context).translate('upComing')) : Container(),
+                        // completedCarePlans.length> 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: completedCarePlans, text: AppLocalizations.of(context).translate('complete')) : Container(),
 
 
                         SizedBox(height: 30,),
@@ -1875,11 +1981,14 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: <Widget>[
+                            FloatingButton(text: 'Update Last Encounter', onPressed: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pushNamed('/editIncompleteEncounter',);
+                            }, ),
                             FloatingButton(text: 'New Visit', onPressed: () {
                               Navigator.of(context).pop();
-                              Navigator.of(context).pushNamed(NewQuestionnaireFeelingNurseScreen.path);
+                              Navigator.of(context).pushNamed(NewPatientQuestionnaireNurseScreen.path);
                             }, ),
-
                             // FloatingButton(text: AppLocalizations.of(context).translate('newCommunityVisit'), onPressed: () {
                             //   Navigator.of(context).pop();
                             //   //TODO: change the route
@@ -1933,334 +2042,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
   }
 }
 
-class GoalItem extends StatefulWidget {
-  final item;
-  GoalItem({this.item});
-
-  @override
-  _GoalItemState createState() => _GoalItemState();
-}
-
-class _GoalItemState extends State<GoalItem> {
-  var status = 'pending';
-
-    @override
-  void initState() {
-    super.initState();
-    getStatus();
-  }
-
-  getStatus() {
-    status = 'completed';
-    widget.item['items'].forEach( (goal) {
-      if (goal['meta']['status'] == 'pending') {
-        setState(() {
-          status = 'pending';
-        });
-      }
-    });
-  }
-  setStatus(completedItem) {
-    // print(completedItem);
-
-    //set all the actions as completed
-    setState(() {
-      dueCarePlans.remove(completedItem);
-      var data = completedItem;
-      data['items'].forEach( (goal) {
-        completedItem['items'][completedItem['items'].indexOf(goal)]['meta']['status'] = 'completed';
-      });
-      completedCarePlans.add(completedItem);
-      // status = 'completed';
-    });
-  }
-  getCount() {
-    var count = 0;
-    if (status == 'pending') {
-      widget.item['items'].forEach( (goal) {
-        if (goal['meta']['status'] == 'pending') {
-          setState(() {
-            count += 1;
-          });
-        }
-      });
-    } else {
-      widget.item['items'].forEach( (goal) {
-        setState(() {
-          count += 1;
-        });
-      });
-    }
-
-    return count.toString();
-  }
-  
-  getCompletedDate(goal) {
-    var data = '';
-    DateTime date;
-    print('asdknas');
-    goal['items'].forEach((item) {
-      // print(item['body']['activityDuration']['end']);
-      DateFormat format = new DateFormat("E LLL d y");
-      var endDate;
-        try {
-          endDate = format.parse(item['body']['activityDuration']['end']);
-        } catch(err) {
-          endDate = DateTime.parse(item['body']['activityDuration']['end']);
-        }
-      // print(endDate);
-      date = endDate;
-      if (date != null) {
-        date  = endDate;
-      } else {
-        if (endDate.isBefore(date)) {
-          date = endDate;
-        }
-      }
-      
-    });
-    if (date != null) {
-      var test = DateFormat('MMMM d, y').format(date);
-      data = 'Complete By ' + test;
-    }
-    return data;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      padding: EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: kBorderLighter)
-        )
-      ),
-      child: GestureDetector(
-        onTap: () {
-          if (status == 'pending') {
-            if (widget.item['title'] == 'Improve blood pressure control') {
-              Navigator.of(context).pushNamed('/chwImproveBp', arguments: { 'data': widget.item, 'parent': this });
-            } else {
-              Navigator.of(context).pushNamed('/chwOtherActions', arguments: { 'data': widget.item, 'parent': this });
-            }
-          }
-        },
-        child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(widget.item['title'], style: TextStyle(fontSize: 16, color: kPrimaryColor)),
-          status != 'completed' ? Text(getCompletedDate(widget.item), style: TextStyle(fontSize: 15, color: kBorderLight)) : Container(),
-          Container(
-            child: Row(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: status == 'pending' ? kPrimaryRedColor : kPrimaryGreenColor),
-                    borderRadius: BorderRadius.circular(3)
-                  ),
-                  child: GestureDetector(
-                    onTap: () {
-                      if (widget.item['title'] == 'Improve blood pressure control') {
-                        Navigator.of(context).pushNamed('/chwImproveBp', arguments: { 'data': widget.item, 'parent': this });
-                      } else {
-                        Navigator.of(context).pushNamed('/chwOtherActions', arguments: { 'data': widget.item, 'parent': this });
-                      }
-                    },
-                    child: Row(
-                      children: <Widget>[
-                        // Text('${report['body']['result']['actions'].length} Actions  ', style: TextStyle(color: status == 'pending' ? kPrimaryRedColor : kPrimaryGreenColor, fontWeight: FontWeight.w500),),
-                        Text('${getCount()}'+AppLocalizations.of(context).translate("actions"), style: TextStyle(color: status == 'pending' ? kPrimaryRedColor : kPrimaryGreenColor, fontWeight: FontWeight.w500),),
-                        if (status != 'pending') 
-                        Icon(Icons.check_circle, color: kPrimaryGreenColor, size: 14,)
-                      ],
-                    ),
-                  ),
-                ),
-                Icon(Icons.chevron_right, color: kBorderLight,)
-              ],
-            ),
-          ),
-        ],),
-      ),
-    );
-  }
-}
-
-class CareplanAction extends StatefulWidget {
-
-  CareplanAction({this.checkInState, this.carePlans, this.text});
-
-  bool checkInState;
-  var carePlans = [];
-  String text = '';
-  @override
-  _CareplanActionState createState() => _CareplanActionState();
-}
-
-class _CareplanActionState extends State<CareplanAction> {
-
-  getCount(item) {
-    var count = 0;
-
-    item['items'].forEach( (goal) {
-      setState(() {
-        count += 1;
-      });
-    });
-    
-
-    return count.toString();
-  }
-
-  getCompletedDate(goal) {
-    var data = '';
-    DateTime date;
-    // print(goal['items']);
-    goal['items'].forEach((item) {
-      // print(item['body']['activityDuration']['end']);
-      if (item['meta']['status'] != 'completed') {
-        DateFormat format = new DateFormat("E LLL d y");
-        var endDate;
-        try {
-          endDate = format.parse(item['body']['activityDuration']['end']);
-        } catch(err) {
-          endDate = DateTime.parse(item['body']['activityDuration']['end']);
-        }
-        
-        // print(endDate);
-        date = endDate;
-        if (date != null) {
-          date  = endDate;
-        } else {
-          if (endDate.isBefore(date)) {
-            date = endDate;
-          }
-        }
-      }
-      
-    });
-    if (date != null) {
-      var test = DateFormat('MMMM d, y').format(date);
-      data = 'Complete By ' + test;
-    }
-    return data;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        SizedBox(height: 20,),
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 13,),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(widget.text, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-              // Text(getDueCounts(),)
-            ],
-          ),
-        ),
-        widget.text == 'Due Today' && widget.checkInState != null ? Container(
-          margin: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
-          child: Row(
-            children: <Widget>[
-              Icon(Icons.check_circle, color: kPrimaryGreenColor,),
-              SizedBox(width: 10,),
-              Text(AppLocalizations.of(context).translate("checkInComplete"), style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
-            ],
-          ),
-        ) : Container(),
-        widget.checkInState == null ? Container(
-          child: Column(
-            children: <Widget>[
-              Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(height: 10,),
-                      ...widget.carePlans.map( (item) {
-                        return Container(
-                          margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                          padding: EdgeInsets.only(bottom: 10),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(color: kBorderLighter)
-                            )
-                          ),
-                          child: GestureDetector(
-                            onTap: () {
-                              // Navigator.of(context).pushNamed('/carePlanInterventions', arguments: {
-                              //   'carePlan' : item,
-                              //   'parent': this
-                              // });
-                            },
-                            child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(item['title'], style: TextStyle(fontSize: 16, color: kBorderLight)),
-                              Text(getCompletedDate(item), style: TextStyle(fontSize: 15, color: kBorderLight)),
-                              Container(
-                                child: Row(
-                                  children: <Widget>[
-                                    Container(
-                                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: kBorderLight),
-                                        borderRadius: BorderRadius.circular(3)
-                                      ),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                        },
-                                        // child: Text('${item['body']['actions'].length} Actions', style: TextStyle(color: kBorderLight, fontWeight: FontWeight.w500),),
-                                        child: Text('${getCount(item)} Actions', style: TextStyle(color: kBorderLight, fontWeight: FontWeight.w500),),
-                                      ),
-                                    ),
-                                    Icon(Icons.chevron_right, color: kBorderLight,)
-                                  ],
-                                ),
-                              ),
-                            ],),
-                          ),
-                        );
-                    }).toList()
-                  
-                    
-                  ],
-                ),
-              ),
-            ],
-          ),
-        )
-
-        : Container(
-          child: Column(
-            children: <Widget>[
-              Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(height: 10,),
-                      ...widget.carePlans.map( (item) {
-                        
-                        return GoalItem(item: item);
-                    }).toList()
-                  
-                    
-                  ],
-                ),
-              ),
-              
-            ],
-          ),
-        ),
-
-      ],
-    );
-  }
-}
 
 class FloatingButton extends StatelessWidget {
   final String text;

@@ -132,7 +132,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     selectedDistrict = {};
     selectedUpazila = {};
     _currentStep = 0;
-
+    fillDummyData();
   }
   nextStep() {
     setState(() {
@@ -290,6 +290,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     mobilePhoneController.clear();
     emailController.clear();
     nidController.clear();
+    bracPatientIdContoller.clear();
     contactFirstNameController.clear();
     contactLastNameController.clear();
     contactRelationshipController.clear();
@@ -937,13 +938,13 @@ class _PatientDetailsState extends State<PatientDetails> {
             ),
 
             SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 10,
-              bottomPadding: 10,
-              hintText: AppLocalizations.of(context).translate('streetName'),
-              controller: streetNameController,
-              name: AppLocalizations.of(context).translate('streetName'),
-            ),
+            // PrimaryTextField(
+            //   topPaadding: 10,
+            //   bottomPadding: 10,
+            //   hintText: AppLocalizations.of(context).translate('streetName'),
+            //   controller: streetNameController,
+            //   name: AppLocalizations.of(context).translate('streetName'),
+            // ),
             Divider(),
             SizedBox(height: 20,),
             PrimaryTextField(
@@ -992,6 +993,7 @@ class _PatientDetailsState extends State<PatientDetails> {
               hintText: AppLocalizations.of(context).translate('projectId'),
               controller: bracPatientIdContoller,
               name: AppLocalizations.of(context).translate('projectId'),
+              validation: true,
             ),  
             SizedBox(height: 10,),    
             Container(

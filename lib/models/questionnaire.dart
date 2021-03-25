@@ -270,17 +270,35 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'type': 'heart',
-            'key': 'aspirin',
+            'key': 'aspirin_medicine',
           },
           {
             'question': 'Are you taking the medicines regularly?',
-            'question_bn': 'আপনি কি কোনও অ্যাসপিরিন / ক্লপিডগ্রেল জাতীয় ওষুধ খাচ্ছেন?',
+            'question_bn': 'আপনি কি নিয়মিত ওষুধ খাচ্ছেন?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'type': 'heart_regular_medication',
             'category': 'sub',
             'key': 'aspirin_regular_medicine',
           },
+
+          {
+            'question': 'Are you taking any drug for lowering fat in blood (Cholesterol)?',
+            'question_bn': 'রক্তে ফ্যাট (কোলেস্টেরল) কমাতে আপনি কি কোনও ওষুধ খাচ্ছেন?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'type': 'heart_bp_diabetes',
+            'key': 'cholesterol_medicine',
+          },
+          {
+            'question': 'Are you taking the medicines regularly?',
+            'question_bn': 'আপনি কি নিয়মিত ওষুধ খাচ্ছেন?',
+            'options': ['yes', 'no'],
+            'options_bn': ['হ্যা', 'না'],
+            'type': 'heart_bp_diabetes_regular_medication',
+            'category': 'sub',
+            'key': 'cholesterol_regular_medicine',
+          }
         ]
 
       },
@@ -338,7 +356,7 @@ var _questions = {
           },
           {
             'question': 'Do you frequently eat salty foods such as sauce, achar, singara, samucha, etc?',
-            'question_bn': 'Do you frequently eat salty foods such as sauce, achar, singara, samucha, etc?',
+            'question_bn': 'আপনি কি নিয়মিত লবনাক্ত খাবার খান, যেমনঃ সস, আচার, সিঙ্গারা, সমুচা?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'unhealth-diet',
@@ -346,7 +364,7 @@ var _questions = {
             'key': 'salty_foods'
           },
           {
-            'question': 'Do you have sugery drinks on most days?',
+            'question': 'Do you have sugary drinks on most days?',
             'question_bn': 'আপনি কি বেশিরভাগ সময়ে চিনিযুক্ত পানীয় পান করেন?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
@@ -364,7 +382,7 @@ var _questions = {
             'key': 'processed_foods'
           },
           {
-            'question': 'Do you frequently eat redmeat?',
+            'question': 'Do you frequently eat red meat?',
             'question_bn': 'আপনি কি নিয়মিত লাল গোস্ত খান?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
@@ -414,15 +432,15 @@ var _questions = {
           },
           {
             'question': 'Smokeless Tobacco',
-            'question_bn': 'Smokeless Tobacco',
+            'question_bn': 'ধোঁয়াহীন তামাক',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'tobacco',
             'type': 'smokeless-tobacco'
           },
           {
-            'question': 'Vegetable',
-            'question_bn': 'শাকসবজি',
+            'question': 'Fruits and vegetables intake',
+            'question_bn': 'ফল ও শাকসবজি গ্রহণ',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'unhealthy-diet',
@@ -788,6 +806,24 @@ class Questionnaire {
     return 'success';
   }
 
+  addNewMedicationNcd(type, answers) {
+    var questions = Questionnaire().questions['new_patient'][type];
+    var updated = false;
+
+    for (var qn in _questionnaireItems) {
+      if (qn['body']['data']['name'] == type) {
+        _questionnaireItems[_questionnaireItems.indexOf(qn)] = _prepareNewMedicationDataNcd(questions, answers, type);
+        updated = true;
+      }
+    }
+
+    if (!updated) {
+      _questionnaireItems.add(_prepareNewMedicationDataNcd(questions, answers, type));
+    }
+    
+    return 'success';
+  }
+
   addNewRiskFactors(type, answers) {
     var questions = Questionnaire().questions['new_patient'][type];
     var updated = false;
@@ -1095,8 +1131,35 @@ class Questionnaire {
           'hypertension_regular_medicine': answers[1],
           'diabetes_medicine': answers[2],
           'diabetes_regular_medicine': answers[3],
-          'aspirin': answers[4],
+          'aspirin_medicine': answers[4],
           'aspirin_regular_medicine': answers[5],
+        },
+        "patient_id": Patient().getPatient()['uuid'],
+      }
+    };
+
+    return data;
+  }
+
+  /// Prepare questionnaire data New
+  _prepareNewMedicationDataNcd(questions, answers, type) {
+    var data = {
+      "meta": {
+        "performed_by": Auth().getAuth()['uid'],
+        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
+      },
+      "body": {
+        "type": "survey",
+        "data": {
+          'name': type,
+          'hypertension_medicine': answers[0],
+          'hypertension_regular_medicine': answers[1],
+          'diabetes_medicine': answers[2],
+          'diabetes_regular_medicine': answers[3],
+          'aspirin_medicine': answers[4],
+          'aspirin_regular_medicine': answers[5],
+          'cholesterol_medicine': answers[6],
+          'cholesterol_regular_medicine': answers[7],
         },
         "patient_id": Patient().getPatient()['uuid'],
       }

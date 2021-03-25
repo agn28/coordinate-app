@@ -47,6 +47,9 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
   @override
   initState() {
     super.initState();
+    setState(() {
+      searchController.text = '';
+    });
     // getPatients();
     isLoading = true;
     getLivePatients();

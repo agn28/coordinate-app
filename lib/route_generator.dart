@@ -11,6 +11,7 @@ import 'package:nhealth/screens/chw/counselling_framework/counselling_framwork_s
 import 'package:nhealth/screens/chw/counselling_framework/couselling_confirmation_screen.dart';
 import 'package:nhealth/screens/chw/encounters/new_chw_encounter_screen.dart';
 import 'package:nhealth/screens/chw/careplan_actions/careplan_feeling_screen.dart';
+import 'package:nhealth/screens/chw/followup/well_followup_screen.dart';
 import 'package:nhealth/screens/chw/new_community_visit/patient_feeling_screen.dart';
 import 'package:nhealth/screens/chw/new_community_visit/verify_patient_screen.dart';
 import 'package:nhealth/screens/chw/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
@@ -29,6 +30,7 @@ import 'package:nhealth/screens/chw/unwell/severity_screen.dart';
 import 'package:nhealth/screens/chw/unwell/update_referral_screen.dart';
 import 'package:nhealth/screens/chw/work-list/chw_navigation_screen.dart';
 import 'package:nhealth/screens/home_screen.dart';
+import 'package:nhealth/screens/nurse/new_patient_questionnairs/followup/full_assessment_screen.dart';
 import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
 import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_questionnaire_acute_screen.dart';
 import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_questionnaire_feeling_screen.dart';
@@ -45,6 +47,7 @@ import 'package:nhealth/screens/patients/ncd/followup_feeling_screen.dart';
 import 'package:nhealth/screens/patients/ncd/followup_patient_summary_screen.dart';
 import 'package:nhealth/screens/patients/ncd/followup_visit_screen.dart';
 import 'package:nhealth/screens/patients/ncd/ncd_patient_summary_screen.dart';
+import 'package:nhealth/screens/patients/ncd/new_followup_screen.dart';
 import 'package:nhealth/screens/patients/ncd/search/first_center_search_screen.dart';
 import 'package:nhealth/screens/patients/ncd/search/followup_search_screen.dart';
 import 'package:nhealth/screens/patients/ncd/search/unwell_followup_screen.dart';
@@ -75,6 +78,10 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => FollowupFeelingScreen());
       case FollowupVisitScreen.path:
         return CupertinoPageRoute(builder: (_) => FollowupVisitScreen());
+      case WellFollowupScreen.path:
+        return CupertinoPageRoute(builder: (_) => WellFollowupScreen());
+        case FullAssessmentScreen.path:
+        return CupertinoPageRoute(builder: (_) => FullAssessmentScreen());
       case FollowupAcuteScreen.path:
         return CupertinoPageRoute(builder: (_) => FollowupAcuteScreen());
       case ChwFollowupScreen.path:
@@ -132,7 +139,7 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => CounsellingFrameworkScreen(data: data['data'], parent: data['parent']));
       case CounsellingConfirmation.path:
       var data = settings.arguments as Map;
-        return CupertinoPageRoute(builder: (_) => CounsellingConfirmation(data: data['data'], actionsState: data['actionsState']));
+        return CupertinoPageRoute(builder: (_) => CounsellingConfirmation(data: data['data'], parent: data['parent']));
 
       case MedicalRecommendationScreen.path:
         var data = settings.arguments;
@@ -182,6 +189,8 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => PatientUpdateSummary());
       case EditPatientScreen.path:
         return CupertinoPageRoute(builder: (_) => EditPatientScreen());
+      case NewFollowupScreen.path:
+        return CupertinoPageRoute(builder: (_) => NewFollowupScreen());
     }
   }
 }

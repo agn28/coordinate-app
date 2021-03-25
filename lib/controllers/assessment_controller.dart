@@ -56,6 +56,11 @@ class AssessmentController {
     return data;
   }
 
+  getLastAssessmentByPatient(followupType) async {
+    var assessment = await AssessmentRepository().getLastAssessment(followupType);
+    return assessment;
+  }
+
   /// Get all the assessments.
   getAllAssessments() async {
     var assessments = await AssessmentRepositoryLocal().getAllAssessments();
@@ -168,6 +173,25 @@ class AssessmentController {
     return status;
   }
 
+  createFollowupAssessment(
+      type, screening_type, comment, completeStatus, nextVisitDate, followupType) async {
+    var data = _prepareData(
+      type,
+      screening_type,
+      comment,
+    );
+    data['body']['status'] = completeStatus;
+    data['body']['followup_type'] = followupType;
+    data['body']['next_visit_date'] = nextVisitDate;
+    var status =
+        await AssessmentRepositoryLocal().createOnlyAssessmentWithStatus(data);
+    Helpers().clearObservationItems();
+
+    print('before health report');
+
+    return status;
+  }
+
   createOnlyAssessmentWithStatus(
       type, screening_type, comment, completeStatus, nextVisitDate) async {
     var data = _prepareData(
@@ -232,10 +256,11 @@ class AssessmentController {
     bodyMeasurements.forEach((bm) {      
       if (bmobs.isNotEmpty) {
         var matchedObs = bmobs.where(
-          (bmob) => bmob['body']['data']['name'] == bm['body']['data']['name']).first;
+          (bmob) => bmob['body']['data']['name'] == bm['body']['data']['name']);
           print('matchedObs ${matchedObs}');
         if(matchedObs.isNotEmpty)
         {
+          matchedObs = matchedObs.first;
           var apiData = {'id': matchedObs['id']};
           apiData.addAll(bm);
           apiData['body']['assessment_id'] = matchedObs['body']['assessment_id'];
@@ -259,10 +284,11 @@ class AssessmentController {
     bloodPressures.forEach((bp) {
       if (bpobs.isNotEmpty) {
         var matchedObs = bpobs.where(
-          (bpob) => bpob['body']['data']['name'] == bp['body']['data']['name']).first;
+          (bpob) => bpob['body']['data']['name'] == bp['body']['data']['name']);
           print('matchedObs ${matchedObs}');
         if(matchedObs.isNotEmpty)
         {
+          matchedObs = matchedObs.first;
           var apiData = {'id': matchedObs['id']};
           apiData.addAll(bp);
           apiData['body']['assessment_id'] = matchedObs['body']['assessment_id'];
@@ -286,10 +312,11 @@ class AssessmentController {
     bloodTests.forEach((bt) {
       if (btobs.isNotEmpty) {
         var matchedObs = btobs.where(
-          (btob) => btob['body']['data']['name'] == bt['body']['data']['name']).first;
+          (btob) => btob['body']['data']['name'] == bt['body']['data']['name']);
           print('matchedObs ${matchedObs}');
         if(matchedObs.isNotEmpty)
         {
+          matchedObs = matchedObs.first;
           var apiData = {'id': matchedObs['id']};
           apiData.addAll(bt);
           apiData['body']['assessment_id'] = matchedObs['body']['assessment_id'];
@@ -309,21 +336,29 @@ class AssessmentController {
 
     var qstnobs = observations.where(
           (observation) => observation['body']['type'] == 'survey').toList();
-    print('qstnobs ${qstnobs}');
     questionnaires.forEach((qstn) {
+      print('qstn ${qstn['body']['data']['name']}');
       if (qstnobs.isNotEmpty) {
         var matchedObs = qstnobs.where(
-          (qstnob) => qstnob['body']['data']['name'] == qstn['body']['data']['name']).first;
-          print('matchedObs ${matchedObs}');
+        (qstnob) => qstnob['body']['data']['name'] == qstn['body']['data']['name']);
+        print('matchedObs ${matchedObs}');
         if(matchedObs.isNotEmpty)
         {
+          matchedObs = matchedObs.first;
           var apiData = {'id': matchedObs['id']};
           apiData.addAll(qstn);
           apiData['body']['assessment_id'] = matchedObs['body']['assessment_id'];
           print('Questionnaires_if $apiData');
           obsRepo.create(apiData);
         }
-        
+        else{
+          var id = Uuid().v4();
+          Map<String, dynamic> apiData = {'id': id};
+          apiData.addAll(qstn);
+          apiData['body']['assessment_id'] = encounter['id'];
+          print('Questionnaires_else $apiData');
+          obsRepo.create(apiData);
+        }
       }
     });
 

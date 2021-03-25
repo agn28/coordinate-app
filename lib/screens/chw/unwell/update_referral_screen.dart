@@ -34,7 +34,7 @@ class _UpdateReferralScreenState extends State<UpdateReferralScreen> {
 
   List referralReasons = ['urgent medical attempt required', 'NCD screening required'];
   var selectedReason;
-  List clinicTypes = ['community clinic', 'upazila health complex', 'hospital','Refer from CHW','Refer from Paramedics'];
+  List clinicTypes = ['community clinic', 'upazila health complex', 'hospital', 'BRAC NCD Centre' ,'Refer from CHW','Refer from Paramedics'];
   var selectedtype;
   List status = ['pending', 'completed'];
   var selectedStatus;

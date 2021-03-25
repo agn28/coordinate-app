@@ -9,6 +9,7 @@ import 'package:nhealth/configs/configs.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
+import 'package:nhealth/screens/patients/ncd/followup_patient_summary_screen.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
@@ -211,7 +212,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
         }
 
         else if (obsData['name'] == 'risk_factors') {
-          print('into medical history');
+          print('into risk factors');
           var keys = obsData.keys.toList();
           print(keys);
           keys.forEach((key) {
@@ -778,7 +779,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                     }
 
                     if (_currentStep == 1) {
-                      Questionnaire().addNewMedication('medication', medicationAnswers);
+                      Questionnaire().addNewMedicationNcd('medication', medicationAnswers);
                       print(Questionnaire().qnItems);
                     }
 
@@ -792,14 +793,14 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                       _completeStep();
                       return;
                     }
-                    if (_currentStep == 5) {
+                    if (_currentStep == 4) {
                       print('hello');
 
                       
                       createObservations();
                       nextText = 'COMPLETE';
                     }
-                    if (_currentStep < 6) {
+                    if (_currentStep < 5) {
                      
                         // If the form is valid, display a Snackbar.
                         _currentStep = _currentStep + 1;
@@ -875,7 +876,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     }
     var response = await AssessmentController().updateIncompleteAssessmentData(status, encounter, observations);
     // var response = await AssessmentController().createOnlyAssessmentWithStatus('ncd center assessment', 'ncd', '', 'incomplete');
-
+    !hasMissingData ? Patient().setPatientReviewRequiredTrue() : null;
     setLoader(false);
 
     // if age greater than 40 redirect to referral page
@@ -908,8 +909,11 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
 
       return;
     }
-
-    goToHome(false, null);
+  
+    
+    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path);
+    // Navigator.of(context).pushNamed('/ncdPatientSummary');
+    // goToHome(false, null);
   }
 
   List<CustomStep> _mySteps() {
@@ -1144,13 +1148,26 @@ checkMedicalHistoryAnswers(medicationQuestion) {
   }
 
   var matchedQuestion;
+  bool matchedHBD = false;
   medicalHistoryQuestions['items'].forEach((item) {
     if (item['type'] != null && item['type'] == medicationQuestion['type']) {
       matchedQuestion =  item;
     }
+    else if (medicationQuestion['type'] == 'heart_bp_diabetes') {
+      if (item['type'] == 'heart' || item['type'] == 'blood_pressure' || item['type'] == 'diabetes') {
+        
+        var answer = medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(item)];
+        if (answer == 'yes') {
+          matchedHBD = true;
+          // return true;
+        }
+      }
+    }
   });
 
-  
+  if (matchedHBD) {
+    return true;
+  }
 
   if (matchedQuestion != null) {
     // print(matchedQuestion.first);
@@ -2585,12 +2602,12 @@ var incomeController = TextEditingController();
 var educationController = TextEditingController();
 
 var religions = ['Muslim', 'Hindu', 'Cristian', 'Others'];
-var selectedReligion = 'Muslim';
+var selectedReligion = null;
 var ethnicity = ['Bengali', 'Others'];
-var selectedEthnicity = 'Bengali';
+var selectedEthnicity = null;
 var bloodGroups = ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-'];
 var selectedBloodGroup = null;
-var isTribe = false;
+var isTribe = null;
 
 class _HistoryState extends State<History> {
 
@@ -2821,21 +2838,19 @@ class _HistoryState extends State<History> {
                                         width: 100,
                                         margin: EdgeInsets.only(right: 20, left: 0),
                                         decoration: BoxDecoration(
-                                          border: Border.all(width: 1, color: isTribe ? Color(0xFF01579B) : Colors.black),
+                                          border: Border.all(width: 1, color: (isTribe != null && isTribe) ? Color(0xFF01579B) : Colors.black),
                                           borderRadius: BorderRadius.circular(3),
-                                          color: isTribe ? Color(0xFFE1F5FE) : null
+                                          color: (isTribe != null && isTribe) ? Color(0xFFE1F5FE) : null
                                         ),
                                         child: FlatButton(
                                           onPressed: () {
                                             setState(() {
-                                              setState(() {
                                                 isTribe = true;
-                                              });
                                             });
                                           },
                                           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                           child: Text(AppLocalizations.of(context).translate('yes'),
-                                            style: TextStyle(color: isTribe ? kPrimaryColor : null),
+                                            style: TextStyle(color: (isTribe != null && isTribe) ? kPrimaryColor : null),
                                           ),
                                         ),
                                       )
@@ -2847,21 +2862,19 @@ class _HistoryState extends State<History> {
                                         width: 100,
                                         margin: EdgeInsets.only(right: 20, left: 0),
                                         decoration: BoxDecoration(
-                                          border: Border.all(width: 1, color: !isTribe ? Color(0xFF01579B) : Colors.black),
+                                          border: Border.all(width: 1, color: (isTribe == null || isTribe) ? Colors.black : Color(0xFF01579B)),
                                           borderRadius: BorderRadius.circular(3),
-                                          color: !isTribe ? Color(0xFFE1F5FE) : null
+                                          color: (isTribe == null || isTribe) ? null : Color(0xFFE1F5FE)
                                         ),
                                         child: FlatButton(
                                           onPressed: () {
                                             setState(() {
-                                              setState(() {
                                                 isTribe = false;
-                                              });
                                             });
                                           },
                                           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                           child: Text(AppLocalizations.of(context).translate('NO'),
-                                            style: TextStyle(color: !isTribe ? kPrimaryColor : null),
+                                            style: TextStyle(color: (isTribe == null || isTribe) ? null : kPrimaryColor),
                                           ),
                                         ),
                                       )
