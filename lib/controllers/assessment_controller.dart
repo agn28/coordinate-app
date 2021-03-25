@@ -17,7 +17,6 @@ import 'package:uuid/uuid.dart';
 var bloodPressures = [];
 
 class AssessmentController {
-
   /// Get all the assessments.
   getAllAssessmentsByPatient() async {
     var assessments = await AssessmentRepositoryLocal().getAllAssessments();
@@ -54,8 +53,12 @@ class AssessmentController {
       });
     }
 
-    
     return data;
+  }
+
+  getLastAssessmentByPatient(followupType) async {
+    var assessment = await AssessmentRepository().getLastAssessment(followupType);
+    return assessment;
   }
 
   /// Get all the assessments.
@@ -76,7 +79,8 @@ class AssessmentController {
   }
 
   getIncompleteEncounterWithObservation(patientId) async {
-    var assessment = await AssessmentRepository().getIncompleteEncounterWithObservation(patientId);
+    var assessment = await AssessmentRepository()
+        .getIncompleteEncounterWithObservation(patientId);
 
     return assessment;
   }
@@ -90,7 +94,8 @@ class AssessmentController {
 
     await observations.forEach((item) {
       parsedData = jsonDecode(item['data']);
-      if (parsedData['body']['patient_id'] == Patient().getPatient()['uuid'] && parsedData['body']['assessment_id'] == assessment['uuid']) {
+      if (parsedData['body']['patient_id'] == Patient().getPatient()['uuid'] &&
+          parsedData['body']['assessment_id'] == assessment['uuid']) {
         data.add({
           'uuid': item['uuid'],
           'body': {
@@ -110,7 +115,8 @@ class AssessmentController {
   /// Get observations under a specific assessment.
   /// [assessment] object is required as parameter.
   getLiveObservationsByAssessment(assessment) async {
-    var response = await AssessmentRepository().getObservationsByAssessment(assessment['uuid']);
+    var response = await AssessmentRepository()
+        .getObservationsByAssessment(assessment['uuid']);
     var data = [];
 
     if (response['error'] != null && !response['error']) {
@@ -134,7 +140,6 @@ class AssessmentController {
   /// Create assessment.
   /// Assessment [type] and [comment] is required as parameter.
   create(type, screening_type, comment) async {
-
     var data = _prepareData(type, screening_type, comment);
     var status = await AssessmentRepositoryLocal().create(data);
     if (status == 'success') {
@@ -157,7 +162,6 @@ class AssessmentController {
   /// Create assessment.
   /// Assessment [type] and [comment] is required as parameter.
   createOnlyAssessment(type, screening_type, comment) async {
-
     var data = _prepareData(type, screening_type, comment);
     var status = await AssessmentRepositoryLocal().create(data);
     if (status == 'success') {
@@ -169,12 +173,36 @@ class AssessmentController {
     return status;
   }
 
-  createOnlyAssessmentWithStatus(type, screening_type, comment, completeStatus, nextVisitDate) async {
+  createFollowupAssessment(
+      type, screening_type, comment, completeStatus, nextVisitDate, followupType) async {
+    var data = _prepareData(
+      type,
+      screening_type,
+      comment,
+    );
+    data['body']['status'] = completeStatus;
+    data['body']['followup_type'] = followupType;
+    data['body']['next_visit_date'] = nextVisitDate;
+    var status =
+        await AssessmentRepositoryLocal().createOnlyAssessmentWithStatus(data);
+    Helpers().clearObservationItems();
 
-    var data = _prepareData(type, screening_type, comment,);
+    print('before health report');
+
+    return status;
+  }
+
+  createOnlyAssessmentWithStatus(
+      type, screening_type, comment, completeStatus, nextVisitDate) async {
+    var data = _prepareData(
+      type,
+      screening_type,
+      comment,
+    );
     data['body']['status'] = completeStatus;
     data['body']['next_visit_date'] = nextVisitDate;
-    var status = await AssessmentRepositoryLocal().createOnlyAssessmentWithStatus(data);
+    var status =
+        await AssessmentRepositoryLocal().createOnlyAssessmentWithStatus(data);
     Helpers().clearObservationItems();
 
     print('before health report');
@@ -183,7 +211,6 @@ class AssessmentController {
   }
 
   updateIncompleteAssessmentData(status, encounter, observations) async {
-
     // var assessmentId = Uuid().v4();
     var bloodPressures = BloodPressure().bpItems;
     var bloodTests = BloodTest().btItems;
@@ -217,110 +244,263 @@ class AssessmentController {
     // bodyMeasurements.forEach((element) { print(element); });
     encounter['body']['status'] = status;
 
-    
     var obsRepo = ObservationRepository();
 
     var bpUpdated = false;
     var btUpdated = false;
     var bmUpdated = false;
-    // return;
-    observations.forEach((obs) {
-      // print(obs);
-      if (obs['body']['type'] == 'survey') {
-        questionnaires.forEach((qstn) {
-          if (qstn['body']['data']['name'] == obs['body']['data']['name']) {
-            var apiData = {
-              'id': obs['id']
-            };
-            apiData.addAll(qstn);
-            apiData['body']['assessment_id'] = obs['body']['assessment_id'];
-            // obsRepo.create(apiData);
-          }
-        });
-      }
 
-      else if (obs['body']['type'] == 'blood_pressure') {
-        bloodPressures.forEach((bp) {
-          var apiData = {
-            'id': obs['id']
-          };
-          apiData.addAll(bp);
-          apiData['body']['assessment_id'] = obs['body']['assessment_id'];
+    var bmobs = observations.where(
+          (observation) => observation['body']['type'] == 'body_measurement').toList();
+    print('bmobs ${bmobs}');
+    bodyMeasurements.forEach((bm) {      
+      if (bmobs.isNotEmpty) {
+        var matchedObs = bmobs.where(
+          (bmob) => bmob['body']['data']['name'] == bm['body']['data']['name']);
+          print('matchedObs ${matchedObs}');
+        if(matchedObs.isNotEmpty)
+        {
+          matchedObs = matchedObs.first;
+          var apiData = {'id': matchedObs['id']};
+          apiData.addAll(bm);
+          apiData['body']['assessment_id'] = matchedObs['body']['assessment_id'];
+          print('body Measurements_if $apiData');
           obsRepo.create(apiData);
-          bpUpdated = true;
-        });
-      }
-
-      else if (obs['body']['type'] == 'blood_test') {
-        bloodTests.forEach((bp) {
-          var apiData = {
-            'id': obs['id']
-          };
-          apiData.addAll(bp);
-          apiData['body']['assessment_id'] = obs['body']['assessment_id'];
-          obsRepo.create(apiData);
-          btUpdated = true;
-        });
-      }
-      else if (obs['body']['type'] == 'body_measurement') {
-        bodyMeasurements.forEach((bp) {
-          var apiData = {
-            'id': obs['id']
-          };
-          apiData.addAll(bp);
-          apiData['body']['assessment_id'] = obs['body']['assessment_id'];
-          obsRepo.create(apiData);
-          bmUpdated = true;
-        });
+        }
+        
+      } else {
+        var id = Uuid().v4();
+        Map<String, dynamic> apiData = {'id': id};
+        apiData.addAll(bm);
+        apiData['body']['assessment_id'] = encounter['id'];
+        print('body Measurements_else $apiData');
+        obsRepo.create(apiData);
       }
     });
 
-
-    if (!bpUpdated) {
-      bloodPressures.forEach((bp) {
-        // var id = Uuid().v4();
-        // print(id);
-        var id =  Uuid().v4();
-        Map<String, dynamic> apiData = {
-          'id': id
-        };
+    var bpobs = observations.where(
+          (observation) => observation['body']['type'] == 'blood_pressure').toList();
+    print('bpobs ${bpobs}');
+    bloodPressures.forEach((bp) {
+      if (bpobs.isNotEmpty) {
+        var matchedObs = bpobs.where(
+          (bpob) => bpob['body']['data']['name'] == bp['body']['data']['name']);
+          print('matchedObs ${matchedObs}');
+        if(matchedObs.isNotEmpty)
+        {
+          matchedObs = matchedObs.first;
+          var apiData = {'id': matchedObs['id']};
+          apiData.addAll(bp);
+          apiData['body']['assessment_id'] = matchedObs['body']['assessment_id'];
+          print('Blood Pressure_if $apiData');
+          obsRepo.create(apiData);
+        }
+        
+      } else {
+        var id = Uuid().v4();
+        Map<String, dynamic> apiData = {'id': id};
         apiData.addAll(bp);
-        // apiData['id'] = 'adsa';
         apiData['body']['assessment_id'] = encounter['id'];
-        print('bloodPressure $apiData');
+        print('Blood Pressure_else $apiData');
         obsRepo.create(apiData);
-      });
-    }
-    if (!btUpdated) {
-      bloodTests.forEach((bt) {
-        // var id = Uuid().v4();
-        // print(id);
-        var id =  Uuid().v4();
-        Map<String, dynamic> apiData = {
-          'id': id
-        };
+      }
+    });
+
+    var btobs = observations.where(
+          (observation) => observation['body']['type'] == 'blood_test').toList();
+    print('btobs ${btobs}');
+    bloodTests.forEach((bt) {
+      if (btobs.isNotEmpty) {
+        var matchedObs = btobs.where(
+          (btob) => btob['body']['data']['name'] == bt['body']['data']['name']);
+          print('matchedObs ${matchedObs}');
+        if(matchedObs.isNotEmpty)
+        {
+          matchedObs = matchedObs.first;
+          var apiData = {'id': matchedObs['id']};
+          apiData.addAll(bt);
+          apiData['body']['assessment_id'] = matchedObs['body']['assessment_id'];
+          print('Blood Test_if $apiData');
+          obsRepo.create(apiData);
+        }
+        
+      } else {
+        var id = Uuid().v4();
+        Map<String, dynamic> apiData = {'id': id};
         apiData.addAll(bt);
-        // apiData['id'] = 'adsa';
         apiData['body']['assessment_id'] = encounter['id'];
-        print('bloodPressure $apiData');
+        print('Blood Test_else $apiData');
         obsRepo.create(apiData);
-      });
-    }
-    if (!bmUpdated) {
-      bodyMeasurements.forEach((bm) {
-        // var id = Uuid().v4();
-        // print(id);
-        var id =  Uuid().v4();
-        Map<String, dynamic> apiData = {
-          'id': id
-        };
-        apiData.addAll(bm);
-        // apiData['id'] = 'adsa';
-        apiData['body']['assessment_id'] = encounter['id'];
-        print('bloodPressure $apiData');
-        obsRepo.create(apiData);
-      });
-    }
+      }
+    });
+
+    var qstnobs = observations.where(
+          (observation) => observation['body']['type'] == 'survey').toList();
+    questionnaires.forEach((qstn) {
+      print('qstn ${qstn['body']['data']['name']}');
+      if (qstnobs.isNotEmpty) {
+        var matchedObs = qstnobs.where(
+        (qstnob) => qstnob['body']['data']['name'] == qstn['body']['data']['name']);
+        print('matchedObs ${matchedObs}');
+        if(matchedObs.isNotEmpty)
+        {
+          matchedObs = matchedObs.first;
+          var apiData = {'id': matchedObs['id']};
+          apiData.addAll(qstn);
+          apiData['body']['assessment_id'] = matchedObs['body']['assessment_id'];
+          print('Questionnaires_if $apiData');
+          obsRepo.create(apiData);
+        }
+        else{
+          var id = Uuid().v4();
+          Map<String, dynamic> apiData = {'id': id};
+          apiData.addAll(qstn);
+          apiData['body']['assessment_id'] = encounter['id'];
+          print('Questionnaires_else $apiData');
+          obsRepo.create(apiData);
+        }
+      }
+    });
+
+    // return;
+    // observations.forEach((obs) {
+    //   print('obs $obs');
+    //   if (obs['body']['type'] == 'survey') {
+    //     questionnaires.forEach((qstn) {
+    //       if (qstn['body']['data']['name'] == obs['body']['data']['name']) {
+    //         var apiData = {
+    //           'id': obs['id']
+    //         };
+    //         apiData.addAll(qstn);
+    //         apiData['body']['assessment_id'] = obs['body']['assessment_id'];
+    //         obsRepo.create(apiData);
+    //       }
+    //     });
+    //   }
+
+    //   else if (obs['body']['type'] == 'blood_pressure') {
+    //     bloodPressures.forEach((bp) {
+    //       print('obs $obs');
+    //       print('bp $bp');
+    //       if (obs['body']['data']['name'] == bp['body']['data']['name']){
+    //         var apiData = {
+    //           'id': obs['id']
+    //         };
+    //         apiData.addAll(bp);
+    //         apiData['body']['assessment_id'] = obs['body']['assessment_id'];
+    //         print('bloodPressure $apiData');
+    //         obsRepo.create(apiData);
+    //       }
+    //       else{
+    //         var id =  Uuid().v4();
+    //         Map<String, dynamic> apiData = {
+    //           'id': id
+    //         };
+    //         apiData.addAll(bp);
+    //         // apiData['id'] = 'adsa';
+    //         apiData['body']['assessment_id'] = encounter['id'];
+    //         print('bloodPressure $apiData');
+    //         obsRepo.create(apiData);
+    //       }
+    //     });
+    //   }
+
+    //   else if (obs['body']['type'] == 'blood_test') {
+    //     bloodTests.forEach((bp) {
+    //       if (obs['body']['data']['name'] == bp['body']['data']['name']){
+    //         var apiData = {
+    //           'id': obs['id']
+    //         };
+    //         apiData.addAll(bp);
+    //         apiData['body']['assessment_id'] = obs['body']['assessment_id'];
+    //         obsRepo.create(apiData);
+    //       }
+    //       else{
+    //         var id =  Uuid().v4();
+    //         Map<String, dynamic> apiData = {
+    //           'id': id
+    //         };
+    //         apiData.addAll(bp);
+    //         // apiData['id'] = 'adsa';
+    //         apiData['body']['assessment_id'] = encounter['id'];
+    //         print('blood_test $apiData');
+    //         obsRepo.create(apiData);
+    //       }
+
+    //     });
+    //   }
+    //   else if (obs['body']['type'] == 'body_measurement') {
+
+    //     bodyMeasurements.forEach((bm) {
+    //       print('bm $bm');
+    //       if (obs['body']['data']['name'] == bm['body']['data']['name']) {
+    //         var apiData = {
+    //           'id': obs['id']
+    //         };
+    //         apiData.addAll(bm);
+    //         apiData['body']['assessment_id'] = obs['body']['assessment_id'];
+    //         print('body Measurements_if $apiData');
+    //         obsRepo.create(apiData);
+    //       }
+    //       else{
+    //         var id =  Uuid().v4();
+    //         Map<String, dynamic> apiData = {
+    //           'id': id
+    //         };
+    //         apiData.addAll(bm);
+    //         apiData['body']['assessment_id'] = encounter['id'];
+    //         print('body Measurements_else $apiData');
+    //         obsRepo.create(apiData);
+    //       }
+    //     });
+    //   }
+    // });
+
+    // if (!bpUpdated) {
+    //   bloodPressures.forEach((bp) {
+    //     // var id = Uuid().v4();
+    //     // print(id);
+    //     var id =  Uuid().v4();
+    //     Map<String, dynamic> apiData = {
+    //       'id': id
+    //     };
+    //     apiData.addAll(bp);
+    //     // apiData['id'] = 'adsa';
+    //     apiData['body']['assessment_id'] = encounter['id'];
+    //     print('bloodPressure $apiData');
+    //     obsRepo.create(apiData);
+    //   });
+    // }
+    // if (!btUpdated) {
+    //   bloodTests.forEach((bt) {
+    //     // var id = Uuid().v4();
+    //     // print(id);
+    //     var id =  Uuid().v4();
+    //     Map<String, dynamic> apiData = {
+    //       'id': id
+    //     };
+    //     apiData.addAll(bt);
+    //     // apiData['id'] = 'adsa';
+    //     apiData['body']['assessment_id'] = encounter['id'];
+    //     print('bloodPressure $apiData');
+    //     obsRepo.create(apiData);
+    //   });
+    // }
+    // if (!bmUpdated) {
+    //   bodyMeasurements.forEach((bm) {
+    //     // var id = Uuid().v4();
+    //     // print(id);
+    //     var id =  Uuid().v4();
+    //     Map<String, dynamic> apiData = {
+    //       'id': id
+    //     };
+    //     apiData.addAll(bm);
+    //     // apiData['id'] = 'adsa';
+    //     apiData['body']['assessment_id'] = encounter['id'];
+    //     print('body Measurements $apiData');
+    //     obsRepo.create(apiData);
+    //   });
+    // }
     // var data = _prepareData(type, screening_type, comment,);
     // data['body']['status'] = completeStatus;
     // var status = await AssessmentRepositoryLocal().createOnlyAssessmentWithStatus(data);
@@ -333,9 +513,8 @@ class AssessmentController {
 
     Future.delayed(const Duration(seconds: 5));
     print('after health report');
-    print(bloodTests[0]);
 
-    HealthReportController().generateReport(encounter['body']['patient_id']);
+    // HealthReportController().generateReport(encounter['body']['patient_id']);
 
     Helpers().clearObservationItems();
 
@@ -360,8 +539,10 @@ class AssessmentController {
       "body": {
         "type": type == 'In-clinic Screening' ? 'in-clinic' : 'visit',
         "comment": comment,
-        "performed_by": Assessment().getSelectedAssessment()['data']['performed_by'],
-        "assessment_date": Assessment().getSelectedAssessment()['data']['assessment_date'],
+        "performed_by": Assessment().getSelectedAssessment()['data']
+            ['performed_by'],
+        "assessment_date": Assessment().getSelectedAssessment()['data']
+            ['assessment_date'],
         "patient_id": Assessment().getSelectedAssessment()['data']['patient_id']
       }
     };
@@ -406,5 +587,4 @@ class AssessmentController {
       }
     });
   }
-  
 }

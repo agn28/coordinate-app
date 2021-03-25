@@ -19,6 +19,7 @@ import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chw/unwell/create_referral_screen.dart';
+import 'package:nhealth/screens/patients/ncd/followup_patient_summary_screen.dart';
 import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
@@ -196,6 +197,7 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     sodiumController.text = '';
     potassiumController.text = '';
     ketonesController.text = '';
+    proteinController.text = '';
 
     occupationController.text = '';
     incomeController.text = '';
@@ -287,8 +289,8 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
   createObservations() {
 
     print('_currentStep $_currentStep');
-    if (diastolicEditingController.text != '' && systolicEditingController.text != '') {
-    BloodPressure().addItem('left', int.parse(systolicEditingController.text), int.parse(diastolicEditingController.text), int.parse(pulseRateEditingController.text), null);
+    if (diastolicEditingController.text != '' && systolicEditingController.text != '' && pulseRateEditingController.text != "") {
+    BloodPressure().addItem('left', int.parse(systolicEditingController.text), int.parse(diastolicEditingController.text), int.tryParse(pulseRateEditingController.text), null);
       var formData = {
         'items': BloodPressure().items,
         'comment': '',
@@ -309,10 +311,10 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
       BodyMeasurement().addItem('weight', weightEditingController.text, 'kg', '', '');
     }
     if (waistEditingController.text != '') {
-      BodyMeasurement().addItem('waist', waistEditingController.text, '', '', '');
+      BodyMeasurement().addItem('waist', waistEditingController.text, 'cm', '', '');
     }
     if (hipEditingController.text != '') {
-      BodyMeasurement().addItem('hip', hipEditingController.text, '', '', '');
+      BodyMeasurement().addItem('hip', hipEditingController.text, 'cm', '', '');
     }
 
     BodyMeasurement().addBmItem();
@@ -354,6 +356,9 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     }
     if (ketonesController.text != '') {
       BloodTest().addItem('ketones', ketonesController.text, selectedKetonesUnit, '', '');
+    }
+    if (proteinController.text != '') {
+      BloodTest().addItem('protein', proteinController.text, selectedProteinUnit, '', '');
     }
 
     BloodTest().addBtItem();
@@ -454,17 +459,17 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
                   setState(() {
                     print(_currentStep);
                     if (_currentStep == 0) {
-                      Questionnaire().addNewMedicalHistory('medical_history', medicalHistoryAnswers);
+                      Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
                       print(Questionnaire().qnItems);
                     }
 
                     if (_currentStep == 1) {
-                      Questionnaire().addNewMedication('medication', medicationAnswers);
+                      Questionnaire().addNewMedicationNcd('medication', medicationAnswers);
                       print(Questionnaire().qnItems);
                     }
 
                     if (_currentStep == 2) {
-                      Questionnaire().addNewRiskFactors('risk_factors', riskAnswers);
+                      Questionnaire().addNewRiskFactorsNcd('risk_factors', riskAnswers);
                       print(Questionnaire().qnItems);
                     }
                     
@@ -536,8 +541,9 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
   Future _completeStep() async {
     
     print('before missing popup');
+    var hasMissingData = checkMissingData();
 
-    if (checkMissingData()) {
+    if (hasMissingData) {
       var continueMissing = await missingDataAlert();
       if (!continueMissing) {
         return;
@@ -549,7 +555,8 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     var patient = Patient().getPatient();
 
     print(patient['data']['age']);
-    var response = await AssessmentController().createOnlyAssessmentWithStatus('new ncd center assessment', 'ncd', '', 'incomplete', '');
+    var status = hasMissingData ? 'incomplete' : 'complete';
+    var response = await AssessmentController().createOnlyAssessmentWithStatus('new ncd center assessment', 'ncd', '', status, '');
 
     setLoader(false);
 
@@ -584,7 +591,8 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
       return;
     }
 
-    goToHome(false, null);
+    // goToHome(false, null);
+    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path);
   }
 
   List<CustomStep> _mySteps() {
@@ -651,28 +659,24 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
 }
 
 checkMissingData() {
-  if (diastolicEditingController.text == '' || systolicEditingController.text == '') {
-    print('diatolic');
+  if (diastolicEditingController.text == '' || systolicEditingController.text == '' || pulseRateEditingController.text == '') {
+    print('blood pressure missing');
     return true;
   }
 
   
 
-  if (heightEditingController.text == '' || weightEditingController.text == '' || waistEditingController.text == '' || hipEditingController.text == '') {
-    print('height');
+  if (heightEditingController.text == '' || weightEditingController.text == '') {
+    print('body measurement missing');
     return true;
   }
 
   if (
-    randomBloodController.text == '' ||
-    fastingBloodController.text == '' ||
-    habfController.text == '' || hba1cController.text == ''||
-    cholesterolController.text == '' ||
-    ldlController.text == '' ||
-    hdlController.text == '' ||
-    tgController.text == '' ||
-    creatinineController.text == '') {
-    print('blood');
+    randomBloodController.text == '' &&
+    fastingBloodController.text == '' &&
+    habfController.text == '' && 
+    hba1cController.text == '') {
+    print('blood sugar missing');
     return true;
   }
 
@@ -822,11 +826,26 @@ checkMedicalHistoryAnswers(medicationQuestion) {
   }
 
   var matchedQuestion;
+  bool matchedHBD = false;
   medicalHistoryQuestions['items'].forEach((item) {
     if (item['type'] != null && item['type'] == medicationQuestion['type']) {
       matchedQuestion =  item;
     }
+    else if (medicationQuestion['type'] == 'heart_bp_diabetes') {
+      if (item['type'] == 'heart' || item['type'] == 'blood_pressure' || item['type'] == 'diabetes') {
+        
+        var answer = medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(item)];
+        if (answer == 'yes') {
+          matchedHBD = true;
+          // return true;
+        }
+      }
+    }
   });
+
+  if (matchedHBD) {
+    return true;
+  }
 
   
 
@@ -1361,6 +1380,8 @@ var selectedPotassiumUnit = 'mg/dL';
 var potassiumController = TextEditingController();
 var selectedKetonesUnit = 'mg/dL';
 var ketonesController = TextEditingController();
+var selectedProteinUnit = 'mg/dL';
+var proteinController = TextEditingController();
 
 class _BloodTestsState extends State<BloodTests> {
 
@@ -2174,6 +2195,65 @@ class _BloodTestsState extends State<BloodTests> {
                                   ],
                                 ),
                               ),
+
+                              Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(AppLocalizations.of(context).translate('protein'), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                    SizedBox(width: 45,),
+                                    Container(
+                                      width: 80,
+                                      height: 40,
+                                      child: TextFormField(
+                                        textAlign: TextAlign.center,
+                                        keyboardType: TextInputType.number,
+                                        controller: proteinController,
+                                        onChanged: (value) {
+                                      
+                                        },
+                                        decoration: InputDecoration(  
+                                          contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                          border: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                          ), 
+                                        ),
+                                      ),
+                                    ),
+                                  
+                                    Row(
+                                      children: <Widget>[
+                                        Radio(
+                                          activeColor: kPrimaryColor,
+                                          value: 'mg/dL',
+                                          groupValue: selectedProteinUnit,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              selectedProteinUnit = value;
+                                            });
+                                          },
+                                        ),
+                                        Text("mg/dL", style: TextStyle(color: Colors.black)),
+                                        Radio(
+                                          activeColor: kPrimaryColor,
+                                          value: 'mmol/L',
+                                          groupValue: selectedProteinUnit,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              selectedProteinUnit = value;
+                                            });
+                                          },
+                                        ),
+                                        Text(
+                                          "mmol/L",
+                                        ),
+                                        
+                                        SizedBox(width: 20,),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -2202,12 +2282,12 @@ var incomeController = TextEditingController();
 var educationController = TextEditingController();
 
 var religions = ['Muslim', 'Hindu', 'Cristian', 'Others'];
-var selectedReligion = 'Muslim';
+var selectedReligion = null;
 var ethnicity = ['Bengali', 'Others'];
-var selectedEthnicity = 'Bengali';
+var selectedEthnicity = null;
 var bloodGroups = ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-'];
 var selectedBloodGroup = null;
-var isTribe = false;
+var isTribe = null;
 
 class _HistoryState extends State<History> {
 
@@ -2438,21 +2518,19 @@ class _HistoryState extends State<History> {
                                         width: 100,
                                         margin: EdgeInsets.only(right: 20, left: 0),
                                         decoration: BoxDecoration(
-                                          border: Border.all(width: 1, color: isTribe ? Color(0xFF01579B) : Colors.black),
+                                          border: Border.all(width: 1, color: (isTribe != null && isTribe) ? Color(0xFF01579B) : Colors.black),
                                           borderRadius: BorderRadius.circular(3),
-                                          color: isTribe ? Color(0xFFE1F5FE) : null
+                                          color: (isTribe != null && isTribe) ? Color(0xFFE1F5FE) : null
                                         ),
                                         child: FlatButton(
                                           onPressed: () {
                                             setState(() {
-                                              setState(() {
                                                 isTribe = true;
-                                              });
                                             });
                                           },
                                           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                           child: Text(AppLocalizations.of(context).translate('yes'),
-                                            style: TextStyle(color: isTribe ? kPrimaryColor : null),
+                                            style: TextStyle(color: (isTribe != null && isTribe) ? kPrimaryColor : null),
                                           ),
                                         ),
                                       )
@@ -2464,21 +2542,19 @@ class _HistoryState extends State<History> {
                                         width: 100,
                                         margin: EdgeInsets.only(right: 20, left: 0),
                                         decoration: BoxDecoration(
-                                          border: Border.all(width: 1, color: !isTribe ? Color(0xFF01579B) : Colors.black),
+                                          border: Border.all(width: 1, color: (isTribe == null || isTribe) ? Colors.black : Color(0xFF01579B)),
                                           borderRadius: BorderRadius.circular(3),
-                                          color: !isTribe ? Color(0xFFE1F5FE) : null
+                                          color: (isTribe == null || isTribe) ? null : Color(0xFFE1F5FE)
                                         ),
                                         child: FlatButton(
                                           onPressed: () {
                                             setState(() {
-                                              setState(() {
                                                 isTribe = false;
-                                              });
                                             });
                                           },
                                           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                           child: Text(AppLocalizations.of(context).translate('NO'),
-                                            style: TextStyle(color: !isTribe ? kPrimaryColor : null),
+                                            style: TextStyle(color: (isTribe == null || isTribe) ? null : kPrimaryColor),
                                           ),
                                         ),
                                       )

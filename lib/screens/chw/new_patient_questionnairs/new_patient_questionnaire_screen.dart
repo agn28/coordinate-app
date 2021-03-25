@@ -18,6 +18,7 @@ import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chw/unwell/create_referral_screen.dart';
 import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
+import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import '../../../custom-classes/custom_stepper.dart';
@@ -191,6 +192,8 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
       Navigator.of(context).pushNamed('/chwHome',);
     }
   }
+
+  
     
 
   checkData() async {
@@ -276,7 +279,8 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
       BodyMeasurement().addItem('weight', weightEditingController.text, 'kg', '', '');
     }
     if (bmiEditingController.text != '') {
-      BodyMeasurement().addItem('bmi', bmiEditingController.text, '', '', '');
+
+      BodyMeasurement().addItem('bmi', bmiEditingController.text.toString(), 'bmi', '', '');
     }
 
     BodyMeasurement().addBmItem();
@@ -304,7 +308,7 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
       ),
       body: !isLoading ? GestureDetector(
         onTap: () {
-          FocusScope.of(context).requestFocus(new FocusNode());
+          // FocusScope.of(context).requestFocus(new FocusNode());
         },
         child: CustomStepper(
           isHeader: false,
@@ -376,17 +380,17 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
                   setState(() {
                     print(_currentStep);
                     if (_currentStep == 0) {
-                      Questionnaire().addNewMedicalHistory('medical_history', medicalHistoryAnswers);
+                      Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
                       print(Questionnaire().qnItems);
                     }
 
                     if (_currentStep == 1) {
-                      Questionnaire().addNewMedication('medication', medicationAnswers);
+                      Questionnaire().addNewMedicationNcd('medication', medicationAnswers);
                       print(Questionnaire().qnItems);
                     }
 
                     if (_currentStep == 2) {
-                      Questionnaire().addNewRiskFactors('risk_factors', riskAnswers);
+                      Questionnaire().addNewRiskFactorsNcd('risk_factors', riskAnswers);
                       print(Questionnaire().qnItems);
                     }
                     
@@ -423,17 +427,75 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
     );
   }
 
-  Future _completeStep()async{
+  // Future _completeStep()async{
+
+  //   setLoader(true);
+
+  //   var patient = Patient().getPatient();
+
+  //   print(patient['data']['age']);
+  //   var response = await AssessmentController().createOnlyAssessment('new patient questionnaire', '', '');
+
+  //   setLoader(false);
+
+
+  //   // if age greater than 40 redirect to referral page
+  //   // if (patient['data']['age'] != null && patient['data']['age'] > 40) {
+  //   //   var data = {
+  //   //     'meta': {
+  //   //       'patient_id': Patient().getPatient()['uuid'],
+  //   //       "collected_by": Auth().getAuth()['uid'],
+  //   //       "status": "pending"
+  //   //     },
+  //   //     'body': {},
+  //   //     'referred_from': 'new questionnaire'
+  //   //   };
+  //   //   goToHome(true, data);
+
+  //   //   return;
+  //   // }
+
+  //   if (isReferralRequired) {
+  //     var data = {
+  //       'meta': {
+  //         'patient_id': Patient().getPatient()['uuid'],
+  //         "collected_by": Auth().getAuth()['uid'],
+  //         "status": "pending"
+  //       },
+  //       'body': {},
+  //       'referred_from': 'new questionnaire'
+  //     };
+  //     goToHome(true, data);
+
+  //     return;
+  //   }
+
+  //   goToHome(false, null);
+  // }
+
+
+
+  Future _completeStep() async {
+    
+    print('before missing popup');
+    var hasMissingData = checkMissingData();
+
+    if (hasMissingData) {
+      var continueMissing = await missingDataAlert();
+      if (!continueMissing) {
+        return;
+      }
+    }
 
     setLoader(true);
 
     var patient = Patient().getPatient();
 
     print(patient['data']['age']);
-    var response = await AssessmentController().createOnlyAssessment('new patient questionnaire', '', '');
+    var status = hasMissingData ? 'incomplete' : 'complete';
+    var response = await AssessmentController().createOnlyAssessmentWithStatus('new questionnaire', 'new-questionnaire', '', status, nextVisitDate);
 
     setLoader(false);
-
 
     // if age greater than 40 redirect to referral page
     // if (patient['data']['age'] != null && patient['data']['age'] > 40) {
@@ -451,7 +513,7 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
     //   return;
     // }
 
-    if (isReferralRequired) {
+    if ((isReferralRequired != null && isReferralRequired)) {
       var data = {
         'meta': {
           'patient_id': Patient().getPatient()['uuid'],
@@ -469,6 +531,35 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
     goToHome(false, null);
   }
 
+
+   missingDataAlert() async {
+   var response = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          content: new Text(AppLocalizations.of(context).translate("incompleteNcd"), style: TextStyle(fontSize: 20),),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            FlatButton(
+              child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(color: kPrimaryColor)),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            FlatButton(
+              child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      }
+    );
+    print("NoYes : $response");
+    return response;
+  }
   List<CustomStep> _mySteps() {
     List<CustomStep> _steps = [
       CustomStep(
@@ -518,6 +609,28 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
       
     return _steps;
   }
+
+}
+
+checkMissingData() {
+  if (diastolicEditingController.text == '' || systolicEditingController.text == '' || pulseRateEditingController.text == '') {
+    print('blood pressure missing');
+    return true;
+  }
+
+  
+
+  if (heightEditingController.text == '' || weightEditingController.text == '') {
+    print('body measurement missing');
+    return true;
+  }
+
+  if (bloodSugerEditingController.text == '') {
+    print('blood sugar missing');
+    return true;
+  }
+
+  return false;
 
 }
 
@@ -662,11 +775,26 @@ checkMedicalHistoryAnswers(medicationQuestion) {
   }
 
   var matchedQuestion;
+  bool matchedHBD = false;
   medicalHistoryQuestions['items'].forEach((item) {
     if (item['type'] != null && item['type'] == medicationQuestion['type']) {
       matchedQuestion =  item;
     }
+    else if (medicationQuestion['type'] == 'heart_bp_diabetes') {
+      if (item['type'] == 'heart' || item['type'] == 'blood_pressure' || item['type'] == 'diabetes') {
+        
+        var answer = medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(item)];
+        if (answer == 'yes') {
+          matchedHBD = true;
+          // return true;
+        }
+      }
+    }
   });
+
+  if (matchedHBD) {
+    return true;
+  }
 
   
 
@@ -744,7 +872,12 @@ checkMedicalHistoryAnswers(medicationQuestion) {
                         
                         ...medicationQuestions['items'].map((question) {
                           
+                          print('medQuestion $question');
                           if (checkMedicalHistoryAnswers(question)) {
+                            if(question['category'] == 'sub'){
+                              print('subCategoryQuestion $question');
+                              print('subCategory');
+                            }
                             isEmpty = false;
                             return Container(
                               margin: question['category'] == 'sub' ? EdgeInsets.only(left: 40, bottom: 20) : null,
@@ -915,32 +1048,33 @@ class _MeasurementsState extends State<Measurements> {
                               //Spacer(),
                               SizedBox(width: 50),
                               Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(AppLocalizations.of(context).translate("pulseRate"), style: TextStyle(color: Colors.black, fontSize: 16)),
-                                    SizedBox(width: 24,),
-                                    Container(
-                                      width: 80,
-                                      height: 40,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.center,
-                                        keyboardType: TextInputType.number,
-                                        controller: pulseRateEditingController,
-                                        onChanged: (value) {
-                                      
-                                        },
-                                        decoration: InputDecoration(  
-                                          contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                          ), 
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(AppLocalizations.of(context).translate("diastolic"), style: TextStyle(color: Colors.black, fontSize: 16)),
+                              SizedBox(width: 14,),
+                              Container(
+                                width: 80,
+                                height: 40,
+                                child: TextFormField(
+                                  textAlign: TextAlign.center,
+                                  keyboardType: TextInputType.number,
+                                  controller: diastolicEditingController,
+                                  onChanged: (value) {
+                                
+                                  },
+                                  decoration: InputDecoration(  
+                                    contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                    ), 
+                                  ),
                                 ),
-                              )
+                              ),
+                            ],
+                          ),
+                        ),
+                              
 
 
                             ],
@@ -955,17 +1089,17 @@ class _MeasurementsState extends State<Measurements> {
                       children: [
                         Container(
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              Text(AppLocalizations.of(context).translate("diastolic"), style: TextStyle(color: Colors.black, fontSize: 16)),
-                              SizedBox(width: 14,),
+                              Text(AppLocalizations.of(context).translate("pulseRate"), style: TextStyle(color: Colors.black, fontSize: 16)),
+                              SizedBox(width: 24,),
                               Container(
                                 width: 80,
                                 height: 40,
                                 child: TextFormField(
                                   textAlign: TextAlign.center,
                                   keyboardType: TextInputType.number,
-                                  controller: diastolicEditingController,
+                                  controller: pulseRateEditingController,
                                   onChanged: (value) {
                                 
                                   },
@@ -1108,6 +1242,8 @@ class _MeasurementsState extends State<Measurements> {
                                   child: TextFormField(
                                     textAlign: TextAlign.center,
                                     keyboardType: TextInputType.number,
+                                    readOnly: true, 
+                                    // enabled: false, 
                                     controller: bmiEditingController,
                                     onChanged: (value) {
                                   
@@ -1167,6 +1303,32 @@ class _MeasurementsState extends State<Measurements> {
                             ),
                           ),
                         ),
+                        Radio(
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          value: 'mg/dL',
+                          groupValue: selectedGlucoseUnit,
+                          
+                          activeColor: kPrimaryColor,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedGlucoseUnit = value;
+                            });
+                          },
+                        ),
+                        Text('mg/dL', style: TextStyle(color: Colors.black)),
+                        SizedBox(width: 20,),
+                        Radio(
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          value: 'mmol/L',
+                          groupValue: selectedGlucoseUnit,
+                          activeColor: kPrimaryColor,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedGlucoseUnit = value;
+                            });
+                          },
+                        ),
+                        Text('mmol/L', style: TextStyle(color: Colors.black)),
                       ],
                     ),
                   ),
@@ -1212,12 +1374,19 @@ class RecommendedCounselling extends StatefulWidget {
   _RecommendedCounsellingState createState() => _RecommendedCounsellingState();
 }
 
-var isReferralRequired = false;
+var isReferralRequired = null;
+bool dietTitleAdded = false;
 class _RecommendedCounsellingState extends State<RecommendedCounselling> {
 
   bool tobaccoTitleAdded = false;
-  bool dietTitleAdded = false;
+  
   bool activityTitleAdded = false;
+
+  @override
+  initState() {
+    super.initState();
+    dietTitleAdded = false;
+  }
 
   checkCounsellingQuestions(counsellingQuestion) {
 
@@ -1240,7 +1409,11 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
     if (matchedQuestion != null) {
       // print(matchedQuestion.first);
       var answer = riskAnswers[riskQuestions['items'].indexOf(matchedQuestion)];
-      if (answer == 'yes') {
+      if((matchedQuestion['type'] == 'eat-vegetables' || matchedQuestion['type'] == 'physical-activity-high')){
+        if(answer == 'no') {
+          return true;
+        }
+      }else {
         return true;
       }
     }
@@ -1250,7 +1423,8 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
 
   addCounsellingGroupTitle(question) {
     if (question['group'] == 'unhealthy-diet') {
-      print('group');
+      print('unhealthy-diet');
+      print(dietTitleAdded);
       if (!dietTitleAdded) {
         dietTitleAdded = true;
         return Column(
@@ -1364,6 +1538,7 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
                                                 child: FlatButton(
                                                   onPressed: () {
                                                     setState(() {
+                                                      dietTitleAdded = false;
                                                       counsellingAnswers[counsellingQuestions['items'].indexOf(question)] = question['options'][question['options'].indexOf(option)];
                                                       // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
                                                     });
@@ -1413,21 +1588,20 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
                                             width: 100,
                                             margin: EdgeInsets.only(right: 20, left: 0),
                                             decoration: BoxDecoration(
-                                              border: Border.all(width: 1, color: isReferralRequired ? Color(0xFF01579B) : Colors.black),
+                                              border: Border.all(width: 1, color: (isReferralRequired != null && isReferralRequired) ? Color(0xFF01579B) : Colors.black),
                                               borderRadius: BorderRadius.circular(3),
-                                              color: isReferralRequired ? Color(0xFFE1F5FE) : null
+                                              color: (isReferralRequired != null && isReferralRequired) ? Color(0xFFE1F5FE) : null
                                             ),
                                             child: FlatButton(
                                               onPressed: () {
                                                 setState(() {
-                                                  setState(() {
-                                                    isReferralRequired = true;
-                                                  });
+                                                  dietTitleAdded = false;
+                                                  isReferralRequired = true;
                                                 });
                                               },
                                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                               child: Text(AppLocalizations.of(context).translate('yes'),
-                                                style: TextStyle(color: isReferralRequired ? kPrimaryColor : null),
+                                                style: TextStyle(color: (isReferralRequired != null && isReferralRequired) ? kPrimaryColor : null),
                                               ),
                                             ),
                                           )
@@ -1439,21 +1613,20 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
                                             width: 100,
                                             margin: EdgeInsets.only(right: 20, left: 0),
                                             decoration: BoxDecoration(
-                                              border: Border.all(width: 1, color: !isReferralRequired ? Color(0xFF01579B) : Colors.black),
+                                              border: Border.all(width: 1, color: (isReferralRequired == null || isReferralRequired) ? Colors.black  : Color(0xFF01579B)),
                                               borderRadius: BorderRadius.circular(3),
-                                              color: !isReferralRequired ? Color(0xFFE1F5FE) : null
+                                              color: (isReferralRequired == null || isReferralRequired) ? null : Color(0xFFE1F5FE)
                                             ),
                                             child: FlatButton(
                                               onPressed: () {
                                                 setState(() {
-                                                  setState(() {
-                                                    isReferralRequired = false;
-                                                  });
+                                                  dietTitleAdded = false;
+                                                  isReferralRequired = false;
                                                 });
                                               },
                                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                               child: Text(AppLocalizations.of(context).translate('NO'),
-                                                style: TextStyle(color: !isReferralRequired ? kPrimaryColor : null),
+                                                style: TextStyle(color: (isReferralRequired == null || isReferralRequired) ? null : kPrimaryColor),
                                               ),
                                             ),
                                           )

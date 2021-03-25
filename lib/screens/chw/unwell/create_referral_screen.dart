@@ -24,13 +24,14 @@ class CreateReferralScreen extends StatefulWidget {
 }
 
 class _CreateReferralScreenState extends State<CreateReferralScreen> {
+  var role = '';
   var _patient;
   bool isLoading = false;
   bool avatarExists = false;
 
   List referralReasons = ['urgent medical attempt required', 'NCD screening required'];
   var selectedReason;
-  List clinicTypes = ['community clinic', 'upazila health complex', 'hospital'];
+  List clinicTypes = ['community clinic', 'upazila health complex', 'hospital', 'BRAC NCD Centre'];
   var selectedtype;
   var clinicNameController = TextEditingController();
 
@@ -39,6 +40,17 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
     super.initState();
     _patient = Patient().getPatient();
     print(widget.referralData);
+    _getAuthData();
+  }
+
+  _getAuthData() async {
+    var data = await Auth().getStorageAuth();
+
+    print('role');
+    print(data['role']);
+    setState(() {
+      role = data['role'];
+    });
   }
 
   _checkAvatar() async {
@@ -199,11 +211,20 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                               onPressed: () async {
                                 // Navigator.of(context).pushNamed('/chwNavigation',);
 
-                              
+                                var referralType;
+                                if(role == 'chw')
+                                {
+                                  referralType = 'community';
+                                } else if(role == 'nurse'){
+                                  referralType = 'center';
+                                } else{
+                                  referralType = '';
+                                }
 
                                 var data = widget.referralData;
 
                                 data['body']['reason'] = selectedReason;
+                                data['body']['type'] = referralType;
                                 data['body']['location'] = {};
                                 data['body']['location']['clinic_type'] = selectedtype;
                                 data['body']['location']['clinic_name'] = clinicNameController.text;

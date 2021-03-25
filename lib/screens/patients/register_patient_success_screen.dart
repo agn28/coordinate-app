@@ -111,14 +111,14 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                         border: Border.all(width: 1, color: Colors.black54),
                         borderRadius: BorderRadius.circular(4)
                       ),
-                      child: Text(AppLocalizations.of(context).translate('patientOverview'), style: TextStyle(color: Colors.black87, fontSize: 15, fontWeight: FontWeight.w400))
+                      child: Text(AppLocalizations.of(context).translate('overview'), style: TextStyle(color: Colors.black87, fontSize: 15, fontWeight: FontWeight.w400))
                     ),
                   ),
 
                   SizedBox(height: 40,),
 
                   role != 'chw' ? GestureDetector(
-                    onTap: () => Navigator.of(context).pushNamed(NewQuestionnaireFeelingNurseScreen.path),
+                    onTap: () => Navigator.of(context).pushNamed(NewPatientQuestionnaireNurseScreen.path),
                     child: Container(
                       // height: 190,
                       width: double.infinity,
@@ -173,7 +173,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                       ),
                     ),
                   ) : GestureDetector(
-                    onTap: () => Navigator.of(context).pushNamed(NewQuestionnaireFeelingScreen.path),
+                    onTap: () => Navigator.of(context).pushNamed(NewPatientQuestionnaireScreen.path),
                     child: Container(
                       // height: 190,
                       width: double.infinity,

@@ -47,6 +47,9 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
   @override
   initState() {
     super.initState();
+    setState(() {
+      searchController.text = '';
+    });
     // getPatients();
     isLoading = true;
     getLivePatients();
@@ -119,7 +122,8 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      resizeToAvoidBottomPadding: false,
+      //resizeToAvoidBottomPadding: false,
+      //Migrate Projects
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).translate('patients')),

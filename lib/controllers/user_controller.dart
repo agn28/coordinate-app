@@ -17,5 +17,11 @@ class UserController {
     return response;
   }
 
+  getUser(userId) async {
+    var response = await UserRepository().getUser(userId);
+
+    return response;
+  }
+
   
 }

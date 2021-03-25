@@ -20,7 +20,7 @@ import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 
-import 'followup_feeling_screen.dart';
+import 'package:nhealth/screens/patients/ncd/new_followup_screen.dart';
 
 var dueCarePlans = [];
 var completedCarePlans = [];
@@ -45,9 +45,10 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
   
   bool avatarExists = false;
   var encounters = [];
+  String lastEncounterType = '';
   String lastEncounterdDate = '';
   String lastAssessmentdDate = '';
-  String lastCarePlanDate = '';
+  String lastCarePlanDate = ''; 
   var conditions = [];
   var medications = [];
   var allergies = [];
@@ -66,6 +67,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
+    print('followup_patient ${_patient['meta']['review_required']}');
     dueCarePlans = [];
     completedCarePlans = [];
     upcomingCarePlans = [];
@@ -356,6 +358,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
       setState(() {
         isLoading = false;
         lastEncounterdDate = DateFormat("MMMM d, y").format(DateTime.parse(encounters.first['meta']['created_at']));
+        lastEncounterType = encounters.first['data']['type'];
       });
 
     }
@@ -1326,36 +1329,99 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                             ],
                           ),
                         ),
-
-                        carePlans.length > 0 ?
+                        
                         Container(
-                          padding: EdgeInsets.only(left: 10, right: 10, bottom: 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 1, color: kBorderLighter),
+                          ),
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(AppLocalizations.of(context).translate('lastEncounter')+'$lastEncounterType', style: TextStyle(fontSize: 17,)),
+                              SizedBox(height: 10,),
+                              Text(AppLocalizations.of(context).translate('lastEncounterDate')+'$lastEncounterdDate', style: TextStyle(fontSize: 17,)),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide(width: 4, color: kBorderLighter)
+                            ),
+                          ),
+                          padding: EdgeInsets.only(top: 15, left: 10, right: 10),
+                          child: Column(
                             children: <Widget>[
-                              Text(AppLocalizations.of(context).translate('careplanAcions'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                              
                               Container(
-                                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: kPrimaryColor),
-                                  borderRadius: BorderRadius.circular(3)
-                                ),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    if (!carePlansEmpty) {
-                                      Navigator.of(context).pushNamed('/carePlanDetails', arguments: carePlans);
-                                    }
-                                  },
-                                  child: Text(AppLocalizations.of(context).translate('viewCareplan'), style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w500),),
+                                padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(AppLocalizations.of(context).translate('careplanAcions'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                                    if (_patient['meta']['review_required'] != null && _patient['meta']['review_required'])
+                                      Container(
+                                        padding: EdgeInsets.symmetric(vertical: 9),
+                                        child: Text('PENDING DOCTOR CONSULTATION', style: TextStyle(fontSize: 17, color: kPrimaryYellowColor, fontWeight: FontWeight.w500),)
+                                        ,
+                                      )
+                                    else if(carePlans.length > 0)
+                                      if(dueCarePlans.length > 0 || upcomingCarePlans.length > 0)
+                                        Container(
+                                          padding: EdgeInsets.symmetric(vertical: 9),
+                                          child: Text('PENDING', style: TextStyle(fontSize: 17, color: kPrimaryRedColor, fontWeight: FontWeight.w500),)
+                                          ,
+                                        )
+                                      else
+                                        Container(
+                                          padding: EdgeInsets.symmetric(vertical: 9),
+                                          child: Text('COMPLETED. PENDING FOLLOW UP', style: TextStyle(fontSize: 17, color: kPrimaryGreenColor, fontWeight: FontWeight.w500),)
+                                          ,
+                                        )
+                                    else Container(
+                                          padding: EdgeInsets.symmetric(vertical: 9),
+                                          child: Text('NONE', style: TextStyle(fontSize: 17, color: kPrimaryRedColor, fontWeight: FontWeight.w500),)
+                                          ,
+                                        ),
+                                    
+                                  ],
                                 ),
                               ),
                             ],
-                          ),
-                        ) : Container(),
+                          )
+                        ), 
+
+                        // carePlans.length > 0 ?
+                        // Container(
+                        //   padding: EdgeInsets.only(left: 10, right: 10, bottom: 5),
+                        //   child: Row(
+                        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //     children: <Widget>[
+                        //       Text(AppLocalizations.of(context).translate('careplanAcions'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                        //       Container(
+                        //         padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                        //         decoration: BoxDecoration(
+                        //           border: Border.all(color: kPrimaryColor),
+                        //           borderRadius: BorderRadius.circular(3)
+                        //         ),
+                        //         child: GestureDetector(
+                        //           onTap: () {
+                        //             if (!carePlansEmpty) {
+                        //               Navigator.of(context).pushNamed('/carePlanDetails', arguments: carePlans);
+                        //             }
+                        //           },
+                        //           child: Text(AppLocalizations.of(context).translate('viewCareplan'), style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w500),),
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ) : Container(),
                         
-                        dueCarePlans.length > 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: dueCarePlans, text: AppLocalizations.of(context).translate('dueToday')) : Container(),
-                        upcomingCarePlans.length > 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: upcomingCarePlans, text: AppLocalizations.of(context).translate('upComing')) : Container(),
-                        completedCarePlans.length> 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: completedCarePlans, text: AppLocalizations.of(context).translate('complete')) : Container(),
+                        // dueCarePlans.length > 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: dueCarePlans, text: AppLocalizations.of(context).translate('dueToday')) : Container(),
+                        // upcomingCarePlans.length > 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: upcomingCarePlans, text: AppLocalizations.of(context).translate('upComing')) : Container(),
+                        // completedCarePlans.length> 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: completedCarePlans, text: AppLocalizations.of(context).translate('complete')) : Container(),
 
 
                         SizedBox(height: 30,),
@@ -1887,9 +1953,9 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: <Widget>[
-                            FloatingButton(text: 'New Visit', onPressed: () {
+                            FloatingButton(text: 'New Follow Up', onPressed: () {
                               Navigator.of(context).pop();
-                              Navigator.of(context).pushNamed(FollowupFeelingScreen.path);
+                              Navigator.of(context).pushNamed(NewFollowupScreen.path);
                             }, ),
 
                             // FloatingButton(text: AppLocalizations.of(context).translate('newCommunityVisit'), onPressed: () {

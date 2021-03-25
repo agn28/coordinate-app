@@ -26,7 +26,7 @@ class BodyMeasurement {
     _items.add({
       'name': name,
       'unit': unit,
-      'value': int.parse(value),
+      'value': double.parse(value.toString()),
       'comment': comment,
       'device': device
     });
@@ -69,7 +69,7 @@ class BodyMeasurement {
       }
       
     }
-    
+    print('_bmItems $_bmItems');
     return 'success';
   }
 

@@ -28,7 +28,7 @@ class _PatientUpdateSummaryState extends State<PatientUpdateSummary> {
 
   List referralReasons = ['urgent medical attempt required', 'NCD screening required'];
   var selectedReason;
-  List clinicTypes = ['community clinic', 'upazila health complex', 'hospital'];
+  List clinicTypes = ['community clinic', 'upazila health complex', 'hospital', 'BRAC NCD Centre'];
   var selectedtype;
   List status = ['pending', 'completed'];
   var selectedStatus;

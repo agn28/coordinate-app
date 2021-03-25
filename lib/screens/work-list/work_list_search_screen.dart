@@ -144,6 +144,9 @@ class _WorkListSearchState extends State<WorkListSearch> {
   @override
   initState() {
     super.initState();
+    setState(() {
+      searchController.text = '';
+    });
     allWorklist = [];
     worklist = [];
     _getWorklist();

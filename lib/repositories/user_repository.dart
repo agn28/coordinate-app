@@ -25,6 +25,23 @@ class UserRepository {
     });
   }
 
-  
+  getUser(userId) async {
+    var authData = await Auth().getStorageAuth() ;
+    var token = authData['accessToken'];
+    return http.get(
+      apiUrl + 'users/' + userId,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    ).then((response) {
+      print('getuser ${response.body}');
+      return json.decode(response.body);
+      
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
+  }
   
 }

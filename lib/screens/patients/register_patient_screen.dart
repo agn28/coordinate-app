@@ -39,10 +39,14 @@ final postalCodeController = TextEditingController();
 final townController = TextEditingController();
 final upazilaController = TextEditingController();
 final villageController = TextEditingController();
+final hhNumberController = TextEditingController();
+final serialController = TextEditingController();
+final unionController = TextEditingController();
 final streetNameController = TextEditingController();
 final mobilePhoneController = TextEditingController();
 final emailController = TextEditingController();
 final nidController = TextEditingController();
+final bracPatientIdContoller = TextEditingController();
 
 final contactFirstNameController = TextEditingController();
 final contactLastNameController = TextEditingController();
@@ -56,6 +60,8 @@ String uploadedImageUrl = '';
 bool isEditState = false;
 String selectedGender = 'male';
 String selectedGuardian = 'father';
+var selectedCenters = 0;
+var centers;
 List relationships = [
   'father',
   'mother',
@@ -105,6 +111,8 @@ class RegisterPatient extends StatefulWidget {
 }
 int _currentStep = 0;
 
+var centersList = [];
+
 class _RegisterPatientState extends State<RegisterPatient> {
   
 
@@ -112,23 +120,46 @@ class _RegisterPatientState extends State<RegisterPatient> {
   String nextText = 'NEXT';
   bool isLoading = false;
 
+  
+
   @override
   void initState() {
     super.initState();
     getAddresses();
     _prepareState();
     _checkAuth();
+    getCenters();
     selectedDistrict = {};
     selectedUpazila = {};
     _currentStep = 0;
-
-    fillDummyData(); //Remove this
+    fillDummyData();
   }
   nextStep() {
     setState(() {
       _currentStep += 1;
     });
   }
+  getCenters () async{
+    
+    setState(() {
+      isLoading = true;
+    });
+    var centerData = await PatientController().getCenter();
+    setState(() {
+      isLoading = false;
+    });
+
+   print("CenterData: $centerData");
+
+    if (centerData['error'] != null && !centerData['error']) {
+      centersList = centerData['data'];
+    }
+    print("center: $centersList");
+
+  }
+
+
+
 
   getAddresses() async {
 
@@ -203,6 +234,11 @@ class _RegisterPatientState extends State<RegisterPatient> {
     mobilePhoneController.text = patient['data']['mobile'];
     emailController.text = patient['data']['email'];
     nidController.text = patient['data']['nid'];   
+    bracPatientIdContoller.text = patient['data']['brac_id'];
+    //centers = patient['data']['centers'];
+    hhNumberController.text = patient['data']['hh_number'];
+    serialController.text = patient['data']['serial'];
+    unionController.text = patient['data']['union'];
     contactFirstNameController.text = patient['data']['contact']['first_name'];
     contactLastNameController.text = patient['data']['contact']['last_name'];
     contactRelationshipController.text = patient['data']['contact']['relationship'];
@@ -211,6 +247,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
 
   }
 
+  
   fillDummyData() {
     firstNameController.text = 'Dummy';
     fatherNameController.text = 'Father test';
@@ -253,6 +290,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     mobilePhoneController.clear();
     emailController.clear();
     nidController.clear();
+    bracPatientIdContoller.clear();
     contactFirstNameController.clear();
     contactLastNameController.clear();
     contactRelationshipController.clear();
@@ -409,7 +447,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
   List<CustomStep> _mySteps() {
     List<CustomStep> _steps = [
       CustomStep(
-        title: Text(AppLocalizations.of(context).translate('details'), textAlign: TextAlign.center,),
+        title: Text(AppLocalizations.of(context).translate('registerDetails'), textAlign: TextAlign.center,),
         content: PatientDetails(),
         isActive: _currentStep >= 0,
       ),
@@ -456,12 +494,17 @@ class _RegisterPatientState extends State<RegisterPatient> {
       'birth_month': birthMonthController.text,
       'birth_year': birthYearController.text,
       'nid': nidController.text,
+      'brac_id': bracPatientIdContoller.text,
+      
       'registration_date': DateFormat('y-MM-dd').format(DateTime.now()),
       'address': {
         'district': selectedDistrict['name'],
         'postal_code': postalCodeController.text,
         'upazila': selectedUpazila['name'],
         'village': villageController.text,
+        'hh_number': hhNumberController.text,
+        'serial': serialController.text,
+        'union':unionController.text,
         'street_name': streetNameController.text,
       },
       //TODO: remove validation from api for contact
@@ -479,8 +522,16 @@ class _RegisterPatientState extends State<RegisterPatient> {
 
     if (selectedGuardian == 'husband') {
       data['husband_name'] = fatherNameController.text;
+      //print(data['husband_name']);
     } else {
       data['father_name'] = fatherNameController.text;
+    }
+
+    if (centersList.length > 0 && selectedCenters > -1) {
+      data['center'] = {
+        'id': centersList[selectedCenters]['id'],
+        'name': centersList[selectedCenters]['name']
+      };
     }
 
     return data;
@@ -502,6 +553,11 @@ class _PatientDetailsState extends State<PatientDetails> {
   
   final lastVisitDateController = TextEditingController();
   final format = DateFormat("yyyy-MM-dd");
+
+  
+
+
+
 
   updateUpazilas(district) {
     // print(district);
@@ -532,7 +588,6 @@ class _PatientDetailsState extends State<PatientDetails> {
   }
   @override
   Widget build(BuildContext context) {
-    
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
       child: Form(
@@ -540,7 +595,7 @@ class _PatientDetailsState extends State<PatientDetails> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(AppLocalizations.of(context).translate('details'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
+            Text(AppLocalizations.of(context).translate('registerDetails'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
             SizedBox(height: 20,),
 
             Row(
@@ -562,8 +617,8 @@ class _PatientDetailsState extends State<PatientDetails> {
                     bottomPadding: 10,
                     hintText: AppLocalizations.of(context).translate('lastName'),
                     controller: lastNameController,
-                    name: AppLocalizations.of(context).translate('firstName'),
-                    validation: true,
+                    name: AppLocalizations.of(context).translate('lastName'),
+                    //validation: true,
                   ),
                 ),
               ],
@@ -630,6 +685,7 @@ class _PatientDetailsState extends State<PatientDetails> {
                         onChanged: (value) {
                           setState(() {
                             selectedGuardian = value;
+                            print("selectedGuardian: $selectedGuardian");
                           });
                         },
                       ),
@@ -765,6 +821,41 @@ class _PatientDetailsState extends State<PatientDetails> {
             Text(AppLocalizations.of(context).translate('address'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
             SizedBox(height: 20,),
 
+            PrimaryTextField(
+              topPaadding: 10,
+              bottomPadding: 10,
+              hintText: AppLocalizations.of(context).translate('village'),
+              controller: villageController,
+              name: AppLocalizations.of(context).translate('village'),
+            ),
+            SizedBox(height: 10,),
+            
+            PrimaryTextField(
+              topPaadding: 10,
+              bottomPadding: 10,
+              hintText: AppLocalizations.of(context).translate('hhNumber'),
+              controller: hhNumberController,
+              name: AppLocalizations.of(context).translate('hhNumber'),
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 10,
+              bottomPadding: 10,
+              hintText: AppLocalizations.of(context).translate('serial'),
+              controller: serialController,
+              name: AppLocalizations.of(context).translate('serial'),
+            ),
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 10,
+              bottomPadding: 10,
+              hintText: AppLocalizations.of(context).translate('union'),
+              controller: unionController,
+              name: AppLocalizations.of(context).translate('union'),
+            ),
+
+            SizedBox(height: 10,),
+
             DropdownSearch(
               validator: (v) => v == null ? "required field" : null,
               hint: AppLocalizations.of(context).translate('district'),
@@ -845,22 +936,15 @@ class _PatientDetailsState extends State<PatientDetails> {
               name: AppLocalizations.of(context).translate('postalCode'),
               type: TextInputType.number
             ),
+
             SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 10,
-              bottomPadding: 10,
-              hintText: AppLocalizations.of(context).translate('village'),
-              controller: villageController,
-              name: AppLocalizations.of(context).translate('village'),
-            ),
-            SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 10,
-              bottomPadding: 10,
-              hintText: AppLocalizations.of(context).translate('streetName'),
-              controller: streetNameController,
-              name: AppLocalizations.of(context).translate('streetName'),
-            ),
+            // PrimaryTextField(
+            //   topPaadding: 10,
+            //   bottomPadding: 10,
+            //   hintText: AppLocalizations.of(context).translate('streetName'),
+            //   controller: streetNameController,
+            //   name: AppLocalizations.of(context).translate('streetName'),
+            // ),
             Divider(),
             SizedBox(height: 20,),
             PrimaryTextField(
@@ -889,7 +973,7 @@ class _PatientDetailsState extends State<PatientDetails> {
               bottomPadding: 10,
               prefixIcon: Icon(Icons.email),
               hintText: AppLocalizations.of(context).translate('emailAddressOptional'),
-              name: AppLocalizations.of(context).translate('nationalId'),
+              name: AppLocalizations.of(context).translate('emailAddressOptional'),
               controller: emailController
             ),
             SizedBox(height: 10,),
@@ -900,9 +984,51 @@ class _PatientDetailsState extends State<PatientDetails> {
               controller: nidController,
               name: AppLocalizations.of(context).translate('nationalId'),
               validation: true,
+              type: TextInputType.number,
             ),
-            
+            SizedBox(height: 10,),
+            PrimaryTextField(
+              topPaadding: 10,
+              bottomPadding: 10,
+              hintText: AppLocalizations.of(context).translate('projectId'),
+              controller: bracPatientIdContoller,
+              name: AppLocalizations.of(context).translate('projectId'),
+              validation: true,
+            ),  
+            SizedBox(height: 10,),    
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 65,
+              color: kSecondaryTextField,
+              alignment: Alignment.center,
+              child: DropdownButtonFormField(
+                hint: Text(AppLocalizations.of(context).translate("center"), style: TextStyle(fontSize: 20, color: kTextGrey),),
+                decoration: InputDecoration(
+                  fillColor: kSecondaryTextField,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                  border: UnderlineInputBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(4),
+                    topRight: Radius.circular(4),
+                  )
+                ),
+                ),
+                items: centersList.map((center) => DropdownMenuItem(
+                  child: Text(center['name']),
+                  value: centersList.indexOf(center),
+                )).toList(),
+                value: selectedCenters,
+                isExpanded: true,
+                onChanged: (value) {
+                  setState(() {
+                     selectedCenters = value;
+                  });
+                  print("centerssss: $value");
+                },
+              ),
+            ),     
             SizedBox(height: 30,),
+
           ],
         ),
       )
@@ -916,7 +1042,6 @@ class DatePicker extends StatefulWidget {
    this.hintText,
     this.levelText
   });
-
   final controller;
   String hintText = '';
   String levelText = '';
@@ -1028,10 +1153,7 @@ class _AddPhotoState extends State<AddPhoto> {
       }
 
       // if (_uploadTask.isCanceled) {
-
       // }
-
-
       return url;
     }
   }
@@ -1289,7 +1411,7 @@ class _ViewSummaryState extends State<ViewSummary> {
           SizedBox(height: 10,),
 
           Container(
-            height: 300,
+            height: 420,
             // width: 200,
             // alignment: Alignment.topCenter,
             decoration: BoxDecoration(
@@ -1299,7 +1421,7 @@ class _ViewSummaryState extends State<ViewSummary> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('patientName') + ': ', style: TextStyle(fontSize: 18),),
+                    Text(AppLocalizations.of(context).translate('name') + ': ', style: TextStyle(fontSize: 18),),
                     Text(firstNameController.text + ' ' + lastNameController.text, style: TextStyle(fontSize: 18),),
                     Spacer(),
                     ClipOval(
@@ -1319,6 +1441,14 @@ class _ViewSummaryState extends State<ViewSummary> {
                         ),
                       ),
                     ),
+                  ],
+                ),
+                SizedBox(height: 7,),
+
+                Row(
+                  children: <Widget>[
+                    selectedGuardian == 'husband' ? Text(AppLocalizations.of(context).translate('husbandName') + ': ', style: TextStyle(fontSize: 18),) :Text(AppLocalizations.of(context).translate('fathersName') + ': ', style: TextStyle(fontSize: 18),),
+                    Text(fatherNameController.text, style: TextStyle(fontSize: 18),),
                   ],
                 ),
                 SizedBox(height: 7,),
@@ -1352,13 +1482,42 @@ class _ViewSummaryState extends State<ViewSummary> {
                   ],
                 ),
                 SizedBox(height: 7,),
-
+                
                 Row(
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate('hhNumber') + ': ', style: TextStyle(fontSize: 18),),
+                    Text(hhNumberController.text, style: TextStyle(fontSize: 18),),
+                  ],
+                ),
+                SizedBox(height: 7,),
+                
+                Row(
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate('serial') + ': ', style: TextStyle(fontSize: 18),),
+                    Text(serialController.text, style: TextStyle(fontSize: 18),),
+                  ],
+                ),
+                SizedBox(height: 7,),
+                Row(
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate('union') + ': ', style: TextStyle(fontSize: 18),),
+                    Text(unionController.text, style: TextStyle(fontSize: 18),),
+                  ],
+                ),
+                SizedBox(height: 7,),
+                emailController.text.isNotEmpty ? Row(
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate('email') + ": ", style: TextStyle(fontSize: 18),),
+                    Text(emailController.text, style: TextStyle(fontSize: 18),),
+                  ],
+                ) : Container(height: 0,),
+                SizedBox(height: 7,),
+                mobilePhoneController.text.isNotEmpty ? Row(
                   children: <Widget>[
                     Text(AppLocalizations.of(context).translate('mobile') + ': ', style: TextStyle(fontSize: 18),),
                     Text(mobilePhoneController.text, style: TextStyle(fontSize: 18),),
                   ],
-                ),
+                ) : Container(height: 0),
                 SizedBox(height: 7,),
 
                 Row(
@@ -1369,13 +1528,28 @@ class _ViewSummaryState extends State<ViewSummary> {
                 ),
                 
                 SizedBox(height: 7,),
-
-                Row(
+                                
+               alternativePhoneController.text.isNotEmpty ? Row(
                   children: <Widget>[
                     Text(AppLocalizations.of(context).translate('alternativePhone') + ': ', style: TextStyle(fontSize: 18),),
                     Text(alternativePhoneController.text, style: TextStyle(fontSize: 18),),
                   ],
-                ),
+                ) : Container(height: 0),
+              
+              SizedBox(height: 7,),
+               bracPatientIdContoller.text.isNotEmpty ? Row(
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate('projectId') + ': ', style: TextStyle(fontSize: 18),),
+                    Text(bracPatientIdContoller.text, style: TextStyle(fontSize: 18),),
+                  ],
+                ) : Container(height: 0,),
+              SizedBox(height: 7,),
+               centersList.isNotEmpty ? Row(
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate('center') + ': ', style: TextStyle(fontSize: 18),),
+                    Text(centersList[selectedCenters]['name'], style: TextStyle(fontSize: 18),),
+                  ],
+                ) : Container(height: 0,)
               ],
             ),
           ),
@@ -1389,33 +1563,27 @@ class _ViewSummaryState extends State<ViewSummary> {
               });
               var url = await uploadImage();
               var formData = _RegisterPatientState()._prepareFormData();
-              print('formdata');
+              print('formdata $formData');
               var response = isEditState != null ? await PatientController().update(formData, false) : await PatientController().create(formData);
               setState(() {
                 isLoading = false;
               });
 
               if (response != null) {
-                if (response['error'] != null && response['error']) {
-                  if (response['message'] == 'Patient already exists.') {
+                if (response['error'] != null && response['error']) {              
                     _scaffoldKey.currentState.showSnackBar(
                       SnackBar(
-                        content: Text(AppLocalizations.of(context).translate('nidValidation')),
+                        content: Text(response['message']),
                         backgroundColor: kPrimaryRedColor,
                       )
-                    );
-                    return;
-                  }
-
+                    );  
+                } else {                             
                   _scaffoldKey.currentState.showSnackBar(
                     SnackBar(
-                      content: Text(AppLocalizations.of(context).translate('somethingWrong')),
+                      content: Text(response['message']),
                       backgroundColor: kPrimaryRedColor,
                     )
                   );
-
-                  return;
-                  
                 }
 
                 if (response['message'] != null && response['message'] == 'Unauthorized') {

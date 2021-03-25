@@ -33,10 +33,10 @@ int selectedTab = 0;
 
 class ChwWorkListSearchScreen extends StatefulWidget {
   @override
-  _WorkListSearchState createState() => _WorkListSearchState();
+  _ChwWorkListSearchScreenState createState() => _ChwWorkListSearchScreenState();
 }
 
-class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
+class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
 
   List patients = [];
   bool isLoading = true;
@@ -51,6 +51,9 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
   @override
   initState() {
     super.initState();
+    setState(() {
+      searchController.text = '';
+    });
     allWorklist = [];
     worklist = [];
     _getAuthUser();
@@ -59,6 +62,7 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
     dueDateSort = 'asc';
     patientSortActive = false;
     dueDateSortActive = false;
+    print("pendingPatients: $pendingPatients");
   }
   
   loaderHandle(value) {
@@ -521,107 +525,124 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
                     ],
                   ),
                 ),
-                
                 Container(
-                  height: MediaQuery.of(context).size.height,
-                  padding: EdgeInsets.only(bottom: 210),
-                  decoration: BoxDecoration(
-                  color: kPrimaryColor,
-                    border: Border.all(width: 0, color: kPrimaryColor)
-                  ),
-                  child: DefaultTabController(
-                    initialIndex: 0,
-
-                    length: 3,
-                    child: Scaffold(
-                      appBar: AppBar(
-                        elevation: 0,
-                        automaticallyImplyLeading: false,
-                        backgroundColor: kPrimaryColor,
-                        bottom: PreferredSize(child: Container(color: kPrimaryColor, height: 1.0,), preferredSize: Size.fromHeight(1.0)),
-                        flexibleSpace: TabBar(
-                          onTap: (value) {
-                            setState(() {
-                              selectedTab = value;
-                            });
-                          },
-                          labelPadding: EdgeInsets.all(0),
-                          indicatorPadding: EdgeInsets.all(0),
-                          indicatorColor: Colors.white,
-                          tabs: [
-                            Tab(
-                              child: Text(AppLocalizations.of(context).translate('pending') + ' (${getPendingCount()})', style: TextStyle(fontSize: 17)),
-                            ),
-                            Tab(
-                              child: Text(AppLocalizations.of(context).translate('pastDue') + ' (${pastPatients.length})', style: TextStyle(fontSize: 17)),
-                            ),
-                            Tab(
-                              child: Text(AppLocalizations.of(context).translate('completed') + ' (${getCompletedCount()})', style: TextStyle(fontSize: 17)),
-                            ),
-                            
-                          ],
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                  color: Colors.grey.withOpacity(0.15),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 2,
+                          child: Container(
+                          child: Text("Appointment Date", style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
                         ),
                       ),
-                      body: TabBarView(
-                        controller: _tabController,
-                                        
-                        children: [
-                          Container(
-                            child: ListView(
-                              children: <Widget>[
-                                SizedBox(height: 20,),
-                                ...pendingPatients.map((item) => 
-
-                                PatientItem(item: item, parent: this)).toList(),
-                                
-                                pendingPatients.length == 0 ? Container(
-                                  alignment: Alignment.centerLeft,
-                                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                                  child: Text(AppLocalizations.of(context).translate('worklistFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
-                                ) : Container()
-                              ],
-                            )
-                          ),
-                          
-                          
-                          Container(
-                            child: ListView(
-                              children: <Widget>[
-                                SizedBox(height: 20,),
-                                ...pastPatients.map((item) => 
-                                PatientItem(item: item, parent: this)).toList(),
-
-                                pastPatients.length == 0 ? Container(
-                                  alignment: Alignment.centerLeft,
-                                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                                  child: Text(AppLocalizations.of(context).translate('worklistFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
-                                ) : Container()
-                              ],
-                            )
-                          ),
-                          Container(
-                            child: ListView(
-                              children: <Widget>[
-                                SizedBox(height: 20,),
-                                ...completedPatients.map((item) => 
-                                PatientItem(item: item, parent: this)).toList(),
-
-                                completedPatients.length == 0 ? Container(
-                                  alignment: Alignment.centerLeft,
-                                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                                  child: Text(AppLocalizations.of(context).translate('worklistFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
-                                ) : Container()
-                              ],
-                            )
-                          ),
-
-                          
-                        ],
+                      SizedBox(width: 5,),
+                      Expanded(
+                        flex: 2,
+                          child: Container(
+                          child: Text("Village", style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                        ),
                       ),
-                    ),
+                      SizedBox(width: 5,),
+                      Expanded(
+                        flex: 2,
+                          child: Container(
+                          child: Text("Name", style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                        ),
+                      ),
+                      SizedBox(width: 5,),
+                      Expanded(
+                        flex: 2,
+                          child: Container(
+                          child: Text("Father's / Husband's Name", style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                        ),
+                      ),
+                      SizedBox(width: 5,),
+                      Expanded(
+                        flex: 1,
+                          child: Container(
+                          child: Text("Age", style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),),
+                        ),
+                      ),
+                      SizedBox(width: 5,),
+                      Expanded(
+                        flex: 1,
+                          child: Container(
+                          child: Text("Gender", style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),),
+                        ),
+                      )
+                    ],
                   ),
+                ) ,
+
+
+                ...pendingPatients.map((item) =>  Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Patient().setPatientModify(item);
+                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                        //color: Colors.teal.withOpacity(0.25),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Container(
+                                child: Text("22/06/20", style: TextStyle(fontSize: 14, color: Colors.black),),
+                              ),
+                            ),
+                            SizedBox(width: 5,),
+                            Expanded(
+                              flex: 2,
+                                child: Container(
+                                child: Text(item['body']['address']['village'], style: TextStyle(fontSize: 14, color: Colors.black),),
+                              ),
+                            ),
+                            SizedBox(width: 5,),
+                            Expanded(
+                              flex: 2,
+                                child: Container(
+                                child: Text(item['body']['first_name'] + ' ' + item['body']['last_name'], style: TextStyle(fontSize: 14, color: Colors.black,),),
+                              ),
+                            ),
+                            SizedBox(width: 5,),
+                            Expanded(
+                              flex: 2,
+                                child: Container(
+                                child: Text(item['body']['father_name'] != null ? item['body']['father_name'] : item['body']['husband_name'], style: TextStyle(fontSize: 14, color: Colors.black),),
+                              ),
+                            ),
+                            SizedBox(width: 5,),
+                            Expanded(
+                              flex: 1,
+                                child: Container(
+                                child: Text(item['body']['age'].toString(), style: TextStyle(fontSize: 14, color: Colors.black),),
+                              ),
+                            ),
+                            SizedBox(width: 5,),
+                            Expanded(
+                              flex: 1,
+                                child: Container(
+                                child: Text(item['body']['gender'], style: TextStyle(fontSize: 14, color: Colors.black),),
+                              ),
+                            )
+                          ],
+                        ),
+                       ),
+                    ),
+                     Divider(
+                       height: 0,
+                       thickness: 0.5,
+                       color: Colors.grey.withOpacity(0.50)
+                     )
+                  ],
                 ),
-                
+               ).toList(),
               ],
             )
           
@@ -643,12 +664,12 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
 class PatientItem extends StatefulWidget {
   const PatientItem({
     @required this.item,
-    @required this.parent,
+   // @required this.parent,
   });
 
 
   final item;
-  final _WorkListSearchState parent;
+  // final _WorkListSearchState parent;
 
   @override
   _PatientItemState createState() => _PatientItemState();
@@ -990,8 +1011,8 @@ class _PatientItemState extends State<PatientItem> {
 }
 
 class SortDialog extends StatefulWidget {
-  _WorkListSearchState parent;
-  SortDialog({this.parent});
+  // _WorkListSearchState parent;
+  // SortDialog({this.parent});
 
   @override
   _SortDialogState createState() => _SortDialogState();
@@ -1043,9 +1064,9 @@ class _SortDialogState extends State<SortDialog> {
                         patientSortActive = false;
                         dueDateSortActive = false;
                       });
-                      widget.parent.setState((){
-                        widget.parent.clearSort();
-                      });
+                      // widget.parent.setState((){
+                      //   widget.parent.clearSort();
+                      // });
                     },
                     child: Text(AppLocalizations.of(context).translate('clearSort'), style: TextStyle(fontSize: 15, color: kPrimaryColor, fontWeight: FontWeight.w500),),
                   ),
@@ -1174,9 +1195,9 @@ class _SortDialogState extends State<SortDialog> {
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         onPressed: () {
                           Navigator.of(context).pop();
-                          widget.parent.setState(() {
-                            widget.parent.applySort();
-                          });
+                          // widget.parent.setState(() {
+                          //   widget.parent.applySort();
+                          // });
                           // selectedDiseases = _selectedItem;
                           // this.parent.setState(() {
                           //   this.parent.getSelectedDiseaseText();
