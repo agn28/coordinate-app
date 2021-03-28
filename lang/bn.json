@@ -495,7 +495,8 @@
   "nextVisitDate": "পরবর্তী সাক্ষাতের তারিখ: ",
   "editIncompleteEncounter": "অসম্পূর্ণ এনকাউন্টার সম্পাদনা করুন",
   "ncdCenterVisit": "এনসিডি কেন্দ্র পরিদর্শন",
-  "completePrevEncounter": "পূর্ববর্তী এনকাউন্টার সম্পূর্ণ করুন"
+  "completePrevEncounter": "পূর্ববর্তী এনকাউন্টার সম্পূর্ণ করুন",
+  "streetPara": "রাস্তা/পাড়া"
 
 
 }

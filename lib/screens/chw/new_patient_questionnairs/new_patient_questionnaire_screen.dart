@@ -493,7 +493,7 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
 
     print(patient['data']['age']);
     var status = hasMissingData ? 'incomplete' : 'complete';
-    var response = await AssessmentController().createOnlyAssessmentWithStatus('new questionnaire', 'new-questionnaire', '', status, nextVisitDate);
+    var response = await AssessmentController().createOnlyAssessmentWithStatus('new questionnaire', 'new-questionnaire', '', 'incomplete', nextVisitDate);
 
     setLoader(false);
 

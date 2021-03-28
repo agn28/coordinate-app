@@ -132,7 +132,6 @@ class _RegisterPatientState extends State<RegisterPatient> {
     selectedDistrict = {};
     selectedUpazila = {};
     _currentStep = 0;
-    fillDummyData();
   }
   nextStep() {
     setState(() {
@@ -287,6 +286,9 @@ class _RegisterPatientState extends State<RegisterPatient> {
     townController.clear();
     villageController.clear();
     streetNameController.clear();
+    hhNumberController.clear();
+    serialController.clear();
+    unionController.clear();
     mobilePhoneController.clear();
     emailController.clear();
     nidController.clear();
@@ -824,10 +826,12 @@ class _PatientDetailsState extends State<PatientDetails> {
             PrimaryTextField(
               topPaadding: 10,
               bottomPadding: 10,
-              hintText: AppLocalizations.of(context).translate('village'),
-              controller: villageController,
-              name: AppLocalizations.of(context).translate('village'),
+              hintText: AppLocalizations.of(context).translate('streetPara'),
+              controller: streetNameController,
+              name: AppLocalizations.of(context).translate('streetPara'),
             ),
+
+            
             SizedBox(height: 10,),
             
             PrimaryTextField(
@@ -846,12 +850,61 @@ class _PatientDetailsState extends State<PatientDetails> {
               name: AppLocalizations.of(context).translate('serial'),
             ),
             SizedBox(height: 10,),
+
+            PrimaryTextField(
+              topPaadding: 10,
+              bottomPadding: 10,
+              hintText: AppLocalizations.of(context).translate('village'),
+              controller: villageController,
+              name: AppLocalizations.of(context).translate('village'),
+            ),
+
+            SizedBox(height: 10,),
+            
             PrimaryTextField(
               topPaadding: 10,
               bottomPadding: 10,
               hintText: AppLocalizations.of(context).translate('union'),
               controller: unionController,
               name: AppLocalizations.of(context).translate('union'),
+            ),
+
+            SizedBox(height: 10,),
+
+            
+
+            DropdownSearch(
+              validator: (v) => v == null ? "required field" : null,
+              hint: AppLocalizations.of(context).translate('upazila'),
+              mode: Mode.BOTTOM_SHEET,
+              items: filteredUpazilas,
+              // showClearButton: true,
+              dropdownSearchDecoration: InputDecoration(
+                counterText: ' ',
+                contentPadding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10, right: 10),
+                filled: true,
+                fillColor: kSecondaryTextField,
+                border: new UnderlineInputBorder(
+                  borderSide: new BorderSide(color: Colors.white),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(4),
+                    topRight: Radius.circular(4),
+                  )
+                ),
+
+                hintText: 'Upazilas',
+                hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  selectedUpazila = value;
+
+                  // districtController.text = value;
+                });
+              },
+              selectedItem: selectedUpazila['name'],
+              popupItemBuilder: _customPopupItemBuilderExample2,
+              showSearchBox: true,
             ),
 
             SizedBox(height: 10,),
@@ -891,42 +944,6 @@ class _PatientDetailsState extends State<PatientDetails> {
               showSearchBox: true,
             ),
 
-            SizedBox(height: 20,),
-
-            DropdownSearch(
-              validator: (v) => v == null ? "required field" : null,
-              hint: AppLocalizations.of(context).translate('upazila'),
-              mode: Mode.BOTTOM_SHEET,
-              items: filteredUpazilas,
-              // showClearButton: true,
-              dropdownSearchDecoration: InputDecoration(
-                counterText: ' ',
-                contentPadding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10, right: 10),
-                filled: true,
-                fillColor: kSecondaryTextField,
-                border: new UnderlineInputBorder(
-                  borderSide: new BorderSide(color: Colors.white),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(4),
-                    topRight: Radius.circular(4),
-                  )
-                ),
-
-                hintText: 'Upazilas',
-                hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
-              ),
-              onChanged: (value) {
-                setState(() {
-                  selectedUpazila = value;
-
-                  // districtController.text = value;
-                });
-              },
-              selectedItem: selectedUpazila['name'],
-              popupItemBuilder: _customPopupItemBuilderExample2,
-              showSearchBox: true,
-            ),
-
             SizedBox(height: 10,),
             PrimaryTextField(
                 topPaadding: 10,
@@ -938,13 +955,7 @@ class _PatientDetailsState extends State<PatientDetails> {
             ),
 
             SizedBox(height: 10,),
-            // PrimaryTextField(
-            //   topPaadding: 10,
-            //   bottomPadding: 10,
-            //   hintText: AppLocalizations.of(context).translate('streetName'),
-            //   controller: streetNameController,
-            //   name: AppLocalizations.of(context).translate('streetName'),
-            // ),
+            
             Divider(),
             SizedBox(height: 20,),
             PrimaryTextField(
