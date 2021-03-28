@@ -170,6 +170,15 @@ class _NewPatientQuestionnaireScreenState extends State<NewPatientQuestionnaireS
     _diastolicController.text = '';
     _pulseController.text = '';
     _glucoseController.text = '';
+
+    systolicEditingController.text = '';
+    diastolicEditingController.text = '';
+    pulseRateEditingController.text = '';
+    heightEditingController.text = '';
+    weightEditingController.text = '';
+    bmiEditingController.text = '';
+    bloodSugerEditingController.text = '';
+    selectedGlucoseUnit = 'mg/dL';
   }
 
   _checkAuth() {

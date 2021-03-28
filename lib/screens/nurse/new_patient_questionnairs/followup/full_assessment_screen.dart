@@ -88,7 +88,7 @@ getOptionText(context, question, option) {
 
 class FullAssessmentScreen extends StatefulWidget {
 
-  static const path = '/newPatientQuestionnaireNurse';
+  static const path = '/fullassessmentNurse';
   @override
   _FullAssessmentScreenState createState() => _FullAssessmentScreenState();
 }
@@ -198,6 +198,20 @@ class _FullAssessmentScreenState extends State<FullAssessmentScreen> {
     potassiumController.text = '';
     ketonesController.text = '';
     proteinController.text = '';
+    
+    selectedRandomBloodUnit = 'mg/dL';
+    selectedFastingBloodUnit = 'mg/dL';
+    selectedHabfUnit = 'mg/dL';
+    selectedHba1cUnit = 'mg/dL';
+    selectedCholesterolUnit = 'mg/dL';
+    selectedLdlUnit = 'mg/dL';
+    selectedHdlUnit = 'mg/dL';
+    selectedTgUnit = 'mg/dL';
+    selectedCreatinineUnit = 'mg/dL';
+    selectedSodiumUnit = 'mg/dL';
+    selectedPotassiumUnit = 'mg/dL';
+    selectedKetonesUnit = 'mg/dL';
+    selectedProteinUnit = 'mg/dL';
 
     occupationController.text = '';
     incomeController.text = '';

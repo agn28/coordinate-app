@@ -21,6 +21,7 @@ import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chw/unwell/create_referral_screen.dart';
 import 'package:nhealth/screens/patients/ncd/followup_patient_summary_screen.dart';
 import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
+import 'package:nhealth/screens/patients/ncd/ncd_patient_summary_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import '../../../custom-classes/custom_stepper.dart';
@@ -202,6 +203,20 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     occupationController.text = '';
     incomeController.text = '';
     educationController.text = '';
+
+    selectedRandomBloodUnit = 'mg/dL';
+    selectedFastingBloodUnit = 'mg/dL';
+    selectedHabfUnit = 'mg/dL';
+    selectedHba1cUnit = 'mg/dL';
+    selectedCholesterolUnit = 'mg/dL';
+    selectedLdlUnit = 'mg/dL';
+    selectedHdlUnit = 'mg/dL';
+    selectedTgUnit = 'mg/dL';
+    selectedCreatinineUnit = 'mg/dL';
+    selectedSodiumUnit = 'mg/dL';
+    selectedPotassiumUnit = 'mg/dL';
+    selectedKetonesUnit = 'mg/dL';
+    selectedProteinUnit = 'mg/dL';
   }
 
   _checkAuth() {
@@ -592,7 +607,8 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     }
 
     // goToHome(false, null);
-    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path);
+    // Navigator.of(context).pushNamed(NcdPatientSummaryScreen.path);
+    Navigator.of(context).pushNamed('/ncdPatientSummary');
   }
 
   List<CustomStep> _mySteps() {

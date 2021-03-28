@@ -192,7 +192,6 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     hdlController.text = '';
     tgController.text = '';
     creatinineController.text = '';
-    
     sodiumController.text = '';
     potassiumController.text = '';
     ketonesController.text = '';
@@ -201,6 +200,20 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     occupationController.text = '';
     incomeController.text = '';
     educationController.text = '';
+
+    selectedRandomBloodUnit = 'mg/dL';
+    selectedFastingBloodUnit = 'mg/dL';
+    selectedHabfUnit = 'mg/dL';
+    selectedHba1cUnit = 'mg/dL';
+    selectedCholesterolUnit = 'mg/dL';
+    selectedLdlUnit = 'mg/dL';
+    selectedHdlUnit = 'mg/dL';
+    selectedTgUnit = 'mg/dL';
+    selectedCreatinineUnit = 'mg/dL';
+    selectedSodiumUnit = 'mg/dL';
+    selectedPotassiumUnit = 'mg/dL';
+    selectedKetonesUnit = 'mg/dL';
+    selectedProteinUnit = 'mg/dL';
     nextVisitDate = '';
   }
 

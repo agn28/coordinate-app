@@ -129,8 +129,8 @@ class _RegisterPatientState extends State<RegisterPatient> {
     _prepareState();
     _checkAuth();
     getCenters();
-    selectedDistrict = {};
-    selectedUpazila = {};
+    // selectedDistrict = {};
+    // selectedUpazila = {};
     _currentStep = 0;
   }
   nextStep() {
@@ -190,12 +190,35 @@ class _RegisterPatientState extends State<RegisterPatient> {
     print(districts);
   }
 
-  _checkAuth() {
-    if (Auth().isExpired()) {
+  _checkAuth() async {
+    var data = await Auth().getStorageAuth();
+    if (!data['status']) {
       Helpers().logout(context);
-      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    } 
+    }
+
+    // print('address');
+    // print(data['address']);
+    // setState(() {
+    //   if(data['address'].isNotEmpty){
+    //     unionController.text = data['address']['union'] ?? '';
+    //     villageController.text = data['address']['village'] ?? '';
+    //     var authUserDistrict = districts.where((district) => district['name'] == data['address']['district']);
+    //     if(authUserDistrict != null){
+    //       selectedDistrict = authUserDistrict.first;
+    //       var authUserUpazila = selectedDistrict['thanas'].where((upazila) => upazila['name'] == data['address']['upazila']);
+    //       if(authUserUpazila != null){
+    //         selectedUpazila = authUserUpazila.first;
+    //       }
+    //     }
+    //   }
+            
+    // });
+    // if (Auth().isExpired()) {
+    //   Helpers().logout(context);
+    //   // Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    // } 
   }
+  
 
   
 
@@ -204,6 +227,9 @@ class _RegisterPatientState extends State<RegisterPatient> {
     setState(() {
       showItems = false;
       showUpazilaItems = false;
+      // selectedDistrict = {};
+      // selectedUpazila = {};
+      // filteredUpazilas = [];
     });
 
     if (isEditState != null) {
@@ -276,27 +302,29 @@ class _RegisterPatientState extends State<RegisterPatient> {
     firstNameController.clear();
     lastNameController .clear();
     fatherNameController .clear();
-    dobController.clear();
-    ageController.clear();
     birthDateController.clear();
     birthMonthController.clear();
     birthYearController.clear();
-    districtController.clear();
-    postalCodeController.clear();
-    townController.clear();
-    villageController.clear();
+    dobController.clear();
+    ageController.clear();
     streetNameController.clear();
     hhNumberController.clear();
     serialController.clear();
+    villageController.clear();
     unionController.clear();
+    upazilaController.clear();
+    districtController.clear();
+    postalCodeController.clear();
     mobilePhoneController.clear();
+    alternativePhoneController.clear();
     emailController.clear();
     nidController.clear();
     bracPatientIdContoller.clear();
+    selectedCenters = null;
+    townController.clear();
     contactFirstNameController.clear();
     contactLastNameController.clear();
     contactRelationshipController.clear();
-    alternativePhoneController.clear();
     _image = null;
 
     selectedRelation = null;
@@ -556,9 +584,35 @@ class _PatientDetailsState extends State<PatientDetails> {
   final lastVisitDateController = TextEditingController();
   final format = DateFormat("yyyy-MM-dd");
 
-  
+  @override
+  initState() {
+    super.initState();
+    setAddress();
+  }
 
+  setAddress() async{
+    var data = await Auth().getStorageAuth();
+    if (!data['status']) {
+      Helpers().logout(context);
+    }
 
+    print('address');
+    print(data['address']);
+    setState(() {
+      if(data['address'].isNotEmpty){
+        unionController.text = data['address']['union'] ?? '';
+        villageController.text = data['address']['village'] ?? '';
+        var authUserDistrict = districts.where((district) => district['name'] == data['address']['district']);
+        if(authUserDistrict.isNotEmpty){
+          selectedDistrict = authUserDistrict.first;
+          var authUserUpazila = selectedDistrict['thanas'].where((upazila) => upazila['name'] == data['address']['upazila']);
+          if(authUserUpazila.isNotEmpty){
+            selectedUpazila = authUserUpazila.first;
+          }
+        }
+      }
+    });
+  }
 
 
   updateUpazilas(district) {
