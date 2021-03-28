@@ -515,7 +515,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          content: new Text(AppLocalizations.of(context).translate("incompleteNcd"), style: TextStyle(fontSize: 20),),
+          content: new Text(AppLocalizations.of(context).translate("incompleteNcdFollowup"), style: TextStyle(fontSize: 20),),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             FlatButton(
@@ -554,7 +554,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     setLoader(true);
 
     var patient = Patient().getPatient();
-
+  
     print(patient['data']['age']);
     var status = hasMissingData ? 'incomplete' : 'complete';
     var response = await AssessmentController().createFollowupAssessment('follow up visit (community)', 'follow up community', '', status, nextVisitDate, 'short');

@@ -469,6 +469,7 @@
   "occupation": "Occupation",
   "ethnicity": "Ethnicity",
   "incompleteNcd": "Incomplete data, assessment will not be generated. Advise patient to visit NCD centre to complete assessment",
+  "incompleteNcdFollowup": "Not all measurements are completed, confirm to continue.",
   "continue": "CONTINUE",
   "email": "Email",
   "husbandName": "Husband Name",

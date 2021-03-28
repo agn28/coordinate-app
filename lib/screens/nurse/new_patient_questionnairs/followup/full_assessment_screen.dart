@@ -528,7 +528,7 @@ class _FullAssessmentScreenState extends State<FullAssessmentScreen> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          content: new Text(AppLocalizations.of(context).translate("incompleteNcd"), style: TextStyle(fontSize: 20),),
+          content: new Text(AppLocalizations.of(context).translate("incompleteNcdFollowup"), style: TextStyle(fontSize: 20),),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             FlatButton(

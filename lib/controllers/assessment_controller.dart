@@ -183,11 +183,19 @@ class AssessmentController {
     data['body']['status'] = completeStatus;
     data['body']['followup_type'] = followupType;
     data['body']['next_visit_date'] = nextVisitDate;
+    
+    print('before health report');
     var status =
         await AssessmentRepositoryLocal().createOnlyAssessmentWithStatus(data);
+    
+    Future.delayed(const Duration(seconds: 5));
+    print('after health report');
+
+    if(completeStatus == 'complete'){
+      HealthReportController().generateReport(data['body']['patient_id']);
+    }
     Helpers().clearObservationItems();
 
-    print('before health report');
 
     return status;
   }
@@ -201,11 +209,19 @@ class AssessmentController {
     );
     data['body']['status'] = completeStatus;
     data['body']['next_visit_date'] = nextVisitDate;
+    print('before health report');
     var status =
         await AssessmentRepositoryLocal().createOnlyAssessmentWithStatus(data);
+    
+    Future.delayed(const Duration(seconds: 5));
+    print('after health report');
+
+    if(completeStatus == 'complete'){
+      HealthReportController().generateReport(data['body']['patient_id']);
+    }
+
     Helpers().clearObservationItems();
 
-    print('before health report');
 
     return status;
   }
@@ -514,8 +530,10 @@ class AssessmentController {
     Future.delayed(const Duration(seconds: 5));
     print('after health report');
 
-    // HealthReportController().generateReport(encounter['body']['patient_id']);
-
+    if(status == 'complete'){
+      HealthReportController().generateReport(encounter['body']['patient_id']);
+    }
+    
     Helpers().clearObservationItems();
 
     return 'success';

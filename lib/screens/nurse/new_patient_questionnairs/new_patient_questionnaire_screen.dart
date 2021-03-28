@@ -21,7 +21,6 @@ import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chw/unwell/create_referral_screen.dart';
 import 'package:nhealth/screens/patients/ncd/followup_patient_summary_screen.dart';
 import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
-import 'package:nhealth/screens/patients/ncd/ncd_patient_summary_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import '../../../custom-classes/custom_stepper.dart';
@@ -607,8 +606,7 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     }
 
     // goToHome(false, null);
-    // Navigator.of(context).pushNamed(NcdPatientSummaryScreen.path);
-    Navigator.of(context).pushNamed('/ncdPatientSummary');
+    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path);
   }
 
   List<CustomStep> _mySteps() {

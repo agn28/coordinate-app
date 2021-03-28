@@ -89,7 +89,7 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
   
   int _currentStep = 0;
 
-  String nextText = 'NEXT';
+  String nextText = 'COMPLETE';
   bool nextHide = false;
 
   @override
@@ -515,7 +515,7 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          content: new Text(AppLocalizations.of(context).translate("incompleteNcd"), style: TextStyle(fontSize: 20),),
+          content: new Text(AppLocalizations.of(context).translate("incompleteNcdFollowup"), style: TextStyle(fontSize: 20),),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             FlatButton(
@@ -610,11 +610,11 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
       //   isActive: _currentStep >= 2,
       // ),
 
-      CustomStep(
-        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
-        content: Followup(parent: this),
-        isActive: _currentStep >= 2,
-      ),
+      // CustomStep(
+      //   title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
+      //   content: Followup(parent: this),
+      //   isActive: _currentStep >= 2,
+      // ),
 
       // CustomStep(
       //   title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
