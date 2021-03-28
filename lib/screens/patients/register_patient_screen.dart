@@ -138,6 +138,34 @@ class _RegisterPatientState extends State<RegisterPatient> {
       _currentStep += 1;
     });
   }
+
+  populateLocation() async {
+    var data = await Auth().getStorageAuth();
+
+    print('set address');
+    print(districts);
+    print(data['address']);
+    setState(() {
+      if (data['address'].isNotEmpty) {
+        unionController.text = data['address']['union'] ?? '';
+        villageController.text = data['address']['village'] ?? '';
+        var authUserDistrict = districts.where((district) => district['name'] == data['address']['district']);
+        if (authUserDistrict.isNotEmpty) {
+          selectedDistrict = authUserDistrict.first;
+          var authUserUpazila = selectedDistrict['thanas'].where((upazila) => upazila['name'] == data['address']['upazila']);
+          if(authUserUpazila.isNotEmpty){
+            selectedUpazila = authUserUpazila.first;
+            upazilas = selectedDistrict['thanas'];
+          } else {
+            selectedUpazila = {};
+          }
+        } else {
+          selectedDistrict = {};
+          selectedUpazila = {};
+        }
+      }
+    });
+  }
   getCenters () async{
     
     setState(() {
@@ -187,6 +215,8 @@ class _RegisterPatientState extends State<RegisterPatient> {
       // upazilas = json.decode(upazilasData);
       // allUpazilas = upazilas;
     });
+
+    populateLocation();
     print(districts);
   }
 
@@ -478,7 +508,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     List<CustomStep> _steps = [
       CustomStep(
         title: Text(AppLocalizations.of(context).translate('registerDetails'), textAlign: TextAlign.center,),
-        content: PatientDetails(),
+        content: PatientDetails(parent: this),
         isActive: _currentStep >= 0,
       ),
       // CustomStep(
@@ -571,6 +601,10 @@ class _RegisterPatientState extends State<RegisterPatient> {
 }
 
 class PatientDetails extends StatefulWidget {
+  PatientDetails({
+    this.parent
+  });
+  _RegisterPatientState parent;
 
   @override
   _PatientDetailsState createState() => _PatientDetailsState();
@@ -587,33 +621,7 @@ class _PatientDetailsState extends State<PatientDetails> {
   @override
   initState() {
     super.initState();
-    setAddress();
   }
-
-  setAddress() async{
-    var data = await Auth().getStorageAuth();
-    if (!data['status']) {
-      Helpers().logout(context);
-    }
-
-    print('address');
-    print(data['address']);
-    setState(() {
-      if(data['address'].isNotEmpty){
-        unionController.text = data['address']['union'] ?? '';
-        villageController.text = data['address']['village'] ?? '';
-        var authUserDistrict = districts.where((district) => district['name'] == data['address']['district']);
-        if(authUserDistrict.isNotEmpty){
-          selectedDistrict = authUserDistrict.first;
-          var authUserUpazila = selectedDistrict['thanas'].where((upazila) => upazila['name'] == data['address']['upazila']);
-          if(authUserUpazila.isNotEmpty){
-            selectedUpazila = authUserUpazila.first;
-          }
-        }
-      }
-    });
-  }
-
 
   updateUpazilas(district) {
     // print(district);
