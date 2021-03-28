@@ -192,7 +192,6 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     hdlController.text = '';
     tgController.text = '';
     creatinineController.text = '';
-    
     sodiumController.text = '';
     potassiumController.text = '';
     ketonesController.text = '';
@@ -201,6 +200,20 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     occupationController.text = '';
     incomeController.text = '';
     educationController.text = '';
+
+    selectedRandomBloodUnit = 'mg/dL';
+    selectedFastingBloodUnit = 'mg/dL';
+    selectedHabfUnit = 'mg/dL';
+    selectedHba1cUnit = 'mg/dL';
+    selectedCholesterolUnit = 'mg/dL';
+    selectedLdlUnit = 'mg/dL';
+    selectedHdlUnit = 'mg/dL';
+    selectedTgUnit = 'mg/dL';
+    selectedCreatinineUnit = 'mg/dL';
+    selectedSodiumUnit = 'mg/dL';
+    selectedPotassiumUnit = 'mg/dL';
+    selectedKetonesUnit = 'mg/dL';
+    selectedProteinUnit = 'mg/dL';
     nextVisitDate = '';
   }
 
@@ -502,7 +515,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          content: new Text(AppLocalizations.of(context).translate("incompleteNcd"), style: TextStyle(fontSize: 20),),
+          content: new Text(AppLocalizations.of(context).translate("incompleteNcdFollowup"), style: TextStyle(fontSize: 20),),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             FlatButton(
@@ -541,7 +554,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     setLoader(true);
 
     var patient = Patient().getPatient();
-
+  
     print(patient['data']['age']);
     var status = hasMissingData ? 'incomplete' : 'complete';
     var response = await AssessmentController().createFollowupAssessment('follow up visit (community)', 'follow up community', '', status, nextVisitDate, 'short');

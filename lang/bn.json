@@ -470,6 +470,7 @@
   "occupation": "পেশা",
   "ethnicity": "জাতিগততা",
   "incompleteNcd": "অসম্পূর্ণ ডেটা, মূল্যায়ন সংরক্ষণ করা হবে না",
+  "incompleteNcdFollowup": "সমস্ত পরিমাপ সম্পন্ন হয় না, চালিয়ে যাওয়ার জন্য নিশ্চিত করুন।",
   "continue": "চালিয়ে যান",
   "email": "ই-মেইল",
   "husbandName": "স্বামীর নাম",
@@ -495,7 +496,8 @@
   "nextVisitDate": "পরবর্তী সাক্ষাতের তারিখ: ",
   "editIncompleteEncounter": "অসম্পূর্ণ এনকাউন্টার সম্পাদনা করুন",
   "ncdCenterVisit": "এনসিডি কেন্দ্র পরিদর্শন",
-  "completePrevEncounter": "পূর্ববর্তী এনকাউন্টার সম্পূর্ণ করুন"
+  "completePrevEncounter": "পূর্ববর্তী এনকাউন্টার সম্পূর্ণ করুন",
+  "streetPara": "রাস্তা/পাড়া"
 
 
 }

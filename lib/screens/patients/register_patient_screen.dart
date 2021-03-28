@@ -129,14 +129,41 @@ class _RegisterPatientState extends State<RegisterPatient> {
     _prepareState();
     _checkAuth();
     getCenters();
-    selectedDistrict = {};
-    selectedUpazila = {};
+    // selectedDistrict = {};
+    // selectedUpazila = {};
     _currentStep = 0;
-    fillDummyData();
   }
   nextStep() {
     setState(() {
       _currentStep += 1;
+    });
+  }
+
+  populateLocation() async {
+    var data = await Auth().getStorageAuth();
+
+    print('set address');
+    print(districts);
+    print(data['address']);
+    setState(() {
+      if (data['address'].isNotEmpty) {
+        unionController.text = data['address']['union'] ?? '';
+        villageController.text = data['address']['village'] ?? '';
+        var authUserDistrict = districts.where((district) => district['name'] == data['address']['district']);
+        if (authUserDistrict.isNotEmpty) {
+          selectedDistrict = authUserDistrict.first;
+          var authUserUpazila = selectedDistrict['thanas'].where((upazila) => upazila['name'] == data['address']['upazila']);
+          if(authUserUpazila.isNotEmpty){
+            selectedUpazila = authUserUpazila.first;
+            upazilas = selectedDistrict['thanas'];
+          } else {
+            selectedUpazila = {};
+          }
+        } else {
+          selectedDistrict = {};
+          selectedUpazila = {};
+        }
+      }
     });
   }
   getCenters () async{
@@ -188,15 +215,40 @@ class _RegisterPatientState extends State<RegisterPatient> {
       // upazilas = json.decode(upazilasData);
       // allUpazilas = upazilas;
     });
+
+    populateLocation();
     print(districts);
   }
 
-  _checkAuth() {
-    if (Auth().isExpired()) {
+  _checkAuth() async {
+    var data = await Auth().getStorageAuth();
+    if (!data['status']) {
       Helpers().logout(context);
-      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    } 
+    }
+
+    // print('address');
+    // print(data['address']);
+    // setState(() {
+    //   if(data['address'].isNotEmpty){
+    //     unionController.text = data['address']['union'] ?? '';
+    //     villageController.text = data['address']['village'] ?? '';
+    //     var authUserDistrict = districts.where((district) => district['name'] == data['address']['district']);
+    //     if(authUserDistrict != null){
+    //       selectedDistrict = authUserDistrict.first;
+    //       var authUserUpazila = selectedDistrict['thanas'].where((upazila) => upazila['name'] == data['address']['upazila']);
+    //       if(authUserUpazila != null){
+    //         selectedUpazila = authUserUpazila.first;
+    //       }
+    //     }
+    //   }
+            
+    // });
+    // if (Auth().isExpired()) {
+    //   Helpers().logout(context);
+    //   // Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    // } 
   }
+  
 
   
 
@@ -205,6 +257,9 @@ class _RegisterPatientState extends State<RegisterPatient> {
     setState(() {
       showItems = false;
       showUpazilaItems = false;
+      // selectedDistrict = {};
+      // selectedUpazila = {};
+      // filteredUpazilas = [];
     });
 
     if (isEditState != null) {
@@ -277,24 +332,29 @@ class _RegisterPatientState extends State<RegisterPatient> {
     firstNameController.clear();
     lastNameController .clear();
     fatherNameController .clear();
-    dobController.clear();
-    ageController.clear();
     birthDateController.clear();
     birthMonthController.clear();
     birthYearController.clear();
+    dobController.clear();
+    ageController.clear();
+    streetNameController.clear();
+    hhNumberController.clear();
+    serialController.clear();
+    villageController.clear();
+    unionController.clear();
+    upazilaController.clear();
     districtController.clear();
     postalCodeController.clear();
-    townController.clear();
-    villageController.clear();
-    streetNameController.clear();
     mobilePhoneController.clear();
+    alternativePhoneController.clear();
     emailController.clear();
     nidController.clear();
     bracPatientIdContoller.clear();
+    selectedCenters = null;
+    townController.clear();
     contactFirstNameController.clear();
     contactLastNameController.clear();
     contactRelationshipController.clear();
-    alternativePhoneController.clear();
     _image = null;
 
     selectedRelation = null;
@@ -448,7 +508,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     List<CustomStep> _steps = [
       CustomStep(
         title: Text(AppLocalizations.of(context).translate('registerDetails'), textAlign: TextAlign.center,),
-        content: PatientDetails(),
+        content: PatientDetails(parent: this),
         isActive: _currentStep >= 0,
       ),
       // CustomStep(
@@ -541,6 +601,10 @@ class _RegisterPatientState extends State<RegisterPatient> {
 }
 
 class PatientDetails extends StatefulWidget {
+  PatientDetails({
+    this.parent
+  });
+  _RegisterPatientState parent;
 
   @override
   _PatientDetailsState createState() => _PatientDetailsState();
@@ -554,10 +618,10 @@ class _PatientDetailsState extends State<PatientDetails> {
   final lastVisitDateController = TextEditingController();
   final format = DateFormat("yyyy-MM-dd");
 
-  
-
-
-
+  @override
+  initState() {
+    super.initState();
+  }
 
   updateUpazilas(district) {
     // print(district);
@@ -824,10 +888,12 @@ class _PatientDetailsState extends State<PatientDetails> {
             PrimaryTextField(
               topPaadding: 10,
               bottomPadding: 10,
-              hintText: AppLocalizations.of(context).translate('village'),
-              controller: villageController,
-              name: AppLocalizations.of(context).translate('village'),
+              hintText: AppLocalizations.of(context).translate('streetPara'),
+              controller: streetNameController,
+              name: AppLocalizations.of(context).translate('streetPara'),
             ),
+
+            
             SizedBox(height: 10,),
             
             PrimaryTextField(
@@ -846,12 +912,61 @@ class _PatientDetailsState extends State<PatientDetails> {
               name: AppLocalizations.of(context).translate('serial'),
             ),
             SizedBox(height: 10,),
+
+            PrimaryTextField(
+              topPaadding: 10,
+              bottomPadding: 10,
+              hintText: AppLocalizations.of(context).translate('village'),
+              controller: villageController,
+              name: AppLocalizations.of(context).translate('village'),
+            ),
+
+            SizedBox(height: 10,),
+            
             PrimaryTextField(
               topPaadding: 10,
               bottomPadding: 10,
               hintText: AppLocalizations.of(context).translate('union'),
               controller: unionController,
               name: AppLocalizations.of(context).translate('union'),
+            ),
+
+            SizedBox(height: 10,),
+
+            
+
+            DropdownSearch(
+              validator: (v) => v == null ? "required field" : null,
+              hint: AppLocalizations.of(context).translate('upazila'),
+              mode: Mode.BOTTOM_SHEET,
+              items: filteredUpazilas,
+              // showClearButton: true,
+              dropdownSearchDecoration: InputDecoration(
+                counterText: ' ',
+                contentPadding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10, right: 10),
+                filled: true,
+                fillColor: kSecondaryTextField,
+                border: new UnderlineInputBorder(
+                  borderSide: new BorderSide(color: Colors.white),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(4),
+                    topRight: Radius.circular(4),
+                  )
+                ),
+
+                hintText: 'Upazilas',
+                hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  selectedUpazila = value;
+
+                  // districtController.text = value;
+                });
+              },
+              selectedItem: selectedUpazila['name'],
+              popupItemBuilder: _customPopupItemBuilderExample2,
+              showSearchBox: true,
             ),
 
             SizedBox(height: 10,),
@@ -891,42 +1006,6 @@ class _PatientDetailsState extends State<PatientDetails> {
               showSearchBox: true,
             ),
 
-            SizedBox(height: 20,),
-
-            DropdownSearch(
-              validator: (v) => v == null ? "required field" : null,
-              hint: AppLocalizations.of(context).translate('upazila'),
-              mode: Mode.BOTTOM_SHEET,
-              items: filteredUpazilas,
-              // showClearButton: true,
-              dropdownSearchDecoration: InputDecoration(
-                counterText: ' ',
-                contentPadding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10, right: 10),
-                filled: true,
-                fillColor: kSecondaryTextField,
-                border: new UnderlineInputBorder(
-                  borderSide: new BorderSide(color: Colors.white),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(4),
-                    topRight: Radius.circular(4),
-                  )
-                ),
-
-                hintText: 'Upazilas',
-                hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
-              ),
-              onChanged: (value) {
-                setState(() {
-                  selectedUpazila = value;
-
-                  // districtController.text = value;
-                });
-              },
-              selectedItem: selectedUpazila['name'],
-              popupItemBuilder: _customPopupItemBuilderExample2,
-              showSearchBox: true,
-            ),
-
             SizedBox(height: 10,),
             PrimaryTextField(
                 topPaadding: 10,
@@ -938,13 +1017,7 @@ class _PatientDetailsState extends State<PatientDetails> {
             ),
 
             SizedBox(height: 10,),
-            // PrimaryTextField(
-            //   topPaadding: 10,
-            //   bottomPadding: 10,
-            //   hintText: AppLocalizations.of(context).translate('streetName'),
-            //   controller: streetNameController,
-            //   name: AppLocalizations.of(context).translate('streetName'),
-            // ),
+            
             Divider(),
             SizedBox(height: 20,),
             PrimaryTextField(

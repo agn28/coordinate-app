@@ -88,7 +88,7 @@ getOptionText(context, question, option) {
 
 class FullAssessmentScreen extends StatefulWidget {
 
-  static const path = '/newPatientQuestionnaireNurse';
+  static const path = '/fullassessmentNurse';
   @override
   _FullAssessmentScreenState createState() => _FullAssessmentScreenState();
 }
@@ -198,6 +198,20 @@ class _FullAssessmentScreenState extends State<FullAssessmentScreen> {
     potassiumController.text = '';
     ketonesController.text = '';
     proteinController.text = '';
+    
+    selectedRandomBloodUnit = 'mg/dL';
+    selectedFastingBloodUnit = 'mg/dL';
+    selectedHabfUnit = 'mg/dL';
+    selectedHba1cUnit = 'mg/dL';
+    selectedCholesterolUnit = 'mg/dL';
+    selectedLdlUnit = 'mg/dL';
+    selectedHdlUnit = 'mg/dL';
+    selectedTgUnit = 'mg/dL';
+    selectedCreatinineUnit = 'mg/dL';
+    selectedSodiumUnit = 'mg/dL';
+    selectedPotassiumUnit = 'mg/dL';
+    selectedKetonesUnit = 'mg/dL';
+    selectedProteinUnit = 'mg/dL';
 
     occupationController.text = '';
     incomeController.text = '';
@@ -514,7 +528,7 @@ class _FullAssessmentScreenState extends State<FullAssessmentScreen> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          content: new Text(AppLocalizations.of(context).translate("incompleteNcd"), style: TextStyle(fontSize: 20),),
+          content: new Text(AppLocalizations.of(context).translate("incompleteNcdFollowup"), style: TextStyle(fontSize: 20),),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             FlatButton(

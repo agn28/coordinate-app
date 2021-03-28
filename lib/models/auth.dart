@@ -41,6 +41,7 @@ class Auth {
       'name': authData['name'],
       'email': authData['email'],
       'role': authData['role'],
+      'address': authData['address'],
       'accessToken': authData['accessToken'],
       'expirationTime': authData['expirationTime']
     };

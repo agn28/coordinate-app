@@ -1981,10 +1981,11 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: <Widget>[
+                            _patient['data']['incomplete_encounter'] != null &&  _patient['data']['incomplete_encounter'] ?
                             FloatingButton(text: 'Update Last Encounter', onPressed: () {
                               Navigator.of(context).pop();
                               Navigator.of(context).pushNamed('/editIncompleteEncounter',);
-                            }, ),
+                            }, ) : Container(),
                             FloatingButton(text: 'New Visit', onPressed: () {
                               Navigator.of(context).pop();
                               Navigator.of(context).pushNamed(NewPatientQuestionnaireNurseScreen.path);

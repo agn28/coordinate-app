@@ -910,7 +910,6 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
       return;
     }
   
-    
     Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path);
     // Navigator.of(context).pushNamed('/ncdPatientSummary');
     // goToHome(false, null);

@@ -202,6 +202,20 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     occupationController.text = '';
     incomeController.text = '';
     educationController.text = '';
+
+    selectedRandomBloodUnit = 'mg/dL';
+    selectedFastingBloodUnit = 'mg/dL';
+    selectedHabfUnit = 'mg/dL';
+    selectedHba1cUnit = 'mg/dL';
+    selectedCholesterolUnit = 'mg/dL';
+    selectedLdlUnit = 'mg/dL';
+    selectedHdlUnit = 'mg/dL';
+    selectedTgUnit = 'mg/dL';
+    selectedCreatinineUnit = 'mg/dL';
+    selectedSodiumUnit = 'mg/dL';
+    selectedPotassiumUnit = 'mg/dL';
+    selectedKetonesUnit = 'mg/dL';
+    selectedProteinUnit = 'mg/dL';
   }
 
   _checkAuth() {
