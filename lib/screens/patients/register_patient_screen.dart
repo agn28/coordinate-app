@@ -155,6 +155,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
           var authUserUpazila = selectedDistrict['thanas'].where((upazila) => upazila['name'] == data['address']['upazila']);
           if(authUserUpazila.isNotEmpty){
             selectedUpazila = authUserUpazila.first;
+            upazilas = selectedDistrict['thanas'];
           } else {
             selectedUpazila = {};
           }
