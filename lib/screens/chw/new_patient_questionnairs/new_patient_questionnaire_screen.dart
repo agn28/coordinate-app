@@ -1406,6 +1406,13 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
       
     // }
 
+    if (counsellingQuestion['type'] == 'physical-activity-high') {
+      if (riskAnswers[9] == 'no' || riskAnswers[10] == 'no' ) {
+        return true;
+      }
+      return false;
+    }
+
     var matchedQuestion;
     riskQuestions['items'].forEach((item) {
       if (item['type'] != null && item['type'] == counsellingQuestion['type']) {
@@ -1422,8 +1429,11 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
         if(answer == 'no') {
           return true;
         }
-      }else {
-        return true;
+      } else {
+        if(answer == 'yes') {
+          return true;
+        }
+        return false;
       }
     }
     return false;
