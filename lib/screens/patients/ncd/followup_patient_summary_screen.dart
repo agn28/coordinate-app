@@ -220,27 +220,61 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     });
   }
 
+  var waitCount = 0;
+  waitForReport() async {
+    print('In wait Report');
+    var lastReport = await HealthReportController().getLastReport(context);
+
+    print('lastReport $lastReport');
+
+      if (lastReport['error'] == true && waitCount < 5) {
+        print('waitCount $waitCount');
+        waitCount++;
+        await Future.delayed(const Duration(seconds: 5));
+        waitForReport();
+      } else {
+        if (lastReport['error'] == true) {
+          setState(() {
+            carePlansEmpty = true;
+          });
+          // Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+        } else if (lastReport['message'] == 'Unauthorized') {
+          Auth().logout();
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+        } else {
+          setState(() {
+            report = lastReport['data'];
+          });
+        }
+      }
+
+    
+  }
+
   getReport() async {
+    print('In get Report');
     // return;
     setState(() {
       isLoading = true;
     });
 
-    var data = await HealthReportController().getLastReport(context);
+    var data = await waitForReport();
+    print('getReport $data');
+    // var data = await HealthReportController().getLastReport(context);
     
-    if (data['error'] == true) {
-      setState(() {
-        carePlansEmpty = true;
-      });
-      // Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
-    } else if (data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    } else {
-      setState(() {
-        report = data['data'];
-      });
-    }
+    // if (data['error'] == true) {
+    //   setState(() {
+    //     carePlansEmpty = true;
+    //   });
+    //   // Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+    // } else if (data['message'] == 'Unauthorized') {
+    //   Auth().logout();
+    //   Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    // } else {
+    //   setState(() {
+    //     report = data['data'];
+    //   });
+    // }
     setState(() {
       // bmi = report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ? report['body']['result']['assessments']['body_composition']['components']['bmi'] : null;
       // cvd = report['body']['result']['assessments']['cvd'] != null ? report['body']['result']['assessments']['cvd'] : null;

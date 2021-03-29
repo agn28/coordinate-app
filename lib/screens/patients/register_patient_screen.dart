@@ -146,6 +146,9 @@ class _RegisterPatientState extends State<RegisterPatient> {
     print(districts);
     print(data['address']);
     setState(() {
+      filteredUpazilas = [];
+      selectedDistrict = {};
+      selectedUpazila = {};
       if (data['address'].isNotEmpty) {
         unionController.text = data['address']['union'] ?? '';
         villageController.text = data['address']['village'] ?? '';
@@ -356,6 +359,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     contactLastNameController.clear();
     contactRelationshipController.clear();
     _image = null;
+    uploadedImageUrl = '';
 
     selectedRelation = null;
     selectedGuardian = 'father';
