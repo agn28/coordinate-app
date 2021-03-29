@@ -1395,6 +1395,7 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
   initState() {
     super.initState();
     dietTitleAdded = false;
+    isReferralRequired = null;
   }
 
   checkCounsellingQuestions(counsellingQuestion) {

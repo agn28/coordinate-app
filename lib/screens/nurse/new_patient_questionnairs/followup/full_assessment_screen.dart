@@ -492,14 +492,14 @@ class _FullAssessmentScreenState extends State<FullAssessmentScreen> {
                       _completeStep();
                       return;
                     }
-                    if (_currentStep == 5) {
+                    if (_currentStep == 4) {
                       print('hello');
 
                       
                       createObservations();
                       nextText = 'COMPLETE';
                     }
-                    if (_currentStep < 6) {
+                    if (_currentStep < 5) {
                      
                         // If the form is valid, display a Snackbar.
                         _currentStep = _currentStep + 1;
@@ -644,11 +644,11 @@ class _FullAssessmentScreenState extends State<FullAssessmentScreen> {
         isActive: _currentStep >= 2,
       ),
 
-      CustomStep(
-        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
-        content: Followup(parent: this),
-        isActive: _currentStep >= 2,
-      ),
+      // CustomStep(
+      //   title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
+      //   content: Followup(parent: this),
+      //   isActive: _currentStep >= 2,
+      // ),
 
       // CustomStep(
       //   title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),

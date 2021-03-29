@@ -891,6 +891,7 @@ class _PatientDetailsState extends State<PatientDetails> {
               hintText: AppLocalizations.of(context).translate('streetPara'),
               controller: streetNameController,
               name: AppLocalizations.of(context).translate('streetPara'),
+              validation: true, 
             ),
 
             
@@ -902,6 +903,7 @@ class _PatientDetailsState extends State<PatientDetails> {
               hintText: AppLocalizations.of(context).translate('hhNumber'),
               controller: hhNumberController,
               name: AppLocalizations.of(context).translate('hhNumber'),
+              validation: true, 
             ),
             SizedBox(height: 10,),
             PrimaryTextField(
@@ -910,6 +912,7 @@ class _PatientDetailsState extends State<PatientDetails> {
               hintText: AppLocalizations.of(context).translate('serial'),
               controller: serialController,
               name: AppLocalizations.of(context).translate('serial'),
+              validation: true, 
             ),
             SizedBox(height: 10,),
 
@@ -1484,7 +1487,7 @@ class _ViewSummaryState extends State<ViewSummary> {
           SizedBox(height: 10,),
 
           Container(
-            height: 420,
+            height: 400,
             // width: 200,
             // alignment: Alignment.topCenter,
             decoration: BoxDecoration(
@@ -1627,7 +1630,7 @@ class _ViewSummaryState extends State<ViewSummary> {
             ),
           ),
 
-          SizedBox(height: 70,),
+          // SizedBox(height: 20,),
           
           GestureDetector(
             onTap: () async {

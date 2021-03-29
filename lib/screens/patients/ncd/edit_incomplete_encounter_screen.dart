@@ -950,11 +950,11 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
         isActive: _currentStep >= 2,
       ),
 
-      CustomStep(
-        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
-        content: Followup(parent: this),
-        isActive: _currentStep >= 2,
-      ),
+      // CustomStep(
+      //   title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
+      //   content: Followup(parent: this),
+      //   isActive: _currentStep >= 2,
+      // ),
 
       // CustomStep(
       //   title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),

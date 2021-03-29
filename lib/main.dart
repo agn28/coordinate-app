@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nhealth/concept-manager/concept_manager.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:nhealth/controllers/device_controller.dart';
+import 'package:nhealth/models/devices.dart';
 import 'package:nhealth/models/language.dart';
 import 'package:nhealth/route_generator.dart';
 import 'app_localizations.dart';
@@ -27,7 +29,7 @@ void main() async {
   if (locale != null) {
     appLocale = langMapp[locale];
   }
-
+  _getDevices();
   runApp(MyApp());
 
   print(DatabaseCreator().dBCreatedStatus());
@@ -41,7 +43,12 @@ void main() async {
     DatabaseCreator().dBCreatedStatusChange(false);
   }
 }
-
+_getDevices() async {
+  var data = await DeviceController().getDevices();
+  if (data.length > 0 ) {
+    Device().setDevices(data);
+  }
+}
 class MyApp extends StatefulWidget {
   static void setLocale(BuildContext context, Locale newLocale) async {
     MyAppState state = context.findAncestorStateOfType<MyAppState>();
@@ -60,6 +67,8 @@ class MyAppState extends State<MyApp> {
       appLocale = locale;
     });
   }
+
+
 
   @override
   Widget build(BuildContext context) {
