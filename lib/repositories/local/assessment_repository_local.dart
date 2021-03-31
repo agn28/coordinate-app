@@ -28,19 +28,49 @@ class AssessmentRepositoryLocal {
     return observations;
   }
 
-    /// Create an assessment with observations.
-  /// observations [data] is required as parameter.
-  createOnlyAssessmentWithStatus(data) async {
-    var assessmentId = Uuid().v4();
+  createObservationsForOnlyAssessmentWithStatus(assessmentId) async{
+    
     var bloodPressures = BloodPressure().bpItems;
     var bloodTests = BloodTest().btItems;
     var bodyMeasurements = BodyMeasurement().bmItems;
     var questionnaires = Questionnaire().qnItems;
 
+    for(var item in bloodPressures){
+      print('into observations');
+      var codings = await _getCodings(item);
+      item['body']['data']['codings'] = codings;
+      item['body']['assessment_id'] = assessmentId;
+      await _createObservations(item);
+    }
+
+    for(var item in bloodTests){
+      var codings = await _getCodings(item);
+      item['body']['data']['codings'] = codings;
+      item['body']['assessment_id'] = assessmentId;
+      await _createObservations(item);
+    }
+    for(var item in bodyMeasurements){
+      var codings = await _getCodings(item);
+      item['body']['data']['codings'] = codings;
+      item['body']['assessment_id'] = assessmentId;
+      await _createObservations(item);
+    }
+    for(var item in questionnaires){
+      print('into questionnaire');
+      item['body']['assessment_id'] = assessmentId;
+      await _createObservations(item);
+    }
+  }
+
+    /// Create an assessment with observations.
+  /// observations [data] is required as parameter.
+  createOnlyAssessmentWithStatus(data) async {
+    var assessmentId = Uuid().v4();
+
     // if (bloodPressures.isEmpty && bloodTests.isEmpty && bodyMeasurements.isEmpty && questionnaires.isEmpty) {
     //   return 'No observations added';
     // }
-
+    createObservationsForOnlyAssessmentWithStatus(assessmentId);
     print('before assessment');
     print(DateTime.now());
 
@@ -48,34 +78,32 @@ class AssessmentRepositoryLocal {
 
     print('after assessment ');
     print(DateTime.now());
+    // Future.forEach(bloodPressures, (item) async {
+    //   print('into observations');
+    //   var codings = await _getCodings(item);
+    //   item['body']['data']['codings'] = codings;
+    //   item['body']['assessment_id'] = assessmentId;
+    //   await _createObservations(item);
+    // });
 
-    Future.forEach(bloodPressures, (item) async {
-      print('into observations');
-      var codings = await _getCodings(item);
-      item['body']['data']['codings'] = codings;
-      item['body']['assessment_id'] = assessmentId;
-      await _createObservations(item);
-    });
+    // Future.forEach(bloodTests, (item) async {
+    //   var codings = await _getCodings(item);
+    //   item['body']['data']['codings'] = codings;
+    //   item['body']['assessment_id'] = assessmentId;
+    //   await _createObservations(item);
+    // });
+    // Future.forEach(bodyMeasurements, (item) async {
+    //   var codings = await _getCodings(item);
+    //   item['body']['data']['codings'] = codings;
+    //   item['body']['assessment_id'] = assessmentId;
+    //   await _createObservations(item);
+    // });
 
-    Future.forEach(bloodTests, (item) async {
-      var codings = await _getCodings(item);
-      item['body']['data']['codings'] = codings;
-      item['body']['assessment_id'] = assessmentId;
-      await _createObservations(item);
-    });
-
-    Future.forEach(bodyMeasurements, (item) async {
-      var codings = await _getCodings(item);
-      item['body']['data']['codings'] = codings;
-      item['body']['assessment_id'] = assessmentId;
-      await _createObservations(item);
-    });
-
-    Future.forEach(questionnaires, (item) async {
-      print('into questionnaire');
-      item['body']['assessment_id'] = assessmentId;
-      await _createObservations(item);
-    });
+    // Future.forEach(questionnaires, (item) async {
+    //   print('into questionnaire');
+    //   item['body']['assessment_id'] = assessmentId;
+    //   await _createObservations(item);
+    // });
 
     return 'success';
     

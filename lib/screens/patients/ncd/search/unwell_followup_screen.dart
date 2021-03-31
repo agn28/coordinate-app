@@ -12,6 +12,7 @@ import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/devices.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/chw/patients/patient_summary_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import 'package:nhealth/screens/patients/ncd/followup_visit_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
@@ -145,7 +146,7 @@ class _UnwellFollowupScreen extends State<UnwellFollowupScreen> {
       return;
     }
 
-    Navigator.of(context).pushNamed(FollowupVisitScreen.path);
+    Navigator.of(context).pushNamed('/chwPatientSummary');
 
     // if (temp > 39 || glucose > 250 || systolic > 160 || diastolic > 100 || firstAnswer == 'yes' || secondAnswer == 'yes') {
     //   // var response = FollowupController().create(data);
@@ -671,8 +672,8 @@ var secondQuestionText = 'Are you having any difficulty in talking, or any weakn
 var firstQuestionOptions = ['yes', 'no'];
 var secondQuestionOptions = ['yes', 'no'];
 
-var firstAnswer = 'no';
-var secondAnswer = 'no';
+var firstAnswer = null;
+var secondAnswer = null;
 
 class _AcuteIssuesState extends State<AcuteIssues> {
 
@@ -685,8 +686,8 @@ class _AcuteIssuesState extends State<AcuteIssues> {
   @override
   initState() {
     super.initState();
-    firstAnswer = 'no';
-    secondAnswer = 'no';
+    firstAnswer = null;
+    secondAnswer = null;
 
     devices = Device().getDevices();
   }
@@ -733,9 +734,9 @@ class _AcuteIssuesState extends State<AcuteIssues> {
                               margin: EdgeInsets.only(right: 10, left: 10),
                               decoration: BoxDecoration(
                                 // border: Border.all(width: 1, color:  Color(0xFF01579B)),
-                                border: Border.all(width: 1, color: firstAnswer == option ? Color(0xFF01579B) : Colors.black),
+                                border: Border.all(width: 1, color: (firstAnswer != null && firstAnswer == option) ? Color(0xFF01579B) : Colors.black),
                                 borderRadius: BorderRadius.circular(3),
-                                color: firstAnswer == option ? Color(0xFFE1F5FE) : null
+                                color: (firstAnswer != null && firstAnswer == option) ? Color(0xFFE1F5FE) : null
                                 // color: Color(0xFFE1F5FE) 
                               ),
                               child: FlatButton(
@@ -746,7 +747,7 @@ class _AcuteIssuesState extends State<AcuteIssues> {
                                 },
                                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 child: Text(option.toUpperCase(),
-                                  style: TextStyle(color: firstAnswer == option ? kPrimaryColor : null),
+                                  style: TextStyle(color: (firstAnswer != null && firstAnswer == option) ? kPrimaryColor : null),
                                   // style: TextStyle(color: kPrimaryColor),
                                 ),
                               ),
@@ -778,9 +779,9 @@ class _AcuteIssuesState extends State<AcuteIssues> {
                               margin: EdgeInsets.only(right: 10, left: 10),
                               decoration: BoxDecoration(
                                 // border: Border.all(width: 1, color:  Color(0xFF01579B)),
-                                border: Border.all(width: 1, color: secondAnswer == option ? Color(0xFF01579B) : Colors.black),
+                                border: Border.all(width: 1, color: (secondAnswer != null && secondAnswer == option) ? Color(0xFF01579B) : Colors.black),
                                 borderRadius: BorderRadius.circular(3),
-                                color: secondAnswer == option ? Color(0xFFE1F5FE) : null
+                                color: (secondAnswer != null && secondAnswer == option) ? Color(0xFFE1F5FE) : null
                                 // color: Color(0xFFE1F5FE) 
                               ),
                               child: FlatButton(
@@ -791,7 +792,7 @@ class _AcuteIssuesState extends State<AcuteIssues> {
                                 },
                                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 child: Text(option.toUpperCase(),
-                                  style: TextStyle(color: secondAnswer == option ? kPrimaryColor : null),
+                                  style: TextStyle(color: (secondAnswer != null && secondAnswer == option) ? kPrimaryColor : null),
                                   // style: TextStyle(color: kPrimaryColor),
                                 ),
                               ),
@@ -804,41 +805,41 @@ class _AcuteIssuesState extends State<AcuteIssues> {
 
 
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Container(
-                    width: 200,
-                    margin: EdgeInsets.symmetric(horizontal: 30),
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: kPrimaryColor,
-                      borderRadius: BorderRadius.circular(3)
-                    ),
-                    child: FlatButton(
-                      onPressed: () async {
-                        if (firstAnswer == 'yes' || secondAnswer == 'yes') {
-                          var data = {
-                            'meta': {
-                              'patient_id': Patient().getPatient()['uuid'],
-                              "collected_by": Auth().getAuth()['uid'],
-                              "status": "pending"
-                            },
-                            'body': {}
-                          };
-                          Navigator.of(context).pushNamed('/medicalRecommendation', arguments: data);
-                          return;
-                        }
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.end,
+              //   children: <Widget>[
+              //     Container(
+              //       width: 200,
+              //       margin: EdgeInsets.symmetric(horizontal: 30),
+              //       height: 50,
+              //       decoration: BoxDecoration(
+              //         color: kPrimaryColor,
+              //         borderRadius: BorderRadius.circular(3)
+              //       ),
+              //       child: FlatButton(
+              //         onPressed: () async {
+              //           if (firstAnswer == 'yes' || secondAnswer == 'yes') {
+              //             var data = {
+              //               'meta': {
+              //                 'patient_id': Patient().getPatient()['uuid'],
+              //                 "collected_by": Auth().getAuth()['uid'],
+              //                 "status": "pending"
+              //               },
+              //               'body': {}
+              //             };
+              //             Navigator.of(context).pushNamed('/medicalRecommendation', arguments: data);
+              //             return;
+              //           }
 
-                        Navigator.of(context).pushNamed(FollowupVisitScreen.path);
+              //           Navigator.of(context).pushNamed(FollowupVisitScreen.path);
                         
-                      },
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      child: Text(AppLocalizations.of(context).translate('next'), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
-                    ),
-                  ),
-                ],
-              ),
+              //         },
+              //         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              //         child: Text(AppLocalizations.of(context).translate('next'), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+              //       ),
+              //     ),
+              //   ],
+              // ),
 
                 ],
               )
