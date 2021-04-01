@@ -812,7 +812,7 @@ checkMedicalHistoryAnswers(medicationQuestion) {
       matchedQuestion =  item;
     }
     else if (medicationQuestion['type'] == 'heart_bp_diabetes') {
-      if (item['type'] == 'heart' || item['type'] == 'blood_pressure' || item['type'] == 'diabetes') {
+      if (item['type'] == 'stroke' || item['type'] == 'heart' || item['type'] == 'blood_pressure' || item['type'] == 'diabetes') {
         
         var answer = medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(item)];
         if (answer == 'yes') {
@@ -1027,1027 +1027,1031 @@ class _MeasurementsState extends State<Measurements> {
   @override
   Widget build(BuildContext context) {
     
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-      child: Form(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(AppLocalizations.of(context).translate('bloodPressure'), style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),), 
-            SizedBox(height: 24,),
-            Container(
-              height: 200,
-              decoration: BoxDecoration(
-                border: Border.all(width: 0.5, color: Colors.grey.shade400),
-                borderRadius: BorderRadius.circular(10)
-              ),
-              padding: EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    child: Column(
-                      children: [
-                        Container(
-                          child: Row(
-                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(AppLocalizations.of(context).translate('systolic'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                                    SizedBox(width: 20,),
-                                    Container(
-                                      width: 80,
-                                      height: 40,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.center,
-                                        keyboardType: TextInputType.number,
-                                        controller: systolicEditingController,
-                                        onChanged: (value) {
-                                      
-                                        },
-                                        decoration: InputDecoration(  
-                                          contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                          ), 
+    return SingleChildScrollView(
+      physics: ClampingScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+        child: Form(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(AppLocalizations.of(context).translate('bloodPressure'), style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),), 
+              SizedBox(height: 24,),
+              Container(
+                height: 200,
+                decoration: BoxDecoration(
+                  border: Border.all(width: 0.5, color: Colors.grey.shade400),
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      child: Column(
+                        children: [
+                          Container(
+                            child: Row(
+                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(AppLocalizations.of(context).translate('systolic'), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                      SizedBox(width: 20,),
+                                      Container(
+                                        width: 80,
+                                        height: 40,
+                                        child: TextFormField(
+                                          textAlign: TextAlign.center,
+                                          keyboardType: TextInputType.number,
+                                          controller: systolicEditingController,
+                                          onChanged: (value) {
+                                        
+                                          },
+                                          decoration: InputDecoration(  
+                                            contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                            border: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                            ), 
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              //Spacer(),
-                              SizedBox(width: 50),
-                              Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(AppLocalizations.of(context).translate("diastolic"), style: TextStyle(color: Colors.black, fontSize: 16)),
-                                    SizedBox(width: 14,),
-                                    Container(
-                                      width: 80,
-                                      height: 40,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.center,
-                                        keyboardType: TextInputType.number,
-                                        controller: diastolicEditingController,
-                                        onChanged: (value) {
-                                      
-                                        },
-                                        decoration: InputDecoration(  
-                                          contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                          ), 
+                                //Spacer(),
+                                SizedBox(width: 50),
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(AppLocalizations.of(context).translate("diastolic"), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                      SizedBox(width: 14,),
+                                      Container(
+                                        width: 80,
+                                        height: 40,
+                                        child: TextFormField(
+                                          textAlign: TextAlign.center,
+                                          keyboardType: TextInputType.number,
+                                          controller: diastolicEditingController,
+                                          onChanged: (value) {
+                                        
+                                          },
+                                          decoration: InputDecoration(  
+                                            contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                            border: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                            ), 
+                                          ),
                                         ),
                                       ),
+                                    ],
+                                  )
+                                )
+
+
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(AppLocalizations.of(context).translate("pulseRate"), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                SizedBox(width: 24,),
+                                Container(
+                                  width: 80,
+                                  height: 40,
+                                  child: TextFormField(
+                                    textAlign: TextAlign.center,
+                                    keyboardType: TextInputType.number,
+                                    controller: pulseRateEditingController,
+                                    onChanged: (value) {
+                                  
+                                    },
+                                    decoration: InputDecoration(  
+                                      contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                      ), 
                                     ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Spacer(),
+                          Expanded(
+                            child: Container(),
+                          )
+                        ],
+                      ),
+                    ),
+
+                    Container(
+                     child: Row(
+                       children: [
+                         Text(AppLocalizations.of(context).translate("comment"), style: TextStyle(color: Colors.black, fontSize: 16,)),
+                         SizedBox(width: 8,),
+                         Expanded(
+                           child: Container(
+                             width: 80,
+                             height: 40,
+                             child: TextFormField(
+                               textAlign: TextAlign.center,
+                               keyboardType: TextInputType.text,
+                               controller: commentsEditingController,
+                               onChanged: (value) {
+                             
+                               },
+                               decoration: InputDecoration(  
+                                 contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                 border: OutlineInputBorder(
+                                   borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                 ), 
+                               ),
+                             ),
+                           ),
+                         ),
+                       ],
+                     ),
+                    ),
+
+                  ],
+                ),
+              ),
+              SizedBox(height: 24,),
+              Text(AppLocalizations.of(context).translate('bloodSugar'), style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),), 
+              SizedBox(height: 24,),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(width: 0.5, color: Colors.grey.shade400),
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      child: Column(
+                        children: [
+                          Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(AppLocalizations.of(context).translate('randomBloodSugar'), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                SizedBox(width: 15,),
+                                Container(
+                                  width: 80,
+                                  height: 40,
+                                  child: TextFormField(
+                                    textAlign: TextAlign.center,
+                                    keyboardType: TextInputType.number,
+                                    controller: randomBloodController,
+                                    onChanged: (value) {
+                                  
+                                    },
+                                    decoration: InputDecoration(  
+                                      contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                      ), 
+                                    ),
+                                  ),
+                                ),
+                              
+                                Row(
+                                  children: <Widget>[
+                                    Radio(
+                                      activeColor: kPrimaryColor,
+                                      value: 'mg/dL',
+                                      groupValue: selectedRandomBloodUnit,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedRandomBloodUnit = value;
+                                        });
+                                      },
+                                    ),
+                                    Text("mg/dL", style: TextStyle(color: Colors.black)),
+                                    Radio(
+                                      activeColor: kPrimaryColor,
+                                      value: 'mmol/L',
+                                      groupValue: selectedRandomBloodUnit,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedRandomBloodUnit = value;
+                                        });
+                                      },
+                                    ),
+                                    Text(
+                                      "mmol/L",
+                                    ),
+                                    
+                                    SizedBox(width: 20,),
                                   ],
                                 )
-                              )
-
-
-                            ],
+                              ],
+                            ),
                           ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(AppLocalizations.of(context).translate("pulseRate"), style: TextStyle(color: Colors.black, fontSize: 16)),
-                              SizedBox(width: 24,),
-                              Container(
-                                width: 80,
-                                height: 40,
-                                child: TextFormField(
-                                  textAlign: TextAlign.center,
-                                  keyboardType: TextInputType.number,
-                                  controller: pulseRateEditingController,
-                                  onChanged: (value) {
-                                
-                                  },
-                                  decoration: InputDecoration(  
-                                    contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                    ), 
+                        
+
+                          Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(AppLocalizations.of(context).translate('fastingBloodSugar'), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                SizedBox(width: 20,),
+                                Container(
+                                  width: 80,
+                                  height: 40,
+                                  child: TextFormField(
+                                    textAlign: TextAlign.center,
+                                    keyboardType: TextInputType.number,
+                                    controller: fastingBloodController,
+                                    onChanged: (value) {
+                                  
+                                    },
+                                    decoration: InputDecoration(  
+                                      contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                      ), 
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              
+                                Row(
+                                  children: <Widget>[
+                                    Radio(
+                                      activeColor: kPrimaryColor,
+                                      value: 'mg/dL',
+                                      groupValue: selectedFastingBloodUnit,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedFastingBloodUnit = value;
+                                        });
+                                      },
+                                    ),
+                                    Text("mg/dL", style: TextStyle(color: Colors.black)),
+                                    Radio(
+                                      activeColor: kPrimaryColor,
+                                      value: 'mmol/L',
+                                      groupValue: selectedFastingBloodUnit,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedFastingBloodUnit = value;
+                                        });
+                                      },
+                                    ),
+                                    Text(
+                                      "mmol/L",
+                                    ),
+                                    
+                                    SizedBox(width: 20,),
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                        Spacer(),
-                        Expanded(
-                          child: Container(),
-                        )
-                      ],
-                    ),
-                  ),
+                        
 
-                  Container(
-                   child: Row(
-                     children: [
-                       Text(AppLocalizations.of(context).translate("comment"), style: TextStyle(color: Colors.black, fontSize: 16,)),
-                       SizedBox(width: 8,),
-                       Expanded(
-                         child: Container(
-                           width: 80,
-                           height: 40,
-                           child: TextFormField(
-                             textAlign: TextAlign.center,
-                             keyboardType: TextInputType.text,
-                             controller: commentsEditingController,
-                             onChanged: (value) {
-                           
-                             },
-                             decoration: InputDecoration(  
-                               contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                               border: OutlineInputBorder(
-                                 borderSide: BorderSide(color: Colors.red, width: 0.0)
-                               ), 
+                          Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(AppLocalizations.of(context).translate('2HABF'), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                SizedBox(width: 113,),
+                                Container(
+                                  width: 80,
+                                  height: 40,
+                                  child: TextFormField(
+                                    textAlign: TextAlign.center,
+                                    keyboardType: TextInputType.number,
+                                    controller: habfController,
+                                    onChanged: (value) {
+                                  
+                                    },
+                                    decoration: InputDecoration(  
+                                      contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                      ), 
+                                    ),
+                                  ),
+                                ),
+                              
+                                Row(
+                                  children: <Widget>[
+                                    Radio(
+                                      activeColor: kPrimaryColor,
+                                      value: 'mg/dL',
+                                      groupValue: selectedHabfUnit,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedHabfUnit = value;
+                                        });
+                                      },
+                                    ),
+                                    Text("mg/dL", style: TextStyle(color: Colors.black)),
+                                    Radio(
+                                      activeColor: kPrimaryColor,
+                                      value: 'mmol/L',
+                                      groupValue: selectedHabfUnit,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedHabfUnit = value;
+                                        });
+                                      },
+                                    ),
+                                    Text(
+                                      "mmol/L",
+                                    ),
+                                    
+                                    SizedBox(width: 20,),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+
+                          Container(
+                            margin: EdgeInsets.only(top: 5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(AppLocalizations.of(context).translate('hba1c'), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                SizedBox(width: 117,),
+                                Container(
+                                  width: 80,
+                                  height: 40,
+                                  child: TextFormField(
+                                    textAlign: TextAlign.center,
+                                    keyboardType: TextInputType.number,
+                                    controller: hba1cController,
+                                    onChanged: (value) {
+                                  
+                                    },
+                                    decoration: InputDecoration(  
+                                      contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                      ), 
+                                    ),
+                                  ),
+                                ),
+                              
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: 15,),
+
+                    Container(
+                     child: Row(
+                       children: [
+                         Text(AppLocalizations.of(context).translate("comment"), style: TextStyle(color: Colors.black, fontSize: 16,)),
+                         SizedBox(width: 35,),
+                         Expanded(
+                           child: Container(
+                             width: 80,
+                             height: 40,
+                             child: TextFormField(
+                               textAlign: TextAlign.center,
+                               keyboardType: TextInputType.text,
+                               controller: commentsEditingController,
+                               onChanged: (value) {
+                             
+                               },
+                               decoration: InputDecoration(  
+                                 contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                 border: OutlineInputBorder(
+                                   borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                 ), 
+                               ),
                              ),
                            ),
                          ),
-                       ),
-                     ],
-                   ),
-                  ),
-
-                ],
-              ),
-            ),
-            SizedBox(height: 24,),
-            Text(AppLocalizations.of(context).translate('bloodSugar'), style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),), 
-            SizedBox(height: 24,),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(width: 0.5, color: Colors.grey.shade400),
-                borderRadius: BorderRadius.circular(10)
-              ),
-              padding: EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    child: Column(
-                      children: [
-                        Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(AppLocalizations.of(context).translate('randomBloodSugar'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                              SizedBox(width: 15,),
-                              Container(
-                                width: 80,
-                                height: 40,
-                                child: TextFormField(
-                                  textAlign: TextAlign.center,
-                                  keyboardType: TextInputType.number,
-                                  controller: randomBloodController,
-                                  onChanged: (value) {
-                                
-                                  },
-                                  decoration: InputDecoration(  
-                                    contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                    ), 
-                                  ),
-                                ),
-                              ),
-                            
-                              Row(
-                                children: <Widget>[
-                                  Radio(
-                                    activeColor: kPrimaryColor,
-                                    value: 'mg/dL',
-                                    groupValue: selectedRandomBloodUnit,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        selectedRandomBloodUnit = value;
-                                      });
-                                    },
-                                  ),
-                                  Text("mg/dL", style: TextStyle(color: Colors.black)),
-                                  Radio(
-                                    activeColor: kPrimaryColor,
-                                    value: 'mmol/L',
-                                    groupValue: selectedRandomBloodUnit,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        selectedRandomBloodUnit = value;
-                                      });
-                                    },
-                                  ),
-                                  Text(
-                                    "mmol/L",
-                                  ),
-                                  
-                                  SizedBox(width: 20,),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      
-
-                        Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(AppLocalizations.of(context).translate('fastingBloodSugar'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                              SizedBox(width: 20,),
-                              Container(
-                                width: 80,
-                                height: 40,
-                                child: TextFormField(
-                                  textAlign: TextAlign.center,
-                                  keyboardType: TextInputType.number,
-                                  controller: fastingBloodController,
-                                  onChanged: (value) {
-                                
-                                  },
-                                  decoration: InputDecoration(  
-                                    contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                    ), 
-                                  ),
-                                ),
-                              ),
-                            
-                              Row(
-                                children: <Widget>[
-                                  Radio(
-                                    activeColor: kPrimaryColor,
-                                    value: 'mg/dL',
-                                    groupValue: selectedFastingBloodUnit,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        selectedFastingBloodUnit = value;
-                                      });
-                                    },
-                                  ),
-                                  Text("mg/dL", style: TextStyle(color: Colors.black)),
-                                  Radio(
-                                    activeColor: kPrimaryColor,
-                                    value: 'mmol/L',
-                                    groupValue: selectedFastingBloodUnit,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        selectedFastingBloodUnit = value;
-                                      });
-                                    },
-                                  ),
-                                  Text(
-                                    "mmol/L",
-                                  ),
-                                  
-                                  SizedBox(width: 20,),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      
-
-                        Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(AppLocalizations.of(context).translate('2HABF'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                              SizedBox(width: 113,),
-                              Container(
-                                width: 80,
-                                height: 40,
-                                child: TextFormField(
-                                  textAlign: TextAlign.center,
-                                  keyboardType: TextInputType.number,
-                                  controller: habfController,
-                                  onChanged: (value) {
-                                
-                                  },
-                                  decoration: InputDecoration(  
-                                    contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                    ), 
-                                  ),
-                                ),
-                              ),
-                            
-                              Row(
-                                children: <Widget>[
-                                  Radio(
-                                    activeColor: kPrimaryColor,
-                                    value: 'mg/dL',
-                                    groupValue: selectedHabfUnit,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        selectedHabfUnit = value;
-                                      });
-                                    },
-                                  ),
-                                  Text("mg/dL", style: TextStyle(color: Colors.black)),
-                                  Radio(
-                                    activeColor: kPrimaryColor,
-                                    value: 'mmol/L',
-                                    groupValue: selectedHabfUnit,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        selectedHabfUnit = value;
-                                      });
-                                    },
-                                  ),
-                                  Text(
-                                    "mmol/L",
-                                  ),
-                                  
-                                  SizedBox(width: 20,),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-
-                        Container(
-                          margin: EdgeInsets.only(top: 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(AppLocalizations.of(context).translate('hba1c'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                              SizedBox(width: 117,),
-                              Container(
-                                width: 80,
-                                height: 40,
-                                child: TextFormField(
-                                  textAlign: TextAlign.center,
-                                  keyboardType: TextInputType.number,
-                                  controller: hba1cController,
-                                  onChanged: (value) {
-                                
-                                  },
-                                  decoration: InputDecoration(  
-                                    contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                    ), 
-                                  ),
-                                ),
-                              ),
-                            
-                            ],
-                          ),
-                        ),
-                      ],
+                       ],
+                     ),
                     ),
-                  ),
 
-                  SizedBox(height: 15,),
-
-                  Container(
-                   child: Row(
-                     children: [
-                       Text(AppLocalizations.of(context).translate("comment"), style: TextStyle(color: Colors.black, fontSize: 16,)),
-                       SizedBox(width: 35,),
-                       Expanded(
-                         child: Container(
-                           width: 80,
-                           height: 40,
-                           child: TextFormField(
-                             textAlign: TextAlign.center,
-                             keyboardType: TextInputType.text,
-                             controller: commentsEditingController,
-                             onChanged: (value) {
-                           
-                             },
-                             decoration: InputDecoration(  
-                               contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                               border: OutlineInputBorder(
-                                 borderSide: BorderSide(color: Colors.red, width: 0.0)
-                               ), 
-                             ),
-                           ),
-                         ),
-                       ),
-                     ],
-                   ),
-                  ),
-
-                ],
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 32,),
+              SizedBox(height: 32,),
+              
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(AppLocalizations.of(context).translate('lipidProfile'), style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),), 
+                    SizedBox(height: 24,),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 0.5, color: Colors.grey.shade400),
+                        borderRadius: BorderRadius.circular(10)
+                      ),
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            child: Column(
+                              children: [
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(AppLocalizations.of(context).translate('totalCholesterol'), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                      SizedBox(width: 25,),
+                                      Container(
+                                        width: 80,
+                                        height: 40,
+                                        child: TextFormField(
+                                          textAlign: TextAlign.center,
+                                          keyboardType: TextInputType.number,
+                                          controller: cholesterolController,
+                                          onChanged: (value) {
+                                        
+                                          },
+                                          decoration: InputDecoration(  
+                                            contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                            border: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                            ), 
+                                          ),
+                                        ),
+                                      ),
+                                    
+                                      Row(
+                                        children: <Widget>[
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mg/dL',
+                                            groupValue: selectedCholesterolUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedCholesterolUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text("mg/dL", style: TextStyle(color: Colors.black)),
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mmol/L',
+                                            groupValue: selectedCholesterolUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedCholesterolUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text(
+                                            "mmol/L",
+                                          ),
+                                          
+                                          SizedBox(width: 20,),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              
+
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(AppLocalizations.of(context).translate('ldl'), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                      SizedBox(width: 117,),
+                                      Container(
+                                        width: 80,
+                                        height: 40,
+                                        child: TextFormField(
+                                          textAlign: TextAlign.center,
+                                          keyboardType: TextInputType.number,
+                                          controller: ldlController,
+                                          onChanged: (value) {
+                                        
+                                          },
+                                          decoration: InputDecoration(  
+                                            contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                            border: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                            ), 
+                                          ),
+                                        ),
+                                      ),
+                                    
+                                      Row(
+                                        children: <Widget>[
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mg/dL',
+                                            groupValue: selectedLdlUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedLdlUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text("mg/dL", style: TextStyle(color: Colors.black)),
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mmol/L',
+                                            groupValue: selectedLdlUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedLdlUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text(
+                                            "mmol/L",
+                                          ),
+                                          
+                                          SizedBox(width: 20,),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              
+
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(AppLocalizations.of(context).translate('hdl'), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                      SizedBox(width: 115,),
+                                      Container(
+                                        width: 80,
+                                        height: 40,
+                                        child: TextFormField(
+                                          textAlign: TextAlign.center,
+                                          keyboardType: TextInputType.number,
+                                          controller: hdlController,
+                                          onChanged: (value) {
+                                        
+                                          },
+                                          decoration: InputDecoration(  
+                                            contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                            border: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                            ), 
+                                          ),
+                                        ),
+                                      ),
+                                    
+                                      Row(
+                                        children: <Widget>[
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mg/dL',
+                                            groupValue: selectedHdlUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedHdlUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text("mg/dL", style: TextStyle(color: Colors.black)),
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mmol/L',
+                                            groupValue: selectedHdlUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedHdlUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text(
+                                            "mmol/L",
+                                          ),
+                                          
+                                          SizedBox(width: 20,),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(AppLocalizations.of(context).translate('triglycerides'), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                      SizedBox(width: 55,),
+                                      Container(
+                                        width: 80,
+                                        height: 40,
+                                        child: TextFormField(
+                                          textAlign: TextAlign.center,
+                                          keyboardType: TextInputType.number,
+                                          controller: tgController,
+                                          onChanged: (value) {
+                                        
+                                          },
+                                          decoration: InputDecoration(  
+                                            contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                            border: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                            ), 
+                                          ),
+                                        ),
+                                      ),
+                                    
+                                      Row(
+                                        children: <Widget>[
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mg/dL',
+                                            groupValue: selectedTgUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedTgUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text("mg/dL", style: TextStyle(color: Colors.black)),
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mmol/L',
+                                            groupValue: selectedTgUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedTgUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text(
+                                            "mmol/L",
+                                          ),
+                                          
+                                          SizedBox(width: 20,),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 32,),
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(AppLocalizations.of(context).translate('additional'), style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),), 
+                    SizedBox(height: 24,),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 0.5, color: Colors.grey.shade400),
+                        borderRadius: BorderRadius.circular(10)
+                      ),
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            child: Column(
+                              children: [
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(AppLocalizations.of(context).translate('creatinine'), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                      SizedBox(width: 35,),
+                                      Container(
+                                        width: 80,
+                                        height: 40,
+                                        child: TextFormField(
+                                          textAlign: TextAlign.center,
+                                          keyboardType: TextInputType.number,
+                                          controller: creatinineController,
+                                          onChanged: (value) {
+                                        
+                                          },
+                                          decoration: InputDecoration(  
+                                            contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                            border: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                            ), 
+                                          ),
+                                        ),
+                                      ),
+                                    
+                                      Row(
+                                        children: <Widget>[
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mg/dL',
+                                            groupValue: selectedCreatinineUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedCreatinineUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text("mg/dL", style: TextStyle(color: Colors.black)),
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mmol/L',
+                                            groupValue: selectedCreatinineUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedCreatinineUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text(
+                                            "mmol/L",
+                                          ),
+                                          
+                                          SizedBox(width: 20,),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(AppLocalizations.of(context).translate('sodium'), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                      SizedBox(width: 50,),
+                                      Container(
+                                        width: 80,
+                                        height: 40,
+                                        child: TextFormField(
+                                          textAlign: TextAlign.center,
+                                          keyboardType: TextInputType.number,
+                                          controller: sodiumController,
+                                          onChanged: (value) {
+                                        
+                                          },
+                                          decoration: InputDecoration(  
+                                            contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                            border: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                            ), 
+                                          ),
+                                        ),
+                                      ),
+                                    
+                                      Row(
+                                        children: <Widget>[
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mg/dL',
+                                            groupValue: selectedSodiumUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedSodiumUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text("mg/dL", style: TextStyle(color: Colors.black)),
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mmol/L',
+                                            groupValue: selectedSodiumUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedSodiumUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text(
+                                            "mmol/L",
+                                          ),
+                                          
+                                          SizedBox(width: 20,),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              
+
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(AppLocalizations.of(context).translate('potassium'), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                      SizedBox(width: 28,),
+                                      Container(
+                                        width: 80,
+                                        height: 40,
+                                        child: TextFormField(
+                                          textAlign: TextAlign.center,
+                                          keyboardType: TextInputType.number,
+                                          controller: potassiumController,
+                                          onChanged: (value) {
+                                        
+                                          },
+                                          decoration: InputDecoration(  
+                                            contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                            border: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                            ), 
+                                          ),
+                                        ),
+                                      ),
+                                    
+                                      Row(
+                                        children: <Widget>[
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mg/dL',
+                                            groupValue: selectedPotassiumUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedPotassiumUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text("mg/dL", style: TextStyle(color: Colors.black)),
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mmol/L',
+                                            groupValue: selectedPotassiumUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedPotassiumUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text(
+                                            "mmol/L",
+                                          ),
+                                          
+                                          SizedBox(width: 20,),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(AppLocalizations.of(context).translate('ketones'), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                      SizedBox(width: 45,),
+                                      Container(
+                                        width: 80,
+                                        height: 40,
+                                        child: TextFormField(
+                                          textAlign: TextAlign.center,
+                                          keyboardType: TextInputType.number,
+                                          controller: ketonesController,
+                                          onChanged: (value) {
+                                        
+                                          },
+                                          decoration: InputDecoration(  
+                                            contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                            border: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                            ), 
+                                          ),
+                                        ),
+                                      ),
+                                    
+                                      Row(
+                                        children: <Widget>[
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mg/dL',
+                                            groupValue: selectedKetonesUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedKetonesUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text("mg/dL", style: TextStyle(color: Colors.black)),
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mmol/L',
+                                            groupValue: selectedKetonesUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedKetonesUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text(
+                                            "mmol/L",
+                                          ),
+                                          
+                                          SizedBox(width: 20,),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(AppLocalizations.of(context).translate('protein'), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                      SizedBox(width: 45,),
+                                      Container(
+                                        width: 80,
+                                        height: 40,
+                                        child: TextFormField(
+                                          textAlign: TextAlign.center,
+                                          keyboardType: TextInputType.number,
+                                          controller: proteinController,
+                                          onChanged: (value) {
+                                        
+                                          },
+                                          decoration: InputDecoration(  
+                                            contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                            border: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                            ), 
+                                          ),
+                                        ),
+                                      ),
+                                    
+                                      Row(
+                                        children: <Widget>[
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mg/dL',
+                                            groupValue: selectedProteinUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedProteinUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text("mg/dL", style: TextStyle(color: Colors.black)),
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mmol/L',
+                                            groupValue: selectedProteinUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedProteinUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text(
+                                            "mmol/L",
+                                          ),
+                                          
+                                          SizedBox(width: 20,),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             
-            Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(AppLocalizations.of(context).translate('lipidProfile'), style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),), 
-                  SizedBox(height: 24,),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 0.5, color: Colors.grey.shade400),
-                      borderRadius: BorderRadius.circular(10)
-                    ),
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          child: Column(
-                            children: [
-                              Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(AppLocalizations.of(context).translate('totalCholesterol'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                                    SizedBox(width: 25,),
-                                    Container(
-                                      width: 80,
-                                      height: 40,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.center,
-                                        keyboardType: TextInputType.number,
-                                        controller: cholesterolController,
-                                        onChanged: (value) {
-                                      
-                                        },
-                                        decoration: InputDecoration(  
-                                          contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                          ), 
-                                        ),
-                                      ),
-                                    ),
-                                  
-                                    Row(
-                                      children: <Widget>[
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mg/dL',
-                                          groupValue: selectedCholesterolUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedCholesterolUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text("mg/dL", style: TextStyle(color: Colors.black)),
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mmol/L',
-                                          groupValue: selectedCholesterolUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedCholesterolUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text(
-                                          "mmol/L",
-                                        ),
-                                        
-                                        SizedBox(width: 20,),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            
-
-                              Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(AppLocalizations.of(context).translate('ldl'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                                    SizedBox(width: 117,),
-                                    Container(
-                                      width: 80,
-                                      height: 40,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.center,
-                                        keyboardType: TextInputType.number,
-                                        controller: ldlController,
-                                        onChanged: (value) {
-                                      
-                                        },
-                                        decoration: InputDecoration(  
-                                          contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                          ), 
-                                        ),
-                                      ),
-                                    ),
-                                  
-                                    Row(
-                                      children: <Widget>[
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mg/dL',
-                                          groupValue: selectedLdlUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedLdlUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text("mg/dL", style: TextStyle(color: Colors.black)),
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mmol/L',
-                                          groupValue: selectedLdlUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedLdlUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text(
-                                          "mmol/L",
-                                        ),
-                                        
-                                        SizedBox(width: 20,),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            
-
-                              Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(AppLocalizations.of(context).translate('hdl'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                                    SizedBox(width: 115,),
-                                    Container(
-                                      width: 80,
-                                      height: 40,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.center,
-                                        keyboardType: TextInputType.number,
-                                        controller: hdlController,
-                                        onChanged: (value) {
-                                      
-                                        },
-                                        decoration: InputDecoration(  
-                                          contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                          ), 
-                                        ),
-                                      ),
-                                    ),
-                                  
-                                    Row(
-                                      children: <Widget>[
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mg/dL',
-                                          groupValue: selectedHdlUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedHdlUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text("mg/dL", style: TextStyle(color: Colors.black)),
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mmol/L',
-                                          groupValue: selectedHdlUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedHdlUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text(
-                                          "mmol/L",
-                                        ),
-                                        
-                                        SizedBox(width: 20,),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-
-                              Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(AppLocalizations.of(context).translate('triglycerides'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                                    SizedBox(width: 55,),
-                                    Container(
-                                      width: 80,
-                                      height: 40,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.center,
-                                        keyboardType: TextInputType.number,
-                                        controller: tgController,
-                                        onChanged: (value) {
-                                      
-                                        },
-                                        decoration: InputDecoration(  
-                                          contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                          ), 
-                                        ),
-                                      ),
-                                    ),
-                                  
-                                    Row(
-                                      children: <Widget>[
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mg/dL',
-                                          groupValue: selectedTgUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedTgUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text("mg/dL", style: TextStyle(color: Colors.black)),
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mmol/L',
-                                          groupValue: selectedTgUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedTgUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text(
-                                          "mmol/L",
-                                        ),
-                                        
-                                        SizedBox(width: 20,),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            SizedBox(height: 32,),
-            Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(AppLocalizations.of(context).translate('additional'), style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),), 
-                  SizedBox(height: 24,),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 0.5, color: Colors.grey.shade400),
-                      borderRadius: BorderRadius.circular(10)
-                    ),
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          child: Column(
-                            children: [
-                              Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(AppLocalizations.of(context).translate('creatinine'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                                    SizedBox(width: 35,),
-                                    Container(
-                                      width: 80,
-                                      height: 40,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.center,
-                                        keyboardType: TextInputType.number,
-                                        controller: creatinineController,
-                                        onChanged: (value) {
-                                      
-                                        },
-                                        decoration: InputDecoration(  
-                                          contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                          ), 
-                                        ),
-                                      ),
-                                    ),
-                                  
-                                    Row(
-                                      children: <Widget>[
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mg/dL',
-                                          groupValue: selectedCreatinineUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedCreatinineUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text("mg/dL", style: TextStyle(color: Colors.black)),
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mmol/L',
-                                          groupValue: selectedCreatinineUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedCreatinineUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text(
-                                          "mmol/L",
-                                        ),
-                                        
-                                        SizedBox(width: 20,),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-
-                              Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(AppLocalizations.of(context).translate('sodium'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                                    SizedBox(width: 50,),
-                                    Container(
-                                      width: 80,
-                                      height: 40,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.center,
-                                        keyboardType: TextInputType.number,
-                                        controller: sodiumController,
-                                        onChanged: (value) {
-                                      
-                                        },
-                                        decoration: InputDecoration(  
-                                          contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                          ), 
-                                        ),
-                                      ),
-                                    ),
-                                  
-                                    Row(
-                                      children: <Widget>[
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mg/dL',
-                                          groupValue: selectedSodiumUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedSodiumUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text("mg/dL", style: TextStyle(color: Colors.black)),
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mmol/L',
-                                          groupValue: selectedSodiumUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedSodiumUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text(
-                                          "mmol/L",
-                                        ),
-                                        
-                                        SizedBox(width: 20,),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            
-
-                              Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(AppLocalizations.of(context).translate('potassium'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                                    SizedBox(width: 28,),
-                                    Container(
-                                      width: 80,
-                                      height: 40,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.center,
-                                        keyboardType: TextInputType.number,
-                                        controller: potassiumController,
-                                        onChanged: (value) {
-                                      
-                                        },
-                                        decoration: InputDecoration(  
-                                          contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                          ), 
-                                        ),
-                                      ),
-                                    ),
-                                  
-                                    Row(
-                                      children: <Widget>[
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mg/dL',
-                                          groupValue: selectedPotassiumUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedPotassiumUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text("mg/dL", style: TextStyle(color: Colors.black)),
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mmol/L',
-                                          groupValue: selectedPotassiumUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedPotassiumUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text(
-                                          "mmol/L",
-                                        ),
-                                        
-                                        SizedBox(width: 20,),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-
-                              Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(AppLocalizations.of(context).translate('ketones'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                                    SizedBox(width: 45,),
-                                    Container(
-                                      width: 80,
-                                      height: 40,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.center,
-                                        keyboardType: TextInputType.number,
-                                        controller: ketonesController,
-                                        onChanged: (value) {
-                                      
-                                        },
-                                        decoration: InputDecoration(  
-                                          contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                          ), 
-                                        ),
-                                      ),
-                                    ),
-                                  
-                                    Row(
-                                      children: <Widget>[
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mg/dL',
-                                          groupValue: selectedKetonesUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedKetonesUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text("mg/dL", style: TextStyle(color: Colors.black)),
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mmol/L',
-                                          groupValue: selectedKetonesUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedKetonesUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text(
-                                          "mmol/L",
-                                        ),
-                                        
-                                        SizedBox(width: 20,),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-
-                              Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(AppLocalizations.of(context).translate('protein'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                                    SizedBox(width: 45,),
-                                    Container(
-                                      width: 80,
-                                      height: 40,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.center,
-                                        keyboardType: TextInputType.number,
-                                        controller: proteinController,
-                                        onChanged: (value) {
-                                      
-                                        },
-                                        decoration: InputDecoration(  
-                                          contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                          ), 
-                                        ),
-                                      ),
-                                    ),
-                                  
-                                    Row(
-                                      children: <Widget>[
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mg/dL',
-                                          groupValue: selectedProteinUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedProteinUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text("mg/dL", style: TextStyle(color: Colors.black)),
-                                        Radio(
-                                          activeColor: kPrimaryColor,
-                                          value: 'mmol/L',
-                                          groupValue: selectedProteinUnit,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedProteinUnit = value;
-                                            });
-                                          },
-                                        ),
-                                        Text(
-                                          "mmol/L",
-                                        ),
-                                        
-                                        SizedBox(width: 20,),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          
-          ],
-        ),
-      )
+            ],
+          ),
+        )
+      ),
     );
   }
 }

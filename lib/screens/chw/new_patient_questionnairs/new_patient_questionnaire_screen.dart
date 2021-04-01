@@ -654,94 +654,98 @@ class _MedicalHistoryState extends State<MedicalHistory> {
   @override
   Widget build(BuildContext context) {
     
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-      child: Form(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            PatientTopbar(),
-            SizedBox(height: 20,),
-            Container(
-              // alignment: Alignment.center,
-              margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
-              child: Text(AppLocalizations.of(context).translate('medicalHistory'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
-            ),
+    return SingleChildScrollView(
+      physics: ClampingScrollPhysics(),
+      scrollDirection: Axis.vertical,
+          child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+        child: Form(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              PatientTopbar(),
+              SizedBox(height: 20,),
+              Container(
+                // alignment: Alignment.center,
+                margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
+                child: Text(AppLocalizations.of(context).translate('medicalHistory'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
+              ),
 
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(bottom: 35, top: 20),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: kBorderLighter)
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.only(bottom: 35, top: 20),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: kBorderLighter)
+                        )
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ...medicalHistoryQuestions['items'].map((question) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Container(
+                                  child: Text(getQuestionText(context, question),
+                                    style: TextStyle(fontSize: 18, height: 1.7),
+                                  )
+                                ),
+                                SizedBox(height: 20,),
+                                Container(
+                                  width: MediaQuery.of(context).size.width * .5,
+                                  child: Row(
+                                    children: <Widget>[
+                                      ...question['options'].map((option) => 
+                                        Expanded(
+                                          child: Container(
+                                            height: 40,
+                                            margin: EdgeInsets.only(right: 20, left: 0),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(width: 1, color: medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFF01579B) : Colors.black),
+                                              borderRadius: BorderRadius.circular(3),
+                                              color: medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFFE1F5FE) : null
+                                            ),
+                                            child: FlatButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)] = question['options'][question['options'].indexOf(option)];
+                                                  print(medicalHistoryAnswers);
+                                                  // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
+                                                });
+                                              },
+                                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                              child: Text(getOptionText(context, question, option),
+                                                style: TextStyle(color: medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? kPrimaryColor : null),
+                                              ),
+                                            ),
+                                          )
+                                        ),
+                                      ).toList()
+                                    ],
+                                  )
+                                ),
+
+                                SizedBox(height: 20,)
+                              ],
+                            );
+                          }).toList()
+                          
+                        ],
                       )
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ...medicalHistoryQuestions['items'].map((question) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                child: Text(getQuestionText(context, question),
-                                  style: TextStyle(fontSize: 18, height: 1.7),
-                                )
-                              ),
-                              SizedBox(height: 20,),
-                              Container(
-                                width: MediaQuery.of(context).size.width * .5,
-                                child: Row(
-                                  children: <Widget>[
-                                    ...question['options'].map((option) => 
-                                      Expanded(
-                                        child: Container(
-                                          height: 40,
-                                          margin: EdgeInsets.only(right: 20, left: 0),
-                                          decoration: BoxDecoration(
-                                            border: Border.all(width: 1, color: medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFF01579B) : Colors.black),
-                                            borderRadius: BorderRadius.circular(3),
-                                            color: medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFFE1F5FE) : null
-                                          ),
-                                          child: FlatButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)] = question['options'][question['options'].indexOf(option)];
-                                                print(medicalHistoryAnswers);
-                                                // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
-                                              });
-                                            },
-                                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                            child: Text(getOptionText(context, question, option),
-                                              style: TextStyle(color: medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? kPrimaryColor : null),
-                                            ),
-                                          ),
-                                        )
-                                      ),
-                                    ).toList()
-                                  ],
-                                )
-                              ),
 
-                              SizedBox(height: 20,)
-                            ],
-                          );
-                        }).toList()
-                        
-                      ],
-                    )
-                  ),
-
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      )
+            ],
+          ),
+        )
+      ),
     );
   }
 }
@@ -790,7 +794,7 @@ checkMedicalHistoryAnswers(medicationQuestion) {
       matchedQuestion =  item;
     }
     else if (medicationQuestion['type'] == 'heart_bp_diabetes') {
-      if (item['type'] == 'heart' || item['type'] == 'blood_pressure' || item['type'] == 'diabetes') {
+      if (item['type'] == 'stroke' || item['type'] == 'heart' || item['type'] == 'blood_pressure' || item['type'] == 'diabetes') {
         
         var answer = medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(item)];
         if (answer == 'yes') {
@@ -848,120 +852,124 @@ checkMedicalHistoryAnswers(medicationQuestion) {
   @override
   Widget build(BuildContext context) {
     
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-      child: Form(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            PatientTopbar(),
-            SizedBox(height: 30,),
-            Container(
-              // alignment: Alignment.center,
-              margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
-              child: Text(AppLocalizations.of(context).translate('medicationTitle'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
-            ),
+    return SingleChildScrollView(
+      physics: ClampingScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+        child: Form(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              PatientTopbar(),
+              SizedBox(height: 30,),
+              Container(
+                // alignment: Alignment.center,
+                margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
+                child: Text(AppLocalizations.of(context).translate('medicationTitle'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
+              ),
 
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(bottom: 35, top: 20),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: kBorderLighter)
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.only(bottom: 35, top: 20),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: kBorderLighter)
+                        )
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                      
+                        children: [
+                          
+                          ...medicationQuestions['items'].map((question) {
+                            
+                            print('medQuestion $question');
+                            if (checkMedicalHistoryAnswers(question)) {
+                              if(question['category'] == 'sub'){
+                                print('subCategoryQuestion $question');
+                                print('subCategory');
+                              }
+                              isEmpty = false;
+                              return Container(
+                                margin: question['category'] == 'sub' ? EdgeInsets.only(left: 40, bottom: 20) : null,
+                                padding: question['category'] == 'sub' ? EdgeInsets.symmetric(horizontal: 20,) : null,
+                                decoration: question['category'] == 'sub' ? BoxDecoration(
+                                  border: Border.all(color: Colors.black12),
+                                  borderRadius: BorderRadius.circular(3)
+                                ) : null,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Container(
+                                      child: Text(getQuestionText(context, question),
+                                        style: TextStyle(fontSize: 18, height: 1.7),
+                                      )
+                                    ),
+                                    SizedBox(height: 20,),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width * .5,
+                                      child: Row(
+                                        children: <Widget>[
+                                          ...question['options'].map((option) => 
+                                            Expanded(
+                                              child: Container(
+                                                height: 40,
+                                                margin: EdgeInsets.only(right: 20, left: 0),
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(width: 1, color: medicationQuestions[medicationQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFF01579B) : Colors.black),
+                                                  borderRadius: BorderRadius.circular(3),
+                                                  color: medicationAnswers[medicationQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFFE1F5FE) : null
+                                                ),
+                                                child: FlatButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      print(medicalHistoryAnswers);
+                                                      medicationAnswers[medicationQuestions['items'].indexOf(question)] = question['options'][question['options'].indexOf(option)];
+                                                      checkAnswer();
+                                                      // print(medicalHistoryAnswers);
+                                                      // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
+                                                    });
+                                                  },
+                                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                  child: Text(getOptionText(context, question, option),
+                                                    style: TextStyle(color: medicationAnswers[medicationQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? kPrimaryColor : null),
+                                                  ),
+                                                ),
+                                              )
+                                            ),
+                                          ).toList()
+                                        ],
+                                      )
+                                    ),
+
+                                    SizedBox(height: 20,),
+
+                                  ],
+                                ),
+                              ); 
+                            } else return Container();
+                          }).toList(),
+
+                          isEmpty ? Container(
+                            child: Text( AppLocalizations.of(context).translate('noQuestionFound') + ' ' + AppLocalizations.of(context).translate('goToNextStep'), style: TextStyle(fontSize: 16),),
+                          ) : Container()
+                          
+                        ],
                       )
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                    
-                      children: [
-                        
-                        ...medicationQuestions['items'].map((question) {
-                          
-                          print('medQuestion $question');
-                          if (checkMedicalHistoryAnswers(question)) {
-                            if(question['category'] == 'sub'){
-                              print('subCategoryQuestion $question');
-                              print('subCategory');
-                            }
-                            isEmpty = false;
-                            return Container(
-                              margin: question['category'] == 'sub' ? EdgeInsets.only(left: 40, bottom: 20) : null,
-                              padding: question['category'] == 'sub' ? EdgeInsets.symmetric(horizontal: 20,) : null,
-                              decoration: question['category'] == 'sub' ? BoxDecoration(
-                                border: Border.all(color: Colors.black12),
-                                borderRadius: BorderRadius.circular(3)
-                              ) : null,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Container(
-                                    child: Text(getQuestionText(context, question),
-                                      style: TextStyle(fontSize: 18, height: 1.7),
-                                    )
-                                  ),
-                                  SizedBox(height: 20,),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width * .5,
-                                    child: Row(
-                                      children: <Widget>[
-                                        ...question['options'].map((option) => 
-                                          Expanded(
-                                            child: Container(
-                                              height: 40,
-                                              margin: EdgeInsets.only(right: 20, left: 0),
-                                              decoration: BoxDecoration(
-                                                border: Border.all(width: 1, color: medicationQuestions[medicationQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFF01579B) : Colors.black),
-                                                borderRadius: BorderRadius.circular(3),
-                                                color: medicationAnswers[medicationQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFFE1F5FE) : null
-                                              ),
-                                              child: FlatButton(
-                                                onPressed: () {
-                                                  setState(() {
-                                                    print(medicalHistoryAnswers);
-                                                    medicationAnswers[medicationQuestions['items'].indexOf(question)] = question['options'][question['options'].indexOf(option)];
-                                                    checkAnswer();
-                                                    // print(medicalHistoryAnswers);
-                                                    // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
-                                                  });
-                                                },
-                                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                child: Text(getOptionText(context, question, option),
-                                                  style: TextStyle(color: medicationAnswers[medicationQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? kPrimaryColor : null),
-                                                ),
-                                              ),
-                                            )
-                                          ),
-                                        ).toList()
-                                      ],
-                                    )
-                                  ),
 
-                                  SizedBox(height: 20,),
-
-                                ],
-                              ),
-                            ); 
-                          } else return Container();
-                        }).toList(),
-
-                        isEmpty ? Container(
-                          child: Text( AppLocalizations.of(context).translate('noQuestionFound') + ' ' + AppLocalizations.of(context).translate('goToNextStep'), style: TextStyle(fontSize: 16),),
-                        ) : Container()
-                        
-                      ],
-                    )
-                  ),
-
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      )
+            ],
+          ),
+        )
+      ),
     );
   }
 }
@@ -1000,260 +1008,78 @@ class _MeasurementsState extends State<Measurements> {
   @override
   Widget build(BuildContext context) {
     
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-      child: Form(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(AppLocalizations.of(context).translate('bloodPressure'), style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),), 
-            SizedBox(height: 24,),
-            Container(
-              height: 200,
-              decoration: BoxDecoration(
-                border: Border.all(width: 0.5, color: Colors.grey.shade400),
-                borderRadius: BorderRadius.circular(10)
-              ),
-              padding: EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    child: Column(
-                      children: [
-                        Container(
-                          child: Row(
-                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(AppLocalizations.of(context).translate('systolic'), style: TextStyle(color: Colors.black, fontSize: 16)),
-                                    SizedBox(width: 20,),
-                                    Container(
-                                      width: 80,
-                                      height: 40,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.center,
-                                        keyboardType: TextInputType.number,
-                                        controller: systolicEditingController,
-                                        onChanged: (value) {
-                                      
-                                        },
-                                        decoration: InputDecoration(  
-                                          contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                          ), 
+    return SingleChildScrollView(
+      physics: ClampingScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+        child: Form(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(AppLocalizations.of(context).translate('bloodPressure'), style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),), 
+              SizedBox(height: 24,),
+              Container(
+                height: 200,
+                decoration: BoxDecoration(
+                  border: Border.all(width: 0.5, color: Colors.grey.shade400),
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      child: Column(
+                        children: [
+                          Container(
+                            child: Row(
+                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(AppLocalizations.of(context).translate('systolic'), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                      SizedBox(width: 20,),
+                                      Container(
+                                        width: 80,
+                                        height: 40,
+                                        child: TextFormField(
+                                          textAlign: TextAlign.center,
+                                          keyboardType: TextInputType.number,
+                                          controller: systolicEditingController,
+                                          onChanged: (value) {
+                                        
+                                          },
+                                          decoration: InputDecoration(  
+                                            contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                            border: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                            ), 
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              //Spacer(),
-                              SizedBox(width: 50),
-                              Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(AppLocalizations.of(context).translate("diastolic"), style: TextStyle(color: Colors.black, fontSize: 16)),
-                              SizedBox(width: 14,),
-                              Container(
-                                width: 80,
-                                height: 40,
-                                child: TextFormField(
-                                  textAlign: TextAlign.center,
-                                  keyboardType: TextInputType.number,
-                                  controller: diastolicEditingController,
-                                  onChanged: (value) {
-                                
-                                  },
-                                  decoration: InputDecoration(  
-                                    contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                    ), 
+                                    ],
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                              
-
-
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(AppLocalizations.of(context).translate("pulseRate"), style: TextStyle(color: Colors.black, fontSize: 16)),
-                              SizedBox(width: 24,),
-                              Container(
-                                width: 80,
-                                height: 40,
-                                child: TextFormField(
-                                  textAlign: TextAlign.center,
-                                  keyboardType: TextInputType.number,
-                                  controller: pulseRateEditingController,
-                                  onChanged: (value) {
-                                
-                                  },
-                                  decoration: InputDecoration(  
-                                    contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                    ), 
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Spacer(),
-                        Expanded(
-                          child: Container(),
-                        )
-                      ],
-                    ),
-                  ),
-
-                  Container(
-                   child: Row(
-                     children: [
-                       Text(AppLocalizations.of(context).translate("comment"), style: TextStyle(color: Colors.black, fontSize: 16,)),
-                       SizedBox(width: 8,),
-                       Expanded(
-                         child: Container(
-                           width: 80,
-                           height: 40,
-                           child: TextFormField(
-                             textAlign: TextAlign.center,
-                             keyboardType: TextInputType.text,
-                             controller: commentsEditingController,
-                             onChanged: (value) {
-                           
-                             },
-                             decoration: InputDecoration(  
-                               contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                               border: OutlineInputBorder(
-                                 borderSide: BorderSide(color: Colors.red, width: 0.0)
-                               ), 
-                             ),
-                           ),
-                         ),
-                       ),
-                     ],
-                   ),
-                  ),
-
-                ],
-              ),
-            ),
-            SizedBox(height: 32,),
-            Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(AppLocalizations.of(context).translate("bodyMeasurements"), style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),),
-                  SizedBox(height: 24),
-                  Container(
-                    height: 190,
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 0.5, color: Colors.grey.shade400),
-                      borderRadius: BorderRadius.circular(10)
-                    ),
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
+                                //Spacer(),
+                                SizedBox(width: 50),
+                                Container(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Text(AppLocalizations.of(context).translate("height") + "*", style: TextStyle(color: Colors.black, fontSize: 16)),
-                                SizedBox(width: 30,),
+                                Text(AppLocalizations.of(context).translate("diastolic"), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                SizedBox(width: 14,),
                                 Container(
                                   width: 80,
                                   height: 40,
                                   child: TextFormField(
                                     textAlign: TextAlign.center,
                                     keyboardType: TextInputType.number,
-                                    controller: heightEditingController,
-                                    onChanged: (value) {
-                                      calculateBmi();
-                                    },
-                                    decoration: InputDecoration(  
-                                      contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                      border: OutlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                      ), 
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 16,),
-                                Text(AppLocalizations.of(context).translate("cm"), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(AppLocalizations.of(context).translate("weight") + "*", style: TextStyle(color: Colors.black, fontSize: 16,)),
-                                SizedBox(width: 28,),
-                                Container(
-                                  width: 80,
-                                  height: 40,
-                                  child: TextFormField(
-                                    textAlign: TextAlign.center,
-                                    keyboardType: TextInputType.number,
-                                    controller: weightEditingController,
-                                    onChanged: (value) {
-                                      calculateBmi();
-                                    },
-                                    decoration: InputDecoration(  
-                                      contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                                      border: OutlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.red, width: 0.0)
-                                      ), 
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 16,),
-                                Text(AppLocalizations.of(context).translate("kg"), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(AppLocalizations.of(context).translate("bmi"), style: TextStyle(color: Colors.black, fontSize: 16,)),
-                                SizedBox(width: 56,),
-                                Container(
-                                  width: 80,
-                                  height: 40,
-                                  child: TextFormField(
-                                    textAlign: TextAlign.center,
-                                    keyboardType: TextInputType.number,
-                                    readOnly: true, 
-                                    // enabled: false, 
-                                    controller: bmiEditingController,
+                                    controller: diastolicEditingController,
                                     onChanged: (value) {
                                   
                                     },
@@ -1268,110 +1094,296 @@ class _MeasurementsState extends State<Measurements> {
                               ],
                             ),
                           ),
-                      ],
+                                
+
+
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  )
-                ],
-              ),
-            ),
-            SizedBox(height: 40,),
-            Text(AppLocalizations.of(context).translate("tests"), style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),),
-            SizedBox(height: 24), 
-            Container(
-              padding: EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                border: Border.all(width: 0.5, color: Colors.grey.shade400),
-                borderRadius: BorderRadius.circular(10)
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  
-                  Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(AppLocalizations.of(context).translate("bloodSugar") ,style: TextStyle(color: Colors.black, fontSize: 16)),
-                        SizedBox(width: 10,),
-                        Container(
-                          width: 80,
-                          height: 40,
-                          child: TextFormField(
-                            textAlign: TextAlign.center,
-                            keyboardType: TextInputType.number,
-                            controller: bloodSugerEditingController,
-                            onChanged: (value) {
-                          
-                            },
-                            decoration: InputDecoration(  
-                              contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.red, width: 0.0)
-                              ), 
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(AppLocalizations.of(context).translate("pulseRate"), style: TextStyle(color: Colors.black, fontSize: 16)),
+                                SizedBox(width: 24,),
+                                Container(
+                                  width: 80,
+                                  height: 40,
+                                  child: TextFormField(
+                                    textAlign: TextAlign.center,
+                                    keyboardType: TextInputType.number,
+                                    controller: pulseRateEditingController,
+                                    onChanged: (value) {
+                                  
+                                    },
+                                    decoration: InputDecoration(  
+                                      contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                      ), 
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                        Radio(
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          value: 'mg/dL',
-                          groupValue: selectedGlucoseUnit,
-                          
-                          activeColor: kPrimaryColor,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedGlucoseUnit = value;
-                            });
-                          },
-                        ),
-                        Text('mg/dL', style: TextStyle(color: Colors.black)),
-                        SizedBox(width: 20,),
-                        Radio(
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          value: 'mmol/L',
-                          groupValue: selectedGlucoseUnit,
-                          activeColor: kPrimaryColor,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedGlucoseUnit = value;
-                            });
-                          },
-                        ),
-                        Text('mmol/L', style: TextStyle(color: Colors.black)),
-                      ],
+                          Spacer(),
+                          Expanded(
+                            child: Container(),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 10,),
-                  Container(
-                    child: Row(
-                      children: [
-                        Text(AppLocalizations.of(context).translate("type"), style: TextStyle(color: Colors.black, fontSize: 16)),
-                        SizedBox(width: 70,),
-                        Container(
-                          child: DropdownButton<String>(
-                          items: <String>['FBS', 'RBS', 'Others'].map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                          value: selectedBloodSugarType,
-                          onChanged: (String newValue) {
-                            setState(() {
-                              selectedBloodSugarType = newValue;
-                            });
-                          },
-                        ),
-                        )
-                      ],
+
+                    Container(
+                     child: Row(
+                       children: [
+                         Text(AppLocalizations.of(context).translate("comment"), style: TextStyle(color: Colors.black, fontSize: 16,)),
+                         SizedBox(width: 8,),
+                         Expanded(
+                           child: Container(
+                             width: 80,
+                             height: 40,
+                             child: TextFormField(
+                               textAlign: TextAlign.center,
+                               keyboardType: TextInputType.text,
+                               controller: commentsEditingController,
+                               onChanged: (value) {
+                             
+                               },
+                               decoration: InputDecoration(  
+                                 contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                 border: OutlineInputBorder(
+                                   borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                 ), 
+                               ),
+                             ),
+                           ),
+                         ),
+                       ],
+                     ),
                     ),
-                  )
-                ],
+
+                  ],
+                ),
               ),
-            )
-          ],
-        ),
-      )
+              SizedBox(height: 32,),
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(AppLocalizations.of(context).translate("bodyMeasurements"), style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),),
+                    SizedBox(height: 24),
+                    Container(
+                      height: 190,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 0.5, color: Colors.grey.shade400),
+                        borderRadius: BorderRadius.circular(10)
+                      ),
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(AppLocalizations.of(context).translate("height") + "*", style: TextStyle(color: Colors.black, fontSize: 16)),
+                                  SizedBox(width: 30,),
+                                  Container(
+                                    width: 80,
+                                    height: 40,
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      keyboardType: TextInputType.number,
+                                      controller: heightEditingController,
+                                      onChanged: (value) {
+                                        calculateBmi();
+                                      },
+                                      decoration: InputDecoration(  
+                                        contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                        border: OutlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                        ), 
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 16,),
+                                  Text(AppLocalizations.of(context).translate("cm"), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(AppLocalizations.of(context).translate("weight") + "*", style: TextStyle(color: Colors.black, fontSize: 16,)),
+                                  SizedBox(width: 28,),
+                                  Container(
+                                    width: 80,
+                                    height: 40,
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      keyboardType: TextInputType.number,
+                                      controller: weightEditingController,
+                                      onChanged: (value) {
+                                        calculateBmi();
+                                      },
+                                      decoration: InputDecoration(  
+                                        contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                        border: OutlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                        ), 
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 16,),
+                                  Text(AppLocalizations.of(context).translate("kg"), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(AppLocalizations.of(context).translate("bmi"), style: TextStyle(color: Colors.black, fontSize: 16,)),
+                                  SizedBox(width: 56,),
+                                  Container(
+                                    width: 80,
+                                    height: 40,
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      keyboardType: TextInputType.number,
+                                      readOnly: true, 
+                                      // enabled: false, 
+                                      controller: bmiEditingController,
+                                      onChanged: (value) {
+                                    
+                                      },
+                                      decoration: InputDecoration(  
+                                        contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                        border: OutlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                        ), 
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(height: 40,),
+              Text(AppLocalizations.of(context).translate("tests"), style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),),
+              SizedBox(height: 24), 
+              Container(
+                padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  border: Border.all(width: 0.5, color: Colors.grey.shade400),
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(AppLocalizations.of(context).translate("bloodSugar") ,style: TextStyle(color: Colors.black, fontSize: 16)),
+                          SizedBox(width: 10,),
+                          Container(
+                            width: 80,
+                            height: 40,
+                            child: TextFormField(
+                              textAlign: TextAlign.center,
+                              keyboardType: TextInputType.number,
+                              controller: bloodSugerEditingController,
+                              onChanged: (value) {
+                            
+                              },
+                              decoration: InputDecoration(  
+                                contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.red, width: 0.0)
+                                ), 
+                              ),
+                            ),
+                          ),
+                          Radio(
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            value: 'mg/dL',
+                            groupValue: selectedGlucoseUnit,
+                            
+                            activeColor: kPrimaryColor,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedGlucoseUnit = value;
+                              });
+                            },
+                          ),
+                          Text('mg/dL', style: TextStyle(color: Colors.black)),
+                          SizedBox(width: 20,),
+                          Radio(
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            value: 'mmol/L',
+                            groupValue: selectedGlucoseUnit,
+                            activeColor: kPrimaryColor,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedGlucoseUnit = value;
+                              });
+                            },
+                          ),
+                          Text('mmol/L', style: TextStyle(color: Colors.black)),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10,),
+                    Container(
+                      child: Row(
+                        children: [
+                          Text(AppLocalizations.of(context).translate("type"), style: TextStyle(color: Colors.black, fontSize: 16)),
+                          SizedBox(width: 70,),
+                          Container(
+                            child: DropdownButton<String>(
+                            items: <String>['FBS', 'RBS', 'Others'].map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                            value: selectedBloodSugarType,
+                            onChanged: (String newValue) {
+                              setState(() {
+                                selectedBloodSugarType = newValue;
+                              });
+                            },
+                          ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        )
+      ),
     );
   }
 }
@@ -1491,86 +1503,169 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
   @override
   Widget build(BuildContext context) {
     
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-      child: Form(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            PatientTopbar(),
-            SizedBox(height: 30,),
-            Container(
-              // alignment: Alignment.center,
-              margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(AppLocalizations.of(context).translate('tobaccoUse'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
-                  Text(AppLocalizations.of(context).translate('wasCounsellingProvided'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
-                ],
-              )
-            ),
+    return SingleChildScrollView(
+      physics: ClampingScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+        child: Form(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              PatientTopbar(),
+              SizedBox(height: 30,),
+              Container(
+                // alignment: Alignment.center,
+                margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(AppLocalizations.of(context).translate('tobaccoUse'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
+                    Text(AppLocalizations.of(context).translate('wasCounsellingProvided'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
+                  ],
+                )
+              ),
 
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(bottom: 35, top: 20),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: kBorderLighter)
-                      )
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ...counsellingQuestions['items'].map((question) {
-                          if (checkCounsellingQuestions(question)) 
-                          return Column(
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.only(bottom: 35, top: 20),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: kBorderLighter)
+                        )
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ...counsellingQuestions['items'].map((question) {
+                            if (checkCounsellingQuestions(question)) 
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                addCounsellingGroupTitle(question),
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(getQuestionText(context, question),
+                                        style: TextStyle(fontSize: 18, height: 1.7),
+                                      ),
+
+                                      Container(
+                                        width: 240,
+                                        child: Row(
+                                          children: <Widget>[
+                                            ...question['options'].map((option) => 
+                                              Expanded(
+                                                child: Container(
+                                                  height: 25,
+                                                  width: 100,
+                                                  margin: EdgeInsets.only(right: 20, left: 0),
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(width: 1, color: counsellingAnswers[counsellingQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFF01579B) : Colors.black),
+                                                    borderRadius: BorderRadius.circular(3),
+                                                    color: counsellingAnswers[counsellingQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFFE1F5FE) : null
+                                                  ),
+                                                  child: FlatButton(
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        dietTitleAdded = false;
+                                                        counsellingAnswers[counsellingQuestions['items'].indexOf(question)] = question['options'][question['options'].indexOf(option)];
+                                                        // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
+                                                      });
+                                                    },
+                                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                    child: Text(getOptionText(context, question, option),
+                                                      style: TextStyle(color: counsellingAnswers[counsellingQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? kPrimaryColor : null),
+                                                    ),
+                                                  ),
+                                                )
+                                              ),
+                                            ).toList()
+                                          ],
+                                        )
+                                      ),
+
+                                    ],
+                                  )
+                                ),
+                                
+                                SizedBox(height: 20,)
+                              ],
+                            );
+                            else return Container();
+                          }).toList(),
+
+
+                          Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              addCounsellingGroupTitle(question),
+                              SizedBox(height: 20),
                               Container(
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(getQuestionText(context, question),
-                                      style: TextStyle(fontSize: 18, height: 1.7),
+                                    Text(AppLocalizations.of(context).translate('referralRequired'),
+                                      style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
                                     ),
 
                                     Container(
                                       width: 240,
                                       child: Row(
                                         children: <Widget>[
-                                          ...question['options'].map((option) => 
-                                            Expanded(
-                                              child: Container(
-                                                height: 25,
-                                                width: 100,
-                                                margin: EdgeInsets.only(right: 20, left: 0),
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(width: 1, color: counsellingAnswers[counsellingQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFF01579B) : Colors.black),
-                                                  borderRadius: BorderRadius.circular(3),
-                                                  color: counsellingAnswers[counsellingQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFFE1F5FE) : null
+                                          Expanded(
+                                            child: Container(
+                                              height: 25,
+                                              width: 100,
+                                              margin: EdgeInsets.only(right: 20, left: 0),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(width: 1, color: (isReferralRequired != null && isReferralRequired) ? Color(0xFF01579B) : Colors.black),
+                                                borderRadius: BorderRadius.circular(3),
+                                                color: (isReferralRequired != null && isReferralRequired) ? Color(0xFFE1F5FE) : null
+                                              ),
+                                              child: FlatButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    dietTitleAdded = false;
+                                                    isReferralRequired = true;
+                                                  });
+                                                },
+                                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                child: Text(AppLocalizations.of(context).translate('yes'),
+                                                  style: TextStyle(color: (isReferralRequired != null && isReferralRequired) ? kPrimaryColor : null),
                                                 ),
-                                                child: FlatButton(
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      dietTitleAdded = false;
-                                                      counsellingAnswers[counsellingQuestions['items'].indexOf(question)] = question['options'][question['options'].indexOf(option)];
-                                                      // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
-                                                    });
-                                                  },
-                                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                  child: Text(getOptionText(context, question, option),
-                                                    style: TextStyle(color: counsellingAnswers[counsellingQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? kPrimaryColor : null),
-                                                  ),
+                                              ),
+                                            )
+                                          ),
+
+                                          Expanded(
+                                            child: Container(
+                                              height: 25,
+                                              width: 100,
+                                              margin: EdgeInsets.only(right: 20, left: 0),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(width: 1, color: (isReferralRequired == null || isReferralRequired) ? Colors.black  : Color(0xFF01579B)),
+                                                borderRadius: BorderRadius.circular(3),
+                                                color: (isReferralRequired == null || isReferralRequired) ? null : Color(0xFFE1F5FE)
+                                              ),
+                                              child: FlatButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    dietTitleAdded = false;
+                                                    isReferralRequired = false;
+                                                  });
+                                                },
+                                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                child: Text(AppLocalizations.of(context).translate('NO'),
+                                                  style: TextStyle(color: (isReferralRequired == null || isReferralRequired) ? null : kPrimaryColor),
                                                 ),
-                                              )
-                                            ),
-                                          ).toList()
+                                              ),
+                                            )
+                                          ),
                                         ],
                                       )
                                     ),
@@ -1581,98 +1676,19 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
                               
                               SizedBox(height: 20,)
                             ],
-                          );
-                          else return Container();
-                        }).toList(),
+                          ),
+                          
+                        ],
+                      )
+                    ),
 
-
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            SizedBox(height: 20),
-                            Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(AppLocalizations.of(context).translate('referralRequired'),
-                                    style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
-                                  ),
-
-                                  Container(
-                                    width: 240,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: Container(
-                                            height: 25,
-                                            width: 100,
-                                            margin: EdgeInsets.only(right: 20, left: 0),
-                                            decoration: BoxDecoration(
-                                              border: Border.all(width: 1, color: (isReferralRequired != null && isReferralRequired) ? Color(0xFF01579B) : Colors.black),
-                                              borderRadius: BorderRadius.circular(3),
-                                              color: (isReferralRequired != null && isReferralRequired) ? Color(0xFFE1F5FE) : null
-                                            ),
-                                            child: FlatButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  dietTitleAdded = false;
-                                                  isReferralRequired = true;
-                                                });
-                                              },
-                                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                              child: Text(AppLocalizations.of(context).translate('yes'),
-                                                style: TextStyle(color: (isReferralRequired != null && isReferralRequired) ? kPrimaryColor : null),
-                                              ),
-                                            ),
-                                          )
-                                        ),
-
-                                        Expanded(
-                                          child: Container(
-                                            height: 25,
-                                            width: 100,
-                                            margin: EdgeInsets.only(right: 20, left: 0),
-                                            decoration: BoxDecoration(
-                                              border: Border.all(width: 1, color: (isReferralRequired == null || isReferralRequired) ? Colors.black  : Color(0xFF01579B)),
-                                              borderRadius: BorderRadius.circular(3),
-                                              color: (isReferralRequired == null || isReferralRequired) ? null : Color(0xFFE1F5FE)
-                                            ),
-                                            child: FlatButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  dietTitleAdded = false;
-                                                  isReferralRequired = false;
-                                                });
-                                              },
-                                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                              child: Text(AppLocalizations.of(context).translate('NO'),
-                                                style: TextStyle(color: (isReferralRequired == null || isReferralRequired) ? null : kPrimaryColor),
-                                              ),
-                                            ),
-                                          )
-                                        ),
-                                      ],
-                                    )
-                                  ),
-
-                                ],
-                              )
-                            ),
-                            
-                            SizedBox(height: 20,)
-                          ],
-                        ),
-                        
-                      ],
-                    )
-                  ),
-
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      )
+            ],
+          ),
+        )
+      ),
     );
   }
 }
@@ -1710,95 +1726,99 @@ class _RiskFactorsState extends State<RiskFactors> {
   @override
   Widget build(BuildContext context) {
     
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-      child: Form(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            PatientTopbar(),
-            SizedBox(height: 30,),
-            Container(
-              // alignment: Alignment.center,
-              margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
-              child: Text(AppLocalizations.of(context).translate('riskFactors'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
-            ),
+    return SingleChildScrollView(
+      physics: ClampingScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+        child: Form(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              PatientTopbar(),
+              SizedBox(height: 30,),
+              Container(
+                // alignment: Alignment.center,
+                margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
+                child: Text(AppLocalizations.of(context).translate('riskFactors'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
+              ),
 
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(bottom: 35, top: 20),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: kBorderLighter)
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.only(bottom: 35, top: 20),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: kBorderLighter)
+                        )
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ...riskQuestions['items'].map((question) {
+                            
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                addRiskGroupTitle(question),
+                                Container(
+                                  child: Text(getQuestionText(context, question),
+                                    style: TextStyle(fontSize: 18, height: 1.7),
+                                  )
+                                ),
+                                SizedBox(height: 20,),
+                                Container(
+                                  width: MediaQuery.of(context).size.width * .5,
+                                  child: Row(
+                                    children: <Widget>[
+                                      ...question['options'].map((option) => 
+                                        Expanded(
+                                          child: Container(
+                                            height: 40,
+                                            margin: EdgeInsets.only(right: 20, left: 0),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(width: 1, color: riskAnswers[riskQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFF01579B) : Colors.black),
+                                              borderRadius: BorderRadius.circular(3),
+                                              color: riskAnswers[riskQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFFE1F5FE) : null
+                                            ),
+                                            child: FlatButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  riskAnswers[riskQuestions['items'].indexOf(question)] = question['options'][question['options'].indexOf(option)];
+                                                  // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
+                                                });
+                                              },
+                                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                              child: Text(getOptionText(context, question, option),
+                                                style: TextStyle(color: riskAnswers[riskQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? kPrimaryColor : null),
+                                              ),
+                                            ),
+                                          )
+                                        ),
+                                      ).toList()
+                                    ],
+                                  )
+                                ),
+
+                                SizedBox(height: 20,)
+                              ],
+                            );
+                          }).toList()
+                          
+                        ],
                       )
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ...riskQuestions['items'].map((question) {
-                          
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              addRiskGroupTitle(question),
-                              Container(
-                                child: Text(getQuestionText(context, question),
-                                  style: TextStyle(fontSize: 18, height: 1.7),
-                                )
-                              ),
-                              SizedBox(height: 20,),
-                              Container(
-                                width: MediaQuery.of(context).size.width * .5,
-                                child: Row(
-                                  children: <Widget>[
-                                    ...question['options'].map((option) => 
-                                      Expanded(
-                                        child: Container(
-                                          height: 40,
-                                          margin: EdgeInsets.only(right: 20, left: 0),
-                                          decoration: BoxDecoration(
-                                            border: Border.all(width: 1, color: riskAnswers[riskQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFF01579B) : Colors.black),
-                                            borderRadius: BorderRadius.circular(3),
-                                            color: riskAnswers[riskQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFFE1F5FE) : null
-                                          ),
-                                          child: FlatButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                riskAnswers[riskQuestions['items'].indexOf(question)] = question['options'][question['options'].indexOf(option)];
-                                                // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
-                                              });
-                                            },
-                                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                            child: Text(getOptionText(context, question, option),
-                                              style: TextStyle(color: riskAnswers[riskQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? kPrimaryColor : null),
-                                            ),
-                                          ),
-                                        )
-                                      ),
-                                    ).toList()
-                                  ],
-                                )
-                              ),
 
-                              SizedBox(height: 20,)
-                            ],
-                          );
-                        }).toList()
-                        
-                      ],
-                    )
-                  ),
-
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      )
+            ],
+          ),
+        )
+      ),
     );
   }
 }

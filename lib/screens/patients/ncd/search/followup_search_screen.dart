@@ -285,7 +285,7 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
                 ...patients.map((item) => GestureDetector(
                   onTap: () {
                     Patient().setPatient(item);
-                    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path);
+                    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: 'home');
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
