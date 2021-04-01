@@ -656,462 +656,466 @@ class _PatientDetailsState extends State<PatientDetails> {
   }
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-      child: Form(
-        key: _patientFormKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(AppLocalizations.of(context).translate('registerDetails'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
-            SizedBox(height: 20,),
+    return SingleChildScrollView(
+      physics: ClampingScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+        child: Form(
+          key: _patientFormKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(AppLocalizations.of(context).translate('registerDetails'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
+              SizedBox(height: 20,),
 
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: PrimaryTextField(
-                    topPaadding: 10,
-                    bottomPadding: 10,
-                    hintText: AppLocalizations.of(context).translate('firstName'),
-                    controller: firstNameController,
-                    name: AppLocalizations.of(context).translate('firstName'),
-                    validation: true,
-                  ),
-                ),
-                SizedBox(width: 20,),
-                Expanded(
-                  child: PrimaryTextField(
-                    topPaadding: 10,
-                    bottomPadding: 10,
-                    hintText: AppLocalizations.of(context).translate('lastName'),
-                    controller: lastNameController,
-                    name: AppLocalizations.of(context).translate('lastName'),
-                    //validation: true,
-                  ),
-                ),
-              ],
-            ),
-
-
-            SizedBox(height: 20,),
-
-            Container(
-              // margin: EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
                 children: <Widget>[
-                  Text(AppLocalizations.of(context).translate('gender'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-                  Row(
-                    children: <Widget>[
-                      // SizedBox(width: 20,),
-                      Radio(
-                        activeColor: kPrimaryColor,
-                        value: 'male',
-                        groupValue: selectedGender,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedGender = value;
-                            selectedGuardian = 'father';
-                          });
-                        },
-                      ),
-                      Text(AppLocalizations.of(context).translate('male'), style: TextStyle(color: Colors.black)),
-
-                      Radio(
-                        activeColor: kPrimaryColor,
-                        value: 'female',
-                        groupValue: selectedGender,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedGender = value;
-                          });
-                        },
-                      ),
-                      Text(
-                        AppLocalizations.of(context).translate('female'),
-                      ),
-                    ],
+                  Expanded(
+                    child: PrimaryTextField(
+                      topPaadding: 10,
+                      bottomPadding: 10,
+                      hintText: AppLocalizations.of(context).translate('firstName'),
+                      controller: firstNameController,
+                      name: AppLocalizations.of(context).translate('firstName'),
+                      validation: true,
+                    ),
+                  ),
+                  SizedBox(width: 20,),
+                  Expanded(
+                    child: PrimaryTextField(
+                      topPaadding: 10,
+                      bottomPadding: 10,
+                      hintText: AppLocalizations.of(context).translate('lastName'),
+                      controller: lastNameController,
+                      name: AppLocalizations.of(context).translate('lastName'),
+                      //validation: true,
+                    ),
                   ),
                 ],
-              )
-            ),
-
-            SizedBox(height: 20,),
-
-            selectedGender == 'female' ? Container(
-              // margin: EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      // SizedBox(width: 20,),
-                      Radio(
-                        activeColor: kPrimaryColor,
-                        value: 'father',
-                        groupValue: selectedGuardian,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedGuardian = value;
-                            print("selectedGuardian: $selectedGuardian");
-                          });
-                        },
-                      ),
-                      Text(AppLocalizations.of(context).translate('fathersName'), style: TextStyle(color: Colors.black)),
-
-                      Radio(
-                        activeColor: kPrimaryColor,
-                        value: 'husband',
-                        groupValue: selectedGuardian,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedGuardian = value;
-                          });
-                        },
-                      ),
-                      Text(
-                        AppLocalizations.of(context).translate('husbandsName'),
-                      ),
-                    ],
-                  ),
-                ],
-              )
-            ) : Container(),
-            
-            SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 10,
-              bottomPadding: 10,
-              hintText: AppLocalizations.of(context).translate(selectedGuardian + 'sName'),
-              controller: fatherNameController,
-              name: AppLocalizations.of(context).translate('fathersName'),
-              validation: true,
-            ),
-
-            SizedBox(height: 20,),
-
-            
-
-            Row(
-              children: [
-                // Text(AppLocalizations.of(context).translate('dateOfBirth'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-                // SizedBox(width: 10,),
-                // Text('(DD/MM/YYYY)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),),
-
-                Row(
-                    children: <Widget>[
-                      // SizedBox(width: 20,),
-                      Radio(
-                        activeColor: kPrimaryColor,
-                        value: 'dob',
-                        groupValue: selectedDobType,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedDobType = value;
-                          });
-                        },
-                      ),
-                      Text(AppLocalizations.of(context).translate('dateOfBirth'), style: TextStyle(color: Colors.black)),
-                      SizedBox(width: 10,),
-                      Text('(DD/MM/YYYY)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),),
-
-                      Radio(
-                        activeColor: kPrimaryColor,
-                        value: 'age',
-                        groupValue: selectedDobType,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedDobType = value;
-                          });
-                        },
-                      ),
-                      Text(
-                        AppLocalizations.of(context).translate('age'),
-                      ),
-                    ],
-                  ),
-              ],
-            ),
-            SizedBox(height: 20,),
-
-            selectedDobType == 'dob' ? Row(
-              children: [
-                Expanded(
-                  child: PrimaryTextField(
-                    topPaadding: 10,
-                    bottomPadding: 10,
-                    hintText: AppLocalizations.of(context).translate('dd'),
-                    controller: birthDateController,
-                    name: 'Date',
-                    type: TextInputType.number,
-                    validation: true,
-                  ),
-                ),
-                SizedBox(width: 15),
-                Expanded(
-                  child: PrimaryTextField(
-                    topPaadding: 10,
-                    bottomPadding: 10,
-                    hintText: AppLocalizations.of(context).translate('mm'),
-                    controller: birthMonthController,
-                    type: TextInputType.number,
-                    name: 'Month',
-                    validation: true,
-                  ),
-                ),
-                SizedBox(width: 15),
-                Expanded(
-                  child: PrimaryTextField(
-                    topPaadding: 10,
-                    bottomPadding: 10,
-                    hintText: AppLocalizations.of(context).translate('yy'),
-                    controller: birthYearController,
-                    name: 'Year',
-                    type: TextInputType.number,
-                    validation: true,
-                  ),
-                ),
-              ],
-            ) : 
-            PrimaryTextField(
-              topPaadding: 10,
-              bottomPadding: 10,
-              hintText: AppLocalizations.of(context).translate('age'),
-              controller: ageController,
-              name: 'Age',
-              type: TextInputType.number,
-              validation: true,
-            ),
-
-            SizedBox(height: 10,),
-            Divider(),
-            SizedBox(height: 20,),
-            Text(AppLocalizations.of(context).translate('address'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-            SizedBox(height: 20,),
-
-            PrimaryTextField(
-              topPaadding: 10,
-              bottomPadding: 10,
-              hintText: AppLocalizations.of(context).translate('streetPara'),
-              controller: streetNameController,
-              name: AppLocalizations.of(context).translate('streetPara'),
-              validation: true, 
-            ),
-
-            
-            SizedBox(height: 10,),
-            
-            PrimaryTextField(
-              topPaadding: 10,
-              bottomPadding: 10,
-              hintText: AppLocalizations.of(context).translate('hhNumber'),
-              controller: hhNumberController,
-              name: AppLocalizations.of(context).translate('hhNumber'),
-              validation: true, 
-            ),
-            SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 10,
-              bottomPadding: 10,
-              hintText: AppLocalizations.of(context).translate('serial'),
-              controller: serialController,
-              name: AppLocalizations.of(context).translate('serial'),
-              validation: true, 
-            ),
-            SizedBox(height: 10,),
-
-            PrimaryTextField(
-              topPaadding: 10,
-              bottomPadding: 10,
-              hintText: AppLocalizations.of(context).translate('village'),
-              controller: villageController,
-              name: AppLocalizations.of(context).translate('village'),
-            ),
-
-            SizedBox(height: 10,),
-            
-            PrimaryTextField(
-              topPaadding: 10,
-              bottomPadding: 10,
-              hintText: AppLocalizations.of(context).translate('union'),
-              controller: unionController,
-              name: AppLocalizations.of(context).translate('union'),
-            ),
-
-            SizedBox(height: 10,),
-
-            
-
-            DropdownSearch(
-              validator: (v) => v == null ? "required field" : null,
-              hint: AppLocalizations.of(context).translate('upazila'),
-              mode: Mode.BOTTOM_SHEET,
-              items: filteredUpazilas,
-              // showClearButton: true,
-              dropdownSearchDecoration: InputDecoration(
-                counterText: ' ',
-                contentPadding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10, right: 10),
-                filled: true,
-                fillColor: kSecondaryTextField,
-                border: new UnderlineInputBorder(
-                  borderSide: new BorderSide(color: Colors.white),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(4),
-                    topRight: Radius.circular(4),
-                  )
-                ),
-
-                hintText: 'Upazilas',
-                hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
               ),
-              onChanged: (value) {
-                setState(() {
-                  selectedUpazila = value;
 
-                  // districtController.text = value;
-                });
-              },
-              selectedItem: selectedUpazila['name'],
-              popupItemBuilder: _customPopupItemBuilderExample2,
-              showSearchBox: true,
-            ),
 
-            SizedBox(height: 10,),
+              SizedBox(height: 20,),
 
-            DropdownSearch(
-              validator: (v) => v == null ? "required field" : null,
-              hint: AppLocalizations.of(context).translate('district'),
-              mode: Mode.BOTTOM_SHEET,
-              items: districts,
-              // showClearButton: true,
-              dropdownSearchDecoration: InputDecoration(
-                counterText: ' ',
-                contentPadding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10, right: 10),
-                filled: true,
-                fillColor: kSecondaryTextField,
-                border: new UnderlineInputBorder(
-                  borderSide: new BorderSide(color: Colors.white),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(4),
-                    topRight: Radius.circular(4),
-                  )
-                ),
+              Container(
+                // margin: EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate('gender'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                    Row(
+                      children: <Widget>[
+                        // SizedBox(width: 20,),
+                        Radio(
+                          activeColor: kPrimaryColor,
+                          value: 'male',
+                          groupValue: selectedGender,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedGender = value;
+                              selectedGuardian = 'father';
+                            });
+                          },
+                        ),
+                        Text(AppLocalizations.of(context).translate('male'), style: TextStyle(color: Colors.black)),
 
-                hintText: 'District',
-                hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                        Radio(
+                          activeColor: kPrimaryColor,
+                          value: 'female',
+                          groupValue: selectedGender,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedGender = value;
+                            });
+                          },
+                        ),
+                        Text(
+                          AppLocalizations.of(context).translate('female'),
+                        ),
+                      ],
+                    ),
+                  ],
+                )
               ),
-              onChanged: (value) {
-                setState(() {
-                  selectedDistrict = value;
-                  updateUpazilas(selectedDistrict);
-                  selectedUpazila = {};
-                  // districtController.text = value;
-                });
-              },
-              selectedItem: selectedDistrict['name'],
-              popupItemBuilder: _customPopupItemBuilderExample2,
-              showSearchBox: true,
-            ),
 
-            SizedBox(height: 10,),
-            PrimaryTextField(
+              SizedBox(height: 20,),
+
+              selectedGender == 'female' ? Container(
+                // margin: EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        // SizedBox(width: 20,),
+                        Radio(
+                          activeColor: kPrimaryColor,
+                          value: 'father',
+                          groupValue: selectedGuardian,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedGuardian = value;
+                              print("selectedGuardian: $selectedGuardian");
+                            });
+                          },
+                        ),
+                        Text(AppLocalizations.of(context).translate('fathersName'), style: TextStyle(color: Colors.black)),
+
+                        Radio(
+                          activeColor: kPrimaryColor,
+                          value: 'husband',
+                          groupValue: selectedGuardian,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedGuardian = value;
+                            });
+                          },
+                        ),
+                        Text(
+                          AppLocalizations.of(context).translate('husbandsName'),
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+              ) : Container(),
+              
+              SizedBox(height: 10,),
+              PrimaryTextField(
                 topPaadding: 10,
                 bottomPadding: 10,
-              hintText: AppLocalizations.of(context).translate('postalCode'),
-              controller: postalCodeController,
-              name: AppLocalizations.of(context).translate('postalCode'),
-              type: TextInputType.number
-            ),
+                hintText: AppLocalizations.of(context).translate(selectedGuardian + 'sName'),
+                controller: fatherNameController,
+                name: AppLocalizations.of(context).translate('fathersName'),
+                validation: true,
+              ),
 
-            SizedBox(height: 10,),
-            
-            Divider(),
-            SizedBox(height: 20,),
-            PrimaryTextField(
-              topPaadding: 10,
-              bottomPadding: 10,
-              prefixIcon: Icon(Icons.phone),
-              hintText: AppLocalizations.of(context).translate('mobile'),
-              controller: mobilePhoneController,
-              name: AppLocalizations.of(context).translate('mobile'),
-              validation: true,
-              type: TextInputType.number
-            ),
-            PrimaryTextField(
-              topPaadding: 7,
-              bottomPadding: 7,
-              prefixIcon: Icon(Icons.phone),
-              hintText: AppLocalizations.of(context).translate("alternativePhone"),
-              controller: alternativePhoneController,
-              name: AppLocalizations.of(context).translate("alternativePhone"),
-              validation: false,
-              type: TextInputType.number
-            ),
-            SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 10,
-              bottomPadding: 10,
-              prefixIcon: Icon(Icons.email),
-              hintText: AppLocalizations.of(context).translate('emailAddressOptional'),
-              name: AppLocalizations.of(context).translate('emailAddressOptional'),
-              controller: emailController
-            ),
-            SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 10,
-              bottomPadding: 10,
-              hintText: AppLocalizations.of(context).translate('nationalId'),
-              controller: nidController,
-              name: AppLocalizations.of(context).translate('nationalId'),
-              validation: true,
-              type: TextInputType.number,
-            ),
-            SizedBox(height: 10,),
-            PrimaryTextField(
-              topPaadding: 10,
-              bottomPadding: 10,
-              hintText: AppLocalizations.of(context).translate('projectId'),
-              controller: bracPatientIdContoller,
-              name: AppLocalizations.of(context).translate('projectId'),
-              validation: true,
-            ),  
-            SizedBox(height: 10,),    
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 65,
-              color: kSecondaryTextField,
-              alignment: Alignment.center,
-              child: DropdownButtonFormField(
-                hint: Text(AppLocalizations.of(context).translate("center"), style: TextStyle(fontSize: 20, color: kTextGrey),),
-                decoration: InputDecoration(
+              SizedBox(height: 20,),
+
+              
+
+              Row(
+                children: [
+                  // Text(AppLocalizations.of(context).translate('dateOfBirth'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                  // SizedBox(width: 10,),
+                  // Text('(DD/MM/YYYY)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),),
+
+                  Row(
+                      children: <Widget>[
+                        // SizedBox(width: 20,),
+                        Radio(
+                          activeColor: kPrimaryColor,
+                          value: 'dob',
+                          groupValue: selectedDobType,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedDobType = value;
+                            });
+                          },
+                        ),
+                        Text(AppLocalizations.of(context).translate('dateOfBirth'), style: TextStyle(color: Colors.black)),
+                        SizedBox(width: 10,),
+                        Text('(DD/MM/YYYY)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),),
+
+                        Radio(
+                          activeColor: kPrimaryColor,
+                          value: 'age',
+                          groupValue: selectedDobType,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedDobType = value;
+                            });
+                          },
+                        ),
+                        Text(
+                          AppLocalizations.of(context).translate('age'),
+                        ),
+                      ],
+                    ),
+                ],
+              ),
+              SizedBox(height: 20,),
+
+              selectedDobType == 'dob' ? Row(
+                children: [
+                  Expanded(
+                    child: PrimaryTextField(
+                      topPaadding: 10,
+                      bottomPadding: 10,
+                      hintText: AppLocalizations.of(context).translate('dd'),
+                      controller: birthDateController,
+                      name: 'Date',
+                      type: TextInputType.number,
+                      validation: true,
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                  Expanded(
+                    child: PrimaryTextField(
+                      topPaadding: 10,
+                      bottomPadding: 10,
+                      hintText: AppLocalizations.of(context).translate('mm'),
+                      controller: birthMonthController,
+                      type: TextInputType.number,
+                      name: 'Month',
+                      validation: true,
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                  Expanded(
+                    child: PrimaryTextField(
+                      topPaadding: 10,
+                      bottomPadding: 10,
+                      hintText: AppLocalizations.of(context).translate('yy'),
+                      controller: birthYearController,
+                      name: 'Year',
+                      type: TextInputType.number,
+                      validation: true,
+                    ),
+                  ),
+                ],
+              ) : 
+              PrimaryTextField(
+                topPaadding: 10,
+                bottomPadding: 10,
+                hintText: AppLocalizations.of(context).translate('age'),
+                controller: ageController,
+                name: 'Age',
+                type: TextInputType.number,
+                validation: true,
+              ),
+
+              SizedBox(height: 10,),
+              Divider(),
+              SizedBox(height: 20,),
+              Text(AppLocalizations.of(context).translate('address'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+              SizedBox(height: 20,),
+
+              PrimaryTextField(
+                topPaadding: 10,
+                bottomPadding: 10,
+                hintText: AppLocalizations.of(context).translate('streetPara'),
+                controller: streetNameController,
+                name: AppLocalizations.of(context).translate('streetPara'),
+                validation: true, 
+              ),
+
+              
+              SizedBox(height: 10,),
+              
+              PrimaryTextField(
+                topPaadding: 10,
+                bottomPadding: 10,
+                hintText: AppLocalizations.of(context).translate('hhNumber'),
+                controller: hhNumberController,
+                name: AppLocalizations.of(context).translate('hhNumber'),
+                validation: true, 
+              ),
+              SizedBox(height: 10,),
+              PrimaryTextField(
+                topPaadding: 10,
+                bottomPadding: 10,
+                hintText: AppLocalizations.of(context).translate('serial'),
+                controller: serialController,
+                name: AppLocalizations.of(context).translate('serial'),
+                validation: true, 
+              ),
+              SizedBox(height: 10,),
+
+              PrimaryTextField(
+                topPaadding: 10,
+                bottomPadding: 10,
+                hintText: AppLocalizations.of(context).translate('village'),
+                controller: villageController,
+                name: AppLocalizations.of(context).translate('village'),
+              ),
+
+              SizedBox(height: 10,),
+              
+              PrimaryTextField(
+                topPaadding: 10,
+                bottomPadding: 10,
+                hintText: AppLocalizations.of(context).translate('union'),
+                controller: unionController,
+                name: AppLocalizations.of(context).translate('union'),
+              ),
+
+              SizedBox(height: 10,),
+
+              
+
+              DropdownSearch(
+                validator: (v) => v == null ? "required field" : null,
+                hint: AppLocalizations.of(context).translate('upazila'),
+                mode: Mode.BOTTOM_SHEET,
+                items: filteredUpazilas,
+                // showClearButton: true,
+                dropdownSearchDecoration: InputDecoration(
+                  counterText: ' ',
+                  contentPadding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10, right: 10),
+                  filled: true,
                   fillColor: kSecondaryTextField,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                  border: UnderlineInputBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(4),
-                    topRight: Radius.circular(4),
-                  )
+                  border: new UnderlineInputBorder(
+                    borderSide: new BorderSide(color: Colors.white),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(4),
+                      topRight: Radius.circular(4),
+                    )
+                  ),
+
+                  hintText: 'Upazilas',
+                  hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                 ),
-                ),
-                items: centersList.map((center) => DropdownMenuItem(
-                  child: Text(center['name']),
-                  value: centersList.indexOf(center),
-                )).toList(),
-                value: selectedCenters,
-                isExpanded: true,
                 onChanged: (value) {
                   setState(() {
-                     selectedCenters = value;
-                  });
-                  print("centerssss: $value");
-                },
-              ),
-            ),     
-            SizedBox(height: 30,),
+                    selectedUpazila = value;
 
-          ],
-        ),
-      )
+                    // districtController.text = value;
+                  });
+                },
+                selectedItem: selectedUpazila['name'],
+                popupItemBuilder: _customPopupItemBuilderExample2,
+                showSearchBox: true,
+              ),
+
+              SizedBox(height: 10,),
+
+              DropdownSearch(
+                validator: (v) => v == null ? "required field" : null,
+                hint: AppLocalizations.of(context).translate('district'),
+                mode: Mode.BOTTOM_SHEET,
+                items: districts,
+                // showClearButton: true,
+                dropdownSearchDecoration: InputDecoration(
+                  counterText: ' ',
+                  contentPadding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10, right: 10),
+                  filled: true,
+                  fillColor: kSecondaryTextField,
+                  border: new UnderlineInputBorder(
+                    borderSide: new BorderSide(color: Colors.white),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(4),
+                      topRight: Radius.circular(4),
+                    )
+                  ),
+
+                  hintText: 'District',
+                  hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    selectedDistrict = value;
+                    updateUpazilas(selectedDistrict);
+                    selectedUpazila = {};
+                    // districtController.text = value;
+                  });
+                },
+                selectedItem: selectedDistrict['name'],
+                popupItemBuilder: _customPopupItemBuilderExample2,
+                showSearchBox: true,
+              ),
+
+              SizedBox(height: 10,),
+              PrimaryTextField(
+                  topPaadding: 10,
+                  bottomPadding: 10,
+                hintText: AppLocalizations.of(context).translate('postalCode'),
+                controller: postalCodeController,
+                name: AppLocalizations.of(context).translate('postalCode'),
+                type: TextInputType.number
+              ),
+
+              SizedBox(height: 10,),
+              
+              Divider(),
+              SizedBox(height: 20,),
+              PrimaryTextField(
+                topPaadding: 10,
+                bottomPadding: 10,
+                prefixIcon: Icon(Icons.phone),
+                hintText: AppLocalizations.of(context).translate('mobile'),
+                controller: mobilePhoneController,
+                name: AppLocalizations.of(context).translate('mobile'),
+                validation: true,
+                type: TextInputType.number
+              ),
+              PrimaryTextField(
+                topPaadding: 7,
+                bottomPadding: 7,
+                prefixIcon: Icon(Icons.phone),
+                hintText: AppLocalizations.of(context).translate("alternativePhone"),
+                controller: alternativePhoneController,
+                name: AppLocalizations.of(context).translate("alternativePhone"),
+                validation: false,
+                type: TextInputType.number
+              ),
+              SizedBox(height: 10,),
+              PrimaryTextField(
+                topPaadding: 10,
+                bottomPadding: 10,
+                prefixIcon: Icon(Icons.email),
+                hintText: AppLocalizations.of(context).translate('emailAddressOptional'),
+                name: AppLocalizations.of(context).translate('emailAddressOptional'),
+                controller: emailController
+              ),
+              SizedBox(height: 10,),
+              PrimaryTextField(
+                topPaadding: 10,
+                bottomPadding: 10,
+                hintText: AppLocalizations.of(context).translate('nationalId'),
+                controller: nidController,
+                name: AppLocalizations.of(context).translate('nationalId'),
+                validation: true,
+                type: TextInputType.number,
+              ),
+              SizedBox(height: 10,),
+              PrimaryTextField(
+                topPaadding: 10,
+                bottomPadding: 10,
+                hintText: AppLocalizations.of(context).translate('projectId'),
+                controller: bracPatientIdContoller,
+                name: AppLocalizations.of(context).translate('projectId'),
+                validation: true,
+              ),  
+              SizedBox(height: 10,),    
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: 65,
+                color: kSecondaryTextField,
+                alignment: Alignment.center,
+                child: DropdownButtonFormField(
+                  hint: Text(AppLocalizations.of(context).translate("center"), style: TextStyle(fontSize: 20, color: kTextGrey),),
+                  decoration: InputDecoration(
+                    fillColor: kSecondaryTextField,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                    border: UnderlineInputBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(4),
+                      topRight: Radius.circular(4),
+                    )
+                  ),
+                  ),
+                  items: centersList.map((center) => DropdownMenuItem(
+                    child: Text(center['name']),
+                    value: centersList.indexOf(center),
+                  )).toList(),
+                  value: selectedCenters,
+                  isExpanded: true,
+                  onChanged: (value) {
+                    setState(() {
+                       selectedCenters = value;
+                    });
+                    print("centerssss: $value");
+                  },
+                ),
+              ),     
+              SizedBox(height: 30,),
+
+            ],
+          ),
+        )
+      ),
     );
   }
 }
@@ -1273,130 +1277,134 @@ class _AddPhotoState extends State<AddPhoto> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-      child: Column(
-        // crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(height: 30,),
-          Text(AppLocalizations.of(context).translate('takePhoto'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
-          SizedBox(height: 30,),
+    return SingleChildScrollView(
+      physics: ClampingScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+        child: Column(
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(height: 30,),
+            Text(AppLocalizations.of(context).translate('takePhoto'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
+            SizedBox(height: 30,),
 
-          Container(
-            height: 200,
-            // width: 200,
-            // alignment: Alignment.topCenter,
-            decoration: BoxDecoration(
-              border: Border.all(width: 1, color: kTableBorderGrey)
-            ),
-            child: _image == null && storageAvatar == '' ? 
-            GestureDetector(
-              onTap: () => getImageFromCam(),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-                child: Column(
-                  // crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(Icons.camera_alt, size: 90, color: kPrimaryColor,),
-                    Text(AppLocalizations.of(context).translate('addPhoto'), style: TextStyle(color: kPrimaryColor, fontSize: 20, height: 2))
-                  ],
-                ),
-              ),
-            ) : _image == null && storageAvatar != '' ? 
             Container(
               height: 200,
-              width: 200,
-              child: Stack(
-              children: <Widget>[
-                Image.network(storageAvatar, fit: BoxFit.contain),
-                CachedNetworkImage(
-                  imageUrl: storageAvatar,
-                  placeholder: (context,url) => 
-                  Center(),
-                  errorWidget: (context,url,error) => 
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(Icons.error),
-                        Text(AppLocalizations.of(context).translate("imageNotFound"))
-                      ],
-                    )
-                  ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 80,
-                  child: GestureDetector(
-                    onTap: () => getImageFromCam(),
-                    child: CircleAvatar(
-                      child: Icon(Icons.edit),
-                    ),
-                  ),
-                )
-              ],
-            ),
-            ) : Container(
-              height: 200,
-              width: 200,
-              child: Stack(
-              children: <Widget>[
-                Image.file(_image, fit: BoxFit.contain),
-                Positioned(
-                  bottom: 0,
-                  left: 30,
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _image.delete();
-                        setState(() {
-                          storageAvatar = '';
-                        });
-                        _image = null;
-                        firstTime = true;
-                      });
-                    },
-                    child: CircleAvatar(
-                      child: Icon(Icons.delete),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 30,
-                  child: GestureDetector(
-                    onTap: () => cropImage(),
-                    child: CircleAvatar(
-                      child: Icon(Icons.edit),
-                    ),
-                  ),
-                )
-              ],
-            ),
-            )
-          ) ,
-
-          SizedBox(height: 70,),
-          
-          GestureDetector(
-            onTap: () async {
-              print(_currentStep);
-              widget.parent.nextStep();
-              
-            },
-            child: Container(
-              width: double.infinity,
-              height: 62.0,
-              alignment: Alignment.center,
+              // width: 200,
+              // alignment: Alignment.topCenter,
               decoration: BoxDecoration(
-                color: kPrimaryColor,
-                borderRadius: BorderRadius.circular(4)
+                border: Border.all(width: 1, color: kTableBorderGrey)
               ),
-              child: isLoading ? CircularProgressIndicator() : Text("${isEditState != null ? AppLocalizations.of(context).translate('updatePatient') : AppLocalizations.of(context).translate('viewSummary')}", style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w400))
+              child: _image == null && storageAvatar == '' ? 
+              GestureDetector(
+                onTap: () => getImageFromCam(),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                  child: Column(
+                    // crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(Icons.camera_alt, size: 90, color: kPrimaryColor,),
+                      Text(AppLocalizations.of(context).translate('addPhoto'), style: TextStyle(color: kPrimaryColor, fontSize: 20, height: 2))
+                    ],
+                  ),
+                ),
+              ) : _image == null && storageAvatar != '' ? 
+              Container(
+                height: 200,
+                width: 200,
+                child: Stack(
+                children: <Widget>[
+                  Image.network(storageAvatar, fit: BoxFit.contain),
+                  CachedNetworkImage(
+                    imageUrl: storageAvatar,
+                    placeholder: (context,url) => 
+                    Center(),
+                    errorWidget: (context,url,error) => 
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(Icons.error),
+                          Text(AppLocalizations.of(context).translate("imageNotFound"))
+                        ],
+                      )
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 80,
+                    child: GestureDetector(
+                      onTap: () => getImageFromCam(),
+                      child: CircleAvatar(
+                        child: Icon(Icons.edit),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              ) : Container(
+                height: 200,
+                width: 200,
+                child: Stack(
+                children: <Widget>[
+                  Image.file(_image, fit: BoxFit.contain),
+                  Positioned(
+                    bottom: 0,
+                    left: 30,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _image.delete();
+                          setState(() {
+                            storageAvatar = '';
+                          });
+                          _image = null;
+                          firstTime = true;
+                        });
+                      },
+                      child: CircleAvatar(
+                        child: Icon(Icons.delete),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 30,
+                    child: GestureDetector(
+                      onTap: () => cropImage(),
+                      child: CircleAvatar(
+                        child: Icon(Icons.edit),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              )
+            ) ,
+
+            SizedBox(height: 70,),
+            
+            GestureDetector(
+              onTap: () async {
+                print(_currentStep);
+                widget.parent.nextStep();
+                
+              },
+              child: Container(
+                width: double.infinity,
+                height: 62.0,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: kPrimaryColor,
+                  borderRadius: BorderRadius.circular(4)
+                ),
+                child: isLoading ? CircularProgressIndicator() : Text("${isEditState != null ? AppLocalizations.of(context).translate('updatePatient') : AppLocalizations.of(context).translate('viewSummary')}", style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w400))
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -1483,218 +1491,222 @@ class _ViewSummaryState extends State<ViewSummary> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(height: 10,),
+    return SingleChildScrollView(
+      physics: ClampingScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(height: 10,),
 
-          Container(
-            height: 400,
-            // width: 200,
-            // alignment: Alignment.topCenter,
-            decoration: BoxDecoration(
-              // border: Border.all(width: 1, color: kTableBorderGrey)
-            ),
-            child: Column(
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('name') + ': ', style: TextStyle(fontSize: 18),),
-                    Text(firstNameController.text + ' ' + lastNameController.text, style: TextStyle(fontSize: 18),),
-                    Spacer(),
-                    ClipOval(
-                      child: Material(
-                        child: InkWell(
-                          onTap: () {
-                            widget.parent.goBackToEdit();
-                          },
-                          child: Container(
-                            height: 30,
-                            width: 30,
-                            decoration: BoxDecoration(
-                              color: kPrimaryColor
+            Container(
+              height: 400,
+              // width: 200,
+              // alignment: Alignment.topCenter,
+              decoration: BoxDecoration(
+                // border: Border.all(width: 1, color: kTableBorderGrey)
+              ),
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Text(AppLocalizations.of(context).translate('name') + ': ', style: TextStyle(fontSize: 18),),
+                      Text(firstNameController.text + ' ' + lastNameController.text, style: TextStyle(fontSize: 18),),
+                      Spacer(),
+                      ClipOval(
+                        child: Material(
+                          child: InkWell(
+                            onTap: () {
+                              widget.parent.goBackToEdit();
+                            },
+                            child: Container(
+                              height: 30,
+                              width: 30,
+                              decoration: BoxDecoration(
+                                color: kPrimaryColor
+                              ),
+                              child: Icon(Icons.edit, color: Colors.white, size: 18,),
                             ),
-                            child: Icon(Icons.edit, color: Colors.white, size: 18,),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 7,),
+                    ],
+                  ),
+                  SizedBox(height: 7,),
 
-                Row(
-                  children: <Widget>[
-                    selectedGuardian == 'husband' ? Text(AppLocalizations.of(context).translate('husbandName') + ': ', style: TextStyle(fontSize: 18),) :Text(AppLocalizations.of(context).translate('fathersName') + ': ', style: TextStyle(fontSize: 18),),
-                    Text(fatherNameController.text, style: TextStyle(fontSize: 18),),
-                  ],
-                ),
-                SizedBox(height: 7,),
-                Row(
-                  children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('gender') + ': ', style: TextStyle(fontSize: 18),),
-                    Text(selectedGender, style: TextStyle(fontSize: 18),),
-                  ],
-                ),
-                SizedBox(height: 7,),
+                  Row(
+                    children: <Widget>[
+                      selectedGuardian == 'husband' ? Text(AppLocalizations.of(context).translate('husbandName') + ': ', style: TextStyle(fontSize: 18),) :Text(AppLocalizations.of(context).translate('fathersName') + ': ', style: TextStyle(fontSize: 18),),
+                      Text(fatherNameController.text, style: TextStyle(fontSize: 18),),
+                    ],
+                  ),
+                  SizedBox(height: 7,),
+                  Row(
+                    children: <Widget>[
+                      Text(AppLocalizations.of(context).translate('gender') + ': ', style: TextStyle(fontSize: 18),),
+                      Text(selectedGender, style: TextStyle(fontSize: 18),),
+                    ],
+                  ),
+                  SizedBox(height: 7,),
 
-                selectedDobType == 'dob' ?
-                Row(
-                  children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('dateOfBirth') + ': ', style: TextStyle(fontSize: 18),),
-                    Text(birthDateController.text + '-' + birthMonthController.text + '-' + birthYearController.text, style: TextStyle(fontSize: 18),),
-                  ],
-                ) :  
-                Row(
-                  children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('age') + ': ', style: TextStyle(fontSize: 18),),
-                    Text('${ageController.text}', style: TextStyle(fontSize: 18),),
-                  ],
-                ),
-                SizedBox(height: 7,),
+                  selectedDobType == 'dob' ?
+                  Row(
+                    children: <Widget>[
+                      Text(AppLocalizations.of(context).translate('dateOfBirth') + ': ', style: TextStyle(fontSize: 18),),
+                      Text(birthDateController.text + '-' + birthMonthController.text + '-' + birthYearController.text, style: TextStyle(fontSize: 18),),
+                    ],
+                  ) :  
+                  Row(
+                    children: <Widget>[
+                      Text(AppLocalizations.of(context).translate('age') + ': ', style: TextStyle(fontSize: 18),),
+                      Text('${ageController.text}', style: TextStyle(fontSize: 18),),
+                    ],
+                  ),
+                  SizedBox(height: 7,),
 
-                Row(
-                  children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('address') + ': ', style: TextStyle(fontSize: 18),),
-                    Text(getAddress(), style: TextStyle(fontSize: 18),),
-                  ],
-                ),
-                SizedBox(height: 7,),
+                  Row(
+                    children: <Widget>[
+                      Text(AppLocalizations.of(context).translate('address') + ': ', style: TextStyle(fontSize: 18),),
+                      Text(getAddress(), style: TextStyle(fontSize: 18),),
+                    ],
+                  ),
+                  SizedBox(height: 7,),
+                  
+                  Row(
+                    children: <Widget>[
+                      Text(AppLocalizations.of(context).translate('hhNumber') + ': ', style: TextStyle(fontSize: 18),),
+                      Text(hhNumberController.text, style: TextStyle(fontSize: 18),),
+                    ],
+                  ),
+                  SizedBox(height: 7,),
+                  
+                  Row(
+                    children: <Widget>[
+                      Text(AppLocalizations.of(context).translate('serial') + ': ', style: TextStyle(fontSize: 18),),
+                      Text(serialController.text, style: TextStyle(fontSize: 18),),
+                    ],
+                  ),
+                  SizedBox(height: 7,),
+                  Row(
+                    children: <Widget>[
+                      Text(AppLocalizations.of(context).translate('union') + ': ', style: TextStyle(fontSize: 18),),
+                      Text(unionController.text, style: TextStyle(fontSize: 18),),
+                    ],
+                  ),
+                  SizedBox(height: 7,),
+                  emailController.text.isNotEmpty ? Row(
+                    children: <Widget>[
+                      Text(AppLocalizations.of(context).translate('email') + ": ", style: TextStyle(fontSize: 18),),
+                      Text(emailController.text, style: TextStyle(fontSize: 18),),
+                    ],
+                  ) : Container(height: 0,),
+                  SizedBox(height: 7,),
+                  mobilePhoneController.text.isNotEmpty ? Row(
+                    children: <Widget>[
+                      Text(AppLocalizations.of(context).translate('mobile') + ': ', style: TextStyle(fontSize: 18),),
+                      Text(mobilePhoneController.text, style: TextStyle(fontSize: 18),),
+                    ],
+                  ) : Container(height: 0),
+                  SizedBox(height: 7,),
+
+                  Row(
+                    children: <Widget>[
+                      Text(AppLocalizations.of(context).translate('nationalId') + ': ', style: TextStyle(fontSize: 18),),
+                      Text(nidController.text, style: TextStyle(fontSize: 18),),
+                    ],
+                  ),
+                  
+                  SizedBox(height: 7,),
+                                  
+                 alternativePhoneController.text.isNotEmpty ? Row(
+                    children: <Widget>[
+                      Text(AppLocalizations.of(context).translate('alternativePhone') + ': ', style: TextStyle(fontSize: 18),),
+                      Text(alternativePhoneController.text, style: TextStyle(fontSize: 18),),
+                    ],
+                  ) : Container(height: 0),
                 
-                Row(
-                  children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('hhNumber') + ': ', style: TextStyle(fontSize: 18),),
-                    Text(hhNumberController.text, style: TextStyle(fontSize: 18),),
-                  ],
-                ),
                 SizedBox(height: 7,),
-                
-                Row(
-                  children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('serial') + ': ', style: TextStyle(fontSize: 18),),
-                    Text(serialController.text, style: TextStyle(fontSize: 18),),
-                  ],
-                ),
+                 bracPatientIdContoller.text.isNotEmpty ? Row(
+                    children: <Widget>[
+                      Text(AppLocalizations.of(context).translate('projectId') + ': ', style: TextStyle(fontSize: 18),),
+                      Text(bracPatientIdContoller.text, style: TextStyle(fontSize: 18),),
+                    ],
+                  ) : Container(height: 0,),
                 SizedBox(height: 7,),
-                Row(
-                  children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('union') + ': ', style: TextStyle(fontSize: 18),),
-                    Text(unionController.text, style: TextStyle(fontSize: 18),),
-                  ],
-                ),
-                SizedBox(height: 7,),
-                emailController.text.isNotEmpty ? Row(
-                  children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('email') + ": ", style: TextStyle(fontSize: 18),),
-                    Text(emailController.text, style: TextStyle(fontSize: 18),),
-                  ],
-                ) : Container(height: 0,),
-                SizedBox(height: 7,),
-                mobilePhoneController.text.isNotEmpty ? Row(
-                  children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('mobile') + ': ', style: TextStyle(fontSize: 18),),
-                    Text(mobilePhoneController.text, style: TextStyle(fontSize: 18),),
-                  ],
-                ) : Container(height: 0),
-                SizedBox(height: 7,),
-
-                Row(
-                  children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('nationalId') + ': ', style: TextStyle(fontSize: 18),),
-                    Text(nidController.text, style: TextStyle(fontSize: 18),),
-                  ],
-                ),
-                
-                SizedBox(height: 7,),
-                                
-               alternativePhoneController.text.isNotEmpty ? Row(
-                  children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('alternativePhone') + ': ', style: TextStyle(fontSize: 18),),
-                    Text(alternativePhoneController.text, style: TextStyle(fontSize: 18),),
-                  ],
-                ) : Container(height: 0),
-              
-              SizedBox(height: 7,),
-               bracPatientIdContoller.text.isNotEmpty ? Row(
-                  children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('projectId') + ': ', style: TextStyle(fontSize: 18),),
-                    Text(bracPatientIdContoller.text, style: TextStyle(fontSize: 18),),
-                  ],
-                ) : Container(height: 0,),
-              SizedBox(height: 7,),
-               centersList.isNotEmpty ? Row(
-                  children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('center') + ': ', style: TextStyle(fontSize: 18),),
-                    Text(centersList[selectedCenters]['name'], style: TextStyle(fontSize: 18),),
-                  ],
-                ) : Container(height: 0,)
-              ],
+                 centersList.isNotEmpty ? Row(
+                    children: <Widget>[
+                      Text(AppLocalizations.of(context).translate('center') + ': ', style: TextStyle(fontSize: 18),),
+                      Text(centersList[selectedCenters]['name'], style: TextStyle(fontSize: 18),),
+                    ],
+                  ) : Container(height: 0,)
+                ],
+              ),
             ),
-          ),
 
-          // SizedBox(height: 20,),
-          
-          GestureDetector(
-            onTap: () async {
-              setState(() {
-                isLoading = true;
-              });
-              var url = await uploadImage();
-              var formData = _RegisterPatientState()._prepareFormData();
-              print('formdata $formData');
-              var response = isEditState != null ? await PatientController().update(formData, false) : await PatientController().create(formData);
-              setState(() {
-                isLoading = false;
-              });
+            // SizedBox(height: 20,),
+            
+            GestureDetector(
+              onTap: () async {
+                setState(() {
+                  isLoading = true;
+                });
+                var url = await uploadImage();
+                var formData = _RegisterPatientState()._prepareFormData();
+                print('formdata $formData');
+                var response = isEditState != null ? await PatientController().update(formData, false) : await PatientController().create(formData);
+                setState(() {
+                  isLoading = false;
+                });
 
-              if (response != null) {
-                if (response['error'] != null && response['error']) {              
+                if (response != null) {
+                  if (response['error'] != null && response['error']) {              
+                      _scaffoldKey.currentState.showSnackBar(
+                        SnackBar(
+                          content: Text(response['message']),
+                          backgroundColor: kPrimaryRedColor,
+                        )
+                      );  
+                  } else {                             
                     _scaffoldKey.currentState.showSnackBar(
                       SnackBar(
                         content: Text(response['message']),
                         backgroundColor: kPrimaryRedColor,
                       )
-                    );  
-                } else {                             
-                  _scaffoldKey.currentState.showSnackBar(
-                    SnackBar(
-                      content: Text(response['message']),
-                      backgroundColor: kPrimaryRedColor,
-                    )
-                  );
-                }
+                    );
+                  }
 
-                if (response['message'] != null && response['message'] == 'Unauthorized') {
-                  Helpers().logout(context);
-                  return;
-                }
+                  if (response['message'] != null && response['message'] == 'Unauthorized') {
+                    Helpers().logout(context);
+                    return;
+                  }
 
-                if (response['error'] != null && response['error'] == false) {
+                  if (response['error'] != null && response['error'] == false) {
+                    _RegisterPatientState()._clearForm();
+                    Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen(isEditState: isEditState));
+                    return;
+                  }
+
+                  
+                } else if (response == 'success') {
                   _RegisterPatientState()._clearForm();
                   Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen(isEditState: isEditState));
-                  return;
                 }
-
-                
-              } else if (response == 'success') {
-                _RegisterPatientState()._clearForm();
-                Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen(isEditState: isEditState));
-              }
-            },
-            child: Container(
-              width: double.infinity,
-              height: 62.0,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: kPrimaryColor,
-                borderRadius: BorderRadius.circular(4)
+              },
+              child: Container(
+                width: double.infinity,
+                height: 62.0,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: kPrimaryColor,
+                  borderRadius: BorderRadius.circular(4)
+                ),
+                child: isLoading ? CircularProgressIndicator() : Text("${isEditState != null ? AppLocalizations.of(context).translate('updatePatient') : AppLocalizations.of(context).translate('completeRegistration')}", style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w400))
               ),
-              child: isLoading ? CircularProgressIndicator() : Text("${isEditState != null ? AppLocalizations.of(context).translate('updatePatient') : AppLocalizations.of(context).translate('completeRegistration')}", style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w400))
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
