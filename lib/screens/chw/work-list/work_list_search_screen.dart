@@ -593,7 +593,7 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
                             Expanded(
                               flex: 2,
                               child: Container(
-                                child: Text("22/06/20", style: TextStyle(fontSize: 14, color: Colors.black),),
+                                child: Text("${item['body']['next_visit_date'] ?? 'N/A'}", style: TextStyle(fontSize: 14, color: Colors.black),),
                               ),
                             ),
                             SizedBox(width: 5,),
