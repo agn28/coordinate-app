@@ -178,6 +178,7 @@ var _questions = {
             'question_bn': 'আপনার কি কখনও স্ট্রোক হয়েছে?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
+            'type': 'stroke',
             'key': 'stroke'
           },
           {
@@ -518,7 +519,7 @@ var _questions = {
           },
           {
             'question': 'Heart Attack',
-            'question_bn': 'হৃদপিন্ডে হঠাৎ আক্রমণ',
+            'question_bn': 'হার্ট অ্যাটাক',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'key': 'heart_attack'

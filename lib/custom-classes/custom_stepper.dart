@@ -493,33 +493,34 @@ class _StepperState extends State<CustomStepper> with TickerProviderStateMixin {
       }
     }
 
-    return Column(
-      children: <Widget>[
-        Material(
-          elevation: 2.0,
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Row(
-              children: children,
-            ),
-          ),
-        ),
-        Expanded(
-          child: ListView(
-            padding: widget.isHeader ? EdgeInsets.all(24.0) : null,
-            children: <Widget>[
-              AnimatedSize(
-                curve: Curves.fastOutSlowIn,
-                duration: kThemeAnimationDuration,
-                vsync: this,
-                child: widget.steps[widget.currentStep].content,
-              ),
-              _buildVerticalControls(),
-            ],
-          ),
-        ),
-      ],
-    );
+    return widget.steps[widget.currentStep].content;
+  //   Column(
+  //     children: <Widget>[
+  //       Material(
+  //         elevation: 2.0,
+  //         child: Container(
+  //           margin: const EdgeInsets.symmetric(horizontal: 24.0),
+  //           child: Row(
+  //             children: children,
+  //           ),
+  //         ),
+  //       ),
+  //       Expanded(
+  //         child: ListView(
+  //           padding: widget.isHeader ? EdgeInsets.all(24.0) : null,
+  //           children: <Widget>[
+  //             AnimatedSize(
+  //               curve: Curves.fastOutSlowIn,
+  //               duration: kThemeAnimationDuration,
+  //               vsync: this,
+  //               child: widget.steps[widget.currentStep].content,
+  //             ),
+  //             _buildVerticalControls(),
+  //           ],
+  //         ),
+  //       ),
+  //     ],
+  //   );
   }
 
   @override

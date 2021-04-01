@@ -30,9 +30,9 @@ var pendingReferral;
 
 class FollowupPatientSummaryScreen extends StatefulWidget {
   static const path = '/followupPatientSummary';
-
+  var prevScreen = '';
   var checkInState = false;
-  FollowupPatientSummaryScreen({this.checkInState});
+  FollowupPatientSummaryScreen({this.checkInState, this.prevScreen});
   @override
   _FollowupPatientSummaryScreenState createState() => _FollowupPatientSummaryScreenState();
 }
@@ -75,7 +75,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     referrals = [];
     pendingReferral = null;
     carePlansEmpty = false;
-    print(widget.checkInState);
+    print('prevScreen ${widget.prevScreen}');
     
     _checkAvatar();
     _checkAuth();
@@ -606,6 +606,10 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     return Scaffold(
       key: _scaffoldKey,
       appBar: new AppBar(
+        // leading: FlatButton(onPressed: (){
+        //   Navigator.popAndPushNamed(context, '/home');
+        // }, child: Icon(Icons.arrow_back, color: Colors.white,)),
+        automaticallyImplyLeading:widget.prevScreen == 'encounter' || widget.prevScreen == 'followup' ? false : true,
         title: new Text(AppLocalizations.of(context).translate('patientSummary'), style: TextStyle(color: Colors.white, fontSize: 20),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
@@ -1423,6 +1427,24 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                   ],
                                 ),
                               ),
+                              SizedBox(height: 20,),
+                              widget.prevScreen == 'encounter' || widget.prevScreen == 'followup' ?
+                              Container(
+                                width: double.infinity,
+                                  //margin: EdgeInsets.only(left: 15, right: 15),
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: kPrimaryColor,
+                                  borderRadius: BorderRadius.circular(3)
+                                ),
+                                child: FlatButton(
+                                onPressed: () {
+                                  Navigator.of(context).pushNamed('/home',);
+                                },
+                                color: kPrimaryColor,
+                                child: Text('Complete Encounter', style: TextStyle(color: Colors.white),),
+                                ),
+                              ) : Container(),
                             ],
                           )
                         ), 
