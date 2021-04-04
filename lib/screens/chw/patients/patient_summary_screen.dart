@@ -965,11 +965,11 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('NCD Center visits', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+                              Text(AppLocalizations.of(context).translate('ncdCenterVisit'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
                               SizedBox(height: 15,),
-                              Text('Next visit date: ${getNextVisitDate()}', style: TextStyle(fontSize: 17,)),
+                              Text(AppLocalizations.of(context).translate('nextVisitDate')+getNextVisitDate(), style: TextStyle(fontSize: 17,)),
                               SizedBox(height: 10,),
-                              Text('Last visit date: ${getLastVisitDate()}', style: TextStyle(fontSize: 17,))
+                              Text(AppLocalizations.of(context).translate('lastVisitDate')+getLastVisitDate(), style: TextStyle(fontSize: 17,))
                             ],
                           ),
                         ),
@@ -1007,25 +1007,25 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                     if (_patient['meta']['review_required'] != null && _patient['meta']['review_required'])
                                       Container(
                                         padding: EdgeInsets.symmetric(vertical: 9),
-                                        child: Text('PENDING DOCTOR CONSULTATION', style: TextStyle(fontSize: 17, color: kPrimaryYellowColor, fontWeight: FontWeight.w500),)
+                                        child: Text(AppLocalizations.of(context).translate('pendingDoctorConsultation').toUpperCase(), style: TextStyle(fontSize: 17, color: kPrimaryYellowColor, fontWeight: FontWeight.w500),)
                                         ,
                                       )
                                     else if(carePlans.length > 0)
                                       if(dueCarePlans.length > 0 || upcomingCarePlans.length > 0)
                                         Container(
                                           padding: EdgeInsets.symmetric(vertical: 9),
-                                          child: Text('PENDING', style: TextStyle(fontSize: 17, color: kPrimaryRedColor, fontWeight: FontWeight.w500),)
+                                          child: Text(AppLocalizations.of(context).translate('pending').toUpperCase(), style: TextStyle(fontSize: 17, color: kPrimaryRedColor, fontWeight: FontWeight.w500),)
                                           ,
                                         )
                                       else
                                         Container(
                                           padding: EdgeInsets.symmetric(vertical: 9),
-                                          child: Text('COMPLETED. PENDING FOLLOW UP', style: TextStyle(fontSize: 17, color: kPrimaryGreenColor, fontWeight: FontWeight.w500),)
+                                          child: Text(AppLocalizations.of(context).translate('completedPendingFollowUp').toUpperCase(), style: TextStyle(fontSize: 17, color: kPrimaryGreenColor, fontWeight: FontWeight.w500),)
                                           ,
                                         )
                                     else Container(
                                           padding: EdgeInsets.symmetric(vertical: 9),
-                                          child: Text('NONE', style: TextStyle(fontSize: 17, color: kPrimaryRedColor, fontWeight: FontWeight.w500),)
+                                          child: Text(AppLocalizations.of(context).translate('none').toUpperCase(), style: TextStyle(fontSize: 17, color: kPrimaryRedColor, fontWeight: FontWeight.w500),)
                                           ,
                                         ),
                                   ],

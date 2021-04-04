@@ -389,6 +389,20 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: FlatButton(
+          onPressed: (){
+            _currentStep != 0 ?
+            setState(() {
+              nextHide = false;
+              _currentStep = _currentStep - 1;
+              nextText = AppLocalizations.of(context).translate('next');
+            }) :
+            setState(() {
+              Navigator.pop(context);
+            });
+          }, 
+        child: Icon(Icons.arrow_back, color: Colors.white,)
+        ),
         title: Text(AppLocalizations.of(context).translate('followupVisit')),
       ),
       body: !isLoading ? GestureDetector(

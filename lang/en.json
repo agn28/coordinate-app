@@ -496,8 +496,16 @@
   "editIncompleteEncounter": "Edit Incomplete Encounter",
   "ncdCenterVisit": "NCD Center visit",
   "completePrevEncounter": "Complete Previous Encounter",
-  "streetPara": "Street/Para"
-
-  
+  "streetPara": "Street/Para",
+  "appointmentDate":"Appointment Date",
+  "fathersOrHusbandsName": "Father's / Husband's Name",
+  "whatWasTheOutcome": "What was the outcome?",
+  "selectPurpose": "Select the Purpose for today?",
+  "shortFollowUp": "Short Follow Up",
+  "lastFullAssessment": "Last Full Assessment:",
+  "lastShortFollowUp": "Last Short Assessment:",
+  "pendingDoctorConsultation": "Pending Doctor Consultation",
+  "completedPendingFollowUp": "Completed. Pending Follow Up",
+  "none": "none"
 
 }

@@ -220,7 +220,7 @@ class _NewFollowupScreenState extends State<NewFollowupScreen> {
                                   //     ),
                                   //   ],
                                   // ),
-                                  Text("Select the Purpose for today", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                                  Text(AppLocalizations.of(context).translate('selectPurpose'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
                                   SizedBox(height: 20,),
                                   Container(
                                     width: double.infinity,
@@ -235,11 +235,11 @@ class _NewFollowupScreenState extends State<NewFollowupScreen> {
                                         Navigator.of(context).pushNamed(FullAssessmentScreen.path);
                                       },
                                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      child: Text('Full Assesment'.toUpperCase(), style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.normal),)
+                                      child: Text(AppLocalizations.of(context).translate('fullassessment').toUpperCase(), style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.normal),)
                                     ),
                                   ),
                                   SizedBox(height: 20,),
-                                  Text("Last Full Assessment: "+lastFullAssessmentDate, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                                  Text(AppLocalizations.of(context).translate('lastFullAssessment')+lastFullAssessmentDate, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
                                   SizedBox(height: 20,),
                                   Container(
                                     width: double.infinity,
@@ -254,11 +254,11 @@ class _NewFollowupScreenState extends State<NewFollowupScreen> {
                                         Navigator.of(context).pushNamed(FollowupVisitScreen.path);
                                       },
                                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      child: Text('Short Follow Up'.toUpperCase(), style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.normal),)
+                                      child: Text(AppLocalizations.of(context).translate('shortFollowUp').toUpperCase(), style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.normal),)
                                     ),
                                   ),
                                   SizedBox(height: 20,),
-                                  Text("Last Short Assessment: "+lastShortAssessmentDate, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                                  Text(AppLocalizations.of(context).translate('lastShortFollowUp')+lastShortAssessmentDate, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
                                   SizedBox(height: 20,),
                                 ],
                               ),
