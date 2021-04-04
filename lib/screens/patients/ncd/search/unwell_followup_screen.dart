@@ -167,6 +167,19 @@ class _UnwellFollowupScreen extends State<UnwellFollowupScreen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
+        leading: FlatButton(
+          onPressed: (){
+            _currentStep != 0 ?
+            setState(() {
+              _currentStep = _currentStep - 1;
+              nextText = AppLocalizations.of(context).translate('next');
+            }) :
+            setState(() {
+              Navigator.pop(context);
+            });
+          }, 
+        child: Icon(Icons.arrow_back, color: Colors.white,)
+        ),
         title: Text(AppLocalizations.of(context).translate('followUp')),
       ),
       body: GestureDetector(

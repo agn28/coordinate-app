@@ -534,42 +534,42 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
                       Expanded(
                         flex: 2,
                           child: Container(
-                          child: Text("Appointment Date", style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                          child: Text(AppLocalizations.of(context).translate('appointmentDate'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
                         ),
                       ),
                       SizedBox(width: 5,),
                       Expanded(
                         flex: 2,
                           child: Container(
-                          child: Text("Village", style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                          child: Text(AppLocalizations.of(context).translate('village'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
                         ),
                       ),
                       SizedBox(width: 5,),
                       Expanded(
                         flex: 2,
                           child: Container(
-                          child: Text("Name", style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                          child: Text(AppLocalizations.of(context).translate('name'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
                         ),
                       ),
                       SizedBox(width: 5,),
                       Expanded(
                         flex: 2,
                           child: Container(
-                          child: Text("Father's / Husband's Name", style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                          child: Text(AppLocalizations.of(context).translate('fathersOrHusbandsName'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
                         ),
                       ),
                       SizedBox(width: 5,),
                       Expanded(
                         flex: 1,
                           child: Container(
-                          child: Text("Age", style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),),
+                          child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),),
                         ),
                       ),
                       SizedBox(width: 5,),
                       Expanded(
                         flex: 1,
                           child: Container(
-                          child: Text("Gender", style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),),
+                          child: Text(AppLocalizations.of(context).translate('gender'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),),
                         ),
                       )
                     ],

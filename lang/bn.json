@@ -229,7 +229,7 @@
   "login": "লগ ইন",
   "worklistFound": "কোন কাজের তালিকা পাওয়া যায়নি",
   "noItems": "কোন আইটেম পাওয়া যায়নি",
-  "pending": "অসম্পূর্ণ কাজ",
+  "pending": "অসম্পূর্ণ",
   "pastDue": "পূর্বের অসম্পূর্ণ কাজ",
   "completed": "সম্পন্ন হয়েছে",
   "smokingAdvise": "ধূমপান ত্যাগের জন্য উপদেশ প্রদান",
@@ -497,7 +497,18 @@
   "editIncompleteEncounter": "অসম্পূর্ণ এনকাউন্টার সম্পাদনা করুন",
   "ncdCenterVisit": "এনসিডি কেন্দ্র পরিদর্শন",
   "completePrevEncounter": "পূর্ববর্তী এনকাউন্টার সম্পূর্ণ করুন",
-  "streetPara": "রাস্তা/পাড়া"
+  "streetPara": "রাস্তা/পাড়া",
+  "appointmentDate":"সাক্ষাতের তারিখ",
+  "fathersOrHusbandsName": "পিতার / স্বামীর নাম ",
+  "whatWasTheOutcome": "ফলাফল কি ছিল?",
+  "selectPurpose": "আজকের জন্য উদ্দেশ্যটি নির্বাচন করুন?",
+  "shortFollowUp": "সংক্ষিপ্ত ফলো আপ",
+  "lastFullAssessment": "সর্বশেষ সম্পূর্ণ মূল্যায়ন:",
+  "lastShortFollowUp": "সর্বশেষ সংক্ষিপ্ত মূল্যায়ন:",
+  "pendingDoctorConsultation": "ডাক্তারের পরামর্শ অনিষ্পন্ন",
+  "completedPendingFollowUp": "সম্পূর্ণ. অনিষ্পন্ন ফলো আপ",
+  "none": "নাই"
+
 
 
 }

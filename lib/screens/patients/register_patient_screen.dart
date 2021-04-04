@@ -384,6 +384,18 @@ class _RegisterPatientState extends State<RegisterPatient> {
       resizeToAvoidBottomInset: true,
       key: _scaffoldKey,
       appBar: AppBar(
+        leading: FlatButton(
+          onPressed: (){
+            _currentStep != 0 ?
+            setState(() {
+              goBack();
+            }) :
+            setState(() {
+              Navigator.pop(context);
+            });
+          }, 
+        child: Icon(Icons.arrow_back, color: Colors.white,)
+        ),
         title: Text(AppLocalizations.of(context).translate('register')),
       ),
       body: isLoading ? Center(child: CircularProgressIndicator()) : GestureDetector(
