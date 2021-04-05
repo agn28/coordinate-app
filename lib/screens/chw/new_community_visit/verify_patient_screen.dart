@@ -17,6 +17,8 @@ import 'package:nhealth/widgets/primary_textfield_widget.dart';
 
 
 class VerifyPatientScreen extends StatefulWidget {
+
+  static final String path = "/verifyPatient";
   @override
   _VerifyPatientState createState() => _VerifyPatientState();
 }

@@ -51,16 +51,16 @@ class _NewChwEncounterState extends State<NewChwEncounterScreen> {
     super.initState();
     isLoading = false;
     getAuth();
-    _checkAvatar();
-    _getDevices();
-    BloodPressure().removeDeleteIds();
-    if (Assessment().getSelectedAssessment() != {}) {
-      setState(() {
-        commentController.text = Assessment().getSelectedAssessment()['data'] != null ? Assessment().getSelectedAssessment()['data']['comment'] : '';
-        var type = Assessment().getSelectedAssessment()['data'] != null ? Assessment().getSelectedAssessment()['data']['type'] : 'in-clinic';
-        selectedType = type == 'in-clinic' ? 'In-clinic Screening' : 'Home Visit';
-      });
-    }
+    // _checkAvatar();
+    // _getDevices();
+    // BloodPressure().removeDeleteIds();
+    // if (Assessment().getSelectedAssessment() != {}) {
+    //   setState(() {
+    //     commentController.text = Assessment().getSelectedAssessment()['data'] != null ? Assessment().getSelectedAssessment()['data']['comment'] : '';
+    //     var type = Assessment().getSelectedAssessment()['data'] != null ? Assessment().getSelectedAssessment()['data']['type'] : 'in-clinic';
+    //     selectedType = type == 'in-clinic' ? 'In-clinic Screening' : 'Home Visit';
+    //   });
+    // }
   }
 
   setLoader(value) {
@@ -113,7 +113,7 @@ class _NewChwEncounterState extends State<NewChwEncounterScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          widget.communityClinic == null ? AppLocalizations.of(context).translate('createNewEncounter') : AppLocalizations.of(context).translate('newCommunityClinicVisitExam'), 
+          widget.communityClinic == null ? AppLocalizations.of(context).translate('createNewEncounter') : AppLocalizations.of(context).translate('newCommunityClinicVisit'), 
           style: TextStyle(color: Colors.white),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,

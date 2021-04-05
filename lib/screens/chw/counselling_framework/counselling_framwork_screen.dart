@@ -4,6 +4,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/screens/chw/counselling_framework/couselling_confirmation_screen.dart';
+import 'package:nhealth/screens/chw/patients/patient_summary_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import '../../../app_localizations.dart';
 
@@ -482,6 +483,8 @@ class _CounsellingFrameworkScreenState extends State<CounsellingFrameworkScreen>
                                     ),
                                     child: FlatButton(
                                       onPressed: ()  {
+                                        
+                                        // Navigator.push(context, MaterialPageRoute(builder: (_)=> ChwPatientRecordsScreen()));
 
                                         handleComplete();
 

@@ -18,7 +18,7 @@ import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/chw/new_patient_questionnairs/new_questionnaire_feeling_screen.dart';
+import 'package:nhealth/screens/chw/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.dart';
 import 'package:nhealth/screens/patients/patient_update_summary_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
@@ -1119,34 +1119,34 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                             
                             role == 'chw' ? Column(
                               children: <Widget>[
-                                encounters.length > 0 ? 
-                                Column(
-                                  children: <Widget>[
-                                    FloatingButton(
-                                      text: AppLocalizations.of(context).translate('newCommunityClinicVisit'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        Navigator.of(context).pushNamed('/patientFeeling', arguments: {'communityClinic': true});
-                                      },
-                                      active: true,
-                                    ),
-                                    FloatingButton(
-                                      text: AppLocalizations.of(context).translate('newCommunityVisit'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        Navigator.of(context).pushNamed('/verifyPatient');
-                                      },
-                                      color: kBtnOrangeColor,
-                                      textColor: Colors.white,
-                                      active: true,
-                                    ),
-                                  ],
-                                ) :
+                                // encounters.length > 0 ? 
+                                // Column(
+                                //   children: <Widget>[
+                                //     FloatingButton(
+                                //       text: AppLocalizations.of(context).translate('newCommunityClinicVisit'),
+                                //       onPressed: () {
+                                //         Navigator.of(context).pop();
+                                //         Navigator.of(context).pushNamed('/patientFeeling', arguments: {'communityClinic': true});
+                                //       },
+                                //       active: true,
+                                //     ),
+                                //     FloatingButton(
+                                //       text: AppLocalizations.of(context).translate('newCommunityVisit'),
+                                //       onPressed: () {
+                                //         Navigator.of(context).pop();
+                                //         Navigator.of(context).pushNamed('/verifyPatient');
+                                //       },
+                                //       color: kBtnOrangeColor,
+                                //       textColor: Colors.white,
+                                //       active: true,
+                                //     ),
+                                //   ],
+                                // ) :
                                 FloatingButton(
-                                  text: AppLocalizations.of(context).translate('newPatientQuestionnaire'),
+                                  text: AppLocalizations.of(context).translate('newQuestionnaire'),
                                   onPressed: () {
                                     Navigator.of(context).pop();
-                                    Navigator.of(context).pushNamed(NewQuestionnaireFeelingScreen.path);
+                                    Navigator.of(context).pushNamed(NewPatientQuestionnaireScreen.path);
                                   },
                                   active: true,
                                 ),

@@ -52,6 +52,19 @@ class PatientController {
     return data;
   }
 
+
+  getFirstAssessmentPatients() async {
+    var response = await PatientRepository().getFirstAssessmentPatients();
+
+    return response;
+  }
+
+  getFollowupPatients() async {
+    var response = await PatientRepository().getFollowupPatients();
+
+    return response;
+  }
+
   getLocations() async {
     var response = await PatientRepository().getLocations();
 
@@ -147,13 +160,20 @@ class PatientController {
       var apiResponse = await PatientRepository().getReferralPatients();
 
       return apiResponse;
-    
+
     } else {
       response = PatientReposioryLocal().getReferralPatients();
     }
 
     return response;
   }
+
+  getCenter() async {
+    var response = await PatientRepository().getCenter();
+
+    return response;
+  }
+
 
   /// Create a new patient
   /// [formData] is required as parameter.
@@ -171,7 +191,7 @@ class PatientController {
     if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
       SyncController().initializeLocalToLiveSync();
     }
-    
+
     return response;
 
 
@@ -240,13 +260,13 @@ class PatientController {
           print('after updating sync key');
           print(updateSync);
         }
-        
-        
- 
+
+
+
         return response;
       }
 
-      
+
       // response = await PatientReposioryLocal().create(data);
 
     } else {
@@ -272,13 +292,17 @@ class PatientController {
 
   /// Prepare data to create a new patient.
   _prepareData(formData) {
-    final age = Helpers().calculateAge(formData['birth_year'],
-        formData['birth_month'], formData['birth_date']);
-    String birthDate = formData['birth_year'] +
-        '-' +
-        formData['birth_month'] +
-        '-' +
-        formData['birth_date'];
+    var age;
+    var birthDate;
+    if (formData['selected_dob_type'] == 'dob') {
+      age = Helpers().calculateAge(formData['birth_year'], formData['birth_month'], formData['birth_date']);
+      birthDate = formData['birth_year'] + '-' + formData['birth_month'] + '-' + formData['birth_date'];
+    } else {
+      age = int.tryParse(formData['age']);
+      birthDate = Helpers().calculateDobFromAge(age);
+
+    }
+
     formData.remove('birth_date');
     formData.remove('birth_month');
     formData.remove('birth_year');

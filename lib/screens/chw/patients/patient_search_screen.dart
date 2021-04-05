@@ -23,6 +23,8 @@ import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:get/get.dart';
+import 'package:nhealth/screens/chw/patients/patient_summary_screen.dart';
+
 
 import '../../../app_localizations.dart';
 
@@ -60,6 +62,9 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
   @override
   initState() {
     super.initState();
+    setState(() {
+      searchController.text = '';
+    });
     // getPatients();
     selectedTab = 0;
     _getAuthUser();
@@ -116,7 +121,7 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
       isLoading = true;
     });
 
-    var data = await PatientController().getNewPatients();
+    var data = await PatientController().getFirstAssessmentPatients();
     var existingData = await PatientController().getExistingPatients();
     print('hello');
     // print(existingData['data'].length);
@@ -132,7 +137,7 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
     if (isNull(data) || isNotNull(data['exception']))  {
       setState(() {
         allNewPatients = syncController.localPatientsAll.value;
-        newPatients = allNewPatients; 
+        newPatients = allNewPatients;
       });
     } else if (data['data'] != null) {
       for(var item in data['data']) {
@@ -162,7 +167,7 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
 
 
     setState(() {
-      
+
 
       allExistingPatients = parsedExistingPatients;
       existingPatients = allExistingPatients;
@@ -213,7 +218,8 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      resizeToAvoidBottomPadding: false,
+      //Migrate Projects
+      //resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).translate('patients')),
@@ -362,6 +368,7 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
                         flexibleSpace: TabBar(
                           onTap: (value) {
                             setState(() {
+                              searchController.text = '';
                               selectedTab = value;
                             });
                           },
@@ -445,9 +452,14 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
                               children: <Widget>[
                                 SizedBox(height: 20,),
                                 ...existingPatients.map((item) => GestureDetector(
+                                  // onTap: () {
+                                  //     Patient().setPatient(item);
+                                  //     Navigator.of(context).pushNamed('/patientOverview');
+                                  // },
                                   onTap: () {
-                                      Patient().setPatient(item);
-                                      Navigator.of(context).pushNamed('/patientOverview');
+                                    // Patient().setPatientModify(item);
+                                    Patient().setPatient(item);
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 15),

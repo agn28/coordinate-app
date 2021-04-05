@@ -101,7 +101,8 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: true,
+      //Migrate Projects
+      //resizeToAvoidBottomPadding: true,
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).translate('bloodPressure'), style: TextStyle(color: kLightBlack),),

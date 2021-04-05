@@ -7,7 +7,9 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_questionnaire_feeling_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
+import 'package:nhealth/screens/patients/ncd/search/followup_search_screen.dart';
 import 'package:nhealth/screens/settings/settings_screen.dart';
 import 'package:nhealth/screens/work-list/work_list_search_screen.dart';
 import './patients/register_patient_screen.dart';
@@ -15,6 +17,7 @@ import 'package:nhealth/app_localizations.dart';
 
 
 class HomeScreen extends StatefulWidget {
+  static const path = '/home';
   @override
   _HomeState createState() => _HomeState();
 }
@@ -246,98 +249,225 @@ class _HomeState extends State<HomeScreen> {
                         
                         SizedBox(height: 60,),
 
-                        InkWell(
+                        Row(
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                
+                                onTap: () async {
+                                  Navigator.of(context).pushNamed(FollowupSearchScreen.path);
+                                },
+                                child: Container(
+                                  height: 150,
+                                  width: double.infinity,
+                                  child: Card(
+                                    elevation: 2,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Image.asset('assets/images/icons/inventory.png', width: 50,),
+                                        SizedBox(height: 15,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text(AppLocalizations.of(context).translate('followupVisit'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
+                                            
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 20,),
+                            Expanded(
+                              child: InkWell(
+                                // onTap: () => Navigator.of(context).pushNamed('/chwNavigation', arguments: 1),
+                                onTap: () => Navigator.of(context).pushNamed('/firstCenterSearch'),
+                                child: Container(
+                                  height: 150,
+                                  width: double.infinity,
+                                  alignment: Alignment.center,
+                                  child: Card(
+                                    elevation: 2,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Icon(Icons.group, color: kPrimaryColor, size: 60),
+                                        SizedBox(height: 10,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            
+                                            Text(AppLocalizations.of(context).translate('fullCenterAssessment'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
+                                            
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        
+                        
+                        SizedBox(height: 20,),
+
+                        Row(
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: () => Navigator.of(context).push(RegisterPatientScreen()),
+                                child: Container(
+                                  height: 140,
+                                  width: double.infinity,
+                                  child: Card(
+                                    elevation: 2,
+                                    child: Column(
+                                      children: <Widget>[
+                                        Icon(Icons.person_add_alt_1, color: kPrimaryColor, size: 70,),
+                                        SizedBox(height: 5),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text(AppLocalizations.of(context).translate('newRegistration'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 20,),
+                            Expanded(
+                              child: InkWell(
+                                onTap: () => Navigator.of(context).pushNamed('/chwReferralPatients'),
+                                child: Container(
+                                  height: 140,
+                                  width: double.infinity,
+                                  alignment: Alignment.center,
+                                  child: Card(
+                                    elevation: 2,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Image.asset('assets/images/icons/questionnaire.png'),
+                                        SizedBox(height: 10,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text(AppLocalizations.of(context).translate('referralList'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        SizedBox(height: 20,),
+
+                        
+                        // InkWell(
                           
-                          onTap: () async {
-                            // await Auth().isExpired();
-                            // return;
-                            Navigator.of(context).pushNamed('/patientSearch');
-                            // Navigator.of(context).push(PatientSearchScreen());
-                          },
-                          child: Container(
-                            height: 140,
-                            width: double.infinity,
-                            child: Card(
-                              elevation: 2,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Image.asset('assets/images/icons/manage_patient.png'),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Text(AppLocalizations.of(context).translate('manageExistingPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
-                                      Container(
-                                        alignment: Alignment.center,
-                                        child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              )
-                            ),
-                          ),
-                        ),
+                        //   onTap: () async {
+                        //     // await Auth().isExpired();
+                        //     // return;
+                        //     Navigator.of(context).pushNamed('/patientSearch');
+                        //     // Navigator.of(context).push(PatientSearchScreen());
+                        //   },
+                        //   child: Container(
+                        //     height: 140,
+                        //     width: double.infinity,
+                        //     child: Card(
+                        //       elevation: 2,
+                        //       child: Column(
+                        //         mainAxisAlignment: MainAxisAlignment.center,
+                        //         children: <Widget>[
+                        //           Image.asset('assets/images/icons/manage_patient.png'),
+                        //           Row(
+                        //             mainAxisAlignment: MainAxisAlignment.center,
+                        //             children: <Widget>[
+                        //               Text(AppLocalizations.of(context).translate('manageExistingPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
+                        //               Container(
+                        //                 alignment: Alignment.center,
+                        //                 child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
+                        //               )
+                        //             ],
+                        //           ),
+                        //         ],
+                        //       )
+                        //     ),
+                        //   ),
+                        // ),
                         
-                        SizedBox(height: 20,),
+                        // SizedBox(height: 20,),
 
-                        InkWell(
-                          onTap: () => Navigator.of(context).push(RegisterPatientScreen()),
-                          child: Container(
-                            height: 140,
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            child: Card(
-                              elevation: 2,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Image.asset('assets/images/icons/register_patient.png'),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Text(AppLocalizations.of(context).translate('registerNewPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+                        // InkWell(
+                        //   onTap: () => Navigator.of(context).push(RegisterPatientScreen()),
+                        //   child: Container(
+                        //     height: 140,
+                        //     width: double.infinity,
+                        //     alignment: Alignment.center,
+                        //     child: Card(
+                        //       elevation: 2,
+                        //       child: Column(
+                        //         mainAxisAlignment: MainAxisAlignment.center,
+                        //         children: <Widget>[
+                        //           Image.asset('assets/images/icons/register_patient.png'),
+                        //           Row(
+                        //             mainAxisAlignment: MainAxisAlignment.center,
+                        //             children: <Widget>[
+                        //               Text(AppLocalizations.of(context).translate('registerNewPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
+                        //               Container(
+                        //                 alignment: Alignment.centerLeft,
+                        //                 child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
+                        //               )
+                        //             ],
+                        //           ),
+                        //         ],
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
                         
-                        SizedBox(height: 20,),
+                        // SizedBox(height: 20,),
 
-                        InkWell(
-                          onTap: () => Navigator.of(context).pushNamed('/chwReferralPatients'),
-                          child: Container(
-                            height: 140,
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            child: Card(
-                              elevation: 2,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Image.asset('assets/images/icons/questionnaire.png'),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Text(AppLocalizations.of(context).translate('referralList'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+                        // InkWell(
+                        //   onTap: () => Navigator.of(context).pushNamed('/chwReferralPatients'),
+                        //   child: Container(
+                        //     height: 140,
+                        //     width: double.infinity,
+                        //     alignment: Alignment.center,
+                        //     child: Card(
+                        //       elevation: 2,
+                        //       child: Column(
+                        //         mainAxisAlignment: MainAxisAlignment.center,
+                        //         children: <Widget>[
+                        //           Image.asset('assets/images/icons/questionnaire.png'),
+                        //           Row(
+                        //             mainAxisAlignment: MainAxisAlignment.center,
+                        //             children: <Widget>[
+                        //               Text(AppLocalizations.of(context).translate('referralList'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 24),),
+                        //               Container(
+                        //                 alignment: Alignment.centerLeft,
+                        //                 child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 30,)
+                        //               )
+                        //             ],
+                        //           ),
+                        //         ],
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
+                      
                       ],
                     ),
                   ),

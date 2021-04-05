@@ -8,6 +8,28 @@ import '../constants/constants.dart';
 import 'dart:convert';
 
 class AssessmentRepository {
+
+  createOnlyAssessment(data) async {
+    var authData = await Auth().getStorageAuth() ;
+    print('after get token');
+    var token = authData['accessToken'];
+
+    await http.post(
+      apiUrl + 'assessments/except-oha',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: json.encode(data)
+    ).then((response) {
+      print('assessment created');
+      print(response.body);
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
+  }
+
   create(data) async {
     var authData = await Auth().getStorageAuth() ;
     print('after get token');
@@ -95,6 +117,52 @@ class AssessmentRepository {
     
     return http.get(
       apiUrl + 'assessments/' + id,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    ).then((response) {
+
+      return json.decode(response.body);
+
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
+  }
+
+  getLastAssessment(followupType) async {
+    var authData = await Auth().getStorageAuth() ;
+    var token = authData['accessToken'];
+    var patientId = Patient().getPatient()['uuid'];
+    var followupTypeQp = '';
+
+    if(followupType != null){
+      followupTypeQp = '?followup_type=' + followupType;
+    }
+
+    return http.get(
+      apiUrl + 'assessments/patients/' + patientId + '/last' + followupTypeQp,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    ).then((response) {
+
+      return json.decode(response.body);
+
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
+  }
+
+  getIncompleteEncounterWithObservation(patientId) async {
+    var authData = await Auth().getStorageAuth() ;
+    var token = authData['accessToken'];
+    print(patientId);
+    return http.get(
+      apiUrl + 'assessments/patients/' + patientId + '/incomplete-assessment',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',

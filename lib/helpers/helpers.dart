@@ -29,6 +29,14 @@ class Helpers {
     return age;
   }
 
+  calculateDobFromAge(int age) {
+    var date = DateTime.now();
+    var newDate = DateTime(date.year - age, date.month, date.day);
+    var birthDay = DateFormat("y-MM-dd").format(newDate);
+
+    return birthDay;
+  }
+
   calculateAgeFromDate(date) {
     final birthDay = DateFormat("dd/MM/yyyy").parse(date);
     final now = DateTime.now();
@@ -183,7 +191,10 @@ class Helpers {
               child: Text(AppLocalizations.of(context).translate('logout'), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500, color: kPrimaryColor),),
               onPressed:  () async {
                 await Auth().logout();
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+              
+                Navigator.of(context)
+                  .pushAndRemoveUntil(MaterialPageRoute(builder: (ctx) => AuthScreen()), (Route<dynamic> route) => false);
+                // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
               },
             ),
           ],

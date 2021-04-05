@@ -27,6 +27,29 @@ class HealthReportRepository {
     });
   }
 
+  generateReport(patientId) async {
+    print('into generate report');
+    
+    var authData = await Auth().getStorageAuth() ;
+    var token = authData['accessToken'];
+
+    return await http.post(
+      apiUrl + 'health-reports/generate/' + patientId,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    ).then((response) {
+      print('response generate');
+      print(response.body);
+      return json.decode(response.body);
+      
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
+  }
+
   getLastReport() async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];

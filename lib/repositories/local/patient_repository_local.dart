@@ -1,10 +1,15 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
+
+import 'package:intl/intl.dart';
+import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/repositories/patient_repository.dart';
 import 'package:nhealth/helpers/functions.dart';
 import 'package:sqflite/sqflite.dart';
+
+import '../assessment_repository.dart';
 import './database_creator.dart';
 import 'package:uuid/uuid.dart';
 import '../../app_localizations.dart';
@@ -111,7 +116,7 @@ class PatientReposioryLocal {
         return {
           'data': responseData
         };
-      } 
+      }
 
 
     }
@@ -242,6 +247,29 @@ class PatientReposioryLocal {
     }
 
     return response;
+  }
+
+  _prepareAssessmentData(type, screening_type, comment, patientId) {
+
+    var assessmentId = Uuid().v4();
+
+    var data = {
+      "id": assessmentId,
+      "meta": {
+        "collected_by": Auth().getAuth()['uid'],
+        "created_at": DateTime.now().toString()
+      },
+      "body": {
+        "type": type == 'In-clinic Screening' ? 'in-clinic' : type,
+        "screening_type": screening_type,
+        "comment": comment,
+        "performed_by": Auth().getAuth()['uid'],
+        "assessment_date": DateFormat('y-MM-dd').format(DateTime.now()),
+        "patient_id": patientId
+      }
+    };
+
+    return data;
   }
 
   Future<void> update(data) async {

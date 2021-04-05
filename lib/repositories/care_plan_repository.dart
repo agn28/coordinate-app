@@ -108,6 +108,8 @@ class CarePlanRepository {
   }
 
   update(data, comment) async {
+    print(apiUrl + 'care-plans/' + data['id']);
+
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     return await http.put(
@@ -122,6 +124,7 @@ class CarePlanRepository {
         "completed_at": DateFormat('y-MM-d').format(DateTime.now())
       })
     ).then((response) {
+      print('careplan response ${response.body}');
       return json.decode(response.body);
       
     }).catchError((error) {

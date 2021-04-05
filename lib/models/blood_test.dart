@@ -29,7 +29,7 @@ class BloodTest {
       _items.add({
         'name': name,
         'unit': unit,
-        'value': double.parse(value),
+        'value': double.parse(value.toString()),
         'comment': comment,
         'device': device,
         'type': 'fasting'
@@ -38,7 +38,7 @@ class BloodTest {
       _items.add({
         'name': name,
         'unit': unit,
-        'value': double.parse(value),
+        'value': double.parse(value.toString()),
         'comment': comment,
         'device': device
       });

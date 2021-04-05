@@ -65,7 +65,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
           children: [
             Text(AppLocalizations.of(context).translate('home'), style: TextStyle(color: Colors.white, fontSize: 22),),
             Obx(() =>
-              !syncController.isConnected.value ? 
+              !syncController.isConnected.value ?
               Container(
                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                 decoration: BoxDecoration(
@@ -82,14 +82,14 @@ class _ChwHomeState extends State<ChwHomeScreen> {
               ) :
               Container()
             )
-            
+
           ],
         ),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
         actions: <Widget>[
-          
+
           IconButton(
             icon: Icon(Icons.more_vert, color: Colors.white),
             onPressed: () {},
@@ -254,14 +254,14 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                       width: double.infinity,
                       child: Column(
                         children: <Widget>[
-                          
+
                           SizedBox(height: 60,),
 
                           Row(
                             children: [
                               Expanded(
                                 child: InkWell(
-                                  
+
                                   onTap: () async {
                                     // await Auth().isExpired();
                                     // return;
@@ -282,7 +282,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[
                                               Text(AppLocalizations.of(context).translate('gotoMyWorklist'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
-                                              
+
                                             ],
                                           ),
                                         ],
@@ -309,9 +309,9 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[
-                                              
+
                                               Text(AppLocalizations.of(context).translate('viewExistingPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
-                                              
+
                                             ],
                                           ),
                                         ],
@@ -322,8 +322,8 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                               )
                             ],
                           ),
-                          
-                          
+
+
                           SizedBox(height: 20,),
 
                           Row(
@@ -381,7 +381,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                               ),
                             ],
                           ),
-                          
+
 
                           SizedBox(height: 20,),
 
@@ -391,7 +391,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  if (syncController.isSyncingToLive.value) 
+                                  if (syncController.isSyncingToLive.value)
                                   Column(
                                     children: [
                                       Container(
@@ -407,16 +407,16 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                                             Column(
                                               children: [
                                                 Text('Your data is syncing', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-                                                
+
                                               ],
-                                            ) 
+                                            )
                                           ],
                                         ),
                                       ),
                                       SizedBox(height: 20,),
-                                      CircularProgressIndicator(), 
+                                      CircularProgressIndicator(),
                                     ],
-                                  ) else if (syncController.localNotSyncedPatients.value.length > 0) 
+                                  ) else if (syncController.localNotSyncedPatients.value.length > 0)
                                   Container(
                                     width: 300,
                                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
@@ -430,7 +430,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                                         Text('You have ${syncController.localNotSyncedPatients.value.length + syncController.localNotSyncedAssessments.value.length + syncController.localNotSyncedObservations.value.length + syncController.localNotSyncedReferrals.value.length} device data left to sync', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),)
                                       ],
                                     ),
-                                  ) else if (syncController.syncs.value.length > 0) 
+                                  ) else if (syncController.syncs.value.length > 0)
                                   Container(
                                     width: 300,
                                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
@@ -462,7 +462,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                                       ],
                                     ),
                                   ),
-                                  
+
                                   if (!syncController.isSyncingToLive.value)
                                   IconButton(
                                     icon: Icon(Icons.sync, size: 30,),
@@ -563,14 +563,14 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                                   ),
 
                                   SizedBox(height: 20),
-                                  
+
                                 ],
                               ),
-                              
+
                             ],
                           ),
 
-                        
+
                         ],
                       ),
                     ),

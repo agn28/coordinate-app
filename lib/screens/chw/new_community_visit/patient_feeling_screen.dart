@@ -12,6 +12,7 @@ import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
 class PatientFeelingScreen extends StatefulWidget {
+  static final String path = "/patientFeeling";
   final communityClinic;
   PatientFeelingScreen({this.communityClinic});
   @override

@@ -176,7 +176,8 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      resizeToAvoidBottomPadding: false,
+      //resizeToAvoidBottomPadding: false,
+      //Migrate Projects
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).translate('referralPatients')),

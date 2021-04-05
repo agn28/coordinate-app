@@ -8,6 +8,8 @@ import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/chw/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
 import 'package:nhealth/screens/chw/new_patient_questionnairs/new_questionnaire_feeling_screen.dart';
 import 'package:nhealth/screens/home_screen.dart';
+import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
+import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_questionnaire_feeling_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 
@@ -53,7 +55,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('patientRegComplete')),
+        title: Text(AppLocalizations.of(context).translate('registrationCompleted')),
         automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
@@ -78,7 +80,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                         child: Icon(Icons.done, size: 40, color: Colors.white,)
                       ),
                       SizedBox(width: 15,),
-                      Text(widget.isEditState != null && widget.isEditState ? AppLocalizations.of(context).translate('patientUpdated') : AppLocalizations.of(context).translate('patientRegistered'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500)),
+                      Text(widget.isEditState != null && widget.isEditState ? AppLocalizations.of(context).translate('patientUpdated') : AppLocalizations.of(context).translate('registrationCompleted'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500)),
                     ],
                   ),
                   SizedBox(height: 20,),
@@ -109,14 +111,14 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                         border: Border.all(width: 1, color: Colors.black54),
                         borderRadius: BorderRadius.circular(4)
                       ),
-                      child: Text(AppLocalizations.of(context).translate('patientOverview'), style: TextStyle(color: Colors.black87, fontSize: 15, fontWeight: FontWeight.w400))
+                      child: Text(AppLocalizations.of(context).translate('overview'), style: TextStyle(color: Colors.black87, fontSize: 15, fontWeight: FontWeight.w400))
                     ),
                   ),
 
                   SizedBox(height: 40,),
 
                   role != 'chw' ? GestureDetector(
-                    onTap: () => Navigator.of(context).push(NewEncounterScreen()),
+                    onTap: () => Navigator.of(context).pushNamed(NewPatientQuestionnaireNurseScreen.path),
                     child: Container(
                       // height: 190,
                       width: double.infinity,
@@ -148,9 +150,9 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            Text(AppLocalizations.of(context).translate('screenPatient'), style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w600),),
-                                            SizedBox(height: 10,),
-                                            Text(AppLocalizations.of(context).translate('newAssessment'), style: TextStyle(color: kTextGrey, fontSize: 14,),),
+                                            Text(AppLocalizations.of(context).translate('ncdCenterAssessment'), style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w600),),
+                                            // SizedBox(height: 10,),
+                                            // Text(AppLocalizations.of(context).translate('newAssessment'), style: TextStyle(color: Colors.white, fontSize: 14,),),
                                           ],
                                         )
                                       ],
@@ -171,7 +173,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                       ),
                     ),
                   ) : GestureDetector(
-                    onTap: () => Navigator.of(context).pushNamed(NewQuestionnaireFeelingScreen.path),
+                    onTap: () => Navigator.of(context).pushNamed(NewPatientQuestionnaireScreen.path),
                     child: Container(
                       // height: 190,
                       width: double.infinity,
@@ -203,7 +205,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            Text(AppLocalizations.of(context).translate('newPatientQuestionnaire'), style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w600),),
+                                            Text(AppLocalizations.of(context).translate('newQuestionnaire'), style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w600),),
                                           ],
                                         )
                                       ],
@@ -262,7 +264,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            Text(AppLocalizations.of(context).translate('registerNewPatient'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
+                                            Text(AppLocalizations.of(context).translate('newRegistration'), style: TextStyle(color: kPrimaryColor, fontSize: 22, fontWeight: FontWeight.w600),),
                                           ],
                                         )
                                       ],
