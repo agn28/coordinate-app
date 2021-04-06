@@ -75,14 +75,14 @@ int selectedRelation;
 var selectedDistrict = {};
 var selectedUpazila = {};
 bool isContactAddressSame = false;
-  var districts = [];
-  var upazilas = [];
+var districts = [];
+var upazilas = [];
 
 int selectedOption = -1;
 var _questions = {};
 int _secondQuestionOption = 0;
 int _selectedOption = 1;
-List allMedications =  ['fever', 'cough' ];
+List allMedications = ['fever', 'cough'];
 List allDestricts = [];
 List allUpazilas = [];
 List filteredUpazilas = [];
@@ -98,10 +98,11 @@ var _selectedItem = [];
 class RegisterPatientScreen extends CupertinoPageRoute {
   bool isEdit = false;
   RegisterPatientScreen({this.isEdit})
-      : super(builder: (BuildContext context) => new RegisterPatient(isEdit: isEdit,));
-
+      : super(
+            builder: (BuildContext context) => new RegisterPatient(
+                  isEdit: isEdit,
+                ));
 }
-
 
 class RegisterPatient extends StatefulWidget {
   final isEdit;
@@ -109,18 +110,14 @@ class RegisterPatient extends StatefulWidget {
   @override
   _RegisterPatientState createState() => _RegisterPatientState();
 }
+
 int _currentStep = 0;
 
 var centersList = [];
 
 class _RegisterPatientState extends State<RegisterPatient> {
-  
-
-
   String nextText = 'NEXT';
   bool isLoading = false;
-
-  
 
   @override
   void initState() {
@@ -133,6 +130,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     // selectedUpazila = {};
     _currentStep = 0;
   }
+
   nextStep() {
     setState(() {
       _currentStep += 1;
@@ -152,11 +150,13 @@ class _RegisterPatientState extends State<RegisterPatient> {
       if (data['address'].isNotEmpty) {
         unionController.text = data['address']['union'] ?? '';
         villageController.text = data['address']['village'] ?? '';
-        var authUserDistrict = districts.where((district) => district['name'] == data['address']['district']);
+        var authUserDistrict = districts.where(
+            (district) => district['name'] == data['address']['district']);
         if (authUserDistrict.isNotEmpty) {
           selectedDistrict = authUserDistrict.first;
-          var authUserUpazila = selectedDistrict['thanas'].where((upazila) => upazila['name'] == data['address']['upazila']);
-          if(authUserUpazila.isNotEmpty){
+          var authUserUpazila = selectedDistrict['thanas'].where(
+              (upazila) => upazila['name'] == data['address']['upazila']);
+          if (authUserUpazila.isNotEmpty) {
             selectedUpazila = authUserUpazila.first;
             upazilas = selectedDistrict['thanas'];
           } else {
@@ -169,8 +169,8 @@ class _RegisterPatientState extends State<RegisterPatient> {
       }
     });
   }
-  getCenters () async{
-    
+
+  getCenters() async {
     setState(() {
       isLoading = true;
     });
@@ -179,30 +179,23 @@ class _RegisterPatientState extends State<RegisterPatient> {
       isLoading = false;
     });
 
-   print("CenterData: $centerData");
+    print("CenterData: $centerData");
 
     if (centerData['error'] != null && !centerData['error']) {
       centersList = centerData['data'];
     }
     print("center: $centersList");
-
   }
 
-
-
-
   getAddresses() async {
-
     setState(() {
       isLoading = true;
     });
     var locationData = await PatientController().getLocations();
     var districtsData = [];
     if (locationData['error'] != null && !locationData['error']) {
-      districtsData =  locationData['data'][0]['districts'];
+      districtsData = locationData['data'][0]['districts'];
     }
-
-
 
     setState(() {
       isLoading = false;
@@ -244,16 +237,13 @@ class _RegisterPatientState extends State<RegisterPatient> {
     //       }
     //     }
     //   }
-            
+
     // });
     // if (Auth().isExpired()) {
     //   Helpers().logout(context);
     //   // Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    // } 
+    // }
   }
-  
-
-  
 
   _prepareState() {
     isEditState = widget.isEdit;
@@ -291,7 +281,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     streetNameController.text = patient['data']['address']['street_name'];
     mobilePhoneController.text = patient['data']['mobile'];
     emailController.text = patient['data']['email'];
-    nidController.text = patient['data']['nid'];   
+    nidController.text = patient['data']['nid'];
     bracPatientIdContoller.text = patient['data']['brac_id'];
     //centers = patient['data']['centers'];
     hhNumberController.text = patient['data']['hh_number'];
@@ -299,13 +289,13 @@ class _RegisterPatientState extends State<RegisterPatient> {
     unionController.text = patient['data']['union'];
     contactFirstNameController.text = patient['data']['contact']['first_name'];
     contactLastNameController.text = patient['data']['contact']['last_name'];
-    contactRelationshipController.text = patient['data']['contact']['relationship'];
+    contactRelationshipController.text =
+        patient['data']['contact']['relationship'];
     alternativePhoneController.text = patient['data']['alternative_phone'];
-    selectedRelation = relationships.indexOf(patient['data']['contact']['relationship']);
-
+    selectedRelation =
+        relationships.indexOf(patient['data']['contact']['relationship']);
   }
 
-  
   fillDummyData() {
     firstNameController.text = 'Dummy';
     fatherNameController.text = 'Father test';
@@ -322,19 +312,18 @@ class _RegisterPatientState extends State<RegisterPatient> {
     streetNameController.text = '1234';
     mobilePhoneController.text = '01960229599';
     emailController.text = 'rasel@augnitive.com';
-    nidController.text = '1111111111';   
+    nidController.text = '1111111111';
     contactFirstNameController.text = 'Contact';
     contactLastNameController.text = 'Test';
     contactRelationshipController.text = 'Brother';
     alternativePhoneController.text = '01960229599';
     selectedRelation = 1;
-
   }
 
   _clearForm() {
     firstNameController.clear();
-    lastNameController .clear();
-    fatherNameController .clear();
+    lastNameController.clear();
+    fatherNameController.clear();
     birthDateController.clear();
     birthMonthController.clear();
     birthYearController.clear();
@@ -371,13 +360,14 @@ class _RegisterPatientState extends State<RegisterPatient> {
       nextText = AppLocalizations.of(context).translate('next');
     });
   }
+
   goBackToEdit() {
     setState(() {
       _currentStep = _currentStep - 2;
       nextText = AppLocalizations.of(context).translate('next');
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -385,145 +375,166 @@ class _RegisterPatientState extends State<RegisterPatient> {
       key: _scaffoldKey,
       appBar: AppBar(
         leading: FlatButton(
-          onPressed: (){
-            _currentStep != 0 ?
-            setState(() {
-              goBack();
-            }) :
-            setState(() {
-              Navigator.pop(context);
-            });
-          }, 
-        child: Icon(Icons.arrow_back, color: Colors.white,)
-        ),
+            onPressed: () {
+              _currentStep != 0
+                  ? setState(() {
+                      goBack();
+                    })
+                  : setState(() {
+                      Navigator.pop(context);
+                    });
+            },
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            )),
         title: Text(AppLocalizations.of(context).translate('register')),
       ),
-      body: isLoading ? Center(child: CircularProgressIndicator()) : GestureDetector(
-        onTap: () {
-          setState(() {
-            showItems = false;
-            showUpazilaItems = false;
-          });
-          FocusScope.of(context).requestFocus(new FocusNode());
-        },
-        child: CustomStepper(
-          physics: ClampingScrollPhysics(),
-          type: CustomStepperType.horizontal,
-
-          controlsBuilder: (BuildContext context, {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
-          return Row();
-        },
-          onStepTapped: (step) {
-            setState(() {
-             // _currentStep = step;
-            });
-          },
-          steps: _mySteps(),
-          currentStep: _currentStep,
-        ),
-      ),
-      bottomNavigationBar: Container(
-        color: kBottomNavigationGrey,
-        height: 64,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Expanded(
-              child: _currentStep != 0 ? FlatButton(
-                onPressed: () {
-
-                  goBack();
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : GestureDetector(
+              onTap: () {
+                setState(() {
+                  showItems = false;
+                  showUpazilaItems = false;
+                });
+                FocusScope.of(context).requestFocus(new FocusNode());
+              },
+              child: CustomStepper(
+                physics: ClampingScrollPhysics(),
+                type: CustomStepperType.horizontal,
+                controlsBuilder: (BuildContext context,
+                    {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
+                  return Row();
                 },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Icon(Icons.chevron_left),
-                    Text(AppLocalizations.of(context).translate('back'), style: TextStyle(fontSize: 20)),
-                  ],
-                ),
-              ) : Text('')
-            ),
-            Expanded(
-              child: Container(
-                alignment: Alignment.center,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: _mySteps().length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (BuildContext context, index) {
-                    return Padding(
-                      padding: EdgeInsets.only(right: 10),
-                      child: Icon(Icons.lens, size: 15, color: _currentStep == index ? kPrimaryColor : kStepperDot,)
-                    );
-                  },
-                ),
-              ),
-            ),
-            Expanded(
-              child: _currentStep < _mySteps().length - 1 ? FlatButton(
-                onPressed: () {
-                  // Navigator.of(context).push(RegisterPatientSuccessScreen());
-                  // return;
-
+                onStepTapped: (step) {
                   setState(() {
-                    if (_currentStep == 1) {
-                        _currentStep = _currentStep + 1;
-                        nextText = AppLocalizations.of(context).translate('finish');
-                    }
-                    if (_currentStep < 1) {
-                      if (selectedDobType == 'dob') {
-                        if (birthDateController.text == null || birthDateController.text == '') {
-                          _scaffoldKey.currentState.showSnackBar(
-                            SnackBar(
-                              content: Text(AppLocalizations.of(context).translate("inputBirthday")),
-                              backgroundColor: kPrimaryRedColor,
-                            )
-                          );
-
-                          _patientFormKey.currentState.validate();
-                          return;
-                        }
-                      } else {
-                        if (ageController.text == null || ageController.text == '') {
-                          _scaffoldKey.currentState.showSnackBar(
-                            SnackBar(
-                              content: Text(AppLocalizations.of(context).translate("inputAge")),
-                              backgroundColor: kPrimaryRedColor,
-                            )
-                          );
-
-                          _patientFormKey.currentState.validate();
-                          return;
-                        }
-                      }
-                      
-
-                      if (_patientFormKey.currentState.validate()) {
-                        _currentStep = _currentStep + 1;
-                      }
-                    }
+                    // _currentStep = step;
                   });
                 },
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('next'), style: TextStyle(fontSize: 20)),
-                    Icon(Icons.chevron_right)
-                  ],
-                ),
-              ) : Container()
+                steps: _mySteps(),
+                currentStep: _currentStep,
+              ),
             ),
-          ],
-        )
-      ),
+      bottomNavigationBar: Container(
+          color: kBottomNavigationGrey,
+          height: 64,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                  child: _currentStep != 0
+                      ? FlatButton(
+                          onPressed: () {
+                            goBack();
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Icon(Icons.chevron_left),
+                              Text(
+                                  AppLocalizations.of(context)
+                                      .translate('back'),
+                                  style: TextStyle(fontSize: 20)),
+                            ],
+                          ),
+                        )
+                      : Text('')),
+              Expanded(
+                child: Container(
+                  alignment: Alignment.center,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: _mySteps().length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (BuildContext context, index) {
+                      return Padding(
+                          padding: EdgeInsets.only(right: 10),
+                          child: Icon(
+                            Icons.lens,
+                            size: 15,
+                            color: _currentStep == index
+                                ? kPrimaryColor
+                                : kStepperDot,
+                          ));
+                    },
+                  ),
+                ),
+              ),
+              Expanded(
+                  child: _currentStep < _mySteps().length - 1
+                      ? FlatButton(
+                          onPressed: () {
+                            // Navigator.of(context).push(RegisterPatientSuccessScreen());
+                            // return;
+
+                            setState(() {
+                              if (_currentStep == 1) {
+                                _currentStep = _currentStep + 1;
+                                nextText = AppLocalizations.of(context)
+                                    .translate('finish');
+                              }
+                              if (_currentStep < 1) {
+                                if (selectedDobType == 'dob') {
+                                  if (birthDateController.text == null ||
+                                      birthDateController.text == '') {
+                                    _scaffoldKey.currentState
+                                        .showSnackBar(SnackBar(
+                                      content: Text(AppLocalizations.of(context)
+                                          .translate("inputBirthday")),
+                                      backgroundColor: kPrimaryRedColor,
+                                    ));
+
+                                    _patientFormKey.currentState.validate();
+                                    return;
+                                  }
+                                } else {
+                                  if (ageController.text == null ||
+                                      ageController.text == '') {
+                                    _scaffoldKey.currentState
+                                        .showSnackBar(SnackBar(
+                                      content: Text(AppLocalizations.of(context)
+                                          .translate("inputAge")),
+                                      backgroundColor: kPrimaryRedColor,
+                                    ));
+
+                                    _patientFormKey.currentState.validate();
+                                    return;
+                                  }
+                                }
+
+                                if (_patientFormKey.currentState.validate()) {
+                                  _currentStep = _currentStep + 1;
+                                }
+                              }
+                            });
+                          },
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Text(
+                                  AppLocalizations.of(context)
+                                      .translate('next'),
+                                  style: TextStyle(fontSize: 20)),
+                              Icon(Icons.chevron_right)
+                            ],
+                          ),
+                        )
+                      : Container()),
+            ],
+          )),
     );
   }
 
   List<CustomStep> _mySteps() {
     List<CustomStep> _steps = [
       CustomStep(
-        title: Text(AppLocalizations.of(context).translate('registerDetails'), textAlign: TextAlign.center,),
+        title: Text(
+          AppLocalizations.of(context).translate('registerDetails'),
+          textAlign: TextAlign.center,
+        ),
         content: PatientDetails(parent: this),
         isActive: _currentStep >= 0,
       ),
@@ -545,21 +556,18 @@ class _RegisterPatientState extends State<RegisterPatient> {
     ];
 
     if (Configs().configAvailable('isThumbprint')) {
-      _steps.add(
-        CustomStep(
-          title: Text(AppLocalizations.of(context).translate('thumbprint')),
-          content: Text(''),
-          isActive: _currentStep >= 3,
-        )
-      );
+      _steps.add(CustomStep(
+        title: Text(AppLocalizations.of(context).translate('thumbprint')),
+        content: Text(''),
+        isActive: _currentStep >= 3,
+      ));
     }
-      
+
     return _steps;
   }
 
   _prepareFormData() {
-    
-    var data =  {
+    var data = {
       'first_name': firstNameController.text,
       'last_name': lastNameController.text,
       'father_name': '',
@@ -571,7 +579,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
       'birth_year': birthYearController.text,
       'nid': nidController.text,
       'brac_id': bracPatientIdContoller.text,
-      
+
       'registration_date': DateFormat('y-MM-dd').format(DateTime.now()),
       'address': {
         'district': selectedDistrict['name'],
@@ -580,7 +588,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
         'village': villageController.text,
         'hh_number': hhNumberController.text,
         'serial': serialController.text,
-        'union':unionController.text,
+        'union': unionController.text,
         'street_name': streetNameController.text,
       },
       //TODO: remove validation from api for contact
@@ -611,15 +619,11 @@ class _RegisterPatientState extends State<RegisterPatient> {
     }
 
     return data;
-
   }
-  
 }
 
 class PatientDetails extends StatefulWidget {
-  PatientDetails({
-    this.parent
-  });
+  PatientDetails({this.parent});
   _RegisterPatientState parent;
 
   @override
@@ -630,7 +634,6 @@ DateTime selectedDate = DateTime.now();
 var selectedDobType = 'dob';
 
 class _PatientDetailsState extends State<PatientDetails> {
-  
   final lastVisitDateController = TextEditingController();
   final format = DateFormat("yyyy-MM-dd");
 
@@ -647,10 +650,11 @@ class _PatientDetailsState extends State<PatientDetails> {
     });
     print(allUpazilas);
   }
+
   Widget _customPopupItemBuilderExample2(
       BuildContext context, item, bool isSelected) {
     return SingleChildScrollView(
-            child: Container(
+      child: Container(
         margin: EdgeInsets.symmetric(horizontal: 8),
         decoration: !isSelected
             ? null
@@ -666,56 +670,71 @@ class _PatientDetailsState extends State<PatientDetails> {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      padding: EdgeInsets.only(left: 20, right: 20, top: 20),
       physics: ClampingScrollPhysics(),
       scrollDirection: Axis.vertical,
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-        child: Form(
-          key: _patientFormKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(AppLocalizations.of(context).translate('registerDetails'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
-              SizedBox(height: 20,),
-
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: PrimaryTextField(
-                      topPaadding: 10,
-                      bottomPadding: 10,
-                      hintText: AppLocalizations.of(context).translate('firstName'),
-                      controller: firstNameController,
-                      name: AppLocalizations.of(context).translate('firstName'),
-                      validation: true,
+          margin: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+          child: Form(
+            key: _patientFormKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  AppLocalizations.of(context).translate('registerDetails'),
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: PrimaryTextField(
+                        topPaadding: 10,
+                        bottomPadding: 10,
+                        hintText:
+                            AppLocalizations.of(context).translate('firstName'),
+                        controller: firstNameController,
+                        name:
+                            AppLocalizations.of(context).translate('firstName'),
+                        validation: true,
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 20,),
-                  Expanded(
-                    child: PrimaryTextField(
-                      topPaadding: 10,
-                      bottomPadding: 10,
-                      hintText: AppLocalizations.of(context).translate('lastName'),
-                      controller: lastNameController,
-                      name: AppLocalizations.of(context).translate('lastName'),
-                      //validation: true,
+                    SizedBox(
+                      width: 20,
                     ),
-                  ),
-                ],
-              ),
-
-
-              SizedBox(height: 20,),
-
-              Container(
-                // margin: EdgeInsets.symmetric(horizontal: 30),
-                child: Column(
+                    Expanded(
+                      child: PrimaryTextField(
+                        topPaadding: 10,
+                        bottomPadding: 10,
+                        hintText:
+                            AppLocalizations.of(context).translate('lastName'),
+                        controller: lastNameController,
+                        name:
+                            AppLocalizations.of(context).translate('lastName'),
+                        //validation: true,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                    // margin: EdgeInsets.symmetric(horizontal: 30),
+                    child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(AppLocalizations.of(context).translate('gender'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                    Text(
+                      AppLocalizations.of(context).translate('gender'),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    ),
                     Row(
                       children: <Widget>[
                         // SizedBox(width: 20,),
@@ -730,7 +749,8 @@ class _PatientDetailsState extends State<PatientDetails> {
                             });
                           },
                         ),
-                        Text(AppLocalizations.of(context).translate('male'), style: TextStyle(color: Colors.black)),
+                        Text(AppLocalizations.of(context).translate('male'),
+                            style: TextStyle(color: Colors.black)),
 
                         Radio(
                           activeColor: kPrimaryColor,
@@ -748,72 +768,77 @@ class _PatientDetailsState extends State<PatientDetails> {
                       ],
                     ),
                   ],
-                )
-              ),
+                )),
+                SizedBox(
+                  height: 20,
+                ),
+                selectedGender == 'female'
+                    ? Container(
+                        // margin: EdgeInsets.symmetric(horizontal: 30),
+                        child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              // SizedBox(width: 20,),
+                              Radio(
+                                activeColor: kPrimaryColor,
+                                value: 'father',
+                                groupValue: selectedGuardian,
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedGuardian = value;
+                                    print(
+                                        "selectedGuardian: $selectedGuardian");
+                                  });
+                                },
+                              ),
+                              Text(
+                                  AppLocalizations.of(context)
+                                      .translate('fathersName'),
+                                  style: TextStyle(color: Colors.black)),
 
-              SizedBox(height: 20,),
+                              Radio(
+                                activeColor: kPrimaryColor,
+                                value: 'husband',
+                                groupValue: selectedGuardian,
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedGuardian = value;
+                                  });
+                                },
+                              ),
+                              Text(
+                                AppLocalizations.of(context)
+                                    .translate('husbandsName'),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ))
+                    : Container(),
+                SizedBox(
+                  height: 10,
+                ),
+                PrimaryTextField(
+                  topPaadding: 10,
+                  bottomPadding: 10,
+                  hintText: AppLocalizations.of(context)
+                      .translate(selectedGuardian + 'sName'),
+                  controller: fatherNameController,
+                  name: AppLocalizations.of(context).translate('fathersName'),
+                  validation: true,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  children: [
+                    // Text(AppLocalizations.of(context).translate('dateOfBirth'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                    // SizedBox(width: 10,),
+                    // Text('(DD/MM/YYYY)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),),
 
-              selectedGender == 'female' ? Container(
-                // margin: EdgeInsets.symmetric(horizontal: 30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
                     Row(
-                      children: <Widget>[
-                        // SizedBox(width: 20,),
-                        Radio(
-                          activeColor: kPrimaryColor,
-                          value: 'father',
-                          groupValue: selectedGuardian,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedGuardian = value;
-                              print("selectedGuardian: $selectedGuardian");
-                            });
-                          },
-                        ),
-                        Text(AppLocalizations.of(context).translate('fathersName'), style: TextStyle(color: Colors.black)),
-
-                        Radio(
-                          activeColor: kPrimaryColor,
-                          value: 'husband',
-                          groupValue: selectedGuardian,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedGuardian = value;
-                            });
-                          },
-                        ),
-                        Text(
-                          AppLocalizations.of(context).translate('husbandsName'),
-                        ),
-                      ],
-                    ),
-                  ],
-                )
-              ) : Container(),
-              
-              SizedBox(height: 10,),
-              PrimaryTextField(
-                topPaadding: 10,
-                bottomPadding: 10,
-                hintText: AppLocalizations.of(context).translate(selectedGuardian + 'sName'),
-                controller: fatherNameController,
-                name: AppLocalizations.of(context).translate('fathersName'),
-                validation: true,
-              ),
-
-              SizedBox(height: 20,),
-
-              
-
-              Row(
-                children: [
-                  // Text(AppLocalizations.of(context).translate('dateOfBirth'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-                  // SizedBox(width: 10,),
-                  // Text('(DD/MM/YYYY)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),),
-
-                  Row(
                       children: <Widget>[
                         // SizedBox(width: 20,),
                         Radio(
@@ -826,9 +851,18 @@ class _PatientDetailsState extends State<PatientDetails> {
                             });
                           },
                         ),
-                        Text(AppLocalizations.of(context).translate('dateOfBirth'), style: TextStyle(color: Colors.black)),
-                        SizedBox(width: 10,),
-                        Text('(DD/MM/YYYY)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),),
+                        Text(
+                            AppLocalizations.of(context)
+                                .translate('dateOfBirth'),
+                            style: TextStyle(color: Colors.black)),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          '(DD/MM/YYYY)',
+                          style: TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.normal),
+                        ),
 
                         Radio(
                           activeColor: kPrimaryColor,
@@ -845,311 +879,335 @@ class _PatientDetailsState extends State<PatientDetails> {
                         ),
                       ],
                     ),
-                ],
-              ),
-              SizedBox(height: 20,),
-
-              selectedDobType == 'dob' ? Row(
-                children: [
-                  Expanded(
-                    child: PrimaryTextField(
-                      topPaadding: 10,
-                      bottomPadding: 10,
-                      hintText: AppLocalizations.of(context).translate('dd'),
-                      controller: birthDateController,
-                      name: 'Date',
-                      type: TextInputType.number,
-                      validation: true,
-                    ),
-                  ),
-                  SizedBox(width: 15),
-                  Expanded(
-                    child: PrimaryTextField(
-                      topPaadding: 10,
-                      bottomPadding: 10,
-                      hintText: AppLocalizations.of(context).translate('mm'),
-                      controller: birthMonthController,
-                      type: TextInputType.number,
-                      name: 'Month',
-                      validation: true,
-                    ),
-                  ),
-                  SizedBox(width: 15),
-                  Expanded(
-                    child: PrimaryTextField(
-                      topPaadding: 10,
-                      bottomPadding: 10,
-                      hintText: AppLocalizations.of(context).translate('yy'),
-                      controller: birthYearController,
-                      name: 'Year',
-                      type: TextInputType.number,
-                      validation: true,
-                    ),
-                  ),
-                ],
-              ) : 
-              PrimaryTextField(
-                topPaadding: 10,
-                bottomPadding: 10,
-                hintText: AppLocalizations.of(context).translate('age'),
-                controller: ageController,
-                name: 'Age',
-                type: TextInputType.number,
-                validation: true,
-              ),
-
-              SizedBox(height: 10,),
-              Divider(),
-              SizedBox(height: 20,),
-              Text(AppLocalizations.of(context).translate('address'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-              SizedBox(height: 20,),
-
-              PrimaryTextField(
-                topPaadding: 10,
-                bottomPadding: 10,
-                hintText: AppLocalizations.of(context).translate('streetPara'),
-                controller: streetNameController,
-                name: AppLocalizations.of(context).translate('streetPara'),
-                validation: true, 
-              ),
-
-              
-              SizedBox(height: 10,),
-              
-              PrimaryTextField(
-                topPaadding: 10,
-                bottomPadding: 10,
-                hintText: AppLocalizations.of(context).translate('hhNumber'),
-                controller: hhNumberController,
-                name: AppLocalizations.of(context).translate('hhNumber'),
-                validation: true, 
-              ),
-              SizedBox(height: 10,),
-              PrimaryTextField(
-                topPaadding: 10,
-                bottomPadding: 10,
-                hintText: AppLocalizations.of(context).translate('serial'),
-                controller: serialController,
-                name: AppLocalizations.of(context).translate('serial'),
-                validation: true, 
-              ),
-              SizedBox(height: 10,),
-
-              PrimaryTextField(
-                topPaadding: 10,
-                bottomPadding: 10,
-                hintText: AppLocalizations.of(context).translate('village'),
-                controller: villageController,
-                name: AppLocalizations.of(context).translate('village'),
-              ),
-
-              SizedBox(height: 10,),
-              
-              PrimaryTextField(
-                topPaadding: 10,
-                bottomPadding: 10,
-                hintText: AppLocalizations.of(context).translate('union'),
-                controller: unionController,
-                name: AppLocalizations.of(context).translate('union'),
-              ),
-
-              SizedBox(height: 10,),
-
-              
-
-              DropdownSearch(
-                validator: (v) => v == null ? "required field" : null,
-                hint: AppLocalizations.of(context).translate('upazila'),
-                mode: Mode.BOTTOM_SHEET,
-                items: filteredUpazilas,
-                // showClearButton: true,
-                dropdownSearchDecoration: InputDecoration(
-                  counterText: ' ',
-                  contentPadding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10, right: 10),
-                  filled: true,
-                  fillColor: kSecondaryTextField,
-                  border: new UnderlineInputBorder(
-                    borderSide: new BorderSide(color: Colors.white),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(4),
-                      topRight: Radius.circular(4),
-                    )
-                  ),
-
-                  hintText: 'Upazilas',
-                  hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                  ],
                 ),
-                onChanged: (value) {
-                  setState(() {
-                    selectedUpazila = value;
-
-                    // districtController.text = value;
-                  });
-                },
-                selectedItem: selectedUpazila['name'],
-                popupItemBuilder: _customPopupItemBuilderExample2,
-                showSearchBox: true,
-              ),
-
-              SizedBox(height: 10,),
-
-              DropdownSearch(
-                validator: (v) => v == null ? "required field" : null,
-                hint: AppLocalizations.of(context).translate('district'),
-                mode: Mode.BOTTOM_SHEET,
-                items: districts,
-                // showClearButton: true,
-                dropdownSearchDecoration: InputDecoration(
-                  counterText: ' ',
-                  contentPadding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10, right: 10),
-                  filled: true,
-                  fillColor: kSecondaryTextField,
-                  border: new UnderlineInputBorder(
-                    borderSide: new BorderSide(color: Colors.white),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(4),
-                      topRight: Radius.circular(4),
-                    )
-                  ),
-
-                  hintText: 'District',
-                  hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                SizedBox(
+                  height: 20,
                 ),
-                onChanged: (value) {
-                  setState(() {
-                    selectedDistrict = value;
-                    updateUpazilas(selectedDistrict);
-                    selectedUpazila = {};
-                    // districtController.text = value;
-                  });
-                },
-                selectedItem: selectedDistrict['name'],
-                popupItemBuilder: _customPopupItemBuilderExample2,
-                showSearchBox: true,
-              ),
-
-              SizedBox(height: 10,),
-              PrimaryTextField(
+                selectedDobType == 'dob'
+                    ? Row(
+                        children: [
+                          Expanded(
+                            child: PrimaryTextField(
+                              topPaadding: 10,
+                              bottomPadding: 10,
+                              hintText:
+                                  AppLocalizations.of(context).translate('dd'),
+                              controller: birthDateController,
+                              name: 'Date',
+                              type: TextInputType.number,
+                              validation: true,
+                            ),
+                          ),
+                          SizedBox(width: 15),
+                          Expanded(
+                            child: PrimaryTextField(
+                              topPaadding: 10,
+                              bottomPadding: 10,
+                              hintText:
+                                  AppLocalizations.of(context).translate('mm'),
+                              controller: birthMonthController,
+                              type: TextInputType.number,
+                              name: 'Month',
+                              validation: true,
+                            ),
+                          ),
+                          SizedBox(width: 15),
+                          Expanded(
+                            child: PrimaryTextField(
+                              topPaadding: 10,
+                              bottomPadding: 10,
+                              hintText:
+                                  AppLocalizations.of(context).translate('yy'),
+                              controller: birthYearController,
+                              name: 'Year',
+                              type: TextInputType.number,
+                              validation: true,
+                            ),
+                          ),
+                        ],
+                      )
+                    : PrimaryTextField(
+                        topPaadding: 10,
+                        bottomPadding: 10,
+                        hintText: AppLocalizations.of(context).translate('age'),
+                        controller: ageController,
+                        name: 'Age',
+                        type: TextInputType.number,
+                        validation: true,
+                      ),
+                SizedBox(
+                  height: 10,
+                ),
+                Divider(),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  AppLocalizations.of(context).translate('address'),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                PrimaryTextField(
                   topPaadding: 10,
                   bottomPadding: 10,
-                hintText: AppLocalizations.of(context).translate('postalCode'),
-                controller: postalCodeController,
-                name: AppLocalizations.of(context).translate('postalCode'),
-                type: TextInputType.number
-              ),
-
-              SizedBox(height: 10,),
-              
-              Divider(),
-              SizedBox(height: 20,),
-              PrimaryTextField(
-                topPaadding: 10,
-                bottomPadding: 10,
-                prefixIcon: Icon(Icons.phone),
-                hintText: AppLocalizations.of(context).translate('mobile'),
-                controller: mobilePhoneController,
-                name: AppLocalizations.of(context).translate('mobile'),
-                validation: true,
-                type: TextInputType.number
-              ),
-              PrimaryTextField(
-                topPaadding: 7,
-                bottomPadding: 7,
-                prefixIcon: Icon(Icons.phone),
-                hintText: AppLocalizations.of(context).translate("alternativePhone"),
-                controller: alternativePhoneController,
-                name: AppLocalizations.of(context).translate("alternativePhone"),
-                validation: false,
-                type: TextInputType.number
-              ),
-              SizedBox(height: 10,),
-              PrimaryTextField(
-                topPaadding: 10,
-                bottomPadding: 10,
-                prefixIcon: Icon(Icons.email),
-                hintText: AppLocalizations.of(context).translate('emailAddressOptional'),
-                name: AppLocalizations.of(context).translate('emailAddressOptional'),
-                controller: emailController
-              ),
-              SizedBox(height: 10,),
-              PrimaryTextField(
-                topPaadding: 10,
-                bottomPadding: 10,
-                hintText: AppLocalizations.of(context).translate('nationalId'),
-                controller: nidController,
-                name: AppLocalizations.of(context).translate('nationalId'),
-                validation: true,
-                type: TextInputType.number,
-              ),
-              SizedBox(height: 10,),
-              PrimaryTextField(
-                topPaadding: 10,
-                bottomPadding: 10,
-                hintText: AppLocalizations.of(context).translate('projectId'),
-                controller: bracPatientIdContoller,
-                name: AppLocalizations.of(context).translate('projectId'),
-                validation: true,
-              ),  
-              SizedBox(height: 10,),    
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: 65,
-                color: kSecondaryTextField,
-                alignment: Alignment.center,
-                child: DropdownButtonFormField(
-                  hint: Text(AppLocalizations.of(context).translate("center"), style: TextStyle(fontSize: 20, color: kTextGrey),),
-                  decoration: InputDecoration(
+                  hintText:
+                      AppLocalizations.of(context).translate('streetPara'),
+                  controller: streetNameController,
+                  name: AppLocalizations.of(context).translate('streetPara'),
+                  validation: true,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                PrimaryTextField(
+                  topPaadding: 10,
+                  bottomPadding: 10,
+                  hintText: AppLocalizations.of(context).translate('hhNumber'),
+                  controller: hhNumberController,
+                  name: AppLocalizations.of(context).translate('hhNumber'),
+                  validation: true,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                PrimaryTextField(
+                  topPaadding: 10,
+                  bottomPadding: 10,
+                  hintText: AppLocalizations.of(context).translate('serial'),
+                  controller: serialController,
+                  name: AppLocalizations.of(context).translate('serial'),
+                  validation: true,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                PrimaryTextField(
+                  topPaadding: 10,
+                  bottomPadding: 10,
+                  hintText: AppLocalizations.of(context).translate('village'),
+                  controller: villageController,
+                  name: AppLocalizations.of(context).translate('village'),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                PrimaryTextField(
+                  topPaadding: 10,
+                  bottomPadding: 10,
+                  hintText: AppLocalizations.of(context).translate('union'),
+                  controller: unionController,
+                  name: AppLocalizations.of(context).translate('union'),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                DropdownSearch(
+                  validator: (v) => v == null ? "required field" : null,
+                  hint: AppLocalizations.of(context).translate('upazila'),
+                  mode: Mode.BOTTOM_SHEET,
+                  items: filteredUpazilas,
+                  // showClearButton: true,
+                  dropdownSearchDecoration: InputDecoration(
+                    counterText: ' ',
+                    contentPadding: EdgeInsets.only(
+                        top: 5.0, bottom: 5.0, left: 10, right: 10),
+                    filled: true,
                     fillColor: kSecondaryTextField,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                    border: UnderlineInputBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(4),
-                      topRight: Radius.circular(4),
-                    )
+                    border: new UnderlineInputBorder(
+                        borderSide: new BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          topRight: Radius.circular(4),
+                        )),
+                    hintText: 'Upazilas',
+                    hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                   ),
-                  ),
-                  items: centersList.map((center) => DropdownMenuItem(
-                    child: Text(center['name']),
-                    value: centersList.indexOf(center),
-                  )).toList(),
-                  value: selectedCenters,
-                  isExpanded: true,
                   onChanged: (value) {
                     setState(() {
-                       selectedCenters = value;
-                    });
-                    print("centerssss: $value");
-                  },
-                ),
-              ),     
-              SizedBox(height: 30,),
+                      selectedUpazila = value;
 
-            ],
-          ),
-        )
-      ),
+                      // districtController.text = value;
+                    });
+                  },
+                  selectedItem: selectedUpazila['name'],
+                  popupItemBuilder: _customPopupItemBuilderExample2,
+                  showSearchBox: true,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                DropdownSearch(
+                  validator: (v) => v == null ? "required field" : null,
+                  hint: AppLocalizations.of(context).translate('district'),
+                  mode: Mode.BOTTOM_SHEET,
+                  items: districts,
+                  // showClearButton: true,
+                  dropdownSearchDecoration: InputDecoration(
+                    counterText: ' ',
+                    contentPadding: EdgeInsets.only(
+                        top: 5.0, bottom: 5.0, left: 10, right: 10),
+                    filled: true,
+                    fillColor: kSecondaryTextField,
+                    border: new UnderlineInputBorder(
+                        borderSide: new BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          topRight: Radius.circular(4),
+                        )),
+                    hintText: 'District',
+                    hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedDistrict = value;
+                      updateUpazilas(selectedDistrict);
+                      selectedUpazila = {};
+                      // districtController.text = value;
+                    });
+                  },
+                  selectedItem: selectedDistrict['name'],
+                  popupItemBuilder: _customPopupItemBuilderExample2,
+                  showSearchBox: true,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                PrimaryTextField(
+                    topPaadding: 10,
+                    bottomPadding: 10,
+                    hintText:
+                        AppLocalizations.of(context).translate('postalCode'),
+                    controller: postalCodeController,
+                    name: AppLocalizations.of(context).translate('postalCode'),
+                    type: TextInputType.number),
+                SizedBox(
+                  height: 10,
+                ),
+                Divider(),
+                SizedBox(
+                  height: 20,
+                ),
+                PrimaryTextField(
+                    topPaadding: 10,
+                    bottomPadding: 10,
+                    prefixIcon: Icon(Icons.phone),
+                    hintText: AppLocalizations.of(context).translate('mobile'),
+                    controller: mobilePhoneController,
+                    name: AppLocalizations.of(context).translate('mobile'),
+                    validation: true,
+                    type: TextInputType.number),
+                PrimaryTextField(
+                    topPaadding: 7,
+                    bottomPadding: 7,
+                    prefixIcon: Icon(Icons.phone),
+                    hintText: AppLocalizations.of(context)
+                        .translate("alternativePhone"),
+                    controller: alternativePhoneController,
+                    name: AppLocalizations.of(context)
+                        .translate("alternativePhone"),
+                    validation: false,
+                    type: TextInputType.number),
+                SizedBox(
+                  height: 10,
+                ),
+                PrimaryTextField(
+                    topPaadding: 10,
+                    bottomPadding: 10,
+                    prefixIcon: Icon(Icons.email),
+                    hintText: AppLocalizations.of(context)
+                        .translate('emailAddressOptional'),
+                    name: AppLocalizations.of(context)
+                        .translate('emailAddressOptional'),
+                    controller: emailController),
+                SizedBox(
+                  height: 10,
+                ),
+                PrimaryTextField(
+                  topPaadding: 10,
+                  bottomPadding: 10,
+                  hintText:
+                      AppLocalizations.of(context).translate('nationalId'),
+                  controller: nidController,
+                  name: AppLocalizations.of(context).translate('nationalId'),
+                  validation: true,
+                  type: TextInputType.number,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                PrimaryTextField(
+                  topPaadding: 10,
+                  bottomPadding: 10,
+                  hintText: AppLocalizations.of(context).translate('projectId'),
+                  controller: bracPatientIdContoller,
+                  name: AppLocalizations.of(context).translate('projectId'),
+                  validation: true,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 65,
+                  color: kSecondaryTextField,
+                  alignment: Alignment.center,
+                  child: DropdownButtonFormField(
+                    hint: Text(
+                      AppLocalizations.of(context).translate("center"),
+                      style: TextStyle(fontSize: 20, color: kTextGrey),
+                    ),
+                    decoration: InputDecoration(
+                      fillColor: kSecondaryTextField,
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                      border: UnderlineInputBorder(
+                          borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(4),
+                        topRight: Radius.circular(4),
+                      )),
+                    ),
+                    items: centersList
+                        .map((center) => DropdownMenuItem(
+                              child: Text(center['name']),
+                              value: centersList.indexOf(center),
+                            ))
+                        .toList(),
+                    value: selectedCenters,
+                    isExpanded: true,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedCenters = value;
+                      });
+                      print("centerssss: $value");
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+              ],
+            ),
+          )),
     );
   }
 }
 
 class DatePicker extends StatefulWidget {
-  DatePicker({
-   this.controller,
-   this.hintText,
-    this.levelText
-  });
+  DatePicker({this.controller, this.hintText, this.levelText});
   final controller;
   String hintText = '';
   String levelText = '';
 
-
-
   @override
   _DatePickerState createState() => _DatePickerState();
 }
-bool autoValidate = false;
-class _DatePickerState extends State<DatePicker> {
 
+bool autoValidate = false;
+
+class _DatePickerState extends State<DatePicker> {
   final format = DateFormat("yyyy-MM-dd");
   var selectedDate;
   setDate(date) {
@@ -1167,24 +1225,21 @@ class _DatePickerState extends State<DatePicker> {
       decoration: BoxDecoration(
         color: kSecondaryTextField,
       ),
-      child:  TextFormField(
+      child: TextFormField(
         controller: widget.controller,
         decoration: InputDecoration(
-          labelText:widget.levelText,
-          hintText:widget.hintText,
-          contentPadding: EdgeInsets.only(left: 15,top: 10,bottom: 10)
-        ),
+            labelText: widget.levelText,
+            hintText: widget.hintText,
+            contentPadding: EdgeInsets.only(left: 15, top: 10, bottom: 10)),
         autovalidate: true,
-
-        onTap: () async{
+        onTap: () async {
           DateTime date = DateTime(1900);
           FocusScope.of(context).requestFocus(new FocusNode());
           date = await showDatePicker(
               context: context,
               firstDate: DateTime(1900),
               initialDate: selectedDate ?? DateTime.now(),
-              lastDate: DateTime(2030)
-          );
+              lastDate: DateTime(2030));
           setDate(date);
         },
       ),
@@ -1193,9 +1248,7 @@ class _DatePickerState extends State<DatePicker> {
 }
 
 class AddPhoto extends StatefulWidget {
-  AddPhoto({
-    this.parent
-  });
+  AddPhoto({this.parent});
   _RegisterPatientState parent;
 
   @override
@@ -1203,6 +1256,7 @@ class AddPhoto extends StatefulWidget {
 }
 
 File _image;
+
 class _AddPhotoState extends State<AddPhoto> {
   bool isLoading = false;
   bool firstTime = true;
@@ -1215,7 +1269,8 @@ class _AddPhotoState extends State<AddPhoto> {
     super.initState();
     _image = null;
     if (isEditState != null) {
-      storageAvatar = isEditState ? Patient().getPatient()['data']['avatar'] : '';
+      storageAvatar =
+          isEditState ? Patient().getPatient()['data']['avatar'] : '';
     }
   }
 
@@ -1231,7 +1286,8 @@ class _AddPhotoState extends State<AddPhoto> {
   uploadImage() async {
     var url = '';
     if (_image != null) {
-      String filePath = 'images/patients/${firstNameController.text}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      String filePath =
+          'images/patients/${firstNameController.text}_${DateTime.now().millisecondsSinceEpoch}.jpg';
       print('file path');
       print(filePath);
 
@@ -1256,22 +1312,20 @@ class _AddPhotoState extends State<AddPhoto> {
 
   cropImage() async {
     File croppedImage = await ImageCropper.cropImage(
-      sourcePath: _image.path,
-      aspectRatioPresets: [
-        CropAspectRatioPreset.square,
-      ],
-      androidUiSettings: AndroidUiSettings(
-        toolbarTitle: 'Cropper',
-        toolbarColor: kPrimaryColor,
-        toolbarWidgetColor: Colors.white,
-        initAspectRatio: CropAspectRatioPreset.square,
-        lockAspectRatio: true,
-      ),
-      
-      iosUiSettings: IOSUiSettings(
-        minimumAspectRatio: 1.0,
-      )
-    );
+        sourcePath: _image.path,
+        aspectRatioPresets: [
+          CropAspectRatioPreset.square,
+        ],
+        androidUiSettings: AndroidUiSettings(
+          toolbarTitle: 'Cropper',
+          toolbarColor: kPrimaryColor,
+          toolbarWidgetColor: Colors.white,
+          initAspectRatio: CropAspectRatioPreset.square,
+          lockAspectRatio: true,
+        ),
+        iosUiSettings: IOSUiSettings(
+          minimumAspectRatio: 1.0,
+        ));
     if (croppedImage != null) {
       _image.delete();
       setState(() {
@@ -1284,7 +1338,6 @@ class _AddPhotoState extends State<AddPhoto> {
         _image = null;
       });
     }
-    
   }
 
   @override
@@ -1297,123 +1350,143 @@ class _AddPhotoState extends State<AddPhoto> {
         child: Column(
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 30,),
-            Text(AppLocalizations.of(context).translate('takePhoto'), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
-            SizedBox(height: 30,),
-
+            SizedBox(
+              height: 30,
+            ),
+            Text(
+              AppLocalizations.of(context).translate('takePhoto'),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+            ),
+            SizedBox(
+              height: 30,
+            ),
             Container(
-              height: 200,
-              // width: 200,
-              // alignment: Alignment.topCenter,
-              decoration: BoxDecoration(
-                border: Border.all(width: 1, color: kTableBorderGrey)
-              ),
-              child: _image == null && storageAvatar == '' ? 
-              GestureDetector(
-                onTap: () => getImageFromCam(),
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-                  child: Column(
-                    // crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(Icons.camera_alt, size: 90, color: kPrimaryColor,),
-                      Text(AppLocalizations.of(context).translate('addPhoto'), style: TextStyle(color: kPrimaryColor, fontSize: 20, height: 2))
-                    ],
-                  ),
-                ),
-              ) : _image == null && storageAvatar != '' ? 
-              Container(
                 height: 200,
-                width: 200,
-                child: Stack(
-                children: <Widget>[
-                  Image.network(storageAvatar, fit: BoxFit.contain),
-                  CachedNetworkImage(
-                    imageUrl: storageAvatar,
-                    placeholder: (context,url) => 
-                    Center(),
-                    errorWidget: (context,url,error) => 
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(Icons.error),
-                          Text(AppLocalizations.of(context).translate("imageNotFound"))
-                        ],
+                // width: 200,
+                // alignment: Alignment.topCenter,
+                decoration: BoxDecoration(
+                    border: Border.all(width: 1, color: kTableBorderGrey)),
+                child: _image == null && storageAvatar == ''
+                    ? GestureDetector(
+                        onTap: () => getImageFromCam(),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 50, vertical: 20),
+                          child: Column(
+                            // crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(
+                                Icons.camera_alt,
+                                size: 90,
+                                color: kPrimaryColor,
+                              ),
+                              Text(
+                                  AppLocalizations.of(context)
+                                      .translate('addPhoto'),
+                                  style: TextStyle(
+                                      color: kPrimaryColor,
+                                      fontSize: 20,
+                                      height: 2))
+                            ],
+                          ),
+                        ),
                       )
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 80,
-                    child: GestureDetector(
-                      onTap: () => getImageFromCam(),
-                      child: CircleAvatar(
-                        child: Icon(Icons.edit),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              ) : Container(
-                height: 200,
-                width: 200,
-                child: Stack(
-                children: <Widget>[
-                  Image.file(_image, fit: BoxFit.contain),
-                  Positioned(
-                    bottom: 0,
-                    left: 30,
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _image.delete();
-                          setState(() {
-                            storageAvatar = '';
-                          });
-                          _image = null;
-                          firstTime = true;
-                        });
-                      },
-                      child: CircleAvatar(
-                        child: Icon(Icons.delete),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 30,
-                    child: GestureDetector(
-                      onTap: () => cropImage(),
-                      child: CircleAvatar(
-                        child: Icon(Icons.edit),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              )
-            ) ,
-
-            SizedBox(height: 70,),
-            
+                    : _image == null && storageAvatar != ''
+                        ? Container(
+                            height: 200,
+                            width: 200,
+                            child: Stack(
+                              children: <Widget>[
+                                Image.network(storageAvatar,
+                                    fit: BoxFit.contain),
+                                CachedNetworkImage(
+                                  imageUrl: storageAvatar,
+                                  placeholder: (context, url) => Center(),
+                                  errorWidget: (context, url, error) => Center(
+                                      child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Icon(Icons.error),
+                                      Text(AppLocalizations.of(context)
+                                          .translate("imageNotFound"))
+                                    ],
+                                  )),
+                                ),
+                                Positioned(
+                                  bottom: 0,
+                                  right: 80,
+                                  child: GestureDetector(
+                                    onTap: () => getImageFromCam(),
+                                    child: CircleAvatar(
+                                      child: Icon(Icons.edit),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
+                        : Container(
+                            height: 200,
+                            width: 200,
+                            child: Stack(
+                              children: <Widget>[
+                                Image.file(_image, fit: BoxFit.contain),
+                                Positioned(
+                                  bottom: 0,
+                                  left: 30,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _image.delete();
+                                        setState(() {
+                                          storageAvatar = '';
+                                        });
+                                        _image = null;
+                                        firstTime = true;
+                                      });
+                                    },
+                                    child: CircleAvatar(
+                                      child: Icon(Icons.delete),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 0,
+                                  right: 30,
+                                  child: GestureDetector(
+                                    onTap: () => cropImage(),
+                                    child: CircleAvatar(
+                                      child: Icon(Icons.edit),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          )),
+            SizedBox(
+              height: 70,
+            ),
             GestureDetector(
               onTap: () async {
                 print(_currentStep);
                 widget.parent.nextStep();
-                
               },
               child: Container(
-                width: double.infinity,
-                height: 62.0,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: kPrimaryColor,
-                  borderRadius: BorderRadius.circular(4)
-                ),
-                child: isLoading ? CircularProgressIndicator() : Text("${isEditState != null ? AppLocalizations.of(context).translate('updatePatient') : AppLocalizations.of(context).translate('viewSummary')}", style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w400))
-              ),
+                  width: double.infinity,
+                  height: 62.0,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      color: kPrimaryColor,
+                      borderRadius: BorderRadius.circular(4)),
+                  child: isLoading
+                      ? CircularProgressIndicator()
+                      : Text(
+                          "${isEditState != null ? AppLocalizations.of(context).translate('updatePatient') : AppLocalizations.of(context).translate('viewSummary')}",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400))),
             ),
           ],
         ),
@@ -1424,9 +1497,7 @@ class _AddPhotoState extends State<AddPhoto> {
 
 class ViewSummary extends StatefulWidget {
   final _RegisterPatientState parent;
-  ViewSummary({
-    this.parent
-  });
+  ViewSummary({this.parent});
   @override
   _ViewSummaryState createState() => _ViewSummaryState();
 }
@@ -1444,10 +1515,11 @@ class _ViewSummaryState extends State<ViewSummary> {
     super.initState();
   }
 
-    uploadImage() async {
+  uploadImage() async {
     var url = '';
     if (_image != null) {
-      String filePath = 'images/patients/${firstNameController.text}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      String filePath =
+          'images/patients/${firstNameController.text}_${DateTime.now().millisecondsSinceEpoch}.jpg';
       print('file path');
       print(filePath);
 
@@ -1468,13 +1540,11 @@ class _ViewSummaryState extends State<ViewSummary> {
 
       // }
 
-
       return url;
     }
   }
 
   getAddress() {
-
     var address = '';
     if (streetNameController.text != '' && streetNameController.text != null) {
       print('hi');
@@ -1511,21 +1581,31 @@ class _ViewSummaryState extends State<ViewSummary> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
 
             Container(
               height: 400,
               // width: 200,
               // alignment: Alignment.topCenter,
               decoration: BoxDecoration(
-                // border: Border.all(width: 1, color: kTableBorderGrey)
-              ),
+                  // border: Border.all(width: 1, color: kTableBorderGrey)
+                  ),
               child: Column(
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      Text(AppLocalizations.of(context).translate('name') + ': ', style: TextStyle(fontSize: 18),),
-                      Text(firstNameController.text + ' ' + lastNameController.text, style: TextStyle(fontSize: 18),),
+                      Text(
+                        AppLocalizations.of(context).translate('name') + ': ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Text(
+                        firstNameController.text +
+                            ' ' +
+                            lastNameController.text,
+                        style: TextStyle(fontSize: 18),
+                      ),
                       Spacer(),
                       ClipOval(
                         child: Material(
@@ -1536,129 +1616,274 @@ class _ViewSummaryState extends State<ViewSummary> {
                             child: Container(
                               height: 30,
                               width: 30,
-                              decoration: BoxDecoration(
-                                color: kPrimaryColor
+                              decoration: BoxDecoration(color: kPrimaryColor),
+                              child: Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                                size: 18,
                               ),
-                              child: Icon(Icons.edit, color: Colors.white, size: 18,),
                             ),
                           ),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 7,),
-
+                  SizedBox(
+                    height: 7,
+                  ),
                   Row(
                     children: <Widget>[
-                      selectedGuardian == 'husband' ? Text(AppLocalizations.of(context).translate('husbandName') + ': ', style: TextStyle(fontSize: 18),) :Text(AppLocalizations.of(context).translate('fathersName') + ': ', style: TextStyle(fontSize: 18),),
-                      Text(fatherNameController.text, style: TextStyle(fontSize: 18),),
+                      selectedGuardian == 'husband'
+                          ? Text(
+                              AppLocalizations.of(context)
+                                      .translate('husbandName') +
+                                  ': ',
+                              style: TextStyle(fontSize: 18),
+                            )
+                          : Text(
+                              AppLocalizations.of(context)
+                                      .translate('fathersName') +
+                                  ': ',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                      Text(
+                        fatherNameController.text,
+                        style: TextStyle(fontSize: 18),
+                      ),
                     ],
                   ),
-                  SizedBox(height: 7,),
+                  SizedBox(
+                    height: 7,
+                  ),
                   Row(
                     children: <Widget>[
-                      Text(AppLocalizations.of(context).translate('gender') + ': ', style: TextStyle(fontSize: 18),),
-                      Text(selectedGender, style: TextStyle(fontSize: 18),),
+                      Text(
+                        AppLocalizations.of(context).translate('gender') + ': ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Text(
+                        selectedGender,
+                        style: TextStyle(fontSize: 18),
+                      ),
                     ],
                   ),
-                  SizedBox(height: 7,),
-
-                  selectedDobType == 'dob' ?
+                  SizedBox(
+                    height: 7,
+                  ),
+                  selectedDobType == 'dob'
+                      ? Row(
+                          children: <Widget>[
+                            Text(
+                              AppLocalizations.of(context)
+                                      .translate('dateOfBirth') +
+                                  ': ',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Text(
+                              birthDateController.text +
+                                  '-' +
+                                  birthMonthController.text +
+                                  '-' +
+                                  birthYearController.text,
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ],
+                        )
+                      : Row(
+                          children: <Widget>[
+                            Text(
+                              AppLocalizations.of(context).translate('age') +
+                                  ': ',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Text(
+                              '${ageController.text}',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ],
+                        ),
+                  SizedBox(
+                    height: 7,
+                  ),
                   Row(
                     children: <Widget>[
-                      Text(AppLocalizations.of(context).translate('dateOfBirth') + ': ', style: TextStyle(fontSize: 18),),
-                      Text(birthDateController.text + '-' + birthMonthController.text + '-' + birthYearController.text, style: TextStyle(fontSize: 18),),
-                    ],
-                  ) :  
-                  Row(
-                    children: <Widget>[
-                      Text(AppLocalizations.of(context).translate('age') + ': ', style: TextStyle(fontSize: 18),),
-                      Text('${ageController.text}', style: TextStyle(fontSize: 18),),
+                      Text(
+                        AppLocalizations.of(context).translate('address') +
+                            ': ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Text(
+                        getAddress(),
+                        style: TextStyle(fontSize: 18),
+                      ),
                     ],
                   ),
-                  SizedBox(height: 7,),
-
+                  SizedBox(
+                    height: 7,
+                  ),
                   Row(
                     children: <Widget>[
-                      Text(AppLocalizations.of(context).translate('address') + ': ', style: TextStyle(fontSize: 18),),
-                      Text(getAddress(), style: TextStyle(fontSize: 18),),
+                      Text(
+                        AppLocalizations.of(context).translate('hhNumber') +
+                            ': ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Text(
+                        hhNumberController.text,
+                        style: TextStyle(fontSize: 18),
+                      ),
                     ],
                   ),
-                  SizedBox(height: 7,),
-                  
+                  SizedBox(
+                    height: 7,
+                  ),
                   Row(
                     children: <Widget>[
-                      Text(AppLocalizations.of(context).translate('hhNumber') + ': ', style: TextStyle(fontSize: 18),),
-                      Text(hhNumberController.text, style: TextStyle(fontSize: 18),),
+                      Text(
+                        AppLocalizations.of(context).translate('serial') + ': ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Text(
+                        serialController.text,
+                        style: TextStyle(fontSize: 18),
+                      ),
                     ],
                   ),
-                  SizedBox(height: 7,),
-                  
+                  SizedBox(
+                    height: 7,
+                  ),
                   Row(
                     children: <Widget>[
-                      Text(AppLocalizations.of(context).translate('serial') + ': ', style: TextStyle(fontSize: 18),),
-                      Text(serialController.text, style: TextStyle(fontSize: 18),),
+                      Text(
+                        AppLocalizations.of(context).translate('union') + ': ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Text(
+                        unionController.text,
+                        style: TextStyle(fontSize: 18),
+                      ),
                     ],
                   ),
-                  SizedBox(height: 7,),
+                  SizedBox(
+                    height: 7,
+                  ),
+                  emailController.text.isNotEmpty
+                      ? Row(
+                          children: <Widget>[
+                            Text(
+                              AppLocalizations.of(context).translate('email') +
+                                  ": ",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Text(
+                              emailController.text,
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ],
+                        )
+                      : Container(
+                          height: 0,
+                        ),
+                  SizedBox(
+                    height: 7,
+                  ),
+                  mobilePhoneController.text.isNotEmpty
+                      ? Row(
+                          children: <Widget>[
+                            Text(
+                              AppLocalizations.of(context).translate('mobile') +
+                                  ': ',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Text(
+                              mobilePhoneController.text,
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ],
+                        )
+                      : Container(height: 0),
+                  SizedBox(
+                    height: 7,
+                  ),
                   Row(
                     children: <Widget>[
-                      Text(AppLocalizations.of(context).translate('union') + ': ', style: TextStyle(fontSize: 18),),
-                      Text(unionController.text, style: TextStyle(fontSize: 18),),
+                      Text(
+                        AppLocalizations.of(context).translate('nationalId') +
+                            ': ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Text(
+                        nidController.text,
+                        style: TextStyle(fontSize: 18),
+                      ),
                     ],
                   ),
-                  SizedBox(height: 7,),
-                  emailController.text.isNotEmpty ? Row(
-                    children: <Widget>[
-                      Text(AppLocalizations.of(context).translate('email') + ": ", style: TextStyle(fontSize: 18),),
-                      Text(emailController.text, style: TextStyle(fontSize: 18),),
-                    ],
-                  ) : Container(height: 0,),
-                  SizedBox(height: 7,),
-                  mobilePhoneController.text.isNotEmpty ? Row(
-                    children: <Widget>[
-                      Text(AppLocalizations.of(context).translate('mobile') + ': ', style: TextStyle(fontSize: 18),),
-                      Text(mobilePhoneController.text, style: TextStyle(fontSize: 18),),
-                    ],
-                  ) : Container(height: 0),
-                  SizedBox(height: 7,),
-
-                  Row(
-                    children: <Widget>[
-                      Text(AppLocalizations.of(context).translate('nationalId') + ': ', style: TextStyle(fontSize: 18),),
-                      Text(nidController.text, style: TextStyle(fontSize: 18),),
-                    ],
+                  SizedBox(
+                    height: 7,
                   ),
-                  
-                  SizedBox(height: 7,),
-                                  
-                 alternativePhoneController.text.isNotEmpty ? Row(
-                    children: <Widget>[
-                      Text(AppLocalizations.of(context).translate('alternativePhone') + ': ', style: TextStyle(fontSize: 18),),
-                      Text(alternativePhoneController.text, style: TextStyle(fontSize: 18),),
-                    ],
-                  ) : Container(height: 0),
-                
-                SizedBox(height: 7,),
-                 bracPatientIdContoller.text.isNotEmpty ? Row(
-                    children: <Widget>[
-                      Text(AppLocalizations.of(context).translate('projectId') + ': ', style: TextStyle(fontSize: 18),),
-                      Text(bracPatientIdContoller.text, style: TextStyle(fontSize: 18),),
-                    ],
-                  ) : Container(height: 0,),
-                SizedBox(height: 7,),
-                 centersList.isNotEmpty ? Row(
-                    children: <Widget>[
-                      Text(AppLocalizations.of(context).translate('center') + ': ', style: TextStyle(fontSize: 18),),
-                      Text(centersList[selectedCenters]['name'], style: TextStyle(fontSize: 18),),
-                    ],
-                  ) : Container(height: 0,)
+                  alternativePhoneController.text.isNotEmpty
+                      ? Row(
+                          children: <Widget>[
+                            Text(
+                              AppLocalizations.of(context)
+                                      .translate('alternativePhone') +
+                                  ': ',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Text(
+                              alternativePhoneController.text,
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ],
+                        )
+                      : Container(height: 0),
+                  SizedBox(
+                    height: 7,
+                  ),
+                  bracPatientIdContoller.text.isNotEmpty
+                      ? Row(
+                          children: <Widget>[
+                            Text(
+                              AppLocalizations.of(context)
+                                      .translate('projectId') +
+                                  ': ',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Text(
+                              bracPatientIdContoller.text,
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ],
+                        )
+                      : Container(
+                          height: 0,
+                        ),
+                  SizedBox(
+                    height: 7,
+                  ),
+                  centersList.isNotEmpty
+                      ? Row(
+                          children: <Widget>[
+                            Text(
+                              AppLocalizations.of(context).translate('center') +
+                                  ': ',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Text(
+                              centersList[selectedCenters]['name'],
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ],
+                        )
+                      : Container(
+                          height: 0,
+                        )
                 ],
               ),
             ),
 
             // SizedBox(height: 20,),
-            
+
             GestureDetector(
               onTap: () async {
                 setState(() {
@@ -1667,55 +1892,59 @@ class _ViewSummaryState extends State<ViewSummary> {
                 var url = await uploadImage();
                 var formData = _RegisterPatientState()._prepareFormData();
                 print('formdata $formData');
-                var response = isEditState != null ? await PatientController().update(formData, false) : await PatientController().create(formData);
+                var response = isEditState != null
+                    ? await PatientController().update(formData, false)
+                    : await PatientController().create(formData);
                 setState(() {
                   isLoading = false;
                 });
 
                 if (response != null) {
-                  if (response['error'] != null && response['error']) {              
-                      _scaffoldKey.currentState.showSnackBar(
-                        SnackBar(
-                          content: Text(response['message']),
-                          backgroundColor: kPrimaryRedColor,
-                        )
-                      );  
-                  } else {                             
-                    _scaffoldKey.currentState.showSnackBar(
-                      SnackBar(
-                        content: Text(response['message']),
-                        backgroundColor: kPrimaryRedColor,
-                      )
-                    );
+                  if (response['error'] != null && response['error']) {
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text(response['message']),
+                      backgroundColor: kPrimaryRedColor,
+                    ));
+                  } else {
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text(response['message']),
+                      backgroundColor: kPrimaryRedColor,
+                    ));
                   }
 
-                  if (response['message'] != null && response['message'] == 'Unauthorized') {
+                  if (response['message'] != null &&
+                      response['message'] == 'Unauthorized') {
                     Helpers().logout(context);
                     return;
                   }
 
                   if (response['error'] != null && response['error'] == false) {
                     _RegisterPatientState()._clearForm();
-                    Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen(isEditState: isEditState));
+                    Navigator.of(context).pushReplacement(
+                        RegisterPatientSuccessScreen(isEditState: isEditState));
                     return;
                   }
-
-                  
                 } else if (response == 'success') {
                   _RegisterPatientState()._clearForm();
-                  Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen(isEditState: isEditState));
+                  Navigator.of(context).pushReplacement(
+                      RegisterPatientSuccessScreen(isEditState: isEditState));
                 }
               },
               child: Container(
-                width: double.infinity,
-                height: 62.0,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: kPrimaryColor,
-                  borderRadius: BorderRadius.circular(4)
-                ),
-                child: isLoading ? CircularProgressIndicator() : Text("${isEditState != null ? AppLocalizations.of(context).translate('updatePatient') : AppLocalizations.of(context).translate('completeRegistration')}", style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w400))
-              ),
+                  width: double.infinity,
+                  height: 62.0,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      color: kPrimaryColor,
+                      borderRadius: BorderRadius.circular(4)),
+                  child: isLoading
+                      ? CircularProgressIndicator()
+                      : Text(
+                          "${isEditState != null ? AppLocalizations.of(context).translate('updatePatient') : AppLocalizations.of(context).translate('completeRegistration')}",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400))),
             ),
           ],
         ),

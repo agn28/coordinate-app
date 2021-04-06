@@ -344,7 +344,7 @@
   "Complete": "সম্পূর্ণ",
   "dateOfReferral": "যে তারিখে রেফার করা হয়েছে",
   "reason": "কারণ",
-  "referralLocation": "যেখান থেকে রেফার করা হয়েছে",
+  "referralLocation": "কোন জায়গায় রেফার করবেন?",
   "referredBy": "যিনি রেফার করেছেন",
   "referredOutcome": "রেফারের ফলাফল",
   "cvdRisk": "CVD-এর ঝুঁকি",

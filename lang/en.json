@@ -345,7 +345,7 @@
   "Complete": "Complete",
   "dateOfReferral": "Date of Referral",
   "reason": "Reason",
-  "referralLocation": "Referral Location",
+  "referralLocation": "Where will you refer?",
   "referredBy": "Referred By",
   "referredOutcome": "Referred Outcome",
   "cvdRisk": "CVD Risk",
