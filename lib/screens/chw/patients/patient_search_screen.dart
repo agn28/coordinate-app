@@ -176,7 +176,10 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
 
       setState(() {
         newPatients = modifiedPatients
-          .where((item) => item['data'][searchKey]
+          .where((item) => item['data']['nid']
+          .toLowerCase()
+          .contains(query.toLowerCase()) ||
+          item['data']['name']
           .toLowerCase()
           .contains(query.toLowerCase()))
           .toList();
@@ -191,7 +194,10 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
 
       setState(() {
         existingPatients = modifiedPatients
-          .where((item) => item['data'][searchKey]
+          .where((item) => item['data']['nid']
+          .toLowerCase()
+          .contains(query.toLowerCase()) ||
+          item['data']['name']
           .toLowerCase()
           .contains(query.toLowerCase()))
           .toList();

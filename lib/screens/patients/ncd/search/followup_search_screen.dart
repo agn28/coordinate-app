@@ -107,12 +107,17 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
       return item;
     }).toList();
 
+    
+
     setState(() {
       patients = modifiedPatients
-        .where((item) => item['data'][searchKey]
-        .toLowerCase()
-        .contains(query.toLowerCase()))
-        .toList();
+        .where((item) => item['data']['nid']
+          .toLowerCase()
+          .contains(query.toLowerCase()) ||
+          item['data']['name']
+          .toLowerCase()
+          .contains(query.toLowerCase()))
+          .toList();
     });
   }
 
