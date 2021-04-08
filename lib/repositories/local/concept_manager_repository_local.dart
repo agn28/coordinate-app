@@ -2,18 +2,23 @@ import 'package:nhealth/repositories/local/database_creator.dart';
 import 'dart:convert';
 
 class ConceptManagerRepositoryLocal {
-
   getConceptById(id) async {
-    final sql = '''SELECT * FROM ${DatabaseCreator.conceptManagerTable} WHERE uuid = "${id.toString()}"''';
-    var concept = await db.rawQuery(sql);
-    return concept.isNotEmpty ? concept.first : null;
+    final sql =
+        '''SELECT * FROM ${DatabaseCreator.conceptManagerTable} WHERE id = "${id.toString()}"''';
+
+    try {
+      var concept = await db.rawQuery(sql);
+      return concept.isNotEmpty ? concept.first : null;
+    } catch (error) {
+      print('error');
+      print(error);
+      return;
+    }
   }
-  
 
   /// Create an assessment with observations.
   /// observations [data] is required as parameter.
   create(data) async {
-
     final sql = '''INSERT INTO ${DatabaseCreator.conceptManagerTable}
     (
       id,
@@ -26,8 +31,5 @@ class ConceptManagerRepositoryLocal {
     DatabaseCreator.databaseLog('Add Concepts', sql, null, result, params);
 
     return 'success';
-    
   }
-
-  
 }

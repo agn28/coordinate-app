@@ -52,7 +52,6 @@ class PatientController {
     return data;
   }
 
-
   getFirstAssessmentPatients() async {
     var response = await PatientRepository().getFirstAssessmentPatients();
 
@@ -78,7 +77,10 @@ class PatientController {
     print(localResponse);
     if (isNotNull(localResponse) && localResponse.isNotEmpty) {
       print('into local if');
-      var locations = {'data': jsonDecode(localResponse[0]['data']), 'error': false};
+      var locations = {
+        'data': jsonDecode(localResponse[0]['data']),
+        'error': false
+      };
       print(locations);
       return locations;
     }
@@ -156,11 +158,11 @@ class PatientController {
     var response;
 
     var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
       var apiResponse = await PatientRepository().getReferralPatients();
 
       return apiResponse;
-
     } else {
       response = PatientReposioryLocal().getReferralPatients();
     }
@@ -174,7 +176,6 @@ class PatientController {
     return response;
   }
 
-
   /// Create a new patient
   /// [formData] is required as parameter.
   create(context, formData) async {
@@ -185,15 +186,14 @@ class PatientController {
     var apiResponse;
     var response;
 
-    response = await PatientReposioryLocal().create(context, uuid, data, false);
+    // response = await PatientReposioryLocal().create(context, uuid, data, false);
 
     var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
-      SyncController().initializeLocalToLiveSync();
-    }
+    // if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+    //   SyncController().initializeLocalToLiveSync();
+    // }
 
-    return response;
-
+    // return response;
 
     //TODO: checking the new process
     if (connectivityResult == ConnectivityResult.mobile ||
@@ -232,7 +232,8 @@ class PatientController {
           backgroundColor: kPrimaryYellowColor,
         ));
 
-        response = await PatientReposioryLocal().create(context, uuid, data, false);
+        response =
+            await PatientReposioryLocal().create(context, uuid, data, false);
         return response;
       } else if (apiResponse['error'] != null && apiResponse['error']) {
         if (apiResponse['message'] == 'Patient already exists.') {
@@ -250,22 +251,22 @@ class PatientController {
           return;
         }
       } else if (apiResponse['error'] != null && !apiResponse['error']) {
-        response = await PatientReposioryLocal().create(context, uuid, data, true);
+        response =
+            await PatientReposioryLocal().create(context, uuid, data, true);
 
         // response = await await PatientReposioryLocal()
         //         .createFromLive(response['patient']['id'], data);
 
-        if (isNotNull(apiResponse['data']['sync']) && isNotNull(apiResponse['data']['sync']['key'])) {
-          var updateSync = await SyncRepository().updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
+        if (isNotNull(apiResponse['data']['sync']) &&
+            isNotNull(apiResponse['data']['sync']['key'])) {
+          var updateSync = await SyncRepository()
+              .updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
           print('after updating sync key');
           print(updateSync);
         }
 
-
-
         return response;
       }
-
 
       // response = await PatientReposioryLocal().create(data);
 
@@ -275,7 +276,8 @@ class PatientController {
         content: Text('Warning: No Internet. Using offline...'),
         backgroundColor: kPrimaryYellowColor,
       ));
-      response = await PatientReposioryLocal().create(context, uuid, data, false);
+      response =
+          await PatientReposioryLocal().create(context, uuid, data, false);
     }
 
     return response;
@@ -295,12 +297,16 @@ class PatientController {
     var age;
     var birthDate;
     if (formData['selected_dob_type'] == 'dob') {
-      age = Helpers().calculateAge(formData['birth_year'], formData['birth_month'], formData['birth_date']);
-      birthDate = formData['birth_year'] + '-' + formData['birth_month'] + '-' + formData['birth_date'];
+      age = Helpers().calculateAge(formData['birth_year'],
+          formData['birth_month'], formData['birth_date']);
+      birthDate = formData['birth_year'] +
+          '-' +
+          formData['birth_month'] +
+          '-' +
+          formData['birth_date'];
     } else {
       age = int.tryParse(formData['age']);
       birthDate = Helpers().calculateDobFromAge(age);
-
     }
 
     formData.remove('birth_date');

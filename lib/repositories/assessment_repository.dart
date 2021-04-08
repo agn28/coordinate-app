@@ -8,21 +8,20 @@ import '../constants/constants.dart';
 import 'dart:convert';
 
 class AssessmentRepository {
-
   createOnlyAssessment(data) async {
-    var authData = await Auth().getStorageAuth() ;
+    var authData = await Auth().getStorageAuth();
     print('after get token');
     var token = authData['accessToken'];
 
-    await http.post(
-      apiUrl + 'assessments/except-oha',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: json.encode(data)
-    ).then((response) {
+    await http
+        .post(apiUrl + 'assessments/except-oha',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+            },
+            body: json.encode(data))
+        .then((response) {
       print('assessment created');
       print(response.body);
     }).catchError((error) {
@@ -31,23 +30,22 @@ class AssessmentRepository {
   }
 
   create(data) async {
-    var authData = await Auth().getStorageAuth() ;
+    var authData = await Auth().getStorageAuth();
     print('after get token');
     var token = authData['accessToken'];
-    
+
     var response;
 
     try {
       response = await http
-        .post(apiUrl + 'assessments',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-          },
-          body: json.encode(data)
-        )
-        .timeout(Duration(seconds: httpRequestTimeout));
+          .post(apiUrl + 'assessments/except-oha',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+              },
+              body: json.encode(data))
+          .timeout(Duration(seconds: httpRequestTimeout));
       print('assessment created');
       print(response.body);
       return json.decode(response.body);
@@ -72,22 +70,21 @@ class AssessmentRepository {
   }
 
   getAllAssessments() async {
-    var authData = await Auth().getStorageAuth() ;
+    var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
     var patientId = Patient().getPatient()['id'];
 
     var response;
 
     try {
-      response = await http
-        .get(apiUrl + 'patients/' + patientId + '/assessments',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-          },
-        )
-        .timeout(Duration(seconds: httpRequestTimeout));
+      response = await http.get(
+        apiUrl + 'patients/' + patientId + '/assessments',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+      ).timeout(Duration(seconds: httpRequestTimeout));
       print('assessment get');
       print(response.body);
       return json.decode(response.body);
@@ -112,9 +109,9 @@ class AssessmentRepository {
   }
 
   getAssessmentsById(id) async {
-    var authData = await Auth().getStorageAuth() ;
+    var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
-    
+
     return http.get(
       apiUrl + 'assessments/' + id,
       headers: {
@@ -123,21 +120,19 @@ class AssessmentRepository {
         'Authorization': 'Bearer ' + token
       },
     ).then((response) {
-
       return json.decode(response.body);
-
     }).catchError((error) {
       print('error ' + error.toString());
     });
   }
 
   getLastAssessment(followupType) async {
-    var authData = await Auth().getStorageAuth() ;
+    var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
     var patientId = Patient().getPatient()['uuid'];
     var followupTypeQp = '';
 
-    if(followupType != null){
+    if (followupType != null) {
       followupTypeQp = '?followup_type=' + followupType;
     }
 
@@ -149,16 +144,14 @@ class AssessmentRepository {
         'Authorization': 'Bearer ' + token
       },
     ).then((response) {
-
       return json.decode(response.body);
-
     }).catchError((error) {
       print('error ' + error.toString());
     });
   }
 
   getIncompleteEncounterWithObservation(patientId) async {
-    var authData = await Auth().getStorageAuth() ;
+    var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
     print(patientId);
     return http.get(
@@ -169,18 +162,16 @@ class AssessmentRepository {
         'Authorization': 'Bearer ' + token
       },
     ).then((response) {
-
       return json.decode(response.body);
-      
     }).catchError((error) {
       print('error ' + error.toString());
     });
   }
 
   getObservationsByAssessment(assessmentId) async {
-    var authData = await Auth().getStorageAuth() ;
+    var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
-    
+
     return http.get(
       apiUrl + 'assessments/' + assessmentId + '/observations',
       headers: {
@@ -189,19 +180,17 @@ class AssessmentRepository {
         'Authorization': 'Bearer ' + token
       },
     ).then((response) {
-
       return json.decode(response.body);
-      
     }).catchError((error) {
       print('error ' + error.toString());
     });
   }
 
   getAllObservations() async {
-    var authData = await Auth().getStorageAuth() ;
+    var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
     var patientId = Patient().getPatient()['id'];
-    
+
     return http.get(
       apiUrl + 'patients/' + patientId + '/observations',
       headers: {
@@ -210,31 +199,27 @@ class AssessmentRepository {
         'Authorization': 'Bearer ' + token
       },
     ).then((response) {
-
       return json.decode(response.body);
-      
     }).catchError((error) {
       print('error ' + error.toString());
     });
   }
 
   update(id, data) async {
-    var authData = await Auth().getStorageAuth() ;
+    var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
-    
-    await http.put(
-      apiUrl + 'assessments/' + id,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: json.encode(data)
-    ).then((response) {
-      
-    }).catchError((error) {
+
+    await http
+        .put(apiUrl + 'assessments/' + id,
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+            },
+            body: json.encode(data))
+        .then((response) {})
+        .catchError((error) {
       print('error ' + error.toString());
     });
   }
-  
 }
