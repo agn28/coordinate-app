@@ -387,6 +387,35 @@ class AssessmentController {
     return status;
   }
 
+  createSyncFollowUp(context, type, screening_type, comment, completeStatus,
+      nextVisitDate, followupType) async {
+    var data = _prepareData(type, screening_type, comment);
+    data['body']['status'] = completeStatus;
+    data['body']['followup_type'] = followupType;
+    data['body']['next_visit_date'] = nextVisitDate;
+
+    var assessmentId = Uuid().v4();
+    Map<String, dynamic> apiData = {'id': assessmentId};
+
+    apiData.addAll(data);
+
+    //creating assesment
+    var response = await createAssessment(context, assessmentId, data, apiData);
+
+    //creating observations
+    if (isNotNull(response)) {
+      ObservationController()
+          .prepareAndCreateObservations(context, assessmentId);
+
+      if (completeStatus == 'complete') {
+        HealthReportController().generateReport(data['body']['patient_id']);
+      }
+      Helpers().clearObservationItems();
+
+      return response;
+    }
+  }
+
   createSyncAssessment(context, type, screening_type, comment, completeStatus,
       nextVisitDate) async {
     var data = _prepareData(type, screening_type, comment);
