@@ -34,9 +34,7 @@ class AssessmentRepositoryLocal {
     var bloodTests = BloodTest().btItems;
     var bodyMeasurements = BodyMeasurement().bmItems;
     var questionnaires = Questionnaire().qnItems;
-    // if (bloodPressures.isEmpty && bloodTests.isEmpty && bodyMeasurements.isEmpty && questionnaires.isEmpty) {
-    //   return 'No observations added';
-    // }
+
     for (var item in bloodPressures) {
       print('into observations');
       var codings = await _getCodings(item);
@@ -69,126 +67,45 @@ class AssessmentRepositoryLocal {
   createOnlyAssessmentWithStatus(data) async {
     var assessmentId = Uuid().v4();
 
-    print('before assessment & observation');
-    print(DateTime.now());
-
-    //TODO: create locals
-    await _createAssessmentWithObservations(assessmentId, data);
-    // await _createOnlyAssessment(assessmentId, data);
-
-    print('after assessment & observation');
-    print(DateTime.now());
-
-    // createObservationsForOnlyAssessmentWithStatus(assessmentId);
-
-    return 'success';
-  }
-
-  createLocalAssessment(id, data) async {
-    final sql = '''INSERT INTO ${DatabaseCreator.assessmentTable}
-    (
-      uuid,
-      data,
-      status
-    )
-    VALUES (?,?,?)''';
-    List<dynamic> params = [id, jsonEncode(data), 'not synced'];
-    final result = await db.rawInsert(sql, params);
-    DatabaseCreator.databaseLog('Add assessment', sql, null, result, params);
-  }
-
-  _createLocalObservations(data) async {
-    String id = Uuid().v4();
-    final sql = '''INSERT INTO ${DatabaseCreator.observationTable}
-    (
-      uuid,
-      data,
-      status
-    )
-    VALUES (?,?,?)''';
-    List<dynamic> params = [id, jsonEncode(data), 'not synced'];
-    final result = await db.rawInsert(sql, params);
-    DatabaseCreator.databaseLog('Add observation', sql, null, result, params);
-  }
-
-  _createAssessmentWithObservations(id, data) async {
-    createLocalAssessment(id, data);
-
-    Map<String, dynamic> apiDataAssessment = {'id': id};
-
-    apiDataAssessment.addAll(data);
-
-    print('before assessment');
-    print(apiDataAssessment);
-    //create live assessment
-    // await AssessmentRepository().createOnlyAssessment(apiData);
-    print('after assessment');
-    print('before observations');
-    await prepareObservations(id);
-    print('after observations');
-
-    // TODO: New API Call Here
-    // await AssessmentRepository().createOnlyAssessment(apiData);
-  }
-
-  prepareObservations(assessmentId) async {
-    List observations = [];
-    var bloodPressures = BloodPressure().bpItems;
-    var bloodTests = BloodTest().btItems;
-    var bodyMeasurements = BodyMeasurement().bmItems;
-    var questionnaires = Questionnaire().qnItems;
     // if (bloodPressures.isEmpty && bloodTests.isEmpty && bodyMeasurements.isEmpty && questionnaires.isEmpty) {
     //   return 'No observations added';
     // }
-    if (bloodPressures.isNotEmpty) {
-      for (var item in bloodPressures) {
-        print('into bloodPressures');
-        var codings = await _getCodings(item);
-        item['body']['data']['codings'] = codings;
-        item['body']['assessment_id'] = assessmentId;
-        _createLocalObservations(item);
-        // await _createObservations(item);
-      }
-      observations.add(bloodPressures);
-    }
-    if (bloodTests.isNotEmpty) {
-      for (var item in bloodTests) {
-        print('into bloodTests');
-        var codings = await _getCodings(item);
-        item['body']['data']['codings'] = codings;
-        item['body']['assessment_id'] = assessmentId;
-        _createLocalObservations(item);
-        // await _createObservations(item);
-      }
-      observations.add(bloodTests);
-    }
-    if (bodyMeasurements.isNotEmpty) {
-      for (var item in bodyMeasurements) {
-        print('into bodyMeasurements');
-        var codings = await _getCodings(item);
-        item['body']['data']['codings'] = codings;
-        item['body']['assessment_id'] = assessmentId;
-        _createLocalObservations(item);
-        // await _createObservations(item);
-      }
-      observations.add(bodyMeasurements);
-    }
-    if (questionnaires.isNotEmpty) {
-      for (var item in questionnaires) {
-        print('into questionnaire');
-        item['body']['assessment_id'] = assessmentId;
-        _createLocalObservations(item);
-        // await _createObservations(item);
-      }
-      observations.add(questionnaires);
-    }
+    createObservationsForOnlyAssessmentWithStatus(assessmentId);
+    print('before assessment');
+    print(DateTime.now());
 
-    print('bloodPressures $bloodPressures');
-    print('bloodTests $bloodTests');
-    print('bodyMeasurements $bodyMeasurements');
-    print('observations $observations');
+    await _createOnlyAssessment(assessmentId, data);
 
-    return observations;
+    print('after assessment ');
+    print(DateTime.now());
+    // Future.forEach(bloodPressures, (item) async {
+    //   print('into observations');
+    //   var codings = await _getCodings(item);
+    //   item['body']['data']['codings'] = codings;
+    //   item['body']['assessment_id'] = assessmentId;
+    //   await _createObservations(item);
+    // });
+
+    // Future.forEach(bloodTests, (item) async {
+    //   var codings = await _getCodings(item);
+    //   item['body']['data']['codings'] = codings;
+    //   item['body']['assessment_id'] = assessmentId;
+    //   await _createObservations(item);
+    // });
+    // Future.forEach(bodyMeasurements, (item) async {
+    //   var codings = await _getCodings(item);
+    //   item['body']['data']['codings'] = codings;
+    //   item['body']['assessment_id'] = assessmentId;
+    //   await _createObservations(item);
+    // });
+
+    // Future.forEach(questionnaires, (item) async {
+    //   print('into questionnaire');
+    //   item['body']['assessment_id'] = assessmentId;
+    //   await _createObservations(item);
+    // });
+
+    return 'success';
   }
 
   /// Create an assessment with observations.
@@ -463,5 +380,91 @@ class AssessmentRepositoryLocal {
 
     apiData.addAll(data);
     AssessmentRepository().update(id, apiData);
+  }
+
+  prepareObservations(assessmentId) async {
+    List observations = [];
+    var bloodPressures = BloodPressure().bpItems;
+    var bloodTests = BloodTest().btItems;
+    var bodyMeasurements = BodyMeasurement().bmItems;
+    var questionnaires = Questionnaire().qnItems;
+
+    if (bloodPressures.isNotEmpty) {
+      for (var item in bloodPressures) {
+        print('into bloodPressures');
+        var codings = await _getCodings(item);
+        item['body']['data']['codings'] = codings;
+        item['body']['assessment_id'] = assessmentId;
+        var itemData = await _createLocalObservations(item);
+        observations.add(itemData);
+      }
+    }
+    if (bloodTests.isNotEmpty) {
+      for (var item in bloodTests) {
+        print('into bloodTests');
+        var codings = await _getCodings(item);
+        item['body']['data']['codings'] = codings;
+        item['body']['assessment_id'] = assessmentId;
+        var itemData = await _createLocalObservations(item);
+        observations.add(itemData);
+      }
+    }
+    if (bodyMeasurements.isNotEmpty) {
+      for (var item in bodyMeasurements) {
+        print('into bodyMeasurements');
+        var codings = await _getCodings(item);
+        item['body']['data']['codings'] = codings;
+        item['body']['assessment_id'] = assessmentId;
+        var itemData = await _createLocalObservations(item);
+        observations.add(itemData);
+      }
+    }
+    if (questionnaires.isNotEmpty) {
+      for (var item in questionnaires) {
+        print('into questionnaire');
+        item['body']['assessment_id'] = assessmentId;
+        var itemData = await _createLocalObservations(item);
+        observations.add(itemData);
+      }
+    }
+    print('bloodPressures $bloodPressures');
+    print('bloodTests $bloodTests');
+    print('bodyMeasurements $bodyMeasurements');
+    print('observations $observations');
+
+    return observations;
+  }
+
+  createLocalAssessment(id, data) async {
+    final sql = '''INSERT INTO ${DatabaseCreator.assessmentTable}
+    (
+      uuid,
+      data,
+      status
+    )
+    VALUES (?,?,?)''';
+    List<dynamic> params = [id, jsonEncode(data), 'not synced'];
+    final result = await db.rawInsert(sql, params);
+    DatabaseCreator.databaseLog('Add assessment', sql, null, result, params);
+  }
+
+  _createLocalObservations(data) async {
+    String id = Uuid().v4();
+    final sql = '''INSERT INTO ${DatabaseCreator.observationTable}
+    (
+      uuid,
+      data,
+      status
+    )
+    VALUES (?,?,?)''';
+    List<dynamic> params = [id, jsonEncode(data), 'not synced'];
+    final result = await db.rawInsert(sql, params);
+    DatabaseCreator.databaseLog('Add observation', sql, null, result, params);
+
+    Map<String, dynamic> apiData = {'id': id};
+
+    apiData.addAll(data);
+
+    return apiData;
   }
 }
