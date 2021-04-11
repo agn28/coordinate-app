@@ -7,6 +7,8 @@ const String apiUrl = 'https://brac-api.ghrucoordinate.com/api/v1/';
 
 const String gsBucket = 'gs://brac-coordinate.appspot.com';
 
+var httpRequestTimeout = 10;
+
 const kTextInputColorGrey = Color(0xFFE5E5E5);
 const kPrimaryColor = Color(0xFF01579B);
 
