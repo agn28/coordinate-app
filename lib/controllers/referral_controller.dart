@@ -8,7 +8,6 @@ import 'package:nhealth/repositories/referral_repository.dart';
 import 'package:nhealth/repositories/sync_repository.dart';
 import 'package:uuid/uuid.dart';
 
-
 class ReferralController {
   var referralRepo = ReferralRepository();
   var referralRepoLocal = ReferralRepositoryLocal();
@@ -19,7 +18,8 @@ class ReferralController {
 
     var response;
     var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
       // I am connected to a mobile network.
 
       print('connected');
@@ -35,9 +35,9 @@ class ReferralController {
       print(apiResponse);
 
       if (isNull(apiResponse)) {
-        
         Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text("Error: ${AppLocalizations.of(context).translate('somethingWrong')}"),
+          content: Text(
+              "Error: ${AppLocalizations.of(context).translate('somethingWrong')}"),
           backgroundColor: kPrimaryRedColor,
         ));
         return;
@@ -58,37 +58,26 @@ class ReferralController {
         response = await referralRepoLocal.create(referralId, data, false);
         return response;
       } else if (apiResponse['error'] != null && apiResponse['error']) {
-        //TODO: need to change the logic
-        if (apiResponse['message'] == 'Patient already exists.') {
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text(
-                "Error: ${AppLocalizations.of(context).translate('nidValidation')}"),
-            backgroundColor: kPrimaryRedColor,
-          ));
-          return;
-        } else {
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text("Error: ${apiResponse['message']}"),
-            backgroundColor: kPrimaryRedColor,
-          ));
-          return;
-        }
+        // Scaffold.of(context).showSnackBar(SnackBar(
+        //   content: Text("Error: ${apiResponse['message']}"),
+        //   backgroundColor: kPrimaryRedColor,
+        // ));
+        return;
       } else if (apiResponse['error'] != null && !apiResponse['error']) {
         print('into success');
         response = await referralRepoLocal.create(referralId, data, true);
 
-        if (isNotNull(apiResponse['data']['sync']) && isNotNull(apiResponse['data']['sync']['key'])) {
+        if (isNotNull(apiResponse['data']['sync']) &&
+            isNotNull(apiResponse['data']['sync']['key'])) {
           print('into assessment sync update');
-          var updateSync = await SyncRepository().updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
+          var updateSync = await SyncRepository()
+              .updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
           print('after updating sync key');
           print(updateSync);
         }
-        
         return response;
       }
-
       return response;
-
     } else {
       print('not connected');
       // Scaffold.of(context).showSnackBar(SnackBar(
@@ -98,7 +87,8 @@ class ReferralController {
       response = await referralRepoLocal.create(referralId, data, false);
       return response;
     }
-  } 
+  }
+
   update(data) async {
     var response = await ReferralRepository().update(data);
 
@@ -116,5 +106,4 @@ class ReferralController {
 
     return response;
   }
-
 }

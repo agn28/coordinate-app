@@ -394,7 +394,7 @@ class SyncController extends GetxController {
     }
 
     for (var referral in localNotSyncedReferrals) {
-      print('into local observations');
+      print('into local referrals');
       print(referral['data']);
       print(referral['meta']);
       var data = {
@@ -404,7 +404,7 @@ class SyncController extends GetxController {
       };
 
       var response = await referralRepo.create(data);
-      print('observation create resposne');
+      print('referral create resposne');
       print(response);
 
       //TODO: check slow network

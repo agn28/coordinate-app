@@ -288,7 +288,7 @@ class _NewPatientQuestionnaireScreenState
       var formData = {
         'items': BloodPressure().items,
         'comment': '',
-        'patient_id': Patient().getPatient()['uuid'],
+        'patient_id': Patient().getPatient()['id'],
         'device': '',
         'performed_by': '',
       };

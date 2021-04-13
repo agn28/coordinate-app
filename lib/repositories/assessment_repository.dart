@@ -129,7 +129,7 @@ class AssessmentRepository {
   getLastAssessment(followupType) async {
     var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
-    var patientId = Patient().getPatient()['uuid'];
+    var patientId = Patient().getPatient()['id'];
     var followupTypeQp = '';
 
     if (followupType != null) {

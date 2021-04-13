@@ -262,7 +262,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
 
     var data = {
       'meta': {
-        'patient_id': Patient().getPatient()['uuid'],
+        'patient_id': Patient().getPatient()['id'],
         "collected_by": Auth().getAuth()['uid'],
         "status": "pending"
       },
@@ -333,7 +333,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
       var formData = {
         'items': BloodPressure().items,
         'comment': '',
-        'patient_id': Patient().getPatient()['uuid'],
+        'patient_id': Patient().getPatient()['id'],
         'device': '',
         'performed_by': '',
       };
@@ -646,7 +646,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     if (isReferralRequired) {
       var data = {
         'meta': {
-          'patient_id': Patient().getPatient()['uuid'],
+          'patient_id': Patient().getPatient()['id'],
           "collected_by": Auth().getAuth()['uid'],
           "status": "pending"
         },

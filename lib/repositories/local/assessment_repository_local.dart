@@ -13,22 +13,22 @@ import 'package:uuid/uuid.dart';
 import 'dart:convert';
 
 class AssessmentRepositoryLocal {
-
   /// Get all assessments.
   getAllAssessments() async {
-    final sqlAssessments = '''SELECT * FROM ${DatabaseCreator.assessmentTable}''';
+    final sqlAssessments =
+        '''SELECT * FROM ${DatabaseCreator.assessmentTable}''';
     var assessments = await db.rawQuery(sqlAssessments);
     return assessments;
   }
 
-    /// Get all assessments.
+  /// Get all assessments.
   getAssessmentsByPatients(patientIds) async {
     final sql = '''SELECT * FROM ${DatabaseCreator.assessmentTable}''';
     var assessments;
 
     try {
       assessments = await db.rawQuery(sql);
-    } catch(error) {
+    } catch (error) {
       print('error');
       print(error);
       return;
@@ -38,12 +38,13 @@ class AssessmentRepositoryLocal {
 
   getAssessmentsByPatient(id) async {
     print('patient id ' + id);
-    final sql = '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE patient_id="$id"''';
+    final sql =
+        '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE patient_id="$id"''';
     var assessments;
 
     try {
       assessments = await db.rawQuery(sql);
-    } catch(error) {
+    } catch (error) {
       print('errors');
       print(error);
       return;
@@ -69,20 +70,20 @@ class AssessmentRepositoryLocal {
 
   /// Get all observations.
   getAllObservations() async {
-    final sqlObservations = '''SELECT * FROM ${DatabaseCreator.observationTable}''';
+    final sqlObservations =
+        '''SELECT * FROM ${DatabaseCreator.observationTable}''';
     final observations = await db.rawQuery(sqlObservations);
 
     return observations;
   }
 
-  createObservationsForOnlyAssessmentWithStatus(assessmentId) async{
-
+  createObservationsForOnlyAssessmentWithStatus(assessmentId) async {
     var bloodPressures = BloodPressure().bpItems;
     var bloodTests = BloodTest().btItems;
     var bodyMeasurements = BodyMeasurement().bmItems;
     var questionnaires = Questionnaire().qnItems;
 
-    for(var item in bloodPressures){
+    for (var item in bloodPressures) {
       print('into observations');
       var codings = await _getCodings(item);
       item['body']['data']['codings'] = codings;
@@ -90,26 +91,26 @@ class AssessmentRepositoryLocal {
       await _createObservations(item);
     }
 
-    for(var item in bloodTests){
+    for (var item in bloodTests) {
       var codings = await _getCodings(item);
       item['body']['data']['codings'] = codings;
       item['body']['assessment_id'] = assessmentId;
       await _createObservations(item);
     }
-    for(var item in bodyMeasurements){
+    for (var item in bodyMeasurements) {
       var codings = await _getCodings(item);
       item['body']['data']['codings'] = codings;
       item['body']['assessment_id'] = assessmentId;
       await _createObservations(item);
     }
-    for(var item in questionnaires){
+    for (var item in questionnaires) {
       print('into questionnaire');
       item['body']['assessment_id'] = assessmentId;
       await _createObservations(item);
     }
   }
 
-    /// Create an assessment with observations.
+  /// Create an assessment with observations.
   /// observations [data] is required as parameter.
   createOnlyAssessmentWithStatus(data) async {
     var assessmentId = Uuid().v4();
@@ -153,7 +154,6 @@ class AssessmentRepositoryLocal {
     // });
 
     return 'success';
-
   }
 
   /// Create an assessment with observations.
@@ -165,7 +165,10 @@ class AssessmentRepositoryLocal {
     var bodyMeasurements = BodyMeasurement().bmItems;
     var questionnaires = Questionnaire().qnItems;
 
-    if (bloodPressures.isEmpty && bloodTests.isEmpty && bodyMeasurements.isEmpty && questionnaires.isEmpty) {
+    if (bloodPressures.isEmpty &&
+        bloodTests.isEmpty &&
+        bodyMeasurements.isEmpty &&
+        questionnaires.isEmpty) {
       return 'No observations added';
     }
 
@@ -206,15 +209,14 @@ class AssessmentRepositoryLocal {
     });
 
     return 'success';
-    
   }
 
-  createFromLive(id, data) {
-
-  }
+  createFromLive(id, data) {}
 
   _getCodings(item) async {
-    var type = item['body']['type'] == 'blood_pressure' ? item['body']['type'] : item['body']['data']['name'];
+    var type = item['body']['type'] == 'blood_pressure'
+        ? item['body']['type']
+        : item['body']['data']['name'];
     if (type == 'hdl') {
       return {
         'snomed': {
@@ -243,15 +245,17 @@ class AssessmentRepositoryLocal {
       };
     }
 
-    var observationConcept = await ObservationConceptsRepositoryLocal().getConceptByObservation(type);
-      if (observationConcept != null && observationConcept['concept_id'] != '' ) {
-        var concept = await ConceptManagerRepositoryLocal().getConceptById(observationConcept['concept_id']);
-        if (concept != null) {
-          return jsonDecode(concept['codings']);
-        }
-      } 
+    var observationConcept = await ObservationConceptsRepositoryLocal()
+        .getConceptByObservation(type);
+    if (observationConcept != null && observationConcept['concept_id'] != '') {
+      var concept = await ConceptManagerRepositoryLocal()
+          .getConceptById(observationConcept['concept_id']);
+      if (concept != null) {
+        return jsonDecode(concept['codings']);
+      }
+    }
 
-      return {};
+    return {};
   }
 
   update(data) async {
@@ -262,7 +266,9 @@ class AssessmentRepositoryLocal {
     var bodyMeasurements = BodyMeasurement().bmItems;
     var questionnaires = Questionnaire().qnItems;
 
-    if (bloodPressures.isEmpty && bloodTests.isEmpty && bodyMeasurements.isEmpty) {
+    if (bloodPressures.isEmpty &&
+        bloodTests.isEmpty &&
+        bodyMeasurements.isEmpty) {
       return 'Observations are not completed';
     }
 
@@ -278,29 +284,33 @@ class AssessmentRepositoryLocal {
       item['body']['assessment_id'] = assessmentId;
       if (item['body']['data']['id'] == null) {
         _createObservations(item);
-      } else {
-      }
+      } else {}
       // item['body']['assessment_id'] = assessmentId;
       // item['id'] != null ? _updateObservations(item) : _createObservations(item);
     });
 
     bloodTests.forEach((item) {
       item['body']['assessment_id'] = assessmentId;
-      item['id'] != null ? _updateObservations(item) : _createObservations(item);
+      item['id'] != null
+          ? _updateObservations(item)
+          : _createObservations(item);
     });
 
     bodyMeasurements.forEach((item) {
       item['body']['assessment_id'] = assessmentId;
-      item['id'] != null ? _updateObservations(item) : _createObservations(item);
+      item['id'] != null
+          ? _updateObservations(item)
+          : _createObservations(item);
     });
 
     questionnaires.forEach((item) async {
       item['body']['assessment_id'] = assessmentId;
-      item['id'] != null ? _updateObservations(item) : _createObservations(item);
+      item['id'] != null
+          ? _updateObservations(item)
+          : _createObservations(item);
     });
 
     return 'success';
-    
   }
 
   ///Update observations.
@@ -315,9 +325,7 @@ class AssessmentRepositoryLocal {
     final result = await db.rawUpdate(sql, params);
     DatabaseCreator.databaseLog('Add observation', sql, null, result, params);
 
-    Map<String, dynamic> apiData = {
-      'id': id
-    };
+    Map<String, dynamic> apiData = {'id': id};
 
     apiData.addAll(data);
     ObservationRepository().update(id, apiData);
@@ -330,8 +338,10 @@ class AssessmentRepositoryLocal {
     // WHERE uuid = ?''';
     // List<dynamic> params = [id];
 
-    final sql = '''SELECT * FROM ${DatabaseCreator.observationTable} WHERE uuid = $id''';
-    final observations = await db.rawQuery('DELETE FROM ${DatabaseCreator.observationTable} WHERE uuid = ?', [id]);
+    final sql =
+        '''SELECT * FROM ${DatabaseCreator.observationTable} WHERE uuid = $id''';
+    final observations = await db.rawQuery(
+        'DELETE FROM ${DatabaseCreator.observationTable} WHERE uuid = ?', [id]);
     // final result = await db.rawDelete(sql, params);
     // DatabaseCreator.databaseLog('Delete observation', sql, null, result, params);
 
@@ -353,9 +363,7 @@ class AssessmentRepositoryLocal {
     final result = await db.rawInsert(sql, params);
     DatabaseCreator.databaseLog('Add observation', sql, null, result, params);
 
-    Map<String, dynamic> apiData = {
-      'id': id
-    };
+    Map<String, dynamic> apiData = {'id': id};
 
     apiData.addAll(data);
 
@@ -365,18 +373,14 @@ class AssessmentRepositoryLocal {
   /// Create assessment.
   /// Assessment uuid [id] and [data] are required as paremeter.
   _createAssessment(id, data) async {
-    Map<String, dynamic> apiData = {
-      'id': id
-    };
+    Map<String, dynamic> apiData = {'id': id};
 
     apiData.addAll(data);
     var apiResponse = await AssessmentRepository().create(apiData);
-    if (isNotNull(apiResponse) && isNotNull(apiResponse['error'] &&  !apiResponse['error'])) {
-
-    }
+    if (isNotNull(apiResponse) &&
+        isNotNull(apiResponse['error'] && !apiResponse['error'])) {}
 
     return;
-
 
     final sql = '''INSERT INTO ${DatabaseCreator.assessmentTable}
     (
@@ -390,10 +394,7 @@ class AssessmentRepositoryLocal {
     final result = await db.rawInsert(sql, params);
     DatabaseCreator.databaseLog('Add assessment', sql, null, result, params);
 
-
-
     print('before encounter');
-
 
     print('into encounter');
   }
@@ -401,7 +402,7 @@ class AssessmentRepositoryLocal {
   _createOnlyAssessment(id, data) async {
     final sql = '''INSERT INTO ${DatabaseCreator.assessmentTable}
     (
-      uuid,
+      id,
       data,
       status
     )
@@ -410,10 +411,7 @@ class AssessmentRepositoryLocal {
     final result = await db.rawInsert(sql, params);
     DatabaseCreator.databaseLog('Add assessment', sql, null, result, params);
 
-    Map<String, dynamic> apiData = {
-      'id': id
-    };
-
+    Map<String, dynamic> apiData = {'id': id};
 
     apiData.addAll(data);
 
@@ -424,7 +422,7 @@ class AssessmentRepositoryLocal {
   }
 
   createLocalAssessment(id, data, isSynced) async {
-    print('into local assessment create '+ isSynced.toString());
+    print('into local assessment create ' + isSynced.toString());
     print('create patient id ' + data['body']['patient_id']);
     // print('create patient body ' + data['body']);
     final sql = '''INSERT INTO ${DatabaseCreator.assessmentTable}
@@ -437,12 +435,18 @@ class AssessmentRepositoryLocal {
     )
     VALUES (?,?,?,?,?)''';
 
-    List<dynamic> params = [id, jsonEncode(data), data['body']['patient_id'], '', isSynced];
+    List<dynamic> params = [
+      id,
+      jsonEncode(data),
+      data['body']['patient_id'],
+      '',
+      isSynced
+    ];
     var response;
 
     try {
       response = await db.rawInsert(sql, params);
-    } catch(error) {
+    } catch (error) {
       print('local assessment error');
       print(error);
     }
@@ -453,7 +457,6 @@ class AssessmentRepositoryLocal {
   /// Create assessment.
   /// Assessment uuid [id] and [data] are required as paremeter.
   _updateAssessment(id, data) async {
-
     final sql = '''UPDATE ${DatabaseCreator.assessmentTable} SET
       data = ?
       WHERE uuid = ?''';
@@ -461,9 +464,7 @@ class AssessmentRepositoryLocal {
     final result = await db.rawUpdate(sql, params);
     DatabaseCreator.databaseLog('Update assessment', sql, null, result, params);
 
-    Map<String, dynamic> apiData = {
-      'id': id
-    };
+    Map<String, dynamic> apiData = {'id': id};
 
     apiData.addAll(data);
     AssessmentRepository().update(id, apiData);
@@ -483,13 +484,11 @@ class AssessmentRepositoryLocal {
       response = await db.rawUpdate(sql, params);
       print('update local response');
       print(response);
-    } catch(error) {
+    } catch (error) {
       print('error');
       print(error);
       return;
     }
     return response;
-
   }
-
 }

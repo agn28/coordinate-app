@@ -173,7 +173,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     setState(() {
       isLoading = true;
     });
-    var patientId = Patient().getPatient()['uuid'];
+    var patientId = Patient().getPatient()['id'];
     var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
     // print('incompleteData ${data['data']['assessment']['body']['performed_by']}');
     if(data['data']['assessment']['body']['performed_by'] != null)
@@ -237,7 +237,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
       isLoading = true;
     });
 
-    var patientID = Patient().getPatient()['uuid'];
+    var patientID = Patient().getPatient()['id'];
 
     var data = await FollowupController().getFollowupsByPatient(patientID);
 

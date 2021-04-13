@@ -255,7 +255,7 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
 
     var data = {
       'meta': {
-        'patient_id': Patient().getPatient()['uuid'],
+        'patient_id': Patient().getPatient()['id'],
         "collected_by": Auth().getAuth()['uid'],
         "status": "pending"
       },
@@ -315,7 +315,7 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
       var formData = {
         'items': BloodPressure().items,
         'comment': '',
-        'patient_id': Patient().getPatient()['uuid'],
+        'patient_id': Patient().getPatient()['id'],
         'device': '',
         'performed_by': '',
       };
@@ -594,7 +594,7 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
     if (isReferralRequired) {
       var data = {
         'meta': {
-          'patient_id': Patient().getPatient()['uuid'],
+          'patient_id': Patient().getPatient()['id'],
           "collected_by": Auth().getAuth()['uid'],
           "status": "pending"
         },
@@ -4151,7 +4151,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                     if (patient['data']['age'] != null && patient['data']['age'] > 40) {
                                       var data = {
                                         'meta': {
-                                          'patient_id': Patient().getPatient()['uuid'],
+                                          'patient_id': Patient().getPatient()['id'],
                                           "collected_by": Auth().getAuth()['uid'],
                                           "status": "pending"
                                         },
