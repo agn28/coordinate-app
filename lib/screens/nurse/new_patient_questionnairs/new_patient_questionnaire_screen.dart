@@ -622,6 +622,7 @@ class _NewPatientQuestionnaireNurseScreenState
   Future _completeStep() async {
     print('before missing popup');
     var hasMissingData = checkMissingData();
+    var hasOptionalMissingData = checkOptionalMissingData();
 
     if (hasMissingData) {
       var continueMissing = await missingDataAlert();
@@ -635,11 +636,15 @@ class _NewPatientQuestionnaireNurseScreenState
     var patient = Patient().getPatient();
 
     print(patient['data']['age']);
-    var status = hasMissingData ? 'incomplete' : 'complete';
-    var response = await AssessmentController()
-        .createAssessmentWithObservations(
-            context, 'new ncd center assessment', 'ncd', '', status, '');
-
+    var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
+    if(dataStatus == 'incomplete' || dataStatus == 'complete'){
+      // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', dataStatus, '');
+    }
+    
+    var encounterData = {
+      'context': context,
+      'dataStatus': dataStatus
+    };
     setLoader(false);
 
     // if age greater than 40 redirect to referral page
@@ -674,8 +679,8 @@ class _NewPatientQuestionnaireNurseScreenState
     }
 
     // goToHome(false, null);
-    Navigator.of(context)
-        .pushNamed(FollowupPatientSummaryScreen.path, arguments: 'encounter');
+    // Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: );
+    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
   }
 
   List<CustomStep> _mySteps() {
@@ -775,6 +780,43 @@ checkMissingData() {
       habfController.text == '' &&
       hba1cController.text == '') {
     print('blood sugar missing');
+    return true;
+  }
+
+  return false;
+}
+
+checkOptionalMissingData() {
+  if (heightEditingController.text == '' ||
+    weightEditingController.text == '' ||
+    waistEditingController.text == ''||
+    hipEditingController.text == '') {
+    print('body measurement optional missing');
+    return true;
+  }
+
+  if (randomBloodController.text == '' ||
+      fastingBloodController.text == '' ||
+      habfController.text == '' ||
+      hba1cController.text == '') {
+    print('blood sugar optinal missing');
+    return true;
+  }
+
+  if (cholesterolController.text == '' ||
+    ldlController.text == '' ||
+    hdlController.text == '' ||
+    tgController.text == '') {
+    print('lipid profile optinal missing');
+    return true;
+  }
+
+  if (creatinineController.text == '' ||
+    sodiumController.text == '' ||
+    potassiumController.text == '' ||
+    ketonesController.text == '' ||
+    proteinController.text == '') {
+    print('additional optinal missing');
     return true;
   }
 

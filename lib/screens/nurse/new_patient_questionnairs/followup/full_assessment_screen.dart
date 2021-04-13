@@ -673,8 +673,7 @@ class _FullAssessmentScreenState extends State<FullAssessmentScreen> {
     }
 
     // goToHome(false, null);
-    Navigator.of(context)
-        .pushNamed(FollowupPatientSummaryScreen.path, arguments: 'followup');
+                    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': {},});
   }
 
   List<CustomStep> _mySteps() {

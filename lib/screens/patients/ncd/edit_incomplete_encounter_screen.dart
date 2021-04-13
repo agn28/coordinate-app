@@ -929,6 +929,7 @@ class _EditIncompleteEncounterScreenScreenState
     print('before missing popup');
 
     var hasMissingData = checkMissingData();
+    var hasOptionalMissingData = checkOptionalMissingData();
 
     if (hasMissingData) {
       var continueMissing = await missingDataAlert();
@@ -937,20 +938,25 @@ class _EditIncompleteEncounterScreenScreenState
       }
     }
 
-    setLoader(true);
+    // setLoader(true);
 
     var patient = Patient().getPatient();
 
     print(patient['data']['age']);
-    var status = hasMissingData ? 'incomplete' : 'complete';
+    var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
     if (nextVisitDate != '') {
       encounter['body']['next_visit_date'] = nextVisitDate;
     }
-    var response = await AssessmentController()
-        .updateAssessmentWithObservations(status, encounter, observations);
+    var encounterData = {
+      'context': context,
+      'dataStatus': dataStatus,
+      'encounter': encounter,
+      'observations': observations
+    };
+    // var response = await AssessmentController().updateAssessmentWithObservations(status, encounter, observations);
     // var response = await AssessmentController().createOnlyAssessmentWithStatus('ncd center assessment', 'ncd', '', 'incomplete');
-    !hasMissingData ? Patient().setPatientReviewRequiredTrue() : null;
-    setLoader(false);
+    // !hasMissingData ? Patient().setPatientReviewRequiredTrue() : null;
+    // setLoader(false);
 
     // if age greater than 40 redirect to referral page
     // if (patient['data']['age'] != null && patient['data']['age'] > 40) {
@@ -982,9 +988,9 @@ class _EditIncompleteEncounterScreenScreenState
 
       return;
     }
-
-    Navigator.of(context)
-        .pushNamed(FollowupPatientSummaryScreen.path, arguments: 'encounter');
+  
+    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
+    // Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: 'encounter');
     // Navigator.of(context).pushNamed('/ncdPatientSummary');
     // goToHome(false, null);
   }
@@ -1086,6 +1092,42 @@ checkMissingData() {
       habfController.text == '' &&
       hba1cController.text == '') {
     print('blood sugar missing');
+    return true;
+  }
+
+  return false;
+}
+checkOptionalMissingData() {
+  if (heightEditingController.text == '' ||
+    weightEditingController.text == '' ||
+    waistEditingController.text == ''||
+    hipEditingController.text == '') {
+    print('body measurement optional missing');
+    return true;
+  }
+
+  if (randomBloodController.text == '' ||
+      fastingBloodController.text == '' ||
+      habfController.text == '' ||
+      hba1cController.text == '') {
+    print('blood sugar optinal missing');
+    return true;
+  }
+
+  if (cholesterolController.text == '' ||
+    ldlController.text == '' ||
+    hdlController.text == '' ||
+    tgController.text == '') {
+    print('lipid profile optinal missing');
+    return true;
+  }
+
+  if (creatinineController.text == '' ||
+    sodiumController.text == '' ||
+    potassiumController.text == '' ||
+    ketonesController.text == '' ||
+    proteinController.text == '') {
+    print('additional optinal missing');
     return true;
   }
 
