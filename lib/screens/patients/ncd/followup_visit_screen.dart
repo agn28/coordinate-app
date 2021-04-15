@@ -652,8 +652,7 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
       return;
     }
 
-    Navigator.of(context)
-        .pushNamed(FollowupPatientSummaryScreen.path, arguments: 'followup');
+    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': {},});
     // goToHome(false, null);
   }
 

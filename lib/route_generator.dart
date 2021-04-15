@@ -73,8 +73,8 @@ class RouteGenerator {
       case '/ncdPatientSummary':
         return CupertinoPageRoute(builder: (_) => NcdPatientSummaryScreen());
       case FollowupPatientSummaryScreen.path:
-      var data = settings.arguments;
-        return CupertinoPageRoute(builder: (_) => FollowupPatientSummaryScreen( prevScreen: data));
+      var data = settings.arguments as Map;
+        return CupertinoPageRoute(builder: (_) => FollowupPatientSummaryScreen( prevScreen: data['prevScreen'], encounterData: data['encounterData']));
       case FollowupFeelingScreen.path:
         return CupertinoPageRoute(builder: (_) => FollowupFeelingScreen());
       case FollowupVisitScreen.path:

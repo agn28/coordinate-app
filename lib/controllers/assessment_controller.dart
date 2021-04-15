@@ -618,7 +618,7 @@ class AssessmentController {
     Helpers().clearObservationItems();
   }
 
-  updateAssessmentWithObservations(status, encounter, observations) async {
+  updateAssessmentWithObservations(context, status, encounter, observations) async {
     var apiDataObservations =
         await updateObservations(status, encounter, observations);
     print('apiDataObservations $apiDataObservations');
@@ -633,18 +633,47 @@ class AssessmentController {
     // Call API
     var apiResponse =
         await AssessmentRepository().createAssessmentWithObservations(apiData);
+    //Could not get any response from API
+    if (apiResponse == null) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text(
+            "Error: ${AppLocalizations.of(context).translate('somethingWrong')}"),
+        backgroundColor: kPrimaryRedColor,
+      ));
+      // return;
+    }
+    //API did not respond due to handled exception
+    else if (apiResponse['exception'] != null) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text('Error: ${apiResponse['message']}'),
+        backgroundColor: kPrimaryRedColor,
+      ));
+      // return;
+    }
+    //API responded with error
+    else if (apiResponse['error'] != null && apiResponse['error']) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text("Error: ${apiResponse['message']}"),
+        backgroundColor: kPrimaryRedColor,
+      ));
+      // return;
+    }
+    //API responded success with no error
+    else if (apiResponse['error'] != null && !apiResponse['error']) {
+      print('into success');
+      // creating local assessment with synced status
+      // response = await AssessmentRepositoryLocal().createLocalAssessment(assessmentId, data, true);
+      // print('response $response');
 
-    print('before health report');
-
-    if (status == 'complete') {
-      HealthReportController().generateReport(encounter['body']['patient_id']);
+      if (status == 'complete') {
+        print('before health report');
+        HealthReportController().generateReport(encounter['body']['patient_id']);
+        print('after health report');
+      }
+      // return response;
     }
 
-    print('after health report');
-
-    Helpers().clearObservationItems();
-
-    return 'success';
+    return;
   }
 
   updateIncompleteAssessmentData(status, encounter, observations) async {
