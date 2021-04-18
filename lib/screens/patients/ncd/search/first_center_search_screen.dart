@@ -85,7 +85,7 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
 
     for(var item in data['data']) {
       parsedPatients.add({
-        'uuid': item['id'],
+        'id': item['id'],
         'data': item['body'],
         'meta': item['meta']
       });

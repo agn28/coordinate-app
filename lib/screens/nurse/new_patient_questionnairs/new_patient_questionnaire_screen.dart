@@ -584,7 +584,8 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
 
     print(patient['data']['age']);
     var status = hasMissingData ? 'incomplete' : 'complete';
-    var response = await AssessmentController().createOnlyAssessmentWithStatus('new ncd center assessment', 'ncd', '', status, '');
+    var response = await AssessmentController().createSyncAssessment(context, 'new ncd center assessment', 'ncd', '', status, '');
+    // var response = await AssessmentController().createOnlyAssessmentWithStatus('new ncd center assessment', 'ncd', '', status, '');
 
     setLoader(false);
 

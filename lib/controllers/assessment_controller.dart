@@ -164,10 +164,37 @@ class AssessmentController {
   }
 
   getIncompleteEncounterWithObservation(patientId) async {
-    var assessment = await AssessmentRepository()
-        .getIncompleteEncounterWithObservation(patientId);
+    var apiResponse;
+    var response;
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      // I am connected to a mobile network.
 
-    return assessment;
+      print('connected');
+
+      print('live incomplete encounter');
+      print(patientId);
+      apiResponse = await AssessmentRepository().getIncompleteEncounterWithObservation(patientId);
+      print('apiResponse');
+
+      print(apiResponse);
+    } else {
+      print('not connected');
+      // Scaffold.of(context).showSnackBar(SnackBar(
+      //   content: Text('Warning: No Internet. Using offline...'),
+      //   backgroundColor: kPrimaryYellowColor,
+      // ));
+      var assessment  =
+          await AssessmentRepositoryLocal().getIncompleteAssessmentsByPatient(patientId);
+      var observations = await getObservationsByAssessment(assessment);
+      print('local assessment $assessment');
+      print('local observations $observations');
+    }
+    // var assessment = await AssessmentRepository()
+    //     .getIncompleteEncounterWithObservation(patientId);
+
+    // return assessment;
   }
 
   /// Get observations under a specific assessment.

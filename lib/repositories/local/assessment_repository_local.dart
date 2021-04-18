@@ -52,6 +52,22 @@ class AssessmentRepositoryLocal {
     return assessments;
   }
 
+  getIncompleteAssessmentsByPatient(id) async {
+    print('patient id ' + id);
+    final sql =
+        '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE status='incomplete' patient_id="$id"''';
+    var assessments;
+
+    try {
+      assessments = await db.rawQuery(sql);
+    } catch (error) {
+      print('errors');
+      print(error);
+      return;
+    }
+    return assessments;
+  }
+
   getNotSyncedAssessments() async {
     final sql =
         '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE is_synced=0''';

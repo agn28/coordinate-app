@@ -9,6 +9,8 @@ import 'package:nhealth/configs/configs.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
+import 'package:nhealth/controllers/sync_controller.dart';
+import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/screens/patients/ncd/followup_patient_summary_screen.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/blood_pressure.dart';
@@ -25,6 +27,7 @@ import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import '../../../custom-classes/custom_stepper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get/get.dart';
 
 final _temperatureController = TextEditingController();
 final _systolicController = TextEditingController();
@@ -92,7 +95,7 @@ class EditIncompleteEncounterScreen extends StatefulWidget {
 }
 
 class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEncounterScreen> {
-  
+  final syncController = Get.put(SyncController());
   int _currentStep = 0;
 
   String nextText = 'NEXT';
@@ -132,17 +135,25 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
       isLoading = true;
     });
     var patientId = Patient().getPatient()['id'];
+    print('patientId $patientId');
     var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
     setState(() {
       isLoading = false;
     });
 
-    if (data == null) {
-      return;
-    } else if (data['message'] == 'Unauthorized') {
+    if (data != null && data['message'] == 'Unauthorized') {
       Auth().logout();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
       return;
+    } else if (isNull(data) || isNotNull(data['exception'])) {
+      setState(() {
+        // allNewPatients = syncController.localPatientsAll.value;
+        encounter = data['data']['assessment'];
+        print("encounter: $encounter");
+        observations = data['data']['observations'];
+        print("observations: $observations");
+      });
+      // return;
     } else if (data['error'] != null && data['error']) {
       return;
     }

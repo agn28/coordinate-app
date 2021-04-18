@@ -571,7 +571,7 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
 
     print(patient['data']['age']);
     var status = hasMissingData ? 'incomplete' : 'complete';
-    var response = await AssessmentController().createFollowupAssessment('follow up visit (center)', 'follow up center', '', status, nextVisitDate, 'short');
+    var response = await AssessmentController().createSyncFollowUp(context, 'follow up visit (center)', 'follow up center', '', status, nextVisitDate, 'short');
     !hasMissingData ? Patient().setPatientReviewRequiredTrue() : null;
     setLoader(false);
 
