@@ -1300,6 +1300,14 @@ class _MedicationState extends State<Medication> {
     // }
     // return true;
 
+    // check if any medical histroy answer is yes. then return true if medication question is aspirin, or lower fat
+    if (medicationQuestion['type'] == 'heart' || medicationQuestion['type'] == 'heart_bp_diabetes') {
+      var medicalHistoryasYes = medicalHistoryAnswers.where((item) => item == 'yes');
+      if (medicalHistoryasYes.isNotEmpty) {
+        return true;
+      }
+    }
+    
     if (medicationQuestion['type'].contains('medication')) {
       var mainType =
           medicationQuestion['type'].replaceAll('_regular_medication', '');

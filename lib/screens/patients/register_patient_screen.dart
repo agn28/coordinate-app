@@ -674,7 +674,7 @@ class _PatientDetailsState extends State<PatientDetails> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+      padding: EdgeInsets.all(20),
       physics: ClampingScrollPhysics(),
       scrollDirection: Axis.vertical,
       child: Container(
@@ -727,7 +727,7 @@ class _PatientDetailsState extends State<PatientDetails> {
                 ),
                 Container(
                     // margin: EdgeInsets.symmetric(horizontal: 30),
-                    child: Column(
+                  child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
@@ -765,6 +765,19 @@ class _PatientDetailsState extends State<PatientDetails> {
                         Text(
                           AppLocalizations.of(context).translate('female'),
                         ),
+
+                        Radio(
+                          activeColor: kPrimaryColor,
+                          value: 'other',
+                          groupValue: selectedGender,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedGender = value;
+                            });
+                          },
+                        ),
+                        Text(AppLocalizations.of(context).translate('other'),
+                            style: TextStyle(color: Colors.black)),
                       ],
                     ),
                   ],
@@ -1004,6 +1017,15 @@ class _PatientDetailsState extends State<PatientDetails> {
                 SizedBox(
                   height: 10,
                 ),
+
+                Text(
+                  AppLocalizations.of(context).translate('upazila'),
+                  style:
+                      TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
                 DropdownSearch(
                   validator: (v) => v == null ? "required field" : null,
                   hint: AppLocalizations.of(context).translate('upazila'),
@@ -1035,6 +1057,14 @@ class _PatientDetailsState extends State<PatientDetails> {
                   selectedItem: selectedUpazila['name'],
                   popupItemBuilder: _customPopupItemBuilderExample2,
                   showSearchBox: true,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  AppLocalizations.of(context).translate('district'),
+                  style:
+                      TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                 ),
                 SizedBox(
                   height: 10,
@@ -1343,6 +1373,7 @@ class _AddPhotoState extends State<AddPhoto> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      padding: EdgeInsets.all(20),
       physics: ClampingScrollPhysics(),
       scrollDirection: Axis.vertical,
       child: Container(
@@ -1574,6 +1605,7 @@ class _ViewSummaryState extends State<ViewSummary> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      padding: EdgeInsets.all(20),
       physics: ClampingScrollPhysics(),
       scrollDirection: Axis.vertical,
       child: Container(

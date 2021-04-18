@@ -1459,7 +1459,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                   Navigator.of(context).pushNamed('/home',);
                                 },
                                 color: kPrimaryColor,
-                                child: Text('Save for Later', style: TextStyle(color: Colors.white),),
+                                child: Text(AppLocalizations.of(context).translate('saveForLater'), style: TextStyle(color: Colors.white),),
                                 ),
                               ) : Container(),
                               SizedBox(height: 20,),
@@ -1498,7 +1498,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                   Navigator.of(context).pushNamed('/home',);
                                 },
                                 color: kPrimaryColor,
-                                child: Text('Complete Encounter', style: TextStyle(color: Colors.white),),
+                                child: Text(AppLocalizations.of(context).translate('completeEncounter'), style: TextStyle(color: Colors.white),),
                                 ),
                               ) : Container(),
                             ],

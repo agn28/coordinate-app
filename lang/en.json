@@ -148,6 +148,7 @@
   "unablePerform": "UNABLE TO PERFORM",
   "reasonSkipping": "Reason for Skipping",
   "others": "Others",
+  "other": "Other",
   "enterBloodTest": "Enter blood test results (where applicable)",
   "lipidProfile": "Lipid Profile",
   "totalCholesterol": "Total Cholesterol",
