@@ -179,6 +179,7 @@ class AssessmentController {
       print('apiResponse');
 
       print(apiResponse);
+      return apiResponse;
     } else {
       print('not connected');
       // Scaffold.of(context).showSnackBar(SnackBar(
@@ -187,14 +188,76 @@ class AssessmentController {
       // ));
       var assessment  =
           await AssessmentRepositoryLocal().getIncompleteAssessmentsByPatient(patientId);
-      var observations = await getObservationsByAssessment(assessment);
-      print('local assessment $assessment');
-      print('local observations $observations');
+      // var observations = await getObservationsByAssessment(assessment);
+      print('local assessment ${(assessment[0]["id"])}');
+      // print('local observations $observations');
     }
     // var assessment = await AssessmentRepository()
     //     .getIncompleteEncounterWithObservation(patientId);
 
     // return assessment;
+  }
+
+  getIncompleteAssessmentsByPatient(patientId) async {
+    var assessments = await AssessmentRepositoryLocal().getIncompleteAssessmentsByPatient(patientId);
+    var data = [];
+    var parsedData;
+
+    await assessments.forEach((assessment) {
+      parsedData = jsonDecode(assessment['data']);
+      if (parsedData['body']['patient_id'] == Patient().getPatient()['id']) {
+        data.add({
+          'id': assessment['id'],
+          'data': parsedData['body'],
+          'meta': parsedData['meta']
+        });
+      }
+    });
+    return data;
+  }
+
+  getIncompleteAssessmentWithObservations(patientId) async {
+    var response = await AssessmentRepository().getIncompleteEncounterWithObservation(patientId);
+
+    print('encounter respose ' + response.toString());
+    var data = [];
+    // if (response == null) {
+    //   return data;
+    // }
+
+    if (isNull(response) || isNotNull(response['exception'])) {
+      print('into exception');
+      var patientId = Patient().getPatient()['id'];
+      var localResponse =
+          await AssessmentRepositoryLocal().getAssessmentsByPatient(patientId);
+      print('localResponse');
+      print(localResponse);
+      if (isNotNull(localResponse)) {
+        localResponse.forEach((assessment) {
+          var parseData = json.decode(assessment['data']);
+
+          data.add({
+            'id': assessment['id'],
+            'data': parseData['body'],
+            'meta': parseData['meta']
+          });
+        });
+      }
+
+      return data;
+    }
+
+    if (response['error'] != null && !response['error']) {
+      await response['data'].forEach((assessment) {
+        data.add({
+          'id': assessment['id'],
+          'data': assessment['body'],
+          'meta': assessment['meta']
+        });
+      });
+    }
+
+    return data;
   }
 
   /// Get observations under a specific assessment.

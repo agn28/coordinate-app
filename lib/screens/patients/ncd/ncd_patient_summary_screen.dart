@@ -82,14 +82,14 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     
     _checkAvatar();
     _checkAuth();
-    getUsers();
-    getAssessmentDueDate();
-    _getCarePlan();
-    getReferrals();
-    getEncounters();
-    getAssessments();
-    getMedicationsConditions();
-    getReport();
+    // getUsers();
+    // getAssessmentDueDate();
+    // _getCarePlan();
+    // getReferrals();
+    // getEncounters();
+    // getAssessments();
+    // getMedicationsConditions();
+    // getReport();
     getIncompleteAssessment();
 
   }
@@ -175,17 +175,17 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     });
     var patientId = Patient().getPatient()['id'];
     var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
-    // print('incompleteData ${data['data']['assessment']['body']['performed_by']}');
-    if(data['data']['assessment']['body']['performed_by'] != null)
+    print('incompleteData ${data}');
+    if(data != null && data['data']['assessment']['body']['performed_by'] != null)
     {
       performer = await getPerformer(data['data']['assessment']['body']['performed_by']);
       print('performer $performer');
     }
     setState(() {
       isLoading = false;
-      incompleteEncounterDate = DateFormat("MMMM d, y").format(DateTime.parse(data['data']['assessment']['meta']['created_at']));
-      performerName = performer.isNotEmpty ? performer['data']['name'] : '';
-      performerRole = performer.isNotEmpty ? performer['data']['role'] : '';
+      incompleteEncounterDate = data != null ? DateFormat("MMMM d, y").format(DateTime.parse(data['data']['assessment']['meta']['created_at'])) : '';
+      performerName = performer != null ? performer['data']['name'] : '';
+      performerRole = performer != null ? performer['data']['role'] : '';
     });
 
     if (data == null) {
@@ -285,10 +285,10 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
       });
     }
     setState(() {
-      bmi = report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ? report['body']['result']['assessments']['body_composition']['components']['bmi'] : null;
-      cvd = report['body']['result']['assessments']['cvd'] != null ? report['body']['result']['assessments']['cvd'] : null;
-      bp = report['body']['result']['assessments']['blood_pressure'] != null ? report['body']['result']['assessments']['blood_pressure'] : null;
-      cholesterol = report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ? report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] : null;
+      bmi = report != null && report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ? report['body']['result']['assessments']['body_composition']['components']['bmi'] : null;
+      cvd = report != null && report['body']['result']['assessments']['cvd'] != null ? report['body']['result']['assessments']['cvd'] : null;
+      bp = report != null && report['body']['result']['assessments']['blood_pressure'] != null ? report['body']['result']['assessments']['blood_pressure'] : null;
+      cholesterol = report != null && report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ? report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] : null;
     });
 
   }
