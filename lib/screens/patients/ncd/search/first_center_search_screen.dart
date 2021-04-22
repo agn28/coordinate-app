@@ -10,6 +10,7 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:nhealth/controllers/sync_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
@@ -17,7 +18,8 @@ import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
-
+import 'package:get/get.dart';
+import 'package:nhealth/helpers/functions.dart';
 import '../../../../app_localizations.dart';
 
 
@@ -41,6 +43,7 @@ class FirstCenterSearchScreen extends StatefulWidget {
 }
 
 class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
+  final syncController = Get.put(SyncController());
   bool isLoading = false;
   @override
   initState() {
@@ -64,10 +67,10 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
   }
 
   getLivePatients() async {
-    if (Auth().isExpired()) {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    }
+    // if (Auth().isExpired()) {
+    //   Auth().logout();
+    //   Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    // }
 
     setState(() {
       isLoading = true;
@@ -76,26 +79,56 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
 
     var data = await PatientController().getFirstAssessmentPatients();
 
-    if (data['message'] == 'Unauthorized') {
+    if (data != null && data['message'] == 'Unauthorized') {
       Auth().logout();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
     }
 
     var parsedPatients = [];
+    var parsedLocalPatient = [];
+    if (isNull(data) || isNotNull(data['exception']))  {
+      var allLocalPatients = syncController.localPatientsAll.value;
+      var assessments = await AssessmentController().getAllAssessments();
 
-    for(var item in data['data']) {
-      parsedPatients.add({
-        'id': item['id'],
-        'data': item['body'],
-        'meta': item['meta']
+      for(var localPatient in allLocalPatients) {
+        for(var assessment in assessments) {
+          print(assessment);
+          if (assessment['data']['patient_id'] == localPatient['id']){      
+            var localpatientdata = {
+              'id': localPatient['id'],
+              'data': localPatient['data'],
+              'meta': localPatient['meta']
+            };
+            if (assessment['data']['status'] == 'incomplete') {
+              print(localpatientdata);
+              localpatientdata['data']['incomplete_encounter'] = true;
+            }
+            parsedLocalPatient.add(localpatientdata);
+            print('localpatientdata $localpatientdata');
+          }
+        }
+      }
+      setState(() {
+        allPatients = parsedLocalPatient;
+        patients = allPatients;
+        isLoading = false;
+      });
+    } else if (data['data'] != null) {
+      for(var item in data['data']) {
+        parsedPatients.add({
+          'id': item['id'],
+          'data': item['body'],
+          'meta': item['meta']
+        });
+      }
+
+      setState(() {
+        allPatients = parsedPatients;
+        patients = allPatients;
+        isLoading = false;
       });
     }
-
-    setState(() {
-      allPatients = parsedPatients;
-      patients = allPatients;
-      isLoading = false;
-    });
+    
   }
 
   search(query) {

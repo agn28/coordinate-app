@@ -234,6 +234,54 @@ class SyncController extends GetxController {
     // }
   }
 
+ syncLocalDataToLiveByPatient() async {
+    print('syncing local patient data');
+    // if (localNotSyncedPatients.value.isEmpty) {
+    //   return;
+    // }
+    var syncData = [];
+    print('localNotSyncedPatients ${localNotSyncedPatients.length}');
+    isSyncingToLive.value = true;
+    for (var patient in localNotSyncedPatients) {
+    var prepareSyncData = {};
+      print('local patient $patient');
+      var patientData = {
+        'id': patient['id'],
+        'body': patient['data'],
+        'meta': patient['meta']
+      };
+      // prepareSyncData['patient_id'] = patient['id'];
+      // prepareSyncData['sync_data']['patient_data'] = patientData;
+      syncData.add({
+        'patient_id': patient['id'],
+        'sync_data':{
+          'patient_data':patientData
+        }
+      });
+      print('syncData $syncData');
+    }
+
+    for (var assessment in localNotSyncedAssessments) {
+    var prepareSyncData = {};
+      print('into local assessments');
+      var assessmentData = {
+        'id': assessment['id'],
+        'body': assessment['data'],
+        'meta': assessment['meta']
+      };
+      
+      for (var data in syncData) {
+        if(data['patient_id'] == assessment['data']['patient_id']) {
+          data['sync_data']['assessment_data'] = assessmentData;
+          print('assessment $assessment');
+        }
+        // else preparedata
+      }
+      
+    }
+    print('final syncdata $syncData');
+  }
+
   syncLocalPatientsToLive() async {
     print('syncing local patient');
     // if (localNotSyncedPatients.value.isEmpty) {

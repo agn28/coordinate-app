@@ -71,6 +71,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
+    print('_patient $_patient');
     dueCarePlans = [];
     completedCarePlans = [];
     upcomingCarePlans = [];
@@ -176,11 +177,12 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     var patientId = Patient().getPatient()['id'];
     var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
     print('incompleteData ${data}');
-    if(data != null && data['data']['assessment']['body']['performed_by'] != null)
-    {
-      performer = await getPerformer(data['data']['assessment']['body']['performed_by']);
-      print('performer $performer');
-    }
+    //TODO: need to get performer name from local
+    // if(data != null && data['data']['assessment']['body']['performed_by'] != null)
+    // {
+    //   performer = await getPerformer(data['data']['assessment']['body']['performed_by']);
+    //   print('performer $performer');
+    // }
     setState(() {
       isLoading = false;
       incompleteEncounterDate = data != null ? DateFormat("MMMM d, y").format(DateTime.parse(data['data']['assessment']['meta']['created_at'])) : '';

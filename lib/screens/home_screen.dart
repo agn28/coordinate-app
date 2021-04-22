@@ -537,6 +537,7 @@ class _HomeState extends State<HomeScreen> {
                                           ),
                                           onPressed: () {
                                             syncController.initializeSync();
+                                            // syncController.syncLocalDataToLiveByPatient();
                                           })
                                   ],
                                 ),

@@ -899,7 +899,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     if (nextVisitDate != '') {
       encounter['body']['next_visit_date'] = nextVisitDate;
     }
-    var response = await AssessmentController().updateIncompleteAssessmentData(status, encounter, observations);
+    var response = await AssessmentController().updateSyncIncompleteAssessment(context, status, encounter, observations);
     // var response = await AssessmentController().createOnlyAssessmentWithStatus('ncd center assessment', 'ncd', '', 'incomplete');
     !hasMissingData ? Patient().setPatientReviewRequiredTrue() : null;
     setLoader(false);

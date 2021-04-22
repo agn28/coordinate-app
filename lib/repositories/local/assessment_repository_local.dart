@@ -474,6 +474,27 @@ class AssessmentRepositoryLocal {
     return response;
   }
 
+  updateLocalAssessment(id, data, isSynced) async {
+    final sql = '''UPDATE ${DatabaseCreator.assessmentTable} SET
+      data = ? , 
+      patient_id = ?,
+      status = ?,
+      is_synced = ?
+      WHERE id = ?''';
+    List<dynamic> params = [jsonEncode(data), data['body']['patient_id'],
+      data['body']['status'], isSynced, id];
+    var response;
+    try {
+      response = await db.rawUpdate(sql, params);
+      print('sql $response');
+    } catch (error) {
+      print('local assessment update error');
+      print(error);
+    }
+    DatabaseCreator.databaseLog('Update assessment', sql, null, response, params);
+    return response;
+  }
+
   /// Create assessment.
   /// Assessment uuid [id] and [data] are required as paremeter.
   _updateAssessment(id, data) async {

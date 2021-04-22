@@ -33,6 +33,32 @@ class ObservationRepositoryLocal {
     
   }
 
+  update(id, data, isSynced) async {
+
+    print('into local observation update');
+
+    final sql = '''UPDATE ${DatabaseCreator.observationTable} SET
+      data = ? , 
+      patient_id = ?,
+      status = ?,
+      is_synced = ?
+      WHERE id = ?''';
+    List<dynamic> params = [jsonEncode(data), data['body']['patient_id'],
+      data['body']['status'], isSynced, id];
+    var response;
+
+    try {
+      response = await db.rawUpdate(sql, params);
+      print(response);
+    } catch(error) {
+      print('local observation update error');
+      print(error);
+    }
+    DatabaseCreator.databaseLog('Update observation', sql, null, response, params);
+    return response;
+    
+  }
+
   getAllObservations() async {
     final sqlObservations = '''SELECT * FROM ${DatabaseCreator.observationTable}''';
     final observations = await db.rawQuery(sqlObservations);
