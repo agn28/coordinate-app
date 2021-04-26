@@ -502,11 +502,12 @@
   "fathersOrHusbandsName": "Father's / Husband's Name",
   "whatWasTheOutcome": "What was the outcome?",
   "selectPurpose": "Select the Purpose for today?",
-  "shortFollowUp": "Short Follow Up",
+  "shortFollowUp": "Short Follow Up (Measurements and Tests)",
   "lastFullAssessment": "Last Full Assessment:",
   "lastShortFollowUp": "Last Short Assessment:",
   "pendingDoctorConsultation": "Pending Doctor Consultation",
   "completedPendingFollowUp": "Completed. Pending Follow Up",
-  "none": "none"
-
+  "none": "none",
+  "saveForLater": "Save for Later",
+  "completeEncounter": "Complete Encounter"
 }

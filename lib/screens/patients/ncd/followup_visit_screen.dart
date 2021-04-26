@@ -183,6 +183,11 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
     systolicEditingController.text = '';
     diastolicEditingController.text = '';
     pulseRateEditingController.text = '';
+    
+    heightEditingController.text = '';
+    weightEditingController.text = '';
+    waistEditingController.text = '';
+    hipEditingController.text = '';
 
     randomBloodController.text = '';
     fastingBloodController.text = '';
@@ -338,6 +343,22 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
       };
 
       BloodPressure().addBloodPressure(formData);
+    }
+
+    if (heightEditingController.text != '') {
+      BodyMeasurement()
+          .addItem('height', heightEditingController.text, 'cm', '', '');
+    }
+    if (weightEditingController.text != '') {
+      BodyMeasurement()
+          .addItem('weight', weightEditingController.text, 'kg', '', '');
+    }
+    if (waistEditingController.text != '') {
+      BodyMeasurement()
+          .addItem('waist', waistEditingController.text, 'cm', '', '');
+    }
+    if (hipEditingController.text != '') {
+      BodyMeasurement().addItem('hip', hipEditingController.text, 'cm', '', '');
     }
 
     BodyMeasurement().addBmItem();
@@ -600,6 +621,7 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
   Future _completeStep() async {
     print('before missing popup');
     var hasMissingData = checkMissingData();
+    var hasOptionalMissingData = checkOptionalMissingData();
 
     if (hasMissingData) {
       var continueMissing = await missingDataAlert();
@@ -613,12 +635,15 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
     var patient = Patient().getPatient();
 
     print(patient['data']['age']);
-    var status = hasMissingData ? 'incomplete' : 'complete';
-    var response = await AssessmentController()
-        .createAssessmentWithObservations(context, 'follow up visit (center)',
-            'follow up center', '', status, nextVisitDate,
-            followupType: 'short');
+    var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
+    // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow up center', '', status, nextVisitDate, followupType: 'short');
     !hasMissingData ? Patient().setPatientReviewRequiredTrue() : null;
+    
+    var encounterData = {
+      'context': context,
+      'dataStatus': dataStatus,
+      'followupType': 'short'
+    };
     setLoader(false);
 
     // if age greater than 40 redirect to referral page
@@ -652,7 +677,8 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
       return;
     }
 
-    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': {},});
+    // Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': {},});
+    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': encounterData ,});
     // goToHome(false, null);
   }
 
@@ -705,16 +731,52 @@ checkMissingData() {
     return true;
   }
 
-  // if (heightEditingController.text == '' || weightEditingController.text == '') {
-  //   print('body measurement missing');
-  //   return true;
-  // }
+  if (heightEditingController.text == '' || weightEditingController.text == '') {
+    print('body measurement missing');
+    return true;
+  }
 
   if (randomBloodController.text == '' &&
       fastingBloodController.text == '' &&
       habfController.text == '' &&
       hba1cController.text == '') {
     print('blood sugar missing');
+    return true;
+  }
+
+  return false;
+}
+checkOptionalMissingData() {
+  if (heightEditingController.text == '' ||
+    weightEditingController.text == '' ||
+    waistEditingController.text == ''||
+    hipEditingController.text == '') {
+    print('body measurement optional missing');
+    return true;
+  }
+
+  if (randomBloodController.text == '' ||
+      fastingBloodController.text == '' ||
+      habfController.text == '' ||
+      hba1cController.text == '') {
+    print('blood sugar optinal missing');
+    return true;
+  }
+
+  if (cholesterolController.text == '' ||
+    ldlController.text == '' ||
+    hdlController.text == '' ||
+    tgController.text == '') {
+    print('lipid profile optinal missing');
+    return true;
+  }
+
+  if (creatinineController.text == '' ||
+    sodiumController.text == '' ||
+    potassiumController.text == '' ||
+    ketonesController.text == '' ||
+    proteinController.text == '') {
+    print('additional optinal missing');
     return true;
   }
 
@@ -815,9 +877,31 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                                                             question['options']
                                                                 .indexOf(
                                                                     option)];
-                                                        print(
-                                                            medicalHistoryAnswers);
-                                                        // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
+                                                        var selectedOption = medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)];
+                                                        print('selectedOption $selectedOption');
+                                                        medicationQuestions['items'].forEach((qtn) {
+                                                          if(qtn['type'].contains('heart') || qtn['type'].contains('heart_bp_diabetes')) {
+                                                            
+                                                            var medicalHistoryAnswerYes = false;
+                                                            medicalHistoryAnswers.forEach((ans) {
+                                                              if(ans == 'yes') {
+                                                                medicalHistoryAnswerYes = true;
+                                                                print('medicalHistoryAnswerYes $ans');
+                                                              }
+                                                            });
+                                                            if (!medicalHistoryAnswerYes) {
+                                                              medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
+                                                              print('exceptional if'); 
+                                                            }
+                                                          } else if(qtn['type'].contains(question['type']) && selectedOption == 'no') {
+                                                            medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
+                                                            print('if');
+                                                          }
+                                                          print(qtn['type']);
+                                                          print(question['type']);
+                                                          print('qtn $qtn');
+                                                          print('medicationAnswers ${medicationAnswers}');
+                                                        });
                                                       });
                                                     },
                                                     materialTapTargetSize:
@@ -1149,6 +1233,13 @@ var pulseRateEditingController = TextEditingController();
 var diastolicEditingController = TextEditingController();
 var commentsEditingController = TextEditingController();
 
+
+var heightEditingController = TextEditingController();
+var weightEditingController = TextEditingController();
+var waistEditingController = TextEditingController();
+var hipEditingController = TextEditingController();
+var bmiEditingController = TextEditingController();
+
 //Blood Test
 var selectedRandomBloodUnit = 'mg/dL';
 var randomBloodController = TextEditingController();
@@ -1178,6 +1269,16 @@ var selectedProteinUnit = 'mg/dL';
 var proteinController = TextEditingController();
 
 class _MeasurementsState extends State<Measurements> {
+  calculateBmi() {
+    if (heightEditingController != '' && weightEditingController.text != '') {
+      var height = int.parse(heightEditingController.text) / 100;
+      var weight = int.parse(weightEditingController.text);
+
+      var bmi = weight / (height * height);
+
+      bmiEditingController.text = bmi.toStringAsFixed(2);
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -1374,6 +1475,217 @@ class _MeasurementsState extends State<Measurements> {
                           ],
                         ),
                       ),
+                    ],
+                  ),
+                ),SizedBox(
+                  height: 24,
+                ),
+                Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)
+                            .translate("bodyMeasurements"),
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      SizedBox(height: 24),
+                      Container(
+                        height: 230,
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 0.5, color: Colors.grey.shade400),
+                            borderRadius: BorderRadius.circular(10)),
+                        padding: EdgeInsets.all(20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      AppLocalizations.of(context)
+                                              .translate("height") +
+                                          "*",
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 16)),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Container(
+                                    width: 80,
+                                    height: 40,
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      keyboardType: TextInputType.number,
+                                      controller: heightEditingController,
+                                      onChanged: (value) {
+                                        calculateBmi();
+                                      },
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.only(
+                                            top: 5, left: 10, right: 10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.red, width: 0.0)),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 16,
+                                  ),
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate("cm"),
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400)),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      AppLocalizations.of(context)
+                                              .translate("weight") +
+                                          "*",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      )),
+                                  SizedBox(
+                                    width: 18,
+                                  ),
+                                  Container(
+                                    width: 80,
+                                    height: 40,
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      keyboardType: TextInputType.number,
+                                      controller: weightEditingController,
+                                      onChanged: (value) {
+                                        calculateBmi();
+                                      },
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.only(
+                                            top: 5, left: 10, right: 10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.red, width: 0.0)),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 16,
+                                  ),
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate("kg"),
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400)),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate("waist"),
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      )),
+                                  SizedBox(
+                                    width: 35,
+                                  ),
+                                  Container(
+                                    width: 80,
+                                    height: 40,
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      keyboardType: TextInputType.number,
+                                      controller: waistEditingController,
+                                      onChanged: (value) {
+                                        calculateBmi();
+                                      },
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.only(
+                                            top: 5, left: 10, right: 10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.red, width: 0.0)),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 16,
+                                  ),
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate("cm"),
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400)),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      AppLocalizations.of(context)
+                                              .translate("hip") +
+                                          " ",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      )),
+                                  SizedBox(
+                                    width: 47,
+                                  ),
+                                  Container(
+                                    width: 80,
+                                    height: 40,
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      keyboardType: TextInputType.number,
+                                      controller: hipEditingController,
+                                      onChanged: (value) {},
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.only(
+                                            top: 5, left: 10, right: 10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.red, width: 0.0)),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 16,
+                                  ),
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate("cm"),
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),

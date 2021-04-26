@@ -88,7 +88,9 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     getEncounters();
     getAssessments();
     getMedicationsConditions();
-    getReport();
+    if(widget.prevScreen != 'encounter'){
+      getReport();
+    }
     
   }
 
@@ -1363,7 +1365,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                             children: [
                               Text(AppLocalizations.of(context).translate('ncdCenterVisit'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
                               SizedBox(height: 15,),
-                              Text(AppLocalizations.of(context).translate('nextVisitDate') + '${getNextVisitDate()}', style: TextStyle(fontSize: 17,)),
+                              Text(AppLocalizations.of(context).translate('nextVisitDate') + '', style: TextStyle(fontSize: 17,)),
                               SizedBox(height: 10,),
                               Text(AppLocalizations.of(context).translate('lastVisitDate') + ': ${getLastVisitDate()}', style: TextStyle(fontSize: 17,))
                             ],
@@ -1430,7 +1432,33 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                 ),
                               ),
                               SizedBox(height: 20,),
-                              (widget.prevScreen == 'encounter') && widget.encounterData['dataStatus'] != 'complete' ?
+                              // (widget.prevScreen == 'home') && _patient['data']['incomplete_encounter'] != null &&  _patient['data']['incomplete_encounter'] ?
+                              // Container(
+                              //   child: Column(
+                              //     crossAxisAlignment: CrossAxisAlignment.start,
+                              //     children: [
+                              //       Row(
+                              //         crossAxisAlignment: CrossAxisAlignment.start,
+                              //         children: [
+                              //           Container(
+                              //             child: FlatButton(
+                              //               onPressed: () {
+                              //                 print('hello');
+                              //                 print("patientDataincomplete ${_patient['data']} ");
+                              //                 Navigator.of(context).pushNamed('/editIncompleteEncounter',);
+                              //               },
+                              //               color: kPrimaryColor,
+                              //               child: Text(AppLocalizations.of(context).translate("completePrevEncounter"), style: TextStyle(color: Colors.white),),
+                              //             ),
+                              //           ),
+                              //           SizedBox(width: 20),
+                              //         ]
+                              //       ),
+                              //     ],
+                              //   )
+                              // ) : Container(),
+                              SizedBox(height: 20,),
+                              (widget.prevScreen == 'encounter' || widget.prevScreen == 'followup') && widget.encounterData['dataStatus'] != 'complete' ?
                               Container(
                                 width: double.infinity,
                                   //margin: EdgeInsets.only(left: 15, right: 15),
@@ -1444,14 +1472,26 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                   setState(() {
                                     isLoading = true;
                                   });
-                                  if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
-                                  {
-                                    print('edit encounter');
-                                    var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']); 
+                                  if(widget.prevScreen == 'encounter') {
+                                    if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
+                                    {
+                                      print('edit encounter');
+                                      var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']); 
 
-                                  } else {
-                                    print('new encounter');
-                                    var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                                    } else {
+                                      print('new encounter');
+                                      var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                                    }
+                                  } else if(widget.prevScreen == 'followup') {
+                                    if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
+                                    {
+                                      print('edit followup');
+                                      // var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']); 
+
+                                    } else {
+                                      print('new followup');
+                                      var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow up center', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
+                                    }
                                   }
                                   setState(() {
                                     isLoading = false;
@@ -1474,10 +1514,10 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                 ),
                                 child: FlatButton(
                                 onPressed: () async {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
                                   if(widget.prevScreen == 'encounter') {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
                                     var status = widget.encounterData['dataStatus'] == 'incomplete' ? 'incomplete' : 'complete'; 
                                     if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
                                     {
@@ -1488,13 +1528,28 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                     } else {
                                       print('new encounter');
                                       print(status);
+                                      var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow up center', '', status, '', followupType: widget.encounterData['followupType']);
+                                    }
+                                    status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
+                                    
+                                  } else if(widget.prevScreen == 'followup') {
+                                    var status = widget.encounterData['dataStatus'] == 'incomplete' ? 'incomplete' : 'complete'; 
+                                    if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
+                                    {
+                                      print('edit followup');
+                                      print(status);
+                                      // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']); 
+
+                                    } else {
+                                      print('new followup');
+                                      print(status);
                                       var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', status, '');
                                     }
                                     status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
-                                    setState(() {
-                                      isLoading = false;
-                                    });
                                   }
+                                  setState(() {
+                                    isLoading = false;
+                                  });
                                   Navigator.of(context).pushNamed('/home',);
                                 },
                                 color: kPrimaryColor,

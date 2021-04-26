@@ -503,12 +503,14 @@
   "fathersOrHusbandsName": "পিতার / স্বামীর নাম ",
   "whatWasTheOutcome": "ফলাফল কি ছিল?",
   "selectPurpose": "আজকের জন্য উদ্দেশ্যটি নির্বাচন করুন?",
-  "shortFollowUp": "সংক্ষিপ্ত ফলো আপ",
+  "shortFollowUp": "সংক্ষিপ্ত ফলো আপ (পরিমাপ এবং পরীক্ষা)",
   "lastFullAssessment": "সর্বশেষ সম্পূর্ণ মূল্যায়ন:",
   "lastShortFollowUp": "সর্বশেষ সংক্ষিপ্ত মূল্যায়ন:",
   "pendingDoctorConsultation": "ডাক্তারের পরামর্শ অনিষ্পন্ন",
   "completedPendingFollowUp": "সম্পূর্ণ. অনিষ্পন্ন ফলো আপ",
-  "none": "নাই"
+  "none": "নাই",
+  "saveForLater": "সংরক্ষণ করুন",
+  "completeEncounter": "ভিজিট সম্পন্ন করুন"
 
 
 

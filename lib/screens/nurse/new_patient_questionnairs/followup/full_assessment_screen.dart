@@ -620,6 +620,7 @@ class _FullAssessmentScreenState extends State<FullAssessmentScreen> {
   Future _completeStep() async {
     print('before missing popup');
     var hasMissingData = checkMissingData();
+    var hasOptionalMissingData = checkOptionalMissingData();
 
     if (hasMissingData) {
       var continueMissing = await missingDataAlert();
@@ -633,12 +634,15 @@ class _FullAssessmentScreenState extends State<FullAssessmentScreen> {
     var patient = Patient().getPatient();
 
     print(patient['data']['age']);
-    var status = hasMissingData ? 'incomplete' : 'complete';
-    var response = await AssessmentController()
-        .createAssessmentWithObservations(context, 'follow up visit (center)',
-            'follow up center', '', status, nextVisitDate,
-            followupType: 'full');
+    var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
+    
+    // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow up center', '', status, nextVisitDate, followupType: 'full');
     !hasMissingData ? Patient().setPatientReviewRequiredTrue() : null;
+    var encounterData = {
+      'context': context,
+      'dataStatus': dataStatus,
+      'followupType': 'full'
+    };
     setLoader(false);
 
     // if age greater than 40 redirect to referral page
@@ -673,7 +677,8 @@ class _FullAssessmentScreenState extends State<FullAssessmentScreen> {
     }
 
     // goToHome(false, null);
-                    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': {},});
+    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': encounterData ,});
+    // Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': {},});
   }
 
   List<CustomStep> _mySteps() {
@@ -773,6 +778,43 @@ checkMissingData() {
       habfController.text == '' &&
       hba1cController.text == '') {
     print('blood sugar missing');
+    return true;
+  }
+
+  return false;
+}
+
+checkOptionalMissingData() {
+  if (heightEditingController.text == '' ||
+    weightEditingController.text == '' ||
+    waistEditingController.text == ''||
+    hipEditingController.text == '') {
+    print('body measurement optional missing');
+    return true;
+  }
+
+  if (randomBloodController.text == '' ||
+      fastingBloodController.text == '' ||
+      habfController.text == '' ||
+      hba1cController.text == '') {
+    print('blood sugar optinal missing');
+    return true;
+  }
+
+  if (cholesterolController.text == '' ||
+    ldlController.text == '' ||
+    hdlController.text == '' ||
+    tgController.text == '') {
+    print('lipid profile optinal missing');
+    return true;
+  }
+
+  if (creatinineController.text == '' ||
+    sodiumController.text == '' ||
+    potassiumController.text == '' ||
+    ketonesController.text == '' ||
+    proteinController.text == '') {
+    print('additional optinal missing');
     return true;
   }
 
@@ -879,9 +921,31 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                                                                       'options']
                                                                   .indexOf(
                                                                       option)];
-                                                          print(
-                                                              medicalHistoryAnswers);
-                                                          // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
+                                                          var selectedOption = medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)];
+                                                          print('selectedOption $selectedOption');
+                                                          medicationQuestions['items'].forEach((qtn) {
+                                                            if(qtn['type'].contains('heart') || qtn['type'].contains('heart_bp_diabetes')) {
+                                                              
+                                                              var medicalHistoryAnswerYes = false;
+                                                              medicalHistoryAnswers.forEach((ans) {
+                                                                if(ans == 'yes') {
+                                                                  medicalHistoryAnswerYes = true;
+                                                                  print('medicalHistoryAnswerYes $ans');
+                                                                }
+                                                              });
+                                                              if (!medicalHistoryAnswerYes) {
+                                                                medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
+                                                                print('exceptional if'); 
+                                                              }
+                                                            } else if(qtn['type'].contains(question['type']) && selectedOption == 'no') {
+                                                              medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
+                                                              print('if');
+                                                            }
+                                                            print(qtn['type']);
+                                                            print(question['type']);
+                                                            print('qtn $qtn');
+                                                            print('medicationAnswers ${medicationAnswers}');
+                                                          });
                                                         });
                                                       },
                                                       materialTapTargetSize:

@@ -95,6 +95,7 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
     setState(() {
       allPatients = parsedPatients;
       patients = allPatients;
+      print('patients $patients');
       isLoading = false;
     });
   }

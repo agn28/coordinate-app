@@ -210,6 +210,7 @@ var _questions = {
             'question_bn': 'আপনার কি কখনও হাঁপানি / সিওপিডি (ফুস্ফুসের দীর্ঘমেয়াদী শ্বাসকষ্টজনিত রোগ ধরা পড়েছে?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
+            'type': 'asthma',
             'key': 'asthma'
           },
           {
@@ -217,6 +218,7 @@ var _questions = {
             'question_bn': 'আপনার কি কখনও ক্যান্সার ধরা পড়েছে?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
+            'type': 'cancer',
             'key': 'cancer'
           },
           {
@@ -224,6 +226,7 @@ var _questions = {
             'question_bn': 'আপনার কি কখনও দীর্ঘস্থায়ী কিডনি রোগ ধরা পড়েছে?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
+            'type': 'kidney_disease',
             'key': 'kidney_disease'
           },
         ]
