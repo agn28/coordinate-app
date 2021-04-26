@@ -806,9 +806,31 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                                                                       'options']
                                                                   .indexOf(
                                                                       option)];
-                                                          print(
-                                                              medicalHistoryAnswers);
-                                                          // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
+                                                          var selectedOption = medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)];
+                                                          print('selectedOption $selectedOption');
+                                                          medicationQuestions['items'].forEach((qtn) {
+                                                            if(qtn['type'].contains('heart') || qtn['type'].contains('heart_bp_diabetes')) {
+                                                              
+                                                              var medicalHistoryAnswerYes = false;
+                                                              medicalHistoryAnswers.forEach((ans) {
+                                                                if(ans == 'yes') {
+                                                                  medicalHistoryAnswerYes = true;
+                                                                  print('medicalHistoryAnswerYes $ans');
+                                                                }
+                                                              });
+                                                              if (!medicalHistoryAnswerYes) {
+                                                                medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
+                                                                print('exceptional if'); 
+                                                              }
+                                                            } else if(qtn['type'].contains(question['type']) && selectedOption == 'no') {
+                                                              medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
+                                                              print('if');
+                                                            }
+                                                            print(qtn['type']);
+                                                            print(question['type']);
+                                                            print('qtn $qtn');
+                                                            print('medicationAnswers ${medicationAnswers}');
+                                                          });
                                                         });
                                                       },
                                                       materialTapTargetSize:
