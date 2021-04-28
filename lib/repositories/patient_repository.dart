@@ -63,7 +63,7 @@ class PatientRepository {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     return http.get(
-      apiUrl + 'patients',
+      apiUrl + 'patients/all',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -154,7 +154,7 @@ class PatientRepository {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     return http.get(
-      apiUrl + 'patients?type=referral',
+      apiUrl + 'patients/all?type=referral',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
