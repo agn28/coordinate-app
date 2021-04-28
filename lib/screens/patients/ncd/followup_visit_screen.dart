@@ -141,6 +141,7 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
     medicationAnswers = [];
     riskAnswers = [];
     counsellingAnswers = [];
+    relativeAnswers = [];
     medicalHistoryQuestions['items'].forEach((qtn) {
       medicalHistoryAnswers.add('');
     });
@@ -221,6 +222,10 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
     occupationController.text = '';
     incomeController.text = '';
     educationController.text = '';
+    selectedReligion = null;
+    selectedEthnicity = null;
+    selectedBloodGroup = null;
+    isTribe = null;
     nextVisitDate = '';
   }
 
@@ -3712,7 +3717,7 @@ var occupationController = TextEditingController();
 var incomeController = TextEditingController();
 var educationController = TextEditingController();
 
-var religions = ['Muslim', 'Hindu', 'Cristian', 'Others'];
+var religions = ['Islam', 'Hindu', 'Cristianity', 'Others'];
 var selectedReligion = null;
 var ethnicity = ['Bengali', 'Others'];
 var selectedEthnicity = null;

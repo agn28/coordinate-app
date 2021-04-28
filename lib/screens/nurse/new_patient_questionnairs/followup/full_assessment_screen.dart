@@ -141,6 +141,7 @@ class _FullAssessmentScreenState extends State<FullAssessmentScreen> {
     medicationAnswers = [];
     riskAnswers = [];
     counsellingAnswers = [];
+    relativeAnswers = [];
     medicalHistoryQuestions['items'].forEach((qtn) {
       medicalHistoryAnswers.add('');
     });
@@ -219,6 +220,10 @@ class _FullAssessmentScreenState extends State<FullAssessmentScreen> {
     occupationController.text = '';
     incomeController.text = '';
     educationController.text = '';
+    selectedReligion = null;
+    selectedEthnicity = null;
+    selectedBloodGroup = null;
+    isTribe = null;
   }
 
   _checkAuth() {
@@ -2781,7 +2786,7 @@ var occupationController = TextEditingController();
 var incomeController = TextEditingController();
 var educationController = TextEditingController();
 
-var religions = ['Muslim', 'Hindu', 'Cristian', 'Others'];
+var religions = ['Islam', 'Hindu', 'Cristianity', 'Others'];
 var selectedReligion = null;
 var ethnicity = ['Bengali', 'Others'];
 var selectedEthnicity = null;
