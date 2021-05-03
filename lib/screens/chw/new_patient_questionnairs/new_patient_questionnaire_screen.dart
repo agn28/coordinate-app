@@ -107,6 +107,7 @@ class _NewPatientQuestionnaireScreenState
     isLoading = false;
 
     print(Language().getLanguage());
+    nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
 
     prepareQuestions();
     prepareAnswers();
@@ -450,7 +451,7 @@ class _NewPatientQuestionnaireScreenState
                                 print(Questionnaire().qnItems);
                               }
 
-                              if (nextText == 'COMPLETE') {
+                              if (_currentStep == 4) {
                                 Questionnaire().addNewCounselling(
                                     'counselling_provided', counsellingAnswers);
                                 _completeStep();
@@ -459,7 +460,7 @@ class _NewPatientQuestionnaireScreenState
                               if (_currentStep == 3) {
                                 print('hello');
                                 createObservations();
-                                nextText = 'COMPLETE';
+                                nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                               }
                               if (_currentStep < 4) {
                                 // If the form is valid, display a Snackbar.

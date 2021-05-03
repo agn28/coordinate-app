@@ -105,6 +105,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     getAuth();
 
     // print(Language().getLanguage());
+    nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
 
     prepareQuestions();
     prepareAnswers();
@@ -402,19 +403,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     }
 
     BloodTest().addBtItem();
-
-    var relativeAdditionalData = {
-      'religion': selectedReligion,
-      'occupation': occupationController.text,
-      'ethnicity': selectedEthnicity,
-      'monthly_income': incomeController.text,
-      'blood_group': selectedBloodGroup,
-      'education': educationController.text,
-      'tribe': isTribe
-    };
-    Questionnaire().addNewPersonalHistory(
-        'relative_problems', relativeAnswers, relativeAdditionalData);
-  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -538,14 +527,26 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
 
                               // }
 
-                              if (nextText == 'COMPLETE') {
+                              if (_currentStep == 1) {    
+                                var relativeAdditionalData = {
+                                  'religion': selectedReligion,
+                                  'occupation': occupationController.text,
+                                  'ethnicity': selectedEthnicity,
+                                  'monthly_income': incomeController.text,
+                                  'blood_group': selectedBloodGroup,
+                                  'education': educationController.text,
+                                  'tribe': isTribe
+                                };
+                                print('relativeAdditionalData $relativeAdditionalData');
+                                Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
+  
                                 _completeStep();
                                 return;
                               }
                               if (_currentStep == 0) {
                                 print('hello');
                                 createObservations();
-                                nextText = 'COMPLETE';
+                                nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                               }
                               if (_currentStep < 6) {
                                 // If the form is valid, display a Snackbar.
@@ -3430,14 +3431,45 @@ class History extends StatefulWidget {
 var occupationController = TextEditingController();
 var incomeController = TextEditingController();
 var educationController = TextEditingController();
-
-var religions = ['Islam', 'Hindu', 'Cristianity', 'Others'];
+var personalQuestions = {
+  'religion' :
+    {
+      'options': ['Islam', 'Hindu', 'Cristianity', 'Others'],
+      'options_bn': ['ইসলাম', 'হিন্দু', 'খ্রিস্টান', 'অন্যান্য']
+    },
+    'ethnicity' :
+    {
+      'options': ['Bengali', 'Others'],
+      'options_bn': ['বাংলাদেশী', 'অন্যান্য'],
+    },
+    'blood_group' : {
+      'options': ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-'],
+      'options_bn': ['এবি+', 'এবি-', 'এ+', 'এ-', 'বি+', 'বি-', 'ও+', 'ও-'], 
+    }
+};    
+var religions = personalQuestions['religion']['options'];
 var selectedReligion = null;
-var ethnicity = ['Bengali', 'Others'];
+var ethnicity = personalQuestions['ethnicity']['options'];
 var selectedEthnicity = null;
-var bloodGroups = ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-'];
+var bloodGroups = personalQuestions['blood_group']['options'];
 var selectedBloodGroup = null;
 var isTribe = null;
+
+getDropdownOptionText(context, list, value) {
+  var locale = Localizations.localeOf(context);
+
+  if (locale == Locale('bn', 'BN')) {
+
+    if (list['options_bn'] != null) {
+      var matchedIndex = list['options'].indexOf(value);
+      print('matchedIndex $matchedIndex');
+      print(list['options_bn'][matchedIndex]);
+      return list['options_bn'][matchedIndex];
+    }
+    return StringUtils.capitalize(value);
+  }
+  return StringUtils.capitalize(value);
+}
 
 class _HistoryState extends State<History> {
   @override
@@ -3490,7 +3522,7 @@ class _HistoryState extends State<History> {
                                     items: religions.map((String value) {
                                       return DropdownMenuItem<String>(
                                         value: value,
-                                        child: Text(value),
+                                        child: Text(getDropdownOptionText(context, personalQuestions['religion'], value)),
                                       );
                                     }).toList(),
                                     value: selectedReligion,
@@ -3556,7 +3588,7 @@ class _HistoryState extends State<History> {
                                     items: ethnicity.map((String value) {
                                       return DropdownMenuItem<String>(
                                         value: value,
-                                        child: Text(value),
+                                        child: Text(getDropdownOptionText(context, personalQuestions['ethnicity'], value)),
                                       );
                                     }).toList(),
                                     value: selectedEthnicity,
@@ -3622,7 +3654,7 @@ class _HistoryState extends State<History> {
                                     items: bloodGroups.map((String value) {
                                       return DropdownMenuItem<String>(
                                         value: value,
-                                        child: Text(value),
+                                        child: Text(getDropdownOptionText(context, personalQuestions['blood_group'], value)),
                                       );
                                     }).toList(),
                                     value: selectedBloodGroup,
