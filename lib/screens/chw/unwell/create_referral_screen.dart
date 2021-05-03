@@ -8,12 +8,26 @@ import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/followup_controller.dart';
 import 'package:nhealth/models/auth.dart';
+import 'package:nhealth/models/language.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 
+getDropdownOptionText(context, list, value) {
+  var locale = Localizations.localeOf(context);
+
+  if (locale == Locale('bn', 'BN')) {
+
+    if (list['options_bn'] != null) {
+      var matchedIndex = list['options'].indexOf(value);
+      return list['options_bn'][matchedIndex];
+    }
+    return StringUtils.capitalize(value);
+  }
+  return StringUtils.capitalize(value);
+}
 
 class CreateReferralScreen extends StatefulWidget {
   static const path = '/createReferral';
@@ -29,9 +43,17 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
   bool isLoading = false;
   bool avatarExists = false;
 
-  List referralReasons = ['urgent medical attempt required', 'NCD screening required'];
+  var referralReasonOptions = {
+    'options': ['urgent medical attempt required', 'NCD screening required'],
+    'options_bn': ['তাৎক্ষণিক মেডিকেল প্রচেষ্টা প্রয়োজন', 'এনসিডি স্ক্রিনিং প্রয়োজন']
+  };
+  List referralReasons;
   var selectedReason;
-  List clinicTypes = ['community clinic', 'upazila health complex', 'hospital', 'BRAC NCD Centre'];
+  var clinicTypeOptions = {
+    'options': ['community clinic', 'upazila health complex', 'hospital', 'BRAC NCD Centre'],
+    'options_bn': ['কমিউনিটি ক্লিনিক', 'উপজেলা স্বাস্থ্য কমপ্লেক্স', 'হাসপাতাল', 'ব্র্যাক এনসিডি কেন্দ্র']
+  };
+  List clinicTypes;
   var selectedtype;
   var clinicNameController = TextEditingController();
 
@@ -40,7 +62,11 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
     super.initState();
     _patient = Patient().getPatient();
     print(widget.referralData);
+    print(Language().getLanguage());
+    // referralReasons = Language().getLanguage() == 'Bengali' ? : ;
     _getAuthData();
+    referralReasons = referralReasonOptions['options'];
+    clinicTypes = clinicTypeOptions['options'];
   }
 
   _getAuthData() async {
@@ -125,7 +151,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                         items: [
                           ...referralReasons.map((item) =>
                             DropdownMenuItem(
-                              child: Text(StringUtils.capitalize(item)),
+                              child: Text(getDropdownOptionText(context, referralReasonOptions, item)),
                               value: item
                             )
                           ).toList(),
@@ -165,7 +191,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                         items: [
                           ...clinicTypes.map((item) =>
                             DropdownMenuItem(
-                              child: Text(StringUtils.capitalize(item)),
+                              child: Text(getDropdownOptionText(context, clinicTypeOptions, item)),
                               value: item
                             )
                           ).toList(),
