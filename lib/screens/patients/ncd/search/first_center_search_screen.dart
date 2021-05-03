@@ -91,22 +91,22 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
       var assessments = await AssessmentController().getAllAssessments();
 
       for(var localPatient in allLocalPatients) {
+        var localpatientdata = {
+          'id': localPatient['id'],
+          'data': localPatient['data'],
+          'meta': localPatient['meta']
+        };
         for(var assessment in assessments) {
           print(assessment);
           if (assessment['data']['patient_id'] == localPatient['id']){      
-            var localpatientdata = {
-              'id': localPatient['id'],
-              'data': localPatient['data'],
-              'meta': localPatient['meta']
-            };
             if (assessment['data']['status'] == 'incomplete') {
               print(localpatientdata);
               localpatientdata['data']['incomplete_encounter'] = true;
             }
-            parsedLocalPatient.add(localpatientdata);
             print('localpatientdata $localpatientdata');
           }
         }
+        parsedLocalPatient.add(localpatientdata);
       }
       setState(() {
         allPatients = parsedLocalPatient;

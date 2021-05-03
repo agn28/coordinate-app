@@ -17,6 +17,49 @@ class SyncRepository {
 
   }
 
+  create(data) async {
+    var authData = await Auth().getStorageAuth();
+    var token = authData['accessToken'];
+    var api = ApiService();
+
+    print('data $data');
+
+    var response;
+
+    print(apiUrl + 'syncs/patient');
+
+    try {
+      response = await http
+      .post(apiUrl + 'syncs/patient',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: json.encode(data))
+      .timeout(Duration(seconds: httpRequestTimeout));
+
+      return json.decode(response.body);
+    } on SocketException {
+      // showErrorSnackBar('Error', 'socketError'.tr);
+      print('socket exception');
+      return {'exception': true, 'message': 'No internet'};
+    } on TimeoutException {
+      // showErrorSnackBar('Error', 'timeoutError'.tr);
+      print('timeout error');
+      return {'exception': true, 'type': 'poor_network', 'message': 'Slow internet'};
+    } on Error catch (err) {
+      print('test error');
+      print(err);
+      // showErrorSnackBar('Error', 'unknownError'.tr);
+      return {
+        'exception': true,
+        'type': 'unknown',
+        'message': 'Something went wrong'
+      };
+    }
+  }
+
   getLatestSyncInfo(data) async {  
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];

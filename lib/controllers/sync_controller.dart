@@ -199,7 +199,8 @@ class SyncController extends GetxController {
     if (!isSyncingToLive.value) {
       isSyncingToLive.value = true;
 
-      await syncLocalPatientsToLive();
+      // await syncLocalPatientsToLive();
+      await syncLocalDataToLiveByPatient();
       isSyncingToLive.value = false;
     }
   }
@@ -227,7 +228,8 @@ class SyncController extends GetxController {
       await Future.delayed(const Duration(seconds: 2));
       await syncLivePatientsToLocal();
       await Future.delayed(const Duration(seconds: 2));
-      await syncLocalPatientsToLive();
+      // await syncLocalPatientsToLive();
+      await syncLocalDataToLiveByPatient();
       isSyncingToLive.value = false;
     }
 
@@ -236,50 +238,169 @@ class SyncController extends GetxController {
 
  syncLocalDataToLiveByPatient() async {
     print('syncing local patient data');
-    // if (localNotSyncedPatients.value.isEmpty) {
-    //   return;
-    // }
+    if (localNotSyncedPatients.value.isEmpty && localNotSyncedAssessments.value.isEmpty && localNotSyncedObservations.value.isEmpty && localNotSyncedReferrals.value.isEmpty) {
+      return;
+    }
     var syncData = [];
-    print('localNotSyncedPatients ${localNotSyncedPatients.length}');
     isSyncingToLive.value = true;
     for (var patient in localNotSyncedPatients) {
-    var prepareSyncData = {};
-      print('local patient $patient');
+      print('into local patients $patient');
       var patientData = {
         'id': patient['id'],
         'body': patient['data'],
         'meta': patient['meta']
       };
-      // prepareSyncData['patient_id'] = patient['id'];
-      // prepareSyncData['sync_data']['patient_data'] = patientData;
       syncData.add({
         'patient_id': patient['id'],
         'sync_data':{
-          'patient_data':patientData
+          'patient_data':patientData,
+          'assessment_data': [],
+          'referral_data': []
         }
       });
-      print('syncData $syncData');
+      print('patientData $syncData');
     }
-
     for (var assessment in localNotSyncedAssessments) {
-    var prepareSyncData = {};
-      print('into local assessments');
+      print('into local assessments $assessment');
       var assessmentData = {
         'id': assessment['id'],
         'body': assessment['data'],
-        'meta': assessment['meta']
+        'meta': assessment['meta'],
+        'observation_data' : []
       };
-      
-      for (var data in syncData) {
-        if(data['patient_id'] == assessment['data']['patient_id']) {
-          data['sync_data']['assessment_data'] = assessmentData;
-          print('assessment $assessment');
-        }
-        // else preparedata
+      var matchedData = syncData.where((data) => data['patient_id'] == assessment['data']['patient_id']);
+      if(matchedData.isEmpty) {
+        syncData.add({
+          'patient_id': assessment['data']['patient_id'],
+          'sync_data':{
+            'assessment_data': [assessmentData]
+          }
+        });
+      } else if(matchedData.isNotEmpty) {
+        var matchedGroupIndex = syncData.indexOf(matchedData.first);
+        syncData[matchedGroupIndex]['sync_data']['assessment_data'].add(assessmentData);
       }
-      
+      // var matchedGroup = assessmentsByPatient.where((item) => item['patient_id'] == assessment['data']['patient_id']);
+      // if(matchedGroup.isEmpty) {
+      //   assessmentsByPatient.add({
+      //     'patient_id': assessment['data']['patient_id'],
+      //     'assessment_data': [assessmentData]
+      //   });
+      // } else if(matchedGroup.isNotEmpty) {
+      //   var matchedGroupIndex = assessmentsByPatient.indexOf(matchedGroup.first);
+      //   assessmentsByPatient[matchedGroupIndex]['assessment_data'].add(assessmentData);
+      // }
     }
-    print('final syncdata $syncData');
+    print(syncData[0]['sync_data']['assessment_data']);
+
+    for (var observation in localNotSyncedObservations) {
+      print('into local observations $observation');
+      var observationData = {
+        'id': observation['id'],
+        'body': observation['data'],
+        'meta': observation['meta']
+      };
+      var matchedData = syncData.where((data) {
+        var matchedAssessment = data['sync_data']['assessment_data'].where((assessment) => assessment['id'] == observation['data']['assessment_id']);
+        if (matchedAssessment.isNotEmpty) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+      if(matchedData.isNotEmpty) {
+        var matchedGroupIndex = syncData.indexOf(matchedData.first);
+        var matchedAssessment = syncData[matchedGroupIndex]['sync_data']['assessment_data'].first;
+        matchedAssessment['observation_data'].add(observationData);
+        print(matchedAssessment);
+      }
+    }
+    for (var referral in localNotSyncedReferrals) {
+      print('into local referrals $referral');
+      var referralData = {
+        'id': referral['id'],
+        'body': referral['body'],
+        'meta': referral['meta']
+      };
+      var matchedData = syncData.where((data) => data['patient_id'] == referral['meta']['patient_id']);
+      if(matchedData.isEmpty) {
+        syncData.add({
+          'patient_id': referral['data']['patient_id'],
+          'sync_data':{
+            'referral_data': [referralData]
+          }
+        });
+      } else if(matchedData.isNotEmpty) {
+        var matchedGroupIndex = syncData.indexOf(matchedData.first);
+        print(syncData[matchedGroupIndex]);
+        if(syncData[matchedGroupIndex]['sync_data']['referral_data'] != null){
+          syncData[matchedGroupIndex]['sync_data']['referral_data'].add(referralData);
+        } else {
+          syncData[matchedGroupIndex]['sync_data']['referral_data'] = [referralData];
+        }
+      }
+    }
+    print(syncData[0]['sync_data']['referral_data']);
+
+    // Initiating API request
+    for (var data in syncData) {
+      print('reqData ${data['sync_data']}');
+      var response = await syncRepo.create(data['sync_data']);
+      print('sync resposne $response');
+
+      if (isNotNull(response['exception']) && response['type'] == 'poor_network') {
+        isPoorNetwork.value = true;
+        isSyncingToLive.value = false;
+        showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
+        retryForStableNetwork();
+        break;
+      }
+
+      if (isNotNull(response) && isNotNull(response['error']) && !response['error']) {
+        print('sync created');
+
+        // For Patient
+        if (isNotNull(response['data']['patient']['sync']) && isNotNull(response['data']['patient']['sync']['key'])) {
+          await patientRepoLocal.updateLocalStatus(response['data']['patient']['sync']['document_id'], 1);
+          await syncRepo.updateLatestLocalSyncKey(response['data']['patient']['sync']['key']);
+        }
+
+        //For Assessments
+        if (response['data']['assessments'].isNotEmpty) {
+          for (var assessment in response['data']['assessments']) {
+            if (isNotNull(assessment['sync']) && isNotNull(assessment['sync']['key'])) {
+              await assessmentRepoLocal.updateLocalStatus(assessment['sync']['document_id'], 1);
+              await syncRepo.updateLatestLocalSyncKey(assessment['sync']['key']);
+            }
+          }
+        }
+
+        //For Observations
+        if (response['data']['observations'].isNotEmpty) {
+          for (var observation in response['data']['observations']) {
+            if (isNotNull(observation['sync']) && isNotNull(observation['sync']['key'])) {
+              await observationRepoLocal.updateLocalStatus(observation['sync']['document_id'], 1);
+              await syncRepo.updateLatestLocalSyncKey(observation['sync']['key']);
+            }
+          }
+        }
+
+      } else {
+        print('data not synced');
+        print(response);
+        if (isNotNull(response) && response['message'] == 'Unauthorized') {
+          showWarningSnackBar(
+              'Error', 'Session is expired. Login again to sync data');
+        }
+      }
+    }
+
+    await Future.delayed(const Duration(seconds: 5));
+
+    isSyncingToLive.value = false;
+    if (!isPoorNetwork.value) {
+      getAllStatsData();
+    }
   }
 
   syncLocalPatientsToLive() async {
