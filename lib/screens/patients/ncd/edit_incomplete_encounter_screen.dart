@@ -896,6 +896,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
 
     print(patient['data']['age']);
     var status = hasMissingData ? 'incomplete' : 'complete';
+    print('enstatus $status');
     if (nextVisitDate != '') {
       encounter['body']['next_visit_date'] = nextVisitDate;
     }

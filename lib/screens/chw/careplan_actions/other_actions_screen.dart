@@ -190,7 +190,7 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
                                     var response = '';
                                     await Future.forEach(widget.data['items'], (item) async {
                                       if (item['meta']['status'] == 'pending') {
-                                        response = await CarePlanController().update(item, '');
+                                        response = await CarePlanController().update(context, item, '');
                                       }
                                     });
 

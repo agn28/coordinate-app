@@ -159,11 +159,11 @@ class SyncController extends GetxController {
   }
 
   getLocalNotSyncedReferrals() async {
-    print(localNotSyncedPatients);
+    
     var response = await referralRepoLocal.getNotSyncedReferrals();
 
     print('not synced referral response');
-    // print(response);
+    print(response);
 
     if (isNotNull(response)) {
       localNotSyncedReferrals.value = [];
@@ -291,7 +291,6 @@ class SyncController extends GetxController {
       //   assessmentsByPatient[matchedGroupIndex]['assessment_data'].add(assessmentData);
       // }
     }
-    print(syncData[0]['sync_data']['assessment_data']);
 
     for (var observation in localNotSyncedObservations) {
       print('into local observations $observation');
@@ -340,7 +339,6 @@ class SyncController extends GetxController {
         }
       }
     }
-    print(syncData[0]['sync_data']['referral_data']);
 
     // Initiating API request
     for (var data in syncData) {
@@ -360,7 +358,7 @@ class SyncController extends GetxController {
         print('sync created');
 
         // For Patient
-        if (isNotNull(response['data']['patient']['sync']) && isNotNull(response['data']['patient']['sync']['key'])) {
+        if (isNotNull(response['data']['patient']) && isNotNull(response['data']['patient']['sync']) && isNotNull(response['data']['patient']['sync']['key'])) {
           await patientRepoLocal.updateLocalStatus(response['data']['patient']['sync']['document_id'], 1);
           await syncRepo.updateLatestLocalSyncKey(response['data']['patient']['sync']['key']);
         }
@@ -381,6 +379,16 @@ class SyncController extends GetxController {
             if (isNotNull(observation['sync']) && isNotNull(observation['sync']['key'])) {
               await observationRepoLocal.updateLocalStatus(observation['sync']['document_id'], 1);
               await syncRepo.updateLatestLocalSyncKey(observation['sync']['key']);
+            }
+          }
+        }
+
+        //For Referrals
+        if (response['data']['referrals'].isNotEmpty) {
+          for (var referral in response['data']['referrals']) {
+            if (isNotNull(referral['sync']) && isNotNull(referral['sync']['key'])) {
+              await referralRepoLocal.updateLocalStatus(referral['sync']['document_id'], 1);
+              await syncRepo.updateLatestLocalSyncKey(referral['sync']['key']);
             }
           }
         }

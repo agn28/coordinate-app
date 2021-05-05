@@ -705,6 +705,7 @@ class AssessmentController {
 
   updateSyncIncompleteAssessment(context, status, encounter, observations) async {
     //creating assesment
+    encounter['body']['status'] = status;
     print('upencounter $encounter');
     var response = await updateAssessment(context, encounter["id"], encounter);
     print('update response $response');

@@ -560,7 +560,7 @@ class _CommentContainerState extends State<CommentContainer> {
                 setState(() {
                   isLoading = true;
                 });
-                var response = await CarePlanController().update(widget.widget.carePlan, widget.commentController.text);
+                var response = await CarePlanController().update(context, widget.widget.carePlan, widget.commentController.text);
                 setState(() {
                   isLoading = false;
                 });

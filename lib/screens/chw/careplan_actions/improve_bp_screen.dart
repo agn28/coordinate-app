@@ -314,7 +314,7 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
                                     var response = 'success';
                                     await Future.forEach(widget.data['items'], (item) async {
                                       if (item['meta']['status'] == 'pending') {
-                                        response = await CarePlanController().update(item, '');
+                                        response = await CarePlanController().update(context, item, '');
                                       }
                                     });
                                     

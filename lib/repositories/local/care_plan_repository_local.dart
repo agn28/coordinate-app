@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/repositories/local/database_creator.dart';
 
 class CarePlanRepositoryLocal {
@@ -30,14 +31,47 @@ class CarePlanRepositoryLocal {
       response = await db.rawInsert(sql, params);
       print(response);
     } catch (error) {
-      print('local referral create error');
+      print('local careplan create error');
       print(error);
     }
     return response;
   }
 
+  update(id, data, isSynced) async {
+    final sql = '''UPDATE ${DatabaseCreator.careplanTable} SET
+      data = ? , 
+      patient_id = ?,
+      status = ?,
+      is_synced = ?
+      WHERE id = ?''';
+    List<dynamic> params = [
+      id,
+      jsonEncode(data),
+      data['body']['patient_id'],
+      'completed',
+      isSynced
+    ];
+    var response;
+    try {
+      response = await db.rawUpdate(sql, params);
+      print('sql $response');
+    } catch (error) {
+      print('local careplan update error');
+      print(error);
+    }
+    DatabaseCreator.databaseLog('Update careplan', sql, null, response, params);
+    return response;
+  }
+
   getAllCareplans() async {
     final sqlCareplans = '''SELECT * FROM ${DatabaseCreator.careplanTable}''';
+    final careplans = await db.rawQuery(sqlCareplans);
+
+    return careplans;
+  }
+  getCareplanByPatient() async {
+    var patientId = Patient().getPatient()['id'];
+    final sqlCareplans = '''SELECT * FROM ${DatabaseCreator.careplanTable} WHERE patient_id="$patientId"''';
     final careplans = await db.rawQuery(sqlCareplans);
 
     return careplans;

@@ -16,6 +16,7 @@ import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/controllers/observation_controller.dart';
 import 'package:nhealth/controllers/user_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
+import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
@@ -195,10 +196,23 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
     } else {
       // print( data['data']);
       // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
-      carePlans = data['data'];
-      print('carePlans');
-      print(carePlans);
-      data['data'].forEach( (item) {
+      if (isNull(data) || isNotNull(data['exception']))  {
+        // var allLocalPatients = syncController.localPatientsAll.value;
+        var localCarePlans = await CarePlanController().getLocalCarePlan();
+        print('localCarePlans ${localCarePlans}');
+        var parsedLocalCarePlans = [];
+        for(var localCarePlan in localCarePlans) {
+          parsedLocalCarePlans.add(localCarePlan['data']);
+        }
+        print(parsedLocalCarePlans);
+        carePlans = parsedLocalCarePlans;
+      } else {
+        carePlans = data['data'];
+      }
+      // carePlans = data['data'];
+      print('carePlans $carePlans');
+      carePlans.forEach( (item) {
+        print('item ${item[0]['id']}');
         DateFormat format = new DateFormat("E LLL d y");
         
         var todayDate = DateTime.now();

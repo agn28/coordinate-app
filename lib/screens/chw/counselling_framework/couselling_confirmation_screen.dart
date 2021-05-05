@@ -177,7 +177,7 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
                                         // print(result);
                                         print('widget.data ${widget.data}');
 
-                                        var response = await CarePlanController().update(widget.data, commentController.text);
+                                        var response = await CarePlanController().update(context, widget.data, commentController.text);
                                         // print('response $response');
                                         setState(() {
                                           isLoading = false;
