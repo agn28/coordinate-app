@@ -25,6 +25,11 @@ import '../../../../app_localizations.dart';
 final birthDateController = TextEditingController();
 final birthmonthController = TextEditingController();
 final birthYearController = TextEditingController();
+final ageFromController = TextEditingController();
+final ageToController = TextEditingController();
+final upazilaController = TextEditingController();
+final unionController = TextEditingController();
+final villageController = TextEditingController();
 List patients = [];
 List allPatients = [];
 final searchController = TextEditingController();
@@ -57,7 +62,8 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
 
   clearFilters() {
     setState(() {
-      ageController.clear();
+      ageFromController.clear();
+      ageToController.clear();
       selectedUpazila = {};
       unionController.clear();
       villageController.clear();
@@ -712,10 +718,13 @@ class _FiltersDialogState extends State<FiltersDialog> {
     allPatients.forEach((patient) { 
       print('allPatients $patient');
     });
-    if (ageController.text != '') {
-      print(ageController.text);
+    if (ageFromController.text != '' || ageToController.text != '') {
+      print(ageFromController.text);
+      print(ageToController.text);
       var filteredPatients = [];
-      filteredPatients =  allPatients.where((item) => item['data']['age'] == int.parse(ageController.text)).toList();
+      var startingAge = ageFromController.text != '' ? int.parse(ageFromController.text) : 0 ;
+      var endingAge = ageToController.text != '' ? int.parse(ageToController.text) : 150 ;
+      filteredPatients =  allPatients.where((item) => item['data']['age'] >= startingAge && item['data']['age'] <= endingAge).toList();
       print('filteredPatients $filteredPatients');
       this.widget.parent.setState(() => {
         allPatients = filteredPatients,
@@ -842,7 +851,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
                           },
                         ),
                         Text(
-                          AppLocalizations.of(context).translate('age'),
+                          AppLocalizations.of(context).translate('ageRange'),
                         ),
                         Radio(
                           activeColor: kPrimaryColor,
@@ -915,14 +924,38 @@ class _FiltersDialogState extends State<FiltersDialog> {
               )
               : Container(
                 margin: EdgeInsets.symmetric(horizontal: 25),
-                child: PrimaryTextField(
-                        topPaadding: 10,
-                        bottomPadding: 10,
-                        hintText: AppLocalizations.of(context).translate('age'),
-                        controller: ageController,
-                        name: 'Age',
-                        type: TextInputType.number,
-                      ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate("ageRange"), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),),
+                    SizedBox(height: 20,),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: PrimaryTextField(
+                            topPaadding: 10,
+                            bottomPadding: 10,
+                            hintText: AppLocalizations.of(context).translate('from'),
+                            controller: ageFromController,
+                            name: 'Age From',
+                            type: TextInputType.number,
+                          ),
+                        ),
+                        SizedBox(width: 20,),
+                        Expanded(
+                          child: PrimaryTextField(
+                            topPaadding: 10,
+                            bottomPadding: 10,
+                            hintText: AppLocalizations.of(context).translate('to'),
+                            controller: ageToController,
+                            name: 'Age To',
+                            type: TextInputType.number,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
               Divider(),
               SizedBox(height: 10,),

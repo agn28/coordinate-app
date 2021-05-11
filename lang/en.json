@@ -509,5 +509,8 @@
   "completedPendingFollowUp": "Completed. Pending Follow Up",
   "none": "none",
   "saveForLater": "Save for Later",
-  "completeEncounter": "Complete Encounter"
+  "completeEncounter": "Complete Encounter",
+  "ageRange": "Age Range",
+  "from": "From",
+  "to": "To"
 }

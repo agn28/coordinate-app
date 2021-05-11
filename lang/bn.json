@@ -510,7 +510,10 @@
   "completedPendingFollowUp": "সম্পূর্ণ. অনিষ্পন্ন ফলো আপ",
   "none": "নাই",
   "saveForLater": "সংরক্ষণ করুন",
-  "completeEncounter": "ভিজিট সম্পন্ন করুন"
+  "completeEncounter": "ভিজিট সম্পন্ন করুন",
+  "ageRange": "বয়স পরিসীমা",
+  "from": "শুরুর বয়স",
+  "to": "সমাপ্তির বয়স"
 
 
 
