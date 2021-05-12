@@ -8,7 +8,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="Coordinate 0.0.9.38"
+        android:label="Coordinate 0.0.9.42"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

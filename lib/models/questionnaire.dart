@@ -162,7 +162,22 @@ var _questions = {
         },
       ]
     },
-
+    'unwell_followup': {
+      'items' : [
+        {
+          'question': 'Are you having any pain or discomfort or pressure or heaviness in your chest?',
+          'question_bn': 'আপনার বুকে কোনও ব্যথা বা অস্বস্তি বা চাপ বা ভারাক্রান্তি রয়েছে?',
+          'options': ['yes', 'no'],
+          'options_bn': ['হ্যা', 'না']
+        },
+        {
+          'question': 'Are you having any difficulty in talking, or any weakness or numbness of arms, legs or face?',
+          'question_bn': 'আপনার কথা বলতে কোনও অসুবিধা হচ্ছে, বা বাহু, পা বা মুখের কোনও দুর্বলতা বা অসাড়তা?',
+          'options': ['yes', 'no'],
+          'options_bn': ['হ্যা', 'না']
+        }
+      ]
+    },
     'new_patient': {
       'medical_history': {
         'items' : [

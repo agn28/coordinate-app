@@ -10,7 +10,9 @@ import 'package:nhealth/controllers/followup_controller.dart';
 import 'package:nhealth/custom-classes/custom_stepper.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/devices.dart';
+import 'package:nhealth/models/language.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chw/patients/patient_summary_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
@@ -36,6 +38,27 @@ String selectedArm = 'left';
 String selectedGlucoseType = 'fasting';
 String selectedGlucoseUnit = 'mg/dL';
 
+getQuestionText(context, question) {
+  var locale = Localizations.localeOf(context);
+
+  if (locale == Locale('bn', 'BN')) {
+    print('true');
+    return question['question_bn'];
+  }
+  return question['question'];
+}
+
+getOptionText(context, question, option) {
+  var locale = Localizations.localeOf(context);
+
+  if (locale == Locale('bn', 'BN')) {
+    if (question['options_bn'] != null) {
+      return question['options_bn'][question['options'].indexOf(option)];
+    }
+    return option;
+  }
+  return StringUtils.capitalize(option);
+}
 
 class UnwellFollowupScreen extends StatefulWidget {
   static const path = '/unWellFollowupScreen';
@@ -52,6 +75,7 @@ class _UnwellFollowupScreen extends State<UnwellFollowupScreen> {
   @override
   void initState() {
     super.initState();
+    nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
     _checkAuth();
     clearForm();
   }
@@ -133,7 +157,7 @@ class _UnwellFollowupScreen extends State<UnwellFollowupScreen> {
       glucose = int.parse(_glucoseController.text);
     }
 
-    if (firstAnswer == 'yes' || secondAnswer == 'yes') {
+    if (followupAnswers.contains('yes')) {
       var data = {
         'meta': {
           'patient_id': Patient().getPatient()['uuid'],
@@ -248,12 +272,13 @@ class _UnwellFollowupScreen extends State<UnwellFollowupScreen> {
                 onPressed: () {
                   setState(() {
                     print(_currentStep);
-                    if (nextText =='COMPLETE') {
+                    if (_currentStep == 4) {
+                      print('_currentStep $_currentStep');
                       checkData();
                     }
                     if (_currentStep == 3) {
-                      print(_currentStep);
-                     nextText = 'COMPLETE';
+                    //  nextText = 'COMPLETE';
+                     nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                     }
                     if (_currentStep < 4) {
                      
@@ -672,6 +697,8 @@ class _BloodPressureState extends State<BloodPressure> {
   }
 }
 
+var followupQuestions = {};
+var followupAnswers = [];
 class AcuteIssues extends StatefulWidget {
   AcuteIssues({this.parent});
   final parent;
@@ -684,16 +711,24 @@ var firstQuestionText = 'Are you having any pain or discomfort or pressure or he
 var secondQuestionText = 'Are you having any difficulty in talking, or any weakness or numbness of arms, legs or face?';
 var firstQuestionOptions = ['yes', 'no'];
 var secondQuestionOptions = ['yes', 'no'];
-
+// var firstQuestion = {
+//   'question': 'Are you having any pain or discomfort or pressure or heaviness in your chest?',
+//   'question_bn': 'আপনার কি কখনও স্ট্রোক হয়েছে?',
+//   'options': ['yes', 'no'],
+//   'options_bn': ['হ্যা', 'না']
+// };
+// var secondQuestion = {
+//   'question': 'Are you having any difficulty in talking, or any weakness or numbness of arms, legs or face?',
+//   'question_bn': 'আপনার কি কখনও স্ট্রোক হয়েছে?',
+//   'options': ['yes', 'no'],
+//   'options_bn': ['হ্যা', 'না']
+// };
 var firstAnswer = null;
 var secondAnswer = null;
 
 class _AcuteIssuesState extends State<AcuteIssues> {
 
   List devices = [];
-
-  
-
   var selectedDevice = 0;
 
   @override
@@ -701,8 +736,18 @@ class _AcuteIssuesState extends State<AcuteIssues> {
     super.initState();
     firstAnswer = null;
     secondAnswer = null;
-
     devices = Device().getDevices();
+    prepareQuestions();
+    prepareAnswers();
+  }
+  prepareQuestions() {
+    followupQuestions = Questionnaire().questions['unwell_followup'];
+  }
+  prepareAnswers() {
+    followupAnswers = [];
+    followupQuestions['items'].forEach((qtn) {
+      followupAnswers.add('');
+    });
   }
   
   @override
@@ -726,133 +771,142 @@ class _AcuteIssuesState extends State<AcuteIssues> {
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-                    // child: Text(_questions['items'][0]['question'],
-                    child: Text(firstQuestionText,
-                      style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
-                    )
-                  ),
-                  SizedBox(height: 20,),
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 0, horizontal: 25),
-                    width: MediaQuery.of(context).size.width * .5,
-                    child: Row(
-                      children: <Widget>[
-                        ...firstQuestionOptions.map((option) => 
-                          Expanded(
-                            child: Container(
-                              height: 40,
-                              margin: EdgeInsets.only(right: 10, left: 10),
-                              decoration: BoxDecoration(
-                                // border: Border.all(width: 1, color:  Color(0xFF01579B)),
-                                border: Border.all(width: 1, color: (firstAnswer != null && firstAnswer == option) ? Color(0xFF01579B) : Colors.black),
-                                borderRadius: BorderRadius.circular(3),
-                                color: (firstAnswer != null && firstAnswer == option) ? Color(0xFFE1F5FE) : null
-                                // color: Color(0xFFE1F5FE) 
+                children: [
+                  ...followupQuestions['items'].map((question) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+                        // child: Text(_questions['items'][0]['question'],
+                        child: Text(getQuestionText(context, question),
+                          style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
+                        )
+                      ),
+                      SizedBox(height: 20,),
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 0, horizontal: 25),
+                        width: MediaQuery.of(context).size.width * .5,
+                        child: Row(
+                          children: <Widget>[
+                            ...question['options'].map((option) => 
+                              Expanded(
+                                child: Container(
+                                  height: 40,
+                                  margin: EdgeInsets.only(right: 10, left: 10),
+                                  decoration: BoxDecoration(
+                                    // border: Border.all(width: 1, color:  Color(0xFF01579B)),
+                                    border: Border.all(width: 1, color: followupAnswers[followupQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFF01579B) : Colors.black),
+                                    borderRadius: BorderRadius.circular(3),
+                                    color: followupAnswers[followupQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFFE1F5FE) : null
+                                    // color: Color(0xFFE1F5FE) 
+                                  ),
+                                  child: FlatButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        // firstAnswer = option;
+                                        followupAnswers[followupQuestions['items'].indexOf(question)] = question['options'][question['options'].indexOf(option)];
+                                      });
+                                    },
+                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    child: Text(getOptionText(context, question, option),
+                                      style: TextStyle(color: followupAnswers[followupQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? kPrimaryColor : null),
+                                      // style: TextStyle(color: kPrimaryColor),
+                                    ),
+                                  ),
+                                )
                               ),
-                              child: FlatButton(
-                                onPressed: () {
-                                  setState(() {
-                                    firstAnswer = option;
-                                  });
-                                },
-                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                child: Text(option.toUpperCase(),
-                                  style: TextStyle(color: (firstAnswer != null && firstAnswer == option) ? kPrimaryColor : null),
-                                  // style: TextStyle(color: kPrimaryColor),
-                                ),
-                              ),
-                            )
-                          ),
-                        ).toList()
-                      ],
-                    )
-                  ),
+                            ).toList()
+                          ],
+                        )
+                      ),
+                      SizedBox(height: 30,),
+                    ],
+                  );
+                 }).toList() 
 
-                  SizedBox(height: 30,),
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-                    // child: Text(_questions['items'][0]['question'],
-                    child: Text(secondQuestionText,
-                      style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
-                    )
-                  ),
-                  SizedBox(height: 20,),
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 0, horizontal: 25),
-                    width: MediaQuery.of(context).size.width * .5,
-                    child: Row(
-                      children: <Widget>[
-                        ...secondQuestionOptions.map((option) => 
-                          Expanded(
-                            child: Container(
-                              height: 40,
-                              margin: EdgeInsets.only(right: 10, left: 10),
-                              decoration: BoxDecoration(
-                                // border: Border.all(width: 1, color:  Color(0xFF01579B)),
-                                border: Border.all(width: 1, color: (secondAnswer != null && secondAnswer == option) ? Color(0xFF01579B) : Colors.black),
-                                borderRadius: BorderRadius.circular(3),
-                                color: (secondAnswer != null && secondAnswer == option) ? Color(0xFFE1F5FE) : null
-                                // color: Color(0xFFE1F5FE) 
-                              ),
-                              child: FlatButton(
-                                onPressed: () {
-                                  setState(() {
-                                    secondAnswer = option;
-                                  });
-                                },
-                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                child: Text(option.toUpperCase(),
-                                  style: TextStyle(color: (secondAnswer != null && secondAnswer == option) ? kPrimaryColor : null),
-                                  // style: TextStyle(color: kPrimaryColor),
-                                ),
-                              ),
-                            )
-                          ),
-                        ).toList()
-                      ],
-                    )
-                  ),
-
-
-
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.end,
-              //   children: <Widget>[
+              //     SizedBox(height: 30,),
               //     Container(
-              //       width: 200,
-              //       margin: EdgeInsets.symmetric(horizontal: 30),
-              //       height: 50,
-              //       decoration: BoxDecoration(
-              //         color: kPrimaryColor,
-              //         borderRadius: BorderRadius.circular(3)
-              //       ),
-              //       child: FlatButton(
-              //         onPressed: () async {
-              //           if (firstAnswer == 'yes' || secondAnswer == 'yes') {
-              //             var data = {
-              //               'meta': {
-              //                 'patient_id': Patient().getPatient()['uuid'],
-              //                 "collected_by": Auth().getAuth()['uid'],
-              //                 "status": "pending"
-              //               },
-              //               'body': {}
-              //             };
-              //             Navigator.of(context).pushNamed('/medicalRecommendation', arguments: data);
-              //             return;
-              //           }
-
-              //           Navigator.of(context).pushNamed(FollowupVisitScreen.path);
-                        
-              //         },
-              //         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              //         child: Text(AppLocalizations.of(context).translate('next'), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
-              //       ),
+              //       margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+              //       // child: Text(_questions['items'][0]['question'],
+              //       child: Text(getQuestionText(context, secondQuestion),
+              //         style: TextStyle(fontSize: 18, height: 1.7, fontWeight: FontWeight.w500),
+              //       )
               //     ),
-              //   ],
-              // ),
+              //     SizedBox(height: 20,),
+              //     Container(
+              //       margin: EdgeInsets.symmetric(vertical: 0, horizontal: 25),
+              //       width: MediaQuery.of(context).size.width * .5,
+              //       child: Row(
+              //         children: <Widget>[
+              //           ...secondQuestionOptions.map((option) => 
+              //             Expanded(
+              //               child: Container(
+              //                 height: 40,
+              //                 margin: EdgeInsets.only(right: 10, left: 10),
+              //                 decoration: BoxDecoration(
+              //                   // border: Border.all(width: 1, color:  Color(0xFF01579B)),
+              //                   border: Border.all(width: 1, color: (secondAnswer != null && secondAnswer == option) ? Color(0xFF01579B) : Colors.black),
+              //                   borderRadius: BorderRadius.circular(3),
+              //                   color: (secondAnswer != null && secondAnswer == option) ? Color(0xFFE1F5FE) : null
+              //                   // color: Color(0xFFE1F5FE) 
+              //                 ),
+              //                 child: FlatButton(
+              //                   onPressed: () {
+              //                     setState(() {
+              //                       secondAnswer = option;
+              //                     });
+              //                   },
+              //                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              //                   child: Text(option.toUpperCase(),
+              //                     style: TextStyle(color: (secondAnswer != null && secondAnswer == option) ? kPrimaryColor : null),
+              //                     // style: TextStyle(color: kPrimaryColor),
+              //                   ),
+              //                 ),
+              //               )
+              //             ),
+              //           ).toList()
+              //         ],
+              //       )
+              //     ),
+
+
+
+              // // Row(
+              // //   mainAxisAlignment: MainAxisAlignment.end,
+              // //   children: <Widget>[
+              // //     Container(
+              // //       width: 200,
+              // //       margin: EdgeInsets.symmetric(horizontal: 30),
+              // //       height: 50,
+              // //       decoration: BoxDecoration(
+              // //         color: kPrimaryColor,
+              // //         borderRadius: BorderRadius.circular(3)
+              // //       ),
+              // //       child: FlatButton(
+              // //         onPressed: () async {
+              // //           if (firstAnswer == 'yes' || secondAnswer == 'yes') {
+              // //             var data = {
+              // //               'meta': {
+              // //                 'patient_id': Patient().getPatient()['uuid'],
+              // //                 "collected_by": Auth().getAuth()['uid'],
+              // //                 "status": "pending"
+              // //               },
+              // //               'body': {}
+              // //             };
+              // //             Navigator.of(context).pushNamed('/medicalRecommendation', arguments: data);
+              // //             return;
+              // //           }
+
+              // //           Navigator.of(context).pushNamed(FollowupVisitScreen.path);
+                        
+              // //         },
+              // //         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              // //         child: Text(AppLocalizations.of(context).translate('next'), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+              // //       ),
+              // //     ),
+              // //   ],
+              // // ),
 
                 ],
               )
