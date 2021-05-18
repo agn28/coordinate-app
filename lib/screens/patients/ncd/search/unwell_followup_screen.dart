@@ -14,7 +14,9 @@ import 'package:nhealth/models/language.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/chw/followup/well_followup_screen.dart';
 import 'package:nhealth/screens/chw/patients/patient_summary_screen.dart';
+import 'package:nhealth/screens/chw/unwell/create_referral_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/observations/blood-pressure/add_blood_pressure_screen.dart';
 import 'package:nhealth/screens/patients/ncd/followup_visit_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
@@ -29,8 +31,8 @@ final _diastolicController = TextEditingController();
 final _pulseController = TextEditingController();
 final _glucoseController = TextEditingController();
 final _deviceController = TextEditingController();
-List causes = ['Fever', 'Shortness of breath', 'Feeling faint', 'Stomach discomfort'];
-List issues = ['Vision', 'Smell', 'Mental Health', 'Other'];
+List causes = ['Fever', 'Shortness of breath', 'Feeling faint', 'Stomach discomfort', 'Vision', 'Smell', 'Mental Health', 'Other'];
+// List issues = ['Vision', 'Smell', 'Mental Health', 'Other'];
 List selectedCauses = [];
 List selectedIssues = [];
 final otherIssuesController = TextEditingController();
@@ -70,22 +72,22 @@ class _UnwellFollowupScreen extends State<UnwellFollowupScreen> {
   
   int _currentStep = 0;
 
-  String nextText = 'NEXT';
+  String nextText = 'Ok to Proceed';
 
   @override
   void initState() {
     super.initState();
-    nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
+    nextText = (Language().getLanguage() == 'Bengali') ? 'এগিয়ে যান' : 'Ok to Proceed';
     _checkAuth();
     clearForm();
   }
 
   nextStep() {
     setState(() {
-      if (_currentStep == 3) {
+      if (_currentStep == 0) {
         _currentStep = _currentStep + 1;
         nextText = 'COMPLETE';
-      } else if (_currentStep == 4) {
+      } else if (_currentStep == 1) {
         checkData();
       } else {
         _currentStep = _currentStep + 1;
@@ -189,15 +191,15 @@ class _UnwellFollowupScreen extends State<UnwellFollowupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
+      key: _causesFormKey,
       appBar: AppBar(
         leading: FlatButton(
           onPressed: (){
-            _currentStep != 0 ?
-            setState(() {
-              _currentStep = _currentStep - 1;
-              nextText = AppLocalizations.of(context).translate('next');
-            }) :
+            // _currentStep != 0 ?
+            // setState(() {
+            //   _currentStep = _currentStep - 1;
+            //   nextText = AppLocalizations.of(context).translate('next');
+            // }) :
             setState(() {
               Navigator.pop(context);
             });
@@ -234,19 +236,28 @@ class _UnwellFollowupScreen extends State<UnwellFollowupScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Expanded(
-              child: _currentStep != 0 ? FlatButton(
+              child: _currentStep == 0 ? FlatButton(
                 onPressed: () {
-                  
                   setState(() {
-                    _currentStep = _currentStep - 1;
-                    nextText = AppLocalizations.of(context).translate('next');
+                    // _currentStep = _currentStep - 1;
+                    // nextText = AppLocalizations.of(context).translate('next');
+                    var data = {
+                      'meta': {
+                        'patient_id': Patient().getPatient()['uuid'],
+                        "collected_by": Auth().getAuth()['uid'],
+                        "status": "pending"
+                      },
+                      'body': {}
+                    };
+                    Navigator.of(context).pushNamed(CreateReferralScreen.path, arguments: data);
+                    return;
                   });
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Icon(Icons.chevron_left),
-                    Text(AppLocalizations.of(context).translate('back'), style: TextStyle(fontSize: 20)),
+                    // Icon(Icons.chevron_left),
+                    Text(AppLocalizations.of(context).translate("unableToProceed"), style: TextStyle(fontSize: 20)),
                   ],
                 ),
               ) : Text('')
@@ -271,20 +282,20 @@ class _UnwellFollowupScreen extends State<UnwellFollowupScreen> {
               child: _currentStep < _mySteps().length ? FlatButton(
                 onPressed: () {
                   setState(() {
-                    print(_currentStep);
-                    if (_currentStep == 4) {
-                      print('_currentStep $_currentStep');
-                      checkData();
+                    print('_currentStep $_currentStep');
+                    if (_currentStep == 1) {
                     }
-                    if (_currentStep == 3) {
+                    if (_currentStep == 0) {
                     //  nextText = 'COMPLETE';
-                     nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                      // nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'Ok to Proceed';
+                      // checkData();
+                      Navigator.of(context).pushNamed(WellFollowupScreen.path);
                     }
-                    if (_currentStep < 4) {
+                    // if (_currentStep < 1) {
                      
-                        // If the form is valid, display a Snackbar.
-                        _currentStep = _currentStep + 1;
-                    }
+                    //     // If the form is valid, display a Snackbar.
+                    //     _currentStep = _currentStep + 1;
+                    // }
                   });
                 },
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -292,7 +303,7 @@ class _UnwellFollowupScreen extends State<UnwellFollowupScreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     Text(nextText, style: TextStyle(fontSize: 20)),
-                    Icon(Icons.chevron_right)
+                    // Icon(Icons.chevron_right)
                   ],
                 ),
               ) : Container()
@@ -310,27 +321,27 @@ class _UnwellFollowupScreen extends State<UnwellFollowupScreen> {
         content: UnwellCauses(),
         isActive: _currentStep >= 0,
       ),
-      CustomStep(
-        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
-        content: Temperature(parent: this),
-        isActive: _currentStep >= 1,
-      ),
-      CustomStep(
-        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
-        content: BloodPressure(parent: this),
-        isActive: _currentStep >= 2,
-      ),
+      // CustomStep(
+      //   title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
+      //   content: Temperature(parent: this),
+      //   isActive: _currentStep >= 1,
+      // ),
+      // CustomStep(
+      //   title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
+      //   content: BloodPressure(parent: this),
+      //   isActive: _currentStep >= 2,
+      // ),
 
-      CustomStep(
-        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
-        content: Glucose(parent: this),
-        isActive: _currentStep >= 4,
-      ),
-      CustomStep(
-        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
-        content: AcuteIssues(parent: this),
-        isActive: _currentStep >= 5,
-      ),
+      // CustomStep(
+      //   title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
+      //   content: Glucose(parent: this),
+      //   isActive: _currentStep >= 4,
+      // ),
+      // CustomStep(
+      //   title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
+      //   content: AcuteIssues(parent: this),
+      //   isActive: _currentStep >= 1,
+      // ),
     ];
 
     if (Configs().configAvailable('isThumbprint')) {
@@ -349,13 +360,13 @@ class _UnwellFollowupScreen extends State<UnwellFollowupScreen> {
 }
 
 class UnwellCauses extends StatefulWidget {
-
   @override
   _UnwellCausesState createState() => _UnwellCausesState();
 }
 
 class _UnwellCausesState extends State<UnwellCauses> {
   
+  var selectedReason = 0;
   DateTime selectedDate = DateTime.now();
   bool isOtherIssue = false;
 
@@ -382,7 +393,7 @@ class _UnwellCausesState extends State<UnwellCauses> {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
       child: Form(
-        key: _patientFormKey,
+        key: _causesFormKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -393,28 +404,63 @@ class _UnwellCausesState extends State<UnwellCauses> {
               child: Text(AppLocalizations.of(context).translate('unwellCause'), style: TextStyle(fontSize: 21),),
             ),
             SizedBox(height: 30,),
-             ...causes.map((item) {
-                return Container(
-                  alignment: Alignment.centerLeft,
-                  width: double.infinity,
-                    margin: EdgeInsets.only(left: 30, right: 30, bottom: 15),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(3),
-                      border: Border.all(color: selectedCauses.contains(item) ? kPrimaryColor : kBorderGrey)
-                    ),
-                  child: CheckboxListTile(
-                    controlAffinity: ListTileControlAffinity.leading,
-                    contentPadding: EdgeInsets.only(left: 5),
-                    title: Text(item, style: TextStyle(fontSize: 17, ),),
-                    value: selectedCauses.contains(item),
-                    onChanged: (value) {
-                      setState(() {
-                        checkCause(value, item);
-                      });
-                    },
-                  ),
-                );
-             }).toList(),
+
+            Container(
+              color: kSecondaryTextField,
+              margin: EdgeInsets.symmetric(horizontal: 100),
+              child: DropdownButtonFormField(
+                hint: Text(AppLocalizations.of(context).translate("selectAReason"), style: TextStyle(fontSize: 20, color: kTextGrey),),
+                decoration: InputDecoration(
+                  fillColor: kSecondaryTextField,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                  border: UnderlineInputBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(4),
+                    topRight: Radius.circular(4),
+                  )
+                ),
+                ),
+                items: [
+                  ...causes.map((item) =>
+                    DropdownMenuItem(
+                      child: Text(item),
+                      value: causes.indexOf(item)
+                    )
+                  ).toList(),
+                ],
+                value: selectedReason,
+                isExpanded: true,
+                onChanged: (value) {
+                  setState(() {
+                    selectedReason = value;
+                    print('selectedReason $selectedReason');
+                  });
+                },
+              ),
+            ),
+            SizedBox(height: 20,),
+            //  ...causes.map((item) {
+            //     return Container(
+            //       alignment: Alignment.centerLeft,
+            //       width: double.infinity,
+            //         margin: EdgeInsets.only(left: 30, right: 30, bottom: 15),
+            //         decoration: BoxDecoration(
+            //           borderRadius: BorderRadius.circular(3),
+            //           border: Border.all(color: selectedCauses.contains(item) ? kPrimaryColor : kBorderGrey)
+            //         ),
+            //       child: CheckboxListTile(
+            //         controlAffinity: ListTileControlAffinity.leading,
+            //         contentPadding: EdgeInsets.only(left: 5),
+            //         title: Text(item, style: TextStyle(fontSize: 17, ),),
+            //         value: selectedCauses.contains(item),
+            //         onChanged: (value) {
+            //           setState(() {
+            //             checkCause(value, item);
+            //           });
+            //         },
+            //       ),
+            //     );
+            //  }).toList(),
 
             // ...causes.map((item) {
             //   return Container(
@@ -444,70 +490,68 @@ class _UnwellCausesState extends State<UnwellCauses> {
             //     ),
             //   );
             // }).toList(),
-
-            
-             SizedBox(height: 20,),
-            Container(
-              margin: EdgeInsets.only(left: 30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(AppLocalizations.of(context).translate('issuesWith'), style: TextStyle(fontSize: 17),),
-                  SizedBox(height: 20,),
-                  Wrap(
-                    direction: Axis.horizontal,
-                    children: <Widget>[
-                      ...issues.map((item) {
-                        return Container(
-                          width: MediaQuery.of(context).size.width / 2 - 45,
-                          margin: EdgeInsets.only(bottom: 15, right: 15),
-                          //height: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(3),
-                            border: Border.all(color: selectedIssues.contains(item) ? kPrimaryColor : kBorderGrey)
-                          ),
+            // SizedBox(height: 20,),
+            // Container(
+            //   margin: EdgeInsets.only(left: 30),
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     children: <Widget>[
+            //       Text(AppLocalizations.of(context).translate('issuesWith'), style: TextStyle(fontSize: 17),),
+            //       SizedBox(height: 20,),
+            //       Wrap(
+            //         direction: Axis.horizontal,
+            //         children: <Widget>[
+            //           ...issues.map((item) {
+            //             return Container(
+            //               width: MediaQuery.of(context).size.width / 2 - 45,
+            //               margin: EdgeInsets.only(bottom: 15, right: 15),
+            //               //height: 50,
+            //               decoration: BoxDecoration(
+            //                 borderRadius: BorderRadius.circular(3),
+            //                 border: Border.all(color: selectedIssues.contains(item) ? kPrimaryColor : kBorderGrey)
+            //               ),
                           
-                          child: CheckboxListTile(
-                            controlAffinity: ListTileControlAffinity.leading,
-                            contentPadding: EdgeInsets.only(left: 5),
-                            title: Text(item, style: TextStyle(fontSize: 17, ),),
-                            value: selectedCauses.contains(item),
-                            onChanged: (value) {
-                              setState(() {
-                                checkCause(value, item);
-                              });
-                            },
-                          ),
-                        );
-                      }).toList(),
-                    ],
-                  ),
-                  SizedBox(height: 20,),
-                  selectedIssues.contains('Other') ? Container(
-                    child: TextField(
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 3,
-                      style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.only(top: 25.0, bottom: 25.0, left: 20, right: 20),
-                        filled: true,
-                        fillColor: kSecondaryTextField,
-                        border: new UnderlineInputBorder(
-                          borderSide: new BorderSide(color: Colors.white),
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(4),
-                            topRight: Radius.circular(4),
-                          )
-                        ),
+            //               child: CheckboxListTile(
+            //                 controlAffinity: ListTileControlAffinity.leading,
+            //                 contentPadding: EdgeInsets.only(left: 5),
+            //                 title: Text(item, style: TextStyle(fontSize: 17, ),),
+            //                 value: selectedCauses.contains(item),
+            //                 onChanged: (value) {
+            //                   setState(() {
+            //                     checkCause(value, item);
+            //                   });
+            //                 },
+            //               ),
+            //             );
+            //           }).toList(),
+            //         ],
+            //       ),
+            //       SizedBox(height: 20,),
+            //       selectedIssues.contains('Other') ? Container(
+            //         child: TextField(
+            //           keyboardType: TextInputType.multiline,
+            //           maxLines: 3,
+            //           style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
+            //           decoration: InputDecoration(
+            //             contentPadding: const EdgeInsets.only(top: 25.0, bottom: 25.0, left: 20, right: 20),
+            //             filled: true,
+            //             fillColor: kSecondaryTextField,
+            //             border: new UnderlineInputBorder(
+            //               borderSide: new BorderSide(color: Colors.white),
+            //               borderRadius: BorderRadius.only(
+            //                 topLeft: Radius.circular(4),
+            //                 topRight: Radius.circular(4),
+            //               )
+            //             ),
                       
-                        hintText: 'Describe other issues',
-                        hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
-                      ),
-                    ),
-                  ) : Container(),
-                ],
-              ),
-            ),
+            //             hintText: 'Describe other issues',
+            //             hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+            //           ),
+            //         ),
+            //       ) : Container(),
+            //     ],
+            //   ),
+            // ),
           ],
         ),
       )

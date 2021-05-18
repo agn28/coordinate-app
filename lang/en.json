@@ -512,5 +512,8 @@
   "completeEncounter": "Complete Encounter",
   "ageRange": "Age Range",
   "from": "From",
-  "to": "To"
+  "to": "To",
+  "noConfirmedCarePlan": "No care plan has been assigned.",
+  "checkCarePlan": "Check Careplan",
+  "unableToProceed": "Unable to Proceed"
 }

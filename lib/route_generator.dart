@@ -6,6 +6,7 @@ import 'package:nhealth/screens/chw/careplan_actions/actions_swipper_screen.dart
 import 'package:nhealth/screens/chw/careplan_actions/careplan_delivery_screen.dart';
 import 'package:nhealth/screens/chw/careplan_actions/improve_bp_screen.dart';
 import 'package:nhealth/screens/chw/careplan_actions/other_actions_screen.dart';
+import 'package:nhealth/screens/chw/careplan_actions/unwell_careplan_screen.dart';
 import 'package:nhealth/screens/chw/chw_home_screen.dart';
 import 'package:nhealth/screens/chw/counselling_framework/counselling_framwork_screen.dart';
 import 'package:nhealth/screens/chw/counselling_framework/couselling_confirmation_screen.dart';
@@ -99,6 +100,8 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => ChwCareplanDeliveryScreen());
       case CareplanFeelingScreen.path:
         return CupertinoPageRoute(builder: (_) => CareplanFeelingScreen());
+      case UnwellCareplanScreen.path:
+        return CupertinoPageRoute(builder: (_) => UnwellCareplanScreen());
       case '/carePlanDetails':
         var data = settings.arguments;
         return CupertinoPageRoute(builder: (_) => CarePlanDetailsScreen( carePlans: data));

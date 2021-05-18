@@ -372,7 +372,11 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
                     child: Column(
                       children: <Widget>[
                         
-                        dueCarePlans.length > 0 ? CareplanAction(checkInState: false, carePlans: dueCarePlans, text: AppLocalizations.of(context).translate('dueToday')) : Container(),
+                        dueCarePlans.length > 0 ? 
+                        CareplanAction(checkInState: false, carePlans: dueCarePlans, text: AppLocalizations.of(context).translate('dueToday')) 
+                        : Container(
+                          child: Text(AppLocalizations.of(context).translate('noConfirmedCarePlan'), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500)),
+                        ),
                         // upcomingCarePlans.length > 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: upcomingCarePlans, text: AppLocalizations.of(context).translate('upComing')) : Container(),
                         // completedCarePlans.length> 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: completedCarePlans, text: AppLocalizations.of(context).translate('complete')) : Container(),
 
@@ -380,7 +384,7 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
 
 
                         //previous patient history steps
-                        
+                      dueCarePlans.length > 0 ? 
                       Container(
                         width: double.infinity,
                         margin: EdgeInsets.only(left: 20, right: 20, top: 20),
@@ -433,9 +437,21 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
                           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           child: Text(AppLocalizations.of(context).translate('completeVisit'), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
                         ),
+                      ): Container(
+                        width: double.infinity,
+                        margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: kPrimaryColor,
+                          borderRadius: BorderRadius.circular(3)
+                        ),
+                        child: FlatButton(
+                          onPressed: () async {
+                          },
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          child: Text(AppLocalizations.of(context).translate('checkCarePlan'), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                        ),
                       ),
-                      
-
                       ],
                     )
                   ),

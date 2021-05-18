@@ -1176,30 +1176,43 @@ class _FiltersDialogState extends State<FiltersDialog> {
                   children: <Widget>[
                     Text(AppLocalizations.of(context).translate("ageRange"), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),),
                     SizedBox(height: 20,),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: PrimaryTextField(
-                            topPaadding: 10,
-                            bottomPadding: 10,
-                            hintText: AppLocalizations.of(context).translate('from'),
-                            controller: ageFromController,
-                            name: 'Age From',
-                            type: TextInputType.number,
+                    Container(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: PrimaryTextField(
+                              topPaadding: 10,
+                              bottomPadding: 10,
+                              hintText: AppLocalizations.of(context).translate('year'),
+                              controller: ageFromController,
+                              name: 'Age From',
+                              type: TextInputType.number,
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 20,),
-                        Expanded(
-                          child: PrimaryTextField(
-                            topPaadding: 10,
-                            bottomPadding: 10,
-                            hintText: AppLocalizations.of(context).translate('to'),
-                            controller: ageToController,
-                            name: 'Age To',
-                            type: TextInputType.number,
+                          SizedBox(width: 20,),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 20),
+                            height: 65,
+                            child: Center(child: Text(AppLocalizations.of(context).translate("from"), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),))),
+                          SizedBox(width: 20,),
+                          Expanded(
+                            child: PrimaryTextField(
+                              topPaadding: 10,
+                              bottomPadding: 10,
+                              hintText: AppLocalizations.of(context).translate('year'),
+                              controller: ageToController,
+                              name: 'Age To',
+                              type: TextInputType.number,
+                            ),
                           ),
-                        ),
-                      ],
+                          SizedBox(width: 20,),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 20),
+                            height: 65,
+                            child: Center(child: Text(AppLocalizations.of(context).translate("to"), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),))),
+                        ],
+                      ),
                     ),
                   ],
                 ),

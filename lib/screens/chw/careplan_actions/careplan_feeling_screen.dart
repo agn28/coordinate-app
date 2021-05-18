@@ -9,6 +9,8 @@ import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chw/careplan_actions/careplan_delivery_screen.dart';
+import 'package:nhealth/screens/chw/careplan_actions/unwell_careplan_screen.dart';
+import 'package:nhealth/screens/patients/ncd/search/unwell_followup_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
@@ -117,7 +119,7 @@ class _CareplanFeelingScreenState extends State<CareplanFeelingScreen> {
                                 ),
                                 child: FlatButton(
                                   onPressed: () async {
-                                    Navigator.of(context).pushNamed('/chwFollowup');
+                                    Navigator.of(context).pushNamed(UnwellCareplanScreen.path);
                                   },
                                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   child: Column(

@@ -1176,7 +1176,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
 
                             FloatingButton(text: AppLocalizations.of(context).translate('deliverCarePlan'), onPressed: () {
                               Navigator.of(context).pop();
-                              Navigator.of(context).pushNamed(ChwCareplanDeliveryScreen.path);
+                              Navigator.of(context).pushNamed(CareplanFeelingScreen.path);
                             },),
                           ],
                         ),
