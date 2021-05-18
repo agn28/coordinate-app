@@ -942,7 +942,11 @@ class _FiltersDialogState extends State<FiltersDialog> {
                           ),
                         ),
                         SizedBox(width: 20,),
-                        Text(AppLocalizations.of(context).translate("from"), textAlign: TextAlign.center, style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 20),
+                          height: 65,
+                          child: Center(child: Text(AppLocalizations.of(context).translate("from"), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),))
+                        ),
                         SizedBox(width: 20,),
                         Expanded(
                           child: PrimaryTextField(
@@ -955,7 +959,11 @@ class _FiltersDialogState extends State<FiltersDialog> {
                           ),
                         ),
                         SizedBox(width: 20,),
-                        Text(AppLocalizations.of(context).translate("to"), textAlign: TextAlign.center, style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 20),
+                          height: 65,
+                          child: Center(child: Text(AppLocalizations.of(context).translate("to"), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),))
+                        ),
                       ],
                     ),
                   ],
