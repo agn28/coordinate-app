@@ -842,6 +842,22 @@ class Questionnaire {
     
     return 'success';
   }
+  addNewDynamicMedicationNcd(type, titles, answers) {
+    var updated = false;
+
+    for (var qn in _questionnaireItems) {
+      if (qn['body']['data']['name'] == type) {
+        _questionnaireItems[_questionnaireItems.indexOf(qn)] = _prepareNewDynamicMedicationDataNcd(titles, answers, type);
+        updated = true;
+      }
+    }
+
+    if (!updated) {
+      _questionnaireItems.add(_prepareNewDynamicMedicationDataNcd(titles, answers, type));
+    }
+    
+    return 'success';
+  }
 
   addNewRiskFactors(type, answers) {
     var questions = Questionnaire().questions['new_patient'][type];
@@ -1180,6 +1196,32 @@ class Questionnaire {
           'cholesterol_medicine': answers[6],
           'cholesterol_regular_medicine': answers[7],
         },
+        "patient_id": Patient().getPatient()['uuid'],
+      }
+    };
+
+    return data;
+  }
+
+  /// Prepare questionnaire data New
+  _prepareNewDynamicMedicationDataNcd(titles, answers, type) {
+    var prepareData = {};
+    for (var x = 0; x < titles.length; x++) {
+      var index = titles[x];
+      // print(titles.length);
+      prepareData[index] = answers[x];
+    }
+    prepareData['name'] = type;
+
+    print('prepareData $prepareData');
+    var data = {
+      "meta": {
+        "performed_by": Auth().getAuth()['uid'],
+        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
+      },
+      "body": {
+        "type": "survey",
+        "data": prepareData,
         "patient_id": Patient().getPatient()['uuid'],
       }
     };

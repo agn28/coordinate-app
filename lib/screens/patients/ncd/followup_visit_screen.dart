@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:basic_utils/basic_utils.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,6 +10,7 @@ import 'package:nhealth/configs/configs.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
+import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
@@ -48,6 +51,9 @@ var medicalHistoryQuestions = {};
 var medicalHistoryAnswers = [];
 var medicationQuestions = {};
 var medicationAnswers = [];
+var dynamicMedicationTitles = [];
+var dynamicMedicationQuestions = {};
+var dynamicMedicationAnswers = [];
 var riskQuestions = {};
 var relativeQuestions = {};
 var counsellingQuestions = {};
@@ -90,7 +96,7 @@ class FollowupVisitScreen extends StatefulWidget {
 class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
   int _currentStep = 0;
 
-  String nextText = 'COMPLETE';
+  String nextText = 'NEXT';
   bool nextHide = false;
 
   @override
@@ -103,10 +109,11 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
     getAuth();
 
     print(Language().getLanguage());
-    nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+    nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
 
     prepareQuestions();
     prepareAnswers();
+    getMedications();
 
     getLanguage();
   }
@@ -123,6 +130,45 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
     final prefs = await SharedPreferences.getInstance();
 
     print(Localizations.localeOf(context));
+  }
+
+  getMedications() async {
+    print("getMedications");
+    dynamicMedicationQuestions = {};
+
+    if (Auth().isExpired()) {
+      Auth().logout();
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    }
+
+    // setState(() {
+    //   isLoading = true;
+    // });
+    var patientId = Patient().getPatient()['uuid'];
+    var data = await PatientController().getMedicationsByPatient(patientId);
+    // setState(() {
+    //   isLoading = false;
+    // });
+
+    if (data == null) {
+      return;
+    } else if (data['message'] == 'Unauthorized') {
+      Auth().logout();
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+      return;
+    } else if (data['error'] != null && data['error']) {
+      return;
+    } else if (data['data'] != null) {
+      var q = await prepareDynamicMedicationQuestions(data['data']);
+      print('q $q');
+      setState(() {
+        dynamicMedicationQuestions = q;
+        print("medication: $dynamicMedicationQuestions");
+      });
+
+    }
   }
 
   prepareQuestions() {
@@ -158,6 +204,27 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
     relativeQuestions['items'].forEach((qtn) {
       relativeAnswers.add('');
     });
+  }
+
+  
+  prepareDynamicMedicationQuestions(medications) { 
+    var prepareQuestion = [];
+    dynamicMedicationTitles = [];
+    dynamicMedicationAnswers = [];
+    for(var item in medications) {
+      dynamicMedicationTitles.add(item['body']['title']);
+      prepareQuestion.add({
+        'question': 'Are you taking ${item['body']['title']} regularly?',
+        'question_bn': 'আপনি কি নিয়মিত ${item['body']['title']} খাচ্ছেন?',
+        'options': ['yes', 'no'],
+        'options_bn': ['হ্যা', 'না'],
+      });
+      dynamicMedicationAnswers.add('');
+    }
+    dynamicMedicationQuestions['items'] = prepareQuestion;
+    print(dynamicMedicationTitles);  
+    print(dynamicMedicationQuestions["items"]);  
+    return dynamicMedicationQuestions;
   }
 
   nextStep() {
@@ -535,41 +602,19 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
                           onPressed: () async {
                             setState(() {
                               print(_currentStep);
-                              // if (_currentStep == 0) {
 
-                              // }
-
-                              // if (_currentStep == 1) {
-
-                              // }
-
-                              // if (_currentStep == 2) {
-
-                              // }
-
-                              if (_currentStep == 0) {
-                                    
-                                var relativeAdditionalData = {
-                                  'religion': selectedReligion,
-                                  'occupation': occupationController.text,
-                                  'ethnicity': selectedEthnicity,
-                                  'monthly_income': incomeController.text,
-                                  'blood_group': selectedBloodGroup,
-                                  'education': educationController.text,
-                                  'tribe': isTribe
-                                };
-                                print('relativeAdditionalData $relativeAdditionalData');
-                                Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
-  
+                              if (_currentStep == 1) {
+                                print('hello');
+                                createObservations();
                                 _completeStep();
                                 return;
                               }
                               if (_currentStep == 0) {
-                                print('hello');
-                                createObservations();
+                                Questionnaire().addNewDynamicMedicationNcd('dynamic_medication', dynamicMedicationTitles, dynamicMedicationAnswers);
+                                // print(Questionnaire().qnItems);
                                 nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                               }
-                              if (_currentStep < 6) {
+                              if (_currentStep < 2) {
                                 // If the form is valid, display a Snackbar.
                                 _currentStep = _currentStep + 1;
                               }
@@ -696,6 +741,13 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
           AppLocalizations.of(context).translate("permission"),
           textAlign: TextAlign.center,
         ),
+        content: Medication(),
+        isActive: _currentStep >= 1,
+      ),
+      CustomStep(
+        title: Text(
+          AppLocalizations.of(context).translate("permission"),
+          textAlign: TextAlign.center,),
         content: Measurements(),
         isActive: _currentStep >= 2,
       ),
@@ -970,7 +1022,7 @@ class _MedicationState extends State<Medication> {
 
     // }
     // return true;
-
+    
     // check if any medical histroy answer is yes. then return true if medication question is aspirin, or lower fat
     if (medicationQuestion['type'] == 'heart' || medicationQuestion['type'] == 'heart_bp_diabetes') {
       var medicalHistoryasYes = medicalHistoryAnswers.where((item) => item == 'yes');
@@ -1002,6 +1054,7 @@ class _MedicationState extends State<Medication> {
         matchedQuestion = item;
       } else if (medicationQuestion['type'] == 'heart_bp_diabetes') {
         if (item['type'] == 'stroke' ||
+            item['type'] == 'stroke' ||
             item['type'] == 'heart' ||
             item['type'] == 'blood_pressure' ||
             item['type'] == 'diabetes') {
@@ -1056,176 +1109,218 @@ class _MedicationState extends State<Medication> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-        child: Form(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              PatientTopbar(),
-              SizedBox(
-                height: 30,
-              ),
-              Container(
-                // alignment: Alignment.center,
-                margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
-                child: Text(
-                  AppLocalizations.of(context).translate('medicationTitle'),
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+    return SingleChildScrollView(
+      physics: ClampingScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+          child: Form(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                PatientTopbar(),
+                SizedBox(
+                  height: 30,
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                        padding: EdgeInsets.only(bottom: 35, top: 20),
-                        decoration: BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(color: kBorderLighter))),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ...medicationQuestions['items'].map((question) {
-                              if (checkMedicalHistoryAnswers(question)) {
-                                isEmpty = false;
-                                return Container(
-                                  margin: question['category'] == 'sub'
-                                      ? EdgeInsets.only(left: 40, bottom: 20)
-                                      : null,
-                                  padding: question['category'] == 'sub'
-                                      ? EdgeInsets.symmetric(
-                                          horizontal: 20,
-                                        )
-                                      : null,
-                                  decoration: question['category'] == 'sub'
-                                      ? BoxDecoration(
-                                          border:
-                                              Border.all(color: Colors.black12),
-                                          borderRadius:
-                                              BorderRadius.circular(3))
-                                      : null,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Container(
-                                          child: Text(
-                                        getQuestionText(context, question),
-                                        style: TextStyle(
-                                            fontSize: 18, height: 1.7),
-                                      )),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              .5,
-                                          child: Row(
-                                            children: <Widget>[
-                                              ...question['options']
-                                                  .map(
-                                                    (option) => Expanded(
-                                                        child: Container(
-                                                      height: 40,
-                                                      margin: EdgeInsets.only(
-                                                          right: 20, left: 0),
-                                                      decoration: BoxDecoration(
-                                                          border: Border.all(
-                                                              width: 1,
-                                                              color: medicationQuestions[medicationQuestions['items'].indexOf(question)] ==
-                                                                      question['options'][question['options']
-                                                                          .indexOf(
-                                                                              option)]
-                                                                  ? Color(
-                                                                      0xFF01579B)
-                                                                  : Colors
-                                                                      .black),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(3),
-                                                          color: medicationAnswers[medicationQuestions['items'].indexOf(question)] ==
-                                                                  question['options']
-                                                                      [question['options'].indexOf(option)]
-                                                              ? Color(0xFFE1F5FE)
-                                                              : null),
-                                                      child: FlatButton(
-                                                        onPressed: () {
-                                                          setState(() {
-                                                            print(
-                                                                medicalHistoryAnswers);
-                                                            medicationAnswers[
-                                                                medicationQuestions[
-                                                                        'items']
-                                                                    .indexOf(
-                                                                        question)] = question[
-                                                                    'options'][
-                                                                question[
-                                                                        'options']
-                                                                    .indexOf(
-                                                                        option)];
-                                                            checkAnswer();
-                                                            // print(medicalHistoryAnswers);
-                                                            // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
-                                                          });
-                                                        },
-                                                        materialTapTargetSize:
-                                                            MaterialTapTargetSize
-                                                                .shrinkWrap,
-                                                        child: Text(
-                                                          getOptionText(context,
-                                                              question, option),
-                                                          style: TextStyle(
-                                                              color: medicationAnswers[medicationQuestions[
-                                                                              'items']
-                                                                          .indexOf(
-                                                                              question)] ==
-                                                                      question[
-                                                                          'options'][question[
-                                                                              'options']
-                                                                          .indexOf(
-                                                                              option)]
-                                                                  ? kPrimaryColor
-                                                                  : null),
+                Container(
+                  // alignment: Alignment.center,
+                  margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
+                  child: Text(
+                    AppLocalizations.of(context).translate('medicationTitle'),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                          padding: EdgeInsets.only(bottom: 35, top: 20),
+                          decoration: BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(color: kBorderLighter))),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // ...dynamicMedicationQuestions['items'].map((question) {
+                              //   return Column(
+                              //     crossAxisAlignment: CrossAxisAlignment.start,
+                              //     children: <Widget>[
+                              //       Container(
+                              //           child: Text(getQuestionText(context, question),style:TextStyle(fontSize: 18, height: 1.7),
+                              //       )),
+                              //       SizedBox(height: 20,),
+                              //       // Container(
+                              //       //   width:MediaQuery.of(context).size.width *.5,
+                              //       //   child: Row(
+                              //       //     children: <Widget>[
+                              //       //       ...question['options'].map((option) => 
+                              //       //         Expanded(
+                              //       //           child: Container(
+                              //       //             height: 40,
+                              //       //             margin: EdgeInsets.only(right: 20, left: 0),
+                              //       //             decoration: BoxDecoration(
+                              //       //             border: Border.all(
+                              //       //               width: 1,color: medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFF01579B): Colors.black),
+                              //       //               borderRadius: BorderRadius.circular(3),
+                              //       //               color: medicalHistoryAnswers[
+                              //       //                               medicalHistoryQuestions['items'].indexOf(
+                              //       //                                     question)] ==
+                              //       //                             question['options'][
+                              //       //                                 question['options']
+                              //       //                                     .indexOf(option)]
+                              //       //                         ? Color(0xFFE1F5FE)
+                              //       //                         : null),
+                              //       //                 child: FlatButton(
+                              //       //                   onPressed: () {
+                              //       //                     setState(() {
+                              //       //                       medicalHistoryAnswers[
+                              //       //                           medicalHistoryQuestions[
+                              //       //                                   'items']
+                              //       //                               .indexOf(
+                              //       //                                   question)] = question[
+                              //       //                               'options'][
+                              //       //                           question[
+                              //       //                                   'options']
+                              //       //                               .indexOf(
+                              //       //                                   option)];
+                                                          
+                              //       //                         var selectedOption = medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)];
+                              //       //                         print('selectedOption $selectedOption');
+                              //       //                         medicationQuestions['items'].forEach((qtn) {
+                              //       //                           if(qtn['type'].contains('heart') || qtn['type'].contains('heart_bp_diabetes')) {
+                                                                
+                              //       //                             var medicalHistoryAnswerYes = false;
+                              //       //                             medicalHistoryAnswers.forEach((ans) {
+                              //       //                               if(ans == 'yes') {
+                              //       //                                 medicalHistoryAnswerYes = true;
+                              //       //                                 print('medicalHistoryAnswerYes $ans');
+                              //       //                               }
+                              //       //                             });
+                              //       //                             if (!medicalHistoryAnswerYes) {
+                              //       //                               medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
+                              //       //                               print('exceptional if'); 
+                              //       //                             }
+                              //       //                           } else if(qtn['type'].contains(question['type']) && selectedOption == 'no') {
+                              //       //                             medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
+                              //       //                             print('if');
+                              //       //                           }
+                              //       //                           print(qtn['type']);
+                              //       //                           print(question['type']);
+                              //       //                           print('qtn $qtn');
+                              //       //                           print('medicationAnswers ${medicationAnswers}');
+                              //       //                         });
+                              //       //                     });
+                              //       //                   },
+                              //       //                   materialTapTargetSize:
+                              //       //                       MaterialTapTargetSize
+                              //       //                           .shrinkWrap,
+                              //       //                   child: Text(
+                              //       //                     getOptionText(context,
+                              //       //                         question, option),
+                              //       //                     style: TextStyle(
+                              //       //                         color: medicalHistoryAnswers[medicalHistoryQuestions[
+                              //       //                                         'items']
+                              //       //                                     .indexOf(
+                              //       //                                         question)] ==
+                              //       //                                 question[
+                              //       //                                     'options'][question[
+                              //       //                                         'options']
+                              //       //                                     .indexOf(
+                              //       //                                         option)]
+                              //       //                             ? kPrimaryColor
+                              //       //                             : null),
+                              //       //                   ),
+                              //       //                 ),
+                              //       //               )),
+                              //       //             )
+                              //       //             .toList()
+                              //       //       ],
+                              //       //     )),
+                              //       SizedBox(height: 20,)
+                              //     ],
+                              //   );
+                              // }).toList()
+                              if(dynamicMedicationQuestions['items'] != null) 
+                              ...dynamicMedicationQuestions['items'].map((question) {
+                                // if (checkMedicalHistoryAnswers(question)) {
+                                  isEmpty = false;
+                                  return Container(
+                                    margin: question['category'] == 'sub'? EdgeInsets.only(left: 40, bottom: 20): null,
+                                    padding: question['category'] == 'sub'? EdgeInsets.symmetric(horizontal: 20,): null,
+                                    decoration: question['category'] == 'sub'? BoxDecoration(border: Border.all(color: Colors.black12),borderRadius:BorderRadius.circular(3)) : null,
+                                    child: Column(
+                                      crossAxisAlignment:CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Container(child: Text(getQuestionText(context, question),
+                                          style: TextStyle(fontSize: 18, height: 1.7),
+                                        )),
+                                        SizedBox(height: 20,),
+                                        Container(
+                                            width: MediaQuery.of(context).size.width *.5,
+                                            child: Row(
+                                              children: <Widget>[
+                                                ...question['options'].map((option) { 
+                                                return Expanded(
+                                                    child: Container(
+                                                        height: 40,
+                                                        margin: EdgeInsets.only(right: 20, left: 0),
+                                                        decoration: BoxDecoration(
+                                                            border: Border.all(width: 1,
+                                                              color: dynamicMedicationQuestions[dynamicMedicationQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFF01579B) : Colors.black),
+                                                            borderRadius:BorderRadius.circular(3),
+                                                            color: dynamicMedicationAnswers[dynamicMedicationQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFFE1F5FE): null),
+                                                        child: FlatButton(
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              print(
+                                                                  dynamicMedicationAnswers);
+                                                              dynamicMedicationAnswers[
+                                                                  dynamicMedicationQuestions[
+                                                                          'items']
+                                                                      .indexOf(
+                                                                          question)] = question[
+                                                                  'options'][question[
+                                                                      'options']
+                                                                  .indexOf(
+                                                                      option)];
+                                                              checkAnswer();
+                                                              // print(medicalHistoryAnswers);
+                                                              // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
+                                                            });
+                                                          },
+                                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                          child: Text(getOptionText(context, question, option),
+                                                            style: TextStyle(color: dynamicMedicationAnswers[dynamicMedicationQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? kPrimaryColor: null),
+                                                          ),
                                                         ),
-                                                      ),
-                                                    )),
-                                                  )
-                                                  .toList()
-                                            ],
-                                          )),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              } else
-                                return Container();
-                            }).toList(),
-                            isEmpty
-                                ? Container(
-                                    child: Text(
-                                      AppLocalizations.of(context)
-                                              .translate('noQuestionFound') +
-                                          ' ' +
-                                          AppLocalizations.of(context)
-                                              .translate('goToNextStep'),
-                                      style: TextStyle(fontSize: 16),
+                                                      )
+                                                    );
+                                                  }).toList(),
+                                              ],
+                                            )
+                                          ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                      ],
                                     ),
-                                  )
-                                : Container()
-                          ],
-                        )),
-                  ],
+                                  );
+                                // } else
+                                //   return Container();
+                              }).toList(),
+                              
+                              isEmpty ? Container(child: Text(AppLocalizations.of(context).translate('noQuestionFound') + ' ' + AppLocalizations.of(context) .translate('goToNextStep'), style: TextStyle(fontSize: 16),),): Container()
+                            ],
+                          )),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ));
+              ],
+            ),
+          )),
+    );
   }
 }
 

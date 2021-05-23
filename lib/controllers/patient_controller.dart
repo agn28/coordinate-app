@@ -170,4 +170,9 @@ class PatientController {
     return data;
   }
 
+  getMedicationsByPatient(patientId) async {
+    var response = await PatientRepository().getMedicationsByPatient(patientId);
+    return response;
+  }
+
 }
