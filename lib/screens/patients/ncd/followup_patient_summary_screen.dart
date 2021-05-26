@@ -47,6 +47,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
   bool avatarExists = false;
   var encounters = [];
   String lastEncounterType = '';
+  String lastFollowupType = '';
   String lastEncounterdDate = '';
   String lastAssessmentdDate = '';
   String lastCarePlanDate = ''; 
@@ -68,7 +69,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
-    print('followup_patient ${_patient['meta']['review_required']}');
+    print('followup_patient ${_patient}');
     dueCarePlans = [];
     completedCarePlans = [];
     upcomingCarePlans = [];
@@ -392,7 +393,8 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
       encounters.sort((a, b) {
         return DateTime.parse(b['meta']['created_at']).compareTo(DateTime.parse(a['meta']['created_at']));
       });
-
+      lastFollowupType = encounters.first['data']['followup_type'];
+      print('lastFollowupType ${lastFollowupType}');
       setState(() {
         isLoading = false;
         lastEncounterdDate = DateFormat("MMMM d, y").format(DateTime.parse(encounters.first['meta']['created_at']));
@@ -1490,7 +1492,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
 
                                     } else {
                                       print('new followup');
-                                      var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow up center', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
+                                      var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
                                     }
                                   }
                                   setState(() {
@@ -1528,7 +1530,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                     } else {
                                       print('new encounter');
                                       print(status);
-                                      var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow up center', '', status, '', followupType: widget.encounterData['followupType']);
+                                      var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', status, '');
                                     }
                                     status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
                                     
@@ -1543,7 +1545,8 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                     } else {
                                       print('new followup');
                                       print(status);
-                                      var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', status, '');
+                                      print(widget.encounterData['followupType']);
+                                      var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
                                     }
                                     status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
                                   }
@@ -2120,7 +2123,14 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: <Widget>[
-                            FloatingButton(text: 'New Follow Up', onPressed: () {
+                            _patient['data']['incomplete_encounter'] != null &&  _patient['data']['incomplete_encounter'] ?
+                            FloatingButton(text: AppLocalizations.of(context).translate('updateLastFollowUp'), onPressed: () {
+                              Navigator.of(context).pop();
+                              lastFollowupType == 'full' ?
+                              Navigator.of(context).pushNamed('/editIncompleteFullFollowup',)
+                              : Navigator.of(context).pushNamed('/editIncompleteShortFollowup',);
+                            }, ) : Container(),
+                            FloatingButton(text: AppLocalizations.of(context).translate('newFollowUp'), onPressed: () {
                               Navigator.of(context).pop();
                               Navigator.of(context).pushNamed(NewFollowupScreen.path);
                             }, ),

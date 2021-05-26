@@ -85,8 +85,7 @@ class AssessmentController {
   }
 
   getIncompleteEncounterWithObservation(patientId) async {
-    var assessment = await AssessmentRepository()
-        .getIncompleteEncounterWithObservation(patientId);
+    var assessment = await AssessmentRepository().getIncompleteEncounterWithObservation(patientId);
 
     return assessment;
   }

@@ -621,15 +621,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
 
     print(patient['data']['age']);
     var status = hasMissingData ? 'incomplete' : 'complete';
-    var response = await AssessmentController()
-        .createAssessmentWithObservations(
-            context,
-            'follow up visit (community)',
-            'follow up community',
-            '',
-            status,
-            nextVisitDate,
-            followupType: 'short');
+    var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (community)', 'follow-up', '', status, nextVisitDate, followupType: 'short');
     !hasMissingData ? Patient().setPatientReviewRequiredTrue() : null;
     setLoader(false);
 

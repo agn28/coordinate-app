@@ -516,6 +516,11 @@
   "to": "পর্যন্ত",
   "noConfirmedCarePlan": "কোন কেয়ারপ্ল্যান বরাদ্দ করা হয়নি",
   "checkCarePlan": "কেয়ারপ্ল্যান চেক করুন",
-  "unableToProceed": "এগিয়ে যেতে অপারগ"
+  "unableToProceed": "এগিয়ে যেতে অপারগ",
+  "newFollowUp": "নতুন ফলো আপ",
+  "updateLastEncounter": "সর্বশেষ এনকাউন্টার আপডেট",
+  "updateLastFollowUp": "সর্বশেষ ফলো আপ আপডেট",
+  "newVisit": "নতুন ভিসিট",
+  "editIncompleteFollowup": "অসম্পূর্ণ ফলো আপ সম্পাদনা করুন"
 
 }

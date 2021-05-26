@@ -419,7 +419,7 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
                                           isLoading = true;
                                         });
 
-                                        result = await AssessmentController().createOnlyAssessmentWithStatus('Follow up visit (Community)', 'follow-up', '', '', '');
+                                        result = await AssessmentController().createOnlyAssessmentWithStatus('follow up visit (community)', 'follow-up', '', '', '');
 
                                         setState(() {
                                           isLoading = false;

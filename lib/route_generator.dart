@@ -43,6 +43,8 @@ import 'package:nhealth/screens/patients/manage/patient_overview_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_overview_screen_old.dart';
 import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
 import 'package:nhealth/screens/patients/ncd/edit_incomplete_encounter_screen.dart';
+import 'package:nhealth/screens/patients/ncd/edit_incomplete_full_followup_screen.dart';
+import 'package:nhealth/screens/patients/ncd/edit_incomplete_short_followup_screen.dart';
 import 'package:nhealth/screens/patients/ncd/followup_acute_screen.dart';
 import 'package:nhealth/screens/patients/ncd/followup_feeling_screen.dart';
 import 'package:nhealth/screens/patients/ncd/followup_patient_summary_screen.dart';
@@ -95,6 +97,10 @@ class RouteGenerator {
 
       case '/editIncompleteEncounter':
         return CupertinoPageRoute(builder: (_) => EditIncompleteEncounterScreen());
+      case '/editIncompleteShortFollowup':
+        return CupertinoPageRoute(builder: (_) => EditIncompleteShortFollowupScreen());
+      case '/editIncompleteFullFollowup':
+        return CupertinoPageRoute(builder: (_) => EditIncompleteFullFollowupScreen());
         
       case ChwCareplanDeliveryScreen.path:
         return CupertinoPageRoute(builder: (_) => ChwCareplanDeliveryScreen());

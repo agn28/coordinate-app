@@ -546,9 +546,7 @@ class _NewPatientQuestionnaireScreenState
 
     print(patient['data']['age']);
     var status = hasMissingData ? 'incomplete' : 'complete';
-    var response = await AssessmentController()
-        .createAssessmentWithObservations(context, 'new questionnaire',
-            'new-questionnaire', '', 'incomplete', nextVisitDate);
+    var response = await AssessmentController().createAssessmentWithObservations(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', nextVisitDate);
     // var response = await AssessmentController().createOnlyAssessmentWithStatus('new questionnaire', 'new-questionnaire', '', 'incomplete', nextVisitDate);
 
     setLoader(false);

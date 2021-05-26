@@ -515,5 +515,10 @@
   "to": "To",
   "noConfirmedCarePlan": "No care plan has been assigned.",
   "checkCarePlan": "Check Careplan",
-  "unableToProceed": "Unable to Proceed"
+  "unableToProceed": "Unable to Proceed",
+  "newFollowUp": "New Follow Up",
+  "updateLastEncounter": "Update Last Encounter",
+  "updateLastFollowUp": "Update Last Follow Up",
+  "newVisit": "New Visit",
+  "editIncompleteFollowup": "Edit Incomplete Followup"
 }
