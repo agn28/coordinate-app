@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/followup_controller.dart';
+import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/language.dart';
 import 'package:nhealth/models/patient.dart';
@@ -27,6 +28,14 @@ getDropdownOptionText(context, list, value) {
     return StringUtils.capitalize(value);
   }
   return StringUtils.capitalize(value);
+}
+getName(context, item) {
+  var locale = Localizations.localeOf(context);
+
+  if (locale == Locale('bn', 'BN')) {
+    return item['bn_name'];
+  }
+  return item['name'];
 }
 
 class CreateReferralScreen extends StatefulWidget {
@@ -53,7 +62,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
     'options': ['community clinic', 'upazila health complex', 'hospital', 'BRAC NCD Centre'],
     'options_bn': ['কমিউনিটি ক্লিনিক', 'উপজেলা স্বাস্থ্য কমপ্লেক্স', 'হাসপাতাল', 'ব্র্যাক এনসিডি কেন্দ্র']
   };
-  List clinicTypes;
+  var clinicTypes = [];
   var selectedtype;
   var clinicNameController = TextEditingController();
 
@@ -65,8 +74,9 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
     print(Language().getLanguage());
     // referralReasons = Language().getLanguage() == 'Bengali' ? : ;
     _getAuthData();
+    getCenters();
     referralReasons = referralReasonOptions['options'];
-    clinicTypes = clinicTypeOptions['options'];
+    // clinicTypes = clinicTypeOptions['options'];
   }
 
   _getAuthData() async {
@@ -88,6 +98,24 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
       Auth().logout();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
     }
+  }
+
+  getCenters() async {
+    setState(() {
+      isLoading = true;
+    });
+    var centerData = await PatientController().getCenter();
+    setState(() {
+      isLoading = false;
+    });
+
+    print("CenterData: $centerData");
+
+    if (centerData['error'] != null && !centerData['error']) {
+      clinicTypes = centerData['data'];
+
+    }
+    print("center: $clinicTypes");
   }
 
   @override
@@ -191,7 +219,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                         items: [
                           ...clinicTypes.map((item) =>
                             DropdownMenuItem(
-                              child: Text(getDropdownOptionText(context, clinicTypeOptions, item)),
+                              child: Text(getName(context, item)),
                               value: item
                             )
                           ).toList(),
