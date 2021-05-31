@@ -16,6 +16,7 @@ import 'package:nhealth/repositories/assessment_repository.dart';
 import 'package:nhealth/repositories/local/assessment_repository_local.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:nhealth/repositories/local/observation_repository_local.dart';
 import 'package:nhealth/repositories/observation_repository.dart';
 import 'package:nhealth/repositories/sync_repository.dart';
 import 'package:uuid/uuid.dart';
@@ -299,13 +300,85 @@ class AssessmentController {
     });
     return data;
   }
+  // getLiveAllAssessmentsByPatient() async {
+  //   var response = await AssessmentRepository().getAllAssessments();
+
+  //   print('encounter respose ' + response.toString());
+  //   var data = [];
+  //   // if (response == null) {
+  //   //   return data;
+  //   // }
+
+  //   if (isNull(response) || isNotNull(response['exception'])) {
+  //     print('into exception');
+  //     var patientId = Patient().getPatient()['id'];
+  //     var localResponse =
+  //         await AssessmentRepositoryLocal().getAssessmentsByPatient(patientId);
+  //     print('localResponse');
+  //     print(localResponse);
+  //     if (isNotNull(localResponse)) {
+  //       localResponse.forEach((assessment) {
+  //         var parseData = json.decode(assessment['data']);
+
+  //         data.add({
+  //           'id': assessment['id'],
+  //           'data': parseData['body'],
+  //           'meta': parseData['meta']
+  //         });
+  //       });
+  //     }
+
+  //     return data;
+  //   }
+
+  //   if (response['error'] != null && !response['error']) {
+  //     await response['data'].forEach((assessment) {
+  //       data.add({
+  //         'id': assessment['id'],
+  //         'data': assessment['body'],
+  //         'meta': assessment['meta']
+  //       });
+  //     });
+  //   }
+
+  //   return data;
+  // }
 
   /// Get observations under a specific assessment.
   /// [assessment] object is required as parameter.
   getLiveObservationsByAssessment(assessment) async {
-    var response = await AssessmentRepository()
-        .getObservationsByAssessment(assessment['id']);
+    var response = await AssessmentRepository().getObservationsByAssessment(assessment['id']);
     var data = [];
+
+    if (isNull(response) || isNotNull(response['exception'])) {
+      print('into exception');
+      var patientId = Patient().getPatient()['id'];
+      var localResponse = await ObservationRepositoryLocal().getObservationsByPatient(patientId);
+      print('localResponse');
+      print(localResponse);
+      if (isNotNull(localResponse)) {
+        var localObservations = [];
+        localResponse.forEach((observation) {
+          var parseData = json.decode(observation['data']);
+          print('observation ${parseData["body"]}');
+          if(parseData['body']["assessment_id"] == assessment['id']) {
+            data.add({
+              'id': observation['id'],
+              'body': {
+                'type': parseData['body']['type'],
+                'data': parseData['body']['data'],
+                'comment': parseData['body']['comment'],
+                'patient_id': observation['patient_id'],
+                'assessment_id': parseData['body']['assessment_id'],
+              },
+              'meta': parseData['meta']
+            });
+          }
+        });
+      }
+
+      return data;
+    }
 
     if (response['error'] != null && !response['error']) {
       await response['data'].forEach((item) {

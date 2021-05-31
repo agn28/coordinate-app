@@ -305,22 +305,40 @@ class PatientRepository {
   }
 
   getPatientsWorklist(type) async {
-    var authData = await Auth().getStorageAuth();
+    var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
+    var response;
     print('type ' + type);
-    return http.get(
-      apiUrl + 'patients?type=' + type,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-    ).then((response) {
-      // print(json.decode(response.body));
+    try {
+      response = await http
+        .get(apiUrl + 'patients?type=' + type,
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+        )
+        .timeout(Duration(seconds: httpRequestTimeout));
+
       return json.decode(response.body);
-    }).catchError((error) {
-      print('error ' + error.toString());
-    });
+    } on SocketException {
+      // showErrorSnackBar('Error', 'socketError'.tr);
+      print('socket exception');
+      return {'exception': true, 'message': 'No internet'};
+    } on TimeoutException {
+      // showErrorSnackBar('Error', 'timeoutError'.tr);
+      print('timeout error');
+      return {'exception': true, 'message': 'Slow internet'};
+    } on Error catch (err) {
+      print('test error');
+      print(err);
+      // showErrorSnackBar('Error', 'unknownError'.tr);
+      return {
+        'exception': true,
+        'type': 'unknown',
+        'message': 'Something went wrong'
+      };
+    }
   }
 
   update(data) async {

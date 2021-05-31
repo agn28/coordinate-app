@@ -66,6 +66,13 @@ class ObservationRepositoryLocal {
     return observations;
   }
 
+  getObservationsByPatient(patientId) async {
+    final sqlObservations = '''SELECT * FROM ${DatabaseCreator.observationTable} WHERE patient_id="$patientId"''';
+    final observations = await db.rawQuery(sqlObservations);
+
+    return observations;
+  }
+
   getNotSyncedObservations() async {
     final sql =
         '''SELECT * FROM ${DatabaseCreator.observationTable} WHERE is_synced=0''';

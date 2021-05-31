@@ -82,12 +82,12 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     _checkAuth();
     getUsers();
     getAssessmentDueDate();
-    _getCarePlan();
     getReferrals();
-    getEncounters();
-    getAssessments();
     getMedicationsConditions();
     getReport();
+    getEncounters();
+    getAssessments();
+    _getCarePlan();
     
   }
 

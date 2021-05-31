@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'dart:convert';
 import 'dart:math';
 import 'package:expandable/expandable.dart';
 
@@ -202,7 +203,7 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
         print('localCarePlans ${localCarePlans}');
         var parsedLocalCarePlans = [];
         for(var localCarePlan in localCarePlans) {
-          parsedLocalCarePlans.add(localCarePlan['data']);
+          parsedLocalCarePlans.add(json.decode(localCarePlan['data']));
         }
         print(parsedLocalCarePlans);
         carePlans = parsedLocalCarePlans;
@@ -212,7 +213,7 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
       // carePlans = data['data'];
       print('carePlans $carePlans');
       carePlans.forEach( (item) {
-        print('item ${item[0]['id']}');
+        print('carePlanItem ${item}');
         DateFormat format = new DateFormat("E LLL d y");
         
         var todayDate = DateTime.now();
@@ -249,7 +250,7 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
           if (item['meta']['status'] == 'pending') {
             if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
               var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-              // print(existedCp);
+              print(existedCp);
               // print(item['body']['activityDuration']['start']);
 
               if (existedCp.isEmpty) {
@@ -264,6 +265,7 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
                 dueCarePlans[dueCarePlans.indexOf(existedCp.first)]['items'].add(item);
 
               }
+              print('dueCarePlansLength ${dueCarePlans.length}');
             } else if (todayDate.isBefore(startDate)) {
               var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
               // print(existedCp);
@@ -563,7 +565,7 @@ class _GoalItemState extends State<GoalItem> {
   void initState() {
     super.initState();
     getStatus();
-    print('item ${widget.item}');
+    print('goalItem ${widget.item}');
   }
 
   getStatus() {
@@ -836,16 +838,22 @@ class _ActionItemState extends State<ActionItem> {
 
 class CareplanAction extends StatefulWidget {
 
-  CareplanAction({this.checkInState, this.carePlans, this.text});
-
   bool checkInState;
   var carePlans = [];
   String text = '';
+
+  CareplanAction({this.checkInState, this.carePlans, this.text});
+
   @override
   _CareplanActionState createState() => _CareplanActionState();
 }
 
 class _CareplanActionState extends State<CareplanAction> {
+  @override
+  void initState() {
+    super.initState();
+    print('careplanAction ${widget.carePlans}');
+  }
 
   getCount(item) {
     var count = 0;

@@ -10,11 +10,14 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
+import 'package:nhealth/controllers/sync_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
+import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/chw/patients/patient_summary_screen.dart';
+import 'package:get/get.dart';
 
 final searchController = TextEditingController();
 List allWorklist = [];
@@ -38,7 +41,7 @@ class ChwWorkListSearchScreen extends StatefulWidget {
 }
 
 class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
-
+  final syncController = Get.put(SyncController());
   List patients = [];
   bool isLoading = true;
   var report;
@@ -122,6 +125,30 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
           pastPatients = allPastPatients;
         });
       }
+      setState(() {
+        isLoading = false;
+      });
+    }
+    else {
+      var allLocalPatients = syncController.localPatientsAll.value;
+      var localPatientPending = [];
+      for(var localPatient in allLocalPatients) {
+        if(isNotNull(localPatient["meta"]["has_pending"]) && localPatient["meta"]["has_pending"]) {
+          var localpatientdata = {
+            'id': localPatient['id'],
+            'body': localPatient['data'],
+            'meta': localPatient['meta']
+          };
+          localPatientPending.add(localpatientdata);
+        }
+      }
+      print('pending $localPatientPending');
+      setState(() {
+        allPendingPatients = localPatientPending;
+        pendingPatientsSort();
+        pendingPatients = allPendingPatients;
+        print(pendingPatients[0]['body']);
+      });
       setState(() {
         isLoading = false;
       });
