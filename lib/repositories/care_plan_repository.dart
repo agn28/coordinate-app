@@ -64,7 +64,7 @@ class CarePlanRepository {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + token
         },)
-        
+
       .timeout(Duration(seconds: httpRequestTimeout));
 
       return json.decode(response.body);

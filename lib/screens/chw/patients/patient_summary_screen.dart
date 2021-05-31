@@ -88,7 +88,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     getEncounters();
     getAssessments();
     _getCarePlan();
-    
+
   }
 
   getAssessmentDueDate() {
@@ -631,13 +631,13 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(Helpers().getPatientName(_patient), style: TextStyle( fontSize: 19, fontWeight: FontWeight.w600),),
-                                        
+
                                         SizedBox(height: 7,),
                                         Row(
                                           children: <Widget>[
                                             Text(Helpers().getPatientAgeAndGender(_patient), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),),
-                                            
-                                          
+
+
                                           ],
                                         ),
                                         SizedBox(height: 10,),
@@ -663,11 +663,11 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                     ),
                   ),
                   
-            
+
                   Container(
                     padding: EdgeInsets.only(left: 20, right: 20, top: 15),
-                    
-                    child: Row( 
+
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
@@ -745,7 +745,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Text(report['body']['result']['assessments']['lifestyle']['components']['smoking']['value'] == 'current smoker' ? 
+                                    Text(report['body']['result']['assessments']['lifestyle']['components']['smoking']['value'] == 'current smoker' ?
                                       'Yes' : 'No',
                                       style: TextStyle(
                                         fontSize: 18,
@@ -765,7 +765,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                     ),
                   ) : Container(),
 
-                  
+
                   report != null && report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ?
                   Container(
                       padding: EdgeInsets.only(left: 20, right: 20),
@@ -942,7 +942,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                         ],
                       ),
                     ) : Container(),
-                    
+
 
 
 
@@ -997,7 +997,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                           padding: EdgeInsets.only(top: 15, left: 10, right: 10),
                           child: Column(
                             children: <Widget>[
-                              
+
                               Container(
                                 padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
                                 child: Row(
@@ -1033,7 +1033,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                               ),
                             ],
                           )
-                        ), 
+                        ),
 
                         widget.checkInState != null && widget.checkInState ? Container(
                           width: double.infinity,
@@ -1046,7 +1046,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                           child: FlatButton(
                             onPressed: () async {
                                //Navigator.of(context).pushNamed('/chwPatientSummary');
-                              
+
                               showDialog(
                                 context: _scaffoldKey.currentContext,
                                 builder: (BuildContext context) {
@@ -1176,7 +1176,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
 
                             FloatingButton(text: AppLocalizations.of(context).translate('deliverCarePlan'), onPressed: () {
                               Navigator.of(context).pop();
-                              Navigator.of(context).pushNamed(ChwCareplanDeliveryScreen.path);
+                              Navigator.of(context).pushNamed(CareplanFeelingScreen.path);
                             },),
                           ],
                         ),
@@ -1355,7 +1355,7 @@ class _GoalItemState extends State<GoalItem> {
   //                     children: <Widget>[
   //                       // Text('${report['body']['result']['actions'].length} Actions  ', style: TextStyle(color: status == 'pending' ? kPrimaryRedColor : kPrimaryGreenColor, fontWeight: FontWeight.w500),),
   //                       Text('${getCount()}'+AppLocalizations.of(context).translate("actions"), style: TextStyle(color: status == 'pending' ? kPrimaryRedColor : kPrimaryGreenColor, fontWeight: FontWeight.w500),),
-  //                       if (status != 'pending') 
+  //                       if (status != 'pending')
   //                       Icon(Icons.check_circle, color: kPrimaryGreenColor, size: 14,)
   //                     ],
   //                   ),
@@ -1369,7 +1369,7 @@ class _GoalItemState extends State<GoalItem> {
   //     ),
   //   );
   // }
-  
+
   return Container(
     child: Column(
       children: [
@@ -1479,7 +1479,7 @@ class _ActionItemState extends State<ActionItem> {
               ),
             ),
             SizedBox(height: 20,),
-            
+
           ],
         ),
       ),
@@ -1645,7 +1645,7 @@ class _CareplanActionState extends State<CareplanAction> {
                   children: <Widget>[
                     SizedBox(height: 10,),
                     Container(
-                      
+
                       width: double.infinity,
                       padding: EdgeInsets.all(15),
                       child: Text(AppLocalizations.of(context).translate('pendingActions'), style: TextStyle( fontSize: 18, fontWeight: FontWeight.w500),),
@@ -1658,7 +1658,7 @@ class _CareplanActionState extends State<CareplanAction> {
                     ),
 
                     SizedBox(height: 10,),
-                      ...widget.carePlans.map( (item) {                     
+                      ...widget.carePlans.map( (item) {
                         return GoalItem(item: item);
                     }).toList()
                   

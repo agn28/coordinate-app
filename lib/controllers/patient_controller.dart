@@ -15,6 +15,7 @@ import 'package:uuid/uuid.dart';
 import '../app_localizations.dart';
 
 class PatientController {
+
   /// Get all the patients
   var patientRepoLocal = PatientReposioryLocal();
 
@@ -176,6 +177,13 @@ class PatientController {
     return response;
   }
 
+  getCenter() async {
+    var response = await PatientRepository().getCenter();
+
+    return response;
+  }
+
+
   /// Create a new patient
   /// [formData] is required as parameter.
   create(context, formData) async {
@@ -297,16 +305,12 @@ class PatientController {
     var age;
     var birthDate;
     if (formData['selected_dob_type'] == 'dob') {
-      age = Helpers().calculateAge(formData['birth_year'],
-          formData['birth_month'], formData['birth_date']);
-      birthDate = formData['birth_year'] +
-          '-' +
-          formData['birth_month'] +
-          '-' +
-          formData['birth_date'];
+      age = Helpers().calculateAge(formData['birth_year'], formData['birth_month'], formData['birth_date']);
+      birthDate = formData['birth_year'] + '-' + formData['birth_month'] + '-' + formData['birth_date'];
     } else {
       age = int.tryParse(formData['age']);
       birthDate = Helpers().calculateDobFromAge(age);
+
     }
 
     formData.remove('birth_date');
@@ -324,4 +328,10 @@ class PatientController {
     };
     return data;
   }
+
+  getMedicationsByPatient(patientId) async {
+    var response = await PatientRepository().getMedicationsByPatient(patientId);
+    return response;
+  }
+
 }

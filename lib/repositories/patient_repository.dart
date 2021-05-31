@@ -110,7 +110,7 @@ class PatientRepository {
     var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
     return http.get(
-      apiUrl + 'patients',
+      apiUrl + 'patients/all',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -126,37 +126,19 @@ class PatientRepository {
   getFirstAssessmentPatients() async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
-    var response;
-    try {
-      response = await http
-        .get(apiUrl + 'patients/first-assessment',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-          },
-        )
-        .timeout(Duration(seconds: httpRequestTimeout));
-
+    return http.get(
+      apiUrl + 'patients/first-assessment',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    ).then((response) {
       return json.decode(response.body);
-    } on SocketException {
-      // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
-      return {'exception': true, 'message': 'No internet'};
-    } on TimeoutException {
-      // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
-      return {'exception': true, 'message': 'Slow internet'};
-    } on Error catch (err) {
-      print('test error');
-      print(err);
-      // showErrorSnackBar('Error', 'unknownError'.tr);
-      return {
-        'exception': true,
-        'type': 'unknown',
-        'message': 'Something went wrong'
-      };
-    }
+
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
   }
   getFollowupPatients() async {
     var authData = await Auth().getStorageAuth() ;
@@ -170,11 +152,29 @@ class PatientRepository {
       },
     ).then((response) {
       return json.decode(response.body);
-      
+
     }).catchError((error) {
       print('error ' + error.toString());
     });
   }
+
+   getFollowupPatients() async {
+      var authData = await Auth().getStorageAuth() ;
+      var token = authData['accessToken'];
+      return http.get(
+        apiUrl + 'patients/follow-up',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+      ).then((response) {
+        return json.decode(response.body);
+
+      }).catchError((error) {
+        print('error ' + error.toString());
+      });
+    }
 
 
   getNewPatients() async {
@@ -259,7 +259,7 @@ class PatientRepository {
 
     try {
       response = await http
-        .get(apiUrl + 'patients?type=referral',
+        .get(apiUrl + 'patients/all?type=referral',
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -361,4 +361,23 @@ class PatientRepository {
       print('error ' + error.toString());
     });
   }
+
+  getMedicationsByPatient(patientId) async {
+    var authData = await Auth().getStorageAuth() ;
+    var token = authData['accessToken'];
+    return http.get(
+      apiUrl + 'patients/' + patientId + '/medications/',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    ).then((response) {
+      return json.decode(response.body);
+
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
+  }
+
 }

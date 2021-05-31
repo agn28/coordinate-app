@@ -16,6 +16,9 @@ import 'package:nhealth/repositories/local/observation_concepts_repository_local
 import 'package:nhealth/repositories/local/observation_repository_local.dart';
 import 'package:nhealth/repositories/observation_repository.dart';
 import 'package:nhealth/repositories/sync_repository.dart';
+import 'package:nhealth/models/blood_pressure.dart';
+import 'package:nhealth/models/blood_test.dart';
+import 'package:nhealth/models/body_measurement.dart';
 import 'package:uuid/uuid.dart';
 
 var bloodPressures = [];
@@ -479,7 +482,7 @@ class ObservationController {
   getLiveSurveysByPatient() async {
     var observations = await ObservationRepository().getObservations();
     var data = [];
-    if (observations == null) {
+    if (observations == null && observations['error'] != null) {
       return data;
     }
     await observations['data'].forEach((obs) {
@@ -488,6 +491,7 @@ class ObservationController {
         data.add(obs['body']);
       }
     });
+    }
     return data;
   }
 

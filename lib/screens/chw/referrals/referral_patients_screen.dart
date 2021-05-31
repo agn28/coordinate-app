@@ -151,7 +151,10 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
 
     setState(() {
       patients = modifiedPatients
-        .where((item) => item['data']['name']
+        .where((item) => item['data']['nid']
+        .toLowerCase()
+        .contains(query.toLowerCase()) ||
+        item['data']['name']
         .toLowerCase()
         .contains(query.toLowerCase()))
         .toList();

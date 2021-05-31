@@ -107,6 +107,7 @@ class _NewPatientQuestionnaireScreenState
     isLoading = false;
 
     print(Language().getLanguage());
+    nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
 
     prepareQuestions();
     prepareAnswers();
@@ -198,15 +199,12 @@ class _NewPatientQuestionnaireScreenState
   }
 
   goToHome(recommendation, data) {
-    print('into go to home ' + recommendation.toString());
     if (recommendation) {
       Navigator.of(context).pushReplacementNamed(
           MedicalRecommendationScreen.path,
           arguments: data);
     } else {
-      Navigator.of(context).pushNamed(
-        '/chwHome',
-      );
+      Navigator.of(context).pushNamed('/chwHome',);
     }
   }
 
@@ -266,13 +264,12 @@ class _NewPatientQuestionnaireScreenState
       // var response = FollowupController().create(data);
       // print(response);
       // if (response['error'] != null && !response['error'])
-      Navigator.of(context)
-          .pushReplacementNamed('/medicalRecommendation', arguments: data);
+        Navigator.of(context).pushReplacementNamed('/medicalRecommendation', arguments: data);
     } else {
       // var response = FollowupController().create(data);
       // print(response);
       // if (response['error'] != null && !response['error'])
-      Navigator.of(context).pushReplacementNamed('/chwContinue');
+        Navigator.of(context).pushReplacementNamed('/chwContinue');
     }
   }
 
@@ -288,7 +285,7 @@ class _NewPatientQuestionnaireScreenState
       var formData = {
         'items': BloodPressure().items,
         'comment': '',
-        'patient_id': Patient().getPatient()['id'],
+        'patient_id': Patient().getPatient()['uuid'],
         'device': '',
         'performed_by': '',
       };
@@ -378,67 +375,55 @@ class _NewPatientQuestionnaireScreenState
               )),
             ),
       bottomNavigationBar: Container(
-          color: kBottomNavigationGrey,
-          height: 64,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                  child: _currentStep != 0
-                      ? FlatButton(
-                          onPressed: () {
-                            setState(() {
-                              nextHide = false;
-                              _currentStep = _currentStep - 1;
-                              nextText = AppLocalizations.of(context)
-                                  .translate('next');
-                            });
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Icon(Icons.chevron_left),
-                              Text(
-                                  AppLocalizations.of(context)
-                                      .translate('back'),
-                                  style: TextStyle(fontSize: 20)),
-                            ],
-                          ),
-                        )
-                      : Text('')),
-              Expanded(
-                child: Container(
-                  alignment: Alignment.center,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: _mySteps().length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (BuildContext context, index) {
-                      return Padding(
-                          padding: EdgeInsets.only(right: 10),
-                          child: Icon(
-                            Icons.lens,
-                            size: 15,
-                            color: _currentStep == index
-                                ? kPrimaryColor
-                                : kStepperDot,
-                          ));
-                    },
-                  ),
+        color: kBottomNavigationGrey,
+        height: 64,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Expanded(
+              child: _currentStep != 0 ? FlatButton(
+                onPressed: () {
+                  
+                  setState(() {
+                    nextHide = false;
+                    _currentStep = _currentStep - 1;
+                    nextText = AppLocalizations.of(context).translate('next');
+                  });
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Icon(Icons.chevron_left),
+                    Text(AppLocalizations.of(context).translate('back'), style: TextStyle(fontSize: 20)),
+                  ],
+                ),
+              ) : Text('')
+            ),
+            Expanded(
+              child: Container(
+                alignment: Alignment.center,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _mySteps().length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (BuildContext context, index) {
+                    return Padding(
+                      padding: EdgeInsets.only(right: 10),
+                      child: Icon(Icons.lens, size: 15, color: _currentStep == index ? kPrimaryColor : kStepperDot,)
+                    );
+                  },
                 ),
               ),
-              Expanded(
-                  child: _currentStep < _mySteps().length || nextHide
-                      ? FlatButton(
-                          onPressed: () async {
-                            print('qnitems');
-                            setState(() {
-                              print(_currentStep);
-                              if (_currentStep == 0) {
-                                Questionnaire().addNewMedicalHistoryNcd(
-                                    'medical_history', medicalHistoryAnswers);
-                                print(Questionnaire().qnItems);
-                              }
+            ),
+            Expanded(
+              child: _currentStep < _mySteps().length || nextHide ? FlatButton(
+                onPressed: ()async {
+                  setState(() {
+                    print(_currentStep);
+                    if (_currentStep == 0) {
+                      Questionnaire().addNewMedicalHistory('medical_history', medicalHistoryAnswers);
+                      print(Questionnaire().qnItems);
+                    }
 
                               if (_currentStep == 1) {
                                 Questionnaire().addNewMedicationNcd(
@@ -452,7 +437,7 @@ class _NewPatientQuestionnaireScreenState
                                 print(Questionnaire().qnItems);
                               }
 
-                              if (nextText == 'COMPLETE') {
+                              if (_currentStep == 4) {
                                 Questionnaire().addNewCounselling(
                                     'counselling_provided', counsellingAnswers);
                                 _completeStep();
@@ -461,7 +446,7 @@ class _NewPatientQuestionnaireScreenState
                               if (_currentStep == 3) {
                                 print('hello');
                                 createObservations();
-                                nextText = 'COMPLETE';
+                                nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                               }
                               if (_currentStep < 4) {
                                 // If the form is valid, display a Snackbar.
@@ -547,21 +532,8 @@ class _NewPatientQuestionnaireScreenState
 
     print(patient['data']['age']);
     var status = hasMissingData ? 'incomplete' : 'complete';
-    var response = await AssessmentController().createSyncAssessment(
-        context,
-        'new questionnaire',
-        'new-questionnaire',
-        '',
-        'incomplete',
-        nextVisitDate);
-    // var response = await AssessmentController().createOnlyAssessmentWithStatus(
-    //     'new questionnaire',
-    //     'new-questionnaire',
-    //     '',
-    //     'incomplete',
-    //     nextVisitDate);
-
-    //var response = await AssessmentController().createSyncAssessment(context, 'new patient questionnaire', '', '');
+    var response = await AssessmentController().createAssessmentWithObservations(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', nextVisitDate);
+    // var response = await AssessmentController().createOnlyAssessmentWithStatus('new questionnaire', 'new-questionnaire', '', 'incomplete', nextVisitDate);
 
     setLoader(false);
 
@@ -820,9 +792,31 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                                                                       'options']
                                                                   .indexOf(
                                                                       option)];
-                                                          print(
-                                                              medicalHistoryAnswers);
-                                                          // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
+                                                          var selectedOption = medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)];
+                                                          print('selectedOption $selectedOption');
+                                                          medicationQuestions['items'].forEach((qtn) {
+                                                            if(qtn['type'].contains('heart') || qtn['type'].contains('heart_bp_diabetes')) {
+
+                                                              var medicalHistoryAnswerYes = false;
+                                                              medicalHistoryAnswers.forEach((ans) {
+                                                                if(ans == 'yes') {
+                                                                  medicalHistoryAnswerYes = true;
+                                                                  print('medicalHistoryAnswerYes $ans');
+                                                                }
+                                                              });
+                                                              if (!medicalHistoryAnswerYes) {
+                                                                medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
+                                                                print('exceptional if');
+                                                              }
+                                                            } else if(qtn['type'].contains(question['type']) && selectedOption == 'no') {
+                                                              medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
+                                                              print('if');
+                                                            }
+                                                            print(qtn['type']);
+                                                            print(question['type']);
+                                                            print('qtn $qtn');
+                                                            print('medicationAnswers ${medicationAnswers}');
+                                                          });
                                                         });
                                                       },
                                                       materialTapTargetSize:
@@ -885,6 +879,16 @@ class _MedicationState extends State<Medication> {
 
     // }
     // return true;
+    //
+
+
+    // check if any medical histroy answer is yes. then return true if medication question is aspirin, or lower fat
+    if (medicationQuestion['type'] == 'heart' || medicationQuestion['type'] == 'heart_bp_diabetes') {
+      var medicalHistoryasYes = medicalHistoryAnswers.where((item) => item == 'yes');
+      if (medicalHistoryasYes.isNotEmpty) {
+        return true;
+      }
+    }
 
     if (medicationQuestion['type'].contains('medication')) {
       var mainType =
@@ -2779,17 +2783,17 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                                       'new patient questionnaire',
                                                       '',
                                                       '');
-                                          // var response = await AssessmentController().createSyncAssessment(context, 'new patient questionnaire', '', '');
 
                                           widget.parent.setLoader(false);
                                           print('successss');
+                                          return;
 
                                           if (patient['data']['age'] != null &&
                                               patient['data']['age'] > 40) {
                                             var data = {
                                               'meta': {
                                                 'patient_id': Patient()
-                                                    .getPatient()['id'],
+                                                    .getPatient()['uuid'],
                                                 "collected_by":
                                                     Auth().getAuth()['uid'],
                                                 "status": "pending"
@@ -2803,7 +2807,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                             return;
                                           }
 
-                                          widget.parent.goToHome(false, null);
+                                    widget.parent.goToHome(false, null);
 
                                           print('response');
                                           print(response);
@@ -3062,10 +3066,8 @@ class AcuteIssues extends StatefulWidget {
   _AcuteIssuesState createState() => _AcuteIssuesState();
 }
 
-var firstQuestionText =
-    'Are you having any pain or discomfort or pressure or heaviness in your chest?';
-var secondQuestionText =
-    'Are you having any difficulty in talking, or any weakness or numbness of arms, legs or face?';
+var firstQuestionText = 'Are you having any pain or discomfort or pressure or heaviness in your chest?';
+var secondQuestionText = 'Are you having any difficulty in talking, or any weakness or numbness of arms, legs or face?';
 var firstQuestionOptions = ['yes', 'no'];
 var secondQuestionOptions = ['yes', 'no'];
 

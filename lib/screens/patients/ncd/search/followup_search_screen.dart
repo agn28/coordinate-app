@@ -1,4 +1,5 @@
 import 'package:basic_utils/basic_utils.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -25,6 +26,11 @@ import '../../../../app_localizations.dart';
 final birthDateController = TextEditingController();
 final birthmonthController = TextEditingController();
 final birthYearController = TextEditingController();
+final ageFromController = TextEditingController();
+final ageToController = TextEditingController();
+final upazilaController = TextEditingController();
+final unionController = TextEditingController();
+final villageController = TextEditingController();
 List patients = [];
 List allPatients = [];
 final searchController = TextEditingController();
@@ -52,7 +58,23 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
     });
     // getPatients();
     isLoading = true;
+    clearFilters();
     getLivePatients();
+  }
+
+  clearFilters() {
+    setState(() {
+      ageFromController.clear();
+      ageToController.clear();
+      selectedUpazila = {};
+      unionController.clear();
+      villageController.clear();
+      birthDateController.clear();
+      birthMonthController.clear();
+      birthYearController.clear();
+      lastVisitDateController.clear();
+      selectedDiseases = [];
+    });
   }
 
   getPatients() async {
@@ -95,6 +117,7 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
     setState(() {
       allPatients = parsedPatients;
       patients = allPatients;
+      print('patients $patients');
       isLoading = false;
     });
   }
@@ -285,7 +308,7 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
                 ...patients.map((item) => GestureDetector(
                   onTap: () {
                     Patient().setPatient(item);
-                    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: 'home');
+                    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'home', 'encounterData': {},});
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -595,6 +618,9 @@ class _DiseasesDialogState extends State<DiseasesDialog> {
   }
 }
 
+List filteredUpazilas = [];
+var selectedUpazila = {};
+var selectedDistrict = {};
 
 class FiltersDialog extends StatefulWidget {
   
@@ -610,12 +636,66 @@ class _FiltersDialogState extends State<FiltersDialog> {
   final format = DateFormat("yyyy-MM-dd");
   String _selectedDiseaseText = '';
 
+  var selectedDobType = 'age';
   @override
   void initState() {
     super.initState();
-
+    // selectedUpazila = {};
+    getLocations();
     getSelectedDiseaseText();
   }
+
+  getLocations() async {
+    setState(() {
+      isLoading = true;
+    });
+    var locationData = await PatientController().getLocations();
+    var districtsData = [];
+    if (locationData['error'] != null && !locationData['error']) {
+      districtsData = locationData['data'][0]['districts'];
+    }
+    setState(() {
+      isLoading = false;
+      districts = districtsData;
+    });
+    populateUpazilas();
+  }
+
+  populateUpazilas() async {
+    var data = await Auth().getStorageAuth();
+
+    print('set address');
+    // print(districts);
+    print(data['address']);
+    setState(() {
+      filteredUpazilas = [];
+      selectedDistrict = {};
+      // selectedUpazila = {};
+      if (data['address'].isNotEmpty) {
+        // unionController.text = data['address']['union'] ?? '';
+        // villageController.text = data['address']['village'] ?? '';
+        var authUserDistrict = districts.where(
+            (district) => district['name'] == data['address']['district']);
+        if (authUserDistrict.isNotEmpty) {
+          selectedDistrict = authUserDistrict.first;
+          var authUserUpazila = selectedDistrict['thanas'].where(
+              (upazila) => upazila['name'] == data['address']['upazila']);
+          if (authUserUpazila.isNotEmpty) {
+            // selectedUpazila = authUserUpazila.first;
+            // selectedUpazila = {};
+            filteredUpazilas = selectedDistrict['thanas'];
+            print('filteredUpazilas $filteredUpazilas');
+          } else {
+            selectedUpazila = {};
+          }
+        } else {
+          selectedDistrict = {};
+          selectedUpazila = {};
+        }
+      }
+    });
+  }
+
 
   getSelectedDiseaseText() {
     if (selectedDiseases.length > 0) {
@@ -630,15 +710,69 @@ class _FiltersDialogState extends State<FiltersDialog> {
   }
 
   applyFilter() async {
-    await this.widget.parent.getPatients();
+    await this.widget.parent.getLivePatients();
+
+    allPatients.forEach((patient) {
+      print('allPatients $patient');
+    });
+    if (ageFromController.text != '' || ageToController.text != '') {
+      print(ageFromController.text);
+      print(ageToController.text);
+      var filteredPatients = [];
+      var startingAge = ageFromController.text != '' ? int.parse(ageFromController.text) : 0 ;
+      var endingAge = ageToController.text != '' ? int.parse(ageToController.text) : 150 ;
+      filteredPatients =  allPatients.where((item) => item['data']['age'] >= startingAge && item['data']['age'] <= endingAge).toList();
+      print('filteredPatients $filteredPatients');
+      this.widget.parent.setState(() => {
+        allPatients = filteredPatients,
+        patients = allPatients
+      });
+    }
+
+    if (selectedUpazila.isNotEmpty) {
+      print(selectedUpazila);
+      var filteredPatients = [];
+      filteredPatients =  allPatients.where((item) => item['data']['address']['upazila'] == selectedUpazila['name']).toList();
+      print('filteredPatients $filteredPatients');
+      this.widget.parent.setState(() => {
+        allPatients = filteredPatients,
+        patients = allPatients
+      });
+    }
+
+    if (unionController.text != '') {
+      print(unionController.text);
+      var filteredPatients = [];
+      filteredPatients =  allPatients.where((item) => item['data']['address']['union'] == unionController.text).toList();
+      print('filteredPatients $filteredPatients');
+      this.widget.parent.setState(() => {
+        allPatients = filteredPatients,
+        patients = allPatients
+      });
+    }
+
+    if (villageController.text != '') {
+      print(villageController.text);
+      var filteredPatients = [];
+      filteredPatients =  allPatients.where((item) => item['data']['address']['union'] == villageController.text).toList();
+      print('filteredPatients $filteredPatients');
+      this.widget.parent.setState(() => {
+        allPatients = filteredPatients,
+        patients = allPatients
+      });
+    }
+
     var birthDate = '';
     if (birthDateController.text != '' && birthMonthController.text != '' && birthYearController.text != '') {
       birthDate = birthYearController.text + '-' + birthMonthController.text + '-' + birthDateController.text;
     }
 
     if (birthDate != '') {
-      this.widget.parent.setState(() {
-        patients = patients.where((item) => item['data']['birth_date'] == birthDate).toList();
+      var filteredPatients = [];
+      filteredPatients = patients.where((item) => item['data']['birth_date'] == birthDate).toList();
+      this.widget.parent.setState(() => {
+        allPatients = filteredPatients,
+        patients = allPatients
       });
     }
 
@@ -656,22 +790,13 @@ class _FiltersDialogState extends State<FiltersDialog> {
       });
 
       this.widget.parent.setState(() => {
-        patients = filteredPatients
+        allPatients = filteredPatients,
+        patients = allPatients
       });
     }
   }
 
-  clearFilters() {
-    setState(() {
-      birthDateController.clear();
-      birthMonthController.clear();
-      birthYearController.clear();
-      lastVisitDateController.clear();
-      selectedDiseases = [];
-    });
 
-    this.widget.parent.getPatients();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -687,8 +812,9 @@ class _FiltersDialogState extends State<FiltersDialog> {
             children: <Widget>[
               SizedBox(height: 30,),
               GestureDetector(
-                onTap: () {
-                  clearFilters();
+                onTap: () async {
+                  this.widget.parent.clearFilters();
+                  await this.widget.parent.getLivePatients();
                   Navigator.of(context).pop();
                 },
                 child: Container(
@@ -704,6 +830,46 @@ class _FiltersDialogState extends State<FiltersDialog> {
               ),
 
               SizedBox(height: 30,),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: <Widget>[
+                        Radio(
+                          activeColor: kPrimaryColor,
+                          value: 'age',
+                          groupValue: selectedDobType,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedDobType = value;
+                            });
+                          },
+                        ),
+                        Text(
+                          AppLocalizations.of(context).translate('ageRange'),
+                        ),
+                        Radio(
+                          activeColor: kPrimaryColor,
+                          value: 'dob',
+                          groupValue: selectedDobType,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedDobType = value;
+                            });
+                          },
+                        ),
+                        Text(AppLocalizations.of(context).translate('dateOfBirth'),style: TextStyle(color: Colors.black)),
+                        SizedBox(width: 10,),
+                        Text('(DD/MM/YYYY)',style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 10,),
+              selectedDobType == 'dob' ?
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 25),
                 child: Column(
@@ -752,10 +918,116 @@ class _FiltersDialogState extends State<FiltersDialog> {
                     ),
                   ],
                 )
+              )
+              : Container(
+                margin: EdgeInsets.symmetric(horizontal: 25),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(AppLocalizations.of(context).translate("ageRange"), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),),
+                    SizedBox(height: 20,),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: PrimaryTextField(
+                            topPaadding: 10,
+                            bottomPadding: 10,
+                            hintText: AppLocalizations.of(context).translate('year'),
+                            controller: ageFromController,
+                            name: 'Age From',
+                            type: TextInputType.number,
+                          ),
+                        ),
+                        SizedBox(width: 20,),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 20),
+                          height: 65,
+                          child: Center(child: Text(AppLocalizations.of(context).translate("from"), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),))
+                        ),
+                        SizedBox(width: 20,),
+                        Expanded(
+                          child: PrimaryTextField(
+                            topPaadding: 10,
+                            bottomPadding: 10,
+                            hintText: AppLocalizations.of(context).translate('year'),
+                            controller: ageToController,
+                            name: 'Age To',
+                            type: TextInputType.number,
+                          ),
+                        ),
+                        SizedBox(width: 20,),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 20),
+                          height: 65,
+                          child: Center(child: Text(AppLocalizations.of(context).translate("to"), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),))
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              
               Divider(),
+              SizedBox(height: 10,),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 25),
+                child: DropdownSearch(
+                  validator: (v) => v == null ? "required field" : null,
+                  hint: AppLocalizations.of(context).translate('upazila'),
+                  mode: Mode.BOTTOM_SHEET,
+                  items: filteredUpazilas,
+                  // showClearButton: true,
+                  dropdownSearchDecoration: InputDecoration(
+                    counterText: ' ',
+                    contentPadding: EdgeInsets.only(
+                        top: 5.0, bottom: 5.0, left: 10, right: 10),
+                    filled: true,
+                    fillColor: kSecondaryTextField,
+                    border: new UnderlineInputBorder(
+                        borderSide: new BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          topRight: Radius.circular(4),
+                        )),
+                    hintText: 'Upazilas',
+                    hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedUpazila = value;
 
+                      // districtController.text = value;
+                    });
+                  },
+                  selectedItem: selectedUpazila['name'],
+                  popupItemBuilder: _customPopupItemBuilderExample2,
+                  showSearchBox: true,
+                ),
+              ),
+              Divider(),
+              SizedBox(height: 10,),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 25),
+                child: PrimaryTextField(
+                  topPaadding: 10,
+                  bottomPadding: 10,
+                  hintText: AppLocalizations.of(context).translate('union'),
+                  controller: unionController,
+                  name: AppLocalizations.of(context).translate('union'),
+                ),
+              ),
+              Divider(),
+              SizedBox(height: 10,),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 25),
+                child: PrimaryTextField(
+                  topPaadding: 10,
+                  bottomPadding: 10,
+                  hintText: AppLocalizations.of(context).translate('village'),
+                  controller: villageController,
+                  name: AppLocalizations.of(context).translate('village'),
+                ),
+              ),
+              Divider(),
               SizedBox(height: 10,),
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 25),
@@ -867,6 +1139,26 @@ class _FiltersDialogState extends State<FiltersDialog> {
   }
 
 
+}
+
+Widget _customPopupItemBuilderExample2(
+    BuildContext context, item, bool isSelected) {
+  return SingleChildScrollView(
+    child: Container(
+      margin: EdgeInsets.symmetric(horizontal: 8),
+      decoration: !isSelected
+          ? null
+          : BoxDecoration(
+              border: Border.all(color: Theme.of(context).primaryColor),
+              borderRadius: BorderRadius.circular(5),
+              color: Colors.white,
+            ),
+      child: ListTile(
+        selected: isSelected,
+        title: Text(item['name']),
+      ),
+    ),
+  );
 }
 
 class LeaderBoard {

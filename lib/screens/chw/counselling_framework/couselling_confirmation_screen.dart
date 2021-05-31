@@ -23,7 +23,7 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
   bool withFramework = true;
   bool isLoading = false;
   final commentController = TextEditingController();
-  
+
   bool checkValue = false;
 
   @override
@@ -35,7 +35,7 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.data['body']['title']),),      
+      appBar: AppBar(title: Text(widget.data['body']['goal']['title']),),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
             child: Container(
@@ -60,7 +60,7 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                        
+
                           children: [
                             Container(
                               child: Column(
@@ -98,7 +98,7 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
                                               ),
                                             ),
                                           )
-                                        ), 
+                                        ),
                                         Expanded(
                                           child: Container(
                                             height: 40,
@@ -149,7 +149,7 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
                                               topRight: Radius.circular(4),
                                             )
                                           ),
-                                        
+
                                           hintText: '',
                                           hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                                         ),
@@ -177,7 +177,7 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
                                         // print(result);
                                         print('widget.data ${widget.data}');
 
-                                        var response = await CarePlanController().update(context, widget.data, commentController.text);
+                                        var response = await CarePlanController().update(widget.data, commentController.text);
                                         // print('response $response');
                                         setState(() {
                                           isLoading = false;
@@ -196,7 +196,7 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
                                   ),
                                 ],
                               ),
-                            ),                  
+                            ),
                           ],
                         )
                       ),
@@ -221,7 +221,7 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
       //       child: Container(
       //       margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
       //       child: !isLoading ? Column(
-          
+
       //       mainAxisAlignment: MainAxisAlignment.start,
       //       children: <Widget>[
       //         PatientTopbar(),
@@ -268,7 +268,7 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
       //                 ),
 
       //                 SizedBox(height: 60,),
-                  
+
       //                 Row(
       //                   children: <Widget>[
       //                     Expanded(
@@ -301,10 +301,10 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
       //                             int count = 0;
       //                             Navigator.of(context).popUntil((_) => count++ >= 2);
       //                             if (response == 'success') {
-                                    
+
       //                               // Navigator.of(context).pop();
       //                             } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
-                                  
+
       //                           },
       //                           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       //                           child: Text(AppLocalizations.of(context).translate('completeAction').toUpperCase(), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
@@ -318,7 +318,7 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
       //           ),
       //           ),
       //         ),
-                  
+
       //       ]
       //     ) : Container(
       //         height: MediaQuery.of(context).size.height,

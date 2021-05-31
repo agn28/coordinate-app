@@ -35,7 +35,7 @@ class _HomeState extends State<HomeScreen> {
     _getAuthData();
     super.initState();
     Connectivity().onConnectivityChanged.listen(syncController.checkConnection);
-    
+
     syncController.getAllStatsData();
   }
 
@@ -285,14 +285,14 @@ class _HomeState extends State<HomeScreen> {
                       width: double.infinity,
                       child: Column(
                         children: <Widget>[
-                          
+
                           SizedBox(height: 60,),
 
                           Row(
                             children: [
                               Expanded(
                                 child: InkWell(
-                                  
+
                                   onTap: () async {
                                     Navigator.of(context).pushNamed(FollowupSearchScreen.path);
                                   },
@@ -310,7 +310,7 @@ class _HomeState extends State<HomeScreen> {
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[
                                               Text(AppLocalizations.of(context).translate('followupVisit'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
-                                              
+
                                             ],
                                           ),
                                         ],
@@ -338,9 +338,9 @@ class _HomeState extends State<HomeScreen> {
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[
-                                              
+
                                               Text(AppLocalizations.of(context).translate('fullCenterAssessment'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
-                                              
+
                                             ],
                                           ),
                                         ],
@@ -351,8 +351,8 @@ class _HomeState extends State<HomeScreen> {
                               )
                             ],
                           ),
-                          
-                          
+
+
                           SizedBox(height: 20,),
 
                           Row(
@@ -635,9 +635,9 @@ class _HomeState extends State<HomeScreen> {
                                 ),
                               ],
                             ),
-                          
+
                           // InkWell(
-                            
+
                           //   onTap: () async {
                           //     // await Auth().isExpired();
                           //     // return;
@@ -668,7 +668,7 @@ class _HomeState extends State<HomeScreen> {
                           //     ),
                           //   ),
                           // ),
-                          
+
                           // SizedBox(height: 20,),
 
                           // InkWell(
@@ -698,7 +698,7 @@ class _HomeState extends State<HomeScreen> {
                           //     ),
                           //   ),
                           // ),
-                          
+
                           // SizedBox(height: 20,),
 
                           // InkWell(
@@ -728,7 +728,7 @@ class _HomeState extends State<HomeScreen> {
                           //     ),
                           //   ),
                           // ),
-                        
+
                         ],
                       ),
                     ),

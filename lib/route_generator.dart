@@ -6,6 +6,7 @@ import 'package:nhealth/screens/chw/careplan_actions/actions_swipper_screen.dart
 import 'package:nhealth/screens/chw/careplan_actions/careplan_delivery_screen.dart';
 import 'package:nhealth/screens/chw/careplan_actions/improve_bp_screen.dart';
 import 'package:nhealth/screens/chw/careplan_actions/other_actions_screen.dart';
+import 'package:nhealth/screens/chw/careplan_actions/unwell_careplan_screen.dart';
 import 'package:nhealth/screens/chw/chw_home_screen.dart';
 import 'package:nhealth/screens/chw/counselling_framework/counselling_framwork_screen.dart';
 import 'package:nhealth/screens/chw/counselling_framework/couselling_confirmation_screen.dart';
@@ -42,6 +43,8 @@ import 'package:nhealth/screens/patients/manage/patient_overview_screen.dart';
 import 'package:nhealth/screens/patients/manage/patient_overview_screen_old.dart';
 import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
 import 'package:nhealth/screens/patients/ncd/edit_incomplete_encounter_screen.dart';
+import 'package:nhealth/screens/patients/ncd/edit_incomplete_full_followup_screen.dart';
+import 'package:nhealth/screens/patients/ncd/edit_incomplete_short_followup_screen.dart';
 import 'package:nhealth/screens/patients/ncd/followup_acute_screen.dart';
 import 'package:nhealth/screens/patients/ncd/followup_feeling_screen.dart';
 import 'package:nhealth/screens/patients/ncd/followup_patient_summary_screen.dart';
@@ -73,8 +76,8 @@ class RouteGenerator {
       case '/ncdPatientSummary':
         return CupertinoPageRoute(builder: (_) => NcdPatientSummaryScreen());
       case FollowupPatientSummaryScreen.path:
-      var data = settings.arguments;
-        return CupertinoPageRoute(builder: (_) => FollowupPatientSummaryScreen( prevScreen: data));
+      var data = settings.arguments as Map;
+        return CupertinoPageRoute(builder: (_) => FollowupPatientSummaryScreen( prevScreen: data['prevScreen'], encounterData: data['encounterData']));
       case FollowupFeelingScreen.path:
         return CupertinoPageRoute(builder: (_) => FollowupFeelingScreen());
       case FollowupVisitScreen.path:
@@ -94,11 +97,17 @@ class RouteGenerator {
 
       case '/editIncompleteEncounter':
         return CupertinoPageRoute(builder: (_) => EditIncompleteEncounterScreen());
-        
+      case '/editIncompleteShortFollowup':
+        return CupertinoPageRoute(builder: (_) => EditIncompleteShortFollowupScreen());
+      case '/editIncompleteFullFollowup':
+        return CupertinoPageRoute(builder: (_) => EditIncompleteFullFollowupScreen());
+
       case ChwCareplanDeliveryScreen.path:
         return CupertinoPageRoute(builder: (_) => ChwCareplanDeliveryScreen());
       case CareplanFeelingScreen.path:
         return CupertinoPageRoute(builder: (_) => CareplanFeelingScreen());
+      case UnwellCareplanScreen.path:
+        return CupertinoPageRoute(builder: (_) => UnwellCareplanScreen());
       case '/carePlanDetails':
         var data = settings.arguments;
         return CupertinoPageRoute(builder: (_) => CarePlanDetailsScreen( carePlans: data));

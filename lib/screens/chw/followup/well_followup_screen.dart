@@ -105,6 +105,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     getAuth();
 
     // print(Language().getLanguage());
+    nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
 
     prepareQuestions();
     prepareAnswers();
@@ -143,6 +144,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     medicationAnswers = [];
     riskAnswers = [];
     counsellingAnswers = [];
+    relativeAnswers = [];
     medicalHistoryQuestions['items'].forEach((qtn) {
       medicalHistoryAnswers.add('');
     });
@@ -200,10 +202,6 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     ketonesController.text = '';
     proteinController.text = '';
 
-    occupationController.text = '';
-    incomeController.text = '';
-    educationController.text = '';
-
     selectedRandomBloodUnit = 'mg/dL';
     selectedFastingBloodUnit = 'mg/dL';
     selectedHabfUnit = 'mg/dL';
@@ -218,6 +216,14 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     selectedKetonesUnit = 'mg/dL';
     selectedProteinUnit = 'mg/dL';
     nextVisitDate = '';
+
+    occupationController.text = '';
+    incomeController.text = '';
+    educationController.text = '';
+    selectedReligion = null;
+    selectedEthnicity = null;
+    selectedBloodGroup = null;
+    isTribe = null;
   }
 
   _checkAuth() {
@@ -397,19 +403,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     }
 
     BloodTest().addBtItem();
-
-    var relativeAdditionalData = {
-      'religion': selectedReligion,
-      'occupation': occupationController.text,
-      'ethnicity': selectedEthnicity,
-      'monthly_income': incomeController.text,
-      'blood_group': selectedBloodGroup,
-      'education': educationController.text,
-      'tribe': isTribe
-    };
-    Questionnaire().addNewPersonalHistory(
-        'relative_problems', relativeAnswers, relativeAdditionalData);
-  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -533,14 +527,26 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
 
                               // }
 
-                              if (nextText == 'COMPLETE') {
+                              if (_currentStep == 1) {
+                                var relativeAdditionalData = {
+                                  'religion': selectedReligion,
+                                  'occupation': occupationController.text,
+                                  'ethnicity': selectedEthnicity,
+                                  'monthly_income': incomeController.text,
+                                  'blood_group': selectedBloodGroup,
+                                  'education': educationController.text,
+                                  'tribe': isTribe
+                                };
+                                print('relativeAdditionalData $relativeAdditionalData');
+                                Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
+
                                 _completeStep();
                                 return;
                               }
                               if (_currentStep == 0) {
                                 print('hello');
                                 createObservations();
-                                nextText = 'COMPLETE';
+                                nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                               }
                               if (_currentStep < 6) {
                                 // If the form is valid, display a Snackbar.
@@ -615,15 +621,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
 
     print(patient['data']['age']);
     var status = hasMissingData ? 'incomplete' : 'complete';
-    // var response = await AssessmentController().createFollowupAssessment('follow up visit (community)', 'follow up community', '', status, nextVisitDate, 'short');
-    var response = await AssessmentController().createSyncFollowUp(
-        context,
-        'follow up visit (community)',
-        'follow up community',
-        '',
-        status,
-        nextVisitDate,
-        'short');
+    var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (community)', 'follow-up', '', status, nextVisitDate, followupType: 'short');
     !hasMissingData ? Patient().setPatientReviewRequiredTrue() : null;
     setLoader(false);
 
@@ -816,17 +814,33 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                                                   child: FlatButton(
                                                     onPressed: () {
                                                       setState(() {
-                                                        medicalHistoryAnswers[
-                                                            medicalHistoryQuestions[
-                                                                    'items']
-                                                                .indexOf(
-                                                                    question)] = question[
-                                                                'options'][
-                                                            question['options']
-                                                                .indexOf(
-                                                                    option)];
-                                                        print(
-                                                            medicalHistoryAnswers);
+                                                        medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)] = question['options'][['options'].indexOf(option)];
+
+                                                        var selectedOption = medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)];
+                                                        print('selectedOption $selectedOption');
+                                                        medicationQuestions['items'].forEach((qtn) {
+                                                          if(qtn['type'].contains('heart') || qtn['type'].contains('heart_bp_diabetes')) {
+
+                                                            var medicalHistoryAnswerYes = false;
+                                                            medicalHistoryAnswers.forEach((ans) {
+                                                              if(ans == 'yes') {
+                                                                medicalHistoryAnswerYes = true;
+                                                                print('medicalHistoryAnswerYes $ans');
+                                                              }
+                                                            });
+                                                            if (!medicalHistoryAnswerYes) {
+                                                              medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
+                                                              print('exceptional if');
+                                                            }
+                                                          } else if(qtn['type'].contains(question['type']) && selectedOption == 'no') {
+                                                            medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
+                                                            print('if');
+                                                          }
+                                                          print(qtn['type']);
+                                                          print(question['type']);
+                                                          print('qtn $qtn');
+                                                          print('medicationAnswers ${medicationAnswers}');
+                                                        });
                                                         // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
                                                       });
                                                     },
@@ -889,6 +903,14 @@ class _MedicationState extends State<Medication> {
 
     // }
     // return true;
+
+    // check if any medical histroy answer is yes. then return true if medication question is aspirin, or lower fat
+    if (medicationQuestion['type'] == 'heart' || medicationQuestion['type'] == 'heart_bp_diabetes') {
+      var medicalHistoryasYes = medicalHistoryAnswers.where((item) => item == 'yes');
+      if (medicalHistoryasYes.isNotEmpty) {
+        return true;
+      }
+    }
 
     if (medicationQuestion['type'].contains('medication')) {
       var mainType =
@@ -3401,14 +3423,45 @@ class History extends StatefulWidget {
 var occupationController = TextEditingController();
 var incomeController = TextEditingController();
 var educationController = TextEditingController();
-
-var religions = ['Muslim', 'Hindu', 'Cristian', 'Others'];
+var personalQuestions = {
+  'religion' :
+    {
+      'options': ['Islam', 'Hindu', 'Cristianity', 'Others'],
+      'options_bn': ['ইসলাম', 'হিন্দু', 'খ্রিস্টান', 'অন্যান্য']
+    },
+    'ethnicity' :
+    {
+      'options': ['Bengali', 'Others'],
+      'options_bn': ['বাংলাদেশী', 'অন্যান্য'],
+    },
+    'blood_group' : {
+      'options': ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-'],
+      'options_bn': ['এবি+', 'এবি-', 'এ+', 'এ-', 'বি+', 'বি-', 'ও+', 'ও-'],
+    }
+};
+var religions = personalQuestions['religion']['options'];
 var selectedReligion = null;
-var ethnicity = ['Bengali', 'Others'];
+var ethnicity = personalQuestions['ethnicity']['options'];
 var selectedEthnicity = null;
-var bloodGroups = ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-'];
+var bloodGroups = personalQuestions['blood_group']['options'];
 var selectedBloodGroup = null;
 var isTribe = null;
+
+getDropdownOptionText(context, list, value) {
+  var locale = Localizations.localeOf(context);
+
+  if (locale == Locale('bn', 'BN')) {
+
+    if (list['options_bn'] != null) {
+      var matchedIndex = list['options'].indexOf(value);
+      print('matchedIndex $matchedIndex');
+      print(list['options_bn'][matchedIndex]);
+      return list['options_bn'][matchedIndex];
+    }
+    return StringUtils.capitalize(value);
+  }
+  return StringUtils.capitalize(value);
+}
 
 class _HistoryState extends State<History> {
   @override
@@ -3461,7 +3514,7 @@ class _HistoryState extends State<History> {
                                     items: religions.map((String value) {
                                       return DropdownMenuItem<String>(
                                         value: value,
-                                        child: Text(value),
+                                        child: Text(getDropdownOptionText(context, personalQuestions['religion'], value)),
                                       );
                                     }).toList(),
                                     value: selectedReligion,
@@ -3527,7 +3580,7 @@ class _HistoryState extends State<History> {
                                     items: ethnicity.map((String value) {
                                       return DropdownMenuItem<String>(
                                         value: value,
-                                        child: Text(value),
+                                        child: Text(getDropdownOptionText(context, personalQuestions['ethnicity'], value)),
                                       );
                                     }).toList(),
                                     value: selectedEthnicity,
@@ -3593,7 +3646,7 @@ class _HistoryState extends State<History> {
                                     items: bloodGroups.map((String value) {
                                       return DropdownMenuItem<String>(
                                         value: value,
-                                        child: Text(value),
+                                        child: Text(getDropdownOptionText(context, personalQuestions['blood_group'], value)),
                                       );
                                     }).toList(),
                                     value: selectedBloodGroup,

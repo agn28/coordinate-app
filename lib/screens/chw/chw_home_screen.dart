@@ -273,34 +273,15 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          AppLocalizations.of(context).translate('welcome'),
-                          style: TextStyle(color: Colors.white70, fontSize: 18),
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          userName,
-                          style: TextStyle(color: Colors.white, fontSize: 24),
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          role != null ? getRole(role) : '',
-                          style: TextStyle(color: Colors.white70, fontSize: 16),
-                        ),
-                        SizedBox(
-                          height: 40,
-                        ),
-                        Text(
-                          AppLocalizations.of(context).translate('homeIntro'),
-                          style: TextStyle(color: Colors.white, fontSize: 34),
-                        )
+                        SizedBox(height: 20,),
+                        Text(AppLocalizations.of(context).translate('welcome'), style: TextStyle(color: Colors.white70, fontSize: 18),),
+                        SizedBox(height: 15,),
+                        Text(userName, style: TextStyle(color: Colors.white, fontSize: 24),),
+                        SizedBox(height: 15,),
+                        Text(role != null ? getRole(role) : '', style: TextStyle(color: Colors.white70, fontSize: 16),),
+                        SizedBox(height: 40,),
+
+                        Text(AppLocalizations.of(context).translate('homeIntro'), style: TextStyle(color: Colors.white, fontSize: 34),)
                       ],
                     ),
                   ),
@@ -364,96 +345,63 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                                   ),
                                 ),
                               ),
-                              SizedBox(
-                                width: 20,
-                              ),
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () => Navigator.of(context).pushNamed(
-                                      '/chwNavigation',
-                                      arguments: 1),
-                                  child: Container(
-                                    height: 150,
-                                    width: double.infinity,
-                                    alignment: Alignment.center,
-                                    child: Card(
-                                      elevation: 2,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Icon(Icons.group,
-                                              color: kPrimaryColor, size: 60),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              Text(
-                                                AppLocalizations.of(context)
-                                                    .translate(
-                                                        'viewExistingPatient'),
-                                                textAlign: TextAlign.right,
-                                                style: TextStyle(
-                                                    color: kPrimaryColor,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 20),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                            ),
+                            SizedBox(width: 20,),
+                            Expanded(
+                              child: InkWell(
+                                onTap: () => Navigator.of(context).pushNamed('/chwNavigation', arguments: 1),
+                                child: Container(
+                                  height: 150,
+                                  width: double.infinity,
+                                  alignment: Alignment.center,
+                                  child: Card(
+                                    elevation: 2,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Icon(Icons.group, color: kPrimaryColor, size: 60),
+                                        SizedBox(height: 10,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            
+                                            Text(AppLocalizations.of(context).translate('viewExistingPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
+                                            
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () =>
-                                      syncController.isSyncingToLive.value
-                                          ? null
-                                          : Navigator.of(context)
-                                              .push(RegisterPatientScreen()),
-                                  child: Container(
-                                    height: 140,
-                                    width: double.infinity,
-                                    child: Card(
-                                      elevation: 2,
-                                      child: Column(
-                                        children: <Widget>[
-                                          Icon(
-                                            Icons.person_add_alt_1,
-                                            color: kPrimaryColor,
-                                            size: 70,
-                                          ),
-                                          SizedBox(height: 5),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              Text(
-                                                AppLocalizations.of(context)
-                                                    .translate(
-                                                        'registerNewPatient'),
-                                                textAlign: TextAlign.right,
-                                                style: TextStyle(
-                                                    color: kPrimaryColor,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 20),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                              ),
+                            )
+                          ],
+                        ),
+                        
+                        
+                        SizedBox(height: 20,),
+
+                        Row(
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: () => Navigator.of(context).push(RegisterPatientScreen()),
+                                child: Container(
+                                  height: 140,
+                                  width: double.infinity,
+                                  child: Card(
+                                    elevation: 2,
+                                    child: Column(
+                                      children: <Widget>[
+                                        Icon(Icons.add, color: kPrimaryColor, size: 70,),
+                                        SizedBox(height: 5),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text(AppLocalizations.of(context).translate('registerNewPatient'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -742,7 +690,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
 }
 
 class CustomClipPath extends CustomClipper<Path> {
-  var radius = 10.0;
+  var radius=10.0;
   @override
   Path getClip(Size size) {
     Path path = Path();
@@ -750,7 +698,7 @@ class CustomClipPath extends CustomClipper<Path> {
     path.lineTo(size.width, 0.0);
     return path;
   }
-
+  
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
