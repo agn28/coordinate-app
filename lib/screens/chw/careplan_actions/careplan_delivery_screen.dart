@@ -860,12 +860,6 @@ class CareplanAction extends StatefulWidget {
   String text = '';
 
   CareplanAction({this.checkInState, this.carePlans, this.text});
-
-  CareplanAction({this.checkInState, this.carePlans, this.text});
-
-  bool checkInState;
-  var carePlans = [];
-  String text = '';
   @override
   _CareplanActionState createState() => _CareplanActionState();
 }

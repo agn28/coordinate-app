@@ -482,7 +482,7 @@ class ObservationController {
   getLiveSurveysByPatient() async {
     var observations = await ObservationRepository().getObservations();
     var data = [];
-    if (observations == null && observations['error'] != null) {
+    if (observations == null) {
       return data;
     }
     await observations['data'].forEach((obs) {
@@ -491,7 +491,6 @@ class ObservationController {
         data.add(obs['body']);
       }
     });
-    }
     return data;
   }
 

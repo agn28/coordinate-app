@@ -11,6 +11,7 @@ class DatabaseCreator {
   static const observationTable = 'observations';
   static const referralTable = 'referrals';
   static const careplanTable = 'care_plans';
+  static const healthReportTable = 'health_reports';
   static const conceptManagerTable = 'concept_manager';
   static const observationConceptsTable = 'observation_concepts';
   static const syncTable = 'syncs';
@@ -83,6 +84,21 @@ class DatabaseCreator {
 
     await db.execute(sql);
     print('${careplanTable} table created');
+  }
+
+  Future<void> createHealthReportsTable(Database db) async {
+    final sql = '''CREATE TABLE $healthReportTable
+    (
+      id TEXT PRIMARY KEY,
+      data TEXT,
+      patient_id TEXT,
+      status TEXT,
+      is_synced BOOLEAN,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )''';
+
+    await db.execute(sql);
+    print('${healthReportTable} table created');
   }
 
   Future<void> createObservationsTable(Database db) async {

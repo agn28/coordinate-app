@@ -1813,7 +1813,6 @@ class _MeasurementsState extends State<Measurements> {
                                       onChanged: (value) {
                                         calculateBmi();
                                       },
-<<<<<<< HEAD
                                       decoration: InputDecoration(  
                                         contentPadding: EdgeInsets.only(top: 5, left: 10, right: 10),
                                         border: OutlineInputBorder(
@@ -1824,26 +1823,6 @@ class _MeasurementsState extends State<Measurements> {
                                   ),
                                   SizedBox(width: 16,),
                                   Text(AppLocalizations.of(context).translate("cm"), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
-=======
-                                      decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.only(
-                                            top: 5, left: 10, right: 10),
-                                        border: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.red, width: 0.0)),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 16,
-                                  ),
-                                  Text(
-                                      AppLocalizations.of(context)
-                                          .translate("cm"),
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w400)),
->>>>>>> bd
                                 ],
                               ),
                             ),

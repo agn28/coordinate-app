@@ -158,25 +158,6 @@ class PatientRepository {
     });
   }
 
-   getFollowupPatients() async {
-      var authData = await Auth().getStorageAuth() ;
-      var token = authData['accessToken'];
-      return http.get(
-        apiUrl + 'patients/follow-up',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
-        },
-      ).then((response) {
-        return json.decode(response.body);
-
-      }).catchError((error) {
-        print('error ' + error.toString());
-      });
-    }
-
-
   getNewPatients() async {
     var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];

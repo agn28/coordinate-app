@@ -17,6 +17,7 @@ import 'package:nhealth/repositories/local/assessment_repository_local.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:nhealth/repositories/local/database_creator.dart';
+import 'package:nhealth/repositories/local/observation_repository_local.dart';
 import 'package:nhealth/repositories/observation_repository.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -129,12 +130,6 @@ class AssessmentController {
     //   };
     // }
 
-    return assessment;
-  }
-
-  getLastAssessmentByPatient(followupType) async {
-    var assessment =
-        await AssessmentRepository().getLastAssessment(followupType);
     return assessment;
   }
 
@@ -279,12 +274,6 @@ class AssessmentController {
     }
 
     return data;
-  }
-
-  getIncompleteEncounterWithObservation(patientId) async {
-    var assessment = await AssessmentRepository().getIncompleteEncounterWithObservation(patientId);
-
-    return assessment;
   }
 
   /// Get observations under a specific assessment.
@@ -899,57 +888,6 @@ class AssessmentController {
     return 'success';
   }
 
-  createFollowupAssessment(type, screening_type, comment, completeStatus,
-      nextVisitDate, followupType) async {
-    var data = _prepareData(
-      type,
-      screening_type,
-      comment,
-    );
-    data['body']['status'] = completeStatus;
-    data['body']['followup_type'] = followupType;
-    data['body']['next_visit_date'] = nextVisitDate;
-
-    print('before health report');
-    var status =
-        await AssessmentRepositoryLocal().createOnlyAssessmentWithStatus(data);
-
-    Future.delayed(const Duration(seconds: 5));
-    print('after health report');
-
-    if (completeStatus == 'complete') {
-      HealthReportController().generateReport(data['body']['patient_id']);
-    }
-    Helpers().clearObservationItems();
-
-    return status;
-  }
-
-  createOnlyAssessmentWithStatus(
-      type, screening_type, comment, completeStatus, nextVisitDate) async {
-    var data = _prepareData(
-      type,
-      screening_type,
-      comment,
-    );
-    data['body']['status'] = completeStatus;
-    data['body']['next_visit_date'] = nextVisitDate;
-    print('before health report');
-    var status =
-        await AssessmentRepositoryLocal().createOnlyAssessmentWithStatus(data);
-
-    Future.delayed(const Duration(seconds: 5));
-    print('after health report');
-
-    if (completeStatus == 'complete') {
-      HealthReportController().generateReport(data['body']['patient_id']);
-    }
-
-    Helpers().clearObservationItems();
-
-    return status;
-  }
-
   createAssessmentWithObservations(
       context, type, screening_type, comment, completeStatus, nextVisitDate,
       {followupType: ''}) async {
@@ -963,7 +901,7 @@ class AssessmentController {
 
     var assessmentId = Uuid().v4();
 
-    await AssessmentRepositoryLocal().createLocalAssessment(assessmentId, data);
+    await AssessmentRepositoryLocal().createLocalAssessment(assessmentId, data, false);
 
     // Preparing assessment data for API call
     Map<String, dynamic> apiDataAssessment = {'id': assessmentId};
@@ -1203,141 +1141,6 @@ class AssessmentController {
     return apiDataObservations;
   }
 
-  createObservations(status, encounter, observations) async {
-    var bloodPressures = BloodPressure().bpItems;
-    var bloodTests = BloodTest().btItems;
-    var bodyMeasurements = BodyMeasurement().bmItems;
-    var questionnaires = Questionnaire().qnItems;
-
-    encounter['body']['status'] = status;
-
-    var obsRepo = ObservationRepository();
-
-    var bmobs = observations
-        .where(
-            (observation) => observation['body']['type'] == 'body_measurement')
-        .toList();
-    print('bmobs ${bmobs}');
-    for (var bm in bodyMeasurements) {
-      if (bmobs.isNotEmpty) {
-        var matchedObs = bmobs.where((bmob) =>
-            bmob['body']['data']['name'] == bm['body']['data']['name']);
-        print('matchedObs ${matchedObs}');
-        if (matchedObs.isNotEmpty) {
-          matchedObs = matchedObs.first;
-          var apiData = {'id': matchedObs['id']};
-          apiData.addAll(bm);
-          apiData['body']['assessment_id'] =
-              matchedObs['body']['assessment_id'];
-          print('body Measurements_if $apiData');
-          await obsRepo.create(apiData);
-        }
-      } else {
-        var id = Uuid().v4();
-        Map<String, dynamic> apiData = {'id': id};
-        apiData.addAll(bm);
-        apiData['body']['assessment_id'] = encounter['id'];
-        print('body Measurements_else $apiData');
-        await obsRepo.create(apiData);
-      }
-    }
-
-    var bpobs = observations
-        .where((observation) => observation['body']['type'] == 'blood_pressure')
-        .toList();
-    print('bpobs ${bpobs}');
-
-    for (var bp in bloodPressures) {
-      if (bpobs.isNotEmpty) {
-        var matchedObs = bpobs.where((bpob) =>
-            bpob['body']['data']['name'] == bp['body']['data']['name']);
-        print('matchedObs ${matchedObs}');
-        if (matchedObs.isNotEmpty) {
-          matchedObs = matchedObs.first;
-          var apiData = {'id': matchedObs['id']};
-          apiData.addAll(bp);
-          apiData['body']['assessment_id'] =
-              matchedObs['body']['assessment_id'];
-          print('Blood Pressure_if $apiData');
-          await obsRepo.create(apiData);
-        }
-      } else {
-        var id = Uuid().v4();
-        Map<String, dynamic> apiData = {'id': id};
-        apiData.addAll(bp);
-        apiData['body']['assessment_id'] = encounter['id'];
-        print('Blood Pressure_else $apiData');
-        await obsRepo.create(apiData);
-      }
-    }
-
-    var btobs = observations
-        .where((observation) => observation['body']['type'] == 'blood_test')
-        .toList();
-    print('btobs ${btobs}');
-    for (var bt in bloodTests) {
-      if (btobs.isNotEmpty) {
-        var matchedObs = btobs.where((btob) =>
-            btob['body']['data']['name'] == bt['body']['data']['name']);
-        print('matchedObs ${matchedObs}');
-        if (matchedObs.isNotEmpty) {
-          matchedObs = matchedObs.first;
-          var apiData = {'id': matchedObs['id']};
-          apiData.addAll(bt);
-          apiData['body']['assessment_id'] =
-              matchedObs['body']['assessment_id'];
-          print('Blood Test_if $apiData');
-          await obsRepo.create(apiData);
-        }
-      } else {
-        var id = Uuid().v4();
-        Map<String, dynamic> apiData = {'id': id};
-        apiData.addAll(bt);
-        apiData['body']['assessment_id'] = encounter['id'];
-        print('Blood Test_else $apiData');
-        await obsRepo.create(apiData);
-      }
-    }
-
-    var qstnobs = observations
-        .where((observation) => observation['body']['type'] == 'survey')
-        .toList();
-    for (var qstn in questionnaires) {
-      print('qstn ${qstn['body']['data']['name']}');
-      if (qstnobs.isNotEmpty) {
-        var matchedObs = qstnobs.where((qstnob) =>
-            qstnob['body']['data']['name'] == qstn['body']['data']['name']);
-        print('matchedObs ${matchedObs}');
-        if (matchedObs.isNotEmpty) {
-          matchedObs = matchedObs.first;
-          var apiData = {'id': matchedObs['id']};
-          apiData.addAll(qstn);
-          apiData['body']['assessment_id'] =
-              matchedObs['body']['assessment_id'];
-          print('Questionnaires_if $apiData');
-          await obsRepo.create(apiData);
-        } else {
-          var id = Uuid().v4();
-          Map<String, dynamic> apiData = {'id': id};
-          apiData.addAll(qstn);
-          apiData['body']['assessment_id'] = encounter['id'];
-          print('Questionnaires_else $apiData');
-          await obsRepo.create(apiData);
-        }
-      }
-    }
-
-    print('before health report');
-
-    if (status == 'complete') {
-      HealthReportController().generateReport(encounter['body']['patient_id']);
-    }
-
-    print('after health report');
-
-    Helpers().clearObservationItems();
-  }
-
   updateAssessmentWithObservations(context, status, encounter, observations) async {
     var apiDataObservations =
         await updateObservations(status, encounter, observations);
@@ -1394,15 +1197,6 @@ class AssessmentController {
     }
 
     return;
-  }
-
-  updateIncompleteAssessmentData(status, encounter, observations) async {
-    createObservations(status, encounter, observations);
-    print('before assessment');
-    print(DateTime.now());
-    await AssessmentRepository().createOnlyAssessment(encounter);
-
-    return 'success';
   }
 
   update(type, comment) {

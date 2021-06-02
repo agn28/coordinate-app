@@ -1937,7 +1937,7 @@ class _ViewSummaryState extends State<ViewSummary> {
                 print('formdata $formData');
                 var response = isEditState != null
                     ? await PatientController().update(formData, false)
-                    : await PatientController().create(formData);
+                    : await PatientController().create(context, formData);
                 setState(() {
                   isLoading = false;
                 });
@@ -1992,7 +1992,6 @@ class _ViewSummaryState extends State<ViewSummary> {
           ],
         ),
       ),
-    )
     );
   }
 }

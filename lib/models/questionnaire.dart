@@ -1097,42 +1097,6 @@ class Questionnaire {
 
     return data;
   }
-        //   "data": {
-        //   'name': type,
-        //   'diabetes': answers[0],
-        //   'stroke': answers[1],
-        //   'heart_attack': answers[2],
-        //   'asthma': answers[3],
-        //   'kidney_disease': answers[4],
-        //   'cancer': answers[5],
-        //   'hypertension': answers[6],
-        // },
-
-  /// Prepare questionnaire data for NCD
-  _prepareNewMedicalDataNcd(questions, answers, type) {
-    var data = {
-      "meta": {
-        "performed_by": Auth().getAuth()['uid'],
-        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
-      },
-      "body": {
-        "type": "survey",
-        "data": {
-          'name': type,
-          'stroke': answers[0],
-          'heart_attack': answers[1],
-          'hypertension': answers[2],
-          'diabetes': answers[3],
-          'asthma': answers[4],
-          'cancer': answers[5],
-          'kidney_disease': answers[6],
-        },
-        "patient_id": Patient().getPatient()['uuid'],
-      }
-    };
-
-    return data;
-  }
 
   /// Prepare questionnaire data
   _preparePhysicalActivityData(questions, answers, type) {
@@ -1236,33 +1200,6 @@ class Questionnaire {
   }
 
   /// Prepare questionnaire data New
-  _prepareNewMedicationDataNcd(questions, answers, type) {
-    var data = {
-      "meta": {
-        "performed_by": Auth().getAuth()['uid'],
-        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
-      },
-      "body": {
-        "type": "survey",
-        "data": {
-          'name': type,
-          'hypertension_medicine': answers[0],
-          'hypertension_regular_medicine': answers[1],
-          'diabetes_medicine': answers[2],
-          'diabetes_regular_medicine': answers[3],
-          'aspirin_medicine': answers[4],
-          'aspirin_regular_medicine': answers[5],
-          'cholesterol_medicine': answers[6],
-          'cholesterol_regular_medicine': answers[7],
-        },
-        "patient_id": Patient().getPatient()['uuid'],
-      }
-    };
-
-    return data;
-  }
-
-  /// Prepare questionnaire data New
   _prepareNewDynamicMedicationDataNcd(titles, answers, type) {
     var prepareData = {};
     for (var x = 0; x < titles.length; x++) {
@@ -1346,89 +1283,6 @@ class Questionnaire {
 
     return data;
   }
-
-        //  "data": {
-        //   'name': type,
-        //   'smoking': answers[0],
-        //   'smokeless_tobacco': answers[1],
-        //   'fruits_vegetables_daily': answers[2],
-        //   'extra_salt': answers[3],
-        //   'salty_foods': answers[4],
-        //   'sugary_drinks': answers[5],
-        //   'processed_foods': answers[6],
-        //   'red_meat': answers[7],
-        //   'betel_nut': answers[8],
-        //   'physical_activity_moderate': answers[9],
-        //   'physical_activity_high': answers[10],
-        //   'alcohol': answers[11],
-        // },
-
-  _prepareNewCounsellingData(questions, answers, type) {
-    var data = {
-      "meta": {
-        "performed_by": Auth().getAuth()['uid'],
-        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
-      },
-      "body": {
-        "type": "survey",
-        "data": {
-          'name': type,
-          'smoking': answers[0],
-          'smokeless_tobacco': answers[1],
-          'fruits_vegitables_daily': answers[2],
-          'extra_salt': answers[3],
-          'sugary_drinks': answers[4],
-          'processed_foods': answers[5],
-          'red_meat': answers[6],
-          'physical_activity_moderate': answers[7],
-          'medical_adherence': answers[9],
-          'alcohol': answers[9],
-        },
-        "patient_id": Patient().getPatient()['uuid'],
-      }
-    };
-
-    return data;
-  }
-  _prepareRelativeData(questions, answers, type) {
-    var data = {
-      "meta": {
-        "performed_by": Auth().getAuth()['uid'],
-        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
-      },
-      "body": {
-        "type": "survey",
-        "data": {
-          'name': type,
-          'stroke': answers[0],
-          'heart_attack': answers[1],
-          'high_blood_pressure': answers[2],
-          'diabetes': answers[3],
-          'asthma': answers[4],
-          'cancer': answers[5]
-        },
-        "patient_id": Patient().getPatient()['uuid'],
-      }
-    };
-
-    return data;
-  }
-
-  //  "data": {
-  //   'name': type,
-  //   'smoking': answers[0],
-  //   'smokeless_tobacco': answers[1],
-  //   'fruits_vegetables_daily': answers[2],
-  //   'extra_salt': answers[3],
-  //   'salty_foods': answers[4],
-  //   'sugary_drinks': answers[5],
-  //   'processed_foods': answers[6],
-  //   'red_meat': answers[7],
-  //   'betel_nut': answers[8],
-  //   'physical_activity_moderate': answers[9],
-  //   'physical_activity_high': answers[10],
-  //   'alcohol': answers[11],
-  // },
 
   _prepareNewCounsellingData(questions, answers, type) {
     var data = {

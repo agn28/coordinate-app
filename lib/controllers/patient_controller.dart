@@ -177,13 +177,6 @@ class PatientController {
     return response;
   }
 
-  getCenter() async {
-    var response = await PatientRepository().getCenter();
-
-    return response;
-  }
-
-
   /// Create a new patient
   /// [formData] is required as parameter.
   create(context, formData) async {

@@ -4,13 +4,16 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/controllers/observation_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/repositories/assessment_repository.dart';
 import 'package:nhealth/repositories/care_plan_repository.dart';
+import 'package:nhealth/repositories/health_report_repository.dart';
 import 'package:nhealth/repositories/local/assessment_repository_local.dart';
 import 'package:nhealth/repositories/local/care_plan_repository_local.dart';
+import 'package:nhealth/repositories/local/health_report_repository_local.dart';
 import 'package:nhealth/repositories/local/observation_repository_local.dart';
 import 'package:nhealth/repositories/local/patient_repository_local.dart';
 import 'package:nhealth/repositories/local/referral_repository_local.dart';
@@ -38,6 +41,7 @@ class SyncController extends GetxController {
   var localNotSyncedObservations = [].obs;
   var localNotSyncedReferrals = [].obs;
   var localCareplansAll = [].obs;
+  var localHealthReportsAll = [].obs;
   var localNotSyncedCareplans = [].obs;
   var syncRepo = SyncRepository();
   var patientRepoLocal = PatientReposioryLocal();
@@ -53,6 +57,9 @@ class SyncController extends GetxController {
   var referralRepoLocal = ReferralRepositoryLocal();
   var careplanRepo = CarePlanRepository();
   var careplanRepoLocal = CarePlanRepositoryLocal();
+  var healthReportController = HealthReportController();
+  var healthReportRepoLocal = HealthReportRepositoryLocal();
+  var healthReportRepo = HealthReportRepository();
 
   /// Create assessment.
   /// Assessment [type] and [comment] is required as parameter.
@@ -69,11 +76,10 @@ class SyncController extends GetxController {
     getLocalNotSyncedReferrals();
 
     var allLocalPatients = await patientController.getAllLocalPatients();
-    var allLocalAssessments =
-        await assessmentController.getAllLocalAssessments();
-    var allLocalObservations =
-        await observationController.getAllLocalObservations();
+    var allLocalAssessments = await assessmentController.getAllLocalAssessments();
+    var allLocalObservations = await observationController.getAllLocalObservations();
     var allLocalCareplans = await careplanRepoLocal.getAllCareplans();
+    var allLocalHealthReports = await healthReportController.getAllLocalHealthReports();
 
     var allLivePatients = await patientRepo.getPatients();
 
@@ -85,6 +91,7 @@ class SyncController extends GetxController {
     localAssessmentsAll.value = allLocalAssessments;
     localObservationsAll.value = allLocalObservations;
     localCareplansAll.value = allLocalCareplans;
+    localHealthReportsAll.value = allLocalHealthReports;
   }
 
   getLocalNotSyncedPatient() async {
@@ -822,6 +829,27 @@ class SyncController extends GetxController {
             print('after creating local careplan');
 
             if (isNotNull(localCareplan)) {
+              print('updating sync key');
+              var updateSync = await updateLocalSyncKey(item['key']);
+              print('after updating sync key');
+              print(item['key']);
+              print(updateSync);
+              if (isNotNull(updateSync)) {
+                syncs.remove(item);
+              }
+            }
+          }
+        }
+      } else if (item['collection'] == 'health_reports') {
+        if (item['action'] == 'create') {
+          var healthReport = await healthReportRepo.getHealthReportById(item['document_id']);
+          print('healthReports $healthReport');
+          if (isNotNull(healthReport) && isNotNull(healthReport['error']) && !healthReport['error'] && isNotNull(healthReport['data'])) {
+            print('creating local healthReport');
+            var localHealthReport = await healthReportRepoLocal.create(healthReport['data']['id'], healthReport['data'], true);
+            print('after creating local healthReport');
+
+            if (isNotNull(localHealthReport)) {
               print('updating sync key');
               var updateSync = await updateLocalSyncKey(item['key']);
               print('after updating sync key');

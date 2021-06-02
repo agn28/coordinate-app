@@ -1,10 +1,13 @@
 import 'package:intl/intl.dart';
+import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/repositories/health_report_repository.dart';
+import 'package:nhealth/repositories/local/health_report_repository_local.dart';
 
 import 'package:uuid/uuid.dart';
+import 'dart:convert';
 
 class HealthReportController {
 
@@ -26,11 +29,28 @@ class HealthReportController {
 
   getLastReport(context) async {
     var response = await HealthReportRepository().getLastReport();
-
-    if (response['message'] != null && response['message'] == 'Unauthorized') {
-      Helpers().logout(context);
+    
+    if (response['error'] != null && !response['error']) {
+      return response;
     }
-    return response;
+
+    var data = [];
+    if (isNull(response) || isNotNull(response['exception'])) {
+      print('into exception');
+      var patientId = Patient().getPatient()['id'];
+      var localHealthReport = await HealthReportRepositoryLocal().getLastReport(patientId);
+      print('localHealthReport $localHealthReport');
+      if (isNotNull(localHealthReport)) {
+        var parseData = json.decode(localHealthReport['data']);
+        print('localHealthReport ${parseData["body"]}');
+        data.add({
+          'id': localHealthReport['id'],
+          'data': parseData['body'],
+          'meta': parseData['meta']
+        });
+      }
+    }
+    return data;
   }
 
   confirmAssessment(reports, comments) async {
@@ -100,6 +120,11 @@ class HealthReportController {
     };
 
     return data;
+  }
+
+  getAllLocalHealthReports() async {
+    var healthReports = await HealthReportRepositoryLocal().getAllHealthReports();
+    return healthReports;
   }
 
 

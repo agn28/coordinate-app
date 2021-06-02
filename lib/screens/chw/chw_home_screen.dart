@@ -345,7 +345,6 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                                   ),
                                 ),
                               ),
-                            ),
                             SizedBox(width: 20,),
                             Expanded(
                               child: InkWell(
@@ -377,8 +376,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                             )
                           ],
                         ),
-                        
-                        
+
                         SizedBox(height: 20,),
 
                         Row(
@@ -406,6 +404,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                                   ),
                                 ),
                               ),
+                            ),
                               SizedBox(
                                 width: 20,
                               ),
