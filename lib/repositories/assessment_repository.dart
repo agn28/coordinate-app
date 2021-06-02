@@ -109,18 +109,18 @@ class AssessmentRepository {
     });
   }
 
-  getLastAssessment(followupType) async {
+  getLastAssessment(key, value) async {
     var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
     var patientId = Patient().getPatient()['uuid'];
-    var followupTypeQp = '';
+    var qParam = '';
 
-    if (followupType != null) {
-      followupTypeQp = '?followup_type=' + followupType;
+    if (key != null && value!= null) {
+      qParam = '?'+ key +'=' + value;
     }
-
+    print(apiUrl + 'assessments/patients/' + patientId + '/last' + qParam);
     return http.get(
-      apiUrl + 'assessments/patients/' + patientId + '/last' + followupTypeQp,
+      apiUrl + 'assessments/patients/' + patientId + '/last' + qParam,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',

@@ -46,6 +46,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
   
   bool avatarExists = false;
   var encounters = [];
+  var lastFollowup;
   String lastEncounterType = '';
   String lastFollowupType = '';
   String lastEncounterdDate = '';
@@ -82,6 +83,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     
     _checkAvatar();
     _checkAuth();
+    getLastFollowup();
     getUsers();
     getAssessmentDueDate();
     _getCarePlan();
@@ -393,14 +395,26 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
       encounters.sort((a, b) {
         return DateTime.parse(b['meta']['created_at']).compareTo(DateTime.parse(a['meta']['created_at']));
       });
-      lastFollowupType = encounters.first['data']['followup_type'];
-      print('lastFollowupType ${lastFollowupType}');
       setState(() {
         isLoading = false;
         lastEncounterdDate = DateFormat("MMMM d, y").format(DateTime.parse(encounters.first['meta']['created_at']));
         lastEncounterType = encounters.first['data']['type'];
       });
 
+    }
+    
+  }
+
+  getLastFollowup() async {
+    setState(() {
+      isLoading = true;
+    });
+    lastFollowup = await AssessmentController().getLastAssessmentByPatient('screening_type', 'follow-up');
+
+    print('lastFollowup $lastFollowup');
+    if(lastFollowup != null) {
+      lastFollowupType = lastFollowup['data']['body']['followup_type'];
+      print('lastFollowupType ${lastFollowupType}');
     }
     
   }

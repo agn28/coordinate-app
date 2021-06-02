@@ -61,9 +61,9 @@ class AssessmentController {
     return data;
   }
 
-  getLastAssessmentByPatient(followupType) async {
-    var assessment =
-        await AssessmentRepository().getLastAssessment(followupType);
+  getLastAssessmentByPatient(key, value) async {
+    var assessment = await AssessmentRepository().getLastAssessment(key, value);
+    print('assessment $assessment');
     return assessment;
   }
 
