@@ -161,36 +161,35 @@ class AssessmentRepository {
         'Authorization': 'Bearer ' + token
       },
     ).then((response) {
-
       return json.decode(response.body);
-      
     }).catchError((error) {
       print('error ' + error.toString());
     });
   }
-   getLastAssessment(followupType) async {
-      var authData = await Auth().getStorageAuth();
-      var token = authData['accessToken'];
-      var patientId = Patient().getPatient()['id'];
-      var followupTypeQp = '';
 
-      if (followupType != null) {
-        followupTypeQp = '?followup_type=' + followupType;
-      }
+  getLastAssessment(key, value) async {
+    var authData = await Auth().getStorageAuth();
+    var token = authData['accessToken'];
+    var patientId = Patient().getPatient()['id'];
+    var qParam = '';
 
-      return http.get(
-        apiUrl + 'assessments/patients/' + patientId + '/last' + followupTypeQp,
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
-        },
-      ).then((response) {
-        return json.decode(response.body);
-      }).catchError((error) {
-        print('error ' + error.toString());
-      });
+    if (key != null && value!= null) {
+      qParam = '?'+ key +'=' + value;
     }
+    print(apiUrl + 'assessments/patients/' + patientId + '/last' + qParam);
+    return http.get(
+      apiUrl + 'assessments/patients/' + patientId + '/last' + qParam,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    ).then((response) {
+      return json.decode(response.body);
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
+  }
 
   getIncompleteEncounterWithObservation(patientId) async {
     var authData = await Auth().getStorageAuth();
@@ -231,7 +230,6 @@ class AssessmentRepository {
 
   getObservationsByAssessment(assessmentId) async {
     var authData = await Auth().getStorageAuth();
-    print('after get token');
     var token = authData['accessToken'];
 
     var response;
