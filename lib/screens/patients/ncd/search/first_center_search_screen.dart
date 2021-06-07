@@ -89,16 +89,11 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
   }
 
   getLivePatients() async {
-    if (Auth().isExpired()) {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    }
-
     setState(() {
       isLoading = true;
       searchController.text = '';
     });
-
+    
     var data = await PatientController().getFirstAssessmentPatients();
 
     if (data != null && data['message'] == 'Unauthorized') {
@@ -113,22 +108,25 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
       var assessments = await AssessmentController().getAllAssessments();
 
       for(var localPatient in allLocalPatients) {
-        var localpatientdata = {
-          'id': localPatient['id'],
-          'data': localPatient['data'],
-          'meta': localPatient['meta']
-        };
+        var isListed = false;
         for(var assessment in assessments) {
           print(assessment);
-          if (assessment['data']['patient_id'] == localPatient['id']){
+          print(localPatient);
+          if (assessment['data']['patient_id'] == localPatient['id'] && assessment['data']['screening_type'] != 'follow-up' && assessment['data']['status'] != 'complete'){      
+            var localpatientdata = {
+              'id': localPatient['id'],
+              'data': localPatient['data'],
+              'meta': localPatient['meta']
+            };
             if (assessment['data']['status'] == 'incomplete') {
               print(localpatientdata);
               localpatientdata['data']['incomplete_encounter'] = true;
             }
             print('localpatientdata $localpatientdata');
+            !isListed ? parsedLocalPatient.add(localpatientdata) : '';
+            isListed = true;
           }
         }
-        parsedLocalPatient.add(localpatientdata);
       }
       setState(() {
         allPatients = parsedLocalPatient;
@@ -815,7 +813,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
       var filteredPatients = [];
       patients.forEach((patient) { 
         filteredAssessments.forEach((assessment) {
-          if (assessment['data']['patient_id'] == patient['uuid']) {
+          if (assessment['data']['patient_id'] == patient['id']) {
             filteredPatients.add(patient);
           } 
         });

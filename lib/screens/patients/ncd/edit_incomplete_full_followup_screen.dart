@@ -93,7 +93,7 @@ class _EditIncompleteFullFollowupScreenState extends State<EditIncompleteFullFol
     setState(() {
       isLoading = true;
     });
-    var patientId = Patient().getPatient()['uuid'];
+    var patientId = Patient().getPatient()['id'];
     var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
     setState(() {
       isLoading = false;
@@ -487,7 +487,7 @@ class _EditIncompleteFullFollowupScreenState extends State<EditIncompleteFullFol
       var formData = {
         'items': BloodPressure().items,
         'comment': '',
-        'patient_id': Patient().getPatient()['uuid'],
+        'patient_id': Patient().getPatient()['id'],
         'device': '',
         'performed_by': '',
       };
@@ -806,7 +806,7 @@ class _EditIncompleteFullFollowupScreenState extends State<EditIncompleteFullFol
       'observations': observations
     };
   
-    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
+    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': encounterData ,});
   }
 
   List<CustomStep> _mySteps() {

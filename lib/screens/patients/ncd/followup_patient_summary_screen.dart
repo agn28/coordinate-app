@@ -79,15 +79,16 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     carePlansEmpty = false;
     print('encounterData ${widget.encounterData}');
     print('prevScreen ${widget.prevScreen}');
+    print('pid ${Patient().getPatient()['id']}');
     
     _checkAvatar();
     _checkAuth();
     getUsers();
     getAssessmentDueDate();
-    _getCarePlan();
+    // _getCarePlan();
     getReferrals();
-    getEncounters();
-    getAssessments();
+    // getEncounters();
+    // getAssessments();
     getMedicationsConditions();
     if(widget.prevScreen != 'encounter'){
       getReport();
@@ -1478,6 +1479,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                     if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
                                     {
                                       print('edit encounter');
+                                      print('${widget.encounterData['encounter']}');
                                       var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
 
                                     } else {
@@ -1488,7 +1490,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                     if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
                                     {
                                       print('edit followup');
-                                      // var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
+                                      var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
 
                                     } else {
                                       print('new followup');
@@ -1498,6 +1500,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                   setState(() {
                                     isLoading = false;
                                   });
+                                  return;
                                   Navigator.of(context).pushNamed('/home',);
                                 },
                                 color: kPrimaryColor,
@@ -1540,7 +1543,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                     {
                                       print('edit followup');
                                       print(status);
-                                      // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
+                                      var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
 
                                     } else {
                                       print('new followup');

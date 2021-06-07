@@ -39,6 +39,7 @@ class SyncRepository {
           body: json.encode(data))
       .timeout(Duration(seconds: httpRequestTimeout));
 
+      print(response.body);
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
@@ -64,6 +65,8 @@ class SyncRepository {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     var  api = ApiService();
+    print('getLatestSyncInfo Data');
+    print(data);
 
     var response;
 
@@ -128,6 +131,7 @@ class SyncRepository {
     var response;
     try {
       response = await db.rawQuery(sql);
+      print('sync response $response');
     } on DatabaseException catch (error) {
       print('error');
       print(error);

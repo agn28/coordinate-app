@@ -492,7 +492,9 @@ class AssessmentRepositoryLocal {
   }
 
   prepareObservations(assessmentId) async {
+    var preparedObservations;
     List observations = [];
+    List localObservations = [];
     var bloodPressures = BloodPressure().bpItems;
     var bloodTests = BloodTest().btItems;
     var bodyMeasurements = BodyMeasurement().bmItems;
@@ -504,8 +506,15 @@ class AssessmentRepositoryLocal {
         var codings = await _getCodings(item);
         item['body']['data']['codings'] = codings;
         item['body']['assessment_id'] = assessmentId;
-        var itemData = await _createLocalObservations(item);
-        observations.add(itemData);
+        // var itemData = await _createLocalObservations(item);
+        String id = Uuid().v4();
+        Map<String, dynamic> apiData = {'id': id};
+        apiData.addAll(item);
+        observations.add(apiData);
+        localObservations.add({
+          'id': id,
+          'data': item
+        });
       }
     }
     if (bloodTests.isNotEmpty) {
@@ -514,8 +523,15 @@ class AssessmentRepositoryLocal {
         var codings = await _getCodings(item);
         item['body']['data']['codings'] = codings;
         item['body']['assessment_id'] = assessmentId;
-        var itemData = await _createLocalObservations(item);
-        observations.add(itemData);
+        // var itemData = await _createLocalObservations(item);
+        String id = Uuid().v4();
+        Map<String, dynamic> apiData = {'id': id};
+        apiData.addAll(item);
+        observations.add(apiData);
+        localObservations.add({
+          'id': id,
+          'data': item
+        });
       }
     }
     if (bodyMeasurements.isNotEmpty) {
@@ -524,24 +540,41 @@ class AssessmentRepositoryLocal {
         var codings = await _getCodings(item);
         item['body']['data']['codings'] = codings;
         item['body']['assessment_id'] = assessmentId;
-        var itemData = await _createLocalObservations(item);
-        observations.add(itemData);
+        // var itemData = await _createLocalObservations(item);
+        String id = Uuid().v4();
+        Map<String, dynamic> apiData = {'id': id};
+        apiData.addAll(item);
+        observations.add(apiData);
+        localObservations.add({
+          'id': id,
+          'data': item
+        });
       }
     }
     if (questionnaires.isNotEmpty) {
       for (var item in questionnaires) {
         print('into questionnaire');
         item['body']['assessment_id'] = assessmentId;
-        var itemData = await _createLocalObservations(item);
-        observations.add(itemData);
+        // var itemData = await _createLocalObservations(item);
+        String id = Uuid().v4();
+        Map<String, dynamic> apiData = {'id': id};
+        apiData.addAll(item);
+        observations.add(apiData);
+        localObservations.add({
+          'id': id,
+          'data': item
+        });
       }
     }
     print('bloodPressures $bloodPressures');
     print('bloodTests $bloodTests');
     print('bodyMeasurements $bodyMeasurements');
-    print('observations $observations');
-
-    return observations;
+    preparedObservations = {
+      'apiData': observations,
+      'localData': localObservations
+    };
+    print('observations $preparedObservations');
+    return preparedObservations;
   }
 
 

@@ -79,14 +79,14 @@ class AssessmentRepository {
 
     try {
       response = await http
-          .post(apiUrl + 'assessments/full',
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-              },
-              body: json.encode(data))
-          .timeout(Duration(seconds: httpRequestTimeout));
+        .post(apiUrl + 'assessments/full',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+            },
+            body: json.encode(data))
+        .timeout(Duration(seconds: httpRequestTimeout));
       print('assessment created');
       print(response.body);
       return json.decode(response.body);

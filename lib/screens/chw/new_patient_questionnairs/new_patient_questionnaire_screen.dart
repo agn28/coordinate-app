@@ -285,7 +285,7 @@ class _NewPatientQuestionnaireScreenState
       var formData = {
         'items': BloodPressure().items,
         'comment': '',
-        'patient_id': Patient().getPatient()['uuid'],
+        'patient_id': Patient().getPatient()['id'],
         'device': '',
         'performed_by': '',
       };
@@ -421,9 +421,10 @@ class _NewPatientQuestionnaireScreenState
                   setState(() {
                     print(_currentStep);
                     if (_currentStep == 0) {
-                      Questionnaire().addNewMedicalHistory('medical_history', medicalHistoryAnswers);
-                      print(Questionnaire().qnItems);
-                    }
+                                Questionnaire().addNewMedicalHistoryNcd(
+                                    'medical_history', medicalHistoryAnswers);
+                                print(Questionnaire().qnItems);
+                              }
 
                               if (_currentStep == 1) {
                                 Questionnaire().addNewMedicationNcd(
@@ -485,7 +486,7 @@ class _NewPatientQuestionnaireScreenState
   //   // if (patient['data']['age'] != null && patient['data']['age'] > 40) {
   //   //   var data = {
   //   //     'meta': {
-  //   //       'patient_id': Patient().getPatient()['uuid'],
+  //   //       'patient_id': Patient().getPatient()['id'],
   //   //       "collected_by": Auth().getAuth()['uid'],
   //   //       "status": "pending"
   //   //     },
@@ -500,7 +501,7 @@ class _NewPatientQuestionnaireScreenState
   //   if (isReferralRequired) {
   //     var data = {
   //       'meta': {
-  //         'patient_id': Patient().getPatient()['uuid'],
+  //         'patient_id': Patient().getPatient()['id'],
   //         "collected_by": Auth().getAuth()['uid'],
   //         "status": "pending"
   //       },
@@ -541,7 +542,7 @@ class _NewPatientQuestionnaireScreenState
     // if (patient['data']['age'] != null && patient['data']['age'] > 40) {
     //   var data = {
     //     'meta': {
-    //       'patient_id': Patient().getPatient()['uuid'],
+    //       'patient_id': Patient().getPatient()['id'],
     //       "collected_by": Auth().getAuth()['uid'],
     //       "status": "pending"
     //     },
@@ -2793,7 +2794,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                             var data = {
                                               'meta': {
                                                 'patient_id': Patient()
-                                                    .getPatient()['uuid'],
+                                                    .getPatient()['id'],
                                                 "collected_by":
                                                     Auth().getAuth()['uid'],
                                                 "status": "pending"

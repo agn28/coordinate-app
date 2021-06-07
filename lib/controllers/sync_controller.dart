@@ -689,6 +689,7 @@ class SyncController extends GetxController {
   }
 
   syncLivePatientsToLocal() async {
+    print('syncLivePatientsToLocal');
     if (syncs.value.isEmpty) {
       return;
     }
@@ -933,9 +934,7 @@ class SyncController extends GetxController {
     }
     print('getLatestSyncInfo');
     print(response);
-    if (isNotNull(response) &&
-        isNotNull(response['error']) &&
-        !response['error']) {
+    if (isNotNull(response) && isNotNull(response['error']) && !response['error']) {
       syncs.value = response['data'];
       print('syncs');
       print(syncs.value);

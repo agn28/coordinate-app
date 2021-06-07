@@ -16,6 +16,7 @@ import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/controllers/observation_controller.dart';
 import 'package:nhealth/controllers/user_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
+import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
@@ -85,9 +86,9 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     getReferrals();
     getMedicationsConditions();
     getReport();
-    getEncounters();
-    getAssessments();
-    _getCarePlan();
+    // getEncounters();
+    // getAssessments();
+    // _getCarePlan();
 
   }
 
@@ -228,26 +229,30 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     });
 
     var data = await HealthReportController().getLastReport(context);
-    
-    if (data['error'] == true) {
+    print(data);
+    // return;
+    if (data.isEmpty) {
       setState(() {
         carePlansEmpty = true;
       });
-      // Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+    } else if(isNotNull(data['error']) && data['error']) {
+      setState(() {
+        carePlansEmpty = true;
+      });
     } else if (data['message'] == 'Unauthorized') {
       Auth().logout();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+      return;
     } else {
+      print(data['data']);
       setState(() {
         report = data['data'];
+        bmi = report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ? report['body']['result']['assessments']['body_composition']['components']['bmi'] : null;
+        cvd = report['body']['result']['assessments']['cvd'] != null ? report['body']['result']['assessments']['cvd'] : null;
+        bp = report['body']['result']['assessments']['blood_pressure'] != null ? report['body']['result']['assessments']['blood_pressure'] : null;
+        cholesterol = report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ? report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] : null;
       });
     }
-    setState(() {
-      bmi = report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ? report['body']['result']['assessments']['body_composition']['components']['bmi'] : null;
-      cvd = report['body']['result']['assessments']['cvd'] != null ? report['body']['result']['assessments']['cvd'] : null;
-      bp = report['body']['result']['assessments']['blood_pressure'] != null ? report['body']['result']['assessments']['blood_pressure'] : null;
-      cholesterol = report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ? report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] : null;
-    });
 
   }
 

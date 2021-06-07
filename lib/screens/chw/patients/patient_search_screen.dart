@@ -162,6 +162,9 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
         allNewPatients = syncController.localPatientsAll.value;
         newPatients = allNewPatients;
       });
+      for(var localPatient in allNewPatients) {
+        print(localPatient);
+      }
     } else if (data['data'] != null) {
       for(var item in data['data']) {
         print(item['body']['last_name']);

@@ -40,6 +40,7 @@ class DatabaseCreator {
     )''';
 
     await db.execute(sql);
+    print('${patientTable} table created');
   }
 
   Future<void> createAssessmentsTable(Database db) async {
@@ -54,6 +55,7 @@ class DatabaseCreator {
     )''';
 
     await db.execute(sql);
+    print('${assessmentTable} table created');
   }
 
   Future<void> createReferralsTable(Database db) async {
@@ -113,6 +115,7 @@ class DatabaseCreator {
     )''';
 
     await db.execute(sql);
+    print('${observationTable} table created');
   }
 
   Future<void> createSyncsTable(Database db) async {
@@ -151,6 +154,7 @@ class DatabaseCreator {
     )''';
 
     await db.execute(sql);
+    print('${conceptManagerTable} table created');
   }
 
   Future<void> createObservationConceptsTable(Database db) async {
@@ -162,6 +166,7 @@ class DatabaseCreator {
     )''';
 
     await db.execute(sql);
+    print('${observationConceptsTable} table created');
 
   }
 
@@ -198,6 +203,7 @@ class DatabaseCreator {
     await createcareplansTable(db);
     await createConceptManagerTable(db);
     await createObservationConceptsTable(db);
+    await createHealthReportsTable(db);
   }
 
   dBCreatedStatusChange(status) {

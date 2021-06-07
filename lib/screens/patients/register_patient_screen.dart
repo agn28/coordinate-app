@@ -1943,35 +1943,46 @@ class _ViewSummaryState extends State<ViewSummary> {
                 });
 
                 if (response != null) {
-                  if (response['error'] != null && response['error']) {
-                    _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text(response['message']),
-                      backgroundColor: kPrimaryRedColor,
-                    ));
-                  } else {
-                    _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text(response['message']),
-                      backgroundColor: kPrimaryRedColor,
-                    ));
-                  }
-
-                  if (response['message'] != null &&
-                      response['message'] == 'Unauthorized') {
-                    Helpers().logout(context);
-                    return;
-                  }
-
-                  if (response['error'] != null && response['error'] == false) {
-                    _RegisterPatientState()._clearForm();
-                    Navigator.of(context).pushReplacement(
-                        RegisterPatientSuccessScreen(isEditState: isEditState));
-                    return;
-                  }
-                } else if (response == 'success') {
+                if (response == 'success') {
+                  print('into success');
                   _RegisterPatientState()._clearForm();
-                  Navigator.of(context).pushReplacement(
-                      RegisterPatientSuccessScreen(isEditState: isEditState));
+                  Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen(isEditState: isEditState));
                 }
+                else if (response['error'] != null && response['error']) {
+                  if (response['message'] == 'Patient already exists.') {
+                    _scaffoldKey.currentState.showSnackBar(
+                      SnackBar(
+                        content: Text(AppLocalizations.of(context).translate('nidValidation')),
+                        backgroundColor: kPrimaryRedColor,
+                      )
+                    );
+                    return;
+                  }
+
+                  _scaffoldKey.currentState.showSnackBar(
+                    SnackBar(
+                      content: Text(AppLocalizations.of(context).translate('somethingWrong')),
+                      backgroundColor: kPrimaryRedColor,
+                    )
+                  );
+
+
+                  return;
+                  
+                }
+
+                else if (response['message'] != null && response['message'] == 'Unauthorized') {
+                  Helpers().logout(context);
+                  return;
+                }
+
+                else if (response['id'] != null ) {
+                  print('into id');
+                  _RegisterPatientState()._clearForm();
+                  Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen(isEditState: isEditState));
+                  return;
+                }
+              }
               },
               child: Container(
                   width: double.infinity,

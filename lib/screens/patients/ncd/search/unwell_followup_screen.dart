@@ -243,7 +243,7 @@ class _UnwellFollowupScreen extends State<UnwellFollowupScreen> {
                     // nextText = AppLocalizations.of(context).translate('next');
                     var data = {
                       'meta': {
-                        'patient_id': Patient().getPatient()['uuid'],
+                        'patient_id': Patient().getPatient()['id'],
                         "collected_by": Auth().getAuth()['uid'],
                         "status": "pending"
                       },
@@ -932,7 +932,7 @@ class _AcuteIssuesState extends State<AcuteIssues> {
               // //           if (firstAnswer == 'yes' || secondAnswer == 'yes') {
               // //             var data = {
               // //               'meta': {
-              // //                 'patient_id': Patient().getPatient()['uuid'],
+              // //                 'patient_id': Patient().getPatient()['id'],
               // //                 "collected_by": Auth().getAuth()['uid'],
               // //                 "status": "pending"
               // //               },

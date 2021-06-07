@@ -31,23 +31,28 @@ class HealthReportController {
     var response = await HealthReportRepository().getLastReport();
     
     if (response['error'] != null && !response['error']) {
+      print('response ${response['data']['id']}');
       return response;
     }
 
-    var data = [];
+    var data = {};
     if (isNull(response) || isNotNull(response['exception'])) {
       print('into exception');
       var patientId = Patient().getPatient()['id'];
       var localHealthReport = await HealthReportRepositoryLocal().getLastReport(patientId);
-      print('localHealthReport $localHealthReport');
-      if (isNotNull(localHealthReport)) {
-        var parseData = json.decode(localHealthReport['data']);
-        print('localHealthReport ${parseData["body"]}');
-        data.add({
-          'id': localHealthReport['id'],
-          'data': parseData['body'],
-          'meta': parseData['meta']
-        });
+      print('localHealthReport ${localHealthReport[0]}');
+      if (localHealthReport.isNotEmpty) {
+        var parseData = json.decode(localHealthReport[0]['data']);
+        print('parseData ${parseData["body"]}');
+        // print('parseData ${parseData["data"]["body"]}');
+        data = {
+          'error': false,
+          'data': {
+            'id': localHealthReport[0]['id'],
+            'body': parseData['body'],
+            'meta': parseData['meta']
+          }
+        };
       }
     }
     return data;

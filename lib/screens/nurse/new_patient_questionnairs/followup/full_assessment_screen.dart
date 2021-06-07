@@ -630,7 +630,7 @@ class _FullAssessmentScreenState extends State<FullAssessmentScreen> {
     // if (patient['data']['age'] != null && patient['data']['age'] > 40) {
     //   var data = {
     //     'meta': {
-    //       'patient_id': Patient().getPatient()['uuid'],
+    //       'patient_id': Patient().getPatient()['id'],
     //       "collected_by": Auth().getAuth()['uid'],
     //       "status": "pending"
     //     },
@@ -4223,10 +4223,8 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                               patient['data']['age'] > 40) {
                                             var data = {
                                               'meta': {
-                                                'patient_id': Patient()
-                                                    .getPatient()['uuid'],
-                                                "collected_by":
-                                                    Auth().getAuth()['uid'],
+                                                'patient_id': Patient().getPatient()['id'],
+                                                "collected_by": Auth().getAuth()['uid'],
                                                 "status": "pending"
                                               },
                                               'body': {},

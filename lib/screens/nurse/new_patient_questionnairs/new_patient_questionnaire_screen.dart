@@ -496,36 +496,51 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
                   setState(() {
                     print(_currentStep);
                     if (_currentStep == 0) {
-                      Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
+                      Questionnaire().addNewMedicalHistoryNcd(
+                          'medical_history', medicalHistoryAnswers);
                       print(Questionnaire().qnItems);
                     }
 
                     if (_currentStep == 1) {
-                      Questionnaire().addNewMedicationNcd('medication', medicationAnswers);
+                      Questionnaire().addNewMedicationNcd(
+                          'medication', medicationAnswers);
                       print(Questionnaire().qnItems);
                     }
 
                     if (_currentStep == 2) {
-                      Questionnaire().addNewRiskFactorsNcd('risk_factors', riskAnswers);
+                      Questionnaire().addNewRiskFactorsNcd(
+                          'risk_factors', riskAnswers);
                       print(Questionnaire().qnItems);
                     }
 
-                    if (nextText =='COMPLETE') {
-                      Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);
+                    if (_currentStep == 5) {
+                      Questionnaire().addNewCounselling(
+                          'counselling_provided', counsellingAnswers);
+                          
+                      var relativeAdditionalData = {
+                        'religion': selectedReligion,
+                        'occupation': occupationController.text,
+                        'ethnicity': selectedEthnicity,
+                        'monthly_income': incomeController.text,
+                        'blood_group': selectedBloodGroup,
+                        'education': educationController.text,
+                        'tribe': isTribe
+                      };
+                      print('relativeAdditionalData $relativeAdditionalData');
+                      Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
+
                       _completeStep();
                       return;
                     }
                     if (_currentStep == 4) {
                       print('hello');
 
-
                       createObservations();
-                      nextText = 'COMPLETE';
+                      nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                     }
                     if (_currentStep < 5) {
-
-                        // If the form is valid, display a Snackbar.
-                        _currentStep = _currentStep + 1;
+                      // If the form is valid, display a Snackbar.
+                      _currentStep = _currentStep + 1;
                     }
                   });
                 },
@@ -606,7 +621,7 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     // if (patient['data']['age'] != null && patient['data']['age'] > 40) {
     //   var data = {
     //     'meta': {
-    //       'patient_id': Patient().getPatient()['uuid'],
+    //       'patient_id': Patient().getPatient()['id'],
     //       "collected_by": Auth().getAuth()['uid'],
     //       "status": "pending"
     //     },
@@ -634,7 +649,7 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     }
 
     // goToHome(false, null);
-    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: 'encounter');
+    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
   }
 
   List<CustomStep> _mySteps() {
@@ -4211,7 +4226,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                             var data = {
                                               'meta': {
                                                 'patient_id': Patient()
-                                                    .getPatient()['uuid'],
+                                                    .getPatient()['id'],
                                                 "collected_by":
                                                     Auth().getAuth()['uid'],
                                                 "status": "pending"

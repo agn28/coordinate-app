@@ -629,7 +629,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     // if (patient['data']['age'] != null && patient['data']['age'] > 40) {
     //   var data = {
     //     'meta': {
-    //       'patient_id': Patient().getPatient()['uuid'],
+    //       'patient_id': Patient().getPatient()['id'],
     //       "collected_by": Auth().getAuth()['uid'],
     //       "status": "pending"
     //     },

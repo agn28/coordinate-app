@@ -12,6 +12,7 @@ import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
+import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
@@ -19,7 +20,8 @@ import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/ncd/followup_patient_summary_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
-
+import 'package:get/get.dart';
+import 'package:nhealth/controllers/sync_controller.dart';
 import '../../../../app_localizations.dart';
 
 
@@ -49,6 +51,7 @@ class FollowupSearchScreen extends StatefulWidget {
 }
 
 class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
+  final syncController = Get.put(SyncController());
   bool isLoading = false;
   @override
   initState() {
@@ -99,27 +102,57 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
 
     var data = await PatientController().getFollowupPatients();
 
-    if (data['message'] == 'Unauthorized') {
+    if (data != null && data['message'] == 'Unauthorized') {
       Auth().logout();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
     }
 
     var parsedPatients = [];
+    var parsedLocalPatient = [];
+    if (isNull(data) || isNotNull(data['exception']))  {
+      var allLocalPatients = syncController.localPatientsAll.value;
+      var assessments = await AssessmentController().getAllAssessments();
+      for(var localPatient in allLocalPatients) {
+        var isListed = false;
+        for(var assessment in assessments) {
+          print(assessment);
+          if (assessment['data']['patient_id'] == localPatient['id'] && (assessment['data']['screening_type'] == 'follow-up' || (assessment['data']['screening_type'] == 'ncd' && assessment['data']['status'] == 'complete'))){      
+            var localpatientdata = {
+              'id': localPatient['id'],
+              'data': localPatient['data'],
+              'meta': localPatient['meta']
+            };
+            if (assessment['data']['status'] == 'incomplete') {
+              print(localpatientdata);
+              localpatientdata['data']['incomplete_encounter'] = true;
+            }
+            print('localpatientdata $localpatientdata');
+            !isListed ? parsedLocalPatient.add(localpatientdata) : '';
+            isListed = true;
+          }
+        }
+        // parsedLocalPatient.add(localpatientdata);
+      }
+      setState(() {
+        allPatients = parsedLocalPatient;
+        patients = allPatients;
+        isLoading = false;
+      });
+    } else if (data['data'] != null) {
+      for(var item in data['data']) {
+        parsedPatients.add({
+          'id': item['id'],
+          'data': item['body'],
+          'meta': item['meta']
+        });
+      }
 
-    for(var item in data['data']) {
-      parsedPatients.add({
-        'uuid': item['id'],
-        'data': item['body'],
-        'meta': item['meta']
+      setState(() {
+        allPatients = parsedPatients;
+        patients = allPatients;
+        isLoading = false;
       });
     }
-
-    setState(() {
-      allPatients = parsedPatients;
-      patients = allPatients;
-      print('patients $patients');
-      isLoading = false;
-    });
   }
 
   search(query) {
@@ -783,7 +816,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
       var filteredPatients = [];
       patients.forEach((patient) { 
         filteredAssessments.forEach((assessment) {
-          if (assessment['data']['patient_id'] == patient['uuid']) {
+          if (assessment['data']['patient_id'] == patient['id']) {
             filteredPatients.add(patient);
           } 
         });

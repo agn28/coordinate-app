@@ -172,6 +172,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
   populatePreviousAnswers() {
     print("testest");
     observations.forEach((obs) {
+      print('obs $obs');
       if (obs['body']['type'] == 'survey') {
         print('into survey');
         var obsData = obs['body']['data'];
@@ -693,19 +694,6 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     }
 
     BloodTest().addBtItem();
-
-
-    var relativeAdditionalData = {
-      'religion': selectedReligion,
-      'occupation': occupationController.text,
-      'ethnicity': selectedEthnicity,
-      'monthly_income': incomeController.text,
-      'blood_group': selectedBloodGroup,
-      'education': educationController.text,
-      'tribe': isTribe
-    };
-    Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
-
   }
 
 
@@ -803,36 +791,50 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                   setState(() {
                     print(_currentStep);
                     if (_currentStep == 0) {
-                      Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
+                      Questionnaire().addNewMedicalHistoryNcd(
+                          'medical_history', medicalHistoryAnswers);
                       print(Questionnaire().qnItems);
                     }
 
                     if (_currentStep == 1) {
-                      Questionnaire().addNewMedicationNcd('medication', medicationAnswers);
+                      Questionnaire().addNewMedicationNcd(
+                          'medication', medicationAnswers);
                       print(Questionnaire().qnItems);
                     }
 
                     if (_currentStep == 2) {
-                      Questionnaire().addNewRiskFactorsNcd('risk_factors', riskAnswers);
+                      Questionnaire().addNewRiskFactorsNcd(
+                          'risk_factors', riskAnswers);
                       print(Questionnaire().qnItems);
                     }
 
-                    if (nextText =='COMPLETE') {
+                    if (_currentStep == 5) {
                       Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);
+                          
+                      var relativeAdditionalData = {
+                        'religion': selectedReligion,
+                        'occupation': occupationController.text,
+                        'ethnicity': selectedEthnicity,
+                        'monthly_income': incomeController.text,
+                        'blood_group': selectedBloodGroup,
+                        'education': educationController.text,
+                        'tribe': isTribe
+                      };
+                      print('relativeAdditionalData $relativeAdditionalData');
+                      Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
+
                       _completeStep();
                       return;
                     }
                     if (_currentStep == 4) {
                       print('hello');
 
-
                       createObservations();
-                      nextText = 'COMPLETE';
+                      nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                     }
                     if (_currentStep < 5) {
-
-                        // If the form is valid, display a Snackbar.
-                        _currentStep = _currentStep + 1;
+                      // If the form is valid, display a Snackbar.
+                      _currentStep = _currentStep + 1;
                     }
                   });
                 },
@@ -900,9 +902,10 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
 
     print(patient['data']['age']);
     var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
-    if (nextVisitDate != '') {
-      encounter['body']['next_visit_date'] = nextVisitDate;
-    }
+    // if (nextVisitDate != '') {
+    //   encounter['body']['next_visit_date'] = nextVisitDate;
+    // }
+    print('encounter: $encounter');
     var encounterData = {
       'context': context,
       'dataStatus': dataStatus,
@@ -918,7 +921,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     // if (patient['data']['age'] != null && patient['data']['age'] > 40) {
     //   var data = {
     //     'meta': {
-    //       'patient_id': Patient().getPatient()['uuid'],
+    //       'patient_id': Patient().getPatient()['id'],
     //       "collected_by": Auth().getAuth()['uid'],
     //       "status": "pending"
     //     },
@@ -4348,7 +4351,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                             var data = {
                                               'meta': {
                                                 'patient_id': Patient()
-                                                    .getPatient()['uuid'],
+                                                    .getPatient()['id'],
                                                 "collected_by":
                                                     Auth().getAuth()['uid'],
                                                 "status": "pending"

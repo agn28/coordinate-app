@@ -140,7 +140,7 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
     // setState(() {
     //   isLoading = true;
     // });
-    var patientId = Patient().getPatient()['uuid'];
+    var patientId = Patient().getPatient()['id'];
     var data = await PatientController().getMedicationsByPatient(patientId);
     // setState(() {
     //   isLoading = false;
@@ -334,7 +334,7 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
 
     var data = {
       'meta': {
-        'patient_id': Patient().getPatient()['uuid'],
+        'patient_id': Patient().getPatient()['id'],
         "collected_by": Auth().getAuth()['uid'],
         "status": "pending"
       },
@@ -405,7 +405,7 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
       var formData = {
         'items': BloodPressure().items,
         'comment': '',
-        'patient_id': Patient().getPatient()['uuid'],
+        'patient_id': Patient().getPatient()['id'],
         'device': '',
         'performed_by': '',
       };
@@ -605,7 +605,9 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
                                 return;
                               }
                               if (_currentStep == 0) {
-                                Questionnaire().addNewDynamicMedicationNcd('dynamic_medication', dynamicMedicationTitles, dynamicMedicationAnswers);
+                                if(dynamicMedicationTitles.isNotEmpty) {
+                                  Questionnaire().addNewDynamicMedicationNcd('dynamic_medication', dynamicMedicationTitles, dynamicMedicationAnswers);
+                                }
                                 // print(Questionnaire().qnItems);
                                 nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                               }
@@ -697,7 +699,7 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
     // if (patient['data']['age'] != null && patient['data']['age'] > 40) {
     //   var data = {
     //     'meta': {
-    //       'patient_id': Patient().getPatient()['uuid'],
+    //       'patient_id': Patient().getPatient()['id'],
     //       "collected_by": Auth().getAuth()['uid'],
     //       "status": "pending"
     //     },
@@ -712,7 +714,7 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
     if (isReferralRequired) {
       var data = {
         'meta': {
-          'patient_id': Patient().getPatient()['uuid'],
+          'patient_id': Patient().getPatient()['id'],
           "collected_by": Auth().getAuth()['uid'],
           "status": "pending"
         },
@@ -5280,7 +5282,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                             var data = {
                                               'meta': {
                                                 'patient_id': Patient()
-                                                    .getPatient()['uuid'],
+                                                    .getPatient()['id'],
                                                 "collected_by":
                                                     Auth().getAuth()['uid'],
                                                 "status": "pending"

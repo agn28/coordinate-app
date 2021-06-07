@@ -77,7 +77,7 @@ class HealthReportRepositoryLocal {
   }
 
   getLastReport(patientId) async {
-    final sqlHealthReports = '''SELECT * FROM ${DatabaseCreator.healthReportTable} WHERE patient_id="$patientId" ORDER BY created_atx DESC LIMIT 1''';
+    final sqlHealthReports = '''SELECT * FROM ${DatabaseCreator.healthReportTable} WHERE patient_id="$patientId" ORDER BY created_at DESC LIMIT 1''';
     final healthReport = await db.rawQuery(sqlHealthReports);
 
     return healthReport;

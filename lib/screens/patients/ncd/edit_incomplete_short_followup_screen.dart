@@ -98,7 +98,7 @@ class _EditIncompleteShortFollowupScreenState extends State<EditIncompleteShortF
     setState(() {
       isLoading = true;
     });
-    var patientId = Patient().getPatient()['uuid'];
+    var patientId = Patient().getPatient()['id'];
     var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
     setState(() {
       isLoading = false;
@@ -130,6 +130,7 @@ class _EditIncompleteShortFollowupScreenState extends State<EditIncompleteShortF
   populatePreviousAnswers() {
     print("testest");
     observations.forEach((obs) {
+      print('obs $obs');
       if (obs['body']['type'] == 'survey') {
         print('into survey');
         var obsData = obs['body']['data'];
@@ -140,16 +141,18 @@ class _EditIncompleteShortFollowupScreenState extends State<EditIncompleteShortF
           keys.forEach((key) {
             if (obsData[key] != '') {
               print('into keys');
-              var matchedMhq = dynamicMedicationQuestions['items']
-                  .where((mhq) => mhq['key'] == key);
-              if (matchedMhq.isNotEmpty) {
-                matchedMhq = matchedMhq.first;
-                setState(() {
-                  print("medication: ${obsData[key]}");
-                  dynamicMedicationAnswers[dynamicMedicationQuestions['items'].indexOf(matchedMhq)] = obsData[key];
-                  print("medicationAnswers");
-                  //print(medicationAnswers[medicationQuestions['items'].indexOf(matchedMhq)]);
-                });
+              if(dynamicMedicationQuestions.isNotEmpty)
+              {
+                var matchedMhq = dynamicMedicationQuestions['items'].where((mhq) => mhq['key'] == key);
+                if (matchedMhq.isNotEmpty) {
+                  matchedMhq = matchedMhq.first;
+                  setState(() {
+                    print("medication: ${obsData[key]}");
+                    dynamicMedicationAnswers[dynamicMedicationQuestions['items'].indexOf(matchedMhq)] = obsData[key];
+                    print("medicationAnswers");
+                    //print(medicationAnswers[medicationQuestions['items'].indexOf(matchedMhq)]);
+                  });
+                }
               }
             }
           });
@@ -316,7 +319,7 @@ class _EditIncompleteShortFollowupScreenState extends State<EditIncompleteShortF
     // setState(() {
     //   isLoading = true;
     // });
-    var patientId = Patient().getPatient()['uuid'];
+    var patientId = Patient().getPatient()['id'];
     var data = await PatientController().getMedicationsByPatient(patientId);
     // setState(() {
     //   isLoading = false;
@@ -467,7 +470,7 @@ class _EditIncompleteShortFollowupScreenState extends State<EditIncompleteShortF
       var formData = {
         'items': BloodPressure().items,
         'comment': '',
-        'patient_id': Patient().getPatient()['uuid'],
+        'patient_id': Patient().getPatient()['id'],
         'device': '',
         'performed_by': '',
       };
@@ -671,7 +674,9 @@ class _EditIncompleteShortFollowupScreenState extends State<EditIncompleteShortF
                                 return;
                               }
                               if (_currentStep == 0) {
-                                Questionnaire().addNewDynamicMedicationNcd('dynamic_medication', dynamicMedicationTitles, dynamicMedicationAnswers);
+                                if(dynamicMedicationTitles.isNotEmpty) {
+                                  Questionnaire().addNewDynamicMedicationNcd('dynamic_medication', dynamicMedicationTitles, dynamicMedicationAnswers);
+                                }
                                 // print(Questionnaire().qnItems);
                                 nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                               }
@@ -756,8 +761,9 @@ class _EditIncompleteShortFollowupScreenState extends State<EditIncompleteShortF
       'encounter': encounter,
       'observations': observations
     };
-  
-    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
+    print('dataStatus $dataStatus');
+    // return;
+    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': encounterData ,});
   }
 
   List<CustomStep> _mySteps() {

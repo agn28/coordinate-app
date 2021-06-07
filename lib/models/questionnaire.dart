@@ -1218,7 +1218,7 @@ class Questionnaire {
       "body": {
         "type": "survey",
         "data": prepareData,
-        "patient_id": Patient().getPatient()['uuid'],
+        "patient_id": Patient().getPatient()['id'],
       }
     };
 
@@ -1277,7 +1277,7 @@ class Questionnaire {
           'physical_activity_high': answers[10],
           'alcohol': answers[11],
         },
-        "patient_id": Patient().getPatient()['uuid'],
+        "patient_id": Patient().getPatient()['id'],
       }
     };
 
