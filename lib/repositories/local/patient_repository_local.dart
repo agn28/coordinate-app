@@ -5,6 +5,7 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:intl/intl.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/repositories/local/assessment_repository_local.dart';
 import 'package:nhealth/repositories/patient_repository.dart';
 import 'package:nhealth/helpers/functions.dart';
 import 'package:sqflite/sqflite.dart';
@@ -195,6 +196,8 @@ class PatientReposioryLocal {
       ));
       return;
     }
+    var assessmentData = _prepareAssessmentData('registration', 'registration', '', id);
+    await AssessmentRepositoryLocal().createLocalAssessment(assessmentData['id'], assessmentData, synced);
 
     print('result 1');
     print(response);
@@ -207,6 +210,29 @@ class PatientReposioryLocal {
     print(response);
     // DatabaseCreator.databaseLog('Add patient', sql, null, response, params);
     return 'success';
+  }
+
+  _prepareAssessmentData(type, screening_type, comment, patientId) {
+
+    var assessmentId = Uuid().v4();
+
+    var data = {
+      "id": assessmentId,
+      "meta": {
+        "collected_by": Auth().getAuth()['uid'],
+        "created_at": DateTime.now().toString()
+      },
+      "body": {
+        "type": type == 'In-clinic Screening' ? 'in-clinic' : type,
+        "screening_type": screening_type,
+        "comment": comment,
+        "performed_by": Auth().getAuth()['uid'],
+        "assessment_date": DateFormat('y-MM-dd').format(DateTime.now()),
+        "patient_id": patientId
+      }
+    };
+
+    return data;
   }
 
   createFromLive(id, data) async {
@@ -247,29 +273,6 @@ class PatientReposioryLocal {
     }
 
     return response;
-  }
-
-  _prepareAssessmentData(type, screening_type, comment, patientId) {
-
-    var assessmentId = Uuid().v4();
-
-    var data = {
-      "id": assessmentId,
-      "meta": {
-        "collected_by": Auth().getAuth()['uid'],
-        "created_at": DateTime.now().toString()
-      },
-      "body": {
-        "type": type == 'In-clinic Screening' ? 'in-clinic' : type,
-        "screening_type": screening_type,
-        "comment": comment,
-        "performed_by": Auth().getAuth()['uid'],
-        "assessment_date": DateFormat('y-MM-dd').format(DateTime.now()),
-        "patient_id": patientId
-      }
-    };
-
-    return data;
   }
 
   Future<void> update(data) async {
@@ -330,6 +333,20 @@ class PatientReposioryLocal {
 
   getLocations() async {
     final sql = '''SELECT * FROM ${DatabaseCreator.locationTable}''';
+    var response;
+
+    try {
+      response = await db.rawQuery(sql);
+    } catch (error) {
+      print('error');
+      print(error);
+      return;
+    }
+
+    return response;
+  }
+  getCenters() async {
+    final sql = '''SELECT * FROM ${DatabaseCreator.centerTable}''';
     var response;
 
     try {

@@ -108,24 +108,62 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
       var assessments = await AssessmentController().getAllAssessments();
 
       for(var localPatient in allLocalPatients) {
+        print(localPatient);
         var isListed = false;
+        var isOnlyRegistered = false;
         for(var assessment in assessments) {
           print(assessment);
-          print(localPatient);
-          if (assessment['data']['patient_id'] == localPatient['id'] && assessment['data']['screening_type'] != 'follow-up' && assessment['data']['status'] != 'complete'){      
-            var localpatientdata = {
-              'id': localPatient['id'],
-              'data': localPatient['data'],
-              'meta': localPatient['meta']
-            };
-            if (assessment['data']['status'] == 'incomplete') {
-              print(localpatientdata);
-              localpatientdata['data']['incomplete_encounter'] = true;
+          // matched assessment
+          if(assessment['data']['patient_id'] == localPatient['id']) {
+            if(assessment['data']['screening_type'] != 'follow-up' 
+              && assessment['data']['status'] == 'incomplete') {
+                //add to list
+                var localpatientdata = {
+                  'id': localPatient['id'],
+                  'data': localPatient['data'],
+                  'meta': localPatient['meta']
+                };
+                if(isNotNull(assessment['data']['status']) && assessment['data']['status'] == 'incomplete') {
+                  print('status: ${assessment['data']['status']}');
+                  localpatientdata['data']['incomplete_encounter'] = true;
+                }
+                print('localpatientdata $localpatientdata');
+                !isListed ? parsedLocalPatient.add(localpatientdata) : '';
+                isListed = true;
+
+            } else if(assessment['data']['screening_type'] == 'registration') {
+              isOnlyRegistered = true;
+            } else {
+              isOnlyRegistered = false;
             }
-            print('localpatientdata $localpatientdata');
-            !isListed ? parsedLocalPatient.add(localpatientdata) : '';
-            isListed = true;
           }
+          // if(assessment['data']['patient_id'] == localPatient['id'] 
+          // && (assessment['data']['screening_type'] == 'registration'
+          // || (assessment['data']['screening_type'] != 'follow-up' 
+          // && assessment['data']['status'] != 'complete'))){      
+          //   var localpatientdata = {
+          //     'id': localPatient['id'],
+          //     'data': localPatient['data'],
+          //     'meta': localPatient['meta']
+          //   };
+          //   if (isNotNull(assessment['data']['status']) && assessment['data']['status'] == 'incomplete') {
+          //     print('status: ${assessment['data']['status']}');
+          //     localpatientdata['data']['incomplete_encounter'] = true;
+          //   }
+          //   print('localpatientdata $localpatientdata');
+          //   !isListed ? parsedLocalPatient.add(localpatientdata) : '';
+          //   isListed = true;
+          // }
+        }
+        if(isOnlyRegistered && !isListed) {
+          var localpatientdata = {
+            'id': localPatient['id'],
+            'data': localPatient['data'],
+            'meta': localPatient['meta']
+          };
+          print('localpatientdata $localpatientdata');
+          parsedLocalPatient.add(localpatientdata);
+          isListed = true;
         }
       }
       setState(() {

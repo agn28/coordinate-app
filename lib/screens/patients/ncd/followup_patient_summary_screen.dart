@@ -1514,7 +1514,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                   setState(() {
                                     isLoading = false;
                                   });
-                                  return;
+                                  // return;
                                   Navigator.of(context).pushNamed('/home',);
                                 },
                                 color: kPrimaryColor,

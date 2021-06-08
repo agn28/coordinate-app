@@ -83,4 +83,20 @@ class HealthReportRepositoryLocal {
     return healthReport;
   }
 
+  getNotSyncedHealthReports() async {
+    final sql =
+        '''SELECT * FROM ${DatabaseCreator.careplanTable} WHERE is_synced=0''';
+    var response = await db.rawQuery(sql);
+
+    try {
+      response = await db.rawQuery(sql);
+    } catch (error) {
+      print('error');
+      print(error);
+      return;
+    }
+
+    return response;
+  }
+
 }

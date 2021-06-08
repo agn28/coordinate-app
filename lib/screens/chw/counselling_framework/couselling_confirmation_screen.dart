@@ -31,6 +31,7 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
     super.initState();
     isLoading = false;
     isCounsellingProvided = null;
+    print('counseling confirmation');
   }
   @override
   Widget build(BuildContext context) {

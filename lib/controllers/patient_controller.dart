@@ -171,10 +171,41 @@ class PatientController {
     return response;
   }
 
+  // getCenter() async {
+  //   var response;
+  //   var connectivityResult = await (Connectivity().checkConnectivity());
+  //   if (connectivityResult == ConnectivityResult.mobile ||
+  //       connectivityResult == ConnectivityResult.wifi) {
+  //     var apiResponse = await PatientRepository().getCenter();
+
+  //     return apiResponse;
+  //   } else {
+  //     response = PatientReposioryLocal().getReferralPatients();
+  //   }
+  //   return response;
+  // }
   getCenter() async {
     var response = await PatientRepository().getCenter();
 
-    return response;
+    if (isNotNull(response) && isNull(response['exception'])) {
+      return response;
+    }
+
+    var localResponse = await PatientReposioryLocal().getCenters();
+
+    print('local centers');
+    print(localResponse);
+    if (isNotNull(localResponse) && localResponse.isNotEmpty) {
+      print('into local if');
+      var locations = {
+        'data': jsonDecode(localResponse[0]['data']),
+        'error': false
+      };
+      print(locations);
+      return locations;
+    }
+
+    return;
   }
 
   /// Create a new patient

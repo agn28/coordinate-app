@@ -130,9 +130,11 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
       });
     }
     else {
+      print('not connected');
       var allLocalPatients = syncController.localPatientsAll.value;
       var localPatientPending = [];
       for(var localPatient in allLocalPatients) {
+        print('localPatient ${localPatient['meta']}');
         if(isNotNull(localPatient["meta"]["has_pending"]) && localPatient["meta"]["has_pending"]) {
           var localpatientdata = {
             'id': localPatient['id'],

@@ -446,6 +446,7 @@ class AssessmentRepositoryLocal {
 
     try {
       response = await db.rawInsert(sql, params);
+      print('sql $response');
     } catch (error) {
       print('local assessment error');
       print(error);

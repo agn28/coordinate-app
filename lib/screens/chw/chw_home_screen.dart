@@ -30,6 +30,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
 
     // syncController.getLocalNotSyncedPatient();
     syncController.getAllStatsData();
+    syncController.initializeSync();
   }
 
   _getAuthData() async {
@@ -636,96 +637,96 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                               ),
 
                               // for development
-                              Column(
-                                children: [
-                                  Text('Updates in server: ${syncController.syncs.value.length}', style: TextStyle(fontSize: 20),),
-                                  Text('Updates in Local: ${syncController.localNotSyncedPatients.value.length + syncController.localNotSyncedAssessments.value.length + syncController.localNotSyncedObservations.value.length + syncController.localNotSyncedReferrals.value.length}', style: TextStyle(fontSize: 20),),
-                                  SizedBox(height: 20,),
+                              // Column(
+                              //   children: [
+                              //     Text('Updates in server: ${syncController.syncs.value.length}', style: TextStyle(fontSize: 20),),
+                              //     Text('Updates in Local: ${syncController.localNotSyncedPatients.value.length + syncController.localNotSyncedAssessments.value.length + syncController.localNotSyncedObservations.value.length + syncController.localNotSyncedReferrals.value.length}', style: TextStyle(fontSize: 20),),
+                              //     SizedBox(height: 20,),
 
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text('Assessments Not synced in Local: ${syncController.localNotSyncedAssessments.value.length}', style: TextStyle(fontSize: 20),),
-                                      SizedBox(width: 20),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text('Observations Not synced in Local: ${syncController.localNotSyncedObservations.value.length}', style: TextStyle(fontSize: 20),),
-                                      SizedBox(width: 20),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text('Referrals Not synced in Local: ${syncController.localNotSyncedReferrals.value.length}', style: TextStyle(fontSize: 20),),
-                                      SizedBox(width: 20),
-                                    ],
-                                  ),
-                                  SizedBox(height: 20,),
+                              //     Row(
+                              //       mainAxisAlignment: MainAxisAlignment.center,
+                              //       children: [
+                              //         Text('Assessments Not synced in Local: ${syncController.localNotSyncedAssessments.value.length}', style: TextStyle(fontSize: 20),),
+                              //         SizedBox(width: 20),
+                              //       ],
+                              //     ),
+                              //     Row(
+                              //       mainAxisAlignment: MainAxisAlignment.center,
+                              //       children: [
+                              //         Text('Observations Not synced in Local: ${syncController.localNotSyncedObservations.value.length}', style: TextStyle(fontSize: 20),),
+                              //         SizedBox(width: 20),
+                              //       ],
+                              //     ),
+                              //     Row(
+                              //       mainAxisAlignment: MainAxisAlignment.center,
+                              //       children: [
+                              //         Text('Referrals Not synced in Local: ${syncController.localNotSyncedReferrals.value.length}', style: TextStyle(fontSize: 20),),
+                              //         SizedBox(width: 20),
+                              //       ],
+                              //     ),
+                              //     SizedBox(height: 20,),
 
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text('Patients in server: ${syncController.livePatientsAll.value.length}', style: TextStyle(fontSize: 20),),
-                                      SizedBox(width: 20),
-                                      // FlatButton(
-                                      //   color: kPrimaryColor,
-                                      //   onPressed: () async {
-                                      //     await syncController.syncLivePatientsToLocal();
-                                      //     // Get.offAll(ChwHomeScreen());
-                                      //   },
-                                      //   child: Text('Sync', style: TextStyle(color: Colors.white),)
-                                      // )
-                                    ],
-                                  ),
+                              //     Row(
+                              //       mainAxisAlignment: MainAxisAlignment.center,
+                              //       children: [
+                              //         Text('Patients in server: ${syncController.livePatientsAll.value.length}', style: TextStyle(fontSize: 20),),
+                              //         SizedBox(width: 20),
+                              //         // FlatButton(
+                              //         //   color: kPrimaryColor,
+                              //         //   onPressed: () async {
+                              //         //     await syncController.syncLivePatientsToLocal();
+                              //         //     // Get.offAll(ChwHomeScreen());
+                              //         //   },
+                              //         //   child: Text('Sync', style: TextStyle(color: Colors.white),)
+                              //         // )
+                              //       ],
+                              //     ),
 
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text('Patients in Local: ${syncController.localPatientsAll.value.length}', style: TextStyle(fontSize: 20),),
-                                      SizedBox(width: 20),
-                                    ],
-                                  ),
+                              //     Row(
+                              //       mainAxisAlignment: MainAxisAlignment.center,
+                              //       children: [
+                              //         Text('Patients in Local: ${syncController.localPatientsAll.value.length}', style: TextStyle(fontSize: 20),),
+                              //         SizedBox(width: 20),
+                              //       ],
+                              //     ),
 
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text('Assessments in Local: ${syncController.localAssessmentsAll.value.length}', style: TextStyle(fontSize: 20),),
-                                      SizedBox(width: 20),
-                                    ],
-                                  ),
+                              //     Row(
+                              //       mainAxisAlignment: MainAxisAlignment.center,
+                              //       children: [
+                              //         Text('Assessments in Local: ${syncController.localAssessmentsAll.value.length}', style: TextStyle(fontSize: 20),),
+                              //         SizedBox(width: 20),
+                              //       ],
+                              //     ),
 
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text('Observations in Local: ${syncController.localObservationsAll.value.length}', style: TextStyle(fontSize: 20),),
-                                      SizedBox(width: 20),
-                                    ],
-                                  ),
+                              //     Row(
+                              //       mainAxisAlignment: MainAxisAlignment.center,
+                              //       children: [
+                              //         Text('Observations in Local: ${syncController.localObservationsAll.value.length}', style: TextStyle(fontSize: 20),),
+                              //         SizedBox(width: 20),
+                              //       ],
+                              //     ),
 
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text('Careplans in Local: ${syncController.localCareplansAll.value.length}', style: TextStyle(fontSize: 20),),
-                                      SizedBox(width: 20),
-                                    ],
-                                  ),
+                              //     Row(
+                              //       mainAxisAlignment: MainAxisAlignment.center,
+                              //       children: [
+                              //         Text('Careplans in Local: ${syncController.localCareplansAll.value.length}', style: TextStyle(fontSize: 20),),
+                              //         SizedBox(width: 20),
+                              //       ],
+                              //     ),
 
-                                  SizedBox(height: 30),
-                                  FlatButton(
-                                    color: kPrimaryRedColor,
-                                    onPressed: () {
-                                      syncController.emptyLocalDatabase();
-                                    },
-                                    child: Text('Empty Synced Databases', style: TextStyle(color: Colors.white),)
-                                  ),
+                              //     SizedBox(height: 30),
+                              //     FlatButton(
+                              //       color: kPrimaryRedColor,
+                              //       onPressed: () {
+                              //         syncController.emptyLocalDatabase();
+                              //       },
+                              //       child: Text('Empty Synced Databases', style: TextStyle(color: Colors.white),)
+                              //     ),
 
-                                  SizedBox(height: 20),
+                              //     SizedBox(height: 20),
 
-                                ],
-                              ),
+                              //   ],
+                              // ),
                             ],
                           ),
                         ],

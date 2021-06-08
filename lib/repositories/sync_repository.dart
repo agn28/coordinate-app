@@ -22,7 +22,7 @@ class SyncRepository {
     var token = authData['accessToken'];
     var api = ApiService();
 
-    print('data $data');
+    print('data ${json.encode(data)}');
 
     var response;
 
@@ -126,6 +126,18 @@ class SyncRepository {
     return response;
   }
 
+  checkLocalCenterData() async {
+    final sql = '''SELECT * FROM ${DatabaseCreator.centerTable}''';
+    var response;
+    try {
+      response = await db.rawQuery(sql);
+    } on DatabaseException catch (error) {
+      print('error');
+      print(error);
+    }
+    return response;
+  }
+
   getLocalSyncKey() async {
     final sql = '''SELECT * FROM ${DatabaseCreator.syncTable}''';
     var response;
@@ -210,6 +222,21 @@ class SyncRepository {
 
   }
 
+  createCenter(data) async {
+    String id = Uuid().v4();
+    final sql = '''INSERT INTO ${DatabaseCreator.centerTable}
+    (
+      id,
+      data,
+      status
+    )
+    VALUES (?,?,?)''';
+    List<dynamic> params = [id, jsonEncode(data), ''];
+    final result = await db.rawInsert(sql, params);
+    DatabaseCreator.databaseLog('Add centers', sql, null, result, params);
+
+  }
+
   emptyDatabase() async {
     final patient = await db.rawQuery('''DELETE FROM ${DatabaseCreator.patientTable}''');
     final syncs = await db.rawQuery('''DELETE FROM ${DatabaseCreator.syncTable}''');
@@ -217,12 +244,14 @@ class SyncRepository {
     final observations = await db.rawQuery('''DELETE FROM ${DatabaseCreator.observationTable}''');
     final referrals = await db.rawQuery('''DELETE FROM ${DatabaseCreator.referralTable}''');
     final care_plans = await db.rawQuery('''DELETE FROM ${DatabaseCreator.careplanTable}''');
+    final health_reports = await db.rawQuery('''DELETE FROM ${DatabaseCreator.healthReportTable}''');
     print('patient table deleted: ' + patient.toString());
     print('sync table deleted: ' + syncs.toString());
     print('assessments table deleted: ' + assessments.toString());
     print('observations table deleted: ' + observations.toString());
     print('referrals table deleted: ' + referrals.toString());
     print('care_plans table deleted: ' + care_plans.toString());
+    print('health_reports table deleted: ' + health_reports.toString());
 
   }
 }

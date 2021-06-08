@@ -112,9 +112,48 @@ class AssessmentController {
   }
 
   getLastAssessmentByPatient(key, value) async {
-    var assessment = await AssessmentRepository().getLastAssessment(key, value);
-    print('assessment $assessment');
-    return assessment;
+    // var assessment = await AssessmentRepository().getLastAssessment(key, value);
+    // print('assessment $assessment');
+    // return assessment;
+    var response = await AssessmentRepository().getLastAssessment(key, value);
+    
+    if (response['error'] != null && !response['error']) {
+      print('response ${response['data']['id']}');
+      return response;
+    }
+
+    var data = {};
+
+    if (isNull(response) || isNotNull(response['exception'])) {
+      print('into exception');
+      var patientId = Patient().getPatient()['id'];
+      var assessments = await AssessmentRepositoryLocal().getAssessmentsByPatient(patientId);
+      print('localResponse');
+      print(assessments);
+      if (isNotNull(assessments)) {
+        var lastAssessment = assessments.last;
+        var parseData = json.decode(lastAssessment['data']);
+        if(parseData['body']['screening_type'] == 'follow-up') {
+          
+          data = {
+            'id': lastAssessment['id'],
+            'data': parseData,
+          };
+        }
+        // localResponse.forEach((assessment) {
+        //   var parseData = json.decode(assessment['data']);
+        //   if(parseData['body']['screening_type'] == 'follow-up') {
+        //     data.add({
+        //       'id': assessment['id'],
+        //       'data': parseData['body'],
+        //       'meta': parseData['meta']
+        //     });
+        //   }
+        // });
+      }
+
+      return data;
+    }
   }
 
   getAssessmentById(id) async {
@@ -916,8 +955,11 @@ class AssessmentController {
       'observations': observations['apiData']
     };
     print('apiData $apiData');
-    response = storeAssessmentWithObservations(context, assessmentId, data, observations['localData'], apiData);
+    response = await storeAssessmentWithObservations(context, assessmentId, data, observations['localData'], apiData);
     print('apiResponse $response');
+
+    Helpers().clearObservationItems();
+
     return response;
 
     // Call API
@@ -1126,17 +1168,17 @@ storeAssessmentWithObservations(context, assessmentId, assessmentData, observati
   storeLocalAssessmentWithObservations(assessmentId, assessmentData, observationsData, isSynced) async {
     var response;
     response = await AssessmentRepositoryLocal().createLocalAssessment(assessmentId, assessmentData, isSynced);
-    await observationsData.forEach((observation) {
-      ObservationRepositoryLocal().create(observation['id'], observation['data'], isSynced);
-    });
+    for (var observation in observationsData) {
+      await ObservationRepositoryLocal().create(observation['id'], observation['data'], isSynced);
+    }
+
   }
   updateLocalAssessmentWithObservations(assessmentData, observationsData, isSynced) async {
     var response;
     response = await AssessmentRepositoryLocal().updateLocalAssessment(assessmentData['id'], assessmentData, isSynced);
-    observationsData.forEach((observation) async {
-      print('observation+ $observation');
+    for (var observation in observationsData) {
       await ObservationRepositoryLocal().update(observation['id'], observation, isSynced);
-    });
+    }
   }
 
   updateObservations(status, encounter, observations) async {
@@ -1321,8 +1363,10 @@ storeAssessmentWithObservations(context, assessmentId, assessmentData, observati
       'observations': apiDataObservations
     };
     print('apiData $apiData');
-    response = storeUpdatedAssessmentWithObservations(context, encounter, apiDataObservations, apiData);
+    response = await storeUpdatedAssessmentWithObservations(context, encounter, apiDataObservations, apiData);
     print('apiResponse $response');
+
+    Helpers().clearObservationItems();
     return response;
 
     // return;

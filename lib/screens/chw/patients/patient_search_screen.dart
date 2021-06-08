@@ -155,16 +155,79 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
     }
 
     var parsedNewPatients = [];
+    var parsedLocalNewPatients = [];
+
     var parsedExistingPatients = [];
+    var parsedLocalExistingPatients = [];
 
     if (isNull(data) || isNotNull(data['exception']))  {
-      setState(() {
-        allNewPatients = syncController.localPatientsAll.value;
-        newPatients = allNewPatients;
-      });
-      for(var localPatient in allNewPatients) {
+      // setState(() {
+      //   allNewPatients = syncController.localPatientsAll.value;
+      //   newPatients = allNewPatients;
+      // });
+      // for(var localPatient in allNewPatients) {
+      //   print(localPatient);
+      // }
+      var allLocalPatients = syncController.localPatientsAll.value;
+      var assessments = await AssessmentController().getAllAssessments();
+
+      for(var localPatient in allLocalPatients) {
         print(localPatient);
+        var isListedNew = false;
+        var isListedExisting = false;
+        var isOnlyRegistered = false;
+        for(var assessment in assessments) {
+          print(assessment);
+          // matched assessment
+          if(assessment['data']['patient_id'] == localPatient['id']) {
+            //Existing patient List
+            var localExistingPatientdata = {
+              'id': localPatient['id'],
+              'data': localPatient['data'],
+              'meta': localPatient['meta']
+            };
+            !isListedExisting ? parsedLocalExistingPatients.add(localExistingPatientdata) : '';
+            isListedExisting = true;
+            //First Center Assessment patient List
+            if(assessment['data']['screening_type'] != 'follow-up' 
+              && assessment['data']['status'] == 'incomplete') {
+                //add to list
+                var localNewPatientdata = {
+                  'id': localPatient['id'],
+                  'data': localPatient['data'],
+                  'meta': localPatient['meta']
+                };
+                if(isNotNull(assessment['data']['status']) && assessment['data']['status'] == 'incomplete') {
+                  print('status: ${assessment['data']['status']}');
+                  localNewPatientdata['data']['incomplete_encounter'] = true;
+                }
+                print('localNewPatientdata $localNewPatientdata');
+                !isListedNew ? parsedLocalNewPatients.add(localNewPatientdata) : '';
+                isListedNew = true;
+
+            } else if(assessment['data']['screening_type'] == 'registration') {
+              isOnlyRegistered = true;
+            } else {
+              isOnlyRegistered = false;
+            }
+          }
+        }
+        if(isOnlyRegistered && !isListedNew) {
+          var localNewPatientdata = {
+            'id': localPatient['id'],
+            'data': localPatient['data'],
+            'meta': localPatient['meta']
+          };
+          print('localNewPatientdata $localNewPatientdata');
+          parsedLocalNewPatients.add(localNewPatientdata);
+          isListedNew = true;
+        }
       }
+      setState(() {
+        allNewPatients = parsedLocalNewPatients;
+        newPatients = allNewPatients;
+        isLoading = false;
+      });
     } else if (data['data'] != null) {
       for(var item in data['data']) {
         print(item['body']['last_name']);
@@ -177,10 +240,17 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
       setState(() {
         allNewPatients = parsedNewPatients;
         newPatients = allNewPatients;
+        isLoading = false;
       });
     }
 
-    if (existingData != null && existingData['data'] != null) {
+    if (isNull(existingData) || isNotNull(existingData['exception']))  {
+      setState(() {
+        allExistingPatients = parsedLocalExistingPatients;
+        existingPatients = allExistingPatients;
+        isLoading = false;
+      });
+    } else if (existingData != null && existingData['data'] != null) {
       for(var item in existingData['data']) {
         parsedExistingPatients.add({
           'id': item['id'],
@@ -188,17 +258,13 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
           'meta': item['meta']
         });
       }
+      setState(() {
+        allExistingPatients = parsedExistingPatients;
+        existingPatients = allExistingPatients;
+        isLoading = false;
+      });
     }
 
-
-
-    setState(() {
-
-
-      allExistingPatients = parsedExistingPatients;
-      existingPatients = allExistingPatients;
-      isLoading = false;
-    });
   }
 
   search(query) {

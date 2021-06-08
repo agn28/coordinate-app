@@ -528,17 +528,17 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
                               // }
 
                               if (_currentStep == 1) {
-                                var relativeAdditionalData = {
-                                  'religion': selectedReligion,
-                                  'occupation': occupationController.text,
-                                  'ethnicity': selectedEthnicity,
-                                  'monthly_income': incomeController.text,
-                                  'blood_group': selectedBloodGroup,
-                                  'education': educationController.text,
-                                  'tribe': isTribe
-                                };
-                                print('relativeAdditionalData $relativeAdditionalData');
-                                Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
+                                // var relativeAdditionalData = {
+                                //   'religion': selectedReligion,
+                                //   'occupation': occupationController.text,
+                                //   'ethnicity': selectedEthnicity,
+                                //   'monthly_income': incomeController.text,
+                                //   'blood_group': selectedBloodGroup,
+                                //   'education': educationController.text,
+                                //   'tribe': isTribe
+                                // };
+                                // print('relativeAdditionalData $relativeAdditionalData');
+                                // Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
 
                                 _completeStep();
                                 return;

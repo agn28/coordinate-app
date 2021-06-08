@@ -16,6 +16,7 @@ class DatabaseCreator {
   static const observationConceptsTable = 'observation_concepts';
   static const syncTable = 'syncs';
   static const locationTable = 'locations';
+  static const centerTable = 'centers';
 
   static void databaseLog(String functionName, String sql,
       [List<Map<String, dynamic>> selectQueryResult, int insertAndUpdateQueryResult, List<dynamic> params]) {
@@ -145,6 +146,19 @@ class DatabaseCreator {
     print('${locationTable} table created');
   }
 
+  Future<void> createCentersTable(Database db) async {
+    final sql = '''CREATE TABLE $centerTable
+    (
+      id TEXT PRIMARY KEY,
+      data TEXT,
+      status TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )''';
+
+    await db.execute(sql);
+    print('${centerTable} table created');
+  }
+
   Future<void> createConceptManagerTable(Database db) async {
     final sql = '''CREATE TABLE $conceptManagerTable
     (
@@ -204,6 +218,7 @@ class DatabaseCreator {
     await createConceptManagerTable(db);
     await createObservationConceptsTable(db);
     await createHealthReportsTable(db);
+    await createCentersTable(db);
   }
 
   dBCreatedStatusChange(status) {

@@ -905,6 +905,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     // if (nextVisitDate != '') {
     //   encounter['body']['next_visit_date'] = nextVisitDate;
     // }
+    print('dataStatus: $dataStatus');
     print('encounter: $encounter');
     var encounterData = {
       'context': context,

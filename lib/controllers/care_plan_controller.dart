@@ -70,8 +70,7 @@ class CarePlanController {
           backgroundColor: kPrimaryYellowColor,
         ));
         // creating local careplan with not synced status
-        response = await CarePlanRepositoryLocal()
-            .update(data['id'], data, false);
+        response = await CarePlanRepositoryLocal().completeLocalCarePlan(data['id'], data, comment, false);
         return response;
       }
       //API responded with error
@@ -86,7 +85,7 @@ class CarePlanController {
       else if (apiResponse['error'] != null && !apiResponse['error']) {
         print('into success');
         // creating local careplan with synced status
-        response = await CarePlanRepositoryLocal().update(data['id'], data, true);
+        response = await CarePlanRepositoryLocal().completeLocalCarePlan(data['id'], data, comment, true);
 
         //updating sync key
         if (isNotNull(apiResponse['data']['sync']) &&
@@ -109,9 +108,8 @@ class CarePlanController {
       //   backgroundColor: kPrimaryYellowColor,
       // ));
       // creating local careplan with not synced status
-      response = await CarePlanRepositoryLocal()
-          .update(data['id'], data, false);
-      return response;
+      response = await CarePlanRepositoryLocal().completeLocalCarePlan(data['id'], data, comment, false);
+      return 'success';
     }
   }
 

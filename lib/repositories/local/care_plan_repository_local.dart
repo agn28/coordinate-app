@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/repositories/local/database_creator.dart';
 
@@ -63,6 +64,36 @@ class CarePlanRepositoryLocal {
     return response;
   }
 
+  completeLocalCarePlan(id, data, comment, isSynced) async {
+    print(data['meta']);
+    data['body']['comment'] = comment;
+    data['meta']['status'] = 'completed';
+    data['meta']['completed_at'] = DateFormat('y-MM-d').format(DateTime.now());
+    final sql = '''UPDATE ${DatabaseCreator.careplanTable} SET
+      data = ? , 
+      patient_id = ?,
+      status = ?,
+      is_synced = ?
+      WHERE id = ?''';
+    List<dynamic> params = [
+      jsonEncode(data),
+      data['body']['patient_id'],
+      'completed',
+      isSynced,
+      id
+    ];
+    var response;
+    try {
+      response = await db.rawUpdate(sql, params);
+      print('sql $response');
+    } catch (error) {
+      print('local careplan update error');
+      print(error);
+    }
+    DatabaseCreator.databaseLog('Update careplan', sql, null, response, params);
+    return response;
+  }
+
   getAllCareplans() async {
     final sqlCareplans = '''SELECT * FROM ${DatabaseCreator.careplanTable}''';
     final careplans = await db.rawQuery(sqlCareplans);
@@ -77,9 +108,9 @@ class CarePlanRepositoryLocal {
     return careplans;
   }
 
-  getNotSyncedObservations() async {
+  getNotSyncedCareplans() async {
     final sql =
-        '''SELECT * FROM ${DatabaseCreator.observationTable} WHERE is_synced=0''';
+        '''SELECT * FROM ${DatabaseCreator.careplanTable} WHERE is_synced=0''';
     var response = await db.rawQuery(sql);
 
     try {

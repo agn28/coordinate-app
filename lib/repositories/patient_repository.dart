@@ -306,19 +306,38 @@ class PatientRepository {
     }
   }
 
-   getCenter() async {
-    return http.get(
-      apiUrl + 'centers',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    ).then((response) {
+  getCenter() async {
+    var response;
+
+    try {
+      response = await http.get(
+        apiUrl + 'centers',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+      ).timeout(Duration(seconds: httpRequestTimeout));
+
+      print(response.body);
       return json.decode(response.body);
-      
-    }).catchError((error) {
-      print('error ' + error.toString());
-    });
+    } on SocketException {
+      // showErrorSnackBar('Error', 'socketError'.tr);
+      print('socket exception');
+      return {'exception': true, 'message': 'No internet'};
+    } on TimeoutException {
+      // showErrorSnackBar('Error', 'timeoutError'.tr);
+      print('timeout error');
+      return {'exception': true, 'message': 'Slow internet'};
+    } on Error catch (err) {
+      print('test error');
+      print(err);
+      // showErrorSnackBar('Error', 'unknownError'.tr);
+      return {
+        'exception': true,
+        'type': 'unknown',
+        'message': 'Something went wrong'
+      };
+    }
   }
 
   getPatientsWorklist(type) async {

@@ -256,16 +256,22 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
               if (existedCp.isEmpty) {
                 var items = [];
                 items.add(item);
-                dueCarePlans.add({
-                  'items': items,
-                  'title': item['body']['goal']['title'],
-                  'id': item['body']['goal']['id']
+                setState(() {
+                  dueCarePlans.add({
+                    'items': items,
+                    'title': item['body']['goal']['title'],
+                    'id': item['body']['goal']['id']
+                  });
                 });
+                
               } else {
-                dueCarePlans[dueCarePlans.indexOf(existedCp.first)]['items'].add(item);
-
+                setState(() {
+                  dueCarePlans[dueCarePlans.indexOf(existedCp.first)]['items'].add(item);
+                });
+                
               }
-              print('dueCarePlansLength ${dueCarePlans.length}');
+              
+              print('dueCarePlansLength ${dueCarePlans}');
             } else if (todayDate.isBefore(startDate)) {
               var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
               // print(existedCp);
@@ -329,7 +335,6 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
       //   carePlans = data['data'];
       //   isLoading = false;
       // });
-
     }
   }
 
@@ -388,7 +393,6 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
                     child: Column(
                       children: <Widget>[
                         
-                        dueCarePlans.length > 0 ? CareplanAction(checkInState: false, carePlans: dueCarePlans, text: AppLocalizations.of(context).translate('dueToday')) : Container(),
                         dueCarePlans.length > 0 ?
                         CareplanAction(checkInState: false, carePlans: dueCarePlans, text: AppLocalizations.of(context).translate('dueToday'))
                         : Container(
@@ -805,12 +809,13 @@ class _ActionItemState extends State<ActionItem> {
     return InkWell(
       onTap: () {
         print(widget.item['body']);
+        print('here');
         print(isCounselling());
-        if (isCounselling()) {
+        // if (isCounselling()) {
           Navigator.of(context).pushNamed(CounsellingConfirmation.path, arguments: { 'data': widget.item, 'parent': this});
-          return;
-        }
-        Navigator.of(context).pushNamed('/chwActionsSwipper', arguments: { 'data': widget.item, 'parent': this});
+          // return;
+        // }
+        // Navigator.of(context).pushNamed('/chwActionsSwipper', arguments: { 'data': widget.item, 'parent': this});
       },
       child: Container(
         padding: EdgeInsets.only(top: 20, bottom: 5, left: 20, right: 20),
@@ -856,7 +861,7 @@ class _ActionItemState extends State<ActionItem> {
 class CareplanAction extends StatefulWidget {
 
   bool checkInState;
-  var carePlans = [];
+  final carePlans;
   String text = '';
 
   CareplanAction({this.checkInState, this.carePlans, this.text});
@@ -867,8 +872,9 @@ class CareplanAction extends StatefulWidget {
 class _CareplanActionState extends State<CareplanAction> {
   @override
   void initState() {
-    super.initState();
     print('careplanAction ${widget.carePlans}');
+    super.initState();
+    
   }
 
   getCount(item) {

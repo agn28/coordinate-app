@@ -24,7 +24,7 @@ class ObservationRepositoryLocal {
 
     try {
       response = await db.rawInsert(sql, params);
-      print(response);
+      print('obs $response');
     } catch(error) {
       print('local observation create error');
       print(error);
