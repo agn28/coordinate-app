@@ -432,7 +432,7 @@ class SyncController extends GetxController {
     // Initiating API request
     for (var data in syncData) {
       print('reqData ${jsonEncode(data['sync_data']['careplan_data'])}');
-      return;
+      // return;
       var response = await syncRepo.create(data['sync_data']);
       print('sync resposne $response');
 
