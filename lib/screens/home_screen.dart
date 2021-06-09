@@ -36,9 +36,7 @@ class _HomeState extends State<HomeScreen> {
     _getAuthData();
     super.initState();
     Connectivity().onConnectivityChanged.listen(syncController.checkConnection);
-
-    syncController.getAllStatsData();
-    syncController.initializeSync();
+    getSyncData();
   }
 
   _getAuthData() async {
@@ -52,6 +50,12 @@ class _HomeState extends State<HomeScreen> {
       role = data['role'];
     });
   }
+
+  getSyncData() async {
+    await syncController.getAllStatsData();
+    await syncController.initializeSync();
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -458,9 +462,12 @@ class _HomeState extends State<HomeScreen> {
                                           CircularProgressIndicator(),
                                         ],
                                       )
-                                    else if (syncController
-                                            .localNotSyncedPatients.value.length >
-                                        0)
+                                    else if (syncController.localNotSyncedPatients.value.length > 0 
+                                    || syncController.localNotSyncedAssessments.value.length > 0
+                                    || syncController.localNotSyncedObservations.value.length > 0
+                                    || syncController.localNotSyncedReferrals.value.length > 0
+                                    || syncController.localNotSyncedCareplans.value.length > 0
+                                    || syncController.localNotSyncedHealthReports.value.length > 0)
                                       Container(
                                         width: 300,
                                         padding: EdgeInsets.symmetric(
@@ -474,7 +481,7 @@ class _HomeState extends State<HomeScreen> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              'You have ${syncController.localNotSyncedPatients.value.length + syncController.localNotSyncedAssessments.value.length + syncController.localNotSyncedObservations.value.length + syncController.localNotSyncedReferrals.value.length} device data left to sync',
+                                              'You have ${syncController.localNotSyncedPatients.value.length + syncController.localNotSyncedAssessments.value.length + syncController.localNotSyncedObservations.value.length + syncController.localNotSyncedReferrals.value.length + syncController.localNotSyncedCareplans.value.length} device data left to sync',
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w500),
@@ -548,7 +555,7 @@ class _HomeState extends State<HomeScreen> {
                                 // Column(
                                 //   children: [
                                 //     Text('Updates in server: ${syncController.syncs.value.length}', style: TextStyle(fontSize: 20),),
-                                //     Text('Updates in Local: ${syncController.localNotSyncedPatients.value.length + syncController.localNotSyncedAssessments.value.length + syncController.localNotSyncedObservations.value.length + syncController.localNotSyncedReferrals.value.length}', style: TextStyle(fontSize: 20),),
+                                //     Text('Updates in Local: ${syncController.localNotSyncedPatients.value.length + syncController.localNotSyncedAssessments.value.length + syncController.localNotSyncedObservations.value.length + syncController.localNotSyncedReferrals.value.length + syncController.localNotSyncedCareplans.value.length}', style: TextStyle(fontSize: 20),),
                                 //     SizedBox(height: 20,),
 
                                 //     Row(
@@ -569,6 +576,13 @@ class _HomeState extends State<HomeScreen> {
                                 //       mainAxisAlignment: MainAxisAlignment.center,
                                 //       children: [
                                 //         Text('Referrals Not synced in Local: ${syncController.localNotSyncedReferrals.value.length}', style: TextStyle(fontSize: 20),),
+                                //         SizedBox(width: 20),
+                                //       ],
+                                //     ),
+                                //     Row(
+                                //       mainAxisAlignment: MainAxisAlignment.center,
+                                //       children: [
+                                //         Text('Careplans Not synced in Local: ${syncController.localNotSyncedCareplans.value.length}', style: TextStyle(fontSize: 20),),
                                 //         SizedBox(width: 20),
                                 //       ],
                                 //     ),

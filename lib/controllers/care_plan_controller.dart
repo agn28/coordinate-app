@@ -52,7 +52,7 @@ class CarePlanController {
           content: Text("Error: ${AppLocalizations.of(context).translate('somethingWrong')}"),
           backgroundColor: kPrimaryRedColor,
         ));
-        return;
+        return 'error';
       }
       //API did not respond due to handled exception
       else if (apiResponse['exception'] != null) {
@@ -62,7 +62,7 @@ class CarePlanController {
             content: Text('Error: ${apiResponse['message']}'),
             backgroundColor: kPrimaryRedColor,
           ));
-          return;
+          return 'error';
         }
         // exception type known (e.g: slow/no net)
         Scaffold.of(context).showSnackBar(SnackBar(
@@ -71,7 +71,7 @@ class CarePlanController {
         ));
         // creating local careplan with not synced status
         response = await CarePlanRepositoryLocal().completeLocalCarePlan(data['id'], data, comment, false);
-        return response;
+        return 'success';
       }
       //API responded with error
       else if (apiResponse['error'] != null && apiResponse['error']) {
@@ -79,7 +79,7 @@ class CarePlanController {
           content: Text("Error: ${apiResponse['message']}"),
           backgroundColor: kPrimaryRedColor,
         ));
-        return;
+        return 'error';
       }
       //API responded success with no error
       else if (apiResponse['error'] != null && !apiResponse['error']) {
@@ -96,9 +96,9 @@ class CarePlanController {
           print('after updating sync key');
           print(updateSync);
         }
-        return response;
+        return 'success';
       }
-      return response;
+      return 'error';
     } else {
       print('not connected');
       print(context);

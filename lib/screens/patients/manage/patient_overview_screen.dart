@@ -304,6 +304,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
           });
         }
         encounters[encounters.indexOf(item)]['completed_observations'] = completed_observations;
+        print(encounters[0]['data']);
       });
       // print(encounters);
       //TODO: fix the datetime for sorting

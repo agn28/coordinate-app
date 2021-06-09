@@ -15,6 +15,7 @@ import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/controllers/observation_controller.dart';
 import 'package:nhealth/controllers/user_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
+import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
@@ -207,25 +208,27 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     var data = await FollowupController().getFollowupsByPatient(patientID);
 
     
-    if (data['error'] == true) {
+     if (isNull(data) || isNotNull(data['exception'])) {
 
-      // Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
-    } else if (data['message'] == 'Unauthorized') {
+    }else if (data['message'] == 'Unauthorized') {
       Auth().logout();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    } else if (data['error'] == true) {
+
+      // Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
     } else {
       setState(() {
         referrals = data['data'];
       });
     }
 
-    referrals.forEach((referral) {
-      if (referral['meta']['status'] == 'pending') {
-        setState(() {
-          pendingReferral = referral;
-        });
-      }
-    });
+    // referrals.forEach((referral) {
+    //   if (referral['meta']['status'] == 'pending') {
+    //     setState(() {
+    //       pendingReferral = referral;
+    //     });
+    //   }
+    // });
   }
 
   var waitCount = 0;
@@ -413,7 +416,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     lastFollowup = await AssessmentController().getLastAssessmentByPatient('screening_type', 'follow-up');
 
     print('lastFollowup $lastFollowup');
-    if(lastFollowup != null) {
+    if(lastFollowup != null && lastFollowup.isNotEmpty) {
       lastFollowupType = lastFollowup['data']['body']['followup_type'];
       print('lastFollowupType ${lastFollowupType}');
     }
@@ -1449,31 +1452,26 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                 ),
                               ),
                               SizedBox(height: 20,),
-                              // (widget.prevScreen == 'home') && _patient['data']['incomplete_encounter'] != null &&  _patient['data']['incomplete_encounter'] ?
-                              // Container(
-                              //   child: Column(
-                              //     crossAxisAlignment: CrossAxisAlignment.start,
-                              //     children: [
-                              //       Row(
-                              //         crossAxisAlignment: CrossAxisAlignment.start,
-                              //         children: [
-                              //           Container(
-                              //             child: FlatButton(
-                              //               onPressed: () {
-                              //                 print('hello');
-                              //                 print("patientDataincomplete ${_patient['data']} ");
-                              //                 Navigator.of(context).pushNamed('/editIncompleteEncounter',);
-                              //               },
-                              //               color: kPrimaryColor,
-                              //               child: Text(AppLocalizations.of(context).translate("completePrevEncounter"), style: TextStyle(color: Colors.white),),
-                              //             ),
-                              //           ),
-                              //           SizedBox(width: 20),
-                              //         ]
-                              //       ),
-                              //     ],
-                              //   )
-                              // ) : Container(),
+                              (widget.prevScreen == 'home') && _patient['data']['incomplete_encounter'] != null &&  _patient['data']['incomplete_encounter'] ?
+                              Container(
+                                width: double.infinity,
+                                  //margin: EdgeInsets.only(left: 15, right: 15),
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: kPrimaryColor,
+                                  borderRadius: BorderRadius.circular(3)
+                                ),
+                                child: FlatButton(
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                  lastFollowupType == 'full' ?
+                                  Navigator.of(context).pushNamed('/editIncompleteFullFollowup',)
+                                  : Navigator.of(context).pushNamed('/editIncompleteShortFollowup',);
+                                },
+                                color: kPrimaryColor,
+                                child: Text(AppLocalizations.of(context).translate('updateLastFollowUp'), style: TextStyle(color: Colors.white),),
+                                ),
+                              ) : Container(),
                               SizedBox(height: 20,),
                               (widget.prevScreen == 'encounter' || widget.prevScreen == 'followup') && widget.encounterData['dataStatus'] != 'complete' ?
                               Container(
@@ -1504,6 +1502,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                     if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
                                     {
                                       print('edit followup');
+                                      print('${widget.encounterData['encounter']}');
                                       var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
 
                                     } else {
@@ -2140,7 +2139,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: <Widget>[
-                            _patient['data']['incomplete_encounter'] != null &&  _patient['data']['incomplete_encounter'] ?
+                            (widget.prevScreen == 'home') && _patient['data']['incomplete_encounter'] != null &&  _patient['data']['incomplete_encounter'] ?
                             FloatingButton(text: AppLocalizations.of(context).translate('updateLastFollowUp'), onPressed: () {
                               Navigator.of(context).pop();
                               lastFollowupType == 'full' ?

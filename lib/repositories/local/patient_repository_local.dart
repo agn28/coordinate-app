@@ -31,6 +31,21 @@ class PatientReposioryLocal {
     return data;
   }
 
+  getPatientById(id) async {
+    final sql = '''SELECT * FROM ${DatabaseCreator.patientTable} WHERE id = "$id"''';
+    var patient;
+
+    try {
+      patient = await db.rawQuery(sql);
+      print('patientbyId $patient');
+    } catch (error) {
+      print('error');
+      print(error);
+      return;
+    }
+    return patient;
+  }
+
   getNotSyncedPatients() async {
     final sql =
         '''SELECT * FROM ${DatabaseCreator.patientTable} WHERE is_synced=0''';
@@ -291,6 +306,26 @@ class PatientReposioryLocal {
     PatientRepository().update(data);
 
     await Patient().setPatient(patient);
+  }
+  
+  updateFromLive(id, data) async {
+    print('into updating patient $id');
+
+    final sql = '''UPDATE ${DatabaseCreator.patientTable} SET
+      data = ?, is_synced = ? WHERE id = ?''';
+    List<dynamic> params = [jsonEncode(data), true, id];
+    var response;
+
+    try {
+      response = await db.rawUpdate(sql, params);
+      print('update local patient $response');
+    } catch(error) {
+      print('error');
+      print(error);
+      return;
+    }
+    return response;
+
   }
 
   Future<void> updateLocalStatus(uuid, isSynced) async {

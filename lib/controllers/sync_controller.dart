@@ -121,7 +121,7 @@ class SyncController extends GetxController {
   }
 
   getLocalNotSyncedAssessments() async {
-    print(localNotSyncedPatients);
+    print(localNotSyncedAssessments);
     var response = await assessmentRepoLocal.getNotSyncedAssessments();
 
     print('not synced patient response');
@@ -234,8 +234,7 @@ class SyncController extends GetxController {
 
   checkConnection(result) async {
     print('connection status');
-    if (result == ConnectivityResult.wifi ||
-        result == ConnectivityResult.mobile) {
+    if (result == ConnectivityResult.wifi || result == ConnectivityResult.mobile) {
       print('connected');
       isConnected.value = true;
       initializeSync();
@@ -293,7 +292,11 @@ class SyncController extends GetxController {
 
  syncLocalDataToLiveByPatient() async {
     print('syncing local patient data');
-    if (localNotSyncedPatients.value.isEmpty && localNotSyncedAssessments.value.isEmpty && localNotSyncedObservations.value.isEmpty && localNotSyncedReferrals.value.isEmpty) {
+    if (localNotSyncedPatients.value.isEmpty 
+    && localNotSyncedAssessments.value.isEmpty 
+    && localNotSyncedObservations.value.isEmpty 
+    && localNotSyncedReferrals.value.isEmpty 
+    && localNotSyncedCareplans.value.isEmpty) {
       return;
     }
     var syncData = [];
@@ -310,7 +313,8 @@ class SyncController extends GetxController {
         'sync_data':{
           'patient_data':patientData,
           'assessment_data': [],
-          'referral_data': []
+          'referral_data': [],
+          'careplan_data': []
         }
       });
       print('patientData $syncData');
@@ -383,7 +387,7 @@ class SyncController extends GetxController {
       var matchedData = syncData.where((data) => data['patient_id'] == referral['meta']['patient_id']);
       if(matchedData.isEmpty) {
         syncData.add({
-          'patient_id': referral['data']['patient_id'],
+          'patient_id': referral['meta']['patient_id'],
           'sync_data':{
             'referral_data': [referralData]
           }
@@ -399,9 +403,36 @@ class SyncController extends GetxController {
       }
     }
 
+    for (var careplan in localNotSyncedCareplans) {
+      print('into local careplan $careplan');
+      var careplanData = {
+        'id': careplan['id'],
+        'body': careplan['data'],
+        'meta': careplan['meta']
+      };
+      var matchedData = syncData.where((data) => data['patient_id'] == careplan['data']['patient_id']);
+      if(matchedData.isEmpty) {
+        syncData.add({
+          'patient_id': careplan['data']['patient_id'],
+          'sync_data':{
+            'careplan_data': [careplanData]
+          }
+        });
+      } else if(matchedData.isNotEmpty) {
+        var matchedGroupIndex = syncData.indexOf(matchedData.first);
+        print(syncData[matchedGroupIndex]);
+        if(syncData[matchedGroupIndex]['sync_data']['careplan_data'] != null){
+          syncData[matchedGroupIndex]['sync_data']['careplan_data'].add(careplanData);
+        } else {
+          syncData[matchedGroupIndex]['sync_data']['careplan_data'] = [careplanData];
+        }
+      }
+    }
+
     // Initiating API request
     for (var data in syncData) {
-      print('reqData ${data['sync_data']}');
+      print('reqData ${jsonEncode(data['sync_data']['careplan_data'])}');
+      return;
       var response = await syncRepo.create(data['sync_data']);
       print('sync resposne $response');
 
@@ -448,6 +479,16 @@ class SyncController extends GetxController {
             if (isNotNull(referral['sync']) && isNotNull(referral['sync']['key'])) {
               await referralRepoLocal.updateLocalStatus(referral['sync']['document_id'], 1);
               await syncRepo.updateLatestLocalSyncKey(referral['sync']['key']);
+            }
+          }
+        }
+
+        //For Careplans
+        if (response['data']['careplans'].isNotEmpty) {
+          for (var careplan in response['data']['careplans']) {
+            if (isNotNull(careplan['sync']) && isNotNull(careplan['sync']['key'])) {
+              await referralRepoLocal.updateLocalStatus(careplan['sync']['document_id'], 1);
+              await syncRepo.updateLatestLocalSyncKey(careplan['sync']['key']);
             }
           }
         }
@@ -756,18 +797,20 @@ class SyncController extends GetxController {
     for (var item in tempSyncs) {
       if (item['collection'] == 'patients') {
         if (item['action'] == 'create') {
-          var patient =
-              await PatientController().getPatient(item['document_id']);
+          var patient = await PatientController().getPatient(item['document_id']);
           print('patient');
           print(patient);
-          if (isNotNull(patient) &&
-              isNotNull(patient['error']) &&
-              !patient['error'] &&
-              isNotNull(patient['data'])) {
-            print('creating local patient');
-            var localPatient = await PatientReposioryLocal()
-                .createFromLive(patient['data']['id'], patient['data']);
-            print('after creating local patient');
+          if (isNotNull(patient) && isNotNull(patient['error']) && !patient['error'] && isNotNull(patient['data'])) {
+            var existingLocalPatient = PatientReposioryLocal().getPatientById(patient['data']['id']);
+            //Patient already exists in local, needs to be updated
+            var localPatient;
+            if(isNotNull(existingLocalPatient)) {
+              print('updating local patient');
+              localPatient = await PatientReposioryLocal().updateFromLive(patient['data']['id'], patient['data']);
+            } else {
+              print('creating local patient');
+              localPatient = await PatientReposioryLocal().createFromLive(patient['data']['id'], patient['data']);
+            }
 
             if (isNotNull(localPatient)) {
               print('updating synnc key');

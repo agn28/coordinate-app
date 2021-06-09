@@ -435,12 +435,11 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
                                       child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
                                       onPressed: () async {
                                         Navigator.of(context).pop();
-                                        var result = '';
+                                        var result;
                                         setState(() {
                                           isLoading = true;
                                         });
-
-                                        result = await AssessmentController().createOnlyAssessmentWithStatus('follow up visit (community)', 'follow-up', '', '', '');
+                                        result = await AssessmentController().createOnlyAssessment(context, 'follow up visit (community)', 'follow-up', '', 'complete', '', followupType:'short');
 
                                         setState(() {
                                           isLoading = false;

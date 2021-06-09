@@ -4208,12 +4208,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
 
                                           print(patient['data']['age']);
                                           // return;
-                                          var response =
-                                              await AssessmentController()
-                                                  .createOnlyAssessment(
-                                                      'follow up visit (center)',
-                                                      '',
-                                                      '');
+                                          // var response = await AssessmentController().createOnlyAssessment('follow up visit (center)', '', '');
 
                                           widget.parent.setLoader(false);
                                           print('successss');
@@ -4239,7 +4234,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                           widget.parent.goToHome(false, null);
 
                                           print('response');
-                                          print(response);
+                                          // print(response);
                                         },
                                         materialTapTargetSize:
                                             MaterialTapTargetSize.shrinkWrap,
