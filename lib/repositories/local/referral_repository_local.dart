@@ -36,6 +36,31 @@ class ReferralRepositoryLocal {
     return response;
   }
 
+  update(id, data, isSynced) async {
+    print('into local referral update');
+    final sql = '''UPDATE ${DatabaseCreator.referralTable} SET
+      data = ? , 
+      patient_id = ?,
+      status = ?,
+      is_synced = ?
+      WHERE id = ?''';
+    List<dynamic> params = [jsonEncode(data), data['meta']['patient_id'],
+      data['meta']['status'], isSynced, id];
+    print('sql $sql');
+    var response;
+
+    try {
+      response = await db.rawUpdate(sql, params);
+      print(response);
+    } catch(error) {
+      print('local referral update error');
+      print(error);
+    }
+    DatabaseCreator.databaseLog('Update referral', sql, null, response, params);
+    return response;
+    
+  }
+
   getAllReferrals() async {
     final sqlObservations =
         '''SELECT * FROM ${DatabaseCreator.referralTable}''';
@@ -74,6 +99,21 @@ class ReferralRepositoryLocal {
     }
 
     return response;
+  }
+
+  getReferralById(id) async {
+    final sql = '''SELECT * FROM ${DatabaseCreator.referralTable} WHERE id = "$id"''';
+    var referral;
+
+    try {
+      referral = await db.rawQuery(sql);
+      print('referralbyId $referral');
+    } catch (error) {
+      print('error');
+      print(error);
+      return;
+    }
+    return referral;
   }
 
   Future<void> updateLocalStatus(uuid, isSynced) async {

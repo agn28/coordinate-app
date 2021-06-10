@@ -49,7 +49,7 @@ class CarePlanRepositoryLocal {
       id,
       jsonEncode(data),
       data['body']['patient_id'],
-      'completed',
+      data['meta']['status'],
       isSynced
     ];
     var response;
@@ -106,6 +106,21 @@ class CarePlanRepositoryLocal {
     final careplans = await db.rawQuery(sqlCareplans);
 
     return careplans;
+  }
+
+  getCareplanById(id) async {
+    final sql = '''SELECT * FROM ${DatabaseCreator.careplanTable} WHERE id = "$id"''';
+    var careplan;
+
+    try {
+      careplan = await db.rawQuery(sql);
+      print('careplanbyId $careplan');
+    } catch (error) {
+      print('error');
+      print(error);
+      return;
+    }
+    return careplan;
   }
 
   getNotSyncedCareplans() async {

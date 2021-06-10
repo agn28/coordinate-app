@@ -292,6 +292,7 @@ class SyncController extends GetxController {
 
  syncLocalDataToLiveByPatient() async {
     print('syncing local patient data');
+    print(await careplanRepoLocal.getNotSyncedCareplans());
     if (localNotSyncedPatients.value.isEmpty 
     && localNotSyncedAssessments.value.isEmpty 
     && localNotSyncedObservations.value.isEmpty 
@@ -798,13 +799,12 @@ class SyncController extends GetxController {
       if (item['collection'] == 'patients') {
         if (item['action'] == 'create') {
           var patient = await PatientController().getPatient(item['document_id']);
-          print('patient');
-          print(patient);
+          print('patient $patient');
           if (isNotNull(patient) && isNotNull(patient['error']) && !patient['error'] && isNotNull(patient['data'])) {
-            var existingLocalPatient = PatientReposioryLocal().getPatientById(patient['data']['id']);
+            var existingLocalPatient = await PatientReposioryLocal().getPatientById(patient['data']['id']);
             //Patient already exists in local, needs to be updated
             var localPatient;
-            if(isNotNull(existingLocalPatient)) {
+            if(isNotNull(existingLocalPatient) && existingLocalPatient.isNotEmpty) {
               print('updating local patient');
               localPatient = await PatientReposioryLocal().updateFromLive(patient['data']['id'], patient['data']);
             } else {
@@ -833,16 +833,20 @@ class SyncController extends GetxController {
               await assessmentController.getAssessmentById(item['document_id']);
           print('assessment');
           print(assessment);
-          if (isNotNull(assessment) &&
-              isNotNull(assessment['error']) &&
-              !assessment['error'] &&
-              isNotNull(assessment['data'])) {
-            print('creating local assessment');
-            var localAssessment =
-                await assessmentRepoLocal.createLocalAssessment(
-                    assessment['data']['id'], assessment['data'], true);
-            print('after creating local assessment');
-
+          if (isNotNull(assessment) && isNotNull(assessment['error']) && !assessment['error'] && isNotNull(assessment['data'])) {
+            // print('creating local assessment');
+            // var localAssessment = await assessmentRepoLocal.createLocalAssessment(assessment['data']['id'], assessment['data'], true);
+            // print('after creating local assessment');
+            var existingLocalAssessment = await assessmentRepoLocal.getAssessmentById(assessment['data']['id']);
+            //Assessment already exists in local, needs to be updated
+            var localAssessment;
+            if(isNotNull(existingLocalAssessment) && existingLocalAssessment.isNotEmpty) {
+              print('updating local assessment');
+              localAssessment = await assessmentRepoLocal.updateLocalAssessment(assessment['data']['id'], assessment['data'], true);
+            } else {
+              print('creating local assessment');
+              localAssessment = await assessmentRepoLocal.createLocalAssessment(assessment['data']['id'], assessment['data'], true);
+            }
             if (isNotNull(localAssessment)) {
               print('updating sync key');
               var updateSync = await updateLocalSyncKey(item['key']);
@@ -857,19 +861,24 @@ class SyncController extends GetxController {
         }
       } else if (item['collection'] == 'observations') {
         if (item['action'] == 'create') {
-          var observation = await observationController
-              .getLiveObservationsById(item['document_id']);
+          var observation = await observationController.getLiveObservationsById(item['document_id']);
           print('observations');
           print(observation);
-          if (isNotNull(observation) &&
-              isNotNull(observation['error']) &&
-              !observation['error'] &&
-              isNotNull(observation['data'])) {
-            print('creating local observation');
-            var localObservation = await observationRepoLocal.create(
-                observation['data']['id'], observation['data'], true);
-            print('after creating local observation');
-
+          if (isNotNull(observation) && isNotNull(observation['error']) && !observation['error'] && isNotNull(observation['data'])) {
+            // print('creating local observation');
+            // var localObservation = await observationRepoLocal.create(
+            //     observation['data']['id'], observation['data'], true);
+            // print('after creating local observation');
+            var existingLocalObservation = await observationRepoLocal.getObservationById(observation['data']['id']);
+            //Observation already exists in local, needs to be updated
+            var localObservation;
+            if(isNotNull(existingLocalObservation) && existingLocalObservation.isNotEmpty) {
+              print('updating local observation');
+              localObservation = await observationRepoLocal.update(observation['data']['id'], observation['data'], true);
+            } else {
+              print('creating local observation');
+              localObservation = await observationRepoLocal.create(observation['data']['id'], observation['data'], true);
+            }
             if (isNotNull(localObservation)) {
               print('updating sync key');
               var updateSync = await updateLocalSyncKey(item['key']);
@@ -884,18 +893,24 @@ class SyncController extends GetxController {
         }
       } else if (item['collection'] == 'referrals') {
         if (item['action'] == 'create') {
-          var referral =
-              await referralRepo.getReferralById(item['document_id']);
+          var referral = await referralRepo.getReferralById(item['document_id']);
           print('referrals');
           print(referral);
-          if (isNotNull(referral) &&
-              isNotNull(referral['error']) &&
-              !referral['error'] &&
-              isNotNull(referral['data'])) {
-            print('creating local referral');
-            var localReferral = await referralRepoLocal.create(
-                referral['data']['id'], referral['data'], true);
-            print('after creating local observation');
+          if (isNotNull(referral) && isNotNull(referral['error']) && !referral['error'] && isNotNull(referral['data'])) {
+            // print('creating local referral');
+            // var localReferral = await referralRepoLocal.create(
+            //     referral['data']['id'], referral['data'], true);
+            // print('after creating local observation');
+            var existingLocalReferral = await referralRepoLocal.getReferralById(referral['data']['id']);
+            //Referral already exists in local, needs to be updated
+            var localReferral;
+            if(isNotNull(existingLocalReferral) && existingLocalReferral.isNotEmpty) {
+              print('updating local referral');
+              localReferral = await referralRepoLocal.update(referral['data']['id'], referral['data'], true);
+            } else {
+              print('creating local referral');
+              localReferral = await referralRepoLocal.create(referral['data']['id'], referral['data'], true);
+            }
 
             if (isNotNull(localReferral)) {
               print('updating sync key');
@@ -911,18 +926,24 @@ class SyncController extends GetxController {
         }
       } else if (item['collection'] == 'care_plans') {
         if (item['action'] == 'create') {
-          var careplan =
-              await careplanRepo.getCarePlanById(item['document_id']);
+          var careplan = await careplanRepo.getCarePlanById(item['document_id']);
           print('careplan');
           print(careplan);
-          if (isNotNull(careplan) &&
-              isNotNull(careplan['error']) &&
-              !careplan['error'] &&
-              isNotNull(careplan['data'])) {
+          if (isNotNull(careplan) && isNotNull(careplan['error']) && !careplan['error'] && isNotNull(careplan['data'])) {
             print('creating local referral');
-            var localCareplan = await careplanRepoLocal.create(
-                careplan['data']['id'], careplan['data'], true);
-            print('after creating local careplan');
+            // var localCareplan = await careplanRepoLocal.create(
+            //     careplan['data']['id'], careplan['data'], true);
+            // print('after creating local careplan');
+            var existingLocalCareplan = await careplanRepoLocal.getCareplanById(careplan['data']['id']);
+            //Careplan already exists in local, needs to be updated
+            var localCareplan;
+            if(isNotNull(existingLocalCareplan) && existingLocalCareplan.isNotEmpty) {
+              print('updating local careplan');
+              localCareplan = await careplanRepoLocal.update(careplan['data']['id'], careplan['data'], true);
+            } else {
+              print('creating local careplan');
+              localCareplan = await careplanRepoLocal.create(careplan['data']['id'], careplan['data'], true);
+            }
 
             if (isNotNull(localCareplan)) {
               print('updating sync key');
@@ -941,10 +962,19 @@ class SyncController extends GetxController {
           var healthReport = await healthReportRepo.getHealthReportById(item['document_id']);
           print('healthReports $healthReport');
           if (isNotNull(healthReport) && isNotNull(healthReport['error']) && !healthReport['error'] && isNotNull(healthReport['data'])) {
-            print('creating local healthReport');
-            var localHealthReport = await healthReportRepoLocal.create(healthReport['data']['id'], healthReport['data'], true);
-            print('after creating local healthReport');
-
+            // print('creating local healthReport');
+            // var localHealthReport = await healthReportRepoLocal.create(healthReport['data']['id'], healthReport['data'], true);
+            // print('after creating local healthReport');
+            var existingLocalHealthReport = await healthReportRepoLocal.getHealthReportById(healthReport['data']['id']);
+            //HealthReport already exists in local, needs to be updated
+            var localHealthReport;
+            if(isNotNull(existingLocalHealthReport) && existingLocalHealthReport.isNotEmpty) {
+              print('updating local healthReport');
+              localHealthReport = await healthReportRepoLocal.update(healthReport['data']['id'], healthReport['data'], true);
+            } else {
+              print('creating local healthReport');
+              localHealthReport = await healthReportRepoLocal.create(healthReport['data']['id'], healthReport['data'], true);
+            }
             if (isNotNull(localHealthReport)) {
               print('updating sync key');
               var updateSync = await updateLocalSyncKey(item['key']);

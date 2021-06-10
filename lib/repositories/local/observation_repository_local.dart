@@ -73,6 +73,21 @@ class ObservationRepositoryLocal {
     return observations;
   }
 
+  getObservationById(id) async {
+    final sql = '''SELECT * FROM ${DatabaseCreator.observationTable} WHERE id = "$id"''';
+    var observation;
+
+    try {
+      observation = await db.rawQuery(sql);
+      print('observationbyId $observation');
+    } catch (error) {
+      print('error');
+      print(error);
+      return;
+    }
+    return observation;
+  }
+
   getNotSyncedObservations() async {
     final sql =
         '''SELECT * FROM ${DatabaseCreator.observationTable} WHERE is_synced=0''';

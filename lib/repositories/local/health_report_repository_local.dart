@@ -46,7 +46,7 @@ class HealthReportRepositoryLocal {
       id,
       jsonEncode(data),
       data['body']['patient_id'],
-      'completed',
+      '',
       isSynced
     ];
     var response;
@@ -74,6 +74,21 @@ class HealthReportRepositoryLocal {
     final healthReports = await db.rawQuery(sqlHealthReports);
 
     return healthReports;
+  }
+
+  getHealthReportById(id) async {
+    final sql = '''SELECT * FROM ${DatabaseCreator.healthReportTable} WHERE id = "$id"''';
+    var healthReport;
+
+    try {
+      healthReport = await db.rawQuery(sql);
+      print('healthReportbyId $healthReport');
+    } catch (error) {
+      print('error');
+      print(error);
+      return;
+    }
+    return healthReport;
   }
 
   getLastReport(patientId) async {

@@ -52,6 +52,21 @@ class AssessmentRepositoryLocal {
     return assessments;
   }
 
+  getAssessmentById(id) async {
+    final sql = '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE id = "$id"''';
+    var assessment;
+
+    try {
+      assessment = await db.rawQuery(sql);
+      print('assessmentbyId $assessment');
+    } catch (error) {
+      print('error');
+      print(error);
+      return;
+    }
+    return assessment;
+  }
+
   getIncompleteAssessmentsByPatient(id) async {
     print('patient id ' + id);
     var status = 'incomplete';
