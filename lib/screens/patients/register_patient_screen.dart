@@ -1549,6 +1549,7 @@ class ViewSummary extends StatefulWidget {
 class _ViewSummaryState extends State<ViewSummary> {
   bool isLoading = false;
   bool firstTime = true;
+  bool _isRegisterButtonDisabled;
 
   final FirebaseStorage _storage = FirebaseStorage(storageBucket: gsBucket);
   StorageUploadTask _uploadTask;
@@ -1557,6 +1558,7 @@ class _ViewSummaryState extends State<ViewSummary> {
   @override
   initState() {
     super.initState();
+    _isRegisterButtonDisabled = false;
   }
 
   uploadImage() async {
@@ -1611,6 +1613,60 @@ class _ViewSummaryState extends State<ViewSummary> {
     }
 
     return address;
+  }
+  
+  completeRegistration() async {
+    setState(() {
+      isLoading = true;
+      _isRegisterButtonDisabled = true;
+    });
+    var url = await uploadImage();
+    var formData = _RegisterPatientState()._prepareFormData();
+    print('formdata $formData');
+    var response = isEditState != null
+      ? await PatientController().update(formData, false)
+      : await PatientController().create(context, formData);
+    
+    if (response != null) {
+      if (response == 'success') {
+        print('into success');
+        _RegisterPatientState()._clearForm();
+        Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen(isEditState: isEditState));
+      } else {
+        _scaffoldKey.currentState.showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context).translate('somethingWrong')),
+            backgroundColor: kPrimaryRedColor,
+          )
+        );
+        return;  
+      }
+      // else if (response['error'] != null && response['error']) {
+      //   if (response['message'] == 'Patient already exists.') {
+      //     _scaffoldKey.currentState.showSnackBar(
+      //       SnackBar(
+      //         content: Text(AppLocalizations.of(context).translate('nidValidation')),
+      //         backgroundColor: kPrimaryRedColor,
+      //       )
+      //     );
+      //     return;
+      //   }
+
+      //   _scaffoldKey.currentState.showSnackBar(
+      //     SnackBar(
+      //       content: Text(AppLocalizations.of(context).translate('somethingWrong')),
+      //       backgroundColor: kPrimaryRedColor,
+      //     )
+      //   );
+      //   return;     
+      // } else if (response['message'] != null && response['message'] == 'Unauthorized') {
+      //   Helpers().logout(context);
+      //   return;
+      // } 
+    }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -1928,62 +1984,7 @@ class _ViewSummaryState extends State<ViewSummary> {
             // SizedBox(height: 20,),
 
             GestureDetector(
-              onTap: () async {
-                setState(() {
-                  isLoading = true;
-                });
-                var url = await uploadImage();
-                var formData = _RegisterPatientState()._prepareFormData();
-                print('formdata $formData');
-                var response = isEditState != null
-                    ? await PatientController().update(formData, false)
-                    : await PatientController().create(context, formData);
-                setState(() {
-                  isLoading = false;
-                });
-
-                if (response != null) {
-                if (response == 'success') {
-                  print('into success');
-                  _RegisterPatientState()._clearForm();
-                  Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen(isEditState: isEditState));
-                }
-                else if (response['error'] != null && response['error']) {
-                  if (response['message'] == 'Patient already exists.') {
-                    _scaffoldKey.currentState.showSnackBar(
-                      SnackBar(
-                        content: Text(AppLocalizations.of(context).translate('nidValidation')),
-                        backgroundColor: kPrimaryRedColor,
-                      )
-                    );
-                    return;
-                  }
-
-                  _scaffoldKey.currentState.showSnackBar(
-                    SnackBar(
-                      content: Text(AppLocalizations.of(context).translate('somethingWrong')),
-                      backgroundColor: kPrimaryRedColor,
-                    )
-                  );
-
-
-                  return;
-                  
-                }
-
-                else if (response['message'] != null && response['message'] == 'Unauthorized') {
-                  Helpers().logout(context);
-                  return;
-                }
-
-                else if (response['id'] != null ) {
-                  print('into id');
-                  _RegisterPatientState()._clearForm();
-                  Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen(isEditState: isEditState));
-                  return;
-                }
-              }
-              },
+              onTap: _isRegisterButtonDisabled ? null : completeRegistration,
               child: Container(
                   width: double.infinity,
                   height: 62.0,

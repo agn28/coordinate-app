@@ -228,12 +228,9 @@ class PatientController {
     // return response;
 
     //TODO: checking the new process
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
       // I am connected to a mobile network.
-
       print('connected');
-      // return;
       data['id'] = uuid;
 
       print('live patient create');
@@ -249,6 +246,9 @@ class PatientController {
               "Error: ${AppLocalizations.of(context).translate('somethingWrong')}"),
           backgroundColor: kPrimaryRedColor,
         ));
+        return;
+      } else if (apiResponse['message'] != null && apiResponse['message'] == 'Unauthorized') {
+        Helpers().logout(context);
         return;
       } else if (apiResponse['exception'] != null) {
         if (apiResponse['type'] == 'unknown') {
@@ -266,7 +266,7 @@ class PatientController {
 
         response =
             await PatientReposioryLocal().create(context, uuid, data, false);
-        return response;
+        return 'success';
       } else if (apiResponse['error'] != null && apiResponse['error']) {
         if (apiResponse['message'] == 'Patient already exists.') {
           Scaffold.of(context).showSnackBar(SnackBar(
@@ -297,7 +297,7 @@ class PatientController {
           print(updateSync);
         }
 
-        return response;
+        return 'success';
       }
 
       // response = await PatientReposioryLocal().create(data);
@@ -312,7 +312,7 @@ class PatientController {
           await PatientReposioryLocal().create(context, uuid, data, false);
     }
 
-    return response;
+    return 'success';
   }
 
   /// Create a new patient
