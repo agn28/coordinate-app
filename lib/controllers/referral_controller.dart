@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/helpers/functions.dart';
+import 'package:nhealth/repositories/local/patient_repository_local.dart';
 import 'package:nhealth/repositories/local/referral_repository_local.dart';
 import 'package:nhealth/repositories/referral_repository.dart';
 import 'package:nhealth/repositories/sync_repository.dart';
@@ -56,6 +57,8 @@ class ReferralController {
         ));
 
         response = await referralRepoLocal.create(referralId, data, false);
+        // Identifying this patient with not synced data
+        await PatientReposioryLocal().updateLocalStatus(data['meta']['patient_id'], false);
         return response;
       } else if (apiResponse['error'] != null && apiResponse['error']) {
         // Scaffold.of(context).showSnackBar(SnackBar(
@@ -85,6 +88,8 @@ class ReferralController {
       //   backgroundColor: kPrimaryYellowColor,
       // ));
       response = await referralRepoLocal.create(referralId, data, false);
+      // Identifying this patient with not synced data
+      await PatientReposioryLocal().updateLocalStatus(data['meta']['patient_id'], false);
       return response;
     }
   }

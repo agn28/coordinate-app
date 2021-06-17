@@ -53,7 +53,11 @@ class _HomeState extends State<HomeScreen> {
 
   getSyncData() async {
     await syncController.getAllStatsData();
-    await syncController.initializeSync();
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+      syncController.isConnected.value = true;
+      await syncController.initializeSync();
+    }
   }
 
   @override
@@ -427,41 +431,62 @@ class _HomeState extends State<HomeScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    if (syncController.isSyncingToLive.value)
-                                      Column(
-                                        children: [
-                                          Container(
-                                            width: 230,
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 15, horizontal: 10),
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                                color: kPrimaryAmberColor),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Column(
-                                                  children: [
-                                                    Text(
-                                                      'Your data is syncing',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.w500),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
+                                    if (syncController.isSyncing.value)
+                                    Column(
+                                      children: [
+                                        Container(
+                                          width: 230,
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 15, horizontal: 10),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              color: kPrimaryAmberColor),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              if (syncController.isSyncingToLive.value)
+                                              Column(
+                                                children: [
+                                                  Text('${syncController.localNotSyncedPatients.value.length+syncController.localNotSyncedAssessments.value.length+syncController.localNotSyncedObservations.value.length+syncController.localNotSyncedReferrals.value.length+syncController.localNotSyncedCareplans.value.length+syncController.localNotSyncedHealthReports.value.length} data is syncing to server',
+                                                    style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500),
+                                                  ),
+                                                ],
+                                              )
+                                              else if (syncController.isSyncingToLocal.value)
+                                              Column(
+                                                children: [
+                                                  Text(
+                                                    '${syncController.syncs.value.length} data is syncing to deivce',
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ],
+                                              )
+                                              else
+                                              Column(
+                                                children: [
+                                                  Text(
+                                                    'Processing data',
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ],
+                                              )
+                                            ],
                                           ),
-                                          SizedBox(
-                                            height: 20,
-                                          ),
-                                          CircularProgressIndicator(),
-                                        ],
-                                      )
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        CircularProgressIndicator(),
+                                      ],
+                                    )
                                     else if (syncController.localNotSyncedPatients.value.length > 0 
                                     || syncController.localNotSyncedAssessments.value.length > 0
                                     || syncController.localNotSyncedObservations.value.length > 0
@@ -538,7 +563,7 @@ class _HomeState extends State<HomeScreen> {
                                           ],
                                         ),
                                       ),
-                                    if (!syncController.isSyncingToLive.value)
+                                    if (!syncController.isSyncing.value)
                                       IconButton(
                                           icon: Icon(
                                             Icons.sync,

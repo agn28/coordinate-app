@@ -7,6 +7,7 @@ import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/repositories/care_plan_repository.dart';
 import 'package:nhealth/repositories/health_report_repository.dart';
 import 'package:nhealth/repositories/local/care_plan_repository_local.dart';
+import 'package:nhealth/repositories/local/patient_repository_local.dart';
 import 'package:nhealth/repositories/sync_repository.dart';
 import 'package:nhealth/constants/constants.dart';
 import '../app_localizations.dart';
@@ -71,6 +72,8 @@ class CarePlanController {
         ));
         // creating local careplan with not synced status
         response = await CarePlanRepositoryLocal().completeLocalCarePlan(data['id'], data, comment, false);
+        // Identifying this patient with not synced data
+        await PatientReposioryLocal().updateLocalStatus(data['body']['patient_id'], false);
         return 'success';
       }
       //API responded with error
@@ -109,6 +112,8 @@ class CarePlanController {
       // ));
       // creating local careplan with not synced status
       response = await CarePlanRepositoryLocal().completeLocalCarePlan(data['id'], data, comment, false);
+      // Identifying this patient with not synced data
+      await PatientReposioryLocal().updateLocalStatus(data['body']['patient_id'], false);
       return 'success';
     }
   }

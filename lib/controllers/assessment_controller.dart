@@ -18,6 +18,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:nhealth/repositories/local/database_creator.dart';
 import 'package:nhealth/repositories/local/observation_repository_local.dart';
+import 'package:nhealth/repositories/local/patient_repository_local.dart';
 import 'package:nhealth/repositories/observation_repository.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -518,6 +519,9 @@ class AssessmentController {
         ));
         // creating local assessment with not synced status
         response = await AssessmentRepositoryLocal().createLocalAssessment(assessmentId, data, false);
+        // Identifying this patient with not synced data
+        await PatientReposioryLocal().updateLocalStatus(data['body']['patient_id'], false);
+      
         return response;
       }
       //API responded with error
@@ -554,6 +558,8 @@ class AssessmentController {
       // ));
       // creating local assessment with not synced status
       response = await AssessmentRepositoryLocal().createLocalAssessment(assessmentId, data, false);
+      // Identifying this patient with not synced data
+      await PatientReposioryLocal().updateLocalStatus(data['body']['patient_id'], false);
       return response;
     }
   }
@@ -1201,6 +1207,8 @@ class AssessmentController {
     for (var observation in observationsData) {
       await ObservationRepositoryLocal().create(observation['id'], observation['data'], isSynced);
     }
+    // Identifying this patient with not synced data
+    await PatientReposioryLocal().updateLocalStatus(assessmentData['body']['patient_id'], isSynced);
 
   }
   updateLocalAssessmentWithObservations(assessmentData, observationsData, isSynced) async {
@@ -1209,6 +1217,8 @@ class AssessmentController {
     for (var observation in observationsData) {
       await ObservationRepositoryLocal().update(observation['id'], observation, isSynced);
     }
+    // Identifying this patient with not synced data
+    await PatientReposioryLocal().updateLocalStatus(assessmentData['body']['patient_id'], isSynced);
   }
 
   updateObservations(status, encounter, observations) async {

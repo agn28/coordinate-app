@@ -159,8 +159,7 @@ class PatientController {
     var response;
 
     var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
       var apiResponse = await PatientRepository().getReferralPatients();
 
       return apiResponse;
@@ -264,8 +263,7 @@ class PatientController {
           backgroundColor: kPrimaryYellowColor,
         ));
 
-        response =
-            await PatientReposioryLocal().create(context, uuid, data, false);
+        response = await PatientReposioryLocal().create(context, uuid, data, false);
         return 'success';
       } else if (apiResponse['error'] != null && apiResponse['error']) {
         if (apiResponse['message'] == 'Patient already exists.') {
@@ -308,8 +306,7 @@ class PatientController {
         content: Text('Warning: No Internet. Using offline...'),
         backgroundColor: kPrimaryYellowColor,
       ));
-      response =
-          await PatientReposioryLocal().create(context, uuid, data, false);
+      response = await PatientReposioryLocal().create(context, uuid, data, false);
     }
 
     return 'success';

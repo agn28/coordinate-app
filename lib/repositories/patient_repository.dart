@@ -398,6 +398,48 @@ class PatientRepository {
     });
   }
 
+  updateSyncStatus(patientId, syncStatus) async {
+    var authData = await Auth().getStorageAuth();
+    var token = authData['accessToken'];
+
+    var response;
+
+    print(apiUrl + 'patients/' + patientId + '/sync-status');
+
+    try {
+      response = await http.put(apiUrl + 'patients/' + patientId + '/sync-status',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: json.encode(
+          {
+            'is_synced': syncStatus
+          }
+        )).timeout(Duration(seconds: httpRequestTimeout));
+      return json.decode(response.body);
+    } on SocketException {
+      // showErrorSnackBar('Error', 'socketError'.tr);
+      print('socket exception');
+      return {'exception': true, 'message': 'No internet'};
+    } on TimeoutException {
+      // showErrorSnackBar('Error', 'timeoutError'.tr);
+      print('timeout error');
+      return {'exception': true, 'type': 'poor_network', 'message': 'Slow internet'};
+    } on Error catch (err) {
+      print('test error');
+      print(err);
+      // showErrorSnackBar('Error', 'unknownError'.tr);
+      return {
+        'exception': true,
+        'type': 'unknown',
+        'message': 'Something went wrong'
+      };
+    }
+  }
+
+
   getMedicationsByPatient(patientId) async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];

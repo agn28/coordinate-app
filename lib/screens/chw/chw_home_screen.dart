@@ -44,8 +44,14 @@ class _ChwHomeState extends State<ChwHomeScreen> {
   }
   
   getSyncData() async {
+    print('getSyncData');
+    print(syncController.isSyncing.value);
     await syncController.getAllStatsData();
-    await syncController.initializeSync();
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+      syncController.isConnected.value = true;
+      await syncController.initializeSync();
+    }
   }
 
   getRole(role) {
@@ -424,7 +430,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                               Expanded(
                                 child: InkWell(
                                   onTap: () =>
-                                      syncController.isSyncingToLive.value
+                                      syncController.isSyncing.value
                                           ? null
                                           : Navigator.of(context)
                                               .push(RegisterPatientScreen()),
@@ -519,7 +525,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  if (syncController.isSyncingToLive.value)
+                                  if (syncController.isSyncing.value)
                                     Column(
                                       children: [
                                         Container(
@@ -534,10 +540,31 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
+                                              if (syncController.isSyncingToLive.value)
+                                              Column(
+                                                children: [
+                                                  Text('${syncController.localNotSyncedPatients.value.length+syncController.localNotSyncedAssessments.value.length+syncController.localNotSyncedObservations.value.length+syncController.localNotSyncedReferrals.value.length+syncController.localNotSyncedCareplans.value.length+syncController.localNotSyncedHealthReports.value.length} data is syncing to server',
+                                                    style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500),
+                                                  ),
+                                                ],
+                                              )
+                                              else if (syncController.isSyncingToLocal.value)
                                               Column(
                                                 children: [
                                                   Text(
-                                                    'Your data is syncing',
+                                                    '${syncController.syncs.value.length} data is syncing to deivce',
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ],
+                                              )
+                                              else
+                                              Column(
+                                                children: [
+                                                  Text(
+                                                    'Processing data',
                                                     style: TextStyle(
                                                         fontSize: 16,
                                                         fontWeight:
@@ -630,7 +657,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                                         ],
                                       ),
                                     ),
-                                  if (!syncController.isSyncingToLive.value)
+                                  if (!syncController.isSyncing.value)
                                     IconButton(
                                         icon: Icon(
                                           Icons.sync,

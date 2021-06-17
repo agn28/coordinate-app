@@ -36,7 +36,7 @@ class AssessmentRepository {
     var token = authData['accessToken'];
 
     var response;
-
+    print(json.encode(data));
     try {
       response = await http
           .post(apiUrl + 'assessments/except-oha',
