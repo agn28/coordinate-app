@@ -1689,6 +1689,13 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
 
     // }
 
+    if (counsellingQuestion['type'] == 'medical-adherence') {
+      if (medicationAnswers[1] == 'no' || medicationAnswers[3] == 'no' ||medicationAnswers[5] == 'no' || riskAnswers[7] == 'no') {
+        return true;
+      }
+      return false;
+    }
+
     if (counsellingQuestion['type'] == 'physical-activity-high') {
       if (riskAnswers[9] == 'no' || riskAnswers[10] == 'no') {
         return true;
@@ -1867,17 +1874,8 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
                                                           child: FlatButton(
                                                             onPressed: () {
                                                               setState(() {
-                                                                dietTitleAdded =
-                                                                    false;
-                                                                counsellingAnswers[
-                                                                    counsellingQuestions[
-                                                                            'items']
-                                                                        .indexOf(
-                                                                            question)] = question[
-                                                                    'options'][question[
-                                                                        'options']
-                                                                    .indexOf(
-                                                                        option)];
+                                                                dietTitleAdded = false;
+                                                                counsellingAnswers[counsellingQuestions['items'].indexOf(question)] = question['options'][question['options'].indexOf(option)];
                                                                 // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
                                                               });
                                                             },

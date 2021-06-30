@@ -47,9 +47,10 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   
   bool avatarExists = false;
   var encounters = [];
+  var lastAssessment;
   String lastEncounterType = '';
-  String lastEncounterdDate = '';
-  String lastAssessmentdDate = '';
+  String lastEncounterDate = '';
+  String nextVisitDate = '';
   String lastCarePlanDate = '';
   var conditions = [];
   var medications = [];
@@ -86,10 +87,31 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     getReferrals();
     getMedicationsConditions();
     getReport();
+    getLastAssessment();
     // getEncounters();
     // getAssessments();
-    // _getCarePlan();
+    _getCarePlan();
 
+  }
+  
+  getLastAssessment() async {
+    setState(() {
+      isLoading = true;
+    });
+    lastAssessment = await AssessmentController().getLastAssessmentByPatient();
+
+    print('lastAssessment $lastAssessment');
+    if(lastAssessment != null && lastAssessment.isNotEmpty) {
+      lastEncounterDate = lastAssessment['data']['meta']['created_at'];
+      nextVisitDate = lastAssessment['data']['body']['next_visit_date'];
+      setState(() {
+        nextVisitDate = nextVisitDate != '' ? DateFormat("MMMM d, y").format(DateTime.parse(nextVisitDate)) : '';
+        lastEncounterType = lastAssessment['data']['body']['type'];
+        lastEncounterDate = DateFormat("MMMM d, y").format(DateTime.parse(lastEncounterDate));
+        print('lastEncounterDate ${lastEncounterDate}');
+      });
+    }
+    
   }
 
   getAssessmentDueDate() {
@@ -306,7 +328,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     }
 
     setState(() {
-      lastAssessmentdDate = '';
+      // lastAssessmentdDate = '';
       // lastAssessmentdDate = DateFormat("MMMM d, y").format(DateTime.parse(response['data']['meta']['created_at']));
     });
 
@@ -360,11 +382,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
         return DateTime.parse(b['meta']['created_at']).compareTo(DateTime.parse(a['meta']['created_at']));
       });
 
-      setState(() {
-        isLoading = false;
-        lastEncounterdDate = DateFormat("MMMM d, y").format(DateTime.parse(encounters.first['meta']['created_at']));
-        lastEncounterType = encounters.first['data']['type'];
-      });
 
     }
     
@@ -404,7 +421,8 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
       // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
       carePlans = data['data'];
       print('carePlans $carePlans');
-      data['data'].forEach( (item) {
+      if(data['data'] != null) {
+        data['data'].forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");
         
         var todayDate = DateTime.now();
@@ -513,6 +531,8 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
         // }
       });
 
+      }
+      
       // setState(() {
       //   carePlans = data['data'];
       //   isLoading = false;
@@ -972,9 +992,9 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                             children: [
                               Text(AppLocalizations.of(context).translate('ncdCenterVisit'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
                               SizedBox(height: 15,),
-                              Text(AppLocalizations.of(context).translate('nextVisitDate')+getNextVisitDate(), style: TextStyle(fontSize: 17,)),
+                              Text(AppLocalizations.of(context).translate('nextVisitDate') +  ': $nextVisitDate', style: TextStyle(fontSize: 17,)),
                               SizedBox(height: 10,),
-                              Text(AppLocalizations.of(context).translate('lastVisitDate')+getLastVisitDate(), style: TextStyle(fontSize: 17,))
+                              Text(AppLocalizations.of(context).translate('lastVisitDate') +  ': $lastEncounterDate', style: TextStyle(fontSize: 17,))
                             ],
                           ),
                         ),
@@ -989,7 +1009,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                             children: [
                               Text(AppLocalizations.of(context).translate('lastEncounter')+'$lastEncounterType', style: TextStyle(fontSize: 17,)),
                               SizedBox(height: 10,),
-                              Text(AppLocalizations.of(context).translate('lastEncounterDate')+'$dueDate', style: TextStyle(fontSize: 17,)),
+                              Text(AppLocalizations.of(context).translate('lastEncounterDate')+  ': $lastEncounterDate', style: TextStyle(fontSize: 17,)),
                             ],
                           ),
                         ),
@@ -1015,7 +1035,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                         child: Text(AppLocalizations.of(context).translate('pendingDoctorConsultation').toUpperCase(), style: TextStyle(fontSize: 17, color: kPrimaryYellowColor, fontWeight: FontWeight.w500),)
                                         ,
                                       )
-                                    else if(carePlans.length > 0)
+                                    else if(carePlans != null && carePlans.length > 0)
                                       if(dueCarePlans.length > 0 || upcomingCarePlans.length > 0)
                                         Container(
                                           padding: EdgeInsets.symmetric(vertical: 9),

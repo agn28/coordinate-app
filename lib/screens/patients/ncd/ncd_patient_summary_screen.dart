@@ -45,8 +45,9 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
   
   bool avatarExists = false;
   var encounters = [];
+  var lastAssessment;
   String lastEncounterType = '';
-  String lastEncounterdDate = '';
+  String lastEncounterDate = '';
   String lastAssessmentdDate = '';
   String lastCarePlanDate = '';
   String incompleteEncounterDate = '';
@@ -92,6 +93,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     getMedicationsConditions();
     getReport();
     getIncompleteAssessment();
+    getLastAssessment();
 
   }
 
@@ -366,6 +368,26 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     return "$goalCount goals & $actionCount actions";
   }
 
+  getLastAssessment() async {
+    setState(() {
+      isLoading = true;
+    });
+    lastAssessment = await AssessmentController().getLastAssessmentByPatient();
+
+    print('lastAssessment $lastAssessment');
+    if(lastAssessment != null && lastAssessment.isNotEmpty) {
+      lastEncounterDate = lastAssessment['data']['meta']['created_at'];
+      nextVisitDate = lastAssessment['data']['body']['next_visit_date'];
+      setState(() {
+        nextVisitDate = DateFormat("MMMM d, y").format(DateTime.parse(nextVisitDate));
+        lastEncounterType = lastAssessment['data']['body']['type'];
+        lastEncounterDate = DateFormat("MMMM d, y").format(DateTime.parse(lastEncounterDate));
+        print('lastEncounterDate ${lastEncounterDate}');
+      });
+    }
+    
+  }
+
   getEncounters() async {
     setState(() {
       isLoading = true;
@@ -374,11 +396,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
 
 
     if (encounters.isNotEmpty) {
-      setState(() {
-        lastEncounterdDate = DateFormat("MMMM d, y").format(DateTime.parse(encounters.first['meta']['created_at']));
-        lastEncounterType = encounters.first['data']['type'];
-
-      });
 
       var allEncounters = encounters;
       await Future.forEach(allEncounters, (item) async {
@@ -1036,7 +1053,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                       children: [
                         Text(AppLocalizations.of(context).translate('lastEncounter')+'$lastEncounterType', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
                         SizedBox(height: 15,),
-                        Text(AppLocalizations.of(context).translate('lastEncounterDate')+'$lastEncounterdDate', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+                        Text(AppLocalizations.of(context).translate('lastEncounterDate')+'$lastEncounterDate', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
                         SizedBox(height: 10,),
                       ],
                     ),

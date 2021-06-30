@@ -491,6 +491,19 @@ class AssessmentRepositoryLocal {
     return response;
   }
 
+  deleteLocalAssessment(id) async {
+    var response;
+    final sql = '''DELETE FROM ${DatabaseCreator.assessmentTable} WHERE id = "$id"''';
+    try {
+      response = await db.rawQuery(sql);
+      print('delete $response');
+    } catch (err) {
+      print(err);
+      return;
+    }
+    return response;
+  }
+
   /// Create assessment.
   /// Assessment uuid [id] and [data] are required as paremeter.
   _updateAssessment(id, data) async {

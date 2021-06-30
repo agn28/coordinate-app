@@ -97,13 +97,13 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
 
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
-      var pending = await PatientController().getPatientsWorklist(context, 'pending');
+      var pending = await PatientController().getPatientsPendingWorklist(context);
       var completed = await PatientController().getPatientsWorklist(context, 'completed');
       var past = await PatientController().getPatientsWorklist(context, 'past');
       print('pending');
       print(pending);
 
-      if (pending['error'] != null && !pending['error']) {
+      if (pending['error'] != null && !pending['error'] && pending['data'].isNotEmpty) {
         setState(() {
           allPendingPatients = pending['data'];
           pendingPatientsSort();
@@ -156,7 +156,9 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
       });
     }
 
-
+    setState(() {
+      isLoading = false;
+    });
 
   }
 
@@ -680,6 +682,11 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
                   ],
                 ),
                ).toList(),
+               pendingPatients.length == 0 ? Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  child: Text(AppLocalizations.of(context).translate('noPatientFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
+                ) : Container()
               ],
             )
           

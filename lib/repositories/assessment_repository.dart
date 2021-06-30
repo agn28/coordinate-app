@@ -76,7 +76,7 @@ class AssessmentRepository {
     var token = authData['accessToken'];
     print('jsonData ${json.encode(data)}');
     var response;
-
+  
     try {
       response = await http
         .post(apiUrl + 'assessments/full',
@@ -167,13 +167,13 @@ class AssessmentRepository {
     });
   }
 
-  getLastAssessment(key, value) async {
+  getLastAssessment({key: '', value: ''}) async {
     var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
     var patientId = Patient().getPatient()['id'];
     var qParam = '';
 
-    if (key != null && value!= null) {
+    if (key != '' && value!= '') {
       qParam = '?'+ key +'=' + value;
     }
     var response;

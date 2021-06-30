@@ -32,25 +32,40 @@ class HealthReportRepository {
 
   generateReport(patientId) async {
     print('into generate report');
-    
-    var authData = await Auth().getStorageAuth() ;
+    var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
+    var response;
 
-    return await http.post(
-      apiUrl + 'health-reports/generate/' + patientId,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-    ).then((response) {
+    try {
+      response = await http
+        .post(apiUrl + 'health-reports/generate/' + patientId,
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+            },)
+        .timeout(Duration(seconds: httpRequestTimeout));
       print('response generate');
       print(response.body);
       return json.decode(response.body);
-      
-    }).catchError((error) {
-      print('error ' + error.toString());
-    });
+    } on SocketException {
+      // showErrorSnackBar('Error', 'socketError'.tr);
+      print('socket exception');
+      return {'exception': true, 'message': 'No internet'};
+    } on TimeoutException {
+      // showErrorSnackBar('Error', 'timeoutError'.tr);
+      print('timeout error');
+      return {'exception': true, 'message': 'Slow internet'};
+    } on Error catch (err) {
+      print('test error');
+      print(err);
+      // showErrorSnackBar('Error', 'unknownError'.tr);
+      return {
+        'exception': true,
+        'type': 'unknown',
+        'message': 'Something went wrong'
+      };
+    }
   }
 
   getLastReport() async {

@@ -36,6 +36,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
     super.initState();
 
     _getAuthData();
+    print('isEditState ${widget.isEditState}');
   }
 
   _getAuthData() async {
@@ -292,7 +293,8 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                       if (role == 'chw') {
                         Navigator.of(context).pushNamed('/chwHome');
                       } else {
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => HomeScreen()));
+                        Navigator.of(context).pushNamed('/home');
+                        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => HomeScreen()));
                       }
                     },
                     child: Container(

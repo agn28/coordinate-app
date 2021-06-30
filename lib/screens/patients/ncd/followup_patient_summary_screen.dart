@@ -47,11 +47,12 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
   
   bool avatarExists = false;
   var encounters = [];
+  var lastAssessment;
   var lastFollowup;
-  String lastEncounterType = '';
   String lastFollowupType = '';
-  String lastEncounterdDate = '';
-  String lastAssessmentdDate = '';
+  String lastEncounterType = '';
+  String lastEncounterDate = '';
+  String nextVisitDate = '';
   String lastCarePlanDate = ''; 
   var conditions = [];
   var medications = [];
@@ -85,6 +86,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     
     _checkAvatar();
     _checkAuth();
+    getLastAssessment();
     getLastFollowup();
     getUsers();
     getAssessmentDueDate();
@@ -345,7 +347,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     }
 
     setState(() {
-      lastAssessmentdDate = '';
+      // lastAssessmentdDate = '';
       // lastAssessmentdDate = DateFormat("MMMM d, y").format(DateTime.parse(response['data']['meta']['created_at']));
     });
 
@@ -401,10 +403,30 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
       });
       setState(() {
         isLoading = false;
-        lastEncounterdDate = DateFormat("MMMM d, y").format(DateTime.parse(encounters.first['meta']['created_at']));
-        lastEncounterType = encounters.first['data']['type'];
+        // lastEncounterDate = DateFormat("MMMM d, y").format(DateTime.parse(encounters.first['meta']['created_at']));
+        // lastEncounterType = encounters.first['data']['type'];
       });
 
+    }
+    
+  }
+
+  getLastAssessment() async {
+    setState(() {
+      isLoading = true;
+    });
+    lastAssessment = await AssessmentController().getLastAssessmentByPatient();
+
+    print('lastAssessment $lastAssessment');
+    if(lastAssessment != null && lastAssessment.isNotEmpty) {
+      lastEncounterDate = lastAssessment['data']['meta']['created_at'];
+      nextVisitDate = lastAssessment['data']['body']['next_visit_date'];
+      setState(() {
+        nextVisitDate = DateFormat("MMMM d, y").format(DateTime.parse(nextVisitDate));
+        lastEncounterType = lastAssessment['data']['body']['type'];
+        lastEncounterDate = DateFormat("MMMM d, y").format(DateTime.parse(lastEncounterDate));
+        print('lastEncounterDate ${lastEncounterDate}');
+      });
     }
     
   }
@@ -413,7 +435,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     setState(() {
       isLoading = true;
     });
-    lastFollowup = await AssessmentController().getLastAssessmentByPatient('screening_type', 'follow-up');
+    lastFollowup = await AssessmentController().getLastAssessmentByPatient(key:'screening_type', value:'follow-up');
 
     print('lastFollowup $lastFollowup');
     if(lastFollowup != null && lastFollowup.isNotEmpty) {
@@ -598,32 +620,6 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     
     return 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
   }
-
-  String getLastVisitDate() {
-    var date = '';
-
-    if (encounters.length > 0) {
-      var lastEncounter = encounters[0];
-      var parsedDate = DateTime.tryParse(lastEncounter['meta']['created_at']);
-      if (parsedDate != null) {
-        date = DateFormat('yyyy-MM-dd').format(parsedDate);
-      }
-    }
-
-    return date;
-  }
-  String getNextVisitDate() {
-    var date = '';
-
-    if (encounters.length > 0) {
-    print('encounters ${encounters[0]}');
-      var lastEncounter = encounters[0];
-      date = lastEncounter['data']['next_visit_date'] ?? '';
-    }
-
-    return date;
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -909,7 +905,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                   //           ),
                   //           Container(
                   //             padding: EdgeInsets.symmetric(vertical: 9),
-                  //             child: Text(lastEncounterdDate, style: TextStyle(fontSize: 17,),),
+                  //             child: Text(lastEncounterDate, style: TextStyle(fontSize: 17,),),
                   //           ),
                   //         ]
                   //       ),
@@ -1385,9 +1381,9 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                             children: [
                               Text(AppLocalizations.of(context).translate('ncdCenterVisit'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
                               SizedBox(height: 15,),
-                              Text(AppLocalizations.of(context).translate('nextVisitDate') + '', style: TextStyle(fontSize: 17,)),
+                              Text(AppLocalizations.of(context).translate('nextVisitDate') + ': $nextVisitDate', style: TextStyle(fontSize: 17,)),
                               SizedBox(height: 10,),
-                              Text(AppLocalizations.of(context).translate('lastVisitDate') + ': ${getLastVisitDate()}', style: TextStyle(fontSize: 17,))
+                              Text(AppLocalizations.of(context).translate('lastVisitDate') + ': $lastEncounterDate', style: TextStyle(fontSize: 17,))
                             ],
                           ),
                         ),
@@ -1403,7 +1399,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                             children: [
                               Text(AppLocalizations.of(context).translate('lastEncounter')+'$lastEncounterType', style: TextStyle(fontSize: 17,)),
                               SizedBox(height: 10,),
-                              Text(AppLocalizations.of(context).translate('lastEncounterDate')+'$lastEncounterdDate', style: TextStyle(fontSize: 17,)),
+                              Text(AppLocalizations.of(context).translate('lastEncounterDate')+'$lastEncounterDate', style: TextStyle(fontSize: 17,)),
                             ],
                           ),
                         ),

@@ -111,12 +111,9 @@ class AssessmentController {
 
     return data;
   }
-
-  getLastAssessmentByPatient(key, value) async {
-    // var assessment = await AssessmentRepository().getLastAssessment(key, value);
-    // print('assessment $assessment');
-    // return assessment;
-    var response = await AssessmentRepository().getLastAssessment(key, value);
+  
+  getLastAssessmentByPatient({key: '', value: ''}) async {
+    var response = await AssessmentRepository().getLastAssessment(key: key, value: value);
     
     if (response['error'] != null && !response['error']) {
       print('response ${response['data']['id']}');
@@ -134,13 +131,20 @@ class AssessmentController {
       if (isNotNull(assessments)) {
         var lastAssessment = assessments.last;
         var parseData = json.decode(lastAssessment['data']);
-        if(parseData['body']['screening_type'] == 'follow-up') {
-          
+        if(key == 'screening_type' && value == 'follow-up') {
+          if(parseData['body']['screening_type'] == 'follow-up') {
+            data = {
+              'id': lastAssessment['id'],
+              'data': parseData,
+            };
+          }
+        } else {
           data = {
             'id': lastAssessment['id'],
             'data': parseData,
           };
         }
+      }
         // localResponse.forEach((assessment) {
         //   var parseData = json.decode(assessment['data']);
         //   if(parseData['body']['screening_type'] == 'follow-up') {
@@ -151,10 +155,8 @@ class AssessmentController {
         //     });
         //   }
         // });
-      }
-
-      return data;
     }
+    return data;
   }
 
   getAssessmentById(id) async {
@@ -1042,6 +1044,11 @@ class AssessmentController {
     response = await storeAssessmentWithObservations(context, assessmentId, data, observations['localData'], apiData);
     print('apiResponse $response');
 
+    //TODO: online offline generate
+    if (completeStatus == 'complete') {
+      await HealthReportController().generateReport(data['body']['patient_id']);
+    }
+
     Helpers().clearObservationItems();
 
     return response;
@@ -1406,6 +1413,9 @@ class AssessmentController {
     response = await storeUpdatedAssessmentWithObservations(context, encounter, apiDataObservations, apiData);
     print('apiResponse $response');
 
+    if (status == 'complete') {
+      await HealthReportController().generateReport(encounter['body']['patient_id']);
+    }
     Helpers().clearObservationItems();
     return response;
 

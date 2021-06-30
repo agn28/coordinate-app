@@ -103,6 +103,24 @@ class PatientController {
 
     return response;
   }
+  getPatientsPendingWorklist(context) async {
+    var response = await PatientRepository().getPatientsPendingWorklist();
+
+    // await patients.forEach((patient) {
+    //   parsedData = jsonDecode(patient['data']);
+    //   data.add({
+    //     'id': patient['id'],
+    //     'data': parsedData['body'],
+    //     'meta': parsedData['meta']
+    //   });
+    // });
+
+    if (response['message'] != null && response['message'] == 'Unauthorized') {
+      await Helpers().logout(context);
+    }
+
+    return response;
+  }
 
   getPatientsWorklist(context, type) async {
     var response = await PatientRepository().getPatientsWorklist(type);

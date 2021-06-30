@@ -480,8 +480,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
                             setState(() {
                               if (_currentStep == 1) {
                                 _currentStep = _currentStep + 1;
-                                nextText = AppLocalizations.of(context)
-                                    .translate('finish');
+                                nextText = AppLocalizations.of(context).translate('finish');
                               }
                               if (_currentStep < 1) {
                                 if (selectedDobType == 'dob') {
@@ -560,7 +559,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
       CustomStep(
         title: Text(AppLocalizations.of(context).translate('viewSummary')),
         content: ViewSummary(parent: this),
-        isActive: _currentStep >= 2,
+        isActive: _currentStep >= 1,
       ),
     ];
 
@@ -620,7 +619,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
       data['father_name'] = fatherNameController.text;
     }
 
-    if (centersList.length > 0 && selectedCenters > -1) {
+    if (centersList.length > 0 && selectedCenters != null && selectedCenters > -1) {
       data['center'] = {
         'id': centersList[selectedCenters]['id'],
         'name': centersList[selectedCenters]['name']
@@ -1559,6 +1558,7 @@ class _ViewSummaryState extends State<ViewSummary> {
   initState() {
     super.initState();
     _isRegisterButtonDisabled = false;
+    print('parent ${widget.parent}');
   }
 
   uploadImage() async {
@@ -1626,7 +1626,8 @@ class _ViewSummaryState extends State<ViewSummary> {
     var response = isEditState != null
       ? await PatientController().update(formData, false)
       : await PatientController().create(context, formData);
-    
+    print('isEditState $isEditState ');
+    print(response);
     if (response != null) {
       if (response == 'success') {
         print('into success');
@@ -1663,6 +1664,14 @@ class _ViewSummaryState extends State<ViewSummary> {
       //   Helpers().logout(context);
       //   return;
       // } 
+    } else {
+      _scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context).translate('somethingWrong')),
+          backgroundColor: kPrimaryRedColor,
+        )
+      );
+      return;  
     }
     setState(() {
       isLoading = false;
@@ -1968,10 +1977,9 @@ class _ViewSummaryState extends State<ViewSummary> {
                                   ': ',
                               style: TextStyle(fontSize: 18),
                             ),
-                            Text(
-                              centersList[selectedCenters]['name'],
-                              style: TextStyle(fontSize: 18),
-                            ),
+                            selectedCenters != null && selectedCenters > -1 && centersList[selectedCenters].isNotEmpty ? 
+                            Text(centersList[selectedCenters]['name'], style: TextStyle(fontSize: 18),) 
+                            : Text(''),
                           ],
                         )
                       : Container(

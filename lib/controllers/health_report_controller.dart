@@ -16,7 +16,8 @@ class HealthReportController {
     var reports = await HealthReportRepository().getReport();
     return reports;
   }
-
+  
+  //TODO: online offline generate
   generateReport(patientId) async {
     var reports = await HealthReportRepository().generateReport(patientId);
     return reports;

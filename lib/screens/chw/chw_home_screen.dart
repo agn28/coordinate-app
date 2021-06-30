@@ -26,11 +26,14 @@ class _ChwHomeState extends State<ChwHomeScreen> {
   initState() {
     _getAuthData();
     super.initState();
-    Connectivity().onConnectivityChanged.listen(syncController.checkConnection);
+    checkConnection();
+    // Connectivity().onConnectivityChanged.listen(syncController.checkConnection);
 
     getSyncData();
   }
-
+  checkConnection() async {
+    await Connectivity().onConnectivityChanged.listen(syncController.checkConnection);
+  }
   _getAuthData() async {
     var data = await Auth().getStorageAuth();
     if (!data['status']) {
@@ -51,6 +54,8 @@ class _ChwHomeState extends State<ChwHomeScreen> {
     if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
       syncController.isConnected.value = true;
       await syncController.initializeSync();
+    } else {
+      syncController.isConnected.value = false;
     }
   }
 
@@ -548,7 +553,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                                                   ),
                                                 ],
                                               )
-                                              else if (syncController.isSyncingToLocal.value)
+                                              else if (syncController.syncs.value.length > 0 && syncController.isSyncingToLocal.value)
                                               Column(
                                                 children: [
                                                   Text(
