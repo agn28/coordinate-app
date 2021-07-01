@@ -15,7 +15,7 @@ import 'package:nhealth/repositories/local/observation_concepts_repository_local
 import './repositories/local/database_creator.dart';
 import './screens/auth_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 
 Locale appLocale = Locale('en', 'EN');

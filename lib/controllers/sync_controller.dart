@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/controllers/observation_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
@@ -288,6 +288,7 @@ class SyncController extends GetxController {
       isSyncing.value = false;
     }
     else {
+      print('initSync in else');
       isSyncing.value = false;
       initializeSync();
     }
@@ -963,6 +964,7 @@ class SyncController extends GetxController {
       }
     }
 
+    await Future.delayed(const Duration(seconds: 5));
     print('p $syncedPatients ${localNotSyncedPatients.value.length}');
     print('a $syncedAssessments ${localAssessments.length}');
     print('o $syncedObservations ${localObservations.length}');
@@ -1006,7 +1008,6 @@ class SyncController extends GetxController {
         }
       }
     }
-    await Future.delayed(const Duration(seconds: 5));
     isSyncing.value = false;
     print('syncing to live complete');
     isSyncingToLive.value = false;

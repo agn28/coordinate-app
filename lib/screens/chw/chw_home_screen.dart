@@ -1,7 +1,10 @@
 
+import 'dart:async';
+
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'package:nhealth/constants/constants.dart';
@@ -11,7 +14,7 @@ import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:nhealth/screens/settings/settings_screen.dart';
 import 'package:nhealth/app_localizations.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class ChwHomeScreen extends StatefulWidget {
   @override
@@ -22,18 +25,66 @@ class _ChwHomeState extends State<ChwHomeScreen> {
   final syncController = Get.put(SyncController());
   String userName = '';
   String role = '';
+
+  ConnectivityResult _connectionStatus = ConnectivityResult.none;
+  final Connectivity _connectivity = Connectivity();
+  StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  
   @override
   initState() {
     _getAuthData();
     super.initState();
-    checkConnection();
     // Connectivity().onConnectivityChanged.listen(syncController.checkConnection);
 
+    initConnectivity();
+    _connectivitySubscription =_connectivity.onConnectivityChanged.listen(_updateConnectionStatus);  
     getSyncData();
   }
-  checkConnection() async {
-    await Connectivity().onConnectivityChanged.listen(syncController.checkConnection);
+
+  @override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
   }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> initConnectivity() async {
+    ConnectivityResult result;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      result = await _connectivity.checkConnectivity();
+    } on PlatformException catch (e) {
+      print(e.toString());
+      return;
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) {
+      return Future.value(null);
+    }
+
+    return _updateConnectionStatus(result);
+  }
+
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    setState(() {
+      _connectionStatus = result;
+      print('_connectionStatus $_connectionStatus');
+    });
+    print('checkConnection');
+    if (result == ConnectivityResult.wifi || result == ConnectivityResult.mobile) {
+      print('connected');
+      syncController.isConnected.value = true;
+      await syncController.initializeSync();
+    } else {
+      syncController.isConnected.value = false;
+      syncController.isSyncing.value = false;
+      print('not connected');
+    }
+  }
+
   _getAuthData() async {
     var data = await Auth().getStorageAuth();
     if (!data['status']) {
@@ -51,12 +102,13 @@ class _ChwHomeState extends State<ChwHomeScreen> {
     print(syncController.isSyncing.value);
     await syncController.getAllStatsData();
     var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
-      syncController.isConnected.value = true;
-      await syncController.initializeSync();
-    } else {
-      syncController.isConnected.value = false;
-    }
+    await _updateConnectionStatus(connectivityResult);
+    // if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+    //   syncController.isConnected.value = true;
+    //   await syncController.initializeSync();
+    // } else {
+    //   syncController.isConnected.value = false;
+    // }
   }
 
   getRole(role) {

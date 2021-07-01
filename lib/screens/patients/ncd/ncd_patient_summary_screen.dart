@@ -379,7 +379,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
       lastEncounterDate = lastAssessment['data']['meta']['created_at'];
       nextVisitDate = lastAssessment['data']['body']['next_visit_date'];
       setState(() {
-        nextVisitDate = DateFormat("MMMM d, y").format(DateTime.parse(nextVisitDate));
+        nextVisitDate = nextVisitDate != '' ? DateFormat("MMMM d, y").format(DateTime.parse(nextVisitDate)):'';
         lastEncounterType = lastAssessment['data']['body']['type'];
         lastEncounterDate = DateFormat("MMMM d, y").format(DateTime.parse(lastEncounterDate));
         print('lastEncounterDate ${lastEncounterDate}');

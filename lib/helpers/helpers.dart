@@ -13,7 +13,7 @@ import 'package:nhealth/models/blood_test.dart';
 import 'package:nhealth/models/body_measurement.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 
 class Helpers {

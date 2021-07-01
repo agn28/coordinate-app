@@ -25,7 +25,7 @@ import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_success_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 
 import '../../custom-classes/custom_stepper.dart';

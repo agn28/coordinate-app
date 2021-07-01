@@ -26,6 +26,7 @@ import 'package:nhealth/screens/chw/counselling_framework/counselling_framwork_s
 import 'package:nhealth/screens/chw/counselling_framework/couselling_confirmation_screen.dart';
 
 var dueCarePlans = [];
+var cpUpdateCount = 0;
 var completedCarePlans = [];
 var upcomingCarePlans = [];
 var referrals = [];
@@ -69,6 +70,7 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
     super.initState();
     _patient = Patient().getPatient();
     dueCarePlans = [];
+    cpUpdateCount = 0;
     completedCarePlans = [];
     upcomingCarePlans = [];
     conditions = [];
@@ -270,8 +272,8 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
                 });
                 
               }
-              
-              print('dueCarePlansLength ${dueCarePlans}');
+              cpUpdateCount = dueCarePlans.length;
+              print('cpUpdateCount ${cpUpdateCount}');
             } else if (todayDate.isBefore(startDate)) {
               var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
               // print(existedCp);
@@ -416,44 +418,62 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
                         ),
                         child: FlatButton(
                           onPressed: () async {
+                            print('cpUpdateCountbt $cpUpdateCount');
+                            if(cpUpdateCount > 0) {
+                              print('if');
                               //Navigator.of(context).pushNamed('/chwPatientSummary');
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                // return object of type Dialog
-                                return AlertDialog(
-                                  content: new Text(AppLocalizations.of(context).translate("carePlanActionsNotCompleted"), style: TextStyle(fontSize: 20),),
-                                  actions: <Widget>[
-                                    // usually buttons at the bottom of the dialog
-                                    FlatButton(
-                                      child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(color: kPrimaryColor)),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                    FlatButton(
-                                      child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
-                                      onPressed: () async {
-                                        Navigator.of(context).pop();
-                                        var result;
-                                        setState(() {
-                                          isLoading = true;
-                                        });
-                                        result = await AssessmentController().createOnlyAssessment(context, 'follow up visit (community)', 'follow-up', '', 'complete', '', followupType:'short');
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  // return object of type Dialog
+                                  return AlertDialog(
+                                    content: new Text(AppLocalizations.of(context).translate("carePlanActionsNotCompleted"), style: TextStyle(fontSize: 20),),
+                                    actions: <Widget>[
+                                      // usually buttons at the bottom of the dialog
+                                      FlatButton(
+                                        child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(color: kPrimaryColor)),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      FlatButton(
+                                        child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
+                                        onPressed: () async {
+                                          Navigator.of(context).pop();
+                                          var result;
+                                          setState(() {
+                                            isLoading = true;
+                                          });
+                                          result = await AssessmentController().createOnlyAssessment(context, 'follow up visit (community)', 'follow-up', '', 'complete', '', followupType:'short');
 
-                                        setState(() {
-                                          isLoading = false;
-                                        });
-                                        Navigator.of(_scaffoldKey.currentContext).pushNamed('/chwPatientSummary');
-                                        
-                                      },
-                                    ),
-                                  ],
-                                );
-                              }
-                            );
+                                          setState(() {
+                                            isLoading = false;
+                                          });
+                                          Navigator.of(_scaffoldKey.currentContext).pushNamed('/chwPatientSummary');
+                                          
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                }
+                              );
+                            }
+                            else {
+                              print('else');
+                              Navigator.of(context).pop();
+                              var result;
+                              setState(() {
+                                isLoading = true;
+                              });
+                              result = await AssessmentController().createOnlyAssessment(context, 'follow up visit (community)', 'follow-up', '', 'complete', '', followupType:'short');
+
+                              setState(() {
+                                isLoading = false;
+                              });
+                              Navigator.of(_scaffoldKey.currentContext).pushNamed('/chwPatientSummary');
                             
-                          },
+                              }
+                            },
                           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           child: Text(AppLocalizations.of(context).translate('completeVisit'), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
                         ),
@@ -798,6 +818,7 @@ class _ActionItemState extends State<ActionItem> {
     setState(() {
       btnDisabled = false;
       status = 'completed';
+      cpUpdateCount--;
     });
 
     widget.parent.setState(() {});

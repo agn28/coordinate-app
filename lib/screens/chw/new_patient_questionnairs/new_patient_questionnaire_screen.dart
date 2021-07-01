@@ -446,10 +446,52 @@ class _NewPatientQuestionnaireScreenState
                               }
                               if (_currentStep == 3) {
                                 print('hello');
-                                createObservations();
-                                nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                                if(diastolicEditingController.text == '' ||
+                                  systolicEditingController.text == '' ||
+                                  pulseRateEditingController.text == '' ||
+                                  heightEditingController.text == '' ||
+                                  weightEditingController.text == ''||
+                                  bloodSugerEditingController.text == '') 
+                                {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      // return object of type Dialog
+                                      return AlertDialog(
+                                        content: new Text("You have missing data, do you want to proceed?", style: TextStyle(fontSize: 20),),
+                                        actions: <Widget>[
+                                          // usually buttons at the bottom of the dialog
+                                          FlatButton(
+                                            child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(color: kPrimaryColor)),
+                                            onPressed: () {
+                                              Navigator.of(context).pop(false);
+                                            },
+                                          ),
+                                          FlatButton(
+                                            child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
+                                            onPressed: () {
+                                              // Navigator.of(context).pop(true);
+                                              setState(() {
+                                                _currentStep = _currentStep + 1;
+                                              });
+                                              createObservations();
+                                              nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                                              print('_currentStep $_currentStep');
+                                              Navigator.of(context).pop(true);
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                  );
+                                } else {
+                                  createObservations();
+                                  nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                                  _currentStep = _currentStep + 1;
+                                  return;
+                                }
                               }
-                              if (_currentStep < 4) {
+                              if (_currentStep < 3) {
                                 // If the form is valid, display a Snackbar.
                                 _currentStep = _currentStep + 1;
                               }

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/repositories/followup_repository.dart';
 import 'package:nhealth/repositories/local/referral_repository_local.dart';

@@ -43,7 +43,8 @@ dependencies:
   barcode_scan_fix: ^1.0.2
   autocomplete_textfield: ^1.7.3
   dropdown_search: ^0.4.4
-  connectivity: ^2.0.2
+  # connectivity: ^2.0.2
+  connectivity_plus: any
   get: ^3.24.0
 
   # The following adds the Cupertino Icons font to your application.
