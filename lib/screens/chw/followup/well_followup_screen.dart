@@ -4167,7 +4167,7 @@ class _FollowupState extends State<Followup> {
                           children: [
                             Text(
                                 AppLocalizations.of(context)
-                                    .translate('nextVisitDate' + nextVisitDate),
+                                    .translate('nextVisitDate' + ': $nextVisitDate'),
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 16)),
                             SizedBox(

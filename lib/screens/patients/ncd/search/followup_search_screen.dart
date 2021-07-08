@@ -116,7 +116,10 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
         var isListed = false;
         for(var assessment in assessments) {
           print(assessment);
-          if (assessment['data']['patient_id'] == localPatient['id'] && (assessment['data']['screening_type'] == 'follow-up' || (assessment['data']['screening_type'] == 'ncd' && assessment['data']['status'] == 'complete'))){      
+          if (assessment['data']['patient_id'] == localPatient['id'] 
+              && (assessment['data']['screening_type'] == 'follow-up' 
+              || (assessment['data']['screening_type'] == 'ncd' && assessment['data']['status'] == 'complete') 
+              || (assessment['data']['screening_type'] == 'new-questionnaire' && assessment['data']['status'] == 'complete'))){      
             var localpatientdata = {
               'id': localPatient['id'],
               'data': localPatient['data'],

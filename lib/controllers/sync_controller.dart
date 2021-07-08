@@ -746,7 +746,11 @@ class SyncController extends GetxController {
     print('c ${localNotSyncedCareplans.value.length}');
     // return;
     var syncedPatients = 0, syncedAssessments = 0, syncedObservations = 0, syncedReferrals = 0, syncedCareplans = 0;
-    if (localNotSyncedPatients.value.isEmpty) {
+    if (localNotSyncedPatients.value.isEmpty
+        && localNotSyncedAssessments.value.isEmpty
+        && localNotSyncedObservations.value.isEmpty
+        && localNotSyncedReferrals.value.isEmpty
+        && localNotSyncedCareplans.value.isEmpty) {
       return;
     }
     print('syncing to live initiated');

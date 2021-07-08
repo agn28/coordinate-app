@@ -10,10 +10,15 @@ import 'dart:convert';
 
 class CarePlanRepository {
 
-  getCarePlan() async {
+  getCarePlan({checkAssignedTo: ''}) async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     var patientID = Patient().getPatient()['id'];
+    var qParam = '';
+
+    if (checkAssignedTo != '') {
+      qParam = '?check_assigned_to=' + checkAssignedTo;
+    }
 
     var response;
 
@@ -21,7 +26,7 @@ class CarePlanRepository {
 
     try {
       response = await http
-      .get(apiUrl + 'care-plans/patient/' + patientID,
+      .get(apiUrl + 'care-plans/patient/' + patientID + qParam,
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',

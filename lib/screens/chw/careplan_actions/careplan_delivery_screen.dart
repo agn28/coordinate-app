@@ -190,29 +190,16 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
       isLoading = false;
     });
     
-    if (data != null && data['message'] == 'Unauthorized') {
-
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    } else if (data['error'] == true) {
-
+    if (data == null) {
+      return;
+    } else if (data['error'] != null && data['error']) {
+      return;
     } else {
       // print( data['data']);
       // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
-      if (isNull(data) || isNotNull(data['exception']))  {
-        // var allLocalPatients = syncController.localPatientsAll.value;
-        var localCarePlans = await CarePlanController().getLocalCarePlan();
-        print('localCarePlans ${localCarePlans}');
-        var parsedLocalCarePlans = [];
-        for(var localCarePlan in localCarePlans) {
-          parsedLocalCarePlans.add(json.decode(localCarePlan['data']));
-        }
-        print(parsedLocalCarePlans);
-        carePlans = parsedLocalCarePlans;
-      } else {
+      setState(() {
         carePlans = data['data'];
-      }
-      // carePlans = data['data'];
+      });
       print('carePlans $carePlans');
       carePlans.forEach( (item) {
         print('carePlanItem ${item}');
@@ -439,7 +426,7 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
                                       FlatButton(
                                         child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
                                         onPressed: () async {
-                                          Navigator.of(context).pop();
+                                          // Navigator.of(context).pop();
                                           var result;
                                           setState(() {
                                             isLoading = true;
@@ -449,7 +436,7 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
                                           setState(() {
                                             isLoading = false;
                                           });
-                                          Navigator.of(_scaffoldKey.currentContext).pushNamed('/chwPatientSummary');
+                                          Navigator.of(_scaffoldKey.currentContext).pushNamed('/chwHome');
                                           
                                         },
                                       ),
@@ -460,7 +447,6 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
                             }
                             else {
                               print('else');
-                              Navigator.of(context).pop();
                               var result;
                               setState(() {
                                 isLoading = true;
@@ -470,7 +456,7 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
                               setState(() {
                                 isLoading = false;
                               });
-                              Navigator.of(_scaffoldKey.currentContext).pushNamed('/chwPatientSummary');
+                              Navigator.of(_scaffoldKey.currentContext).pushNamed('/chwHome');
                             
                               }
                             },

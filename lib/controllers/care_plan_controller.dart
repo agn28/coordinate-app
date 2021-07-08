@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -16,13 +18,68 @@ import 'package:uuid/uuid.dart';
 class CarePlanController {
 
   /// Get all the patients
-  getCarePlan() async {
-    var carePlan = await CarePlanRepository().getCarePlan();
-    return carePlan;
+  // getCarePlan() async {
+  //   var carePlan = await CarePlanRepository().getCarePlan();
+  //   return carePlan;
+  // }
+
+  getCarePlan({checkAssignedTo: ''}) async {
+    var apiResponse = await CarePlanRepository().getCarePlan(checkAssignedTo: checkAssignedTo);
+    
+    if (apiResponse['error'] != null && !apiResponse['error']) {
+      print('response ${apiResponse}');
+      return apiResponse;
+    }
+
+    var data = [];
+
+    if (isNull(apiResponse) || isNotNull(apiResponse['exception'])) {
+      print('into exception');
+      var patientId = Patient().getPatient()['id'];
+      var careplans = await CarePlanRepositoryLocal().getCareplanByPatient(patientId);
+      print('cp $careplans');
+      var data = [];
+      var parsedData;
+
+      await careplans.forEach((careplan) {
+        parsedData = jsonDecode(careplan['data']);
+        if(checkAssignedTo == 'false') {
+          if (parsedData['body']['patient_id'] == Patient().getPatient()['id']
+          && parsedData['meta']['status'] == 'pending') {
+            data.add({
+              'id': careplan['id'],
+              'body': parsedData['body'],
+              'meta': parsedData['meta']
+            });
+          }
+        } else {
+          if (parsedData['body']['patient_id'] == Patient().getPatient()['id']
+          && parsedData['meta']['status'] == 'pending'
+          && parsedData['meta']['assigned_to'] == Auth().getAuth()['uid']) {
+            data.add({
+              'id': careplan['id'],
+              'body': parsedData['body'],
+              'meta': parsedData['meta']
+            });
+          }
+        }
+        
+      });
+
+
+      var response = {
+        'data': data,
+        'error': false
+      };
+      print('localresponse $response');
+      return response;
+      // return data;
+    }
   }
 
   getLocalCarePlan() async {
-    var carePlan = await CarePlanRepositoryLocal().getCareplanByPatient();
+    var patientId = Patient().getPatient()['id'];
+    var carePlan = await CarePlanRepositoryLocal().getCareplanByPatient(patientId);
     return carePlan;
   }
 

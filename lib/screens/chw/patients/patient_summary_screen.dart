@@ -419,7 +419,10 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     } else {
       // print( data['data']);
       // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
-      carePlans = data['data'];
+      setState(() {
+        carePlans = data['data'];
+      });
+      // carePlans = data['data'];
       print('carePlans $carePlans');
       if(data['data'] != null) {
         data['data'].forEach( (item) {

@@ -26,9 +26,9 @@ getDropdownOptionText(context, list, value) {
       var matchedIndex = list['options'].indexOf(value);
       return list['options_bn'][matchedIndex];
     }
-    return StringUtils.capitalize(value);
+    return (value);
   }
-  return StringUtils.capitalize(value);
+  return (value);
 }
 getName(context, item) {
   var locale = Localizations.localeOf(context);
@@ -54,7 +54,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
   bool avatarExists = false;
 
   var referralReasonOptions = {
-    'options': ['urgent medical attempt required', 'NCD screening required'],
+    'options': ['Urgent medical attempt required', 'NCD screening required'],
     'options_bn': ['তাৎক্ষণিক মেডিকেল প্রচেষ্টা প্রয়োজন', 'এনসিডি স্ক্রিনিং প্রয়োজন']
   };
   List referralReasons;
@@ -71,11 +71,12 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
+    print('_patient ${_patient}');
     print(widget.referralData);
     print(Language().getLanguage());
     // referralReasons = Language().getLanguage() == 'Bengali' ? : ;
     _getAuthData();
-    getCenters();
+    getCenters();  
     referralReasons = referralReasonOptions['options'];
     // clinicTypes = clinicTypeOptions['options'];
   }
@@ -114,7 +115,14 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
 
     if (centerData['error'] != null && !centerData['error']) {
       clinicTypes = centerData['data'];
-
+      for(var center in clinicTypes) {
+        if(isNotNull(_patient['data']['center']) && center['id'] == _patient['data']['center']['id']) {
+          print('selectedCenter $center');
+          setState(() {
+            selectedtype = center;
+          });
+        }
+      }
     }
     print("center: $clinicTypes");
   }
@@ -230,6 +238,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                         onChanged: (value) {
                           setState(() {
                             selectedtype = value;
+                            print('selectedtype $selectedtype');
                           });
                         },
                       ),

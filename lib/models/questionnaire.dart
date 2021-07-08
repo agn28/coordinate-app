@@ -352,7 +352,7 @@ var _questions = {
           'key': 'betel_nut'
           },
           {
-            'question': 'Do you eat atleast 5 portions of fruits and vegetables daily?',
+            'question': 'Do you eat at least 5 portions of fruits and vegetables daily?',
             'question_bn': 'আপনি কি প্রতিদিন কমপক্ষে ৫ ভাগ ফল এবং শাকসব্জী খান?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
@@ -410,7 +410,7 @@ var _questions = {
             'key': 'red_meat'
           },
           {
-            'question': 'Do you do physical activity of moderate intensity (you get a little bit out of breath) for atleast 30 minutes per day on 5 days per week or 150 minutes per week?',
+            'question': 'Do you do physical activity of moderate intensity (you get a little bit out of breath) for at least 30 minutes per day on 5 days per week or 150 minutes per week?',
             'question_bn': 'আপনি কি প্রতি সপ্তাহে ৫ দিন প্রতিদিন কমপক্ষে ৩০ মিনিট, বা প্রতি সপ্তাহে ১৫০ মিনিট মাঝারি থেকে তীব্র মাত্রার শারীরিক পরিশ্রম করেন যেখানে শ্বাসপ্রশ্বাস দ্রুত হয়?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
@@ -506,7 +506,7 @@ var _questions = {
             'type': 'physical-activity-high'
           },
           {
-            'question': 'Medical adherence',
+            'question': 'Medication adherence',
             'question_bn': 'চিকিৎসা-পরামর্শ',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],

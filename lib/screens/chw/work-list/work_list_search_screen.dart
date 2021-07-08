@@ -16,6 +16,7 @@ import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/repositories/local/care_plan_repository_local.dart';
 import 'package:nhealth/screens/chw/patients/patient_summary_screen.dart';
 import 'package:get/get.dart';
 
@@ -134,14 +135,28 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
       var allLocalPatients = syncController.localPatientsAll.value;
       var localPatientPending = [];
       for(var localPatient in allLocalPatients) {
-        print('localPatient ${localPatient['meta']}');
+        print('localPatient ${localPatient['data']['first_name']} ${localPatient['meta']}');
         if(isNotNull(localPatient["meta"]["has_pending"]) && localPatient["meta"]["has_pending"]) {
-          var localpatientdata = {
-            'id': localPatient['id'],
-            'body': localPatient['data'],
-            'meta': localPatient['meta']
-          };
-          localPatientPending.add(localpatientdata);
+          var isAssigned = false;
+          var careplans = await CarePlanRepositoryLocal().getCareplanByPatient(localPatient['id']);
+          print('cp $careplans');
+          var parsedData;
+          for(var careplan in careplans) {
+            parsedData = jsonDecode(careplan['data']);
+            if (parsedData['meta']['status'] == 'pending'
+            && parsedData['meta']['assigned_to'] == Auth().getAuth()['uid']) {
+              isAssigned = true;
+              break;
+            }
+          }
+          if(isAssigned) {
+            var localpatientdata = {
+              'id': localPatient['id'],
+              'body': localPatient['data'],
+              'meta': localPatient['meta']
+            };
+            localPatientPending.add(localpatientdata);
+          }
         }
       }
       print('pending $localPatientPending');

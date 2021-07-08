@@ -469,7 +469,10 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     } else {
       // print( data['data']);
       // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
-      carePlans = data['data'];
+      setState(() {
+        carePlans = data['data'];
+      });
+      // carePlans = data['data'];
       print('carePlans');
       print(carePlans);
       data['data'].forEach( (item) {

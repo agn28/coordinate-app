@@ -315,7 +315,7 @@ class _NewPatientQuestionnaireScreenState
       } else if (selectedBloodSugarType == 'FBS') {
         name = 'blood_glucose';
       }
-      BloodTest().addItem(name, bloodSugerEditingController.text, '', '', '');
+      BloodTest().addItem(name, bloodSugerEditingController.text, selectedGlucoseUnit, '', '');
       BloodTest().addBtItem();
     }
   }

@@ -100,8 +100,7 @@ class CarePlanRepositoryLocal {
 
     return careplans;
   }
-  getCareplanByPatient() async {
-    var patientId = Patient().getPatient()['id'];
+  getCareplanByPatient(patientId) async {
     final sqlCareplans = '''SELECT * FROM ${DatabaseCreator.careplanTable} WHERE patient_id="$patientId"''';
     final careplans = await db.rawQuery(sqlCareplans);
 

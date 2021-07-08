@@ -486,11 +486,8 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                             children: [
                               Expanded(
                                 child: InkWell(
-                                  onTap: () =>
-                                      syncController.isSyncing.value
-                                          ? null
-                                          : Navigator.of(context)
-                                              .push(RegisterPatientScreen()),
+                                  onTap: () => Navigator.of(context).push(RegisterPatientScreen()),
+                                      // syncController.isSyncing.value ? null : 
                                   child: Container(
                                     height: 140,
                                     width: double.infinity,

@@ -90,7 +90,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     getLastFollowup();
     getUsers();
     getAssessmentDueDate();
-    // _getCarePlan();
+    _getCarePlan();
     getReferrals();
     // getEncounters();
     // getAssessments();
@@ -466,21 +466,21 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
 
   _getCarePlan() async {
 
-    var data = await CarePlanController().getCarePlan();
+    var data = await CarePlanController().getCarePlan(checkAssignedTo:'false');
     
-    if (data != null && data['message'] == 'Unauthorized') {
-
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    } else if (data['error'] == true) {
-
+    if (data == null) {
+      return;
+    } else if (data['error'] != null && data['error']) {
+      return;
     } else {
       // print( data['data']);
       // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
+      setState(() {
+        carePlans = data['data'];
+      });
       carePlans = data['data'];
-      print('carePlans');
-      print(carePlans);
-      data['data'].forEach( (item) {
+      print('carePlans $carePlans');
+      carePlans.forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");
         
         var todayDate = DateTime.now();
