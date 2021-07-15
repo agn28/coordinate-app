@@ -72,7 +72,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
     super.initState();
     _patient = Patient().getPatient();
     print('_patient ${_patient}');
-    print(widget.referralData);
+    print('referralData ${widget.referralData}');
     print(Language().getLanguage());
     // referralReasons = Language().getLanguage() == 'Bengali' ? : ;
     _getAuthData();

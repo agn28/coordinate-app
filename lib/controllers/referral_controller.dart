@@ -28,7 +28,7 @@ class ReferralController {
 
       print('live referral create');
       var apiData = data;
-      apiData['id'] = referralId;
+      // apiData['id'] = referralId;
 
       var apiResponse = await ReferralRepository().create(apiData);
       print('apiResponse');

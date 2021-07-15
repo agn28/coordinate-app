@@ -1732,7 +1732,8 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
     // }
 
     if (counsellingQuestion['type'] == 'medical-adherence') {
-      if (medicationAnswers[1] == 'no' || medicationAnswers[3] == 'no' ||medicationAnswers[5] == 'no' || riskAnswers[7] == 'no') {
+      print('medicationAdh $medicationAnswers');
+      if (medicationAnswers[1] == 'no' || medicationAnswers[3] == 'no' ||medicationAnswers[5] == 'no' || medicationAnswers[7] == 'no') {
         return true;
       }
       return false;
