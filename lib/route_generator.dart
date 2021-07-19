@@ -72,7 +72,8 @@ class RouteGenerator {
       case FollowupSearchScreen.path:
         return CupertinoPageRoute(builder: (_) => FollowupSearchScreen());
       case '/patientOverview':
-        return CupertinoPageRoute(builder: (_) => PatientRecordsScreen());
+      var data = settings.arguments as Map;
+        return CupertinoPageRoute(builder: (_) => PatientRecordsScreen(prevScreen: data['prevScreen']));
       case '/ncdPatientSummary':
         return CupertinoPageRoute(builder: (_) => NcdPatientSummaryScreen());
       case FollowupPatientSummaryScreen.path:
@@ -122,8 +123,8 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => ChwHomeScreen());
 
       case '/chwPatientSummary':
-        var data = settings.arguments;
-        return CupertinoPageRoute(builder: (_) => ChwPatientRecordsScreen(checkInState: data));
+      var data = settings.arguments as Map;
+        return CupertinoPageRoute(builder: (_) => ChwPatientRecordsScreen(prevScreen: data['prevScreen']));
 
       case '/chwNavigation':
         var data = settings.arguments;

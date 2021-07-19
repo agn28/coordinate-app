@@ -19,6 +19,7 @@ import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chw/unwell/create_referral_screen.dart';
 import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
 import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
+import 'package:nhealth/screens/patients/manage/patient_overview_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import '../../../custom-classes/custom_stepper.dart';
@@ -204,7 +205,9 @@ class _NewPatientQuestionnaireScreenState
           MedicalRecommendationScreen.path,
           arguments: data);
     } else {
-      Navigator.of(context).pushNamed('/chwHome',);
+      // Navigator.of(context).pushNamed('/chwHome',);
+      
+      Navigator.of(context).pushNamed('/patientOverview', arguments: {'prevScreen' : 'encounter'});
     }
   }
 

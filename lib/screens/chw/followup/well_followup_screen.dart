@@ -105,7 +105,8 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     getAuth();
 
     // print(Language().getLanguage());
-    nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
+    // nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
+       nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
 
     prepareQuestions();
     prepareAnswers();
@@ -187,6 +188,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     systolicEditingController.text = '';
     diastolicEditingController.text = '';
     pulseRateEditingController.text = '';
+    weightEditingController.text = '';
 
     randomBloodController.text = '';
     fastingBloodController.text = '';
@@ -347,6 +349,10 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
       BloodPressure().addBloodPressure(formData);
     }
 
+    if (weightEditingController.text != '') {
+      BodyMeasurement()
+          .addItem('weight', weightEditingController.text, 'kg', '', '');
+    }
     BodyMeasurement().addBmItem();
 
     if (randomBloodController.text != '') {
@@ -516,7 +522,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
                             setState(() {
                               print(_currentStep);
 
-                              if (_currentStep == 1) {
+                              // if (_currentStep == 1) {
                                 // var relativeAdditionalData = {
                                 //   'religion': selectedReligion,
                                 //   'occupation': occupationController.text,
@@ -529,65 +535,69 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
                                 // print('relativeAdditionalData $relativeAdditionalData');
                                 // Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
 
-                                _completeStep();
-                                return;
-                              }
+                              //   _completeStep();
+                              //   return;
+                              // }
                               if (_currentStep == 0) {
                                 print('hello');
-                                if (diastolicEditingController.text == '' ||
-                                  systolicEditingController.text == '' ||
-                                  pulseRateEditingController.text == '' ||
-                                  randomBloodController.text == '' ||
-                                  fastingBloodController.text == '' ||
-                                  habfController.text == '' ||
-                                  hba1cController.text == '' ||
-                                  cholesterolController.text == '' ||
-                                  ldlController.text == '' ||
-                                  hdlController.text == '' ||
-                                  tgController.text == '' ||
-                                  creatinineController.text == '' ||
-                                  sodiumController.text == '' ||
-                                  potassiumController.text == '' ||
-                                  ketonesController.text == '' ||
-                                  proteinController.text == '')
-                                {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      // return object of type Dialog
-                                      return AlertDialog(
-                                        content: new Text("You have missing data, do you want to proceed?", style: TextStyle(fontSize: 20),),
-                                        actions: <Widget>[
-                                          // usually buttons at the bottom of the dialog
-                                          FlatButton(
-                                            child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(color: kPrimaryColor)),
-                                            onPressed: () {
-                                              Navigator.of(context).pop(false);
-                                            },
-                                          ),
-                                          FlatButton(
-                                            child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
-                                            onPressed: () {
-                                              // Navigator.of(context).pop(true);
-                                              setState(() {
-                                                _currentStep = _currentStep + 1;
-                                              });
-                                              createObservations();
-                                              nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
-                                              print('_currentStep $_currentStep');
-                                              Navigator.of(context).pop(true);
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    }
-                                  );
-                                } else {
-                                  createObservations();
-                                  nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
-                                  _currentStep = _currentStep + 1;
-                                  return;
-                                }
+                                createObservations();
+                                _completeStep();
+                                return;
+                              //   if (diastolicEditingController.text == '' ||
+                              //     systolicEditingController.text == '' ||
+                              //     pulseRateEditingController.text == '' ||
+                              //     weightEditingController.text == ''||
+                              //     randomBloodController.text == '' ||
+                              //     fastingBloodController.text == '' ||
+                              //     habfController.text == '' ||
+                              //     hba1cController.text == '' ||
+                              //     cholesterolController.text == '' ||
+                              //     ldlController.text == '' ||
+                              //     hdlController.text == '' ||
+                              //     tgController.text == '' ||
+                              //     creatinineController.text == '' ||
+                              //     sodiumController.text == '' ||
+                              //     potassiumController.text == '' ||
+                              //     ketonesController.text == '' ||
+                              //     proteinController.text == '')
+                              //   {
+                              //     showDialog(
+                              //       context: context,
+                              //       builder: (BuildContext context) {
+                              //         // return object of type Dialog
+                              //         return AlertDialog(
+                              //           content: new Text("You have missing data, do you want to proceed?", style: TextStyle(fontSize: 20),),
+                              //           actions: <Widget>[
+                              //             // usually buttons at the bottom of the dialog
+                              //             FlatButton(
+                              //               child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(color: kPrimaryColor)),
+                              //               onPressed: () {
+                              //                 Navigator.of(context).pop(false);
+                              //               },
+                              //             ),
+                              //             FlatButton(
+                              //               child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
+                              //               onPressed: () {
+                              //                 // Navigator.of(context).pop(true);
+                              //                 setState(() {
+                              //                   _currentStep = _currentStep + 1;
+                              //                 });
+                              //                 createObservations();
+                              //                 nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                              //                 print('_currentStep $_currentStep');
+                              //                 Navigator.of(context).pop(true);
+                              //               },
+                              //             ),
+                              //           ],
+                              //         );
+                              //       }
+                              //     );
+                              //   } else {
+                              //     createObservations();
+                              //     nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                              //     _currentStep = _currentStep + 1;
+                              //     return;
+                              //   }
                               }
                               // if (_currentStep < 6) {
                               //   // If the form is valid, display a Snackbar.
@@ -697,8 +707,8 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
       return;
     }
 
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
+    // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
+    Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : 'followup'});
     // goToHome(false, null);
   }
 
@@ -718,14 +728,14 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
       //   isActive: _currentStep >= 2,
       // ),
 
-      CustomStep(
-        title: Text(
-          AppLocalizations.of(context).translate("permission"),
-          textAlign: TextAlign.center,
-        ),
-        content: Followup(parent: this),
-        isActive: _currentStep >= 2,
-      ),
+      // CustomStep(
+      //   title: Text(
+      //     AppLocalizations.of(context).translate("permission"),
+      //     textAlign: TextAlign.center,
+      //   ),
+      //   content: Followup(parent: this),
+      //   isActive: _currentStep >= 2,
+      // ),
 
       // CustomStep(
       //   title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
@@ -754,10 +764,10 @@ checkMissingData() {
     return true;
   }
 
-  // if (heightEditingController.text == '' || weightEditingController.text == '') {
-  //   print('body measurement missing');
-  //   return true;
-  // }
+  if (weightEditingController.text == '') {
+    print('body measurement missing');
+    return true;
+  }
 
   if (randomBloodController.text == '' &&
       fastingBloodController.text == '' &&
@@ -1213,6 +1223,7 @@ var systolicEditingController = TextEditingController();
 var pulseRateEditingController = TextEditingController();
 var diastolicEditingController = TextEditingController();
 var commentsEditingController = TextEditingController();
+var weightEditingController = TextEditingController();
 
 //Blood Test
 var selectedRandomBloodUnit = 'mg/dL';
@@ -1255,6 +1266,80 @@ class _MeasurementsState extends State<Measurements> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)
+                            .translate("bodyMeasurements"),
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      SizedBox(height: 24),
+                      Container(
+                        height: 90,
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 0.5, color: Colors.grey.shade400),
+                            borderRadius: BorderRadius.circular(10)),
+                        padding: EdgeInsets.all(20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      AppLocalizations.of(context)
+                                              .translate("weight") +
+                                          "*",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      )),
+                                  SizedBox(
+                                    width: 28,
+                                  ),
+                                  Container(
+                                    width: 80,
+                                    height: 40,
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      keyboardType: TextInputType.number,
+                                      controller: weightEditingController,
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.only(
+                                            top: 5, left: 10, right: 10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.red, width: 0.0)),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 16,
+                                  ),
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate("kg"),
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 24),
+                    ],
+                  ),
+                ),
                 Text(
                   AppLocalizations.of(context).translate('bloodPressure'),
                   style: TextStyle(

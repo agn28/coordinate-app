@@ -117,7 +117,8 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
       if (data == '${item['data']['first_name']} ${item['data']['last_name']}') {
         patient = item;
         Patient().setPatient(item);
-        Navigator.of(context).pushNamed('/patientOverview');
+        // Navigator.of(context).pushNamed('/patientOverview');
+        Navigator.of(context).pushNamed('/patientOverview', arguments: {'prevScreen' : 'home'});
       }
     });
 
@@ -497,7 +498,7 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
                                       Patient().setPatient(item);
                                       print('hello');
                                       print(item);
-                                      Navigator.of(context).pushNamed('/patientOverview');
+                                      Navigator.of(context).pushNamed('/patientOverview', arguments: {'prevScreen' : 'home'});
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -557,7 +558,8 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
                                   onTap: () {
                                     // Patient().setPatientModify(item);
                                     Patient().setPatient(item);
-                                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
+                                    // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
+                                    Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : 'home'});
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -1572,7 +1574,7 @@ class PopupListItemWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Patient().setPatient(item);
-        Navigator.of(context).pushNamed('/patientOverview');
+        Navigator.of(context).pushNamed('/patientOverview', arguments: {'prevScreen' : 'home'});
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),

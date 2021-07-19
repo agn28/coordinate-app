@@ -102,7 +102,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
                   SizedBox(height: 40,),
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(context).pushNamed('/patientOverview');
+                      Navigator.of(context).pushNamed('/patientOverview', arguments: {'prevScreen' : ''});
                     },
                     child: Container(
                       margin: EdgeInsets.symmetric(horizontal: 50),

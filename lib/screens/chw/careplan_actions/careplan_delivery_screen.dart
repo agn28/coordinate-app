@@ -431,7 +431,7 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
                                           setState(() {
                                             isLoading = true;
                                           });
-                                          result = await AssessmentController().createOnlyAssessment(context, 'follow up visit (community)', 'follow-up', '', 'complete', '', followupType:'short');
+                                          result = await AssessmentController().createOnlyAssessment(context, 'Care Plan Delivery', 'care-plan-delivered', '', 'complete', '');
 
                                           setState(() {
                                             isLoading = false;
@@ -451,7 +451,7 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
                               setState(() {
                                 isLoading = true;
                               });
-                              result = await AssessmentController().createOnlyAssessment(context, 'follow up visit (community)', 'follow-up', '', 'complete', '', followupType:'short');
+                              result = await AssessmentController().createOnlyAssessment(context, 'Care Plan Delivery', 'care-plan-delivered', '', 'complete', '');
 
                               setState(() {
                                 isLoading = false;
@@ -780,7 +780,7 @@ class ActionItem extends StatefulWidget {
 }
 
 class _ActionItemState extends State<ActionItem> {
-  String status = 'pending';
+  String status = 'Pending';
   @override
   void initState() {
     // TODO: implement initState
@@ -803,7 +803,7 @@ class _ActionItemState extends State<ActionItem> {
     print('action set status');
     setState(() {
       btnDisabled = false;
-      status = 'completed';
+      status = 'Completed';
       cpUpdateCount--;
     });
 

@@ -63,66 +63,73 @@ class _ChwNavigationState extends State<ChwNavigationScreen> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-      // appBar: new AppBar(
-      //   title: new Text(AppLocalizations.of(context).translate('home'), style: TextStyle(color: Colors.white, fontSize: 22),),
-      //   backgroundColor: kPrimaryColor,
-      //   elevation: 0.0,
-      //   iconTheme: IconThemeData(color: Colors.white),
-      //   actions: <Widget>[
-      //     FlatButton(
-      //       child: Text('Logout', style: TextStyle(color: Colors.white),),
-      //       onPressed: () async {
-      //         await Auth().logout();
-      //         Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-      //       },
-      //     )
-      //   ],
-      // ),
-      
-      body: navigationItems[_currentIndex],
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 1,
-              blurRadius: 5,
-              offset: Offset(3, 0), // changes position of shadow
-            ),
-          ],
-        ),
-        child: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          type: BottomNavigationBarType.fixed,
-          unselectedFontSize: 16,
-          selectedFontSize: 16,
-          elevation: 0,
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.list),
-              title: Text(AppLocalizations.of(context).translate('workList'))
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.people),
-              title: Text(AppLocalizations.of(context).translate('patients'))
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_add),
-              title: Text(AppLocalizations.of(context).translate('newPatient'))
-            ),
-          ],
-          onTap: (value) {
-            if(value == 2) {
-              Navigator.of(context).push(RegisterPatientScreen());
-            } else {
-              setState(() {
-                _currentIndex = value;
-              });
-            }
-          },
-        ),
-      )
+    return WillPopScope(
+      onWillPop: () async {
+        print('WillPopScope here');
+        Navigator.pushNamed(context, '/home');
+        return true;
+      },
+      child: Scaffold(
+        // appBar: new AppBar(
+        //   title: new Text(AppLocalizations.of(context).translate('home'), style: TextStyle(color: Colors.white, fontSize: 22),),
+        //   backgroundColor: kPrimaryColor,
+        //   elevation: 0.0,
+        //   iconTheme: IconThemeData(color: Colors.white),
+        //   actions: <Widget>[
+        //     FlatButton(
+        //       child: Text('Logout', style: TextStyle(color: Colors.white),),
+        //       onPressed: () async {
+        //         await Auth().logout();
+        //         Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+        //       },
+        //     )
+        //   ],
+        // ),
+        
+        body: navigationItems[_currentIndex],
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 1,
+                blurRadius: 5,
+                offset: Offset(3, 0), // changes position of shadow
+              ),
+            ],
+          ),
+          child: BottomNavigationBar(
+            currentIndex: _currentIndex,
+            type: BottomNavigationBarType.fixed,
+            unselectedFontSize: 16,
+            selectedFontSize: 16,
+            elevation: 0,
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.list),
+                title: Text(AppLocalizations.of(context).translate('workList'))
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.people),
+                title: Text(AppLocalizations.of(context).translate('patients'))
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person_add),
+                title: Text(AppLocalizations.of(context).translate('newPatient'))
+              ),
+            ],
+            onTap: (value) {
+              if(value == 2) {
+                Navigator.of(context).push(RegisterPatientScreen());
+              } else {
+                setState(() {
+                  _currentIndex = value;
+                });
+              }
+            },
+          ),
+        )
+      ),
     );
   }
 }

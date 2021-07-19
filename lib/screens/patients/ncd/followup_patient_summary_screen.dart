@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:basic_utils/basic_utils.dart' as basic_utils;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -420,10 +421,10 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
 
     print('lastAssessment $lastAssessment');
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
-      lastEncounterDate = lastAssessment['data']['meta']['created_at'];
+      // lastEncounterDate = lastAssessment['data']['meta']['created_at'];
       nextVisitDate = lastAssessment['data']['body']['next_visit_date'];
       setState(() {
-        nextVisitDate = nextVisitDate != '' ? DateFormat("MMMM d, y").format(DateTime.parse(nextVisitDate)):'';
+        nextVisitDate = nextVisitDate != '' && nextVisitDate != null ? DateFormat("MMMM d, y").format(DateTime.parse(nextVisitDate)):'';
         lastEncounterType = lastAssessment['data']['body']['type'];
         lastEncounterDate = DateFormat("MMMM d, y").format(DateTime.parse(lastEncounterDate));
         print('lastEncounterDate ${lastEncounterDate}');
@@ -629,14 +630,14 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
         if(widget.prevScreen == 'encounter') {
           print('WillPopScope if');
           Navigator.of(context).pushNamed('/firstCenterSearch');
-          return false;
+          return true;
         } else if(widget.prevScreen == 'followup') {
           print('WillPopScope else if');
           Navigator.of(context).pushNamed(FollowupSearchScreen.path);
-          return false;
+          return true;
         } else {
-          print('WillPopScope else');
-          Navigator.pop(context);
+          print('WillPopScope home');
+          Navigator.pushNamed(context, '/home');
           return true;
         }
       },
@@ -1414,7 +1415,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(AppLocalizations.of(context).translate('lastEncounter')+'$lastEncounterType', style: TextStyle(fontSize: 17,)),
+                                Text(AppLocalizations.of(context).translate('lastEncounter')+'${basic_utils.StringUtils.capitalize(lastEncounterType)}', style: TextStyle(fontSize: 17,)),
                                 SizedBox(height: 10,),
                                 Text(AppLocalizations.of(context).translate('lastEncounterDate')+'$lastEncounterDate', style: TextStyle(fontSize: 17,)),
                               ],

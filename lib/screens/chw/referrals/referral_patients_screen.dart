@@ -89,7 +89,7 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
       if (data == '${item['data']['first_name']} ${item['data']['last_name']}') {
         patient = item;
         Patient().setPatient(item);
-        Navigator.of(context).pushNamed('/patientOverview');
+        Navigator.of(context).pushNamed('/patientOverview', arguments: {'prevScreen' : ''});
       }
     });
 

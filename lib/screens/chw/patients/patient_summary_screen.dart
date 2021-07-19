@@ -1,5 +1,5 @@
 import 'dart:io';
-// import 'package:basic_utils/basic_utils.dart';
+import 'package:basic_utils/basic_utils.dart' as basic_utils;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -34,7 +34,8 @@ var pendingReferral;
 
 class ChwPatientRecordsScreen extends StatefulWidget {
   var checkInState = false;
-  ChwPatientRecordsScreen({this.checkInState});
+  var prevScreen = '';
+  ChwPatientRecordsScreen({this.prevScreen});
   @override
   _PatientRecordsState createState() => _PatientRecordsState();
 }
@@ -71,6 +72,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     super.initState();
     _patient = Patient().getPatient();
     print(_patient['meta']['review_required']);
+    print('prevScreen ${widget.prevScreen}');
     dueCarePlans = [];
     completedCarePlans = [];
     upcomingCarePlans = [];
@@ -78,7 +80,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     referrals = [];
     pendingReferral = null;
     carePlansEmpty = false;
-    print(widget.checkInState);
     
     _checkAvatar();
     _checkAuth();
@@ -596,241 +597,180 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: new AppBar(
-        title: new Text(AppLocalizations.of(context).translate('patientSummary'), style: TextStyle(color: Colors.white, fontSize: 20),),
-        backgroundColor: kPrimaryColor,
-        elevation: 0.0,
-        iconTheme: IconThemeData(color: Colors.white),
-        actions: <Widget>[
+    return WillPopScope(
+      onWillPop: () async {
+      if(widget.prevScreen == 'followup') {
+          print('WillPopScope if');
+          Navigator.of(context).pushNamed( '/chwNavigation', arguments: 1);
+          return true;
+        } else {
+          print('WillPopScope else');
+          Navigator.pop(context);
+          return true;
+        }
+      },
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: new AppBar(
+          title: new Text(AppLocalizations.of(context).translate('patientSummary'), style: TextStyle(color: Colors.white, fontSize: 20),),
+          backgroundColor: kPrimaryColor,
+          elevation: 0.0,
+          iconTheme: IconThemeData(color: Colors.white),
+          actions: <Widget>[
 
-        ],
-      ),
-      body: isLoading ? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
-        child: SingleChildScrollView(
-          child: Stack(
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Container(
-                    color: Colors.transparent,
-                    child: Column(
-                      // mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(width: 1, color: kBorderLighter)
-                            )
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Container(
-                                child: Row(
-                                  children: <Widget>[
-                                    Patient().getPatient()['data']['avatar'] == '' ? 
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      child: Image.asset(
-                                        'assets/images/avatar.png',
-                                        height: 70.0,
-                                        width: 70.0,
-                                      ),
-                                    ) :
-                                    CircleAvatar(
-                                      radius: 30,
-                                      child: ClipRRect(
+          ],
+        ),
+        body: isLoading ? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
+          child: SingleChildScrollView(
+            child: Stack(
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    Container(
+                      color: Colors.transparent,
+                      child: Column(
+                        // mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(width: 1, color: kBorderLighter)
+                              )
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Container(
+                                  child: Row(
+                                    children: <Widget>[
+                                      Patient().getPatient()['data']['avatar'] == '' ? 
+                                      ClipRRect(
                                         borderRadius: BorderRadius.circular(30.0),
-                                        child: Image.network(
-                                          Patient().getPatient()['data']['avatar'],
+                                        child: Image.asset(
+                                          'assets/images/avatar.png',
                                           height: 70.0,
                                           width: 70.0,
                                         ),
+                                      ) :
+                                      CircleAvatar(
+                                        radius: 30,
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(30.0),
+                                          child: Image.network(
+                                            Patient().getPatient()['data']['avatar'],
+                                            height: 70.0,
+                                            width: 70.0,
+                                          ),
+                                        ),
+                                        backgroundImage: AssetImage('assets/images/avatar.png'),
                                       ),
-                                      backgroundImage: AssetImage('assets/images/avatar.png'),
-                                    ),
 
-                                    SizedBox(width: 20,),
+                                      SizedBox(width: 20,),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(Helpers().getPatientName(_patient), style: TextStyle( fontSize: 19, fontWeight: FontWeight.w600),),
+
+                                          SizedBox(height: 7,),
+                                          Row(
+                                            children: <Widget>[
+                                              Text(Helpers().getPatientAgeAndGender(_patient), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),),
+
+
+                                            ],
+                                          ),
+                                          SizedBox(height: 10,),
+                                        ],
+                                      ),
+                                      
+                                      SizedBox(width: 100,),
+                                    ],
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).pushNamed('/chwPatientDetails');
+                                  },
+                                  child: Container(
+                                    child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 35,)
+                                  ),
+                                )
+                              ],
+                            )
+                          ),
+                        ],
+                      ),
+                    ),
+                    
+
+                    Container(
+                      padding: EdgeInsets.only(left: 20, right: 20, top: 15),
+
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            child: Text(AppLocalizations.of(context).translate('currentConditions'), style: TextStyle(fontSize: 17,),),
+                          ),
+                          SizedBox(width: 20),
+                          Expanded(
+                            // padding: EdgeInsets.symmetric(vertical: 9),
+                            child: Wrap(
+                              children: <Widget>[
+                                ...conditions.map((item) {
+                                  return Text(item + '${conditions.length - 1 == conditions.indexOf(item) ? '' : ', '}', style: TextStyle(fontSize: 17,));
+                                }).toList()
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    report != null && report['body']['result']['assessments']['cvd'] != null ?
+                      Container(
+                        padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            // top: BorderSide(color: kBorderLighter)
+                          )
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Row(
+                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Text(AppLocalizations.of(context).translate('cvdRisk')+": ", style: TextStyle(fontSize: 17)),
+                                SizedBox(width: 20),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        Text(Helpers().getPatientName(_patient), style: TextStyle( fontSize: 19, fontWeight: FontWeight.w600),),
-
-                                        SizedBox(height: 7,),
-                                        Row(
-                                          children: <Widget>[
-                                            Text(Helpers().getPatientAgeAndGender(_patient), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),),
-
-
-                                          ],
+                                        Text('${report['body']['result']['assessments']['cvd']['eval']} (${report['body']['result']['assessments']['cvd']['value']})',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: ColorUtils.statusColor[report['body']['result']['assessments']['cvd']['tfl']] ?? Colors.black
+                                          ),
                                         ),
-                                        SizedBox(height: 10,),
-                                      ],
-                                    ),
-                                    
-                                    SizedBox(width: 100,),
-                                  ],
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.of(context).pushNamed('/chwPatientDetails');
-                                },
-                                child: Container(
-                                  child: Icon(Icons.chevron_right, color: kPrimaryColor, size: 35,)
-                                ),
-                              )
-                            ],
-                          )
-                        ),
-                      ],
-                    ),
-                  ),
-                  
-
-                  Container(
-                    padding: EdgeInsets.only(left: 20, right: 20, top: 15),
-
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          child: Text(AppLocalizations.of(context).translate('currentConditions'), style: TextStyle(fontSize: 17,),),
-                        ),
-                        SizedBox(width: 20),
-                        Expanded(
-                          // padding: EdgeInsets.symmetric(vertical: 9),
-                          child: Wrap(
-                            children: <Widget>[
-                              ...conditions.map((item) {
-                                return Text(item + '${conditions.length - 1 == conditions.indexOf(item) ? '' : ', '}', style: TextStyle(fontSize: 17,));
-                              }).toList()
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  report != null && report['body']['result']['assessments']['cvd'] != null ?
-                    Container(
-                      padding: EdgeInsets.only(left: 20, right: 20, top: 20),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          // top: BorderSide(color: kBorderLighter)
-                        )
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(AppLocalizations.of(context).translate('cvdRisk')+": ", style: TextStyle(fontSize: 17)),
-                              SizedBox(width: 20),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text('${report['body']['result']['assessments']['cvd']['eval']} (${report['body']['result']['assessments']['cvd']['value']})',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          color: ColorUtils.statusColor[report['body']['result']['assessments']['cvd']['tfl']] ?? Colors.black
-                                        ),
-                                      ),
-                                    ]
-                                  ),
-                                ]
-                              )
-                            ],
-                          ),
-
-                          SizedBox(height: 20,),
-
-                        ],
-                      ),
-                    ) : Container(),
-
-                  report != null && report['body']['result']['assessments']['lifestyle'] != null && report['body']['result']['assessments']['lifestyle']['components']['smoking'] != null ?
-                  Container(
-                    padding: EdgeInsets.only(left: 20, right: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Text(AppLocalizations.of(context).translate('smoker') + ": ", style: TextStyle(fontSize: 17)),
-                            SizedBox(width: 20),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(report['body']['result']['assessments']['lifestyle']['components']['smoking']['value'] == 'current smoker' ?
-                                      'Yes' : 'No',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: ColorUtils.statusColor[report['body']['result']['assessments']['lifestyle']['components']['smoking']['tfl']] ?? Colors.black
-                                      ),
+                                      ]
                                     ),
                                   ]
-                                ),
-                              ]
-                            )
+                                )
+                              ],
+                            ),
+
+                            SizedBox(height: 20,),
+
                           ],
                         ),
+                      ) : Container(),
 
-                        SizedBox(height: 20,),
-
-                      ],
-                    ),
-                  ) : Container(),
-
-
-                  report != null && report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ?
-                  Container(
-                      padding: EdgeInsets.only(left: 20, right: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Text(AppLocalizations.of(context).translate('bmi') + ": ", style: TextStyle(fontSize: 17)),
-                              SizedBox(width: 20),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text(report['body']['result']['assessments']['body_composition']['components']['bmi']['eval'],
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          color: ColorUtils.statusColor[report['body']['result']['assessments']['body_composition']['components']['bmi']['tfl']] ?? Colors.black
-                                        ),
-                                      ),
-                                    ]
-                                  ),
-                                ]
-                              )
-                            ],
-                          ),
-
-                          SizedBox(height: 20,),
-
-                        ],
-                      ),
-                    ) : Container(),
-
-
-                  report != null && report['body']['result']['assessments']['lifestyle'] != null && report['body']['result']['assessments']['lifestyle']['components']['physical_activity'] != null ?
+                    report != null && report['body']['result']['assessments']['lifestyle'] != null && report['body']['result']['assessments']['lifestyle']['components']['smoking'] != null ?
                     Container(
                       padding: EdgeInsets.only(left: 20, right: 20),
                       child: Column(
@@ -838,7 +778,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                         children: <Widget>[
                           Row(
                             children: <Widget>[
-                              Text(AppLocalizations.of(context).translate('physicalActivity') + ": ", style: TextStyle(fontSize: 17)),
+                              Text(AppLocalizations.of(context).translate('smoker') + ": ", style: TextStyle(fontSize: 17)),
                               SizedBox(width: 20),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -846,10 +786,11 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: <Widget>[
-                                      Text(report['body']['result']['assessments']['lifestyle']['components']['physical_activity']['eval'],
+                                      Text(report['body']['result']['assessments']['lifestyle']['components']['smoking']['value'] == 'current smoker' ?
+                                        'Yes' : 'No',
                                         style: TextStyle(
                                           fontSize: 18,
-                                          color: ColorUtils.statusColor[report['body']['result']['assessments']['lifestyle']['components']['physical_activity']['tfl']] ?? Colors.black
+                                          color: ColorUtils.statusColor[report['body']['result']['assessments']['lifestyle']['components']['smoking']['tfl']] ?? Colors.black
                                         ),
                                       ),
                                     ]
@@ -866,380 +807,453 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                     ) : Container(),
 
 
-                  report != null && report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ?
+                    report != null && report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ?
                     Container(
-                      padding: EdgeInsets.only(left: 20, right: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Text(AppLocalizations.of(context).translate('cholesterol') + ": ", style: TextStyle(fontSize: 17)),
-                              SizedBox(width: 20),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text(report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol']['eval'],
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          color: ColorUtils.statusColor[report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol']['tfl']] ?? Colors.black
-                                        ),
-                                      ),
-                                    ]
-                                  ),
-                                ]
-                              )
-                            ],
-                          ),
-
-                          SizedBox(height: 20,),
-
-                        ],
-                      ),
-                    ) : Container(),
-
-                  report != null && report['body']['result']['assessments']['blood_pressure'] != null ?
-                    Container(
-                      padding: EdgeInsets.only(left: 20, right: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Text(AppLocalizations.of(context).translate('bloodPressure') + ": ", style: TextStyle(fontSize: 17)),
-                              SizedBox(width: 20),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text(report['body']['result']['assessments']['blood_pressure']['eval'],
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          color: ColorUtils.statusColor[report['body']['result']['assessments']['blood_pressure']['tfl']] ?? Colors.black
-                                        ),
-                                      ),
-                                    ]
-                                  ),
-                                ]
-                              )
-                            ],
-                          ),
-
-                          SizedBox(height: 20,),
-
-                        ],
-                      ),
-                    ) : Container(),
-
-                  report != null && report['body']['result']['assessments']['diabetes'] != null ?
-                    Container(
-                      padding: EdgeInsets.only(left: 20, right: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Text(AppLocalizations.of(context).translate('bloodSugar') + ": ", style: TextStyle(fontSize: 17)),
-                              SizedBox(width: 20),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text(report['body']['result']['assessments']['diabetes']['eval'],
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          color: ColorUtils.statusColor[report['body']['result']['assessments']['diabetes']['tfl']] ?? Colors.black
-                                        ),
-                                      ),
-                                    ]
-                                  ),
-                                ]
-                              )
-                            ],
-                          ),
-
-                          SizedBox(height: 20,),
-
-                        ],
-                      ),
-                    ) : Container(),
-
-
-
-
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border(
-                        top: BorderSide(width: 4, color: kBorderLighter)
-                      ),
-                    ),
-                    padding: EdgeInsets.only(top: 15, left: 10, right: 10),
-                    child: Column(
-                      children: <Widget>[
-
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 1, color: kBorderLighter),
-                          ),
-                          width: double.infinity,
-                          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(AppLocalizations.of(context).translate('ncdCenterVisit'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
-                              SizedBox(height: 15,),
-                              Text(AppLocalizations.of(context).translate('nextVisitDate') +  ': $nextVisitDate', style: TextStyle(fontSize: 17,)),
-                              SizedBox(height: 10,),
-                              Text(AppLocalizations.of(context).translate('lastVisitDate') +  ': $lastEncounterDate', style: TextStyle(fontSize: 17,))
-                            ],
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 1, color: kBorderLighter),
-                          ),
-                          width: double.infinity,
-                          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(AppLocalizations.of(context).translate('lastEncounter')+'$lastEncounterType', style: TextStyle(fontSize: 17,)),
-                              SizedBox(height: 10,),
-                              Text(AppLocalizations.of(context).translate('lastEncounterDate')+  ': $lastEncounterDate', style: TextStyle(fontSize: 17,)),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border(
-                              top: BorderSide(width: 4, color: kBorderLighter)
-                            ),
-                          ),
-                          padding: EdgeInsets.only(top: 15, left: 10, right: 10),
-                          child: Column(
-                            children: <Widget>[
-
-                              Container(
-                                padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                                child: Row(
+                        padding: EdgeInsets.only(left: 20, right: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Text(AppLocalizations.of(context).translate('bmi') + ": ", style: TextStyle(fontSize: 17)),
+                                SizedBox(width: 20),
+                                Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    Text(AppLocalizations.of(context).translate('careplanAcions'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
-                                    if (_patient['meta']['review_required'] != null && _patient['meta']['review_required'])
-                                      Container(
-                                        padding: EdgeInsets.symmetric(vertical: 9),
-                                        child: Text(AppLocalizations.of(context).translate('pendingDoctorConsultation').toUpperCase(), style: TextStyle(fontSize: 17, color: kPrimaryYellowColor, fontWeight: FontWeight.w500),)
-                                        ,
-                                      )
-                                    else if(carePlans != null && carePlans.length > 0)
-                                      if(dueCarePlans.length > 0 || upcomingCarePlans.length > 0)
-                                        Container(
-                                          padding: EdgeInsets.symmetric(vertical: 9),
-                                          child: Text(AppLocalizations.of(context).translate('pending').toUpperCase(), style: TextStyle(fontSize: 17, color: kPrimaryRedColor, fontWeight: FontWeight.w500),)
-                                          ,
-                                        )
-                                      else
-                                        Container(
-                                          padding: EdgeInsets.symmetric(vertical: 9),
-                                          child: Text(AppLocalizations.of(context).translate('completedPendingFollowUp').toUpperCase(), style: TextStyle(fontSize: 17, color: kPrimaryGreenColor, fontWeight: FontWeight.w500),)
-                                          ,
-                                        )
-                                    else Container(
-                                          padding: EdgeInsets.symmetric(vertical: 9),
-                                          child: Text(AppLocalizations.of(context).translate('none').toUpperCase(), style: TextStyle(fontSize: 17, color: kPrimaryRedColor, fontWeight: FontWeight.w500),)
-                                          ,
-                                        ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          )
-                        ),
-
-                        widget.checkInState != null && widget.checkInState ? Container(
-                          width: double.infinity,
-                          margin: EdgeInsets.only(left: 20, right: 20, top: 20),
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: kPrimaryColor,
-                            borderRadius: BorderRadius.circular(3)
-                          ),
-                          child: FlatButton(
-                            onPressed: () async {
-                               //Navigator.of(context).pushNamed('/chwPatientSummary');
-
-                              showDialog(
-                                context: _scaffoldKey.currentContext,
-                                builder: (BuildContext context) {
-                                  return Dialog(
-                                    child: Container(
-                                      width: double.infinity,
-                                      height: 160.0,
-                                      child: Column(
-                                        children: <Widget>[
-                                          Container(
-                                            margin: EdgeInsets.only(top: 20),
-                                            width: 350,
-                                            alignment: Alignment.center,
-                                            child: Text(AppLocalizations.of(context).translate('medicalIssueInVisit'), style: TextStyle(
-                                            fontSize: 22
-                                          ), textAlign: TextAlign.center,),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(report['body']['result']['assessments']['body_composition']['components']['bmi']['eval'],
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: ColorUtils.statusColor[report['body']['result']['assessments']['body_composition']['components']['bmi']['tfl']] ?? Colors.black
                                           ),
-                                          Row(
-                                            children: <Widget>[
-                                              Expanded(
-                                                child: Container(
-                                                  width: double.infinity,
-                                                  margin: EdgeInsets.only(left: 20, right: 20, top: 20),
-                                                  height: 50,
-                                                  decoration: BoxDecoration(
-                                                    color: kPrimaryRedColor,
-                                                    borderRadius: BorderRadius.circular(3)
-                                                  ),
-                                                  child: FlatButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                      Navigator.of(context).pushNamed('/reportMedicalIssues');
-                                                    },
-                                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                    child: Text(AppLocalizations.of(context).translate("yes"), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Container(
-                                                  width: double.infinity,
-                                                  margin: EdgeInsets.only(left: 20, right: 20, top: 20),
-                                                  height: 50,
-                                                  decoration: BoxDecoration(
-                                                    color: kPrimaryGreenColor,
-                                                    borderRadius: BorderRadius.circular(3)
-                                                  ),
-                                                  child: FlatButton(
-                                                    onPressed: () async {
-                                                      Navigator.of(context).pop();
-                                                      var result = '';
-                                                      setState(() {
-                                                        isLoading = true;
-                                                      });
-
-                                                      await Future.delayed(const Duration(seconds: 5));
-
-                                                      
-                                                      result = await AssessmentController().create('visit', 'follow-up', '');
-
-                                                      setState(() {
-                                                        isLoading = false;
-                                                      });
-                                                      Navigator.of(_scaffoldKey.currentContext).pushNamed('/chwNavigation');
-
-                                                      
-                                                    },
-                                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                    child: Text(AppLocalizations.of(context).translate("NO"), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
+                                        ),
+                                      ]
                                     ),
-                                  );
-                                },
-                              );
-                            },
-                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            child: Text(AppLocalizations.of(context).translate('completeVisit'), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
-                          ),
-                        ) : Container(),
-                      ],
-                    )
-                  ),
-                  SizedBox(height: 15,),
-                ], 
-                
-              ),
-              isLoading ? Container(
-                height: MediaQuery.of(context).size.height,
-                width: double.infinity,
-                color: Color(0x90FFFFFF),
-                child: Center(
-                  child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),backgroundColor: Color(0x30FFFFFF),)
-                ),
-              ) : Container(),
-            ],
-          ),
-        ),
-      ),
-      floatingActionButton: GestureDetector(
-        onTap: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context){
-              return Stack(
-                children: <Widget>[
-                  Positioned(
-                    bottom: 50,
-                    right: 0,
-                    child: AlertDialog(
-                      contentPadding: EdgeInsets.all(0),
-                      elevation: 0,
-                      content: Container(
-                        alignment: Alignment.bottomRight,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: <Widget>[
-                            FloatingButton(text: AppLocalizations.of(context).translate('followUp'), onPressed: () {
-                              // Navigator.of(context).pop();
-                              Navigator.of(context).pushNamed(FollowupFeelingScreen.path);
-                            }, ),
+                                  ]
+                                )
+                              ],
+                            ),
 
-                            FloatingButton(text: AppLocalizations.of(context).translate('deliverCarePlan'), onPressed: () {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pushNamed(CareplanFeelingScreen.path);
-                            },),
+                            SizedBox(height: 20,),
+
                           ],
                         ),
+                      ) : Container(),
+
+
+                    report != null && report['body']['result']['assessments']['lifestyle'] != null && report['body']['result']['assessments']['lifestyle']['components']['physical_activity'] != null ?
+                      Container(
+                        padding: EdgeInsets.only(left: 20, right: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Text(AppLocalizations.of(context).translate('physicalActivity') + ": ", style: TextStyle(fontSize: 17)),
+                                SizedBox(width: 20),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(report['body']['result']['assessments']['lifestyle']['components']['physical_activity']['eval'],
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: ColorUtils.statusColor[report['body']['result']['assessments']['lifestyle']['components']['physical_activity']['tfl']] ?? Colors.black
+                                          ),
+                                        ),
+                                      ]
+                                    ),
+                                  ]
+                                )
+                              ],
+                            ),
+
+                            SizedBox(height: 20,),
+
+                          ],
+                        ),
+                      ) : Container(),
+
+
+                    report != null && report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ?
+                      Container(
+                        padding: EdgeInsets.only(left: 20, right: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Text(AppLocalizations.of(context).translate('cholesterol') + ": ", style: TextStyle(fontSize: 17)),
+                                SizedBox(width: 20),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol']['eval'],
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: ColorUtils.statusColor[report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol']['tfl']] ?? Colors.black
+                                          ),
+                                        ),
+                                      ]
+                                    ),
+                                  ]
+                                )
+                              ],
+                            ),
+
+                            SizedBox(height: 20,),
+
+                          ],
+                        ),
+                      ) : Container(),
+
+                    report != null && report['body']['result']['assessments']['blood_pressure'] != null ?
+                      Container(
+                        padding: EdgeInsets.only(left: 20, right: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Text(AppLocalizations.of(context).translate('bloodPressure') + ": ", style: TextStyle(fontSize: 17)),
+                                SizedBox(width: 20),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(report['body']['result']['assessments']['blood_pressure']['eval'],
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: ColorUtils.statusColor[report['body']['result']['assessments']['blood_pressure']['tfl']] ?? Colors.black
+                                          ),
+                                        ),
+                                      ]
+                                    ),
+                                  ]
+                                )
+                              ],
+                            ),
+
+                            SizedBox(height: 20,),
+
+                          ],
+                        ),
+                      ) : Container(),
+
+                    report != null && report['body']['result']['assessments']['diabetes'] != null ?
+                      Container(
+                        padding: EdgeInsets.only(left: 20, right: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Text(AppLocalizations.of(context).translate('bloodSugar') + ": ", style: TextStyle(fontSize: 17)),
+                                SizedBox(width: 20),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(report['body']['result']['assessments']['diabetes']['eval'],
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: ColorUtils.statusColor[report['body']['result']['assessments']['diabetes']['tfl']] ?? Colors.black
+                                          ),
+                                        ),
+                                      ]
+                                    ),
+                                  ]
+                                )
+                              ],
+                            ),
+
+                            SizedBox(height: 20,),
+
+                          ],
+                        ),
+                      ) : Container(),
+
+
+
+
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          top: BorderSide(width: 4, color: kBorderLighter)
+                        ),
                       ),
-                      backgroundColor: Colors.transparent,
+                      padding: EdgeInsets.only(top: 15, left: 10, right: 10),
+                      child: Column(
+                        children: <Widget>[
+
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: kBorderLighter),
+                            ),
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(AppLocalizations.of(context).translate('ncdCenterVisit'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+                                SizedBox(height: 15,),
+                                Text(AppLocalizations.of(context).translate('nextVisitDate') +  ': $nextVisitDate', style: TextStyle(fontSize: 17,)),
+                                SizedBox(height: 10,),
+                                Text(AppLocalizations.of(context).translate('lastVisitDate') +  ': $lastEncounterDate', style: TextStyle(fontSize: 17,))
+                              ],
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: kBorderLighter),
+                            ),
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(AppLocalizations.of(context).translate('lastEncounter')+'${basic_utils.StringUtils.capitalize(lastEncounterType)}', style: TextStyle(fontSize: 17,)),
+                                SizedBox(height: 10,),
+                                Text(AppLocalizations.of(context).translate('lastEncounterDate')+  ': $lastEncounterDate', style: TextStyle(fontSize: 17,)),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border(
+                                top: BorderSide(width: 4, color: kBorderLighter)
+                              ),
+                            ),
+                            padding: EdgeInsets.only(top: 15, left: 10, right: 10),
+                            child: Column(
+                              children: <Widget>[
+
+                                Container(
+                                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(AppLocalizations.of(context).translate('careplanAcions'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                                      if (_patient['meta']['review_required'] != null && _patient['meta']['review_required'])
+                                        Container(
+                                          padding: EdgeInsets.symmetric(vertical: 9),
+                                          child: Text(AppLocalizations.of(context).translate('pendingDoctorConsultation').toUpperCase(), style: TextStyle(fontSize: 17, color: kPrimaryYellowColor, fontWeight: FontWeight.w500),)
+                                          ,
+                                        )
+                                      else if(carePlans != null && carePlans.length > 0)
+                                        if(dueCarePlans.length > 0 || upcomingCarePlans.length > 0)
+                                          Container(
+                                            padding: EdgeInsets.symmetric(vertical: 9),
+                                            child: Text(AppLocalizations.of(context).translate('pending').toUpperCase(), style: TextStyle(fontSize: 17, color: kPrimaryRedColor, fontWeight: FontWeight.w500),)
+                                            ,
+                                          )
+                                        else
+                                          Container(
+                                            padding: EdgeInsets.symmetric(vertical: 9),
+                                            child: Text(AppLocalizations.of(context).translate('completedPendingFollowUp').toUpperCase(), style: TextStyle(fontSize: 17, color: kPrimaryGreenColor, fontWeight: FontWeight.w500),)
+                                            ,
+                                          )
+                                      else Container(
+                                            padding: EdgeInsets.symmetric(vertical: 9),
+                                            child: Text(AppLocalizations.of(context).translate('none').toUpperCase(), style: TextStyle(fontSize: 17, color: kPrimaryRedColor, fontWeight: FontWeight.w500),)
+                                            ,
+                                          ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            )
+                          ),
+
+                          widget.checkInState != null && widget.checkInState ? Container(
+                            width: double.infinity,
+                            margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: kPrimaryColor,
+                              borderRadius: BorderRadius.circular(3)
+                            ),
+                            child: FlatButton(
+                              onPressed: () async {
+                                 //Navigator.of(context).pushNamed('/chwPatientSummary');
+
+                                showDialog(
+                                  context: _scaffoldKey.currentContext,
+                                  builder: (BuildContext context) {
+                                    return Dialog(
+                                      child: Container(
+                                        width: double.infinity,
+                                        height: 160.0,
+                                        child: Column(
+                                          children: <Widget>[
+                                            Container(
+                                              margin: EdgeInsets.only(top: 20),
+                                              width: 350,
+                                              alignment: Alignment.center,
+                                              child: Text(AppLocalizations.of(context).translate('medicalIssueInVisit'), style: TextStyle(
+                                              fontSize: 22
+                                            ), textAlign: TextAlign.center,),
+                                            ),
+                                            Row(
+                                              children: <Widget>[
+                                                Expanded(
+                                                  child: Container(
+                                                    width: double.infinity,
+                                                    margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                                                    height: 50,
+                                                    decoration: BoxDecoration(
+                                                      color: kPrimaryRedColor,
+                                                      borderRadius: BorderRadius.circular(3)
+                                                    ),
+                                                    child: FlatButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                        Navigator.of(context).pushNamed('/reportMedicalIssues');
+                                                      },
+                                                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                      child: Text(AppLocalizations.of(context).translate("yes"), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                                                    ),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Container(
+                                                    width: double.infinity,
+                                                    margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                                                    height: 50,
+                                                    decoration: BoxDecoration(
+                                                      color: kPrimaryGreenColor,
+                                                      borderRadius: BorderRadius.circular(3)
+                                                    ),
+                                                    child: FlatButton(
+                                                      onPressed: () async {
+                                                        Navigator.of(context).pop();
+                                                        var result = '';
+                                                        setState(() {
+                                                          isLoading = true;
+                                                        });
+
+                                                        await Future.delayed(const Duration(seconds: 5));
+
+                                                        
+                                                        result = await AssessmentController().create('visit', 'follow-up', '');
+
+                                                        setState(() {
+                                                          isLoading = false;
+                                                        });
+                                                        Navigator.of(_scaffoldKey.currentContext).pushNamed('/chwNavigation');
+
+                                                        
+                                                      },
+                                                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                      child: Text(AppLocalizations.of(context).translate("NO"), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              child: Text(AppLocalizations.of(context).translate('completeVisit'), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
+                            ),
+                          ) : Container(),
+                        ],
+                      )
                     ),
-                  )
-                ],
-              );
-            }
-          );
-        },
-        // icon: Icon(Icons.add),
-        // label: null,
-        // backgroundColor: kPrimaryColor,
-        child: Container(
-          height: 50,
-          width: 50,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50),
-            color: kPrimaryColor,
-            boxShadow: [
-              new BoxShadow(
-                offset: Offset(0.0, 1.0),
-                color: Color(0xFF000000),
-                blurRadius: 2.0,
-              ),
-            ],
-          ),
-          child: Center(
-            child: Icon(Icons.add, color: Colors.white,),
+                    SizedBox(height: 15,),
+                  ], 
+                  
+                ),
+                isLoading ? Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: double.infinity,
+                  color: Color(0x90FFFFFF),
+                  child: Center(
+                    child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),backgroundColor: Color(0x30FFFFFF),)
+                  ),
+                ) : Container(),
+              ],
+            ),
           ),
         ),
-      ),
+        floatingActionButton: GestureDetector(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context){
+                return Stack(
+                  children: <Widget>[
+                    Positioned(
+                      bottom: 50,
+                      right: 0,
+                      child: AlertDialog(
+                        contentPadding: EdgeInsets.all(0),
+                        elevation: 0,
+                        content: Container(
+                          alignment: Alignment.bottomRight,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: <Widget>[
+                              FloatingButton(text: AppLocalizations.of(context).translate('followUp'), onPressed: () {
+                                // Navigator.of(context).pop();
+                                Navigator.of(context).pushNamed(FollowupFeelingScreen.path);
+                              }, ),
 
+                              FloatingButton(text: AppLocalizations.of(context).translate('deliverCarePlan'), onPressed: () {
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pushNamed(CareplanFeelingScreen.path);
+                              },),
+                            ],
+                          ),
+                        ),
+                        backgroundColor: Colors.transparent,
+                      ),
+                    )
+                  ],
+                );
+              }
+            );
+          },
+          // icon: Icon(Icons.add),
+          // label: null,
+          // backgroundColor: kPrimaryColor,
+          child: Container(
+            height: 50,
+            width: 50,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(50),
+              color: kPrimaryColor,
+              boxShadow: [
+                new BoxShadow(
+                  offset: Offset(0.0, 1.0),
+                  color: Color(0xFF000000),
+                  blurRadius: 2.0,
+                ),
+              ],
+            ),
+            child: Center(
+              child: Icon(Icons.add, color: Colors.white,),
+            ),
+          ),
+        ),
+
+      ),
     );
   }
 }

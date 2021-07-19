@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:basic_utils/basic_utils.dart' as basic_utils;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -986,10 +987,10 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(AppLocalizations.of(context).translate('encounterDate')+'$incompleteEncounterDate', style: TextStyle(fontSize: 17,),),
+                            Text(AppLocalizations.of(context).translate('incompleteEncounterDate')+': $incompleteEncounterDate', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),),
                             SizedBox(height: 15,),
-                            Text('$performerRole: '+'$performerName', style: TextStyle(fontSize: 17,),),
-                            SizedBox(height: 10,),
+                            // Text('$performerRole: '+'$performerName', style: TextStyle(fontSize: 17,),),
+                            // SizedBox(height: 10,),
                           ],
                         ),
                         Row(
@@ -1054,7 +1055,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(AppLocalizations.of(context).translate('lastEncounter')+'$lastEncounterType', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+                        Text(AppLocalizations.of(context).translate('lastEncounter')+'${basic_utils.StringUtils.capitalize(lastEncounterType)}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
                         SizedBox(height: 15,),
                         Text(AppLocalizations.of(context).translate('lastEncounterDate')+'$lastEncounterDate', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
                         SizedBox(height: 10,),

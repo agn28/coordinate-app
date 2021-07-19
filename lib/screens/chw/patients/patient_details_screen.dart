@@ -329,7 +329,8 @@ class _PatientItemState extends State<PatientItem> {
     return GestureDetector(
       onTap: () {
         Patient().setPatientModify(widget.item);
-        Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
+        // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
+    Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : ''});
       },
       child: Container(
         color: Colors.transparent,

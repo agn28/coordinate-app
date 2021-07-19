@@ -287,7 +287,7 @@ class _PatientSearchState extends State<PatientSearchScreen> {
                 ...patients.map((item) => GestureDetector(
                   onTap: () {
                     Patient().setPatient(item);
-                    Navigator.of(context).pushNamed('/patientOverview');
+                    Navigator.of(context).pushNamed('/patientOverview', arguments: {'prevScreen' : ''});
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -941,7 +941,7 @@ class PopupListItemWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Patient().setPatient(item);
-        Navigator.of(context).pushNamed('/patientOverview');
+        Navigator.of(context).pushNamed('/patientOverview', arguments: {'prevScreen' : ''});
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),

@@ -179,224 +179,231 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      //resizeToAvoidBottomPadding: false,
-      //Migrate Projects
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('patients')),
-        elevation: 0,
-        actions: <Widget>[
-          FlatButton(
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: 5,),
-                Icon(Icons.person_add, color: Colors.white, size: 20,),
-                SizedBox(height: 5,),
-                Text(AppLocalizations.of(context).translate('newPatient'), style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14),)
-              ],
+    return WillPopScope(
+      onWillPop: () async {
+        print('WillPopScope');
+        Navigator.pushNamed(context, '/home');
+        return true;
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        //resizeToAvoidBottomPadding: false,
+        //Migrate Projects
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context).translate('patients')),
+          elevation: 0,
+          actions: <Widget>[
+            FlatButton(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: 5,),
+                  Icon(Icons.person_add, color: Colors.white, size: 20,),
+                  SizedBox(height: 5,),
+                  Text(AppLocalizations.of(context).translate('newPatient'), style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14),)
+                ],
+              ),
+              onPressed: () {
+                Navigator.of(context).push(RegisterPatientScreen());
+              },
             ),
-            onPressed: () {
-              Navigator.of(context).push(RegisterPatientScreen());
-            },
-          ),
-          Configs().configAvailable('isBarcode') ? FlatButton(
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: 5,),
-                Icon(Icons.line_weight, color: Colors.white, size: 20,),
-                SizedBox(height: 5,),
-                Text(AppLocalizations.of(context).translate('scanBarcode'), style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14),)
-              ],
-            ),
-            onPressed: () {
-              Navigator.of(context).push(RegisterPatientScreen());
-            },
-          ): Container(),
+            Configs().configAvailable('isBarcode') ? FlatButton(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: 5,),
+                  Icon(Icons.line_weight, color: Colors.white, size: 20,),
+                  SizedBox(height: 5,),
+                  Text(AppLocalizations.of(context).translate('scanBarcode'), style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14),)
+                ],
+              ),
+              onPressed: () {
+                Navigator.of(context).push(RegisterPatientScreen());
+              },
+            ): Container(),
 
-          Configs().configAvailable('isThumbprint') ? FlatButton(
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: 5,),
-                Icon(Icons.fingerprint, color: Colors.white, size: 20,),
-                SizedBox(height: 5,),
-                Text(AppLocalizations.of(context).translate('useThumbprint'), style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),)
-              ],
-            ),
-            onPressed: () {},
-          ) : Container()
-        ],
-      ),
-      body: Stack(
-        children: <Widget>[
-          !isLoading ? SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Container(
-                  // padding: EdgeInsets.symmetric(vertical: 20),
-                  color: kPrimaryColor,
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(left: 15, right: 15, top: 20),
-                        child: TextField(
-                          controller: searchController,
-                          onChanged: (query) {
-                            search(query);
-                          },
-                          // focusNode: focusNode,
-                          autofocus: true,
-                          style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                          decoration: InputDecoration(
-                            fillColor: Colors.white,
-                            filled: true,
-                            enabledBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color(0x4437474F),
+            Configs().configAvailable('isThumbprint') ? FlatButton(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: 5,),
+                  Icon(Icons.fingerprint, color: Colors.white, size: 20,),
+                  SizedBox(height: 5,),
+                  Text(AppLocalizations.of(context).translate('useThumbprint'), style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),)
+                ],
+              ),
+              onPressed: () {},
+            ) : Container()
+          ],
+        ),
+        body: Stack(
+          children: <Widget>[
+            !isLoading ? SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    // padding: EdgeInsets.symmetric(vertical: 20),
+                    color: kPrimaryColor,
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(left: 15, right: 15, top: 20),
+                          child: TextField(
+                            controller: searchController,
+                            onChanged: (query) {
+                              search(query);
+                            },
+                            // focusNode: focusNode,
+                            autofocus: true,
+                            style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color(0x4437474F),
+                                ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(5)
+                                )
                               ),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(5)
-                              )
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Theme.of(context).primaryColor),
-                            ),
-                            prefixIcon: Icon(Icons.search),
-                            suffixIcon: IconButton(
-                              onPressed: () { 
-                                setState(() {
-                                  searchController.text = '';
-                                  patients = allPatients;
-                                });
-                              },
-                              icon: Icon(Icons.cancel, color: kTextGrey, size: 25,)
-                            ),
-                            border: InputBorder.none,
-                            hintText: AppLocalizations.of(context).translate('searchHere'),
-                            contentPadding: const EdgeInsets.only(
-                              left: 16,
-                              right: 20,
-                              top: 14,
-                              bottom: 14,
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                              ),
+                              prefixIcon: Icon(Icons.search),
+                              suffixIcon: IconButton(
+                                onPressed: () { 
+                                  setState(() {
+                                    searchController.text = '';
+                                    patients = allPatients;
+                                  });
+                                },
+                                icon: Icon(Icons.cancel, color: kTextGrey, size: 25,)
+                              ),
+                              border: InputBorder.none,
+                              hintText: AppLocalizations.of(context).translate('searchHere'),
+                              contentPadding: const EdgeInsets.only(
+                                left: 16,
+                                right: 20,
+                                top: 14,
+                                bottom: 14,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: 5,),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            padding: EdgeInsets.only(left: 2),
-                            child: Row(
-                              children: <Widget>[
-                                Theme(
-                                  data: Theme.of(context).copyWith(
-                                    unselectedWidgetColor: Colors.white
-                                  ),
-                                  child: Checkbox(
-                                    materialTapTargetSize: null,
-                                    activeColor: Colors.white,
-                                    checkColor: kPrimaryColor,
-                                    value: isPendingRecommendation,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        isPendingRecommendation = value;
-                                      });
-                                    },
-                                  ),
-                                ),
-                                Text(AppLocalizations.of(context).translate('pendingRecommendation'), style: TextStyle(color: Colors.white),)
-                              ],
-                            ),
-                          ),
-                          
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            padding: EdgeInsets.only(right: 15),
-                            child: GestureDetector(
-                              onTap: () async {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return FiltersDialog(parent: this,);
-                                },
-                              );
-                              },
+                        SizedBox(height: 5,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              padding: EdgeInsets.only(left: 2),
                               child: Row(
                                 children: <Widget>[
-                                  Icon(Icons.filter_list, color: Colors.white,),
-                                  SizedBox(width: 10),
-                                  Text(AppLocalizations.of(context).translate('filters'), style: TextStyle(color: Colors.white),)
+                                  Theme(
+                                    data: Theme.of(context).copyWith(
+                                      unselectedWidgetColor: Colors.white
+                                    ),
+                                    child: Checkbox(
+                                      materialTapTargetSize: null,
+                                      activeColor: Colors.white,
+                                      checkColor: kPrimaryColor,
+                                      value: isPendingRecommendation,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          isPendingRecommendation = value;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  Text(AppLocalizations.of(context).translate('pendingRecommendation'), style: TextStyle(color: Colors.white),)
                                 ],
-                              )
+                              ),
+                            ),
+                            
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              padding: EdgeInsets.only(right: 15),
+                              child: GestureDetector(
+                                onTap: () async {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return FiltersDialog(parent: this,);
+                                  },
+                                );
+                                },
+                                child: Row(
+                                  children: <Widget>[
+                                    Icon(Icons.filter_list, color: Colors.white,),
+                                    SizedBox(width: 10),
+                                    Text(AppLocalizations.of(context).translate('filters'), style: TextStyle(color: Colors.white),)
+                                  ],
+                                )
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8,)
+                      ],
+                    )
+                  ),
+                  SizedBox(height: 20,),
+                  ...patients.map((item) => GestureDetector(
+                    onTap: () {
+                      Patient().setPatient(item);
+                      Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'home', 'encounterData': {},});
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      height: 50,
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(item['data']['first_name'] + ' ' + item['data']['last_name'],
+                              style: TextStyle(color: Colors.black87, fontSize: 18),
+                            ),
+                          ),
+                          item['data']['incomplete_encounter'] != null && item['data']['incomplete_encounter'] ? 
+                          Container(
+                              alignment: Alignment.center,
+                              width: 160,
+                              height: 24,
+
+                              // padding: EdgeInsets.symmetric(vertical: 5),
+                              color: Colors.red[400],
+                              child: Text(AppLocalizations.of(context).translate('incompleteEncounter'),
+                                style: TextStyle(color: Colors.white, fontSize: 15),
+                              ),
+                          ) : Container(),
+                          Expanded(
+                            child: Text(item['data']['age'].toString() + 'Y ' + '${item['data']['gender'][0].toUpperCase()}' + ' - ' + item['data']['nid'].toString(), 
+                            style: TextStyle(
+                                color: Colors.black38,
+                                fontWeight: FontWeight.w400
+                              ), 
+                              textAlign: TextAlign.right,
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 8,)
-                    ],
-                  )
-                ),
-                SizedBox(height: 20,),
-                ...patients.map((item) => GestureDetector(
-                  onTap: () {
-                    Patient().setPatient(item);
-                    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'home', 'encounterData': {},});
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    height: 50,
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(item['data']['first_name'] + ' ' + item['data']['last_name'],
-                            style: TextStyle(color: Colors.black87, fontSize: 18),
-                          ),
-                        ),
-                        item['data']['incomplete_encounter'] != null && item['data']['incomplete_encounter'] ? 
-                        Container(
-                            alignment: Alignment.center,
-                            width: 160,
-                            height: 24,
-
-                            // padding: EdgeInsets.symmetric(vertical: 5),
-                            color: Colors.red[400],
-                            child: Text(AppLocalizations.of(context).translate('incompleteEncounter'),
-                              style: TextStyle(color: Colors.white, fontSize: 15),
-                            ),
-                        ) : Container(),
-                        Expanded(
-                          child: Text(item['data']['age'].toString() + 'Y ' + '${item['data']['gender'][0].toUpperCase()}' + ' - ' + item['data']['nid'].toString(), 
-                          style: TextStyle(
-                              color: Colors.black38,
-                              fontWeight: FontWeight.w400
-                            ), 
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                      ],
                     ),
-                  ),
-                )).toList(),
-                patients.length == 0 ? Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  child: Text(AppLocalizations.of(context).translate('noPatientFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
-                ) : Container()
-              ],
+                  )).toList(),
+                  patients.length == 0 ? Container(
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    child: Text(AppLocalizations.of(context).translate('noPatientFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
+                  ) : Container()
+                ],
+              ),
+            ) : Container(
+              height: double.infinity,
+              width: double.infinity,
+              color: Color(0x20FFFFFF),
+              child: Center(
+                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),backgroundColor: Color(0x30FFFFFF),)
+              ),
             ),
-          ) : Container(
-            height: double.infinity,
-            width: double.infinity,
-            color: Color(0x20FFFFFF),
-            child: Center(
-              child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),backgroundColor: Color(0x30FFFFFF),)
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

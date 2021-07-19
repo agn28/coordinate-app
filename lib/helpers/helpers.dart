@@ -185,7 +185,7 @@ class Helpers {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(AppLocalizations.of(context).translate('sessionExpired'), style: TextStyle(fontWeight: FontWeight.w500),),
-          content: Text(AppLocalizations.of(context).translate('sessionExpiredDetails')),
+          content: Text(AppLocalizations.of(context).translate('logoutDetails')),
           actions: [
             FlatButton(
               child: Text(AppLocalizations.of(context).translate('logout'), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500, color: kPrimaryColor),),
