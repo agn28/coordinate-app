@@ -421,7 +421,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
 
     print('lastAssessment $lastAssessment');
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
-      // lastEncounterDate = lastAssessment['data']['meta']['created_at'];
+      lastEncounterDate = lastAssessment['data']['meta']['created_at'];
       nextVisitDate = lastAssessment['data']['body']['next_visit_date'];
       setState(() {
         nextVisitDate = nextVisitDate != '' && nextVisitDate != null ? DateFormat("MMMM d, y").format(DateTime.parse(nextVisitDate)):'';

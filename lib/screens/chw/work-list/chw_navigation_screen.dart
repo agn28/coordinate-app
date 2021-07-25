@@ -66,7 +66,7 @@ class _ChwNavigationState extends State<ChwNavigationScreen> {
     return WillPopScope(
       onWillPop: () async {
         print('WillPopScope here');
-        Navigator.pushNamed(context, '/home');
+        Navigator.pushNamed(context, '/chwHome');
         return true;
       },
       child: Scaffold(

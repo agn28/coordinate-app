@@ -1,5 +1,6 @@
 import 'dart:io';
 // import 'package:basic_utils/basic_utils.dart';
+import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -780,7 +781,7 @@ class ActionItem extends StatefulWidget {
 }
 
 class _ActionItemState extends State<ActionItem> {
-  String status = 'Pending';
+  String status = 'pending';
   @override
   void initState() {
     // TODO: implement initState
@@ -803,7 +804,7 @@ class _ActionItemState extends State<ActionItem> {
     print('action set status');
     setState(() {
       btnDisabled = false;
-      status = 'Completed';
+      status = 'completed';
       cpUpdateCount--;
     });
 
@@ -843,7 +844,7 @@ class _ActionItemState extends State<ActionItem> {
                       children: <Widget>[
                         Text(widget.item['body']['title'] ?? '', style: TextStyle(fontSize: 17),),
                         SizedBox(height: 15,),
-                        Text(status, style: TextStyle(fontSize: 14, color: status == 'completed' ? kPrimaryGreenColor : kPrimaryRedColor),),
+                        Text(StringUtils.capitalize(status), style: TextStyle(fontSize: 14, color: status == 'completed' ? kPrimaryGreenColor : kPrimaryRedColor),),
                       ],
                     ),
                   ),
