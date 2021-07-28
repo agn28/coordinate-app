@@ -56,6 +56,41 @@ class _SettingsState extends State<Settings> {
       _selectedLanguage = value;
     });
   }
+  changeLanguage(value) async{	
+    Language().changeLanguage(value);	
+    print('value $value');	
+    print('currentCode ${_getLanguageCode(context)}');	
+    // If the already-selected language is not English	
+    // Then, change it to English	
+    if (_getLanguageCode(context) != 'en') {	
+      print('here');	
+      // step one, save the chosen locale	
+      var prefs = await SharedPreferences.getInstance();	
+      await prefs.setString('language_code', 'en');	
+      await prefs.setString('country_code', '');	
+      await prefs.setString('language', 'English');	
+      	
+      // step two, rebuild the whole app, with the new locale	
+      MyApp.setLocale(context, Locale('en', 'US'));	
+    } else {	
+      print('there');	
+      // step one, save the chosen locale	
+      var prefs = await SharedPreferences.getInstance();	
+      await prefs.setString('language_code', 'bn');	
+      await prefs.setString('country_code', '');	
+      await prefs.setString('language', 'Bengali');	
+      	
+      // step two, rebuild the whole app, with the new locale	
+      MyApp.setLocale(context, Locale('bn', 'BN'));	
+    }	
+    setState(() {	
+      _selectedLanguage = value;	
+    });	
+  }	
+  	
+  _getLanguageCode(BuildContext context) {	
+    return Localizations.localeOf(context).languageCode;	
+  }	
 
   @override
   Widget build(BuildContext context) {

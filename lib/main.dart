@@ -27,11 +27,15 @@ void main() async {
 
   // Load exsiting lang
   final prefs = await SharedPreferences.getInstance();
-  var locale = prefs.getString('locale');
-  Map langMapp = {"English": Locale('en', 'EN'), "Bengali": Locale('bn', 'BN')};
+  var locale = prefs.getString('language');
+  Map langMapp = {"English": Locale('en', 'US'), "Bengali": Locale('bn', 'BN')};
   Language().changeLanguage(locale);
-  if (locale != null) {
-    appLocale = langMapp[locale];
+  if (locale != null) {	
+    appLocale = langMapp[locale];	
+    Language().changeLanguage(locale);	
+  } else {	
+    appLocale = langMapp["English"];	
+    Language().changeLanguage('English');	
   }
   _getDevices();
   runApp(MyApp());
@@ -56,7 +60,10 @@ _getDevices() async {
 class MyApp extends StatefulWidget {
   static void setLocale(BuildContext context, Locale newLocale) async {
     MyAppState state = context.findAncestorStateOfType<MyAppState>();
-    state.changeLanguage(newLocale);
+    // state.changeLanguage(newLocale);
+    state.setState(() {	
+      state.locale = newLocale;	
+    });
   }
 
   @override
@@ -66,7 +73,25 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  final syncController = Get.put(SyncController());
+  // final syncController = Get.put(SyncController());
+  Locale locale;	
+  @override	
+  void initState() {	
+    super.initState();	
+    this._fetchLocale().then((locale) {	
+      setState(() {	
+        this.locale = locale;	
+      });	
+    });	
+  }	
+  _fetchLocale() async {	
+    var prefs = await SharedPreferences.getInstance();	
+    if (prefs.getString('language_code') == null) {	
+      return Locale('en', 'US');
+    }	
+    return Locale(prefs.getString('language_code'), 	
+      prefs.getString('country_code'));	
+  }
   changeLanguage(Locale locale) {
     setState(() {
       appLocale = locale;
@@ -93,7 +118,7 @@ class MyAppState extends State<MyApp> {
             primaryColor: kPrimaryColor, backgroundColor: Colors.white),
         // List all of the app's supported locales here
         supportedLocales: [
-          Locale('en', 'EN'),
+          Locale('en', 'US'),
           Locale('bn', 'BN'),
         ],
         locale: appLocale,
@@ -107,18 +132,22 @@ class MyAppState extends State<MyApp> {
           GlobalWidgetsLocalizations.delegate,
         ],
         // Returns a locale which will be used by the app
-        localeResolutionCallback: (locale, supportedLocales) {
-          // var t = Locale('bn', 'BN');
-          // Check if the current device locale is supported
-          for (var supportedLocale in supportedLocales) {
-            if (supportedLocale.languageCode == locale.languageCode &&
-                supportedLocale.countryCode == locale.countryCode) {
-              return supportedLocale;
-            }
-          }
-          // If the locale of the device is not supported, use the first one
-          // from the list (English, in this case).
-          return supportedLocales.first;
+        localeResolutionCallback: (deviceLocale, supportedLocales) {
+          if (this.locale == null) {	
+            this.locale = deviceLocale;	
+          }	
+          return this.locale;
+          // // var t = Locale('bn', 'BN');
+          // // Check if the current device locale is supported
+          // for (var supportedLocale in supportedLocales) {
+          //   if (supportedLocale.languageCode == locale.languageCode &&
+          //       supportedLocale.countryCode == locale.countryCode) {
+          //     return supportedLocale;
+          //   }
+          // }
+          // // If the locale of the device is not supported, use the first one
+          // // from the list (English, in this case).
+          // return supportedLocales.first;
         },
 
         onGenerateRoute: RouteGenerator.generarteRoute,
