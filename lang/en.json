@@ -323,6 +323,7 @@
   "gotoMyWorklist": "My Worklist",
   "sessionExpired": "Session Expired",
   "sessionExpiredDetails": "Your current session is expired. You need to login again.",
+  "areYouSure": "Are you sure?",
   "logoutDetails": "You are prompted to log out. Please login again to continue.",
   "newlyRegistered": "Newly Registered",
   "questionsAboutTobacco": "Now I am going to ask you some questions about tobacco use.",

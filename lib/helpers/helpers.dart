@@ -184,9 +184,15 @@ class Helpers {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(AppLocalizations.of(context).translate('sessionExpired'), style: TextStyle(fontWeight: FontWeight.w500),),
+          title: Text(AppLocalizations.of(context).translate('areYouSure'), style: TextStyle(fontWeight: FontWeight.w500),),
           content: Text(AppLocalizations.of(context).translate('logoutDetails')),
           actions: [
+            FlatButton(
+              child: new Text(AppLocalizations.of(context).translate("cancel"), style: TextStyle(color: kPrimaryColor)),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
             FlatButton(
               child: Text(AppLocalizations.of(context).translate('logout'), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500, color: kPrimaryColor),),
               onPressed:  () async {

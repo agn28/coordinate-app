@@ -90,7 +90,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     _getCarePlan();
     getReferrals();
     getEncounters();
-    getAssessments();
+    // getAssessments();
     getMedicationsConditions();
     getReport();
     getIncompleteAssessment();
@@ -188,7 +188,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     // }
     setState(() {
       isLoading = false;
-      incompleteEncounterDate = data != null ? DateFormat("MMMM d, y").format(DateTime.parse(data['data']['assessment']['meta']['created_at'])) : '';
+      incompleteEncounterDate = !data['error'] && data['data'] != null ? DateFormat("MMMM d, y").format(DateTime.parse(data['data']['assessment']['meta']['created_at'])) : '';
       performerName = performer != null ? performer['data']['name'] : '';
       performerRole = performer != null ? performer['data']['role'] : '';
     });
@@ -340,10 +340,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
       isLoading = true;
     });
     var response = await HealthReportController().getLastReport(context);
-    if (response == null) {
-      return;
-    }
-    if (response['error']) {
+    if (response == null || response['error']) {
       return;
     }
 
@@ -369,6 +366,15 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     return "$goalCount goals & $actionCount actions";
   }
 
+  getDate(date) {
+    if (date['_seconds'] != null) {
+      var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
+
+      return DateFormat("MMMM d, y").format(parsedDate).toString();
+    }
+    return '';
+  }
+
   getLastAssessment() async {
     setState(() {
       isLoading = true;
@@ -377,12 +383,12 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
 
     print('lastAssessment $lastAssessment');
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
-      lastEncounterDate = lastAssessment['data']['meta']['created_at'];
-      nextVisitDate = lastAssessment['data']['body']['next_visit_date'];
+      // lastEncounterDate = lastAssessment['data']['meta']['created_at'];
+      // nextVisitDate = lastAssessment['data']['body']['next_visit_date'];
       setState(() {
-        nextVisitDate = nextVisitDate != '' ? DateFormat("MMMM d, y").format(DateTime.parse(nextVisitDate)):'';
+        nextVisitDate = lastAssessment['data']['body']['next_visit_date'] != null ? DateFormat("MMMM d, y").format(DateTime.parse(nextVisitDate)):'';
         lastEncounterType = lastAssessment['data']['body']['type'];
-        lastEncounterDate = DateFormat("MMMM d, y").format(DateTime.parse(lastEncounterDate));
+        lastEncounterDate = getDate(lastAssessment['data']['meta']['created_at']);
         print('lastEncounterDate ${lastEncounterDate}');
       });
     }
@@ -465,7 +471,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
 
       Auth().logout();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    } else if (data['error'] == true) {
+    } else if (data == null || data['error'] == true) {
 
     } else {
       // print( data['data']);
@@ -1055,7 +1061,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(AppLocalizations.of(context).translate('lastEncounter')+'${basic_utils.StringUtils.capitalize(lastEncounterType)}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+                        Text(AppLocalizations.of(context).translate('lastEncounter')+'${(lastEncounterType)}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
                         SizedBox(height: 15,),
                         Text(AppLocalizations.of(context).translate('lastEncounterDate')+'$lastEncounterDate', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
                         SizedBox(height: 10,),
