@@ -412,6 +412,16 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     }
     
   }
+  getDate(date) {
+    if (date.runtimeType == String && date != null && date != '') {
+      return DateFormat("MMMM d, y").format(DateTime.parse(date)).toString();
+    } else if (date['_seconds'] != null) {
+      var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
+
+      return DateFormat("MMMM d, y").format(parsedDate).toString();
+    }
+    return '';
+  }
 
   getLastAssessment() async {
     setState(() {
@@ -421,12 +431,12 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
 
     print('lastAssessment $lastAssessment');
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
-      lastEncounterDate = lastAssessment['data']['meta']['created_at'];
-      nextVisitDate = lastAssessment['data']['body']['next_visit_date'];
+      // lastEncounterDate = lastAssessment['data']['meta']['created_at'];
+      // nextVisitDate = lastAssessment['data']['body']['next_visit_date'];
       setState(() {
-        nextVisitDate = nextVisitDate != '' && nextVisitDate != null ? DateFormat("MMMM d, y").format(DateTime.parse(nextVisitDate)):'';
+        nextVisitDate = lastAssessment['data']['body']['next_visit_date'] != null && lastAssessment['data']['body']['next_visit_date'] != '' ? DateFormat("MMMM d, y").format(DateTime.parse(lastAssessment['data']['body']['next_visit_date'])):'';
         lastEncounterType = lastAssessment['data']['body']['type'];
-        lastEncounterDate = DateFormat("MMMM d, y").format(DateTime.parse(lastEncounterDate));
+        lastEncounterDate = getDate(lastAssessment['data']['meta']['created_at']);
         print('lastEncounterDate ${lastEncounterDate}');
       });
     }
@@ -637,7 +647,8 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
           return true;
         } else {
           print('WillPopScope home');
-          Navigator.pushNamed(context, '/home');
+          // Navigator.pushNamed(context, '/home');
+          Navigator.of(context).pushNamed(FollowupSearchScreen.path);
           return true;
         }
       },

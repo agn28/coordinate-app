@@ -367,7 +367,9 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
   }
 
   getDate(date) {
-    if (date['_seconds'] != null) {
+    if (date.runtimeType == String && date != null && date != '') {
+      return DateFormat("MMMM d, y").format(DateTime.parse(date)).toString();
+    } else if (date['_seconds'] != null) {
       var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
 
       return DateFormat("MMMM d, y").format(parsedDate).toString();
@@ -386,7 +388,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
       // lastEncounterDate = lastAssessment['data']['meta']['created_at'];
       // nextVisitDate = lastAssessment['data']['body']['next_visit_date'];
       setState(() {
-        nextVisitDate = lastAssessment['data']['body']['next_visit_date'] != null ? DateFormat("MMMM d, y").format(DateTime.parse(nextVisitDate)):'';
+        nextVisitDate = lastAssessment['data']['body']['next_visit_date'] != null && lastAssessment['data']['body']['next_visit_date'] != '' ? DateFormat("MMMM d, y").format(DateTime.parse(lastAssessment['data']['body']['next_visit_date'])):'';
         lastEncounterType = lastAssessment['data']['body']['type'];
         lastEncounterDate = getDate(lastAssessment['data']['meta']['created_at']);
         print('lastEncounterDate ${lastEncounterDate}');
