@@ -105,8 +105,8 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     getAuth();
 
     // print(Language().getLanguage());
-    // nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
-       nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+     nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
+    //  nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
 
     prepareQuestions();
     prepareAnswers();
@@ -520,7 +520,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
                       ? FlatButton(
                           onPressed: () async {
                             setState(() {
-                              print(_currentStep);
+                              print('$_currentStep');
 
                               // if (_currentStep == 1) {
                                 // var relativeAdditionalData = {
@@ -539,10 +539,11 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
                               //   return;
                               // }
                               if (_currentStep == 0) {
-                                print('hello');
-                                createObservations();
-                                _completeStep();
-                                return;
+                                // print('hello');
+                                // createObservations();
+                                // _completeStep();
+                                // return;
+
                               //   if (diastolicEditingController.text == '' ||
                               //     systolicEditingController.text == '' ||
                               //     pulseRateEditingController.text == '' ||
@@ -599,10 +600,17 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
                               //     return;
                               //   }
                               }
-                              // if (_currentStep < 6) {
-                              //   // If the form is valid, display a Snackbar.
-                              //   _currentStep = _currentStep + 1;
-                              // }
+                              if (_currentStep < 2) {
+                                // If the form is valid, display a Snackbar.
+                                _currentStep = _currentStep + 1;
+                          
+                              }
+                              if(_currentStep == 1){
+                                nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                                createObservations();
+                                _completeStep();
+                                return;
+                              }
                             });
                           },
                           materialTapTargetSize:
@@ -720,6 +728,14 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
           textAlign: TextAlign.center,
         ),
         content: Measurements(),
+        isActive: _currentStep >= 2,
+      ),
+      CustomStep(
+        title: Text(
+          AppLocalizations.of(context).translate("permission"),
+          textAlign: TextAlign.center,
+        ),
+        content: MedicationScreen(),//new 
         isActive: _currentStep >= 2,
       ),
       // CustomStep(
@@ -2529,6 +2545,207 @@ class _MeasurementsState extends State<Measurements> {
     );
   }
 }
+
+
+
+class MedicationScreen extends StatefulWidget {
+  @override
+  _MedicationScreenState createState() => _MedicationScreenState();
+}
+
+class _MedicationScreenState extends State<MedicationScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      physics: ClampingScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+          child: Form(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        child: Row(
+                          children: [
+                            Text(
+                              'Medication',
+                              style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 34,
+                              fontWeight: FontWeight.w500),
+                            ),
+                            Text(
+                              '(from prescription of doctor)',
+                              style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              // fontWeight: FontWeight.w500
+                              ),
+                            ),
+                          ],  
+                        ),                       
+
+                      ),
+                      SizedBox(height: 24),
+
+                      Container(
+                          child: Text(
+                              'Serial Name    Dose Unit    Frequancy    Timming    Duration',
+                              style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              // fontWeight: FontWeight.w500
+                              ),
+                            ),
+                      ),
+                      SizedBox(height: 24),
+
+                      Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              child: Text(
+                                '1.Tab Metformin -500mg -twice daily- morning and night before meal-continue',
+                                style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 24),
+
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              child: Row(
+                                children: [
+                                  Text('Dispense',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      )),
+                                  SizedBox(
+                                    width: 28,
+                                  ),
+                                  Container(
+                                    width: 120,
+                                    height: 40,
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      keyboardType: TextInputType.number,
+                                      controller: weightEditingController,
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.only(
+                                            top: 5, left: 10, right: 10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.red, width: 0.0)),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 16,
+                                  ),
+                                  FlatButton(
+                                    color: Colors.blue[800],
+                                    textColor: Colors.white, 
+                                    onPressed: () { },
+                                    child: Text('submit'),
+                                  )
+                                ],
+                              ),
+                              ),
+                              SizedBox(height: 24),
+                          ],
+                        ),
+                      ),
+
+                      
+                      Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              child: Text(
+                                '2.Tab Aspirin -75mg once daily-   in the morning meal-continue',
+                                style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 24),
+
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              child: Row(
+                                children: [
+                                  Text('Dispense',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      )),
+                                  SizedBox(
+                                    width: 28,
+                                  ),
+                                  Container(
+                                    width: 120,
+                                    height: 40,
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      keyboardType: TextInputType.number,
+                                      controller: weightEditingController,
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.only(
+                                            top: 5, left: 10, right: 10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.red, width: 0.0)),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 16,
+                                  ),
+                                  FlatButton(
+                                    color: Colors.blue[800],
+                                    textColor: Colors.white, 
+                                    onPressed: () { },
+                                    child: Text('submit'),
+                                  )
+                                ],
+                              ),
+                              ),
+                              SizedBox(height: 24),
+                          ],
+                        ),
+                      ),
+
+
+                      ],
+                    ),
+                  ),
+                ]
+              ),
+          ),
+      ),
+
+    );
+  }
+
+}
+
+
+
+
+
 
 class BloodTests extends StatefulWidget {
   @override
