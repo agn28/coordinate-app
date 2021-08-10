@@ -373,4 +373,9 @@ class PatientController {
     return response;
   }
 
+  dispenseMedicationByPatient(medId, dispensedMed) async {
+    var response = await PatientRepository().dispenseMedicationByPatient(medId, dispensedMed);
+    return response;
+  }
+
 }

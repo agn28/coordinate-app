@@ -9,6 +9,7 @@ import 'package:nhealth/configs/configs.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
+import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
@@ -179,6 +180,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     for(var item in medications) {
       // dynamicMedicationTitles.add(item['body']['title']);
       prepareMedication.add({
+        'medId': item['id'],
         'medInfo': '${serial}. Tab ${item['body']['title']}: ${item['body']['dosage']}${item['body']['unit']} ${item['body']['activityDuration']['repeat']['frequency']} time(s) ${preparePeriodUnits(item['body']['activityDuration']['repeat']['periodUnit'], 'repeat')} - continue ${item['body']['activityDuration']['review']['period']} ${preparePeriodUnits(item['body']['activityDuration']['review']['periodUnit'], 'review')}'
       });
       serial++;
@@ -310,6 +312,8 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     selectedEthnicity = null;
     selectedBloodGroup = null;
     isTribe = null;
+
+    dispenseEditingController.text = '';
   }
 
   _checkAuth() {
@@ -2639,6 +2643,8 @@ class Medications extends StatefulWidget {
   _MedicationsState createState() => _MedicationsState();
 }
 
+var dispenseEditingController = TextEditingController();
+
 class _MedicationsState extends State<Medications> {
   bool isEmpty = true;
   @override
@@ -2721,7 +2727,7 @@ class _MedicationsState extends State<Medications> {
                                     child: TextFormField(
                                       textAlign: TextAlign.center,
                                       keyboardType: TextInputType.number,
-                                      controller: weightEditingController,
+                                      controller: dispenseEditingController,
                                       decoration: InputDecoration(
                                         contentPadding: EdgeInsets.only(
                                             top: 5, left: 10, right: 10),
@@ -2737,7 +2743,21 @@ class _MedicationsState extends State<Medications> {
                                   FlatButton(
                                     color: Colors.blue[800],
                                     textColor: Colors.white, 
-                                    onPressed: () { },
+                                    onPressed: () async {
+                                      setState(() {
+                                        isLoading = true;
+                                      });
+                                      print('id ${item['medId']}');
+                                      var response = await PatientController().dispenseMedicationByPatient(item['medId'], dispenseEditingController.text);
+                                      print('response $response');
+                                      setState(() {
+                                        isLoading = false;
+                                      });
+                                      // Navigator.of(context).pop();
+                                      // if (response == 'success') {
+                                      // // Navigator.of(context).pop();
+                                      // } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+                                    },
                                     child: Text('submit'),
                                   )
                                 ],
