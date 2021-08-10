@@ -8,6 +8,7 @@ import 'package:nhealth/configs/configs.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
+import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
@@ -49,6 +50,7 @@ var medicalHistoryQuestions = {};
 var medicalHistoryAnswers = [];
 var medicationQuestions = {};
 var medicationAnswers = [];
+var dynamicMedications = [];
 var riskQuestions = {};
 var relativeQuestions = {};
 var counsellingQuestions = {};
@@ -112,6 +114,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     prepareAnswers();
 
     getLanguage();
+    getMedications();
   }
 
   getAuth() async {
@@ -126,6 +129,87 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     final prefs = await SharedPreferences.getInstance();
 
     print(Localizations.localeOf(context));
+  }
+
+  getMedications() async {
+    print("getMedications");
+    dynamicMedications = [];
+
+    if (Auth().isExpired()) {
+      Auth().logout();
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    }
+
+    // setState(() {
+    //   isLoading = true;
+    // });
+    var patientId = Patient().getPatient()['id'];
+    var data = await PatientController().getMedicationsByPatient(patientId);
+    // print("medication: ${data['data']}");
+    // setState(() {
+    //   isLoading = false;
+    // });
+
+    if (data == null) {
+      return;
+    } else if (data['message'] == 'Unauthorized') {
+      Auth().logout();
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+      return;
+    } else if (data['error'] != null && data['error']) {
+      return;
+    } else if (data['data'] != null) {
+      var meds = await prepareDynamicMedications(data['data']);
+      print('meds $meds');
+      setState(() {
+        dynamicMedications = meds;
+        print("dynamicMedications: $dynamicMedications");
+      });
+
+    }
+  }
+
+  prepareDynamicMedications(medications) {
+    var prepareMedication = [];
+    var serial = 1;
+    // dynamicMedicationTitles = [];
+    // dynamicMedicationAnswers = [];
+    for(var item in medications) {
+      // dynamicMedicationTitles.add(item['body']['title']);
+      prepareMedication.add({
+        'medInfo': '${serial}. Tab ${item['body']['title']}: ${item['body']['dosage']}${item['body']['unit']} ${item['body']['activityDuration']['repeat']['frequency']} time(s) ${preparePeriodUnits(item['body']['activityDuration']['repeat']['periodUnit'], 'repeat')} - continue ${item['body']['activityDuration']['review']['period']} ${preparePeriodUnits(item['body']['activityDuration']['review']['periodUnit'], 'review')}'
+      });
+      serial++;
+      // dynamicMedicationAnswers.add('');
+    }
+    dynamicMedications = prepareMedication;
+    // print(dynamicMedicationTitles);
+    print(dynamicMedications);
+    return dynamicMedications;
+  }
+
+  preparePeriodUnits(unit, type) {
+    if(unit == 'd')
+      if(type == 'repeat') return 'daily';
+      else if(type == 'review') return 'day(s)';
+      else return '';
+    else if(unit == 'w')
+      if(type == 'repeat') return 'weekly';
+      else if(type == 'review') return 'week(s)';
+      else return '';
+    else if(unit == 'm')
+      if(type == 'repeat') return 'monthly';
+      else if(type == 'review') return 'month(s)';
+      else return '';
+    else if(unit == 'y')
+      if(type == 'repeat') return 'yearly';
+      else if(type == 'review') return 'year(s)';
+      else return '';
+    else
+      return '';
+
   }
 
   prepareQuestions() {
@@ -538,7 +622,15 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
                               //   _completeStep();
                               //   return;
                               // }
+                              if (_currentStep == 1) {
+                                print('hello');
+                                createObservations();
+                                _completeStep();
+                                return;
+                              }
                               if (_currentStep == 0) {
+                                nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                             
                                 // print('hello');
                                 // createObservations();
                                 // _completeStep();
@@ -604,12 +696,6 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
                                 // If the form is valid, display a Snackbar.
                                 _currentStep = _currentStep + 1;
                           
-                              }
-                              if(_currentStep == 1){
-                                nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
-                                createObservations();
-                                _completeStep();
-                                return;
                               }
                             });
                           },
@@ -735,7 +821,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
           AppLocalizations.of(context).translate("permission"),
           textAlign: TextAlign.center,
         ),
-        content: MedicationScreen(),//new 
+        content: Medications(),//new 
         isActive: _currentStep >= 2,
       ),
       // CustomStep(
@@ -2548,12 +2634,13 @@ class _MeasurementsState extends State<Measurements> {
 
 
 
-class MedicationScreen extends StatefulWidget {
+class Medications extends StatefulWidget {
   @override
-  _MedicationScreenState createState() => _MedicationScreenState();
+  _MedicationsState createState() => _MedicationsState();
 }
 
-class _MedicationScreenState extends State<MedicationScreen> {
+class _MedicationsState extends State<Medications> {
+  bool isEmpty = true;
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -2581,42 +2668,36 @@ class _MedicationScreenState extends State<MedicationScreen> {
                               fontSize: 34,
                               fontWeight: FontWeight.w500),
                             ),
-                            Text(
-                              '(from prescription of doctor)',
-                              style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              // fontWeight: FontWeight.w500
-                              ),
-                            ),
                           ],  
                         ),                       
 
                       ),
-                      SizedBox(height: 24),
+                      // SizedBox(height: 24),
 
-                      Container(
-                          child: Text(
-                              'Serial Name    Dose Unit    Frequancy    Timming    Duration',
-                              style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              // fontWeight: FontWeight.w500
-                              ),
-                            ),
-                      ),
+                      // Container(
+                      //     child: Text(
+                      //         'Serial Name    Dose Unit    Frequancy    Duration',
+                      //         style: TextStyle(
+                      //         color: Colors.black,
+                      //         fontSize: 18,
+                      //         // fontWeight: FontWeight.w500
+                      //         ),
+                      //       ),
+                      // ),
                       SizedBox(height: 24),
-
-                      Container(
+                      if(dynamicMedications != null)
+                      ...dynamicMedications.map((item) {
+                        isEmpty = false;
+                        return Container(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
                               child: Text(
-                                '1.Tab Metformin -500mg -twice daily- morning and night before meal-continue',
+                                item['medInfo'],
                                 style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 16,
+                                fontSize: 18,
                                 ),
                               ),
                             ),
@@ -2629,7 +2710,7 @@ class _MedicationScreenState extends State<MedicationScreen> {
                                   Text('Dispense',
                                       style: TextStyle(
                                         color: Colors.black,
-                                        fontSize: 16,
+                                        fontSize: 18,
                                       )),
                                   SizedBox(
                                     width: 28,
@@ -2665,70 +2746,9 @@ class _MedicationScreenState extends State<MedicationScreen> {
                               SizedBox(height: 24),
                           ],
                         ),
-                      ),
-
-                      
-                      Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              child: Text(
-                                '2.Tab Aspirin -75mg once daily-   in the morning meal-continue',
-                                style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 24),
-
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: Row(
-                                children: [
-                                  Text('Dispense',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16,
-                                      )),
-                                  SizedBox(
-                                    width: 28,
-                                  ),
-                                  Container(
-                                    width: 120,
-                                    height: 40,
-                                    child: TextFormField(
-                                      textAlign: TextAlign.center,
-                                      keyboardType: TextInputType.number,
-                                      controller: weightEditingController,
-                                      decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.only(
-                                            top: 5, left: 10, right: 10),
-                                        border: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.red, width: 0.0)),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 16,
-                                  ),
-                                  FlatButton(
-                                    color: Colors.blue[800],
-                                    textColor: Colors.white, 
-                                    onPressed: () { },
-                                    child: Text('submit'),
-                                  )
-                                ],
-                              ),
-                              ),
-                              SizedBox(height: 24),
-                          ],
-                        ),
-                      ),
-
-
+                      );
+                      }).toList(),
+                      isEmpty ? Container(child: Text(AppLocalizations.of(context).translate('noItems'), style: TextStyle(fontSize: 16),),): Container()
                       ],
                     ),
                   ),
