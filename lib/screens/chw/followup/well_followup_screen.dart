@@ -756,6 +756,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
   Future _completeStep() async {
     print('before missing popup');
     var hasMissingData = checkMissingData();
+    var hasOptionalMissingData = checkOptionalMissingData();
 
     if (hasMissingData) {
       var continueMissing = await missingDataAlert();
@@ -769,9 +770,14 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     var patient = Patient().getPatient();
 
     print(patient['data']['age']);
-    var status = hasMissingData ? 'incomplete' : 'complete';
-    var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (community)', 'follow-up', '', status, nextVisitDate, followupType: 'short');
+    var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
+    // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (community)', 'follow-up', '', status, nextVisitDate, followupType: 'short');
     !hasMissingData ? Patient().setPatientReviewRequiredTrue() : null;
+    var encounterData = {
+      'context': context,
+      'dataStatus': dataStatus,
+      'followupType': 'short'
+    };
     setLoader(false);
 
     // if age greater than 40 redirect to referral page
@@ -806,7 +812,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     }
 
     // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
-    Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : 'followup'});
+    Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : 'followup', 'encounterData': encounterData});
     // goToHome(false, null);
   }
 
@@ -880,6 +886,40 @@ checkMissingData() {
       habfController.text == '' &&
       hba1cController.text == '') {
     print('blood sugar missing');
+    return true;
+  }
+
+  return false;
+}
+
+checkOptionalMissingData() {
+  if (weightEditingController.text == '') {
+    print('body measurement optional missing');
+    return true;
+  }
+
+  if (randomBloodController.text == '' ||
+      fastingBloodController.text == '' ||
+      habfController.text == '' ||
+      hba1cController.text == '') {
+    print('blood sugar optinal missing');
+    return true;
+  }
+
+  if (cholesterolController.text == '' ||
+    ldlController.text == '' ||
+    hdlController.text == '' ||
+    tgController.text == '') {
+    print('lipid profile optinal missing');
+    return true;
+  }
+
+  if (creatinineController.text == '' ||
+    sodiumController.text == '' ||
+    potassiumController.text == '' ||
+    ketonesController.text == '' ||
+    proteinController.text == '') {
+    print('additional optinal missing');
     return true;
   }
 

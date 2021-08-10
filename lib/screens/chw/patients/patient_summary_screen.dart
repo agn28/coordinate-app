@@ -35,7 +35,8 @@ var pendingReferral;
 class ChwPatientRecordsScreen extends StatefulWidget {
   var checkInState = false;
   var prevScreen = '';
-  ChwPatientRecordsScreen({this.prevScreen});
+  var encounterData = {};
+  ChwPatientRecordsScreen({this.prevScreen, this.encounterData});
   @override
   _PatientRecordsState createState() => _PatientRecordsState();
 }
@@ -71,6 +72,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
+    print('encounterData ${widget.encounterData}');
     print(_patient['meta']['review_required']);
     print('prevScreen ${widget.prevScreen}');
     dueCarePlans = [];
@@ -1082,6 +1084,84 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                     ],
                                   ),
                                 ),
+                                
+                                SizedBox(height: 20,),
+                                (widget.prevScreen == 'followup') && widget.encounterData['dataStatus'] != 'complete' ?
+                                Container(
+                                  width: double.infinity,
+                                    //margin: EdgeInsets.only(left: 15, right: 15),
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: kPrimaryColor,
+                                    borderRadius: BorderRadius.circular(3)
+                                  ),
+                                  child: FlatButton(
+                                  onPressed: () async {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    if(widget.prevScreen == 'followup') {
+                                      if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
+                                      {
+                                        print('edit followup');
+                                        print('${widget.encounterData['encounter']}');
+                                        var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
+
+                                      } else {
+                                        print('new followup');
+                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (community)', 'follow-up', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
+                                      }
+                                    }
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    // return;
+                                    Navigator.of(context).pushNamed('/chwHome',);
+                                  },
+                                  color: kPrimaryColor,
+                                  child: Text(AppLocalizations.of(context).translate('saveForLater'), style: TextStyle(color: Colors.white),),
+                                  ),
+                                ) : Container(),
+                                SizedBox(height: 20,),
+                                (widget.prevScreen == 'followup')?
+                                Container(
+                                  width: double.infinity,
+                                    //margin: EdgeInsets.only(left: 15, right: 15),
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: kPrimaryColor,
+                                    borderRadius: BorderRadius.circular(3)
+                                  ),
+                                  child: FlatButton(
+                                  onPressed: () async {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    if(widget.prevScreen == 'followup') {
+                                      var status = widget.encounterData['dataStatus'] == 'incomplete' ? 'incomplete' : 'complete';
+                                      if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
+                                      {
+                                        print('edit followup');
+                                        print(status);
+                                        var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
+
+                                      } else {
+                                        print('new followup');
+                                        print(status);
+                                        print(widget.encounterData['followupType']);
+                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (community)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
+                                      }
+                                      status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
+                                    }
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    Navigator.of(context).pushNamed('/chwHome',);
+                                  },
+                                  color: kPrimaryColor,
+                                  child: Text(AppLocalizations.of(context).translate('completeEncounter'), style: TextStyle(color: Colors.white),),
+                                  ),
+                                ) : Container(),
                               ],
                             )
                           ),

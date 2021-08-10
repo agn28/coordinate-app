@@ -637,7 +637,7 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
                       onTap: () {
                         Patient().setPatientModify(item);
                         // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
-    Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : 'home'});
+    Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : 'home', 'encounterData': {}});
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
@@ -762,7 +762,7 @@ class _PatientItemState extends State<PatientItem> {
       onTap: () {
         Patient().setPatientModify(widget.item);
         // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
-    Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : 'home'});
+    Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : 'home', 'encounterData': {}});
       },
       child: Container(
         color: Colors.transparent,

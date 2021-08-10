@@ -330,7 +330,7 @@ class _PatientItemState extends State<PatientItem> {
       onTap: () {
         Patient().setPatientModify(widget.item);
         // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
-    Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : ''});
+    Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : '', 'encounterData': {}});
       },
       child: Container(
         color: Colors.transparent,

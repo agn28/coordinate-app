@@ -559,7 +559,7 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
                                     // Patient().setPatientModify(item);
                                     Patient().setPatient(item);
                                     // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
-                                    Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : 'home'});
+                                    Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : 'home', 'encounterData': {}});
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 15),

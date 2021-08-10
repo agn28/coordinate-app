@@ -124,8 +124,7 @@ class RouteGenerator {
 
       case '/chwPatientSummary':
       var data = settings.arguments as Map;
-        return CupertinoPageRoute(builder: (_) => ChwPatientRecordsScreen(prevScreen: data['prevScreen']));
-
+        return CupertinoPageRoute(builder: (_) => ChwPatientRecordsScreen(prevScreen: data['prevScreen'], encounterData: data['encounterData']));
       case '/chwNavigation':
         var data = settings.arguments;
         return CupertinoPageRoute(builder: (_) => ChwNavigationScreen(pageIndex: data,));
