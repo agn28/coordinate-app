@@ -57,6 +57,9 @@ import 'package:nhealth/screens/patients/ncd/search/unwell_followup_screen.dart'
 import 'package:nhealth/screens/patients/patient_update_summary_screen.dart';
 import 'package:nhealth/screens/chw/unwell/followup_screen.dart';
 
+import 'screens/chw/followup/edit_followup_screen.dart';
+
+
 class RouteGenerator {
   static Route<dynamic>  generarteRoute(RouteSettings settings) {
     
@@ -102,6 +105,9 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => EditIncompleteShortFollowupScreen());
       case '/editIncompleteFullFollowup':
         return CupertinoPageRoute(builder: (_) => EditIncompleteFullFollowupScreen());
+      case '/editFollowup':
+        return CupertinoPageRoute(builder: (_) => EditFollowupScreen());
+
 
       case ChwCareplanDeliveryScreen.path:
         return CupertinoPageRoute(builder: (_) => ChwCareplanDeliveryScreen());
