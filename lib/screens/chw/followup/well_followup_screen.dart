@@ -314,6 +314,11 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     isTribe = null;
 
     dispenseEditingController.text = '';
+    dynamicMedications.forEach((item) {
+      print('clear');
+      textEditingControllers[item['medId']].text = '';
+      // return textFields.add( TextField(controller: textEditingController));
+    });
   }
 
   _checkAuth() {
@@ -2684,11 +2689,21 @@ class Medications extends StatefulWidget {
 }
 
 var dispenseEditingController = TextEditingController();
+// var stringListReturnedFromApiCall = ["first", "second", "third", "fourth", "..."];
+  // This list of controllers can be used to set and get the text from/to the TextFields
+  Map<String,TextEditingController> textEditingControllers = {};
+  var textFields = <TextField>[];
 
 class _MedicationsState extends State<Medications> {
   bool isEmpty = true;
+
   @override
   Widget build(BuildContext context) {
+  dynamicMedications.forEach((item) {
+    var textEditingController = new TextEditingController();
+    textEditingControllers.putIfAbsent(item['medId'], ()=>textEditingController);
+    // return textFields.add( TextField(controller: textEditingController));
+  });
     return SingleChildScrollView(
       physics: ClampingScrollPhysics(),
       scrollDirection: Axis.vertical,
@@ -2767,7 +2782,7 @@ class _MedicationsState extends State<Medications> {
                                     child: TextFormField(
                                       textAlign: TextAlign.center,
                                       keyboardType: TextInputType.number,
-                                      controller: dispenseEditingController,
+                                      controller: textEditingControllers[item['medId']],
                                       decoration: InputDecoration(
                                         contentPadding: EdgeInsets.only(
                                             top: 5, left: 10, right: 10),
@@ -2788,7 +2803,7 @@ class _MedicationsState extends State<Medications> {
                                         isLoading = true;
                                       });
                                       print('id ${item['medId']}');
-                                      var response = await PatientController().dispenseMedicationByPatient(item['medId'], dispenseEditingController.text);
+                                      var response = await PatientController().dispenseMedicationByPatient(item['medId'], textEditingControllers[item['medId']].text);
                                       print('response $response');
                                       setState(() {
                                         isLoading = false;

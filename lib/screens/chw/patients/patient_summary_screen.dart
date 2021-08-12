@@ -1302,55 +1302,55 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: <Widget>[
                               FloatingButton(text: AppLocalizations.of(context).translate('followUp'), onPressed: () {
-                                // Navigator.of(context).pop();
-                                // Navigator.of(context).pushNamed(FollowupFeelingScreen.path);
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context){
-                                    return Stack(
-                                      children: <Widget>[
-                                        Positioned(
-                                          child: CupertinoAlertDialog(
-                                            // contentPadding: EdgeInsets.all(80),
-                                            // elevation: 0,
-                                            content: Container(
-                                              alignment: Alignment.bottomRight,
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Text('do you want to edit the incomplete follow-up or fill up a new one?'),
-                                                  SizedBox(height: 20,),
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      FlatButton(
-                                                        color: Colors.blue[800],
-                                                        textColor: Colors.white, 
-                                                        onPressed: () {
-                                                          Navigator.of(context).pushNamed(EditFollowupScreen.path);
-                                                        },
-                                                        child: Text('edit'),
-                                                      ),
-                                                      SizedBox(width: 20,),
-                                                      FlatButton(
-                                                        color: Colors.blue[800],
-                                                        textColor: Colors.white, 
-                                                        onPressed: () {
-                                                          Navigator.of(context).pushNamed(FollowupFeelingScreen.path);
-                                                        },
-                                                        child: Text('followUp'),
-                                                      ),                                                     
-                                                    ],
-                                                  )                                                  
-                                                ]
-                                              )
-                                            )
-                                          )
-                                        )
-                                      ]
-                                    );
-                                  }
-                                );
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pushNamed(FollowupFeelingScreen.path);
+                                // showDialog(
+                                //   context: context,
+                                //   builder: (BuildContext context){
+                                //     return Stack(
+                                //       children: <Widget>[
+                                //         Positioned(
+                                //           child: CupertinoAlertDialog(
+                                //             // contentPadding: EdgeInsets.all(80),
+                                //             // elevation: 0,
+                                //             content: Container(
+                                //               alignment: Alignment.bottomRight,
+                                //               child: Column(
+                                //                 crossAxisAlignment: CrossAxisAlignment.center,
+                                //                 children: <Widget>[
+                                //                   Text('do you want to edit the incomplete follow-up or fill up a new one?'),
+                                //                   SizedBox(height: 20,),
+                                //                   Row(
+                                //                     mainAxisAlignment: MainAxisAlignment.center,
+                                //                     children: [
+                                //                       FlatButton(
+                                //                         color: Colors.blue[800],
+                                //                         textColor: Colors.white, 
+                                //                         onPressed: () {
+                                //                           Navigator.of(context).pushNamed(EditFollowupScreen.path);
+                                //                         },
+                                //                         child: Text('edit'),
+                                //                       ),
+                                //                       SizedBox(width: 20,),
+                                //                       FlatButton(
+                                //                         color: Colors.blue[800],
+                                //                         textColor: Colors.white, 
+                                //                         onPressed: () {
+                                //                           Navigator.of(context).pushNamed(FollowupFeelingScreen.path);
+                                //                         },
+                                //                         child: Text('followUp'),
+                                //                       ),                                                     
+                                //                     ],
+                                //                   )                                                  
+                                //                 ]
+                                //               )
+                                //             )
+                                //           )
+                                //         )
+                                //       ]
+                                //     );
+                                //   }
+                                // );
                               }, ),
 
                               FloatingButton(text: AppLocalizations.of(context).translate('deliverCarePlan'), onPressed: () {
