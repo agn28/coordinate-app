@@ -64,6 +64,8 @@ int _thirdQuestionOption = 1;
 int _fourthQuestionOption = 1;
 bool isLoading = false;
 
+
+
 getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
 
@@ -99,6 +101,8 @@ class _NewPatientQuestionnaireScreenState
 
   String nextText = 'NEXT';
   bool nextHide = false;
+
+
 
   @override
   void initState() {
@@ -1209,6 +1213,11 @@ var bmiEditingController = TextEditingController();
 var bloodSugerEditingController = TextEditingController();
 
 class _MeasurementsState extends State<Measurements> {
+
+  bool _isBloodPressureEnable = false;
+  bool _isBodyMeasurementsEnable = false;
+  bool _isTestsEnable = false;
+
   calculateBmi() {
     if (heightEditingController != '' && weightEditingController.text != '') {
       var height = int.parse(heightEditingController.text) / 100;
@@ -1243,7 +1252,7 @@ class _MeasurementsState extends State<Measurements> {
                   height: 24,
                 ),
                 Container(
-                  height: 200,
+                  height: 250,
                   decoration: BoxDecoration(
                       border:
                           Border.all(width: 0.5, color: Colors.grey.shade400),
@@ -1282,7 +1291,8 @@ class _MeasurementsState extends State<Measurements> {
                                             keyboardType: TextInputType.number,
                                             controller:
                                                 systolicEditingController,
-                                            onChanged: (value) {},
+                                            enabled: _isBloodPressureEnable,
+                                            // onChanged: (value) {},
                                             decoration: InputDecoration(
                                               contentPadding: EdgeInsets.only(
                                                   top: 5, left: 10, right: 10),
@@ -1320,7 +1330,8 @@ class _MeasurementsState extends State<Measurements> {
                                             keyboardType: TextInputType.number,
                                             controller:
                                                 diastolicEditingController,
-                                            onChanged: (value) {},
+                                            enabled: _isBloodPressureEnable,
+                                            // onChanged: (value) {},
                                             decoration: InputDecoration(
                                               contentPadding: EdgeInsets.only(
                                                   top: 5, left: 10, right: 10),
@@ -1363,7 +1374,8 @@ class _MeasurementsState extends State<Measurements> {
                                       textAlign: TextAlign.center,
                                       keyboardType: TextInputType.number,
                                       controller: pulseRateEditingController,
-                                      onChanged: (value) {},
+                                      enabled: _isBloodPressureEnable,
+                                      // onChanged: (value) {},
                                       decoration: InputDecoration(
                                         contentPadding: EdgeInsets.only(
                                             top: 5, left: 10, right: 10),
@@ -1404,7 +1416,8 @@ class _MeasurementsState extends State<Measurements> {
                                   textAlign: TextAlign.center,
                                   keyboardType: TextInputType.text,
                                   controller: commentsEditingController,
-                                  onChanged: (value) {},
+                                  enabled: _isBloodPressureEnable,
+                                  // onChanged: (value) {},
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.only(
                                         top: 5, left: 10, right: 10),
@@ -1417,6 +1430,31 @@ class _MeasurementsState extends State<Measurements> {
                             ),
                           ],
                         ),
+                      ),
+                      SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          FlatButton(
+                            color: Colors.blue[800],
+                            textColor: Colors.white, 
+                            onPressed: () {
+                              print('before : $_isBloodPressureEnable');
+                              _isBloodPressureEnable = true;
+                              print('after : $_isBloodPressureEnable');
+                            },
+                            child: Text('Edit'),
+                          ),
+                          SizedBox(width: 20,),
+                          FlatButton(
+                            color: Colors.blue[800],
+                            textColor: Colors.white, 
+                            onPressed: () {
+                              _isBloodPressureEnable = false;
+                            },
+                            child: Text('Save'),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -1439,7 +1477,7 @@ class _MeasurementsState extends State<Measurements> {
                       ),
                       SizedBox(height: 24),
                       Container(
-                        height: 190,
+                        height: 240,
                         decoration: BoxDecoration(
                             border: Border.all(
                                 width: 0.5, color: Colors.grey.shade400),
@@ -1468,6 +1506,7 @@ class _MeasurementsState extends State<Measurements> {
                                       textAlign: TextAlign.center,
                                       keyboardType: TextInputType.number,
                                       controller: heightEditingController,
+                                      enabled: _isBodyMeasurementsEnable,
                                       onChanged: (value) {
                                         calculateBmi();
                                       },
@@ -1514,6 +1553,7 @@ class _MeasurementsState extends State<Measurements> {
                                       textAlign: TextAlign.center,
                                       keyboardType: TextInputType.number,
                                       controller: weightEditingController,
+                                      enabled: _isBodyMeasurementsEnable,
                                       onChanged: (value) {
                                         calculateBmi();
                                       },
@@ -1561,6 +1601,7 @@ class _MeasurementsState extends State<Measurements> {
                                       readOnly: true,
                                       // enabled: false,
                                       controller: bmiEditingController,
+                                      enabled: _isBodyMeasurementsEnable,
                                       onChanged: (value) {},
                                       decoration: InputDecoration(
                                         contentPadding: EdgeInsets.only(
@@ -1574,6 +1615,29 @@ class _MeasurementsState extends State<Measurements> {
                                 ],
                               ),
                             ),
+                            SizedBox(height: 8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                FlatButton(
+                                  color: Colors.blue[800],
+                                  textColor: Colors.white, 
+                                  onPressed: () {
+                                    _isBodyMeasurementsEnable = true;
+                                  },
+                                  child: Text('Edit'),
+                                ),
+                                SizedBox(width: 20,),
+                                FlatButton(
+                                  color: Colors.blue[800],
+                                  textColor: Colors.white, 
+                                  onPressed: () {
+                                    _isBodyMeasurementsEnable = false;
+                                  },
+                                  child: Text('Save'),
+                                ),                                                     
+                              ],
+                            )             
                           ],
                         ),
                       )
@@ -1620,6 +1684,7 @@ class _MeasurementsState extends State<Measurements> {
                                 textAlign: TextAlign.center,
                                 keyboardType: TextInputType.number,
                                 controller: bloodSugerEditingController,
+                                enabled: _isTestsEnable,
                                 onChanged: (value) {},
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.only(
@@ -1695,7 +1760,30 @@ class _MeasurementsState extends State<Measurements> {
                             )
                           ],
                         ),
-                      )
+                      ),
+                      SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          FlatButton(
+                            color: Colors.blue[800],
+                            textColor: Colors.white, 
+                            onPressed: () {
+                              _isTestsEnable = true;
+                            },
+                            child: Text('Edit'),
+                          ),
+                          SizedBox(width: 20,),
+                          FlatButton(
+                            color: Colors.blue[800],
+                            textColor: Colors.white, 
+                            onPressed: () {
+                              _isTestsEnable = false;
+                            },
+                            child: Text('Save'),
+                          ),                                                     
+                        ],
+                      )             
                     ],
                   ),
                 )
