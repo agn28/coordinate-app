@@ -1366,6 +1366,8 @@ class _MedicationState extends State<Medication> {
 }
 
 class Measurements extends StatefulWidget {
+  var prevScreen = '';
+  var encounterData = {};
   @override
   _MeasurementsState createState() => _MeasurementsState();
 }
@@ -1502,8 +1504,25 @@ class _MeasurementsState extends State<Measurements> {
                                 FlatButton(
                                   color: Colors.blue[800],
                                   textColor: Colors.white, 
-                                  onPressed: () {
+                                  onPressed: () async {
+                                    // print('widget.prevScreennn: ${widget.prevScreen}');
                                     _isBodyMeasurementsTextEnable = false;
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
+                                    {
+                                      print('edit followup');
+                                      print('${widget.encounterData['encounter']}');
+                                      var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
+
+                                    } else {
+                                      print('new followup');
+                                      var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (community)', 'follow-up', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
+                                    }
+                                    setState(() {
+                                      isLoading = false;
+                                    });
                                   },
                                   child: Text('Save'),
                                 ),                                                     
