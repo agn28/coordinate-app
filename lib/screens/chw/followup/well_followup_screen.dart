@@ -1510,16 +1510,16 @@ class _MeasurementsState extends State<Measurements> {
                                     setState(() {
                                       isLoading = true;
                                     });
-                                    if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
-                                    {
-                                      print('edit followup');
-                                      print('${widget.encounterData['encounter']}');
-                                      var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
+                                    // if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
+                                    // {
+                                    //   print('edit followup');
+                                    //   print('${widget.encounterData['encounter']}');
+                                    //   var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
 
-                                    } else {
+                                    // } else {
                                       print('new followup');
                                       var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (community)', 'follow-up', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
-                                    }
+                                    // }
                                     setState(() {
                                       isLoading = false;
                                     });
