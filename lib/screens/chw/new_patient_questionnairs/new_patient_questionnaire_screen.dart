@@ -64,6 +64,9 @@ int _thirdQuestionOption = 1;
 int _fourthQuestionOption = 1;
 bool isLoading = false;
 
+bool _isBloodPressureEnable = false;
+bool _isBodyMeasurementsEnable = false;
+bool _isTestsEnable = false;
 
 
 getQuestionText(context, question) {
@@ -1214,9 +1217,13 @@ var bloodSugerEditingController = TextEditingController();
 
 class _MeasurementsState extends State<Measurements> {
 
-  bool _isBloodPressureEnable = false;
-  bool _isBodyMeasurementsEnable = false;
-  bool _isTestsEnable = false;
+  @override
+  void initState() { 
+    super.initState();
+    bool _isBloodPressureEnable = false;
+    bool _isBodyMeasurementsEnable = false;
+    bool _isTestsEnable = false;
+  }
 
   calculateBmi() {
     if (heightEditingController != '' && weightEditingController.text != '') {
@@ -1440,7 +1447,9 @@ class _MeasurementsState extends State<Measurements> {
                             textColor: Colors.white, 
                             onPressed: () {
                               print('before : $_isBloodPressureEnable');
-                              _isBloodPressureEnable = true;
+                              setState(() {
+                                _isBloodPressureEnable = true;
+                              });
                               print('after : $_isBloodPressureEnable');
                             },
                             child: Text('Edit'),
@@ -1450,7 +1459,9 @@ class _MeasurementsState extends State<Measurements> {
                             color: Colors.blue[800],
                             textColor: Colors.white, 
                             onPressed: () {
-                              _isBloodPressureEnable = false;
+                              setState(() {
+                                _isBloodPressureEnable = false;
+                              });
                             },
                             child: Text('Save'),
                           ),
@@ -1623,7 +1634,9 @@ class _MeasurementsState extends State<Measurements> {
                                   color: Colors.blue[800],
                                   textColor: Colors.white, 
                                   onPressed: () {
-                                    _isBodyMeasurementsEnable = true;
+                                    setState(() {
+                                      _isBodyMeasurementsEnable = true;
+                                    });
                                   },
                                   child: Text('Edit'),
                                 ),
@@ -1632,7 +1645,9 @@ class _MeasurementsState extends State<Measurements> {
                                   color: Colors.blue[800],
                                   textColor: Colors.white, 
                                   onPressed: () {
-                                    _isBodyMeasurementsEnable = false;
+                                    setState(() {
+                                      _isBodyMeasurementsEnable = false;
+                                    });
                                   },
                                   child: Text('Save'),
                                 ),                                                     
@@ -1769,7 +1784,9 @@ class _MeasurementsState extends State<Measurements> {
                             color: Colors.blue[800],
                             textColor: Colors.white, 
                             onPressed: () {
-                              _isTestsEnable = true;
+                              setState(() {
+                                _isTestsEnable = true;
+                              });
                             },
                             child: Text('Edit'),
                           ),
@@ -1778,7 +1795,9 @@ class _MeasurementsState extends State<Measurements> {
                             color: Colors.blue[800],
                             textColor: Colors.white, 
                             onPressed: () {
-                              _isTestsEnable = false;
+                              setState(() {
+                                _isTestsEnable = false;
+                              });
                             },
                             child: Text('Save'),
                           ),                                                     

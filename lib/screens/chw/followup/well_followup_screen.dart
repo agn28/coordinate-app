@@ -1409,6 +1409,14 @@ var proteinController = TextEditingController();
 
 class _MeasurementsState extends State<Measurements> {
   @override
+  void initState() {
+    bool _isBodyMeasurementsTextEnable = false;
+    bool _isBloodPressureTextEnable = false;
+    bool _isBloodSugarTextEnable = false;
+    bool _isLipidProfileTextEnable = false;
+    bool _isAdditionalTextEnable = false;
+  }
+  @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       physics: ClampingScrollPhysics(),
@@ -1496,7 +1504,9 @@ class _MeasurementsState extends State<Measurements> {
                                   color: Colors.blue[800],
                                   textColor: Colors.white, 
                                   onPressed: () {
-                                    _isBodyMeasurementsTextEnable = true;
+                                    setState(() {
+                                      _isBodyMeasurementsTextEnable = true;
+                                    });
                                   },
                                   child: Text('Edit'),
                                 ),
@@ -1506,7 +1516,9 @@ class _MeasurementsState extends State<Measurements> {
                                   textColor: Colors.white, 
                                   onPressed: () async {
                                     // print('widget.prevScreennn: ${widget.prevScreen}');
-                                    _isBodyMeasurementsTextEnable = false;
+                                    setState(() {
+                                       _isBodyMeasurementsTextEnable = false;
+                                    });
                                     setState(() {
                                       isLoading = true;
                                     });
@@ -1730,7 +1742,9 @@ class _MeasurementsState extends State<Measurements> {
                             color: Colors.blue[800],
                             textColor: Colors.white, 
                             onPressed: () {
-                              _isBloodPressureTextEnable = true;
+                              setState(() {
+                                _isBloodPressureTextEnable = true;
+                              });
                             },
                             child: Text('Edit'),
                           ),
@@ -1739,12 +1753,14 @@ class _MeasurementsState extends State<Measurements> {
                             color: Colors.blue[800],
                             textColor: Colors.white, 
                             onPressed: () {
-                              _isBloodPressureTextEnable = false;
+                              setState(() {
+                                _isBloodPressureTextEnable = false;
+                              });
                             },
                             child: Text('Save'),
                           ),                                                     
                         ],
-                      )   
+                      ),   
                     ],
                   ),
                 ),
@@ -2056,7 +2072,9 @@ class _MeasurementsState extends State<Measurements> {
                             color: Colors.blue[800],
                             textColor: Colors.white, 
                             onPressed: () {
-                              _isBloodSugarTextEnable = true;
+                              setState(() {
+                                _isBloodSugarTextEnable = true;
+                              });
                             },
                             child: Text('Edit'),
                           ),
@@ -2065,7 +2083,9 @@ class _MeasurementsState extends State<Measurements> {
                             color: Colors.blue[800],
                             textColor: Colors.white, 
                             onPressed: () {
-                              _isBloodSugarTextEnable = false;
+                              setState(() {
+                                _isBloodSugarTextEnable = false;  
+                              });
                             },
                             child: Text('Save'),
                           ),                                                     
@@ -2395,7 +2415,9 @@ class _MeasurementsState extends State<Measurements> {
                                   color: Colors.blue[800],
                                   textColor: Colors.white, 
                                   onPressed: () {
-                                    _isLipidProfileTextEnable = true;
+                                    setState(() {
+                                      _isLipidProfileTextEnable = true;
+                                    });
                                   },
                                   child: Text('Edit'),
                                 ),
@@ -2404,7 +2426,9 @@ class _MeasurementsState extends State<Measurements> {
                                   color: Colors.blue[800],
                                   textColor: Colors.white, 
                                   onPressed: () {
-                                    _isLipidProfileTextEnable = false;
+                                    setState(() {
+                                      _isLipidProfileTextEnable = false;
+                                    });
                                   },
                                   child: Text('Save'),
                                 ),                                                     
@@ -2806,7 +2830,9 @@ class _MeasurementsState extends State<Measurements> {
                                   color: Colors.blue[800],
                                   textColor: Colors.white, 
                                   onPressed: () {
-                                    _isAdditionalTextEnable = true;
+                                    setState(() {
+                                      _isAdditionalTextEnable = true;
+                                    });
                                   },
                                   child: Text('Edit'),
                                 ),
@@ -2815,7 +2841,9 @@ class _MeasurementsState extends State<Measurements> {
                                   color: Colors.blue[800],
                                   textColor: Colors.white, 
                                   onPressed: () {
-                                    _isAdditionalTextEnable = false;
+                                    setState(() {
+                                      _isAdditionalTextEnable = false;
+                                    });
                                   },
                                   child: Text('Save'),
                                 ),                                                     
