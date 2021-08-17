@@ -47,6 +47,7 @@ class AssessmentController {
         });
       }
     });
+    print('AssessmentController return data:  $data');
     return data;
   }
 
@@ -1019,6 +1020,7 @@ class AssessmentController {
   createAssessmentWithObservations(context, type, screening_type, comment, completeStatus, nextVisitDate, {followupType: ''}) async {
     var response;
     var data = _prepareData(type, screening_type, comment);
+    print('data prepareData: $data');
     data['body']['status'] = completeStatus;
     data['body']['next_visit_date'] = nextVisitDate;
     if (followupType != '') {
@@ -1050,6 +1052,8 @@ class AssessmentController {
     }
 
     Helpers().clearObservationItems();
+
+    print('createAssessmentWithObservations response:  $response');
 
     return response;
   }

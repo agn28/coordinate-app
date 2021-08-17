@@ -1106,6 +1106,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                   ),
                                   child: FlatButton(
                                   onPressed: () async {
+                                    print('widget.prevScreennn: ${widget.prevScreen}');
                                     setState(() {
                                       isLoading = true;
                                     });
