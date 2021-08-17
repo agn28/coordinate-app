@@ -51,6 +51,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   bool avatarExists = false;
   var encounters = [];
   var lastAssessment;
+  bool hasIncompleteFollowup = false;
   String lastEncounterType = '';
   String lastEncounterDate = '';
   String nextVisitDate = '';
@@ -116,6 +117,13 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
 
     print('lastAssessment $lastAssessment');
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
+      if(lastAssessment['data']['body']['type'] == 'follow up visit (center)' 
+      && lastAssessment['data']['body']['status'] == 'incomplete') {
+        setState(() {
+          hasIncompleteFollowup = true;
+        });
+      }
+      print('hasIncompleteFollowup $hasIncompleteFollowup');
       // lastEncounterDate = lastAssessment['data']['meta']['created_at'];
       // nextVisitDate = lastAssessment['data']['body']['next_visit_date'];
       setState(() {
@@ -1110,7 +1118,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
 
                                       } else {
                                         print('new followup');
-                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (community)', 'follow-up', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
+                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
                                       }
                                     }
                                     setState(() {
@@ -1150,7 +1158,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                         print('new followup');
                                         print(status);
                                         print(widget.encounterData['followupType']);
-                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (community)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
+                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
                                       }
                                       status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
                                     }
@@ -1304,6 +1312,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                               FloatingButton(text: AppLocalizations.of(context).translate('followUp'), onPressed: () {
                                 // Navigator.of(context).pop();
                                 // Navigator.of(context).pushNamed(FollowupFeelingScreen.path);
+                                hasIncompleteFollowup ?
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext context){
@@ -1318,7 +1327,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                               child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: <Widget>[
-                                                  Text('do you want to edit the incomplete follow-up or fill up a new one?'),
+                                                  Text('Do you want to edit the existing follow-up or start a new one?'),
                                                   SizedBox(height: 20,),
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -1329,16 +1338,20 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                                         onPressed: () {
                                                           Navigator.of(context).pushNamed(EditFollowupScreen.path);
                                                         },
-                                                        child: Text('edit'),
+                                                        child: Text('Edit'),
                                                       ),
                                                       SizedBox(width: 20,),
                                                       FlatButton(
                                                         color: Colors.blue[800],
                                                         textColor: Colors.white, 
-                                                        onPressed: () {
+                                                        onPressed: () async {
+                                                          await AssessmentController().deleteAssessment(lastAssessment['data']['id']);
+                                                          setState(() {
+                                                            lastAssessment = {};
+                                                          });
                                                           Navigator.of(context).pushNamed(FollowupFeelingScreen.path);
                                                         },
-                                                        child: Text('followUp'),
+                                                        child: Text('New'),
                                                       ),                                                     
                                                     ],
                                                   )                                                  
@@ -1350,7 +1363,9 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                       ]
                                     );
                                   }
-                                );
+                                ) :
+                                // Navigator.of(context).pop();
+                                Navigator.of(context).pushNamed(FollowupFeelingScreen.path);
                               }, ),
 
                               FloatingButton(text: AppLocalizations.of(context).translate('deliverCarePlan'), onPressed: () {

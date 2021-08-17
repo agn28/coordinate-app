@@ -1541,4 +1541,8 @@ class AssessmentController {
       }
     });
   }
+  deleteAssessment(id) {
+    var response = AssessmentRepository().delete(id);
+    return response;
+  }
 }
