@@ -178,6 +178,11 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     // dynamicMedicationTitles = [];
     // dynamicMedicationAnswers = [];
     for(var item in medications) {
+      // dynamicMedications.forEach((item) {
+    var textEditingController = new TextEditingController();
+    textEditingControllers.putIfAbsent(item['medId'], ()=>textEditingController);
+  //   // return textFields.add( TextField(controller: textEditingController));
+  // });
       // dynamicMedicationTitles.add(item['body']['title']);
       prepareMedication.add({
         'medId': item['id'],
@@ -314,11 +319,13 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     isTribe = null;
 
     dispenseEditingController.text = '';
-    dynamicMedications.forEach((item) {
-      print('clear');
-      textEditingControllers[item['medId']].text = '';
-      // return textFields.add( TextField(controller: textEditingController));
-    });
+    if(dynamicMedications.isNotEmpty) {
+      dynamicMedications.forEach((item) {
+        print('clear');
+        textEditingControllers[item['medId']].text = '';
+        // return textFields.add( TextField(controller: textEditingController));
+      });
+    }
   }
 
   _checkAuth() {
@@ -2699,11 +2706,7 @@ class _MedicationsState extends State<Medications> {
 
   @override
   Widget build(BuildContext context) {
-  dynamicMedications.forEach((item) {
-    var textEditingController = new TextEditingController();
-    textEditingControllers.putIfAbsent(item['medId'], ()=>textEditingController);
-    // return textFields.add( TextField(controller: textEditingController));
-  });
+  
     return SingleChildScrollView(
       physics: ClampingScrollPhysics(),
       scrollDirection: Axis.vertical,

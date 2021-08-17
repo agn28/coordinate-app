@@ -320,4 +320,20 @@ class AssessmentRepository {
       print('error ' + error.toString());
     });
   }
+
+  delete(id) async {
+    await http
+        .delete(
+          apiUrl + 'assessments/' + id,
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+        )
+        .then((response) {})
+        .catchError((error) {
+          print('error ' + error.toString());
+        });
+  }
+
 }
