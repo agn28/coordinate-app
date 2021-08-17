@@ -41,6 +41,9 @@ bool _isBloodSugarTextEnable = false;
 bool _isLipidProfileTextEnable = false;
 bool _isAdditionalTextEnable = false;
 
+
+final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
 getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
 
@@ -360,8 +363,11 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
     // dynamicMedicationAnswers = [];
     for(var item in medications) {
       // dynamicMedicationTitles.add(item['body']['title']);
+
+      var textEditingController = new TextEditingController(text: item['body']['dispense']);
+      textEditingControllers.putIfAbsent(item['id'], ()=>textEditingController);
       prepareMedication.add({
-        'med': item,
+        'medId': item['id'],
         'medInfo': '${serial}. Tab ${item['body']['title']}: ${item['body']['dosage']}${item['body']['unit']} ${item['body']['activityDuration']['repeat']['frequency']} time(s) ${preparePeriodUnits(item['body']['activityDuration']['repeat']['periodUnit'], 'repeat')} - continue ${item['body']['activityDuration']['review']['period']} ${preparePeriodUnits(item['body']['activityDuration']['review']['periodUnit'], 'review')}'
       });
       // dispenseEditingController.text = item['body']['dispense'];
@@ -479,6 +485,13 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
     selectedPotassiumUnit = 'mg/dL';
     selectedKetonesUnit = 'mg/dL';
     selectedProteinUnit = 'mg/dL';
+    // if(dynamicMedications.isNotEmpty) {
+    //   dynamicMedications.forEach((item) {
+    //     print('clear');
+    //     textEditingControllers[item['medId']].text = '';
+    //     // return textFields.add( TextField(controller: textEditingController));
+    //   });
+    // }
   }
 
   _checkAuth() {
@@ -609,6 +622,7 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         leading: FlatButton(
             onPressed: () {
@@ -812,11 +826,12 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
       'context': context,
       'dataStatus': dataStatus,
       'encounter': encounter,
-      'observations': observations
+      'observations': observations,
+      'followupType': 'short'
     };
     print('dataStatus $dataStatus');
     // return;
-    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': encounterData ,});
+    Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : 'followup', 'encounterData': encounterData});
   }
 
   List<CustomStep> _mySteps() {
@@ -918,94 +933,96 @@ class Medications extends StatefulWidget {
 }
 
 var dispenseEditingController = TextEditingController();
+Map<String,TextEditingController> textEditingControllers = {};
+var textFields = <TextField>[];
 
 class _MedicationsState extends State<Medications> {
   bool isEmpty = true;
   @override
   Widget build(BuildContext context) {
-    var stringListReturnedFromApiCall = dynamicMedications;
-    // This list of controllers can be used to set and get the text from/to the TextFields
-    Map<String,TextEditingController> textEditingControllers = {};
-    var textFields = <TextField>[];
-    var comp = <Widget>[];
-    stringListReturnedFromApiCall.forEach((item) {
-      var textEditingController = new TextEditingController(text: item['med']['body']['dispense']);
-      textEditingControllers.putIfAbsent(item['med']['id'], ()=>textEditingController);
-      // return textFields.add( TextField(controller: textEditingController));
-      return comp.add(Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              child: Text(
-                item['medInfo'],
-                style: TextStyle(
-                color: Colors.black,
-                fontSize: 18,
-                ),
-              ),
-            ),
-            SizedBox(height: 24),
+    // var stringListReturnedFromApiCall = dynamicMedications;
+    // // This list of controllers can be used to set and get the text from/to the TextFields
+    // Map<String,TextEditingController> textEditingControllers = {};
+    // var textFields = <TextField>[];
+    // var comp = <Widget>[];
+    // stringListReturnedFromApiCall.forEach((item) {
+    //   var textEditingController = new TextEditingController(text: item['med']['body']['dispense']);
+    //   textEditingControllers.putIfAbsent(item['med']['id'], ()=>textEditingController);
+    //   // return textFields.add( TextField(controller: textEditingController));
+    //   return comp.add(Container(
+    //     child: Column(
+    //       crossAxisAlignment: CrossAxisAlignment.start,
+    //       children: [
+    //         Container(
+    //           child: Text(
+    //             item['medInfo'],
+    //             style: TextStyle(
+    //             color: Colors.black,
+    //             fontSize: 18,
+    //             ),
+    //           ),
+    //         ),
+    //         SizedBox(height: 24),
 
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: [
-                  Text('Dispense',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                      )),
-                  SizedBox(
-                    width: 28,
-                  ),
-                  Container(
-                    width: 120,
-                    height: 40,
-                    child: TextFormField(
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.number,
-                      controller: textEditingController,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(
-                            top: 5, left: 10, right: 10),
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Colors.red, width: 0.0)),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 16,
-                  ),
-                  FlatButton(
-                    color: Colors.blue[800],
-                    textColor: Colors.white, 
-                    onPressed: () async {
-                      setState(() {
-                        isLoading = true;
-                      });
-                      print('id ${item['med']['id']}');
-                      var response = await PatientController().dispenseMedicationByPatient(item['med']['id'], textEditingController.text);
-                      print('response $response');
-                      setState(() {
-                        isLoading = false;
-                      });
-                      // Navigator.of(context).pop();
-                      // if (response == 'success') {
-                      // // Navigator.of(context).pop();
-                      // } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
-                    },
-                    child: Text('submit'),
-                  )
-                ],
-              ),
-              ),
-              SizedBox(height: 24),
-          ],
-        ),
-      ));
-    });
+    //         Container(
+    //           padding: EdgeInsets.symmetric(horizontal: 20),
+    //           child: Row(
+    //             children: [
+    //               Text('Dispense',
+    //                   style: TextStyle(
+    //                     color: Colors.black,
+    //                     fontSize: 18,
+    //                   )),
+    //               SizedBox(
+    //                 width: 28,
+    //               ),
+    //               Container(
+    //                 width: 120,
+    //                 height: 40,
+    //                 child: TextFormField(
+    //                   textAlign: TextAlign.center,
+    //                   keyboardType: TextInputType.number,
+    //                   controller: textEditingController,
+    //                   decoration: InputDecoration(
+    //                     contentPadding: EdgeInsets.only(
+    //                         top: 5, left: 10, right: 10),
+    //                     border: OutlineInputBorder(
+    //                         borderSide: BorderSide(
+    //                             color: Colors.red, width: 0.0)),
+    //                   ),
+    //                 ),
+    //               ),
+    //               SizedBox(
+    //                 width: 16,
+    //               ),
+    //               FlatButton(
+    //                 color: Colors.blue[800],
+    //                 textColor: Colors.white, 
+    //                 onPressed: () async {
+    //                   setState(() {
+    //                     isLoading = true;
+    //                   });
+    //                   print('id ${item['med']['id']}');
+    //                   var response = await PatientController().dispenseMedicationByPatient(item['med']['id'], textEditingController.text);
+    //                   print('response $response');
+    //                   setState(() {
+    //                     isLoading = false;
+    //                   });
+    //                   // Navigator.of(context).pop();
+    //                   // if (response == 'success') {
+    //                   // // Navigator.of(context).pop();
+    //                   // } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+    //                 },
+    //                 child: Text('submit'),
+    //               )
+    //             ],
+    //           ),
+    //           ),
+    //           SizedBox(height: 24),
+    //       ],
+    //     ),
+    //   ));
+    // });
 
     return SingleChildScrollView(
       physics: ClampingScrollPhysics(),
@@ -1050,92 +1067,95 @@ class _MedicationsState extends State<Medications> {
                       // ),
                       
                       SizedBox(height: 24),
-                      Container(
-                          child: Column(
-                          children:[
-                          Column(children:  comp),
-                          ]
-                        )
-                      ),
-                      SizedBox(height: 24),
-                      // if(dynamicMedications != null)
-                      // ...dynamicMedications.map((item) {
-                      //   isEmpty = false;
-                      //   return Container(
-                      //   child: Column(
-                      //     crossAxisAlignment: CrossAxisAlignment.start,
-                      //     children: [
-                      //       Container(
-                      //         child: Text(
-                      //           item['medInfo'],
-                      //           style: TextStyle(
-                      //           color: Colors.black,
-                      //           fontSize: 18,
-                      //           ),
-                      //         ),
-                      //       ),
-                      //       SizedBox(height: 24),
+                      // Container(
+                      //     child: Column(
+                      //     children:[
+                      //     Column(children:  comp),
+                      //     ]
+                      //   )
+                      // ),
+                      // SizedBox(height: 24),
+                      if(dynamicMedications != null)
+                      ...dynamicMedications.map((item) {
+                        isEmpty = false;
+                        return Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              child: Text(
+                                item['medInfo'],
+                                style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 18,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 24),
 
-                      //       Container(
-                      //         padding: EdgeInsets.symmetric(horizontal: 20),
-                      //         child: Row(
-                      //           children: [
-                      //             Text('Dispense',
-                      //                 style: TextStyle(
-                      //                   color: Colors.black,
-                      //                   fontSize: 18,
-                      //                 )),
-                      //             SizedBox(
-                      //               width: 28,
-                      //             ),
-                      //             Container(
-                      //               width: 120,
-                      //               height: 40,
-                      //               child: TextFormField(
-                      //                 textAlign: TextAlign.center,
-                      //                 keyboardType: TextInputType.number,
-                      //                 controller: dispenseEditingController,
-                      //                 decoration: InputDecoration(
-                      //                   contentPadding: EdgeInsets.only(
-                      //                       top: 5, left: 10, right: 10),
-                      //                   border: OutlineInputBorder(
-                      //                       borderSide: BorderSide(
-                      //                           color: Colors.red, width: 0.0)),
-                      //                 ),
-                      //               ),
-                      //             ),
-                      //             SizedBox(
-                      //               width: 16,
-                      //             ),
-                      //             FlatButton(
-                      //               color: Colors.blue[800],
-                      //               textColor: Colors.white, 
-                      //               onPressed: () async {
-                      //                 setState(() {
-                      //                   isLoading = true;
-                      //                 });
-                      //                 print('id ${item['med']['id']}');
-                      //                 var response = await PatientController().dispenseMedicationByPatient(item['med']['id'], dispenseEditingController.text);
-                      //                 print('response $response');
-                      //                 setState(() {
-                      //                   isLoading = false;
-                      //                 });
-                      //                 // Navigator.of(context).pop();
-                      //                 // if (response == 'success') {
-                      //                 // // Navigator.of(context).pop();
-                      //                 // } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
-                      //               },
-                      //               child: Text('submit'),
-                      //             )
-                      //           ],
-                      //         ),
-                      //         ),
-                      //         SizedBox(height: 24),
-                      //     ],
-                      //   ),
-                      // );
-                      // }).toList(),
-                      // isEmpty ? Container(child: Text(AppLocalizations.of(context).translate('noItems'), style: TextStyle(fontSize: 16),),): Container()
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              child: Row(
+                                children: [
+                                  Text('Dispense',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 18,
+                                      )),
+                                  SizedBox(
+                                    width: 28,
+                                  ),
+                                  Container(
+                                    width: 120,
+                                    height: 40,
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      keyboardType: TextInputType.number,
+                                      controller: textEditingControllers[item['medId']],
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.only(
+                                            top: 5, left: 10, right: 10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.red, width: 0.0)),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 16,
+                                  ),
+                                  FlatButton(
+                                    color: Colors.blue[800],
+                                    textColor: Colors.white, 
+                                    onPressed: () async {
+                                      
+                                      var response = await PatientController().dispenseMedicationByPatient(item['medId'], textEditingControllers[item['medId']].text);
+                                      print('response $response');
+                                      if(!response['error']) {
+                                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                          content: Text(response['message']),
+                                          backgroundColor: kPrimaryGreenColor,
+                                        ));
+                                        return;
+                                      }
+                                      {
+                                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                          content: Text(AppLocalizations.of(context).translate('somethingWrong')),
+                                          backgroundColor: kPrimaryRedColor,
+                                        ));
+                                      }
+                                    },
+                                    child: Text('submit'),
+                                  )
+                                ],
+                              ),
+                              ),
+                              SizedBox(height: 24),
+                          ],
+                        ),
+                      );
+                      }).toList(),
+                      isEmpty ? Container(child: Text(AppLocalizations.of(context).translate('noItems'), style: TextStyle(fontSize: 16),),): Container()
                       ],
                     ),
                   ),
@@ -1196,7 +1216,8 @@ class Measurements extends StatefulWidget {
 }
 
 class _MeasurementsState extends State<Measurements> {
-  
+  var encounter;
+  var observations = [];
   @override
   void initState() {
     bool _isBodyMeasurementsTextEnable = false;
@@ -1204,6 +1225,23 @@ class _MeasurementsState extends State<Measurements> {
     bool _isBloodSugarTextEnable = false;
     bool _isLipidProfileTextEnable = false;
     bool _isAdditionalTextEnable = false;
+  }
+  getIncompleteFollowup() async {
+    print("getIncompleteFollowup");
+    encounter = null;
+    observations = [];
+
+    var patientId = Patient().getPatient()['id'];
+    var incompleteEncounter = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
+
+    if(incompleteEncounter != null && incompleteEncounter.isNotEmpty && !incompleteEncounter['error']) {
+      if(incompleteEncounter['data']['assessment']['body']['type'] == 'follow up visit (center)') {
+        encounter = incompleteEncounter['data']['assessment'];
+        print("encounter: $encounter");
+        observations = incompleteEncounter['data']['observations'];
+        print("observations: $observations");
+      }
+    } 
   }
 
   calculateBmi() {
@@ -1319,9 +1357,23 @@ class _MeasurementsState extends State<Measurements> {
                                   color: Colors.blue[800],
                                   textColor: Colors.white, 
                                   onPressed: () async {
-                                    // print('widget.prevScreennn: ${widget.prevScreen}');
                                     setState(() {
-                                       _isBodyMeasurementsTextEnable = false;
+                                      isLoading = true;
+                                    });
+                                    if (weightEditingController.text != '') {
+                                      BodyMeasurement()
+                                          .addItem('weight', weightEditingController.text, 'kg', '', '');
+                                    }
+                                    BodyMeasurement().addBmItem();
+
+                                    await getIncompleteFollowup();
+                                    print('eencounter $encounter');
+                                    if(encounter != null) {
+                                      print('edit followup');
+                                      var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
+                                    }
+                                    setState(() {
+                                      isLoading = false;
                                     });
                                   },
                                   child: Text('Save'),
@@ -1542,10 +1594,37 @@ class _MeasurementsState extends State<Measurements> {
                           FlatButton(
                             color: Colors.blue[800],
                             textColor: Colors.white, 
-                            onPressed: () {
+                            onPressed: () async{
                               setState(() {
-                                _isBloodPressureTextEnable = false;
+                                isLoading = true;
                               });
+                              if (diastolicEditingController.text != '' &&
+                                systolicEditingController.text != '' && pulseRateEditingController.text != '') {
+                                BloodPressure().addItem(
+                                    'left',
+                                    int.parse(systolicEditingController.text),
+                                    int.parse(diastolicEditingController.text),
+                                    int.parse(pulseRateEditingController.text),
+                                    null);
+                                var formData = {
+                                  'items': BloodPressure().items,
+                                  'comment': '',
+                                  'patient_id': Patient().getPatient()['id'],
+                                  'device': '',
+                                  'performed_by': '',
+                                };
+
+                                BloodPressure().addBloodPressure(formData);
+                                await getIncompleteFollowup();
+                                print('eencounter $encounter');
+                                if(encounter != null) {
+                                  print('edit followup');
+                                  var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
+                                }
+                                setState(() {
+                                  isLoading = false;
+                                });
+                              }
                             },
                             child: Text('Save'),
                           ),                                                     
@@ -1872,9 +1951,35 @@ class _MeasurementsState extends State<Measurements> {
                           FlatButton(
                             color: Colors.blue[800],
                             textColor: Colors.white, 
-                            onPressed: () {
+                            onPressed: () async{
                               setState(() {
-                                _isBloodSugarTextEnable = false;  
+                                isLoading = true;
+                              });
+                              if (randomBloodController.text != '') {
+                                BloodTest().addItem('blood_sugar', randomBloodController.text,
+                                    selectedRandomBloodUnit, '', '');
+                              }
+                              if (fastingBloodController.text != '') {
+                                BloodTest().addItem('blood_glucose', fastingBloodController.text,
+                                    selectedFastingBloodUnit, '', '');
+                              }
+                              if (habfController.text != '') {
+                                BloodTest()
+                                    .addItem('2habf', habfController.text, selectedHabfUnit, '', '');
+                              }
+                              if (hba1cController.text != '') {
+                                BloodTest()
+                                    .addItem('a1c', hba1cController.text, selectedHba1cUnit, '', '');
+                              }
+                              BloodTest().addBtItem();
+                              await getIncompleteFollowup();
+                              print('eencounter $encounter');
+                              if(encounter != null) {
+                                print('edit followup');
+                                var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
+                              }
+                              setState(() {
+                                isLoading = false;
                               });
                             },
                             child: Text('Save'),
@@ -2215,9 +2320,33 @@ class _MeasurementsState extends State<Measurements> {
                                 FlatButton(
                                   color: Colors.blue[800],
                                   textColor: Colors.white, 
-                                  onPressed: () {
+                                  onPressed: () async{
                                     setState(() {
-                                      _isLipidProfileTextEnable = false;
+                                      isLoading = true;
+                                    });
+                                    if (cholesterolController.text != '') {
+                                      BloodTest().addItem('total_cholesterol', cholesterolController.text,
+                                          selectedCholesterolUnit, '', '');
+                                    }
+                                    if (ldlController.text != '') {
+                                      BloodTest().addItem('ldl', ldlController.text, selectedLdlUnit, '', '');
+                                    }
+                                    if (hdlController.text != '') {
+                                      BloodTest().addItem('hdl', hdlController.text, selectedHdlUnit, '', '');
+                                    }
+                                    if (tgController.text != '') {
+                                      BloodTest()
+                                          .addItem('triglycerides', tgController.text, selectedTgUnit, '', '');
+                                    }
+                                    BloodTest().addBtItem();  
+                                    await getIncompleteFollowup();
+                                    print('eencounter $encounter');
+                                    if(encounter != null) {
+                                      print('edit followup');
+                                      var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
+                                    }
+                                    setState(() {
+                                      isLoading = false;
                                     });
                                   },
                                   child: Text('Save'),
@@ -2630,9 +2759,39 @@ class _MeasurementsState extends State<Measurements> {
                                 FlatButton(
                                   color: Colors.blue[800],
                                   textColor: Colors.white, 
-                                  onPressed: () {
+                                  onPressed: () async{
                                     setState(() {
-                                      _isAdditionalTextEnable = false;
+                                      isLoading = true;
+                                    });
+                                    if (creatinineController.text != '') {
+                                      BloodTest().addItem('creatinine', creatinineController.text,
+                                          selectedCreatinineUnit, '', '');
+                                    }
+                                    if (sodiumController.text != '') {
+                                      BloodTest()
+                                                                          .addItem('sodium', sodiumController.text, selectedSodiumUnit, '', '');
+                                    }
+                                    if (potassiumController.text != '') {
+                                      BloodTest().addItem(
+                                          'potassium', potassiumController.text, selectedPotassiumUnit, '', '');
+                                    }
+                                    if (ketonesController.text != '') {
+                                      BloodTest().addItem(
+                                          'ketones', ketonesController.text, selectedKetonesUnit, '', '');
+                                    }
+                                    if (proteinController.text != '') {
+                                      BloodTest().addItem(
+                                          'protein', proteinController.text, selectedProteinUnit, '', '');
+                                    }
+                                    BloodTest().addBtItem();
+                                    await getIncompleteFollowup();
+                                    print('eencounter $encounter');
+                                    if(encounter != null) {
+                                      print('edit followup');
+                                      var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
+                                    }
+                                    setState(() {
+                                      isLoading = false;
                                     });
                                   },
                                   child: Text('Save'),

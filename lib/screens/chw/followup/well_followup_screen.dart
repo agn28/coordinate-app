@@ -47,6 +47,7 @@ String selectedArm = 'left';
 String selectedGlucoseType = 'fasting';
 String selectedGlucoseUnit = 'mg/dL';
 
+var lastAssessment;
 var medicalHistoryQuestions = {};
 var medicalHistoryAnswers = [];
 var medicationQuestions = {};
@@ -68,6 +69,28 @@ bool _isBloodPressureTextEnable = false;
 bool _isBloodSugarTextEnable = false;
 bool _isLipidProfileTextEnable = false;
 bool _isAdditionalTextEnable = false;
+
+final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+var encounter;
+var observations = [];
+
+getIncompleteFollowup() async {
+  print("getIncompleteFollowup");
+  encounter = null;
+  observations = [];
+
+  var patientId = Patient().getPatient()['id'];
+  var incompleteEncounter = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
+
+  if(incompleteEncounter != null && incompleteEncounter.isNotEmpty && !incompleteEncounter['error']) {
+    if(incompleteEncounter['data']['assessment']['body']['type'] == 'follow up visit (center)') {
+      encounter = incompleteEncounter['data']['assessment'];
+      print("encounter: $encounter");
+      observations = incompleteEncounter['data']['observations'];
+      print("observations: $observations");
+    }
+  } 
+}
 
 getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
@@ -137,6 +160,26 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
 
     print(Localizations.localeOf(context));
   }
+  // getLastAssessment() async {
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  //   lastAssessment = await AssessmentController().getLastAssessmentByPatient();
+
+  //   print('lastAssessment $lastAssessment');
+  //   if(lastAssessment != null && lastAssessment.isNotEmpty) {
+  //     if(lastAssessment['data']['body']['type'] == 'follow up visit (center)' 
+  //     && lastAssessment['data']['body']['status'] == 'incomplete') {
+  //       setState(() {
+  //         hasIncompleteFollowup = true;
+  //       });
+  //     }
+  //     print('hasIncompleteFollowup $hasIncompleteFollowup');
+  //   }
+    
+  // }
+  
+  
 
   getMedications() async {
     print("getMedications");
@@ -185,10 +228,10 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     // dynamicMedicationAnswers = [];
     for(var item in medications) {
       // dynamicMedications.forEach((item) {
-    var textEditingController = new TextEditingController();
-    textEditingControllers.putIfAbsent(item['medId'], ()=>textEditingController);
-  //   // return textFields.add( TextField(controller: textEditingController));
-  // });
+      var textEditingController = new TextEditingController();
+      textEditingControllers.putIfAbsent(item['id'], ()=>textEditingController);
+      //   // return textFields.add( TextField(controller: textEditingController));
+      // });
       // dynamicMedicationTitles.add(item['body']['title']);
       prepareMedication.add({
         'medId': item['id'],
@@ -520,6 +563,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         leading: FlatButton(
             onPressed: () {
@@ -791,11 +835,24 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
     // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (community)', 'follow-up', '', status, nextVisitDate, followupType: 'short');
     !hasMissingData ? Patient().setPatientReviewRequiredTrue() : null;
-    var encounterData = {
-      'context': context,
-      'dataStatus': dataStatus,
-      'followupType': 'short'
-    };
+    var encounterData = {};
+    await getIncompleteFollowup();
+    print('eencounter $encounter');
+    if(encounter != null) {
+      encounterData = {
+        'context': context,
+        'dataStatus': dataStatus,
+        'encounter': encounter,
+        'observations': observations,
+        'followupType': 'short'
+      };
+    } else {
+        encounterData = {
+        'context': context,
+        'dataStatus': dataStatus,
+        'followupType': 'short'
+      };
+    }
     setLoader(false);
 
     // if age greater than 40 redirect to referral page
@@ -1527,23 +1584,24 @@ class _MeasurementsState extends State<Measurements> {
                                   color: Colors.blue[800],
                                   textColor: Colors.white, 
                                   onPressed: () async {
-                                    // print('widget.prevScreennn: ${widget.prevScreen}');
-                                    setState(() {
-                                       _isBodyMeasurementsTextEnable = false;
-                                    });
                                     setState(() {
                                       isLoading = true;
                                     });
-                                    // if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
-                                    // {
-                                    //   print('edit followup');
-                                    //   print('${widget.encounterData['encounter']}');
-                                    //   var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
+                                    if (weightEditingController.text != '') {
+                                      BodyMeasurement()
+                                          .addItem('weight', weightEditingController.text, 'kg', '', '');
+                                    }
+                                    BodyMeasurement().addBmItem();
 
-                                    // } else {
+                                    await getIncompleteFollowup();
+                                    print('eencounter $encounter');
+                                    if(encounter != null) {
+                                      print('edit followup');
+                                      var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
+                                    } else {
                                       print('new followup');
-                                      var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (community)', 'follow-up', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
-                                    // }
+                                      var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                    }
                                     setState(() {
                                       isLoading = false;
                                     });
@@ -1764,10 +1822,40 @@ class _MeasurementsState extends State<Measurements> {
                           FlatButton(
                             color: Colors.blue[800],
                             textColor: Colors.white, 
-                            onPressed: () {
+                            onPressed: () async {
                               setState(() {
-                                _isBloodPressureTextEnable = false;
+                                isLoading = true;
                               });
+                              if (diastolicEditingController.text != '' &&
+                                systolicEditingController.text != '' && pulseRateEditingController.text != '') {
+                                BloodPressure().addItem(
+                                    'left',
+                                    int.parse(systolicEditingController.text),
+                                    int.parse(diastolicEditingController.text),
+                                    int.parse(pulseRateEditingController.text),
+                                    null);
+                                var formData = {
+                                  'items': BloodPressure().items,
+                                  'comment': '',
+                                  'patient_id': Patient().getPatient()['id'],
+                                  'device': '',
+                                  'performed_by': '',
+                                };
+
+                                BloodPressure().addBloodPressure(formData);
+                                await getIncompleteFollowup();
+                                print('eencounter $encounter');
+                                if(encounter != null) {
+                                  print('edit followup');
+                                  var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
+                                } else {
+                                  print('new followup');
+                                  var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                }
+                                setState(() {
+                                  isLoading = false;
+                                });
+                              }     
                             },
                             child: Text('Save'),
                           ),                                                     
@@ -2094,9 +2182,38 @@ class _MeasurementsState extends State<Measurements> {
                           FlatButton(
                             color: Colors.blue[800],
                             textColor: Colors.white, 
-                            onPressed: () {
+                            onPressed: () async{
                               setState(() {
-                                _isBloodSugarTextEnable = false;  
+                                isLoading = true;
+                              });
+                              if (randomBloodController.text != '') {
+                                BloodTest().addItem('blood_sugar', randomBloodController.text,
+                                    selectedRandomBloodUnit, '', '');
+                              }
+                              if (fastingBloodController.text != '') {
+                                BloodTest().addItem('blood_glucose', fastingBloodController.text,
+                                    selectedFastingBloodUnit, '', '');
+                              }
+                              if (habfController.text != '') {
+                                BloodTest()
+                                    .addItem('2habf', habfController.text, selectedHabfUnit, '', '');
+                              }
+                              if (hba1cController.text != '') {
+                                BloodTest()
+                                    .addItem('a1c', hba1cController.text, selectedHba1cUnit, '', '');
+                              }
+                              BloodTest().addBtItem();
+                              await getIncompleteFollowup();
+                              print('eencounter $encounter');
+                              if(encounter != null) {
+                                print('edit followup');
+                                var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
+                              } else {
+                                print('new followup');
+                                var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                              }
+                              setState(() {
+                                isLoading = false;
                               });
                             },
                             child: Text('Save'),
@@ -2437,10 +2554,37 @@ class _MeasurementsState extends State<Measurements> {
                                 FlatButton(
                                   color: Colors.blue[800],
                                   textColor: Colors.white, 
-                                  onPressed: () {
+                                  onPressed: () async{
                                     setState(() {
-                                      _isLipidProfileTextEnable = false;
+                                      isLoading = true;
                                     });
+                                    if (cholesterolController.text != '') {
+                                      BloodTest().addItem('total_cholesterol', cholesterolController.text,
+                                          selectedCholesterolUnit, '', '');
+                                    }
+                                    if (ldlController.text != '') {
+                                      BloodTest().addItem('ldl', ldlController.text, selectedLdlUnit, '', '');
+                                    }
+                                    if (hdlController.text != '') {
+                                      BloodTest().addItem('hdl', hdlController.text, selectedHdlUnit, '', '');
+                                    }
+                                    if (tgController.text != '') {
+                                      BloodTest()
+                                          .addItem('triglycerides', tgController.text, selectedTgUnit, '', '');
+                                    }
+                                    BloodTest().addBtItem();  
+                                    await getIncompleteFollowup();
+                                    print('eencounter $encounter');
+                                    if(encounter != null) {
+                                      print('edit followup');
+                                      var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
+                                    } else {
+                                      print('new followup');
+                                      var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                    }
+                                    setState(() {
+                                      isLoading = false;
+                                    });           
                                   },
                                   child: Text('Save'),
                                 ),                                                     
@@ -2852,9 +2996,42 @@ class _MeasurementsState extends State<Measurements> {
                                 FlatButton(
                                   color: Colors.blue[800],
                                   textColor: Colors.white, 
-                                  onPressed: () {
+                                  onPressed: () async{
                                     setState(() {
-                                      _isAdditionalTextEnable = false;
+                                      isLoading = true;
+                                    });
+                                    if (creatinineController.text != '') {
+                                      BloodTest().addItem('creatinine', creatinineController.text,
+                                          selectedCreatinineUnit, '', '');
+                                    }
+                                    if (sodiumController.text != '') {
+                                      BloodTest()
+                                                                          .addItem('sodium', sodiumController.text, selectedSodiumUnit, '', '');
+                                    }
+                                    if (potassiumController.text != '') {
+                                      BloodTest().addItem(
+                                          'potassium', potassiumController.text, selectedPotassiumUnit, '', '');
+                                    }
+                                    if (ketonesController.text != '') {
+                                      BloodTest().addItem(
+                                          'ketones', ketonesController.text, selectedKetonesUnit, '', '');
+                                    }
+                                    if (proteinController.text != '') {
+                                      BloodTest().addItem(
+                                          'protein', proteinController.text, selectedProteinUnit, '', '');
+                                    }
+                                    BloodTest().addBtItem();
+                                    await getIncompleteFollowup();
+                                    print('eencounter $encounter');
+                                    if(encounter != null) {
+                                      print('edit followup');
+                                      var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
+                                    } else {
+                                      print('new followup');
+                                      var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                    }
+                                    setState(() {
+                                      isLoading = false;
                                     });
                                   },
                                   child: Text('Save'),
@@ -2994,6 +3171,19 @@ class _MedicationsState extends State<Medications> {
                                       print('id ${item['medId']}');
                                       var response = await PatientController().dispenseMedicationByPatient(item['medId'], textEditingControllers[item['medId']].text);
                                       print('response $response');
+                                      if(!response['error']) {
+                                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                          content: Text(response['message']),
+                                          backgroundColor: kPrimaryGreenColor,
+                                        ));
+                                        return;
+                                      }
+                                      {
+                                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                          content: Text(AppLocalizations.of(context).translate('somethingWrong')),
+                                          backgroundColor: kPrimaryRedColor,
+                                        ));
+                                      }
                                       setState(() {
                                         isLoading = false;
                                       });
