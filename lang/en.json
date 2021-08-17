@@ -523,5 +523,10 @@
   "updateLastEncounter": "Update Last Encounter",
   "updateLastFollowUp": "Update Last Follow Up",
   "newVisit": "New Visit",
-  "editIncompleteFollowup": "Edit Incomplete Followup"
+  "editIncompleteFollowup": "Edit Incomplete Followup",
+  "nextVisitDateChw" : "Next Visit Date Chw",
+  "nextVisitPlaceChw" : "Next Visit Place Chw",
+  "nextVisitDateCc" : "Next Visit Date Cc",
+  "nextVisitPlaceCc" : "Next Visit Place Cc"
+
 }
