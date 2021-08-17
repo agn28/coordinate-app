@@ -524,6 +524,10 @@
   "updateLastEncounter": "সর্বশেষ এনকাউন্টার আপডেট",
   "updateLastFollowUp": "সর্বশেষ ফলো আপ আপডেট",
   "newVisit": "নতুন ভিসিট",
-  "editIncompleteFollowup": "অসম্পূর্ণ ফলো আপ সম্পাদনা করুন"
+  "editIncompleteFollowup": "অসম্পূর্ণ ফলো আপ সম্পাদনা করুন",
+  "nextVisitDateChw" : "পরবর্তী সাক্ষাতের তারিখ Chw",
+  "nextVisitPlaceChw" : "পরবর্তী সাক্ষাতের স্থান Chw",
+  "nextVisitDateCc" : "পরবর্তী সাক্ষাতের তারিখ Cc ",
+  "nextVisitPlaceCc" : "পরবর্তী সাক্ষাতের স্থান Cc"
 
 }

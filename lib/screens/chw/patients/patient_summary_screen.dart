@@ -54,7 +54,10 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   bool hasIncompleteFollowup = false;
   String lastEncounterType = '';
   String lastEncounterDate = '';
-  String nextVisitDate = '';
+  String nextVisitDateChw = '';
+  String nextVisitPlaceChw = '';
+  String nextVisitDateCc = '';
+  String nextVisitPlaceCc = '';
   String lastCarePlanDate = '';
   var conditions = [];
   var medications = [];
@@ -117,17 +120,32 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
 
     print('lastAssessment $lastAssessment');
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
-      if(lastAssessment['data']['body']['type'] == 'follow up visit (center)' 
+    if(lastAssessment['data']['body']['type'] == 'follow up visit (center)'
       && lastAssessment['data']['body']['status'] == 'incomplete') {
         setState(() {
           hasIncompleteFollowup = true;
         });
       }
-      print('hasIncompleteFollowup $hasIncompleteFollowup');
-      // lastEncounterDate = lastAssessment['data']['meta']['created_at'];
-      // nextVisitDate = lastAssessment['data']['body']['next_visit_date'];
+
+      if(lastAssessment['data']['body']['follow_up_info'] != null && lastAssessment['data']['body']['follow_up_info'].isNotEmpty){
+        var followUpInfoChw = lastAssessment['data']['body']['follow_up_info'].where((info)=> info['type'] == 'chw');
+        if(followUpInfoChw.isNotEmpty) {
+          followUpInfoChw = followUpInfoChw.first;
+        }
+        var followUpInfoCc= lastAssessment['data']['body']['follow_up_info'].where((info)=> info['type'] == 'cc');
+        if(followUpInfoCc.isNotEmpty) {
+          followUpInfoCc = followUpInfoCc.first;
+        }
+        setState(() {
+          nextVisitDateChw = (followUpInfoChw['date'] != null && followUpInfoChw['date'].isNotEmpty) ? getDate(followUpInfoChw['date']) : '' ;
+          nextVisitPlaceChw = (followUpInfoChw['place'] != null && followUpInfoChw['place'].isNotEmpty) ? (followUpInfoChw['place']) : '' ;
+          nextVisitDateCc = (followUpInfoCc['date'] != null && followUpInfoCc['date'].isNotEmpty) ? getDate(followUpInfoCc['date']) : '' ;
+          nextVisitPlaceCc = (followUpInfoCc['place'] != null && followUpInfoCc['place'].isNotEmpty) ? (followUpInfoCc['place']) : '' ;;
+        });
+
+      }
+
       setState(() {
-        nextVisitDate = lastAssessment['data']['body']['next_visit_date'] != null && lastAssessment['data']['body']['next_visit_date'] != '' ? DateFormat("MMMM d, y").format(DateTime.parse(lastAssessment['data']['body']['next_visit_date'])):'';
         lastEncounterType = lastAssessment['data']['body']['type'];
         lastEncounterDate = getDate(lastAssessment['data']['meta']['created_at']);
         print('lastEncounterDate ${lastEncounterDate}');
@@ -1029,7 +1047,13 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                               children: [
                                 Text(AppLocalizations.of(context).translate('ncdCenterVisit'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
                                 SizedBox(height: 15,),
-                                Text(AppLocalizations.of(context).translate('nextVisitDate') +  ': $nextVisitDate', style: TextStyle(fontSize: 17,)),
+                                Text(AppLocalizations.of(context).translate('nextVisitDateChw') +  ': $nextVisitDateChw', style: TextStyle(fontSize: 17,)),
+                                SizedBox(height: 10,),
+                                Text(AppLocalizations.of(context).translate('nextVisitPlaceChw') +  ': $nextVisitPlaceChw', style: TextStyle(fontSize: 17,)),
+                                SizedBox(height: 10,),
+                                Text(AppLocalizations.of(context).translate('nextVisitDateCc') +  ': $nextVisitDateCc', style: TextStyle(fontSize: 17,)),
+                                SizedBox(height: 10,),
+                                Text(AppLocalizations.of(context).translate('nextVisitPlaceCc') +  ': $nextVisitPlaceCc', style: TextStyle(fontSize: 17,)),
                                 SizedBox(height: 10,),
                                 Text(AppLocalizations.of(context).translate('lastVisitDate') +  ': $lastEncounterDate', style: TextStyle(fontSize: 17,))
                               ],
