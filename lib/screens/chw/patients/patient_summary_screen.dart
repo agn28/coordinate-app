@@ -116,16 +116,16 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     setState(() {
       isLoading = true;
     });
-    lastAssessment = await AssessmentController().getLastAssessmentByPatient();
+    lastAssessment = await AssessmentController().getLastAssessmentByPatient(key:'screening_type', value:'follow-up');
 
     print('lastAssessment $lastAssessment');
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
-    if(lastAssessment['data']['body']['type'] == 'follow up visit (center)'
-      && lastAssessment['data']['body']['status'] == 'incomplete') {
-        setState(() {
-          hasIncompleteFollowup = true;
-        });
-      }
+      if(lastAssessment['data']['body']['type'] == 'follow up visit (center)'
+        && lastAssessment['data']['body']['status'] == 'incomplete') {
+          setState(() {
+            hasIncompleteFollowup = true;
+          });
+        }
 
       if(lastAssessment['data']['body']['follow_up_info'] != null && lastAssessment['data']['body']['follow_up_info'].isNotEmpty){
         var followUpInfoChw = lastAssessment['data']['body']['follow_up_info'].where((info)=> info['type'] == 'chw');
@@ -1068,7 +1068,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(AppLocalizations.of(context).translate('lastEncounter')+'${basic_utils.StringUtils.capitalize(lastEncounterType)}', style: TextStyle(fontSize: 17,)),
+                                Text(AppLocalizations.of(context).translate('lastEncounter')+'${(lastEncounterType)}', style: TextStyle(fontSize: 17,)),
                                 SizedBox(height: 10,),
                                 Text(AppLocalizations.of(context).translate('lastEncounterDate')+  ': $lastEncounterDate', style: TextStyle(fontSize: 17,)),
                               ],
