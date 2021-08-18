@@ -159,6 +159,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
         && lastFollowup['data']['body']['status'] == 'incomplete') {
           setState(() {
             hasIncompleteFollowup = true;
+            print('hasIncompleteFollowup $hasIncompleteFollowup');
           });
         }
     }
