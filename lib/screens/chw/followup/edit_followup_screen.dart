@@ -1097,7 +1097,7 @@ class _MedicationsState extends State<Medications> {
                               padding: EdgeInsets.symmetric(horizontal: 20),
                               child: Row(
                                 children: [
-                                  Text('Dispense',
+                                  Text(AppLocalizations.of(context).translate('Dispense'),
                                       style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 18,
@@ -1145,7 +1145,7 @@ class _MedicationsState extends State<Medications> {
                                         ));
                                       }
                                     },
-                                    child: Text('submit'),
+                                    child: Text(AppLocalizations.of(context).translate('submit')),
                                   )
                                 ],
                               ),
@@ -1350,7 +1350,7 @@ class _MeasurementsState extends State<Measurements> {
                                       _isBodyMeasurementsTextEnable = true;
                                     });
                                   },
-                                  child: Text('Edit'),
+                                  child: Text(AppLocalizations.of(context).translate('edit')),
                                 ),
                                 SizedBox(width: 20,) ,
                                 FlatButton(
@@ -1376,7 +1376,7 @@ class _MeasurementsState extends State<Measurements> {
                                       isLoading = false;
                                     });
                                   },
-                                  child: Text('Save'),
+                                  child: Text(AppLocalizations.of(context).translate('save')),
                                 ),                                                     
                               ],
                             )   
@@ -1588,7 +1588,7 @@ class _MeasurementsState extends State<Measurements> {
                                 _isBloodPressureTextEnable = true;
                               });
                             },
-                            child: Text('Edit'),
+                            child: Text(AppLocalizations.of(context).translate('edit')),
                           ),
                           SizedBox(width: 20,),
                           FlatButton(
@@ -1626,7 +1626,7 @@ class _MeasurementsState extends State<Measurements> {
                                 });
                               }
                             },
-                            child: Text('Save'),
+                            child: Text(AppLocalizations.of(context).translate('save')),
                           ),                                                     
                         ],
                       )   
@@ -1945,7 +1945,7 @@ class _MeasurementsState extends State<Measurements> {
                                 _isBloodSugarTextEnable = true;
                               });
                             },
-                            child: Text('Edit'),
+                            child: Text(AppLocalizations.of(context).translate('Edit')),
                           ),
                           SizedBox(width: 20,),
                           FlatButton(
@@ -1982,7 +1982,7 @@ class _MeasurementsState extends State<Measurements> {
                                 isLoading = false;
                               });
                             },
-                            child: Text('Save'),
+                            child: Text(AppLocalizations.of(context).translate('save')),
                           ),                                                     
                         ],
                       ),   
@@ -2314,7 +2314,7 @@ class _MeasurementsState extends State<Measurements> {
                                       _isLipidProfileTextEnable = true;
                                     });
                                   },
-                                  child: Text('Edit'),
+                                  child: Text(AppLocalizations.of(context).translate('edit')),
                                 ),
                                 SizedBox(width: 20,),
                                 FlatButton(
@@ -2349,7 +2349,7 @@ class _MeasurementsState extends State<Measurements> {
                                       isLoading = false;
                                     });
                                   },
-                                  child: Text('Save'),
+                                  child: Text(AppLocalizations.of(context).translate('save')),
                                 ),                                                     
                               ],
                             ), 
@@ -2753,7 +2753,7 @@ class _MeasurementsState extends State<Measurements> {
                                       _isAdditionalTextEnable = true;
                                     });
                                   },
-                                  child: Text('Edit'),
+                                  child: Text(AppLocalizations.of(context).translate('edit')),
                                 ),
                                 SizedBox(width: 20,),
                                 FlatButton(
@@ -2794,7 +2794,7 @@ class _MeasurementsState extends State<Measurements> {
                                       isLoading = false;
                                     });
                                   },
-                                  child: Text('Save'),
+                                  child: Text(AppLocalizations.of(context).translate('save')),
                                 ),                                                     
                               ],
                             ), 
