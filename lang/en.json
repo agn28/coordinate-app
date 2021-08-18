@@ -527,6 +527,13 @@
   "nextVisitDateChw" : "Next Visit Date Chw",
   "nextVisitPlaceChw" : "Next Visit Place Chw",
   "nextVisitDateCc" : "Next Visit Date Cc",
-  "nextVisitPlaceCc" : "Next Visit Place Cc"
+  "nextVisitPlaceCc" : "Next Visit Place Cc",
+  "counselingProvided" : "Was Counseling provided?",
+  "whatOutcome": "What was the outcome?",
+  "missingData" : "You have missing data, do you want to proceed?",
+  "dispense" : "Dispense",
+  "submit" : "Submit",
+  "edit" : "Edit",
+  "editExistingFollowup" : "Do you want to edit the existing follow-up or start a new one?"
 
 }

@@ -528,6 +528,14 @@
   "nextVisitDateChw" : "পরবর্তী সাক্ষাতের তারিখ Chw",
   "nextVisitPlaceChw" : "পরবর্তী সাক্ষাতের স্থান Chw",
   "nextVisitDateCc" : "পরবর্তী সাক্ষাতের তারিখ Cc ",
-  "nextVisitPlaceCc" : "পরবর্তী সাক্ষাতের স্থান Cc"
+  "nextVisitPlaceCc" : "পরবর্তী সাক্ষাতের স্থান Cc",
+  "counselingProvided" : "কাউন্সেলিং দেওয়া হয়েছিল?",
+  "whatOutcome": "ফলাফল কি ছিল?",
+  "missingData" : "আপনার কাছে ডেটা নেই, আপনি কি এগিয়ে যেতে চান?",
+  "dispense" : "বিতরণ",
+  "submit" : "জমা দিন",
+  "edit" : "পুনর্বিবেচনা",
+  "editExistingFollowup" : "আপনি কি বিদ্যমান ফলো-আপ সম্পাদনা করতে চান বা একটি নতুন শুরু করতে চান?"
+
 
 }

@@ -1352,7 +1352,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                               child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: <Widget>[
-                                                  Text('Do you want to edit the existing follow-up or start a new one?'),
+                                                  Text(AppLocalizations.of(context).translate('editExistingFollowup')),
                                                   SizedBox(height: 20,),
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.center,
