@@ -1047,14 +1047,30 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                               children: [
                                 Text(AppLocalizations.of(context).translate('ncdCenterVisit'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
                                 SizedBox(height: 15,),
-                                Text(AppLocalizations.of(context).translate('nextVisitDateChw') +  ': $nextVisitDateChw', style: TextStyle(fontSize: 17,)),
-                                SizedBox(height: 10,),
-                                Text(AppLocalizations.of(context).translate('nextVisitPlaceChw') +  ': $nextVisitPlaceChw', style: TextStyle(fontSize: 17,)),
-                                SizedBox(height: 10,),
-                                Text(AppLocalizations.of(context).translate('nextVisitDateCc') +  ': $nextVisitDateCc', style: TextStyle(fontSize: 17,)),
-                                SizedBox(height: 10,),
-                                Text(AppLocalizations.of(context).translate('nextVisitPlaceCc') +  ': $nextVisitPlaceCc', style: TextStyle(fontSize: 17,)),
-                                SizedBox(height: 10,),
+                                nextVisitDateChw == '' 
+                                ? Container()
+                                : Column(children:[
+                                  Text(AppLocalizations.of(context).translate('nextVisitDateChw') +  ': $nextVisitDateChw', style: TextStyle(fontSize: 17,)),
+                                  SizedBox(height: 10,),
+                                  ]),
+                                nextVisitPlaceChw == '' 
+                                ? Container()
+                                : Column(children:[
+                                  Text(AppLocalizations.of(context).translate('nextVisitPlaceChw') +  ': $nextVisitPlaceChw', style: TextStyle(fontSize: 17,)),
+                                  SizedBox(height: 10,),
+                                  ]),
+                                nextVisitDateCc == '' 
+                                ? Container()
+                                : Column(children:[
+                                  Text(AppLocalizations.of(context).translate('nextVisitDateCc') +  ': $nextVisitDateCc', style: TextStyle(fontSize: 17,)),
+                                  SizedBox(height: 10,),
+                                  ]),
+                                nextVisitPlaceCc == '' 
+                                ? Container()
+                                : Column(children:[
+                                  Text(AppLocalizations.of(context).translate('nextVisitPlaceCc') +  ': $nextVisitPlaceCc', style: TextStyle(fontSize: 17,)),
+                                  SizedBox(height: 10,),
+                                  ]),
                                 Text(AppLocalizations.of(context).translate('lastVisitDate') +  ': $lastEncounterDate', style: TextStyle(fontSize: 17,))
                               ],
                             ),
