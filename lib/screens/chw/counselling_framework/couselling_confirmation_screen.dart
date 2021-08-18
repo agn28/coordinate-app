@@ -68,7 +68,7 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Container(
-                                    child: Text("Was Counseling provided?",style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                                    child: Text(AppLocalizations.of(context).translate('counselingProvided'),style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                                     )
                                   ),
                                   SizedBox(height: 20,),
@@ -132,7 +132,7 @@ class _CounsellingConfirmationState extends State<CounsellingConfirmation> {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: <Widget>[
-                                      Text("What was the outcome?", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                                      Text(AppLocalizations.of(context).translate('whatOutcome'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
                                       SizedBox(height: 20,),
                                       TextField(
                                         keyboardType: TextInputType.multiline,

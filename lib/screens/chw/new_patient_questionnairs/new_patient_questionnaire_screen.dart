@@ -468,7 +468,7 @@ class _NewPatientQuestionnaireScreenState
                                     builder: (BuildContext context) {
                                       // return object of type Dialog
                                       return AlertDialog(
-                                        content: new Text("You have missing data, do you want to proceed?", style: TextStyle(fontSize: 20),),
+                                        content: new Text(AppLocalizations.of(context).translate('missingData'), style: TextStyle(fontSize: 20),),
                                         actions: <Widget>[
                                           // usually buttons at the bottom of the dialog
                                           FlatButton(
