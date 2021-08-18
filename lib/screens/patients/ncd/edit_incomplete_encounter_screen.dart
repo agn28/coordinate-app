@@ -43,6 +43,7 @@ final otherIssuesController = TextEditingController();
 String selectedArm = 'left';
 String selectedGlucoseType = 'fasting';
 String selectedGlucoseUnit = 'mg/dL';
+bool hasChwEncounter = false;
 
 var _questions = {};
 var medicalHistoryQuestions = {};
@@ -110,6 +111,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     _checkAuth();
     clearForm();
     isLoading = false;
+    hasChwEncounter = false;
 
     print(Language().getLanguage());
     nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
@@ -137,6 +139,12 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     var patientId = Patient().getPatient()['id'];
     print('patientId $patientId');
     var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
+    if(data != null && data.isNotEmpty && !data['error']) {
+      if(data['data']['assessment']['body']['type'] == 'new questionnaire') {
+        hasChwEncounter = true;
+      }
+    } 
+    print('hasChwEncounter $hasChwEncounter');
     setState(() {
       isLoading = false;
     });
@@ -275,7 +283,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
           });
         }
       }
-      if (obs['body']['type'] == 'blood_pressure') {
+      if (obs['body']['type'] == 'blood_pressure' && !hasChwEncounter) {
         print('into blood pressure');
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
@@ -291,7 +299,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
           print(pulseRateText);
         }
       }
-      if (obs['body']['type'] == 'body_measurement') {
+      if (obs['body']['type'] == 'body_measurement' && !hasChwEncounter) {
         print('into body measurement');
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
@@ -322,7 +330,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
           }
         }
       }
-      if (obs['body']['type'] == 'blood_test') {
+      if (obs['body']['type'] == 'blood_test' && !hasChwEncounter) {
         print('into blood test');
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
@@ -1000,12 +1008,21 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     // }
     print('dataStatus: $dataStatus');
     print('encounter: $encounter');
-    var encounterData = {
-      'context': context,
-      'dataStatus': dataStatus,
-      'encounter': encounter,
-      'observations': observations
-    };
+    var encounterData;
+    if(!hasChwEncounter) {
+      encounterData = {
+        'context': context,
+        'dataStatus': dataStatus,
+        'encounter': encounter,
+        'observations': observations
+      };
+    } else {
+      encounterData = {
+        'context': context,
+        'dataStatus': dataStatus,
+      };
+    }
+    
     // var response = await AssessmentController().updateAssessmentWithObservations(status, encounter, observations);
     // var response = await AssessmentController().createOnlyAssessmentWithStatus('ncd center assessment', 'ncd', '', 'incomplete');
     // !hasMissingData ? Patient().setPatientReviewRequiredTrue() : null;

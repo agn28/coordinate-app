@@ -472,8 +472,11 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
 
     print('lastFollowup $lastFollowup');
     if(lastFollowup != null && lastFollowup.isNotEmpty) {
-      lastFollowupType = lastFollowup['data']['body']['followup_type'];
-      print('lastFollowupType ${lastFollowupType}');
+      if(lastFollowup['data']['body']['type'] == 'follow up visit (community)'
+        && lastFollowup['data']['body']['status'] == 'incomplete') {
+          lastFollowupType = lastFollowup['data']['body']['followup_type'];
+          print('lastFollowupType ${lastFollowupType}');
+        }
     }
     
   }

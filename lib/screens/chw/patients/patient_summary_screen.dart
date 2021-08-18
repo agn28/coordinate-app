@@ -51,6 +51,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   bool avatarExists = false;
   var encounters = [];
   var lastAssessment;
+  var lastFollowup;
   bool hasIncompleteFollowup = false;
   String lastEncounterType = '';
   String lastEncounterDate = '';
@@ -96,6 +97,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     getMedicationsConditions();
     getReport();
     getLastAssessment();
+    getLastFollowup();
     // getEncounters();
     // getAssessments();
     _getCarePlan();
@@ -116,17 +118,10 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     setState(() {
       isLoading = true;
     });
-    lastAssessment = await AssessmentController().getLastAssessmentByPatient(key:'screening_type', value:'follow-up');
+    lastAssessment = await AssessmentController().getLastAssessmentByPatient();
 
     print('lastAssessment $lastAssessment');
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
-      if(lastAssessment['data']['body']['type'] == 'follow up visit (center)'
-        && lastAssessment['data']['body']['status'] == 'incomplete') {
-          setState(() {
-            hasIncompleteFollowup = true;
-          });
-        }
-
       if(lastAssessment['data']['body']['follow_up_info'] != null && lastAssessment['data']['body']['follow_up_info'].isNotEmpty){
         var followUpInfoChw = lastAssessment['data']['body']['follow_up_info'].where((info)=> info['type'] == 'chw');
         if(followUpInfoChw.isNotEmpty) {
@@ -140,9 +135,8 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
           nextVisitDateChw = (followUpInfoChw['date'] != null && followUpInfoChw['date'].isNotEmpty) ? getDate(followUpInfoChw['date']) : '' ;
           nextVisitPlaceChw = (followUpInfoChw['place'] != null && followUpInfoChw['place'].isNotEmpty) ? (followUpInfoChw['place']) : '' ;
           nextVisitDateCc = (followUpInfoCc['date'] != null && followUpInfoCc['date'].isNotEmpty) ? getDate(followUpInfoCc['date']) : '' ;
-          nextVisitPlaceCc = (followUpInfoCc['place'] != null && followUpInfoCc['place'].isNotEmpty) ? (followUpInfoCc['place']) : '' ;;
+          nextVisitPlaceCc = (followUpInfoCc['place'] != null && followUpInfoCc['place'].isNotEmpty) ? (followUpInfoCc['place']) : '' ;
         });
-
       }
 
       setState(() {
@@ -153,6 +147,24 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     }
     
   }
+  getLastFollowup() async {
+    setState(() {
+      isLoading = true;
+    });
+    lastFollowup = await AssessmentController().getLastAssessmentByPatient(key:'screening_type', value:'follow-up');
+
+    print('lastFollowup $lastFollowup');
+    if(lastFollowup != null && lastFollowup.isNotEmpty) {
+      if(lastFollowup['data']['body']['type'] == 'follow up visit (center)'
+        && lastFollowup['data']['body']['status'] == 'incomplete') {
+          setState(() {
+            hasIncompleteFollowup = true;
+          });
+        }
+    }
+    
+  }
+
 
   getAssessmentDueDate() {
     // print(DateFormat("MMMM d, y").format(DateTime.parse(_patient['data']['next_assignment']['body']['activityDuration']['start'])));
@@ -1370,9 +1382,9 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                                         color: Colors.blue[800],
                                                         textColor: Colors.white, 
                                                         onPressed: () async {
-                                                          await AssessmentController().deleteAssessment(lastAssessment['data']['id']);
+                                                          await AssessmentController().deleteAssessment(lastFollowup['data']['id']);
                                                           setState(() {
-                                                            lastAssessment = {};
+                                                            lastFollowup = {};
                                                           });
                                                           Navigator.of(context).pushNamed(FollowupFeelingScreen.path);
                                                         },
