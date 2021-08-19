@@ -1097,7 +1097,7 @@ class _MedicationsState extends State<Medications> {
                               padding: EdgeInsets.symmetric(horizontal: 20),
                               child: Row(
                                 children: [
-                                  Text(AppLocalizations.of(context).translate('Dispense'),
+                                  Text(AppLocalizations.of(context).translate('dispense'),
                                       style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 18,
