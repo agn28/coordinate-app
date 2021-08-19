@@ -1601,7 +1601,7 @@ class _MeasurementsState extends State<Measurements> {
                                     }
                                     
                                     {
-                                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                         content: Text(AppLocalizations.of(context).translate('dataSaved')),
                                         backgroundColor: kPrimaryGreenColor,
                                       ));
@@ -1854,7 +1854,7 @@ class _MeasurementsState extends State<Measurements> {
                                   var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
                                 }
                                 {
-                                  _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                     content: Text(AppLocalizations.of(context).translate('dataSaved')),
                                     backgroundColor: kPrimaryGreenColor,
                                   ));
@@ -2219,7 +2219,7 @@ class _MeasurementsState extends State<Measurements> {
                               }
                               
                               {
-                                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                   content: Text(AppLocalizations.of(context).translate('dataSaved')),
                                   backgroundColor: kPrimaryGreenColor,
                                 ));
@@ -2590,7 +2590,7 @@ class _MeasurementsState extends State<Measurements> {
                                     }
                                     
                                     {
-                                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                         content: Text(AppLocalizations.of(context).translate('dataSaved')),
                                         backgroundColor: kPrimaryGreenColor,
                                       ));
@@ -3039,7 +3039,7 @@ class _MeasurementsState extends State<Measurements> {
                                     }
                                     
                                     {
-                                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                         content: Text(AppLocalizations.of(context).translate('dataSaved')),
                                         backgroundColor: kPrimaryGreenColor,
                                       ));
@@ -3180,23 +3180,16 @@ class _MedicationsState extends State<Medications> {
                                       var response = await PatientController().dispenseMedicationByPatient(item['medId'], textEditingControllers[item['medId']].text);
                                       print('response $response');
                                       if(!response['error']) {
-                                        _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                          content: Text(response['message']),
+                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                          content: Text(AppLocalizations.of(context).translate('dataSaved')),
                                           backgroundColor: kPrimaryGreenColor,
                                         ));
                                         return;
                                       }
                                       {
-                                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                           content: Text(AppLocalizations.of(context).translate('somethingWrong')),
                                           backgroundColor: kPrimaryRedColor,
-                                        ));
-                                      }
-                                      
-                                      {
-                                        _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                          content: Text(AppLocalizations.of(context).translate('dataSaved')),
-                                          backgroundColor: kPrimaryGreenColor,
                                         ));
                                       }
                                       // Navigator.of(context).pop();
