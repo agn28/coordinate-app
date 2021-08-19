@@ -70,7 +70,6 @@ bool _isBloodSugarTextEnable = false;
 bool _isLipidProfileTextEnable = false;
 bool _isAdditionalTextEnable = false;
 
-final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 var encounter;
 var observations = [];
 
@@ -563,7 +562,6 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(
         leading: FlatButton(
             onPressed: () {

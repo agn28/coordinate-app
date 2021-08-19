@@ -41,9 +41,6 @@ bool _isBloodSugarTextEnable = false;
 bool _isLipidProfileTextEnable = false;
 bool _isAdditionalTextEnable = false;
 
-
-final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
 getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
 
@@ -622,7 +619,6 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(
         leading: FlatButton(
             onPressed: () {
