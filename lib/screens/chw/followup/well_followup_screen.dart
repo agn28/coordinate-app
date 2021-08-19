@@ -1584,9 +1584,6 @@ class _MeasurementsState extends State<Measurements> {
                                   color: Colors.blue[800],
                                   textColor: Colors.white, 
                                   onPressed: () async {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
                                     if (weightEditingController.text != '') {
                                       BodyMeasurement()
                                           .addItem('weight', weightEditingController.text, 'kg', '', '');
@@ -1602,9 +1599,13 @@ class _MeasurementsState extends State<Measurements> {
                                       print('new followup');
                                       var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
                                     }
-                                    setState(() {
-                                      isLoading = false;
-                                    });
+                                    
+                                    {
+                                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                        content: Text(AppLocalizations.of(context).translate('dataSaved')),
+                                        backgroundColor: kPrimaryGreenColor,
+                                      ));
+                                    }
                                   },
                                   child: Text(AppLocalizations.of(context).translate('save')),
                                 ),                                                     
@@ -1823,9 +1824,9 @@ class _MeasurementsState extends State<Measurements> {
                             color: Colors.blue[800],
                             textColor: Colors.white, 
                             onPressed: () async {
-                              setState(() {
-                                isLoading = true;
-                              });
+                              // setState(() {
+                              //   isLoading = true;
+                              // });
                               if (diastolicEditingController.text != '' &&
                                 systolicEditingController.text != '' && pulseRateEditingController.text != '') {
                                 BloodPressure().addItem(
@@ -1852,9 +1853,15 @@ class _MeasurementsState extends State<Measurements> {
                                   print('new followup');
                                   var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
                                 }
-                                setState(() {
-                                  isLoading = false;
-                                });
+                                {
+                                  _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                    content: Text(AppLocalizations.of(context).translate('dataSaved')),
+                                    backgroundColor: kPrimaryGreenColor,
+                                  ));
+                                }
+                                // setState(() {
+                                //   isLoading = false;
+                                // });
                               }     
                             },
                             child: Text(AppLocalizations.of(context).translate('save')),
@@ -2183,9 +2190,7 @@ class _MeasurementsState extends State<Measurements> {
                             color: Colors.blue[800],
                             textColor: Colors.white, 
                             onPressed: () async{
-                              setState(() {
-                                isLoading = true;
-                              });
+                              
                               if (randomBloodController.text != '') {
                                 BloodTest().addItem('blood_sugar', randomBloodController.text,
                                     selectedRandomBloodUnit, '', '');
@@ -2212,9 +2217,13 @@ class _MeasurementsState extends State<Measurements> {
                                 print('new followup');
                                 var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
                               }
-                              setState(() {
-                                isLoading = false;
-                              });
+                              
+                              {
+                                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                  content: Text(AppLocalizations.of(context).translate('dataSaved')),
+                                  backgroundColor: kPrimaryGreenColor,
+                                ));
+                              }
                             },
                             child: Text(AppLocalizations.of(context).translate('save')),
                           ),                                                     
@@ -2555,9 +2564,6 @@ class _MeasurementsState extends State<Measurements> {
                                   color: Colors.blue[800],
                                   textColor: Colors.white, 
                                   onPressed: () async{
-                                    setState(() {
-                                      isLoading = true;
-                                    });
                                     if (cholesterolController.text != '') {
                                       BloodTest().addItem('total_cholesterol', cholesterolController.text,
                                           selectedCholesterolUnit, '', '');
@@ -2582,9 +2588,13 @@ class _MeasurementsState extends State<Measurements> {
                                       print('new followup');
                                       var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
                                     }
-                                    setState(() {
-                                      isLoading = false;
-                                    });           
+                                    
+                                    {
+                                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                        content: Text(AppLocalizations.of(context).translate('dataSaved')),
+                                        backgroundColor: kPrimaryGreenColor,
+                                      ));
+                                    }           
                                   },
                                   child: Text(AppLocalizations.of(context).translate('save')),
                                 ),                                                     
@@ -2997,9 +3007,6 @@ class _MeasurementsState extends State<Measurements> {
                                   color: Colors.blue[800],
                                   textColor: Colors.white, 
                                   onPressed: () async{
-                                    setState(() {
-                                      isLoading = true;
-                                    });
                                     if (creatinineController.text != '') {
                                       BloodTest().addItem('creatinine', creatinineController.text,
                                           selectedCreatinineUnit, '', '');
@@ -3030,9 +3037,13 @@ class _MeasurementsState extends State<Measurements> {
                                       print('new followup');
                                       var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
                                     }
-                                    setState(() {
-                                      isLoading = false;
-                                    });
+                                    
+                                    {
+                                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                        content: Text(AppLocalizations.of(context).translate('dataSaved')),
+                                        backgroundColor: kPrimaryGreenColor,
+                                      ));
+                                    }
                                   },
                                   child: Text(AppLocalizations.of(context).translate('save')),
                                 ),                                                     
@@ -3165,9 +3176,6 @@ class _MedicationsState extends State<Medications> {
                                     color: Colors.blue[800],
                                     textColor: Colors.white, 
                                     onPressed: () async {
-                                      setState(() {
-                                        isLoading = true;
-                                      });
                                       print('id ${item['medId']}');
                                       var response = await PatientController().dispenseMedicationByPatient(item['medId'], textEditingControllers[item['medId']].text);
                                       print('response $response');
@@ -3184,9 +3192,13 @@ class _MedicationsState extends State<Medications> {
                                           backgroundColor: kPrimaryRedColor,
                                         ));
                                       }
-                                      setState(() {
-                                        isLoading = false;
-                                      });
+                                      
+                                      {
+                                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                          content: Text(AppLocalizations.of(context).translate('dataSaved')),
+                                          backgroundColor: kPrimaryGreenColor,
+                                        ));
+                                      }
                                       // Navigator.of(context).pop();
                                       // if (response == 'success') {
                                       // // Navigator.of(context).pop();
