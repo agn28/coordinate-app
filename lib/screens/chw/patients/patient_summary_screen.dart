@@ -1370,52 +1370,28 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext context){
-                                    return Stack(
-                                      children: <Widget>[
-                                        Positioned(
-                                          child: CupertinoAlertDialog(
-                                            // contentPadding: EdgeInsets.all(80),
-                                            // elevation: 0,
-                                            content: Container(
-                                              alignment: Alignment.bottomRight,
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Text(AppLocalizations.of(context).translate('editExistingFollowup')),
-                                                  SizedBox(height: 20,),
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      FlatButton(
-                                                        color: Colors.blue[800],
-                                                        textColor: Colors.white, 
-                                                        onPressed: () {
-                                                          Navigator.of(context).pushNamed(EditFollowupScreen.path);
-                                                        },
-                                                        child: Text('Edit'),
-                                                      ),
-                                                      SizedBox(width: 20,),
-                                                      FlatButton(
-                                                        color: Colors.blue[800],
-                                                        textColor: Colors.white, 
-                                                        onPressed: () async {
-                                                          await AssessmentController().deleteAssessment(lastFollowup['data']['id']);
-                                                          setState(() {
-                                                            lastFollowup = {};
-                                                          });
-                                                          Navigator.of(context).pushNamed(FollowupFeelingScreen.path);
-                                                        },
-                                                        child: Text('New'),
-                                                      ),                                                     
-                                                    ],
-                                                  )                                                  
-                                                ]
-                                              )
-                                            )
-                                          )
-                                        )
-                                      ]
-                                    );
+                                    return AlertDialog(
+                                      content: new Text(AppLocalizations.of(context).translate("editExistingFollowup"), style: TextStyle(fontSize: 20),),
+                                      actions: <Widget>[
+                                        // usually buttons at the bottom of the dialog
+                                        FlatButton(
+                                          child: new Text(AppLocalizations.of(context).translate("edit"), style: TextStyle(color: kPrimaryColor)),
+                                          onPressed: () {
+                                            Navigator.of(context).pushNamed(EditFollowupScreen.path);
+                                          },
+                                        ),
+                                        FlatButton(
+                                          child: new Text(AppLocalizations.of(context).translate("newFollowUp"), style: TextStyle(color: kPrimaryColor)),
+                                          onPressed: () async {
+                                            await AssessmentController().deleteAssessment(lastFollowup['data']['id']);
+                                            setState(() {
+                                              lastFollowup = {};
+                                            });
+                                            Navigator.of(context).pushNamed(FollowupFeelingScreen.path);
+                                          },
+                                        ),
+                                      ],
+                                    );     
                                   }
                                 ) :
                                 // Navigator.of(context).pop();
