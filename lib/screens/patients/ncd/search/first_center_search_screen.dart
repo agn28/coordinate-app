@@ -186,7 +186,9 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
         isLoading = false;
       });
     }
-
+    setState(() {
+      isLoading = false;
+    });
   }
 
   search(query) {

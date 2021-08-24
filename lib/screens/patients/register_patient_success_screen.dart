@@ -14,21 +14,22 @@ import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 
 
-class RegisterPatientSuccessScreen extends CupertinoPageRoute {
-  bool isEditState;
-  RegisterPatientSuccessScreen({this.isEditState})
-      : super(builder: (BuildContext context) => new RegisterPatientSuccess(isEditState: isEditState));
+// class RegisterPatientSuccessScreen extends CupertinoPageRoute {
+//   bool isEditState;
+//   RegisterPatientSuccessScreen({this.isEditState})
+//       : super(builder: (BuildContext context) => new RegisterPatientSuccess(isEditState: isEditState));
 
-}
+// }
 
-class RegisterPatientSuccess extends StatefulWidget {
+class RegisterPatientSuccessScreen extends StatefulWidget {
+  static const path = '/registerPatientSuccessScreen';
   bool isEditState;
-  RegisterPatientSuccess({this.isEditState});
+  RegisterPatientSuccessScreen({this.isEditState});
   @override
-  _RegisterPatientSuccessState createState() => _RegisterPatientSuccessState();
+  _RegisterPatientSuccessScreenState createState() => _RegisterPatientSuccessScreenState();
 }
 
-class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
+class _RegisterPatientSuccessScreenState extends State<RegisterPatientSuccessScreen> {
   var role = '';
   @override
   void initState() {
@@ -36,7 +37,7 @@ class _RegisterPatientSuccessState extends State<RegisterPatientSuccess> {
     super.initState();
 
     _getAuthData();
-    print('isEditState ${widget.isEditState}');
+    print('widget.isEditState ${widget.isEditState}');
   }
 
   _getAuthData() async {

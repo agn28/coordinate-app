@@ -1820,9 +1820,9 @@ class RecommendedCounselling extends StatefulWidget {
 
 var isReferralRequired = null;
 bool dietTitleAdded = false;
+bool tobaccoTitleAdded = false;
 
 class _RecommendedCounsellingState extends State<RecommendedCounselling> {
-  bool tobaccoTitleAdded = false;
 
   bool activityTitleAdded = false;
 
@@ -1830,6 +1830,7 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
   initState() {
     super.initState();
     dietTitleAdded = false;
+    tobaccoTitleAdded = false;
     isReferralRequired = null;
   }
 
@@ -1900,6 +1901,24 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
           ],
         );
       }
+    } else if (question['group'] == 'tobacco') {
+      print('tobacco');
+      print(tobaccoTitleAdded);
+      if (!tobaccoTitleAdded) {
+        tobaccoTitleAdded = true;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Divider(),
+            Container(
+                margin: EdgeInsets.only(top: 25, bottom: 30),
+                child: Text(
+                    AppLocalizations.of(context).translate('tobaccoUse'),
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.w500))),
+          ],
+        );
+      }
     } else if (question['type'] == 'physical-activity-high') {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1947,13 +1966,13 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
                     // alignment: Alignment.center,
                     margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(
-                          AppLocalizations.of(context).translate('tobaccoUse'),
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.w500),
-                        ),
+                        // Text(
+                        //   AppLocalizations.of(context).translate('tobaccoUse'),
+                        //   style: TextStyle(
+                        //       fontSize: 20, fontWeight: FontWeight.w500),
+                        // ),
                         Text(
                           AppLocalizations.of(context)
                               .translate('wasCounsellingProvided'),
@@ -2028,6 +2047,7 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
                                                             onPressed: () {
                                                               setState(() {
                                                                 dietTitleAdded = false;
+                                                                tobaccoTitleAdded = false;
                                                                 counsellingAnswers[counsellingQuestions['items'].indexOf(question)] = question['options'][question['options'].indexOf(option)];
                                                                 // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
                                                               });
@@ -2112,6 +2132,7 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
                                                   onPressed: () {
                                                     setState(() {
                                                       dietTitleAdded = false;
+                                                      tobaccoTitleAdded = false;
                                                       isReferralRequired = true;
                                                     });
                                                   },
@@ -2157,8 +2178,8 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
                                                   onPressed: () {
                                                     setState(() {
                                                       dietTitleAdded = false;
-                                                      isReferralRequired =
-                                                          false;
+                                                      tobaccoTitleAdded = false;
+                                                      isReferralRequired = false;
                                                     });
                                                   },
                                                   materialTapTargetSize:

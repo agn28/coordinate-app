@@ -1632,7 +1632,7 @@ class _ViewSummaryState extends State<ViewSummary> {
       if (response == 'success') {
         print('into success');
         _RegisterPatientState()._clearForm();
-        Navigator.of(context).pushReplacement(RegisterPatientSuccessScreen(isEditState: isEditState));
+        Navigator.of(context).pushReplacementNamed(RegisterPatientSuccessScreen.path, arguments: isEditState);
       } else {
         _scaffoldKey.currentState.showSnackBar(
           SnackBar(

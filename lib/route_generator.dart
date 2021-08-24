@@ -56,6 +56,7 @@ import 'package:nhealth/screens/patients/ncd/search/followup_search_screen.dart'
 import 'package:nhealth/screens/patients/ncd/search/unwell_followup_screen.dart';
 import 'package:nhealth/screens/patients/patient_update_summary_screen.dart';
 import 'package:nhealth/screens/chw/unwell/followup_screen.dart';
+import 'package:nhealth/screens/patients/register_patient_success_screen.dart';
 
 import 'screens/chw/followup/edit_followup_screen.dart';
 
@@ -207,6 +208,8 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => EditPatientScreen());
       case NewFollowupScreen.path:
         return CupertinoPageRoute(builder: (_) => NewFollowupScreen());
+      case RegisterPatientSuccessScreen.path:
+        return CupertinoPageRoute(builder: (_) => RegisterPatientSuccessScreen());
     }
   }
 }
