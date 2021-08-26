@@ -1477,11 +1477,11 @@ var proteinController = TextEditingController();
 class _MeasurementsState extends State<Measurements> {
   @override
   void initState() {
-    bool _isBodyMeasurementsTextEnable = false;
-    bool _isBloodPressureTextEnable = false;
-    bool _isBloodSugarTextEnable = false;
-    bool _isLipidProfileTextEnable = false;
-    bool _isAdditionalTextEnable = false;
+    _isBodyMeasurementsTextEnable = false;
+    _isBloodPressureTextEnable = false;
+    _isBloodSugarTextEnable = false;
+    _isLipidProfileTextEnable = false;
+    _isAdditionalTextEnable = false;
   }
   @override
   Widget build(BuildContext context) {
@@ -1548,6 +1548,9 @@ class _MeasurementsState extends State<Measurements> {
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: Colors.red, width: 0.0)),
+                                       
+                                        fillColor: _isBodyMeasurementsTextEnable ? Colors.white : Colors.grey[300],
+                                        filled: true,
                                       ),
                                     ),
                                   ),
@@ -1675,6 +1678,8 @@ class _MeasurementsState extends State<Measurements> {
                                                   borderSide: BorderSide(
                                                       color: Colors.red,
                                                       width: 0.0)),
+                                              fillColor: _isBloodPressureTextEnable ? Colors.white : Colors.grey[300],
+                                              filled: true,
                                             ),
                                           ),
                                         ),
@@ -1713,6 +1718,8 @@ class _MeasurementsState extends State<Measurements> {
                                                 borderSide: BorderSide(
                                                     color: Colors.red,
                                                     width: 0.0)),
+                                            fillColor: _isBloodPressureTextEnable ? Colors.white : Colors.grey[300],
+                                            filled: true,
                                           ),
                                         ),
                                       ),
@@ -1755,6 +1762,8 @@ class _MeasurementsState extends State<Measurements> {
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: Colors.red, width: 0.0)),
+                                        fillColor: _isBloodPressureTextEnable ? Colors.white : Colors.grey[300],
+                                        filled: true,
                                       ),
                                     ),
                                   ),
@@ -1797,6 +1806,8 @@ class _MeasurementsState extends State<Measurements> {
                                     border: OutlineInputBorder(
                                         borderSide: BorderSide(
                                             color: Colors.red, width: 0.0)),
+                                    fillColor: _isBloodPressureTextEnable ? Colors.white : Colors.grey[300],
+                                    filled: true,   
                                   ),
                                 ),
                               ),
@@ -1922,6 +1933,8 @@ class _MeasurementsState extends State<Measurements> {
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: Colors.red, width: 0.0)),
+                                        fillColor: _isBloodSugarTextEnable ? Colors.white : Colors.grey[300],
+                                        filled: true,
                                       ),
                                     ),
                                   ),
@@ -1988,6 +2001,8 @@ class _MeasurementsState extends State<Measurements> {
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: Colors.red, width: 0.0)),
+                                        fillColor: _isBloodSugarTextEnable ? Colors.white : Colors.grey[300],
+                                        filled: true,
                                       ),
                                     ),
                                   ),
@@ -2054,6 +2069,8 @@ class _MeasurementsState extends State<Measurements> {
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: Colors.red, width: 0.0)),
+                                        fillColor: _isBloodSugarTextEnable ? Colors.white : Colors.grey[300],
+                                        filled: true,
                                       ),
                                     ),
                                   ),
@@ -2121,6 +2138,8 @@ class _MeasurementsState extends State<Measurements> {
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: Colors.red, width: 0.0)),
+                                        fillColor: _isBloodSugarTextEnable ? Colors.white : Colors.grey[300],
+                                        filled: true,
                                       ),
                                     ),
                                   ),
@@ -2162,6 +2181,8 @@ class _MeasurementsState extends State<Measurements> {
                                     border: OutlineInputBorder(
                                         borderSide: BorderSide(
                                             color: Colors.red, width: 0.0)),
+                                    fillColor: _isBloodSugarTextEnable ? Colors.white : Colors.grey[300],
+                                    filled: true,
                                   ),
                                 ),
                               ),
@@ -2290,6 +2311,8 @@ class _MeasurementsState extends State<Measurements> {
                                                   borderSide: BorderSide(
                                                       color: Colors.red,
                                                       width: 0.0)),
+                                              fillColor: _isLipidProfileTextEnable ? Colors.white : Colors.grey[300],
+                                              filled: true,
                                             ),
                                           ),
                                         ),
@@ -2363,6 +2386,8 @@ class _MeasurementsState extends State<Measurements> {
                                                   borderSide: BorderSide(
                                                       color: Colors.red,
                                                       width: 0.0)),
+                                              fillColor: _isLipidProfileTextEnable ? Colors.white : Colors.grey[300],
+                                              filled: true,
                                             ),
                                           ),
                                         ),
@@ -2432,6 +2457,8 @@ class _MeasurementsState extends State<Measurements> {
                                                   borderSide: BorderSide(
                                                       color: Colors.red,
                                                       width: 0.0)),
+                                              fillColor: _isLipidProfileTextEnable ? Colors.white : Colors.grey[300],
+                                              filled: true,
                                             ),
                                           ),
                                         ),
@@ -2501,6 +2528,8 @@ class _MeasurementsState extends State<Measurements> {
                                                   borderSide: BorderSide(
                                                       color: Colors.red,
                                                       width: 0.0)),
+                                              fillColor: _isLipidProfileTextEnable ? Colors.white : Colors.grey[300],
+                                              filled: true,
                                             ),
                                           ),
                                         ),
@@ -2664,6 +2693,8 @@ class _MeasurementsState extends State<Measurements> {
                                                   borderSide: BorderSide(
                                                       color: Colors.red,
                                                       width: 0.0)),
+                                              fillColor: _isAdditionalTextEnable ? Colors.white : Colors.grey[300],
+                                              filled: true,
                                             ),
                                           ),
                                         ),
@@ -2737,6 +2768,8 @@ class _MeasurementsState extends State<Measurements> {
                                                   borderSide: BorderSide(
                                                       color: Colors.red,
                                                       width: 0.0)),
+                                              fillColor: _isAdditionalTextEnable ? Colors.white : Colors.grey[300],
+                                              filled: true,
                                             ),
                                           ),
                                         ),
@@ -2806,6 +2839,8 @@ class _MeasurementsState extends State<Measurements> {
                                                   borderSide: BorderSide(
                                                       color: Colors.red,
                                                       width: 0.0)),
+                                              fillColor: _isAdditionalTextEnable ? Colors.white : Colors.grey[300],
+                                              filled: true,
                                             ),
                                           ),
                                         ),
@@ -2875,6 +2910,8 @@ class _MeasurementsState extends State<Measurements> {
                                                   borderSide: BorderSide(
                                                       color: Colors.red,
                                                       width: 0.0)),
+                                              fillColor: _isAdditionalTextEnable ? Colors.white : Colors.grey[300],
+                                              filled: true,
                                             ),
                                           ),
                                         ),
@@ -2944,6 +2981,8 @@ class _MeasurementsState extends State<Measurements> {
                                                   borderSide: BorderSide(
                                                       color: Colors.red,
                                                       width: 0.0)),
+                                              fillColor: _isAdditionalTextEnable ? Colors.white : Colors.grey[300],
+                                              filled: true,
                                             ),
                                           ),
                                         ),
