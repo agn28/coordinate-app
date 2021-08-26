@@ -156,6 +156,9 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
         isLoading = false;
       });
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   search(query) {
