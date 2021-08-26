@@ -2844,8 +2844,8 @@ var personalQuestions = {
       'options_bn': ['বাংলাদেশী', 'অন্যান্য'],
     },
     'blood_group' : {
-      'options': ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-'],
-      'options_bn': ['এবি+', 'এবি-', 'এ+', 'এ-', 'বি+', 'বি-', 'ও+', 'ও-'], 
+      'options': ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-', "Don't know"],
+      'options_bn': ['এবি+', 'এবি-', 'এ+', 'এ-', 'বি+', 'বি-', 'ও+', 'ও-', "জানি না"], 
     }
 };    
 var religions = personalQuestions['religion']['options'];
