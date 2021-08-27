@@ -15,6 +15,7 @@ import 'package:nhealth/screens/chw/careplan_actions/careplan_feeling_screen.dar
 import 'package:nhealth/screens/chw/followup/well_followup_screen.dart';
 import 'package:nhealth/screens/chw/new_community_visit/patient_feeling_screen.dart';
 import 'package:nhealth/screens/chw/new_community_visit/verify_patient_screen.dart';
+import 'package:nhealth/screens/chw/new_patient_questionnairs/edit_incomplete_encounter_chw_screen.dart';
 import 'package:nhealth/screens/chw/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
 import 'package:nhealth/screens/chw/new_patient_questionnairs/new_questionnaire_acute_screen.dart';
 import 'package:nhealth/screens/chw/new_patient_questionnairs/new_questionnaire_feeling_screen.dart';
@@ -190,6 +191,8 @@ class RouteGenerator {
       
       case NewPatientQuestionnaireScreen.path:
         return CupertinoPageRoute(builder: (_) => NewPatientQuestionnaireScreen());
+      case EditIncompleteEncounterChwScreen.path:
+        return CupertinoPageRoute(builder: (_) => EditIncompleteEncounterChwScreen());
       case NewQuestionnaireFeelingScreen.path:
         return CupertinoPageRoute(builder: (_) => NewQuestionnaireFeelingScreen());
       case NewQuestionnaireAcuteScreen.path:

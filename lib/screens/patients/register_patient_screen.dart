@@ -1625,7 +1625,7 @@ class _ViewSummaryState extends State<ViewSummary> {
     print('formdata $formData');
     var response = isEditState != null
       ? await PatientController().update(formData, false)
-      : await PatientController().create(context, formData);
+      : await PatientController().createOffline(context, formData);
     print('isEditState $isEditState ');
     print(response);
     if (response != null) {
@@ -1640,7 +1640,6 @@ class _ViewSummaryState extends State<ViewSummary> {
             backgroundColor: kPrimaryRedColor,
           )
         );
-        return;  
       }
       // else if (response['error'] != null && response['error']) {
       //   if (response['message'] == 'Patient already exists.') {
@@ -1671,7 +1670,6 @@ class _ViewSummaryState extends State<ViewSummary> {
           backgroundColor: kPrimaryRedColor,
         )
       );
-      return;  
     }
     setState(() {
       isLoading = false;

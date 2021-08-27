@@ -1371,7 +1371,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                   context: context,
                                   builder: (BuildContext context){
                                     return AlertDialog(
-                                      content: new Text(AppLocalizations.of(context).translate("editExistingFollowup"), style: TextStyle(fontSize: 20),),
+                                      content: new Text(AppLocalizations.of(context).translate("editExistingAssessment"), style: TextStyle(fontSize: 20),),
                                       actions: <Widget>[
                                         // usually buttons at the bottom of the dialog
                                         FlatButton(

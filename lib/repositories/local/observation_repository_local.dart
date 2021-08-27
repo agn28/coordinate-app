@@ -6,7 +6,7 @@ class ObservationRepositoryLocal {
 
   /// Create an assessment with observations.
   /// observations [data] is required as parameter.
-  create(id, data, isSynced) async {
+  create(id, data, isSynced, {localStatus:''}) async {
 
     print('into local observation create');
 
@@ -16,10 +16,11 @@ class ObservationRepositoryLocal {
       data,
       patient_id,
       status,
-      is_synced
+      is_synced,
+      local_status
     )
-    VALUES (?,?,?,?,?)''';
-    List<dynamic> params = [id, jsonEncode(data), data['body']['patient_id'], '', isSynced];
+    VALUES (?,?,?,?,?,?)''';
+    List<dynamic> params = [id, jsonEncode(data), data['body']['patient_id'], '', isSynced, localStatus];
     var response;
 
     try {
@@ -33,17 +34,18 @@ class ObservationRepositoryLocal {
     
   }
 
-  update(id, data, isSynced) async {
+  update(id, data, isSynced, {localStatus:''}) async {
     print('into local observation update');
     print('upobs $data');
     final sql = '''UPDATE ${DatabaseCreator.observationTable} SET
       data = ? , 
       patient_id = ?,
       status = ?,
-      is_synced = ?
+      is_synced = ?,
+      local_status = ?
       WHERE id = ?''';
     List<dynamic> params = [jsonEncode(data), data['body']['patient_id'],
-      data['body']['status'], isSynced, id];
+      data['body']['status'], isSynced, localStatus, id];
     print('sql $sql');
     var response;
 
@@ -90,7 +92,7 @@ class ObservationRepositoryLocal {
 
   getNotSyncedObservations() async {
     final sql =
-        '''SELECT * FROM ${DatabaseCreator.observationTable} WHERE is_synced=0''';
+        '''SELECT * FROM ${DatabaseCreator.observationTable} WHERE (is_synced=0) AND (local_status!='incomplete')''';
     var response = await db.rawQuery(sql);
 
     try {

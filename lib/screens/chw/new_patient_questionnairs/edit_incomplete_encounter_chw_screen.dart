@@ -64,6 +64,9 @@ int _thirdQuestionOption = 1;
 int _fourthQuestionOption = 1;
 bool isLoading = false;
 
+var encounter;
+var observations = [];
+
 // bool _isBloodPressureEnable = false;
 // bool _isBodyMeasurementsEnable = false;
 // bool _isTestsEnable = false;
@@ -91,15 +94,15 @@ getOptionText(context, question, option) {
   return StringUtils.capitalize(option);
 }
 
-class NewPatientQuestionnaireScreen extends StatefulWidget {
-  static const path = '/newPatientQuestionnaire';
+class EditIncompleteEncounterChwScreen extends StatefulWidget {
+  static const path = '/editIncompleteEncounterChw';
   @override
-  _NewPatientQuestionnaireScreenState createState() =>
-      _NewPatientQuestionnaireScreenState();
+  _EditIncompleteEncounterChwScreenState createState() =>
+      _EditIncompleteEncounterChwScreenState();
 }
 
-class _NewPatientQuestionnaireScreenState
-    extends State<NewPatientQuestionnaireScreen> {
+class _EditIncompleteEncounterChwScreenState
+    extends State<EditIncompleteEncounterChwScreen> {
   int _currentStep = 0;
 
   String nextText = 'NEXT';
@@ -121,6 +124,172 @@ class _NewPatientQuestionnaireScreenState
     prepareAnswers();
 
     getLanguage();
+
+    getIncompleteAssessmentLocal();
+  }
+
+  getIncompleteAssessmentLocal() async {
+    encounter = await AssessmentController().getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: 'new questionnaire');
+    if(encounter.isNotEmpty) {
+      encounter = encounter.first;
+      observations = await AssessmentController().getObservationsByAssessment(encounter);
+    }
+    print("encounter: $encounter");
+    print("observations: $observations");
+    
+    populatePreviousAnswers();
+  }
+  
+  populatePreviousAnswers() {
+    observations.forEach((obs) {
+      print('obs $obs');
+      if (obs['body']['type'] == 'survey') {
+        print('into survey');
+        var obsData = obs['body']['data'];
+        if (obsData['name'] == 'medical_history') {
+          print('into medical history');
+          var keys = obsData.keys.toList();
+          print(keys);
+          keys.forEach((key) {
+            if (obsData[key] != '') {
+              print('into keys');
+              var matchedMhq = medicalHistoryQuestions['items']
+                  .where((mhq) => mhq['key'] == key);
+              if (matchedMhq.isNotEmpty) {
+                matchedMhq = matchedMhq.first;
+                setState(() {
+                  medicalHistoryAnswers[medicalHistoryQuestions['items']
+                      .indexOf(matchedMhq)] = obsData[key];
+                });
+              }
+            }
+          });
+        } else if (obsData['name'] == 'medication') {
+          print('into medical history');
+          var keys = obsData.keys.toList();
+          print(keys);
+          keys.forEach((key) {
+            if (obsData[key] != '') {
+              print('into keys');
+              var matchedMhq = medicationQuestions['items']
+                  .where((mhq) => mhq['key'] == key);
+              if (matchedMhq.isNotEmpty) {
+                matchedMhq = matchedMhq.first;
+                setState(() {
+                  print("medication: ${obsData[key]}");
+                  medicationAnswers[medicationQuestions['items'].indexOf(matchedMhq)] = obsData[key];
+                  medicationAnswers[medicationQuestions['items']
+                      .indexOf(matchedMhq)] = obsData[key];
+                  print("medicationAnswers");
+                  //print(medicationAnswers[medicationQuestions['items'].indexOf(matchedMhq)]);
+                });
+              }
+            }
+          });
+        } else if (obsData['name'] == 'risk_factors') {
+          print('into risk factors');
+          var keys = obsData.keys.toList();
+          print(keys);
+          keys.forEach((key) {
+            if (obsData[key] != '') {
+              print('into keys');
+              var matchedMhq =
+                  riskQuestions['items'].where((mhq) => mhq['key'] == key);
+              if (matchedMhq.isNotEmpty) {
+                matchedMhq = matchedMhq.first;
+                setState(() {
+                  riskAnswers[riskQuestions['items'].indexOf(matchedMhq)] =
+                      obsData[key];
+                });
+              }
+            }
+          });
+        } else if (obsData['name'] == 'counselling_provided') {
+          print('into counselling provided');
+          var keys = obsData.keys.toList();
+          print(keys);
+          keys.forEach((key) {
+            if (obsData[key] != '') {
+              print('into keys $key: ${obsData[key]}');
+              var matchedMhq = counsellingQuestions['items'].where((mhq) => mhq['key'] == key);
+              if (matchedMhq.isNotEmpty) {
+                print('here counse');
+                matchedMhq = matchedMhq.first;
+                setState(() {
+                  counsellingAnswers[counsellingQuestions['items']
+                      .indexOf(matchedMhq)] = obsData[key];
+                });
+              }
+            }
+          });
+        }
+      }
+      if (obs['body']['type'] == 'blood_pressure') {
+        print('into blood pressure');
+        var obsData = obs['body']['data'];
+        if (obsData.isNotEmpty) {
+          print('into obsData');
+          var systolicText = obsData['systolic'];
+          var diastolicText = obsData['diastolic'];
+          var pulseRateText = obsData['pulse_rate'];
+          systolicEditingController.text = '${obsData['systolic']}';
+          pulseRateEditingController.text = '${obsData['pulse_rate']}';
+          diastolicEditingController.text = '${obsData['diastolic']}';
+          print(systolicText);
+          print(diastolicText);
+          print(pulseRateText);
+        }
+      }
+      if (obs['body']['type'] == 'body_measurement') {
+        print('into body measurement');
+        var obsData = obs['body']['data'];
+        if (obsData.isNotEmpty) {
+          print(obsData['name']);
+          if (obsData['name'] == 'height' && obsData['value'] != '') {
+            print('into height');
+            var heightText = obsData['value'];
+            heightEditingController.text = '${obsData['value']}';
+            print(heightText);
+          }
+          if (obsData['name'] == 'weight' && obsData['value'] != '') {
+            print('into weight');
+            var weightText = obsData['value'];
+            weightEditingController.text = '${obsData['value']}';
+            print(weightText);
+          }
+          if (obsData['name'] == 'bmi' && obsData['value'] != '') {
+            print('into bmi');
+            var bmiText = obsData['value'];
+            bmiEditingController.text = '${obsData['value']}';
+            print(bmiText);
+          }
+        }
+      }
+      if (obs['body']['type'] == 'blood_test') {
+        print('into blood test');
+        var obsData = obs['body']['data'];
+        if (obsData.isNotEmpty) {
+          print(obsData['name']);
+          
+          if (obsData['name'] == 'blood_sugar' && obsData['value'] != '') {
+            print('into blood_sugar');
+            var bloodSugarText = obsData['value'];
+            bloodSugerEditingController.text = '${obsData['value']}';
+            selectedRandomBloodUnit = obsData['unit'];
+            selectedBloodSugarType == 'RBS';
+            print(bloodSugarText);
+          }
+          if (obsData['name'] == 'blood_glucose' && obsData['value'] != '') {
+            print('into blood_glucose');
+            var bloodGlucoseText = obsData['value'];
+            bloodSugerEditingController.text = '${obsData['value']}';
+            selectedFastingBloodUnit = obsData['unit'];
+            selectedBloodSugarType == 'FBS';
+            print(bloodGlucoseText);
+          }
+        }
+      }
+    });
   }
 
   getLanguage() async {
@@ -488,7 +657,7 @@ class _NewPatientQuestionnaireScreenState
                                     setState(() {
                                       _currentStep = _currentStep + 1;
                                     });
-                                    await AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
+                                    // await AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
                       
                                     createObservations();
                                     Navigator.of(context).pop(true);
@@ -2398,7 +2567,7 @@ class _RiskFactorsState extends State<RiskFactors> {
 }
 
 class InitialCounselling extends StatefulWidget {
-  _NewPatientQuestionnaireScreenState parent;
+  _EditIncompleteEncounterChwScreenState parent;
   InitialCounselling({this.parent});
   @override
   _InitialCounsellingState createState() => _InitialCounsellingState();

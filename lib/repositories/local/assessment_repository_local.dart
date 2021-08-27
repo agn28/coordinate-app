@@ -35,11 +35,26 @@ class AssessmentRepositoryLocal {
     }
     return assessments;
   }
+  getAssessmentsByPatientWithLocalStatus(id ,localStatus) async {
+    print('patient id ' + id);
+    final sql =
+        '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE (patient_id="$id") AND (local_status="$localStatus")''';
+    var assessments;
+
+    try {
+      assessments = await db.rawQuery(sql);
+    } catch (error) {
+      print('errors');
+      print(error);
+      return;
+    }
+    return assessments;
+  }
 
   getAssessmentsByPatient(id) async {
     print('patient id ' + id);
     final sql =
-        '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE patient_id="$id"''';
+        '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE patient_id="$id" ORDER BY created_at DESC''';
     var assessments;
 
     try {
@@ -89,7 +104,7 @@ class AssessmentRepositoryLocal {
 
   getNotSyncedAssessments() async {
     final sql =
-        '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE is_synced=0''';
+        '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE (is_synced=0) AND (local_status!='incomplete') ''';
     var response = await db.rawQuery(sql);
 
     try {
@@ -436,8 +451,8 @@ class AssessmentRepositoryLocal {
         print('into encounter');
   }
 
-  createLocalAssessment(id, data, isSynced) async {
-    print('into local assessment create ' + isSynced.toString());
+  createLocalAssessment(id, data, isSynced, {localStatus:''}) async {
+    print('into local assessment create localStatus' + localStatus.toString());
     print('create patient id ' + data['body']['patient_id']);
     // print('create patient body ' + data['body']);
     final sql = '''INSERT INTO ${DatabaseCreator.assessmentTable}
@@ -446,16 +461,18 @@ class AssessmentRepositoryLocal {
       data,
       patient_id,
       status,
-      is_synced
+      is_synced,
+      local_status
     )
-    VALUES (?,?,?,?,?)''';
+    VALUES (?,?,?,?,?,?)''';
 
     List<dynamic> params = [
       id,
       jsonEncode(data),
       data['body']['patient_id'],
       data['body']['status'],
-      isSynced
+      isSynced,
+      localStatus
     ];
     var response;
 
@@ -470,15 +487,16 @@ class AssessmentRepositoryLocal {
     return response;
   }
 
-  updateLocalAssessment(id, data, isSynced) async {
+  updateLocalAssessment(id, data, isSynced, {localStatus:''}) async {
     final sql = '''UPDATE ${DatabaseCreator.assessmentTable} SET
       data = ? ,
       patient_id = ?,
       status = ?,
-      is_synced = ?
+      is_synced = ?,
+      local_status = ?
       WHERE id = ?''';
     List<dynamic> params = [jsonEncode(data), data['body']['patient_id'],
-      data['body']['status'], isSynced, id];
+      data['body']['status'], isSynced, localStatus, id];
     var response;
     try {
       response = await db.rawUpdate(sql, params);

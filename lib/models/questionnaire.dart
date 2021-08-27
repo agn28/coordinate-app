@@ -447,7 +447,8 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'tobacco',
-            'type': 'smoking'
+            'type': 'smoking',
+            'key': 'smoking',
           },
           {
             'question': 'Smokeless Tobacco',
@@ -455,7 +456,8 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'tobacco',
-            'type': 'smokeless-tobacco'
+            'type': 'smokeless-tobacco',
+            'key': 'smokeless_tobacco',
           },
           {
             'question': 'Fruits and vegetables intake',
@@ -463,7 +465,8 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'unhealthy-diet',
-            'type': 'eat-vegetables'
+            'type': 'eat-vegetables',
+            'key': 'fruits_vegitables_daily'
           },
           {
             'question': 'Salt',
@@ -471,7 +474,8 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'unhealthy-diet',
-            'type': 'salt'
+            'type': 'salt',
+            'key': 'extra_salt'
           },
           {
             'question': 'Sugar',
@@ -479,7 +483,8 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'unhealthy-diet',
-            'type': 'suger'
+            'type': 'suger',
+            'key': 'sugary_drinks'
           },
           {
             'question': 'Processed food',
@@ -487,7 +492,8 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'unhealth-diet',
-            'type': 'processed-food'
+            'type': 'processed-food',
+            'key': 'processed_foods'
           },
           {
             'question': 'Red meat',
@@ -495,7 +501,8 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'unhealthy-diet',
-            'type': 'red-meat'
+            'type': 'red-meat',
+            'key': 'red_meat'
           },
           {
             'question': 'Physical activity',
@@ -503,7 +510,8 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'physical-activity',
-            'type': 'physical-activity-high'
+            'type': 'physical-activity-high',
+            'key': 'physical_activity_moderate'
           },
           {
             'question': 'Medication adherence',
@@ -511,7 +519,8 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'medical-adherence',
-            'type': 'medical-adherence'
+            'type': 'medical-adherence',
+            'key': 'medical_adherence'
           },
           {
             'question': 'Alcohol consumption',
@@ -519,7 +528,8 @@ var _questions = {
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
             'group': 'alcohol',
-            'type': 'alcohol-status'
+            'type': 'alcohol-status',
+            'key': 'alcohol'
           },
         ]
       },

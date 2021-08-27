@@ -52,6 +52,7 @@ class DatabaseCreator {
       patient_id TEXT,
       status TEXT,
       is_synced BOOLEAN,
+      local_status TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )''';
 
@@ -112,6 +113,7 @@ class DatabaseCreator {
       patient_id TEXT,
       status TEXT,
       is_synced BOOLEAN,
+      local_status TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )''';
 

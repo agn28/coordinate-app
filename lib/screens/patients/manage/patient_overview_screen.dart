@@ -17,7 +17,9 @@ import 'package:nhealth/controllers/user_controller.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/repositories/local/assessment_repository_local.dart';
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/chw/new_patient_questionnairs/edit_incomplete_encounter_chw_screen.dart';
 import 'package:nhealth/screens/chw/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
 import 'package:nhealth/screens/chw/patients/patient_search_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.dart';
@@ -57,16 +59,20 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
   var dueDate;
   var role = '';
   var pendingReferral;
+  var encounter;
+  bool hasIncompleteAssessment = false;
 
   @override
   void initState() {
     super.initState();
+    Helpers().clearObservationItems();
     _patient = Patient().getPatient();
     print('prevScreen ${widget.prevScreen}');
     _checkAvatar();
     _checkAuth();
     _getAuthData();
     getEncounters();
+    getIncompleteAssessmentLocal();
     // _getCarePlan();
     // getAssessments();
     // getAssessmentDueDate();
@@ -75,7 +81,27 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
     // getReferrals();
     // getUsers();
   }
-
+  getIncompleteAssessmentLocal() async {
+    encounter = await AssessmentController().getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: 'new questionnaire');
+    print('incencounter $encounter');
+    if(encounter.isNotEmpty) {
+      print('if');
+      setState(() {
+        hasIncompleteAssessment = true;
+      });
+    } else {
+      print('else');
+      setState(() {
+        hasIncompleteAssessment = false;
+      });
+    }
+  }
+  deleteIncompleteAssessmentLocal() async {
+    if(encounter.isNotEmpty) {
+      await AssessmentRepositoryLocal().deleteLocalAssessment(encounter.first['id']);
+    }
+  }
+  
   getReferrals() async {
     
     var referrals = [];
@@ -1117,6 +1143,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
+            getIncompleteAssessmentLocal();
             showDialog(
               context: context,
               builder: (BuildContext context){
@@ -1162,8 +1189,35 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                                   FloatingButton(
                                     text: AppLocalizations.of(context).translate('newQuestionnaire'),
                                     onPressed: () {
-                                      Navigator.of(context).pop();
+                                      // Navigator.of(context).pop();
+                                      hasIncompleteAssessment ?
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context){
+                                          return AlertDialog(
+                                            content: new Text(AppLocalizations.of(context).translate("editExistingAssessment"), style: TextStyle(fontSize: 20),),
+                                            actions: <Widget>[
+                                              // usually buttons at the bottom of the dialog
+                                              FlatButton(
+                                                child: new Text(AppLocalizations.of(context).translate("edit"), style: TextStyle(color: kPrimaryColor)),
+                                                onPressed: () {
+                                                  Navigator.of(context).pushNamed(EditIncompleteEncounterChwScreen.path);
+                                                },
+                                              ),
+                                              FlatButton(
+                                                child: new Text(AppLocalizations.of(context).translate("newQuestionnaire"), style: TextStyle(color: kPrimaryColor)),
+                                                onPressed: () async {
+                                                  await deleteIncompleteAssessmentLocal();
+                                                  Navigator.of(context).pushNamed(NewPatientQuestionnaireScreen.path);
+                                                },
+                                              ),
+                                            ],
+                                          );     
+                                        }
+                                      ) :
+                                      // Navigator.of(context).pop();
                                       Navigator.of(context).pushNamed(NewPatientQuestionnaireScreen.path);
+                                      // Navigator.of(context).pushNamed(EditIncompleteEncounterChwScreen.path);
                                     },
                                     active: true,
                                   ),

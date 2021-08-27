@@ -329,6 +329,20 @@ class PatientController {
 
     return 'success';
   }
+  
+  createOffline(context, formData) async {
+    var uuid = Uuid().v4();
+    final data = _prepareData(formData);
+    print('patient create');
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('Saving data...'),
+      backgroundColor: kPrimaryGreenColor,
+    ));
+    await PatientReposioryLocal().create(context, uuid, data, false);
+
+    return 'success';
+  }
 
   /// Create a new patient
   /// [formData] is required as parameter.
