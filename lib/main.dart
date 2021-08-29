@@ -18,7 +18,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 
-Locale appLocale = Locale('en', 'EN');
+Locale appLocale = Locale('en', 'US');
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,8 +34,8 @@ void main() async {
     appLocale = langMapp[locale];	
     Language().changeLanguage(locale);	
   } else {	
-    appLocale = langMapp["English"];	
-    Language().changeLanguage('English');	
+    appLocale = langMapp["Bengali"];	
+    Language().changeLanguage('Bengali');	
   }
   _getDevices();
   runApp(MyApp());
@@ -87,7 +87,7 @@ class MyAppState extends State<MyApp> {
   _fetchLocale() async {	
     var prefs = await SharedPreferences.getInstance();	
     if (prefs.getString('language_code') == null) {	
-      return Locale('en', 'US');
+      return Locale('bn', 'BN');
     }	
     return Locale(prefs.getString('language_code'), 	
       prefs.getString('country_code'));	

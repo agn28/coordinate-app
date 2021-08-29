@@ -43,7 +43,7 @@ class _SettingsState extends State<Settings> {
   _changeType (value) async {
     Language().changeLanguage(value);
     Map langMapp = {
-      "English": Locale('en', 'EN'),
+      "English": Locale('en', 'US'),
       "Bengali": Locale('bn', 'BN')
     };
 
@@ -62,17 +62,7 @@ class _SettingsState extends State<Settings> {
     print('currentCode ${_getLanguageCode(context)}');	
     // If the already-selected language is not English	
     // Then, change it to English	
-    if (_getLanguageCode(context) != 'en') {	
-      print('here');	
-      // step one, save the chosen locale	
-      var prefs = await SharedPreferences.getInstance();	
-      await prefs.setString('language_code', 'en');	
-      await prefs.setString('country_code', '');	
-      await prefs.setString('language', 'English');	
-      	
-      // step two, rebuild the whole app, with the new locale	
-      MyApp.setLocale(context, Locale('en', 'US'));	
-    } else {	
+    if (_getLanguageCode(context) != 'bn') {	
       print('there');	
       // step one, save the chosen locale	
       var prefs = await SharedPreferences.getInstance();	
@@ -82,6 +72,16 @@ class _SettingsState extends State<Settings> {
       	
       // step two, rebuild the whole app, with the new locale	
       MyApp.setLocale(context, Locale('bn', 'BN'));	
+    } else {	
+      print('here');	
+      // step one, save the chosen locale	
+      var prefs = await SharedPreferences.getInstance();	
+      await prefs.setString('language_code', 'en');	
+      await prefs.setString('country_code', '');	
+      await prefs.setString('language', 'English');	
+      	
+      // step two, rebuild the whole app, with the new locale	
+      MyApp.setLocale(context, Locale('en', 'US'));	
     }	
     setState(() {	
       _selectedLanguage = value;	

@@ -785,7 +785,7 @@ class SyncController extends GetxController {
       if (isNotNull(response['exception']) && response['type'] == 'poor_network') {
         isPoorNetwork.value = true;
         isSyncing.value = false;
-        showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
+        // showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
         retryForStableNetwork();
         break;
       }
@@ -822,7 +822,7 @@ class SyncController extends GetxController {
       if (isNotNull(response['exception']) && response['type'] == 'poor_network') {
         isPoorNetwork.value = true;
         isSyncing.value = false;
-        showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
+        // showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
         retryForStableNetwork();
         break;
       }
@@ -871,7 +871,7 @@ class SyncController extends GetxController {
       if (isNotNull(response['exception']) && response['type'] == 'poor_network') {
         isPoorNetwork.value = true;
         isSyncing.value = false;
-        showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
+        // showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
         retryForStableNetwork();
         break;
       }
@@ -909,7 +909,7 @@ class SyncController extends GetxController {
       if (isNotNull(response['exception']) && response['type'] == 'poor_network') {
         isPoorNetwork.value = true;
         isSyncing.value = false;
-        showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
+        // showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
         retryForStableNetwork();
         break;
       }
@@ -947,7 +947,7 @@ class SyncController extends GetxController {
       if (isNotNull(response['exception']) && response['type'] == 'poor_network') {
         isPoorNetwork.value = true;
         isSyncing.value = false;
-        showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
+        // showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
         retryForStableNetwork();
         break;
       }
@@ -992,7 +992,7 @@ class SyncController extends GetxController {
         if (isNotNull(response['exception']) && response['type'] == 'poor_network') {
           isPoorNetwork.value = true;
           isSyncing.value = false;
-          showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
+          // showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
           retryForStableNetwork();
           break;
         }
@@ -1372,7 +1372,7 @@ class SyncController extends GetxController {
       isPoorNetwork.value = true;
       isSyncing.value = false;
       // isConnected.value = false;
-      showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
+      // showErrorSnackBar('Error', 'Poor Network. Cannot sync now');
       retryForStableNetwork();
       return;
     } else if (isNotNull(response['exception']) && response['type'] == 'no_network') {

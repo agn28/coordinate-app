@@ -1,5 +1,5 @@
 List _languages = ['English', 'Bengali'];
-var _selectedlanguage = 'English';
+var _selectedlanguage = 'Bengali';
 
 class Language {
 
