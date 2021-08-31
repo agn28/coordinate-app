@@ -43,6 +43,7 @@ class Auth {
       'role': authData['role'],
       'address': authData['address'],
       'accessToken': authData['accessToken'],
+      'refreshToken': authData['refreshToken'],
       'expirationTime': authData['expirationTime']
     };
   }

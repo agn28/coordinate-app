@@ -2,16 +2,21 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:http_interceptor/http_interceptor.dart';
 import 'package:nhealth/controllers/sync_controller.dart';
 import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/repositories/api_interceptor.dart';
 import 'package:nhealth/services/api_service.dart';
 import '../constants/constants.dart';
 import 'dart:convert';
 import 'package:get/get.dart';
 
 class PatientRepository {
+  http.Client client = HttpClientWithInterceptor.build(interceptors: [
+    ApiInterceptor(),
+  ]);
   // var syncController = SyncController();
 
   create(data) async {
@@ -128,7 +133,7 @@ class PatientRepository {
     var token = authData['accessToken'];
     var response;
     try {
-      response = await http
+      response = await client
         .get(apiUrl + 'patients/first-assessment',
           headers: {
             'Accept': 'application/json',

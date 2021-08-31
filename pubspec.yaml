@@ -46,6 +46,7 @@ dependencies:
   # connectivity: ^2.0.2
   connectivity_plus: any
   get: ^3.24.0
+  http_interceptor: any
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
