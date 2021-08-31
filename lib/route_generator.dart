@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/chcp/patient_list_chcp_screen.dart';
 import 'package:nhealth/screens/chw/careplan_actions/actions_swipper_screen.dart';
 import 'package:nhealth/screens/chw/careplan_actions/careplan_delivery_screen.dart';
 import 'package:nhealth/screens/chw/careplan_actions/improve_bp_screen.dart';
@@ -59,6 +60,14 @@ import 'package:nhealth/screens/patients/patient_update_summary_screen.dart';
 import 'package:nhealth/screens/chw/unwell/followup_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_success_screen.dart';
 
+import 'screens/chcp/chcp_feeling_screen.dart';
+import 'screens/chcp/chcp_home_screen.dart';
+import 'screens/chcp/chcp_patient_summary_screen.dart';
+import 'screens/chcp/edit_incomplete_encounter_chcp_screen.dart';
+import 'screens/chcp/full_assessment_chcp_screen.dart';
+import 'screens/chcp/new_followup_chcp_screen.dart';
+import 'screens/chcp/patient_summery_chcp_screen.dart';
+import 'screens/chcp/unwell_chcp_screen.dart';
 import 'screens/chw/followup/edit_followup_screen.dart';
 
 
@@ -90,7 +99,7 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => FollowupVisitScreen());
       case WellFollowupScreen.path:
         return CupertinoPageRoute(builder: (_) => WellFollowupScreen());
-        case FullAssessmentScreen.path:
+      case FullAssessmentScreen.path:
         return CupertinoPageRoute(builder: (_) => FullAssessmentScreen());
       case FollowupAcuteScreen.path:
         return CupertinoPageRoute(builder: (_) => FollowupAcuteScreen());
@@ -213,6 +222,27 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => NewFollowupScreen());
       case RegisterPatientSuccessScreen.path:
         return CupertinoPageRoute(builder: (_) => RegisterPatientSuccessScreen());
+
+      // chcp routes
+      case '/chcpHome':
+        return CupertinoPageRoute(builder: (_) => ChcpHomeScreen());
+      case '/patientListChcp':
+        return CupertinoPageRoute(builder: (_) => PatientListChcpScreen());
+      case '/chcpPatientSummary':
+        return CupertinoPageRoute(builder: (_) => ChcpPatientSummaryScreen());
+      case ChcpFeelingScreen.path:
+        return CupertinoPageRoute(builder: (_) => ChcpFeelingScreen());
+      case '/editIncompleteEncounterChcp':
+        return CupertinoPageRoute(builder: (_) => EditIncompleteEncounterChcpScreen());
+      case UnwellChcpScreen.path:
+      return CupertinoPageRoute(builder: (_) => UnwellChcpScreen());
+      case PatientSummeryChcpScreen.path:
+      var data = settings.arguments as Map;
+        return CupertinoPageRoute(builder: (_) => PatientSummeryChcpScreen( prevScreen: data['prevScreen'], encounterData: data['encounterData']));
+      case NewFollowupChcpScreen.path:
+        return CupertinoPageRoute(builder: (_) => NewFollowupChcpScreen());
+      case FullAssessmentChcpScreen.path:
+        return CupertinoPageRoute(builder: (_) => FullAssessmentChcpScreen());
     }
   }
 }
