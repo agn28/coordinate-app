@@ -97,6 +97,7 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
   @override
   void initState() {
     super.initState();
+    print('followup visit screen!');
     _checkAuth();
     clearForm();
     isLoading = false;

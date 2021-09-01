@@ -535,5 +535,6 @@
   "submit" : "Submit",
   "edit" : "Edit",
   "editExistingAssessment" : "Do you want to edit the existing assessment or start a new one?",
-  "patientList" : "Patient List"
+  "patientList" : "Patient List",
+  "medication" : "Medication"
 }

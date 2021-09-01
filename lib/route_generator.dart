@@ -61,13 +61,18 @@ import 'package:nhealth/screens/chw/unwell/followup_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_success_screen.dart';
 
 import 'screens/chcp/chcp_feeling_screen.dart';
+import 'screens/chcp/chcp_full_assessment_feeling_screen.dart';
 import 'screens/chcp/chcp_home_screen.dart';
 import 'screens/chcp/chcp_patient_summary_screen.dart';
+import 'screens/chcp/chcp_short_followup_feeling_screen.dart';
 import 'screens/chcp/edit_incomplete_encounter_chcp_screen.dart';
+import 'screens/chcp/followup_visit_chcp_screen.dart';
 import 'screens/chcp/full_assessment_chcp_screen.dart';
 import 'screens/chcp/new_followup_chcp_screen.dart';
 import 'screens/chcp/patient_summery_chcp_screen.dart';
 import 'screens/chcp/unwell_chcp_screen.dart';
+import 'screens/chcp/unwell_full_assessment_chcp_screen.dart';
+import 'screens/chcp/unwell_short_followup_chcp_screen.dart';
 import 'screens/chw/followup/edit_followup_screen.dart';
 
 
@@ -243,6 +248,16 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => NewFollowupChcpScreen());
       case FullAssessmentChcpScreen.path:
         return CupertinoPageRoute(builder: (_) => FullAssessmentChcpScreen());
+      case ChcpFullAssessmentFeelingScreen.path:
+        return CupertinoPageRoute(builder: (_) => ChcpFullAssessmentFeelingScreen());
+      case UnwellFullAssessmentChcpScreen.path:
+        return CupertinoPageRoute(builder: (_) => UnwellFullAssessmentChcpScreen());
+      case FollowupVisitChcpScreen.path:
+        return CupertinoPageRoute(builder: (_) => FollowupVisitChcpScreen());
+      case ChcpShortFollowupFeelingScreen.path:
+        return CupertinoPageRoute(builder: (_) => ChcpShortFollowupFeelingScreen());
+      case UnwellShortFollowupChcpScreen.path:
+        return CupertinoPageRoute(builder: (_) => UnwellShortFollowupChcpScreen());
     }
   }
 }

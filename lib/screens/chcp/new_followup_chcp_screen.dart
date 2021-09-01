@@ -16,6 +16,9 @@ import 'package:nhealth/screens/nurse/new_patient_questionnairs/followup/full_as
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import 'package:nhealth/screens/patients/ncd/followup_visit_screen.dart';
 
+import 'chcp_full_assessment_feeling_screen.dart';
+import 'chcp_short_followup_feeling_screen.dart';
+import 'followup_visit_chcp_screen.dart';
 import 'full_assessment_chcp_screen.dart';
 
 class NewFollowupChcpScreen extends StatefulWidget {
@@ -234,7 +237,8 @@ class _NewFollowupChcpScreenState extends State<NewFollowupChcpScreen> {
                                     ),
                                     child: FlatButton(
                                       onPressed: () async {
-                                        Navigator.of(context).pushNamed(FullAssessmentChcpScreen.path);
+                                        // Navigator.of(context).pushNamed(FullAssessmentChcpScreen.path);
+                                        Navigator.of(context).pushNamed(ChcpFullAssessmentFeelingScreen.path);
                                       },
                                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                       child: Text(AppLocalizations.of(context).translate('fullassessment').toUpperCase(), style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.normal),)
@@ -253,7 +257,8 @@ class _NewFollowupChcpScreenState extends State<NewFollowupChcpScreen> {
                                     ),
                                     child: FlatButton(
                                       onPressed: () async {
-                                        Navigator.of(context).pushNamed(FollowupVisitScreen.path);
+                                        // Navigator.of(context).pushNamed(FollowupVisitChcpScreen.path);
+                                        Navigator.of(context).pushNamed(ChcpShortFollowupFeelingScreen.path);
                                       },
                                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                       child: Text(AppLocalizations.of(context).translate('shortFollowUp').toUpperCase(), style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.normal),)
