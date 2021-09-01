@@ -765,7 +765,7 @@ class SyncController extends GetxController {
         'body': patient['data'],
         'meta': patient['meta']
       };
-      var existingPatient = await PatientController().getPatient(patient['id']);    
+      var existingPatient = await patientController.getPatient(patient['id']);    
       print('existingPatient $existingPatient');  
       // return;
       // Check new patient or existing
@@ -1088,7 +1088,7 @@ class SyncController extends GetxController {
 
       if (item['collection'] == 'patients') {
         if (item['action'] == 'create') {
-          var patient = await PatientController().getPatient(item['document_id']);
+          var patient = await patientController.getPatient(item['document_id']);
           print('patient $patient');
           if (isNotNull(patient) && isNotNull(patient['error']) && !patient['error'] && isNotNull(patient['data'])) {
             var existingLocalPatient = await PatientReposioryLocal().getPatientById(patient['data']['id']);
@@ -1326,7 +1326,7 @@ class SyncController extends GetxController {
   }
 
   syncLocationData() async {
-    var response = await PatientController().getLocations();
+    var response = await patientController.getLocations();
 
     if (isNotNull(response) && isNotNull(response['error']) && !response['error']) {
       createLocations(response['data']);
@@ -1346,7 +1346,7 @@ class SyncController extends GetxController {
     syncCenterData();
   }
   syncCenterData() async {
-    var response = await PatientController().getCenter();
+    var response = await patientController.getCenter();
 
     if (isNotNull(response) && isNotNull(response['error']) && !response['error']) {
       createCenters(response['data']);

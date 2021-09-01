@@ -2,14 +2,18 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:http_interceptor/http_interceptor.dart';
 import 'package:intl/intl.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/repositories/api_interceptor.dart';
 import '../constants/constants.dart';
 import 'dart:convert';
 
 class CarePlanRepository {
-
+  http.Client client = HttpClientWithInterceptor.build(interceptors: [
+    ApiInterceptor(),
+  ]);
   getCarePlan({checkAssignedTo: ''}) async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
@@ -25,7 +29,7 @@ class CarePlanRepository {
     print(apiUrl + 'care-plans/' + patientID,);
 
     try {
-      response = await http
+      response = await client
       .get(apiUrl + 'care-plans/patient/' + patientID + qParam,
         headers: {
           'Accept': 'application/json',
@@ -62,7 +66,7 @@ class CarePlanRepository {
     print(apiUrl + 'care-plans/' + id,);
 
     try {
-      response = await http
+      response = await client
       .get(apiUrl + 'care-plans/' + id,
         headers: {
           'Accept': 'application/json',
@@ -97,7 +101,7 @@ class CarePlanRepository {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     var patientID = Patient().getPatient()['id'];
-    return await http.get(
+    return await client.get(
       apiUrl + 'health-reports/',
       headers: {
         'Accept': 'application/json',
@@ -115,7 +119,7 @@ class CarePlanRepository {
   create(data) async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
-    return await http.post(
+    return await client.post(
       apiUrl + 'health-reports',
       headers: {
         'Accept': 'application/json',
@@ -140,7 +144,7 @@ class CarePlanRepository {
     var response;
 
     try {
-      response = await http.put(apiUrl + 'care-plans/' + data['id'],
+      response = await client.put(apiUrl + 'care-plans/' + data['id'],
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',

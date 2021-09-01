@@ -29,7 +29,7 @@ class PatientRepository {
     print(apiUrl + 'patients');
 
     try {
-      response = await http
+      response = await client
       .post(apiUrl + 'patients',
           headers: {
             'Accept': 'application/json',
@@ -64,7 +64,7 @@ class PatientRepository {
     var response;
 
     try {
-      response = await http.get(
+      response = await client.get(
         apiUrl + 'locations',
         headers: {
           'Accept': 'application/json',
@@ -97,7 +97,7 @@ class PatientRepository {
   getPatient(patientId) async {
     var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
-    return http.get(
+    return client.get(
       apiUrl + 'patients/' + patientId,
       headers: {
         'Accept': 'application/json',
@@ -114,7 +114,7 @@ class PatientRepository {
   getPatients() async {
     var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
-    return http.get(
+    return client.get(
       apiUrl + 'patients/all',
       headers: {
         'Accept': 'application/json',
@@ -169,7 +169,7 @@ class PatientRepository {
     var token = authData['accessToken'];
     var response;
     try {
-      response = await http
+      response = await client
         .get(apiUrl + 'patients/follow-up',
           headers: {
             'Accept': 'application/json',
@@ -205,7 +205,7 @@ class PatientRepository {
     var response;
 
     try {
-      response = await http
+      response = await client
         .get(apiUrl + 'patients/new',
           headers: {
             'Accept': 'application/json',
@@ -242,7 +242,7 @@ class PatientRepository {
     var response;
 
     try {
-      response = await http
+      response = await client
         .get(apiUrl + 'patients/existing',
           headers: {
             'Accept': 'application/json',
@@ -280,7 +280,7 @@ class PatientRepository {
     var response;
 
     try {
-      response = await http
+      response = await client
         .get(apiUrl + 'patients/all?type=referral',
           headers: {
             'Accept': 'application/json',
@@ -315,7 +315,7 @@ class PatientRepository {
     var response;
 
     try {
-      response = await http.get(
+      response = await client.get(
         apiUrl + 'centers',
         headers: {
           'Accept': 'application/json',
@@ -349,7 +349,7 @@ class PatientRepository {
     var token = authData['accessToken'];
     var response;
     try {
-      response = await http
+      response = await client
         .get(apiUrl + 'patients/status-pending',
           headers: {
             'Accept': 'application/json',
@@ -386,7 +386,7 @@ class PatientRepository {
     var response;
     print('type ' + type);
     try {
-      response = await http
+      response = await client
         .get(apiUrl + 'patients?type=' + type,
           headers: {
             'Accept': 'application/json',
@@ -423,7 +423,7 @@ class PatientRepository {
     var uuid = Patient().getPatient()['id'];
     print('token');
     print(data);
-    await http
+    await client
         .put(apiUrl + 'patients/' + uuid,
             headers: {
               'Accept': 'application/json',
@@ -447,7 +447,7 @@ class PatientRepository {
     print(apiUrl + 'patients/' + patientId + '/sync-status');
 
     try {
-      response = await http.put(apiUrl + 'patients/' + patientId + '/sync-status',
+      response = await client.put(apiUrl + 'patients/' + patientId + '/sync-status',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
@@ -483,7 +483,7 @@ class PatientRepository {
   getMedicationsByPatient(patientId) async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
-    return http.get(
+    return client.get(
       apiUrl + 'patients/' + patientId + '/medications/',
       headers: {
         'Accept': 'application/json',
@@ -507,7 +507,7 @@ class PatientRepository {
     print(apiUrl + 'patients/' + medId + '/dispense-medication/');
 
     try {
-      response = await http.put(apiUrl + 'patients/' + medId + '/dispense-medication/',
+      response = await client.put(apiUrl + 'patients/' + medId + '/dispense-medication/',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',

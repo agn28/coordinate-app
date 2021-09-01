@@ -2,18 +2,23 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:http_interceptor/http_interceptor.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/repositories/api_interceptor.dart';
 import '../constants/constants.dart';
 import 'dart:convert';
 
 class AssessmentRepository {
+  http.Client client = HttpClientWithInterceptor.build(interceptors: [
+    ApiInterceptor(),
+  ]);
   createOnlyAssessment(data) async {
     var authData = await Auth().getStorageAuth();
     print('after get token');
     var token = authData['accessToken'];
 
-    await http
+    await client
         .post(apiUrl + 'assessments/except-oha',
             headers: {
               'Accept': 'application/json',
@@ -38,7 +43,7 @@ class AssessmentRepository {
     var response;
     print(json.encode(data));
     try {
-      response = await http
+      response = await client
           .post(apiUrl + 'assessments/except-oha',
               headers: {
                 'Accept': 'application/json',
@@ -78,7 +83,7 @@ class AssessmentRepository {
     var response;
   
     try {
-      response = await http
+      response = await client
         .post(apiUrl + 'assessments/full',
             headers: {
               'Accept': 'application/json',
@@ -118,7 +123,7 @@ class AssessmentRepository {
     var response;
 
     try {
-      response = await http.get(
+      response = await client.get(
         apiUrl + 'patients/' + patientId + '/assessments',
         headers: {
           'Accept': 'application/json',
@@ -153,7 +158,7 @@ class AssessmentRepository {
     var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
 
-    return http.get(
+    return client.get(
       apiUrl + 'assessments/' + id,
       headers: {
         'Accept': 'application/json',
@@ -178,7 +183,7 @@ class AssessmentRepository {
     }
     var response;
     try {
-      response = await http.get(
+      response = await client.get(
         apiUrl + 'assessments/patients/' + patientId + '/last' + qParam,
         headers: {
           'Accept': 'application/json',
@@ -215,7 +220,7 @@ class AssessmentRepository {
     print(patientId);
     var response;
     try {
-      response = await http.get(
+      response = await client.get(
         apiUrl + 'assessments/patients/' + patientId + '/incomplete-assessment',
         headers: {
           'Accept': 'application/json',
@@ -253,7 +258,7 @@ class AssessmentRepository {
     var response;
 
     try {
-      response = await http
+      response = await client
           .get(apiUrl + 'assessments/' + assessmentId + '/observations',
               headers: {
                 'Accept': 'application/json',
@@ -289,7 +294,7 @@ class AssessmentRepository {
     var token = authData['accessToken'];
     var patientId = Patient().getPatient()['id'];
 
-    return http.get(
+    return client.get(
       apiUrl + 'patients/' + patientId + '/observations',
       headers: {
         'Accept': 'application/json',
@@ -307,7 +312,7 @@ class AssessmentRepository {
     var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
 
-    await http
+    await client
         .put(apiUrl + 'assessments/' + id,
             headers: {
               'Accept': 'application/json',
@@ -322,7 +327,7 @@ class AssessmentRepository {
   }
 
   delete(id) async {
-    await http
+    await client
         .delete(
           apiUrl + 'assessments/' + id,
           headers: {

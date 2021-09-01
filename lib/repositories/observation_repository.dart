@@ -2,13 +2,18 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:http_interceptor/http_interceptor.dart';
 import 'package:nhealth/models/auth.dart';
+import 'package:nhealth/repositories/api_interceptor.dart';
 import '../constants/constants.dart';
 import 'dart:convert';
 
 class ObservationRepository {
+  http.Client client = HttpClientWithInterceptor.build(interceptors: [
+    ApiInterceptor(),
+  ]);
   getObservations() async {
-    return await http.get(
+    return await client.get(
       apiUrl + 'observations',
       headers: {
         'Accept': 'application/json',
@@ -29,7 +34,7 @@ class ObservationRepository {
     var response;
     print(json.encode(data));
     try {
-      response = await http
+      response = await client
           .post(apiUrl + 'observations',
               headers: {
                 'Accept': 'application/json',
@@ -62,7 +67,7 @@ class ObservationRepository {
   }
 
   update(id, data) async {
-    await http
+    await client
         .put(apiUrl + 'observations/' + id,
             headers: {
               'Accept': 'application/json',
@@ -76,7 +81,7 @@ class ObservationRepository {
   }
 
   delete(id) async {
-    await http
+    await client
         .delete(
           apiUrl + 'observations/' + id,
           headers: {
@@ -94,7 +99,7 @@ class ObservationRepository {
     var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
 
-    return http.get(
+    return client.get(
       apiUrl + 'observations/' + id,
       headers: {
         'Accept': 'application/json',
