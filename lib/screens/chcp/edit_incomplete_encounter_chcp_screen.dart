@@ -1,4 +1,6 @@
-import 'package:basic_utils/basic_utils.dart';
+import 'dart:io';
+
+import 'package:basic_utils/basic_utils.dart' as basic_utils;
 import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +10,18 @@ import 'package:nhealth/configs/configs.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
+import 'package:nhealth/controllers/care_plan_controller.dart';
+import 'package:nhealth/controllers/followup_controller.dart';
+import 'package:nhealth/controllers/health_report_controller.dart';
+import 'package:nhealth/controllers/observation_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:nhealth/controllers/sync_controller.dart';
+import 'package:nhealth/controllers/user_controller.dart';
 import 'package:nhealth/helpers/functions.dart';
+import 'package:nhealth/helpers/helpers.dart';
+import 'package:nhealth/screens/chw/careplan_actions/careplan_feeling_screen.dart';
+import 'package:nhealth/screens/chw/followup/edit_followup_screen.dart';
+import 'package:nhealth/screens/patients/ncd/followup_feeling_screen.dart';
 import 'package:nhealth/screens/patients/ncd/followup_patient_summary_screen.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/blood_pressure.dart';
@@ -67,6 +78,13 @@ int _thirdQuestionOption = 1;
 int _fourthQuestionOption = 1;
 bool isLoading = false;
 
+
+var dueCarePlans = [];
+var completedCarePlans = [];
+var upcomingCarePlans = [];
+var referrals = [];
+var pendingReferral;
+
 getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
 
@@ -86,7 +104,7 @@ getOptionText(context, question, option) {
     }
     return option;
   }
-  return StringUtils.capitalize(option);
+  return basic_utils.StringUtils.capitalize(option);
 }
 
 
@@ -862,6 +880,25 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                       }
                     }
 
+                    if (_currentStep == 8) {
+                      
+                      _completeStep();
+                      return;
+                    }
+
+                    if (_currentStep == 7) {
+                      
+                      nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                      _currentStep = _currentStep + 1; 
+                      return;
+                    }
+
+                    if (_currentStep == 6) {
+                      
+                      _currentStep = _currentStep + 1; 
+                      return;
+                    }
+
                     if (_currentStep == 5) {
                       Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);
                           
@@ -877,7 +914,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                       print('relativeAdditionalData $relativeAdditionalData');
                       Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
 
-                      _completeStep();
+                      _currentStep = _currentStep + 1; 
                       return;
                     }
                     if (_currentStep == 4) {
@@ -918,7 +955,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                                       _currentStep = _currentStep + 1;
                                     });
                                     createObservations();
-                                    nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                                    // nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                                     print('_currentStep $_currentStep');
                                     Navigator.of(context).pop(true);
                                   },
@@ -929,7 +966,6 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                         );
                       } else {
                         createObservations();
-                        nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                         _currentStep = _currentStep + 1;
                         return;
                       }
@@ -1110,6 +1146,22 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
         content: History(),
         isActive: _currentStep >= 2,
       ),
+      CustomStep(
+        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
+        content: ChcpPatientRecordsScreen(),
+        isActive: _currentStep >= 2,
+      ),
+      CustomStep(
+        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
+        content: RecommendedCounsellingChcp(),
+        isActive: _currentStep >= 2,
+      ),
+      CustomStep(
+        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
+        content: MedicationsDispense(),
+        isActive: _currentStep >= 2,
+      ),
+  
 
       // CustomStep(
       //   title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
@@ -3012,9 +3064,9 @@ getDropdownOptionText(context, list, value) {
       print(list['options_bn'][matchedIndex]);
       return list['options_bn'][matchedIndex];
     }
-    return StringUtils.capitalize(value);
+    return basic_utils.StringUtils.capitalize(value);
   }
-  return StringUtils.capitalize(value);
+  return basic_utils.StringUtils.capitalize(value);
 }
 
 class _HistoryState extends State<History> {
@@ -3488,23 +3540,1010 @@ class _HistoryState extends State<History> {
   }
 }
 
-class Followup extends StatefulWidget {
-  _EditIncompleteEncounterChcpScreenState parent;
-  Followup({this.parent});
 
+class ChcpPatientRecordsScreen extends StatefulWidget {
+  var checkInState = false;
+  var prevScreen = '';
+  var encounterData = {};
+  // ChcpPatientRecordsScreen({this.prevScreen, this.encounterData});
   @override
-  _FollowupState createState() => _FollowupState();
+  _PatientRecordsState createState() => _PatientRecordsState();
 }
 
-var isReferralRequired = false;
-var followups = ['1 week', '2 weeks', '1 month', '2 months', '3 months', '6 months', '1 year'];
-var selectedFollowup = null;
-var nextVisitDate = '';
-class _FollowupState extends State<Followup> {
+class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
+  var _patient;
+  // bool isLoading = true;
+  var carePlans = [];
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  
+  bool avatarExists = false;
+  var encounters = [];
+  var lastAssessment;
+  var lastFollowup;
+  bool hasIncompleteFollowup = false;
+  String lastEncounterType = '';
+  String lastEncounterDate = '';
+  String nextVisitDateChw = '';
+  String nextVisitPlaceChw = '';
+  String nextVisitDateCc = '';
+  String nextVisitPlaceCc = '';
+  String lastCarePlanDate = '';
+  var conditions = [];
+  var medications = [];
+  var allergies = [];
+  var users = [];
+  var report;
+  var bmi;
+  var cholesterol;
+  var bp;
+  var cvd;
+  int interventionIndex = 0;
+  bool actionsActive = false;
+  bool carePlansEmpty = false;
+  var dueDate = '';
 
-  bool tobaccoTitleAdded = false;
-  bool dietTitleAdded = false;
+  @override
+  void initState() {
+    super.initState();
+    _patient = Patient().getPatient();
+    print('encounterData ${widget.encounterData}');
+    print(_patient['meta']['review_required']);
+    print('prevScreen ${widget.prevScreen}');
+    dueCarePlans = [];
+    completedCarePlans = [];
+    upcomingCarePlans = [];
+    conditions = [];
+    referrals = [];
+    pendingReferral = null;
+    carePlansEmpty = false;
+    
+    // _checkAvatar();
+    // _checkAuth();
+    // getUsers();
+    // getAssessmentDueDate();
+    // getReferrals();
+    // getMedicationsConditions();
+    // getReport();
+    // getLastAssessment();
+    // getLastFollowup();
+    // // getEncounters();
+    // // getAssessments();
+    // _getCarePlan();
+
+  }
+  getDate(date) {
+     if (date.runtimeType == String && date != null && date != '') {
+      return DateFormat("MMMM d, y").format(DateTime.parse(date)).toString();
+    } else if (date['_seconds'] != null) {
+      var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
+
+      return DateFormat("MMMM d, y").format(parsedDate).toString();
+    }
+    return '';
+  }
+
+  getLastAssessment() async {
+    setState(() {
+      isLoading = true;
+    });
+    lastAssessment = await AssessmentController().getLastAssessmentByPatient();
+
+    print('lastAssessment $lastAssessment');
+    if(lastAssessment != null && lastAssessment.isNotEmpty) {
+      if(lastAssessment['data']['body']['follow_up_info'] != null && lastAssessment['data']['body']['follow_up_info'].isNotEmpty){
+        var followUpInfoChw = lastAssessment['data']['body']['follow_up_info'].where((info)=> info['type'] == 'chw');
+        if(followUpInfoChw.isNotEmpty) {
+          followUpInfoChw = followUpInfoChw.first;
+        }
+        var followUpInfoCc= lastAssessment['data']['body']['follow_up_info'].where((info)=> info['type'] == 'cc');
+        if(followUpInfoCc.isNotEmpty) {
+          followUpInfoCc = followUpInfoCc.first;
+        }
+        setState(() {
+          nextVisitDateChw = (followUpInfoChw['date'] != null && followUpInfoChw['date'].isNotEmpty) ? getDate(followUpInfoChw['date']) : '' ;
+          nextVisitPlaceChw = (followUpInfoChw['place'] != null && followUpInfoChw['place'].isNotEmpty) ? (followUpInfoChw['place']) : '' ;
+          nextVisitDateCc = (followUpInfoCc['date'] != null && followUpInfoCc['date'].isNotEmpty) ? getDate(followUpInfoCc['date']) : '' ;
+          nextVisitPlaceCc = (followUpInfoCc['place'] != null && followUpInfoCc['place'].isNotEmpty) ? (followUpInfoCc['place']) : '' ;
+        });
+      }
+
+      setState(() {
+        lastEncounterType = lastAssessment['data']['body']['type'];
+        lastEncounterDate = getDate(lastAssessment['data']['meta']['created_at']);
+        print('lastEncounterDate ${lastEncounterDate}');
+      });
+    }
+    
+  }
+  getLastFollowup() async {
+    setState(() {
+      isLoading = true;
+    });
+    lastFollowup = await AssessmentController().getLastAssessmentByPatient(key:'screening_type', value:'follow-up');
+
+    print('lastFollowup $lastFollowup');
+    if(lastFollowup != null && lastFollowup.isNotEmpty) {
+      if(lastFollowup['data']['body']['type'] == 'follow up visit (center)'
+        && lastFollowup['data']['body']['status'] == 'incomplete') {
+          setState(() {
+            hasIncompleteFollowup = true;
+            print('hasIncompleteFollowup $hasIncompleteFollowup');
+          });
+        }
+    }
+    
+  }
+
+
+  getAssessmentDueDate() {
+    // print(DateFormat("MMMM d, y").format(DateTime.parse(_patient['data']['next_assignment']['body']['activityDuration']['start'])));
+
+    if (_patient != null && _patient['data']['next_assignment'] != null && _patient['data']['next_assignment']['body']['activityDuration']['start'] != null) {
+      setState(() {
+        DateFormat format = new DateFormat("E LLL d y");
+        
+        try {
+          dueDate = DateFormat("MMMM d, y").format(format.parse(_patient['data']['next_assignment']['body']['activityDuration']['start']));
+        } catch(err) {
+          dueDate = DateFormat("MMMM d, y").format(DateTime.parse(_patient['data']['next_assignment']['body']['activityDuration']['start']));
+        }
+      });
+    }
+    
+
+    // if (_patient['data']['body']['activityDuration'] != null && item['body']['activityDuration']['start'] != '' && item['body']['activityDuration']['end'] != '') {
+    //   var start = DateTime.parse(item['body']['activityDuration']['start']);
+    // }
+  }
+
+  getStatus(item) {
+    var status = 'completed';
+    item['items'].forEach( (goal) {
+      if (goal['meta']['status'] == 'pending') {
+        setState(() {
+          status = 'pending';
+        });
+      }
+    });
+
+    return status;
+  }
+
+  getCount(item) {
+    var count = 0;
+
+    item['items'].forEach( (goal) {
+      setState(() {
+        count += 1;
+      });
+    });
+    
+
+    return count.toString();
+  }
+
+  getUsers() async {
+  
+    var data = await UserController().getUsers();
+
+
+    setState(() {
+      users = data;
+      isLoading = false;
+    });
+  }
+
+  getUser(uid) {
+    var user = users.where((user) => user['uid'] == uid);
+    if (user.isNotEmpty) {
+      return user.first['name'];
+    }
+
+    return '';
+  }
+
+  getCompletedDate(goal) {
+    var data = '';
+    DateTime date;
+    // print(goal['items']);
+    goal['items'].forEach((item) {
+      // print(item['body']['activityDuration']['end']);
+      DateFormat format = new DateFormat("E LLL d y");
+      var endDate;
+      try {
+        endDate = format.parse(item['body']['activityDuration']['end']);
+      } catch(err) {
+        endDate = DateTime.parse(item['body']['activityDuration']['end']);
+      }
+      // print(endDate);
+      date = endDate;
+      if (date != null) {
+        date  = endDate;
+      } else {
+        if (endDate.isBefore(date)) {
+          date = endDate;
+        }
+      }
+      
+    });
+    if (date != null) {
+      var test = DateFormat('MMMM d, y').format(date);
+      data = 'Complete By ' + test;
+    }
+    return data;
+  }
+
+  getReferrals() async {
+
+    setState(() {
+      isLoading = true;
+    });
+
+    var patientID = Patient().getPatient()['id'];
+
+    var data = await FollowupController().getFollowupsByPatient(patientID);
+
+    
+    if (data['error'] == true) {
+
+      // Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+    } else if (data['message'] == 'Unauthorized') {
+      Auth().logout();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    } else {
+      setState(() {
+        referrals = data['data'];
+      });
+    }
+
+    referrals.forEach((referral) {
+      if (referral['meta']['status'] == 'pending') {
+        setState(() {
+          pendingReferral = referral;
+        });
+      }
+    });
+  }
+
+  getReport() async {
+
+    setState(() {
+      isLoading = true;
+    });
+
+    var data = await HealthReportController().getLastReport(context);
+    print(data);
+    // return;
+    if (data.isEmpty) {
+      setState(() {
+        carePlansEmpty = true;
+      });
+    } else if(isNotNull(data['error']) && data['error']) {
+      setState(() {
+        carePlansEmpty = true;
+      });
+    } else if (data['message'] == 'Unauthorized') {
+      Auth().logout();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+      return;
+    } else {
+      print(data['data']);
+      setState(() {
+        report = data['data'];
+        bmi = report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ? report['body']['result']['assessments']['body_composition']['components']['bmi'] : null;
+        cvd = report['body']['result']['assessments']['cvd'] != null ? report['body']['result']['assessments']['cvd'] : null;
+        bp = report['body']['result']['assessments']['blood_pressure'] != null ? report['body']['result']['assessments']['blood_pressure'] : null;
+        cholesterol = report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ? report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] : null;
+      });
+    }
+
+  }
+
+  getMedicationsConditions() async {
+    isLoading = true;
+    if (Auth().isExpired()) {
+      Auth().logout();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    }
+    var fetchedSurveys = await ObservationController().getLiveSurveysByPatient();
+
+    if(fetchedSurveys.isNotEmpty) {
+      fetchedSurveys.forEach((item) {
+        if (item['data']['name'] == 'medical_history') {
+
+          allergies = item['data']['allergy_types'] != null ? item['data']['allergy_types'] : [];
+
+          item['data'].keys.toList().forEach((key) {
+            if (item['data'][key] == 'yes') {
+              setState(() {
+                var text = key.replaceAll('_', ' ');
+                var upperCased = text[0].toUpperCase() + text.substring(1);
+                if (!conditions.contains(upperCased)) {
+                  conditions.add(upperCased);
+                }
+                
+              });
+            }
+          });
+        }
+        if (item['data']['name'] == 'current_medication' && item['data']['medications'].isNotEmpty) {
+          setState(() {
+            medications = item['data']['medications'];
+          });
+        }
+      });
+    }
+
+  }
+
+  getAssessments() async {
+    setState(() {
+      isLoading = true;
+    });
+    var response = await HealthReportController().getLastReport(context);
+    if (response == null) {
+      return;
+    }
+    if (response['error']) {
+      return;
+    }
+
+    setState(() {
+      // lastAssessmentdDate = '';
+      // lastAssessmentdDate = DateFormat("MMMM d, y").format(DateTime.parse(response['data']['meta']['created_at']));
+    });
+
+  }
+
+  getDueCounts() {
+    var goalCount = 0;
+    var actionCount = 0;
+    carePlans.forEach((item) {
+      if(item['meta']['status'] == 'pending') {
+        goalCount = goalCount + 1;
+        if (item['body']['components'] != null) {
+          actionCount = actionCount + item['body']['components'].length;
+        }
+      }
+    });
+
+    return "$goalCount goals & $actionCount actions";
+  }
+
+  getEncounters() async {
+    setState(() {
+      isLoading = true;
+    });
+    encounters = await AssessmentController().getLiveAllAssessmentsByPatient();
+
+
+    if (encounters.isNotEmpty) {
+      var allEncounters = encounters;
+      await Future.forEach(allEncounters, (item) async {
+        var data = await getObservations(item);
+        var completed_observations = [];
+        if (data.isNotEmpty) {
+          data.forEach((obs) {
+            
+            if (obs['body']['type'] == 'survey') {
+              if (!completed_observations.contains(obs['body']['data']['name'])) {
+                completed_observations.add(obs['body']['data']['name']);
+              }
+            } else  {
+              if (!completed_observations.contains(obs['body']['type'])) {
+                completed_observations.add(obs['body']['type']);
+              }
+            }
+          });
+        }
+        encounters[encounters.indexOf(item)]['completed_observations'] = completed_observations;
+      });
+      // print(encounters);
+      encounters.sort((a, b) {
+        return DateTime.parse(b['meta']['created_at']).compareTo(DateTime.parse(a['meta']['created_at']));
+      });
+
+
+    }
+    
+  }
+
+  getObservations(assessment) async {
+    // _observations =  await AssessmentController().getObservationsByAssessment(widget.assessment);
+    var data =  await AssessmentController().getLiveObservationsByAssessment(assessment);
+    // print(data);
+    return data;
+
+  }
+
+  _checkAvatar() async {
+    avatarExists = await File(Patient().getPatient()['data']['avatar']).exists();
+  }
+
+  _checkAuth() {
+    if (Auth().isExpired()) {
+      Auth().logout();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    }
+  }
+
+  _getCarePlan() async {
+
+    var data = await CarePlanController().getCarePlan();
+    
+    if (data != null && data['message'] == 'Unauthorized') {
+
+      Auth().logout();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    } else if (data['error'] == true) {
+
+    } else {
+      // print( data['data']);
+      // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
+      setState(() {
+        carePlans = data['data'];
+      });
+      // carePlans = data['data'];
+      print('carePlans $carePlans');
+      if(data['data'] != null) {
+        data['data'].forEach( (item) {
+        DateFormat format = new DateFormat("E LLL d y");
+        
+        var todayDate = DateTime.now();
+
+        var endDate;
+        var startDate;
+
+        try {
+          endDate = format.parse(item['body']['activityDuration']['end']);
+          startDate = format.parse(item['body']['activityDuration']['start']);
+        } catch(err) {
+          print(item['body']['activityDuration']['start']);
+          print(item['body']['activityDuration']['end']);
+          // print('failed: ' );
+          print(err);
+          DateFormat newFormat = new DateFormat("yyyy-MM-dd");
+          endDate = DateTime.parse(item['body']['activityDuration']['end']);
+          startDate = DateTime.parse(item['body']['activityDuration']['start']);
+          // startDate = DateTime.parse(item['body']['activityDuration']['start']);
+          
+        }
+
+        print('endDate');
+        print(endDate);
+        print(startDate);
+
+
+        print(endDate);
+        print(todayDate.isBefore(endDate));
+        print(todayDate.isAfter(startDate));
+
+        // check due careplans
+        if (item['meta']['status'] == 'pending') {
+          if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
+            var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
+            // print(existedCp);
+            // print(item['body']['activityDuration']['start']);
+
+            if (existedCp.isEmpty) {
+              var items = [];
+              items.add(item);
+              dueCarePlans.add({
+                'items': items,
+                'title': item['body']['goal']['title'],
+                'id': item['body']['goal']['id']
+              });
+            } else {
+              dueCarePlans[dueCarePlans.indexOf(existedCp.first)]['items'].add(item);
+
+            }
+          } else if (todayDate.isBefore(startDate)) {
+            var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
+            // print(existedCp);
+            // print(item['body']['activityDuration']['start']);
+
+            if (existedCp.isEmpty) {
+              var items = [];
+              items.add(item);
+              upcomingCarePlans.add({
+                'items': items,
+                'title': item['body']['goal']['title'],
+                'id': item['body']['goal']['id']
+              });
+            } else {
+              upcomingCarePlans[upcomingCarePlans.indexOf(existedCp.first)]['items'].add(item);
+
+            }
+          }
+        } else {
+          var existedCp = completedCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
+          // print(existedCp);
+          // print(item['body']['activityDuration']['start']);
+
+          if (existedCp.isEmpty) {
+            var items = [];
+            items.add(item);
+            completedCarePlans.add({
+              'items': items,
+              'title': item['body']['goal']['title'],
+              'id': item['body']['goal']['id']
+            });
+          } else {
+            completedCarePlans[completedCarePlans.indexOf(existedCp.first)]['items'].add(item);
+
+          }
+        }
+
+        
+        
+        // var existedCp = carePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
+        // // print(existedCp);
+        // // print(item['body']['activityDuration']['start']);
+        
+
+        // if (existedCp.isEmpty) {
+        //   var items = [];
+        //   items.add(item);
+        //   carePlans.add({
+        //     'items': items,
+        //     'title': item['body']['goal']['title'],
+        //     'id': item['body']['goal']['id']
+        //   });
+        // } else {
+        //   carePlans[carePlans.indexOf(existedCp.first)]['items'].add(item);
+
+        // }
+      });
+
+      }
+      
+      // setState(() {
+      //   carePlans = data['data'];
+      //   isLoading = false;
+      // });
+
+    }
+  }
+
+  convertDateFromSeconds(date) {
+    if (date['_seconds'] != null) {
+      var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
+
+      return DateFormat("MMMM d, y").format(parsedDate).toString();
+    }
+    return '';
+  }
+
+  getTitle(encounter) {
+    var screening_type =  encounter['data']['screening_type'];
+    if (screening_type != null && screening_type != '') {
+      if (screening_type == 'ncd') {
+        screening_type = screening_type.toUpperCase() + ' ';
+      } else {
+        screening_type = screening_type[0].toUpperCase() + screening_type.substring(1) + ' ';
+      }
+      
+      return screening_type + 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
+    }
+    
+    return 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
+  }
+
+    String getLastVisitDate() {
+    var date = '';
+
+    if (encounters.length > 0) {
+      var lastEncounter = encounters[0];
+      var parsedDate = DateTime.tryParse(lastEncounter['meta']['created_at']);
+      if (parsedDate != null) {
+        date = DateFormat('yyyy-MM-dd').format(parsedDate);
+      }
+    }
+
+    return date;
+  }
+  String getNextVisitDate() {
+    var date = '';
+
+    if (encounters.length > 0) {
+    print('encounters ${encounters[0]}');
+      var lastEncounter = encounters[0];
+      date = lastEncounter['data']['next_visit_date'] ?? '';
+    }
+
+    return date;
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+      if(widget.prevScreen == 'followup') {
+          print('WillPopScope if');
+          Navigator.of(context).pushNamed( '/chwNavigation', arguments: 1);
+          return true;
+        } else {
+          print('WillPopScope else');
+          Navigator.pop(context);
+          return true;
+        }
+      },
+      child: Scaffold(
+        key: _scaffoldKey,
+        // appBar: new AppBar(
+        //   title: new Text(AppLocalizations.of(context).translate('patientSummary'), style: TextStyle(color: Colors.white, fontSize: 20),),
+        //   backgroundColor: kPrimaryColor,
+        //   elevation: 0.0,
+        //   iconTheme: IconThemeData(color: Colors.white),
+        //   actions: <Widget>[
+
+        //   ],
+        // ),
+        body: isLoading ? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
+          child: SingleChildScrollView(
+            child: Stack(
+              children: <Widget>[
+                Column(                
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: kBorderLighter),
+                      ),
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),    
+                      
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.only(left: 20, right: 20, top: 15),
+
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  child: Text(AppLocalizations.of(context).translate('age')+":", style: TextStyle(fontSize: 17,),),
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  // padding: EdgeInsets.symmetric(vertical: 9),
+                                  child: Text('dummy age', style: TextStyle(fontSize: 17,)),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // report != null && report['body']['result']['assessments']['cvd'] != null ?
+                            Container(
+                              padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  // top: BorderSide(color: kBorderLighter)
+                                )
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Row(
+                                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(AppLocalizations.of(context).translate('gender')+":", style: TextStyle(fontSize: 17)),
+                                      SizedBox(width: 10),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text('dummy',
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  // color: ColorUtils.statusColor[report['body']['result']['assessments']['cvd']['tfl']] ?? Colors.black
+                                                ),
+                                              ),
+                                            ]
+                                          ),
+                                        ]
+                                      )
+                                    ],
+                                  ),
+
+                                  SizedBox(height: 20,),
+
+                                ],
+                              ),
+                            ), 
+                            // : Container(),
+
+                          // report != null && report['body']['result']['assessments']['lifestyle'] != null && report['body']['result']['assessments']['lifestyle']['components']['smoking'] != null ?
+                          Container(
+                            padding: EdgeInsets.only(left: 20, right: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Text(AppLocalizations.of(context).translate('smoking') + ":", style: TextStyle(fontSize: 17)),
+                                    SizedBox(width: 10),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text('dummy smoking',
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                // color: ColorUtils.statusColor[report['body']['result']['assessments']['lifestyle']['components']['smoking']['tfl']] ?? Colors.black
+                                              ),
+                                            ),
+                                          ]
+                                        ),
+                                      ]
+                                    )
+                                  ],
+                                ),
+
+                                SizedBox(height: 20,),
+
+                              ],
+                            ),
+                          ), 
+                          // : Container(),
+
+
+                          // report != null && report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ?
+                          Container(
+                              padding: EdgeInsets.only(left: 20, right: 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Text(AppLocalizations.of(context).translate('smokelessTobacco') + ":", style: TextStyle(fontSize: 17)),
+                                      SizedBox(width: 10),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text("dummy tobacco",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  // color: ColorUtils.statusColor[report['body']['result']['assessments']['body_composition']['components']['bmi']['tfl']] ?? Colors.black
+                                                ),
+                                              ),
+                                            ]
+                                          ),
+                                        ]
+                                      )
+                                    ],
+                                  ),
+
+                                  SizedBox(height: 20,),
+
+                                ],
+                              ),
+                            ),
+                            // : Container(),
+
+
+                          // report != null && report['body']['result']['assessments']['lifestyle'] != null && report['body']['result']['assessments']['lifestyle']['components']['physical_activity'] != null ?
+                            Container(
+                              padding: EdgeInsets.only(left: 20, right: 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Text(AppLocalizations.of(context).translate('bmi') + ":", style: TextStyle(fontSize: 17)),
+                                      SizedBox(width: 10),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text("dummy bmi",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  // color: ColorUtils.statusColor[report['body']['result']['assessments']['lifestyle']['components']['physical_activity']['tfl']] ?? Colors.black
+                                                ),
+                                              ),
+                                            ]
+                                          ),
+                                        ]
+                                      )
+                                    ],
+                                  ),
+
+                                  SizedBox(height: 20,),
+
+                                ],
+                              ),
+                            ),
+                            // : Container(),
+
+
+                          // report != null && report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ?
+                            Container(
+                              padding: EdgeInsets.only(left: 20, right: 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Text(AppLocalizations.of(context).translate('bp') + ":", style: TextStyle(fontSize: 17)),
+                                      SizedBox(width: 10),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text('dummy',
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  // color: ColorUtils.statusColor[report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol']['tfl']] ?? Colors.black
+                                                ),
+                                              ),
+                                            ]
+                                          ),
+                                        ]
+                                      )
+                                    ],
+                                  ),
+
+                                  SizedBox(height: 20,),
+
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                    ),
+
+                    Container(
+                      // decoration: BoxDecoration(
+                      //   border: Border(
+                      //     top: BorderSide(width: 4, color: kBorderLighter)
+                      //   ),
+                      // ),
+                      padding: EdgeInsets.only(top: 15, left: 10, right: 10),
+                      child: Column(
+                        children: <Widget>[
+
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: kBorderLighter),
+                            ),
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(AppLocalizations.of(context).translate('ncdCenterVisit'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+                                SizedBox(height: 15,),
+                                nextVisitDateChw == '' 
+                                ? Container()
+                                : Column(children:[
+                                  Text(AppLocalizations.of(context).translate('nextVisitDateChw') +  ': $nextVisitDateChw', style: TextStyle(fontSize: 17,)),
+                                  SizedBox(height: 10,),
+                                  ]),
+                                nextVisitPlaceChw == '' 
+                                ? Container()
+                                : Column(children:[
+                                  Text(AppLocalizations.of(context).translate('nextVisitPlaceChw') +  ': $nextVisitPlaceChw', style: TextStyle(fontSize: 17,)),
+                                  SizedBox(height: 10,),
+                                  ]),
+                                nextVisitDateCc == '' 
+                                ? Container()
+                                : Column(children:[
+                                  Text(AppLocalizations.of(context).translate('nextVisitDateCc') +  ': $nextVisitDateCc', style: TextStyle(fontSize: 17,)),
+                                  SizedBox(height: 10,),
+                                  ]),
+                                nextVisitPlaceCc == '' 
+                                ? Container()
+                                : Column(children:[
+                                  Text(AppLocalizations.of(context).translate('nextVisitPlaceCc') +  ': $nextVisitPlaceCc', style: TextStyle(fontSize: 17,)),
+                                  SizedBox(height: 10,),
+                                  ]),
+                                Text(AppLocalizations.of(context).translate('lastVisitDate') +  ': $lastEncounterDate', style: TextStyle(fontSize: 17,))
+                              ],
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: kBorderLighter),
+                            ),
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(AppLocalizations.of(context).translate('lastEncounter')+'${(lastEncounterType)}', style: TextStyle(fontSize: 17,)),
+                                SizedBox(height: 10,),
+                                Text(AppLocalizations.of(context).translate('lastEncounterDate')+  ': $lastEncounterDate', style: TextStyle(fontSize: 17,)),
+                              ],
+                            ),
+                          ),
+
+                        ],
+                      )
+                    ),
+                    SizedBox(height: 15,),
+                  ], 
+                  
+                ),
+                isLoading ? Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: double.infinity,
+                  color: Color(0x90FFFFFF),
+                  child: Center(
+                    child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),backgroundColor: Color(0x30FFFFFF),)
+                  ),
+                ) : Container(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+class FloatingButton extends StatelessWidget {
+  final String text;
+  final Function onPressed;
+  const FloatingButton({this.text, this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 15),
+      width: 300,
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+        onPressed: onPressed,
+        child: Row(
+          children: <Widget>[
+            Icon(Icons.add),
+            SizedBox(width: 10,),
+            Text(text, style: TextStyle(fontSize: 17),)
+          ],
+        ),
+      )
+    );
+  }
+}
+
+
+class RecommendedCounsellingChcp extends StatefulWidget {
+  @override
+  _RecommendedCounsellingChcpState createState() => _RecommendedCounsellingChcpState();
+}
+
+var isReferralRequired = null;
+bool dietTitleAdded = false;
+bool tobaccoTitleAdded = false;
+
+class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp> {
+
   bool activityTitleAdded = false;
+
+  @override
+  initState() {
+    super.initState();
+    dietTitleAdded = false;
+    tobaccoTitleAdded = false;
+    isReferralRequired = null;
+  }
 
   checkCounsellingQuestions(counsellingQuestion) {
     // if (medicationQuestions['items'].length - 1 == medicationQuestions['items'].indexOf(medicationQuestion)) {
@@ -3513,6 +4552,21 @@ class _FollowupState extends State<Followup> {
     //   }
 
     // }
+
+    if (counsellingQuestion['type'] == 'medical-adherence') {
+      print('medicationAdh $medicationAnswers');
+      if (medicationAnswers[1] == 'no' || medicationAnswers[3] == 'no' ||medicationAnswers[5] == 'no' || medicationAnswers[7] == 'no') {
+        return true;
+      }
+      return false;
+    }
+
+    if (counsellingQuestion['type'] == 'physical-activity-high') {
+      if (riskAnswers[9] == 'no' || riskAnswers[10] == 'no') {
+        return true;
+      }
+      return false;
+    }
 
     var matchedQuestion;
     riskQuestions['items'].forEach((item) {
@@ -3524,8 +4578,16 @@ class _FollowupState extends State<Followup> {
     if (matchedQuestion != null) {
       // print(matchedQuestion.first);
       var answer = riskAnswers[riskQuestions['items'].indexOf(matchedQuestion)];
-      if (answer == 'yes') {
-        return true;
+      if ((matchedQuestion['type'] == 'eat-vegetables' ||
+          matchedQuestion['type'] == 'physical-activity-high')) {
+        if (answer == 'no') {
+          return true;
+        }
+      } else {
+        if (answer == 'yes') {
+          return true;
+        }
+        return false;
       }
     }
     return false;
@@ -3533,7 +4595,8 @@ class _FollowupState extends State<Followup> {
 
   addCounsellingGroupTitle(question) {
     if (question['group'] == 'unhealthy-diet') {
-      print('group');
+      print('unhealthy-diet');
+      print(dietTitleAdded);
       if (!dietTitleAdded) {
         dietTitleAdded = true;
         return Column(
@@ -3544,6 +4607,24 @@ class _FollowupState extends State<Followup> {
                 margin: EdgeInsets.only(top: 25, bottom: 30),
                 child: Text(
                     AppLocalizations.of(context).translate('unhealthyDiet'),
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.w500))),
+          ],
+        );
+      }
+    } else if (question['group'] == 'tobacco') {
+      print('tobacco');
+      print(tobaccoTitleAdded);
+      if (!tobaccoTitleAdded) {
+        tobaccoTitleAdded = true;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Divider(),
+            Container(
+                margin: EdgeInsets.only(top: 25, bottom: 30),
+                child: Text(
+                    AppLocalizations.of(context).translate('tobaccoUse'),
                     style:
                         TextStyle(fontSize: 20, fontWeight: FontWeight.w500))),
           ],
@@ -3577,143 +4658,432 @@ class _FollowupState extends State<Followup> {
     );
   }
 
-  getNextVisitDate() {
-    print(selectedFollowup);
-    // ['1 week', '2 weeks', '1 month', '2 months', '3 months', '6 months', '1 year'];
-    var date = '';
-    if (selectedFollowup == '1 week') {
-      date = DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().add(Duration(days: 7)));
-    } else if (selectedFollowup == '2 weeks') {
-      date = DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().add(Duration(days: 14)));
-    } else if (selectedFollowup == '1 month') {
-      date = DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().add(Duration(days: 30)));
-    } else if (selectedFollowup == '2 months') {
-      date = DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().add(Duration(days: 60)));
-    } else if (selectedFollowup == '3 months') {
-      date = DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().add(Duration(days: 90)));
-    } else if (selectedFollowup == '6 months') {
-      date = DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().add(Duration(days: 180)));
-    } else if (selectedFollowup == '1 year') {
-      date = DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().add(Duration(days: 365)));
-    }
-
-    setState(() {
-      nextVisitDate = date;
-    });
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      physics: ClampingScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+          child: Form(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                PatientTopbar(),
+                SizedBox(
+                  height: 30,
+                ),
+                Container(
+                    // alignment: Alignment.center,
+                    margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        // Text(
+                        //   AppLocalizations.of(context).translate('tobaccoUse'),
+                        //   style: TextStyle(
+                        //       fontSize: 20, fontWeight: FontWeight.w500),
+                        // ),
+                        Text(
+                          AppLocalizations.of(context)
+                              .translate('wasCounsellingProvided'),
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    )),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                          padding: EdgeInsets.only(bottom: 35, top: 20),
+                          decoration: BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(color: kBorderLighter))),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ...counsellingQuestions['items'].map((question) {
+                                if (checkCounsellingQuestions(question))
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      addCounsellingGroupTitle(question),
+                                      Container(
+                                          child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            getQuestionText(context, question),
+                                            style: TextStyle(
+                                                fontSize: 18, height: 1.7),
+                                          ),
+                                          Container(
+                                              width: 240,
+                                              child: Row(
+                                                children: <Widget>[
+                                                  ...question['options']
+                                                      .map(
+                                                        (option) => Expanded(
+                                                            child: Container(
+                                                          height: 25,
+                                                          width: 100,
+                                                          margin:
+                                                              EdgeInsets.only(
+                                                                  right: 20,
+                                                                  left: 0),
+                                                          decoration: BoxDecoration(
+                                                              border: Border.all(
+                                                                  width: 1,
+                                                                  color: counsellingAnswers[counsellingQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)]
+                                                                      ? Color(
+                                                                          0xFF01579B)
+                                                                      : Colors
+                                                                          .black),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          3),
+                                                              color: counsellingAnswers[counsellingQuestions['items'].indexOf(
+                                                                          question)] ==
+                                                                      question['options']
+                                                                          [question['options'].indexOf(option)]
+                                                                  ? Color(0xFFE1F5FE)
+                                                                  : null),
+                                                          child: FlatButton(
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                dietTitleAdded = false;
+                                                                tobaccoTitleAdded = false;
+                                                                counsellingAnswers[counsellingQuestions['items'].indexOf(question)] = question['options'][question['options'].indexOf(option)];
+                                                                // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
+                                                              });
+                                                            },
+                                                            materialTapTargetSize:
+                                                                MaterialTapTargetSize
+                                                                    .shrinkWrap,
+                                                            child: Text(
+                                                              getOptionText(
+                                                                  context,
+                                                                  question,
+                                                                  option),
+                                                              style: TextStyle(
+                                                                  color: counsellingAnswers[counsellingQuestions['items'].indexOf(
+                                                                              question)] ==
+                                                                          question['options']
+                                                                              [
+                                                                              question['options'].indexOf(option)]
+                                                                      ? kPrimaryColor
+                                                                      : null),
+                                                            ),
+                                                          ),
+                                                        )),
+                                                      )
+                                                      .toList()
+                                                ],
+                                              )),
+                                        ],
+                                      )),
+                                      SizedBox(
+                                        height: 20,
+                                      )
+                                    ],
+                                  );
+                                else
+                                  return Container();
+                              }).toList(),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  SizedBox(height: 20),
+                                  Container(
+                                      child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)
+                                            .translate('referralRequired'),
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            height: 1.7,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      Container(
+                                          width: 240,
+                                          child: Row(
+                                            children: <Widget>[
+                                              Expanded(
+                                                  child: Container(
+                                                height: 25,
+                                                width: 100,
+                                                margin: EdgeInsets.only(
+                                                    right: 20, left: 0),
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        width: 1,
+                                                        color: (isReferralRequired !=
+                                                                    null &&
+                                                                isReferralRequired)
+                                                            ? Color(0xFF01579B)
+                                                            : Colors.black),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            3),
+                                                    color: (isReferralRequired !=
+                                                                null &&
+                                                            isReferralRequired)
+                                                        ? Color(0xFFE1F5FE)
+                                                        : null),
+                                                child: FlatButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      dietTitleAdded = false;
+                                                      tobaccoTitleAdded = false;
+                                                      isReferralRequired = true;
+                                                    });
+                                                  },
+                                                  materialTapTargetSize:
+                                                      MaterialTapTargetSize
+                                                          .shrinkWrap,
+                                                  child: Text(
+                                                    AppLocalizations.of(context)
+                                                        .translate('yes'),
+                                                    style: TextStyle(
+                                                        color: (isReferralRequired !=
+                                                                    null &&
+                                                                isReferralRequired)
+                                                            ? kPrimaryColor
+                                                            : null),
+                                                  ),
+                                                ),
+                                              )),
+                                              Expanded(
+                                                  child: Container(
+                                                height: 25,
+                                                width: 100,
+                                                margin: EdgeInsets.only(
+                                                    right: 20, left: 0),
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        width: 1,
+                                                        color: (isReferralRequired ==
+                                                                    null ||
+                                                                isReferralRequired)
+                                                            ? Colors.black
+                                                            : Color(
+                                                                0xFF01579B)),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            3),
+                                                    color: (isReferralRequired ==
+                                                                null ||
+                                                            isReferralRequired)
+                                                        ? null
+                                                        : Color(0xFFE1F5FE)),
+                                                child: FlatButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      dietTitleAdded = false;
+                                                      tobaccoTitleAdded = false;
+                                                      isReferralRequired = false;
+                                                    });
+                                                  },
+                                                  materialTapTargetSize:
+                                                      MaterialTapTargetSize
+                                                          .shrinkWrap,
+                                                  child: Text(
+                                                    AppLocalizations.of(context)
+                                                        .translate('NO'),
+                                                    style: TextStyle(
+                                                        color: (isReferralRequired ==
+                                                                    null ||
+                                                                isReferralRequired)
+                                                            ? null
+                                                            : kPrimaryColor),
+                                                  ),
+                                                ),
+                                              )),
+                                            ],
+                                          )),
+                                    ],
+                                  )),
+                                  SizedBox(
+                                    height: 20,
+                                  )
+                                ],
+                              ),
+                            ],
+                          )),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )),
+    );
   }
+}
+
+class MedicationsDispense extends StatefulWidget {
+  @override
+  _MedicationsDispenseState createState() => _MedicationsDispenseState();
+}
+
+var dispenseEditingController = TextEditingController();
+// var stringListReturnedFromApiCall = ["first", "second", "third", "fourth", "..."];
+  // This list of controllers can be used to set and get the text from/to the TextFields
+  Map<String,TextEditingController> textEditingControllers = {};
+  var textFields = <TextField>[];
+
+class _MedicationsDispenseState extends State<MedicationsDispense> {
+  bool isEmpty = true;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-        child: Form(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              PatientTopbar(),
-              SizedBox(
-                height: 30,
-              ),
-              Container(
-                  // alignment: Alignment.center,
-                  margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
-                  child: Row(
+  
+    return SingleChildScrollView(
+      physics: ClampingScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+          child: Form(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        AppLocalizations.of(context).translate('followupVisit'),
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500),
-                      ),
-                    ],
-                  )),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 10),
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                        AppLocalizations.of(context)
-                                .translate('followupVisit') +
-                            ' in',
-                        style: TextStyle(color: Colors.black, fontSize: 16)),
-                    SizedBox(
-                      width: 30,
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 15),
-                      color: kSecondaryTextField,
-                      child: DropdownButton<String>(
-                        items: checkMissingData()
-                            ? []
-                            : followups.map((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-                        value: selectedFollowup,
-                        onChanged: (String newValue) {
-                          setState(() {
-                            selectedFollowup = newValue;
-                            getNextVisitDate();
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              nextVisitDate != ''
-                  ? Container(
-                      margin: EdgeInsets.symmetric(vertical: 10),
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                      Container(
+                        child: Row(
                           children: [
                             Text(
-                                AppLocalizations.of(context)
-                                        .translate('nextVisitDate') +
-                                    ': $nextVisitDate',
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 16)),
-                            SizedBox(
-                              width: 30,
+                              AppLocalizations.of(context).translate('medication'),
+                              style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 34,
+                              fontWeight: FontWeight.w500),
                             ),
-                          ]))
-                  : Container(),
-              Container(
-                width: double.infinity,
-                margin: EdgeInsets.only(top: 60, left: 50, right: 50),
-                height: 50,
-                decoration: BoxDecoration(
-                    color: kPrimaryColor,
-                    borderRadius: BorderRadius.circular(3)),
-                child: FlatButton(
-                    onPressed: () async {
-                      widget.parent._completeStep();
-                    },
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    child: Text(
-                      AppLocalizations.of(context).translate('completeVisit'),
-                      style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.white,
-                          fontWeight: FontWeight.normal),
-                    )),
+                          ],  
+                        ),                       
+
+                      ),
+                      // SizedBox(height: 24),
+
+                      // Container(
+                      //     child: Text(
+                      //         'Serial Name    Dose Unit    Frequancy    Duration',
+                      //         style: TextStyle(
+                      //         color: Colors.black,
+                      //         fontSize: 18,
+                      //         // fontWeight: FontWeight.w500
+                      //         ),
+                      //       ),
+                      // ),
+                      SizedBox(height: 24),
+                      if(dynamicMedications != null)
+                      ...dynamicMedications.map((item) {
+                        isEmpty = false;
+                        return Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              child: Text(
+                                item['medInfo'],
+                                style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 18,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 24),
+
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              child: Row(
+                                children: [
+                                  Text(AppLocalizations.of(context).translate('dispense'),
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 18,
+                                      )),
+                                  SizedBox(
+                                    width: 28,
+                                  ),
+                                  Container(
+                                    width: 120,
+                                    height: 40,
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      keyboardType: TextInputType.number,
+                                      controller: textEditingControllers[item['medId']],
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.only(
+                                            top: 5, left: 10, right: 10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.red, width: 0.0)),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 16,
+                                  ),
+                                  FlatButton(
+                                    color: Colors.blue[800],
+                                    textColor: Colors.white, 
+                                    onPressed: () async {
+                                      print('id ${item['medId']}');
+                                      var response = await PatientController().dispenseMedicationByPatient(item['medId'], textEditingControllers[item['medId']].text);
+                                      print('response $response');
+                                      if(!response['error']) {
+                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                          content: Text(AppLocalizations.of(context).translate('dataSaved')),
+                                          backgroundColor: kPrimaryGreenColor,
+                                        ));
+                                        return;
+                                      }
+                                      {
+                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                          content: Text(AppLocalizations.of(context).translate('somethingWrong')),
+                                          backgroundColor: kPrimaryRedColor,
+                                        ));
+                                      }
+                                      // Navigator.of(context).pop();
+                                      // if (response == 'success') {
+                                      // // Navigator.of(context).pop();
+                                      // } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+                                    },
+                                    child: Text(AppLocalizations.of(context).translate('submit')),
+                                  )
+                                ],
+                              ),
+                              ),
+                              SizedBox(height: 24),
+                          ],
+                        ),
+                      );
+                      }).toList(),
+                      isEmpty ? Container(child: Text(AppLocalizations.of(context).translate('noItems'), style: TextStyle(fontSize: 16),),): Container()
+                      ],
+                    ),
+                  ),
+                ]
               ),
-            ],
           ),
-        ));
+      ),
+
+    );
   }
+
 }
 
 class RiskFactors extends StatefulWidget {
