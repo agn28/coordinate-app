@@ -283,7 +283,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
           });
         }
       }
-      if (obs['body']['type'] == 'blood_pressure' && !hasChwEncounter) {
+      if (obs['body']['type'] == 'blood_pressure') {
         print('into blood pressure');
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
@@ -299,7 +299,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
           print(pulseRateText);
         }
       }
-      if (obs['body']['type'] == 'body_measurement' && !hasChwEncounter) {
+      if (obs['body']['type'] == 'body_measurement') {
         print('into body measurement');
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
@@ -330,7 +330,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
           }
         }
       }
-      if (obs['body']['type'] == 'blood_test' && !hasChwEncounter) {
+      if (obs['body']['type'] == 'blood_test') {
         print('into blood test');
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
@@ -799,8 +799,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                   setState(() {
                     print(_currentStep);
                     if (_currentStep == 0) {
-                      Questionnaire().addNewMedicalHistoryNcd(
-                          'medical_history', medicalHistoryAnswers);
+                      Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
                       print(Questionnaire().qnItems);
                     }
 
@@ -1009,19 +1008,19 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     print('dataStatus: $dataStatus');
     print('encounter: $encounter');
     var encounterData;
-    if(!hasChwEncounter) {
+    // if(!hasChwEncounter) {
       encounterData = {
         'context': context,
         'dataStatus': dataStatus,
         'encounter': encounter,
         'observations': observations
       };
-    } else {
-      encounterData = {
-        'context': context,
-        'dataStatus': dataStatus,
-      };
-    }
+    // } else {
+    //   encounterData = {
+    //     'context': context,
+    //     'dataStatus': dataStatus,
+    //   };
+    // }
     
     // var response = await AssessmentController().updateAssessmentWithObservations(status, encounter, observations);
     // var response = await AssessmentController().createOnlyAssessmentWithStatus('ncd center assessment', 'ncd', '', 'incomplete');

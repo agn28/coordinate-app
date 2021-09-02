@@ -487,10 +487,10 @@ class _NewPatientQuestionnaireScreenState
                                     // Navigator.of(context).pop(true);
                                     setState(() {
                                       _currentStep = _currentStep + 1;
+                                      nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                                     });
-                                    await AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
-                      
                                     createObservations();
+                                    await AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
                                     Navigator.of(context).pop(true);
                                   },
                                 ),

@@ -265,7 +265,9 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
         isLoading = false;
       });
     }
-
+    setState(() {
+      isLoading = false;
+    });
   }
 
   search(query) {

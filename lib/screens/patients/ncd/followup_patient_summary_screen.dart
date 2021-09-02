@@ -1472,7 +1472,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(AppLocalizations.of(context).translate('lastEncounter')+'${basic_utils.StringUtils.capitalize(lastEncounterType)}', style: TextStyle(fontSize: 17,)),
+                                Text(AppLocalizations.of(context).translate('lastEncounter')+'${(lastEncounterType)}', style: TextStyle(fontSize: 17,)),
                                 SizedBox(height: 10,),
                                 Text(AppLocalizations.of(context).translate('lastEncounterDate')+'$lastEncounterDate', style: TextStyle(fontSize: 17,)),
                               ],
@@ -1563,11 +1563,12 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                       {
                                         print('edit encounter');
                                         print('${widget.encounterData['encounter']}');
-                                        var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
+                                        var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
 
                                       } else {
                                         print('new encounter');
-                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                                        // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                                        var response = await AssessmentController().createAssessmentWithObservationsLive('new ncd center assessment', assessmentStatus: 'incomplete');
                                       }
                                     } else if(widget.prevScreen == 'followup') {
                                       if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
@@ -1612,12 +1613,13 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                       {
                                         print('edit encounter');
                                         print(status);
-                                        var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
-
+                                        // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
+                                        var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations']);
                                       } else {
                                         print('new encounter');
                                         print(status);
-                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', status, '');
+                                        // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', status, '');
+                                        var response = await AssessmentController().createAssessmentWithObservationsLive('new ncd center assessment', assessmentStatus: status);
                                       }
                                       status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
 

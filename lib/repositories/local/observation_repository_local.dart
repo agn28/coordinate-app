@@ -61,6 +61,19 @@ class ObservationRepositoryLocal {
     
   }
 
+  deleteLocalObservation(id) async {
+    var response;
+    final sql = '''DELETE FROM ${DatabaseCreator.observationTable} WHERE id = "$id"''';
+    try {
+      response = await db.rawQuery(sql);
+      print('delete $response');
+    } catch (err) {
+      print(err);
+      return;
+    }
+    return response;
+  }
+
   getAllObservations() async {
     final sqlObservations = '''SELECT * FROM ${DatabaseCreator.observationTable}''';
     final observations = await db.rawQuery(sqlObservations);
