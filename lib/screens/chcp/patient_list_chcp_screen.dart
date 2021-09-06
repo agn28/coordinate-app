@@ -54,6 +54,7 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
   @override
   initState() {
     super.initState();
+    print('chcp patient list');
     setState(() {
       searchController.text = '';
     });

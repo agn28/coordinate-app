@@ -167,8 +167,12 @@ class CheckAuth extends StatelessWidget {
       if (data['status']) {
         if (data['role'] == 'chw') {
           Navigator.of(context).pushReplacementNamed('/chwHome');
-        } else {
+        }
+        else if(data['role'] == 'chcp') {
           Navigator.of(context).pushReplacementNamed('/chcpHome');
+        }
+        else{
+          Navigator.of(context).pushReplacementNamed('/home');
         }
       } else {
         Navigator.pushReplacement(

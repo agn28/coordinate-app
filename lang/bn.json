@@ -539,5 +539,7 @@
   "patientList" : "রোগীর তালিকা",
   "medication" : "ওষুধ",
   "smoking" : "ধূমপান",
-  "smokelessTobacco" : "ধোঁয়াহীন তামাক"
+  "smokelessTobacco" : "ধোঁয়াহীন তামাক",
+  "noMedication" : "কোন ওষুধ দেওয়া হয় নাই",
+  "wantToCompleteVisit" : "আপনি কি পরিদর্শন সম্পন্ন করতে চান?"
 }

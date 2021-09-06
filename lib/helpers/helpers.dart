@@ -149,6 +149,14 @@ class Helpers {
     return '${patient["data"]["age"]}Y ${StringUtils.capitalize(patient["data"]["gender"])}';
   }
 
+  getPatientAge(patient) {
+    return '${patient["data"]["age"]}Y';
+  }
+
+  getPatientGender(patient) {
+    return '${StringUtils.capitalize(patient["data"]["gender"])}';
+  }
+
   getPatientPid(patient) {
     print('patient topbar');
     if (patient["data"]["pid"] != null && patient["data"]["pid"] != '') {

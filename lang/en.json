@@ -538,5 +538,7 @@
   "patientList" : "Patient List",
   "medication" : "Medication",
   "smoking" : "Smoking",
-  "smokelessTobacco" : "Smokeless Tobacco"
+  "smokelessTobacco" : "Smokeless Tobacco",
+  "noMedication" : "There is no Medication",
+  "wantToCompleteVisit" : "Do you want to complete the visit ?"
 }

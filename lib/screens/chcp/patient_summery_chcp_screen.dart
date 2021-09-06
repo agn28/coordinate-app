@@ -43,7 +43,7 @@ class PatientSummeryChcpScreen extends StatefulWidget {
 
 class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
   var _patient;
-  bool isLoading = true;
+  bool isLoading;
   var carePlans = [];
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   
@@ -93,8 +93,8 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
     _checkAvatar();
     _checkAuth();
     getLastAssessment();
-    getLastFollowup();
-    getUsers();
+    // getLastFollowup();
+    // getUsers();
     getAssessmentDueDate();
     _getCarePlan();
     getReferrals();
@@ -154,25 +154,25 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
     return count.toString();
   }
 
-  getUsers() async {
+  // getUsers() async {
   
-    var data = await UserController().getUsers();
+  //   var data = await UserController().getUsers();
 
 
-    setState(() {
-      users = data;
-      isLoading = false;
-    });
-  }
+  //   setState(() {
+  //     users = data;
+  //     isLoading = false;
+  //   });
+  // }
 
-  getUser(uid) {
-    var user = users.where((user) => user['uid'] == uid);
-    if (user.isNotEmpty) {
-      return user.first['name'];
-    }
+  // getUser(uid) {
+  //   var user = users.where((user) => user['uid'] == uid);
+  //   if (user.isNotEmpty) {
+  //     return user.first['name'];
+  //   }
 
-    return '';
-  }
+  //   return '';
+  // }
 
   getCompletedDate(goal) {
     var data = '';
@@ -237,6 +237,9 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
     //     });
     //   }
     // });
+    setState(() {
+      isLoading = false;
+    });
   }
 
   var waitCount = 0;
@@ -294,13 +297,9 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
     //     report = data['data'];
     //   });
     // }
-    setState(() {
-      // bmi = report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ? report['body']['result']['assessments']['body_composition']['components']['bmi'] : null;
-      // cvd = report['body']['result']['assessments']['cvd'] != null ? report['body']['result']['assessments']['cvd'] : null;
-      // bp = report['body']['result']['assessments']['blood_pressure'] != null ? report['body']['result']['assessments']['blood_pressure'] : null;
-      // cholesterol = report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ? report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] : null;
+  setState(() {
+      isLoading = false;
     });
-
   }
 
   getMedicationsConditions() async {
@@ -356,66 +355,69 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
       // lastAssessmentdDate = '';
       // lastAssessmentdDate = DateFormat("MMMM d, y").format(DateTime.parse(response['data']['meta']['created_at']));
     });
-
-  }
-
-  getDueCounts() {
-    var goalCount = 0;
-    var actionCount = 0;
-    carePlans.forEach((item) {
-      if(item['meta']['status'] == 'pending') {
-        goalCount = goalCount + 1;
-        if (item['body']['components'] != null) {
-          actionCount = actionCount + item['body']['components'].length;
-        }
-      }
-    });
-
-    return "$goalCount goals & $actionCount actions";
-  }
-
-  getEncounters() async {
     setState(() {
-      isLoading = true;
+      isLoading = false;
     });
-    encounters = await AssessmentController().getLiveAllAssessmentsByPatient();
 
-    print('encounters $encounters');
-
-    if (encounters.isNotEmpty) {
-      var allEncounters = encounters;
-      await Future.forEach(allEncounters, (item) async {
-        var data = await getObservations(item);
-        var completed_observations = [];
-        if (data.isNotEmpty) {
-          data.forEach((obs) {
-            
-            if (obs['body']['type'] == 'survey') {
-              if (!completed_observations.contains(obs['body']['data']['name'])) {
-                completed_observations.add(obs['body']['data']['name']);
-              }
-            } else  {
-              if (!completed_observations.contains(obs['body']['type'])) {
-                completed_observations.add(obs['body']['type']);
-              }
-            }
-          });
-        }
-        encounters[encounters.indexOf(item)]['completed_observations'] = completed_observations;
-      });
-      // print(encounters);
-      encounters.sort((a, b) {
-        return DateTime.parse(b['meta']['created_at']).compareTo(DateTime.parse(a['meta']['created_at']));
-      });
-      setState(() {
-        isLoading = false;
-        // lastEncounterDate = DateFormat("MMMM d, y").format(DateTime.parse(encounters.first['meta']['created_at']));
-        // lastEncounterType = encounters.first['data']['type'];
-      });
-
-    }
-    
   }
+
+  // getDueCounts() {
+  //   var goalCount = 0;
+  //   var actionCount = 0;
+  //   carePlans.forEach((item) {
+  //     if(item['meta']['status'] == 'pending') {
+  //       goalCount = goalCount + 1;
+  //       if (item['body']['components'] != null) {
+  //         actionCount = actionCount + item['body']['components'].length;
+  //       }
+  //     }
+  //   });
+
+  //   return "$goalCount goals & $actionCount actions";
+  // }
+
+  // getEncounters() async {
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  //   encounters = await AssessmentController().getLiveAllAssessmentsByPatient();
+
+  //   print('encounters $encounters');
+
+  //   if (encounters.isNotEmpty) {
+  //     var allEncounters = encounters;
+  //     await Future.forEach(allEncounters, (item) async {
+  //       var data = await getObservations(item);
+  //       var completed_observations = [];
+  //       if (data.isNotEmpty) {
+  //         data.forEach((obs) {
+            
+  //           if (obs['body']['type'] == 'survey') {
+  //             if (!completed_observations.contains(obs['body']['data']['name'])) {
+  //               completed_observations.add(obs['body']['data']['name']);
+  //             }
+  //           } else  {
+  //             if (!completed_observations.contains(obs['body']['type'])) {
+  //               completed_observations.add(obs['body']['type']);
+  //             }
+  //           }
+  //         });
+  //       }
+  //       encounters[encounters.indexOf(item)]['completed_observations'] = completed_observations;
+  //     });
+  //     // print(encounters);
+  //     encounters.sort((a, b) {
+  //       return DateTime.parse(b['meta']['created_at']).compareTo(DateTime.parse(a['meta']['created_at']));
+  //     });
+  //     setState(() {
+  //       isLoading = false;
+  //       // lastEncounterDate = DateFormat("MMMM d, y").format(DateTime.parse(encounters.first['meta']['created_at']));
+  //       // lastEncounterType = encounters.first['data']['type'];
+  //     });
+
+  //   }
+    
+  // }
   getDate(date) {
     if (date.runtimeType == String && date != null && date != '') {
       return DateFormat("MMMM d, y").format(DateTime.parse(date)).toString();
@@ -462,33 +464,38 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
         print('lastEncounterDate ${lastEncounterDate}');
       });
     }
-    
-  }
-
-  getLastFollowup() async {
     setState(() {
-      isLoading = true;
+      isLoading = false;
     });
-    lastFollowup = await AssessmentController().getLastAssessmentByPatient(key:'screening_type', value:'follow-up');
+  }
 
-    print('lastFollowup $lastFollowup');
-    if(lastFollowup != null && lastFollowup.isNotEmpty) {
-      if(lastFollowup['data']['body']['type'] == 'follow up visit (community)'
-        && lastFollowup['data']['body']['status'] == 'incomplete') {
-          lastFollowupType = lastFollowup['data']['body']['followup_type'];
-          print('lastFollowupType ${lastFollowupType}');
-        }
-    }
+  // getLastFollowup() async {
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  //   lastFollowup = await AssessmentController().getLastAssessmentByPatient(key:'screening_type', value:'follow-up');
+
+  //   print('lastFollowup $lastFollowup');
+  //   if(lastFollowup != null && lastFollowup.isNotEmpty) {
+  //     if(lastFollowup['data']['body']['type'] == 'follow up visit (community)'
+  //       && lastFollowup['data']['body']['status'] == 'incomplete') {
+  //         lastFollowupType = lastFollowup['data']['body']['followup_type'];
+  //         print('lastFollowupType ${lastFollowupType}');
+  //       }
+  //   }
     
-  }
+  //   setState(() {
+  //     isLoading = false;
+  //   });
+  // }
 
-  getObservations(assessment) async {
-    // _observations =  await AssessmentController().getObservationsByAssessment(widget.assessment);
-    var data =  await AssessmentController().getLiveObservationsByAssessment(assessment);
-    // print(data);
-    return data;
+  // getObservations(assessment) async {
+  //   // _observations =  await AssessmentController().getObservationsByAssessment(widget.assessment);
+  //   var data =  await AssessmentController().getLiveObservationsByAssessment(assessment);
+  //   // print(data);
+  //   return data;
 
-  }
+  // }
 
   _checkAvatar() async {
     avatarExists = await File(Patient().getPatient()['data']['avatar']).exists();
@@ -634,29 +641,29 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
     }
   }
 
-  convertDateFromSeconds(date) {
-    if (date['_seconds'] != null) {
-      var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
+  // convertDateFromSeconds(date) {
+  //   if (date['_seconds'] != null) {
+  //     var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
 
-      return DateFormat("MMMM d, y").format(parsedDate).toString();
-    }
-    return '';
-  }
+  //     return DateFormat("MMMM d, y").format(parsedDate).toString();
+  //   }
+  //   return '';
+  // }
 
-  getTitle(encounter) {
-    var screening_type =  encounter['data']['screening_type'];
-    if (screening_type != null && screening_type != '') {
-      if (screening_type == 'ncd') {
-        screening_type = screening_type.toUpperCase() + ' ';
-      } else {
-        screening_type = screening_type[0].toUpperCase() + screening_type.substring(1) + ' ';
-      }
+  // getTitle(encounter) {
+  //   var screening_type =  encounter['data']['screening_type'];
+  //   if (screening_type != null && screening_type != '') {
+  //     if (screening_type == 'ncd') {
+  //       screening_type = screening_type.toUpperCase() + ' ';
+  //     } else {
+  //       screening_type = screening_type[0].toUpperCase() + screening_type.substring(1) + ' ';
+  //     }
       
-      return screening_type + 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
-    }
+  //     return screening_type + 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
+  //   }
     
-    return 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
-  }
+  //   return 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -664,7 +671,7 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
       onWillPop: () async {
         if(widget.prevScreen == 'encounter') {
           print('WillPopScope if');
-          Navigator.of(context).pushNamed('/firstCenterSearch');
+          Navigator.of(context).pushNamed('/patientListChcp');
           return true;
         } else if(widget.prevScreen == 'followup') {
           print('WillPopScope else if');

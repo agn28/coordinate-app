@@ -15,6 +15,7 @@ import 'package:nhealth/controllers/followup_controller.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/controllers/observation_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
+import 'package:nhealth/controllers/referral_controller.dart';
 import 'package:nhealth/controllers/sync_controller.dart';
 import 'package:nhealth/controllers/user_controller.dart';
 import 'package:nhealth/helpers/functions.dart';
@@ -84,6 +85,11 @@ var completedCarePlans = [];
 var upcomingCarePlans = [];
 var referrals = [];
 var pendingReferral;
+var encounterData;
+
+var selectedReason;
+var selectedtype;
+var clinicNameController = TextEditingController();
 
 getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
@@ -142,6 +148,8 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
     getLanguage();
 
     getIncompleteAssessment();
+
+    _getAuthData();
   }
 
   getIncompleteAssessment() async {
@@ -880,15 +888,24 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                       }
                     }
 
+                    if (_currentStep == 9) {
+                      _completeRefer();
+                      return;
+                    }
+
                     if (_currentStep == 8) {
-                      
+                      print('here 8');
                       _completeStep();
+                      setState(() {
+                        _currentStep = _currentStep + 1;
+                      nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                      });
+                      
                       return;
                     }
 
                     if (_currentStep == 7) {
                       
-                      nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                       _currentStep = _currentStep + 1; 
                       return;
                     }
@@ -1022,18 +1039,162 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
     return response;
   }
 
+  var role = '';
+  _getAuthData() async {
+    var data = await Auth().getStorageAuth();
+
+    print('role');
+    print(data['role']);
+    setState(() {
+      role = data['role'];
+    });
+  }
+
+  Future _completeRefer() async{
+    var referralType;
+    if(role == 'chw')
+    {
+      referralType = 'community';
+    } else if(role == 'nurse'){
+      referralType = 'center';
+    }  else if(role == 'chcp'){
+      referralType = 'chcp';
+    } else{
+      referralType = '';
+    }
+
+    var data = {
+      'meta': {
+        'patient_id': Patient().getPatient()['id'],
+        "collected_by": Auth().getAuth()['uid'],
+        "status": "pending",
+        "created_at": DateTime.now().toString()
+      },
+      'body': {
+        'reason': selectedReason,
+        'type' : referralType,
+        'location' : {
+          'clinic_type' : selectedtype,
+          'clinic_name' : clinicNameController,
+        },
+      },
+      'referred_from': 'new questionnaire chcp',
+    };
+
+    // data['body']['reason'] = selectedReason;
+    // data['body']['type'] = referralType;
+    // data['body']['location'] = {};
+    // data['body']['location']['clinic_type'] = selectedtype;
+    // data['body']['location']['clinic_name'] = clinicNameController.text;
+
+    print('dataaa: $data');
+
+    // setState(() {
+    //   isLoading = true;
+    // });
+    // var response =
+    //     await ReferralController()
+    //         .create(context, data);
+    // setState(() {
+    //   isLoading = false;
+    // });
+    // print('response');
+    // print(response.runtimeType);
+
+    // return;
+
+    // if (response.runtimeType != int &&
+    //     response != null &&
+    //     response['error'] == true &&
+    //     response['message'] ==
+    //         'referral exists') {
+    //   await showDialog(
+    //     context: context,
+    //     builder: (BuildContext context) {
+    //       // return object of type Dialog
+    //       return AlertDialog(
+    //         content: new Text(
+    //           AppLocalizations.of(context)
+    //               .translate(
+    //                   "referralAlreadyExists"),
+    //           style:
+    //               TextStyle(fontSize: 20),
+    //         ),
+    //         actions: <Widget>[
+    //           // usually buttons at the bottom of the dialog
+    //           new FlatButton(
+    //             child: new Text(
+    //                 AppLocalizations.of(
+    //                         context)
+    //                     .translate(
+    //                         "referralUpdate"),
+    //                 style: TextStyle(
+    //                     color:
+    //                         kPrimaryColor)),
+    //             onPressed: () {
+    //               Navigator.of(context)
+    //                   .pop();
+    //               Navigator.of(context)
+    //                   .pushNamed(
+    //                 '/referralList',
+    //               );
+    //             },
+    //           ),
+    //         ],
+    //       );
+    //     },
+    //   );
+    // } else {
+    //   Navigator.of(context).pushNamed(
+    //     '/chwHome',
+    //   );
+    // }
+
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          content: new Text(
+            AppLocalizations.of(context).translate("wantToCompleteVisit"),
+            style: TextStyle(fontSize: 20),
+          ),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            FlatButton(
+              child: new Text(AppLocalizations.of(context).translate("yes"),
+                  style: TextStyle(color: kPrimaryColor)),
+              onPressed: () {
+                // Navigator.of(context).pop(false);
+                Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
+              },
+            ),
+            FlatButton(
+              child: new Text(
+                  AppLocalizations.of(context).translate("NO"),
+                  style: TextStyle(color: kPrimaryColor)),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+          ],
+        );
+    });
+
+  }
+
   Future _completeStep() async {
     print('before missing popup');
 
     var hasMissingData = checkMissingData();
     var hasOptionalMissingData = checkOptionalMissingData();
 
-    if (hasMissingData) {
-      var continueMissing = await missingDataAlert();
-      if (!continueMissing) {
-        return;
-      }
-    }
+    // if (hasMissingData) {
+    //   var continueMissing = await missingDataAlert();
+    //   if (!continueMissing) {
+    //     return;
+    //   }
+    // }
 
     // setLoader(true);
 
@@ -1046,7 +1207,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
     // }
     print('dataStatus: $dataStatus');
     print('encounter: $encounter');
-    var encounterData;
+    
     if(!hasChwEncounter) {
       encounterData = {
         'context': context,
@@ -1082,22 +1243,22 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
     //   return;
     // }
 
-    if (isReferralRequired) {
-      var data = {
-        'meta': {
-          'patient_id': Patient().getPatient()['id'],
-          "collected_by": Auth().getAuth()['uid'],
-          "status": "pending"
-        },
-        'body': {},
-        'referred_from': 'new questionnaire'
-      };
-      goToHome(true, data);
+    // if (isReferralRequired) {
+    //   var data = {
+    //     'meta': {
+    //       'patient_id': Patient().getPatient()['id'],
+    //       "collected_by": Auth().getAuth()['uid'],
+    //       "status": "pending"
+    //     },
+    //     'body': {},
+    //     'referred_from': 'new questionnaire'
+    //   };
+    //   goToHome(true, data);
 
-      return;
-    }
+    //   return;
+    // }
   
-    Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
+    // Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
     // Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: 'encounter');
     // Navigator.of(context).pushNamed('/ncdPatientSummary');
     // goToHome(false, null);
@@ -1159,6 +1320,11 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
       CustomStep(
         title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
         content: MedicationsDispense(),
+        isActive: _currentStep >= 2,
+      ),
+      CustomStep(
+        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
+        content: CreateRefer(),
         isActive: _currentStep >= 2,
       ),
   
@@ -3596,6 +3762,7 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
     referrals = [];
     pendingReferral = null;
     carePlansEmpty = false;
+    getRiskQuestionAnswer();
     
     // _checkAvatar();
     // _checkAuth();
@@ -3609,6 +3776,22 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
     // // getEncounters();
     // // getAssessments();
     // _getCarePlan();
+
+  }
+
+  getRiskQuestionAnswer(){
+    // print('getRiskQuestionAnswer');
+    var riskQuestions = Questionnaire().questions['new_patient']['risk_factors'];
+    // print('riskQuestions $riskQuestions');
+    riskQuestions['items'].forEach((item) {
+       print('risk factor: ${item} \n');
+      if(item['type'] == 'smoking'){
+        print('SMOKING');
+      }
+      if(item['type'] == 'smokeless-tobacco'){
+        print('SMOKEless tobacco');
+      }
+    });
 
   }
   getDate(date) {
@@ -4155,6 +4338,8 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
   }
 
 
+
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -4208,7 +4393,9 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                 SizedBox(width: 10),
                                 Expanded(
                                   // padding: EdgeInsets.symmetric(vertical: 9),
-                                  child: Text('dummy age', style: TextStyle(fontSize: 17,)),
+                                  // child: Text('dummy age', style: TextStyle(fontSize: 17,)),
+                                  // Text(Helpers().getPatientAgeAndGender(Patient().getPatient()),)
+                                  child: Text(Helpers().getPatientAge(Patient().getPatient()),style: TextStyle(fontSize: 17,)),
                                 ),
                               ],
                             ),
@@ -4236,12 +4423,7 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: <Widget>[
-                                              Text('dummy',
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  // color: ColorUtils.statusColor[report['body']['result']['assessments']['cvd']['tfl']] ?? Colors.black
-                                                ),
-                                              ),
+                                              Text(Helpers().getPatientGender(Patient().getPatient()),style: TextStyle(fontSize: 17,)),
                                             ]
                                           ),
                                         ]
@@ -4345,8 +4527,7 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                         children: <Widget>[
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text("dummy bmi",
+                                            children: <Widget>[Text("${bmiEditingController.text}",
                                                 style: TextStyle(
                                                   fontSize: 18,
                                                   // color: ColorUtils.statusColor[report['body']['result']['assessments']['lifestyle']['components']['physical_activity']['tfl']] ?? Colors.black
@@ -4529,7 +4710,7 @@ class RecommendedCounsellingChcp extends StatefulWidget {
   _RecommendedCounsellingChcpState createState() => _RecommendedCounsellingChcpState();
 }
 
-var isReferralRequired = null;
+// var isReferralRequired = null;
 bool dietTitleAdded = false;
 bool tobaccoTitleAdded = false;
 
@@ -4542,7 +4723,7 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
     super.initState();
     dietTitleAdded = false;
     tobaccoTitleAdded = false;
-    isReferralRequired = null;
+    // isReferralRequired = null;
   }
 
   checkCounsellingQuestions(counsellingQuestion) {
@@ -4796,127 +4977,127 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
                                 else
                                   return Container();
                               }).toList(),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  SizedBox(height: 20),
-                                  Container(
-                                      child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        AppLocalizations.of(context)
-                                            .translate('referralRequired'),
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            height: 1.7,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                      Container(
-                                          width: 240,
-                                          child: Row(
-                                            children: <Widget>[
-                                              Expanded(
-                                                  child: Container(
-                                                height: 25,
-                                                width: 100,
-                                                margin: EdgeInsets.only(
-                                                    right: 20, left: 0),
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        width: 1,
-                                                        color: (isReferralRequired !=
-                                                                    null &&
-                                                                isReferralRequired)
-                                                            ? Color(0xFF01579B)
-                                                            : Colors.black),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            3),
-                                                    color: (isReferralRequired !=
-                                                                null &&
-                                                            isReferralRequired)
-                                                        ? Color(0xFFE1F5FE)
-                                                        : null),
-                                                child: FlatButton(
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      dietTitleAdded = false;
-                                                      tobaccoTitleAdded = false;
-                                                      isReferralRequired = true;
-                                                    });
-                                                  },
-                                                  materialTapTargetSize:
-                                                      MaterialTapTargetSize
-                                                          .shrinkWrap,
-                                                  child: Text(
-                                                    AppLocalizations.of(context)
-                                                        .translate('yes'),
-                                                    style: TextStyle(
-                                                        color: (isReferralRequired !=
-                                                                    null &&
-                                                                isReferralRequired)
-                                                            ? kPrimaryColor
-                                                            : null),
-                                                  ),
-                                                ),
-                                              )),
-                                              Expanded(
-                                                  child: Container(
-                                                height: 25,
-                                                width: 100,
-                                                margin: EdgeInsets.only(
-                                                    right: 20, left: 0),
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        width: 1,
-                                                        color: (isReferralRequired ==
-                                                                    null ||
-                                                                isReferralRequired)
-                                                            ? Colors.black
-                                                            : Color(
-                                                                0xFF01579B)),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            3),
-                                                    color: (isReferralRequired ==
-                                                                null ||
-                                                            isReferralRequired)
-                                                        ? null
-                                                        : Color(0xFFE1F5FE)),
-                                                child: FlatButton(
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      dietTitleAdded = false;
-                                                      tobaccoTitleAdded = false;
-                                                      isReferralRequired = false;
-                                                    });
-                                                  },
-                                                  materialTapTargetSize:
-                                                      MaterialTapTargetSize
-                                                          .shrinkWrap,
-                                                  child: Text(
-                                                    AppLocalizations.of(context)
-                                                        .translate('NO'),
-                                                    style: TextStyle(
-                                                        color: (isReferralRequired ==
-                                                                    null ||
-                                                                isReferralRequired)
-                                                            ? null
-                                                            : kPrimaryColor),
-                                                  ),
-                                                ),
-                                              )),
-                                            ],
-                                          )),
-                                    ],
-                                  )),
-                                  SizedBox(
-                                    height: 20,
-                                  )
-                                ],
-                              ),
+                              // Column(
+                              //   crossAxisAlignment: CrossAxisAlignment.start,
+                              //   children: <Widget>[
+                              //     SizedBox(height: 20),
+                              //     Container(
+                              //         child: Row(
+                              //       mainAxisAlignment:
+                              //           MainAxisAlignment.spaceBetween,
+                              //       children: [
+                              //         Text(
+                              //           AppLocalizations.of(context)
+                              //               .translate('referralRequired'),
+                              //           style: TextStyle(
+                              //               fontSize: 18,
+                              //               height: 1.7,
+                              //               fontWeight: FontWeight.w500),
+                              //         ),
+                              //         Container(
+                              //             width: 240,
+                              //             child: Row(
+                              //               children: <Widget>[
+                              //                 Expanded(
+                              //                     child: Container(
+                              //                   height: 25,
+                              //                   width: 100,
+                              //                   margin: EdgeInsets.only(
+                              //                       right: 20, left: 0),
+                              //                   decoration: BoxDecoration(
+                              //                       border: Border.all(
+                              //                           width: 1,
+                              //                           color: (isReferralRequired !=
+                              //                                       null &&
+                              //                                   isReferralRequired)
+                              //                               ? Color(0xFF01579B)
+                              //                               : Colors.black),
+                              //                       borderRadius:
+                              //                           BorderRadius.circular(
+                              //                               3),
+                              //                       color: (isReferralRequired !=
+                              //                                   null &&
+                              //                               isReferralRequired)
+                              //                           ? Color(0xFFE1F5FE)
+                              //                           : null),
+                              //                   child: FlatButton(
+                              //                     onPressed: () {
+                              //                       setState(() {
+                              //                         dietTitleAdded = false;
+                              //                         tobaccoTitleAdded = false;
+                              //                         isReferralRequired = true;
+                              //                       });
+                              //                     },
+                              //                     materialTapTargetSize:
+                              //                         MaterialTapTargetSize
+                              //                             .shrinkWrap,
+                              //                     child: Text(
+                              //                       AppLocalizations.of(context)
+                              //                           .translate('yes'),
+                              //                       style: TextStyle(
+                              //                           color: (isReferralRequired !=
+                              //                                       null &&
+                              //                                   isReferralRequired)
+                              //                               ? kPrimaryColor
+                              //                               : null),
+                              //                     ),
+                              //                   ),
+                              //                 )),
+                              //                 Expanded(
+                              //                     child: Container(
+                              //                   height: 25,
+                              //                   width: 100,
+                              //                   margin: EdgeInsets.only(
+                              //                       right: 20, left: 0),
+                              //                   decoration: BoxDecoration(
+                              //                       border: Border.all(
+                              //                           width: 1,
+                              //                           color: (isReferralRequired ==
+                              //                                       null ||
+                              //                                   isReferralRequired)
+                              //                               ? Colors.black
+                              //                               : Color(
+                              //                                   0xFF01579B)),
+                              //                       borderRadius:
+                              //                           BorderRadius.circular(
+                              //                               3),
+                              //                       color: (isReferralRequired ==
+                              //                                   null ||
+                              //                               isReferralRequired)
+                              //                           ? null
+                              //                           : Color(0xFFE1F5FE)),
+                              //                   child: FlatButton(
+                              //                     onPressed: () {
+                              //                       setState(() {
+                              //                         dietTitleAdded = false;
+                              //                         tobaccoTitleAdded = false;
+                              //                         isReferralRequired = false;
+                              //                       });
+                              //                     },
+                              //                     materialTapTargetSize:
+                              //                         MaterialTapTargetSize
+                              //                             .shrinkWrap,
+                              //                     child: Text(
+                              //                       AppLocalizations.of(context)
+                              //                           .translate('NO'),
+                              //                       style: TextStyle(
+                              //                           color: (isReferralRequired ==
+                              //                                       null ||
+                              //                                   isReferralRequired)
+                              //                               ? null
+                              //                               : kPrimaryColor),
+                              //                     ),
+                              //                   ),
+                              //                 )),
+                              //               ],
+                              //             )),
+                              //       ],
+                              //     )),
+                              //     SizedBox(
+                              //       height: 20,
+                              //     )
+                              //   ],
+                              // ),
                             ],
                           )),
                     ],
@@ -5072,7 +5253,7 @@ class _MedicationsDispenseState extends State<MedicationsDispense> {
                         ),
                       );
                       }).toList(),
-                      isEmpty ? Container(child: Text(AppLocalizations.of(context).translate('noItems'), style: TextStyle(fontSize: 16),),): Container()
+                      isEmpty ? Container(child: Text(AppLocalizations.of(context).translate('noMedication'), style: TextStyle(fontSize: 16),),): Container()
                       ],
                     ),
                   ),
@@ -5084,6 +5265,436 @@ class _MedicationsDispenseState extends State<MedicationsDispense> {
     );
   }
 
+}
+
+class CreateRefer extends StatefulWidget {
+
+  @override
+  _CreateReferState createState() => _CreateReferState();
+}
+
+class _CreateReferState extends State<CreateRefer> {
+  bool refer = false;
+  var role = '';
+  var referralReasonOptions = {
+  'options': ['Urgent medical attempt required', 'NCD screening required'],
+  'options_bn': ['তাৎক্ষণিক মেডিকেল প্রচেষ্টা প্রয়োজন', 'এনসিডি স্ক্রিনিং প্রয়োজন']
+  };
+  List referralReasons;
+  // var selectedReason;
+  // var clinicNameController = TextEditingController();
+  var clinicTypes = [];
+  // var selectedtype;
+  var _patient;
+
+  @override
+  void initState() {
+    super.initState();
+    _patient = Patient().getPatient();
+    print(Language().getLanguage());
+    // _getAuthData();
+    getCenters();
+    referralReasons = referralReasonOptions['options']; 
+    print('encounterData $encounterData');
+  }
+
+  // _getAuthData() async {
+  //   var data = await Auth().getStorageAuth();
+
+  //   print('role');
+  //   print(data['role']);
+  //   setState(() {
+  //     role = data['role'];
+  //   });
+  // }
+
+  getCenters() async {
+    // setState(() {
+    //   isLoading = true;
+    // });
+    var centerData = await PatientController().getCenter();
+    // setState(() {
+    //   isLoading = false;
+    // });
+
+    print("CenterData: $centerData");
+
+    if (centerData['error'] != null && !centerData['error']) {
+      clinicTypes = centerData['data'];
+      for(var center in clinicTypes) {
+        if(isNotNull(_patient['data']['center']) && center['id'] == _patient['data']['center']['id']) {
+          print('selectedCenter $center');
+          setState(() {
+            selectedtype = center;
+          });
+        }
+      }
+    }
+    print("center: $clinicTypes");
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+       child: SingleChildScrollView(
+          child: Stack(
+            children: <Widget>[
+              Container(
+                
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    // PatientTopbar(),
+                    SizedBox(height: 30,),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Text('Refer', style: TextStyle(fontSize: 20),)
+                          ),
+                          SizedBox(width: 30,),
+                          Container(
+                            height: 25,
+                            width: 100,
+                            margin:
+                                EdgeInsets.only(right: 20,left: 0),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 1,
+                                  color:  Colors.black),
+                                borderRadius: BorderRadius.circular(3),
+                          ),
+                            child: FlatButton(
+                              onPressed: () { 
+                                setState(() {
+                                  refer = true;
+                                });
+                              },
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              child: Text(
+                                AppLocalizations.of(context).translate('yes'),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(width: 20,),
+                          Container(
+                            height: 25,
+                            width: 100,
+                            margin:
+                                EdgeInsets.only(right: 20,left: 0),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 1,
+                                  color:  Colors.black),
+                                borderRadius: BorderRadius.circular(3),
+                          ),
+                            child: FlatButton(
+                              onPressed: () {
+                                setState(() {
+                                  refer = false;
+                                }); 
+                              },
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              child: Text(
+                                AppLocalizations.of(context).translate('NO'),
+                              ),
+                            ),
+                          ),
+                        ],)
+                    ),
+                    SizedBox(height: 50,),
+                    refer == true
+                    ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(AppLocalizations.of(context).translate("reasonForReferral"), style: TextStyle(fontSize: 20),)
+                        ),
+                        SizedBox(height: 10,),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 20),
+                          color: kSecondaryTextField,
+                          child: DropdownButtonFormField(
+                            hint: Text(AppLocalizations.of(context).translate('selectAReason'), style: TextStyle(fontSize: 20, color: kTextGrey),),
+                            decoration: InputDecoration(
+                              fillColor: kSecondaryTextField,
+                              contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                              border: UnderlineInputBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(4),
+                                topRight: Radius.circular(4),
+                              )
+                            ),
+                            ),
+                            items: [
+                              ...referralReasons.map((item) =>
+                                DropdownMenuItem(
+                                  child: Text(getDropdownOptionText(context, referralReasonOptions, item)),
+                                  value: item
+                                )
+                              ).toList(),
+                            ],
+                            value: selectedReason,
+                            isExpanded: true,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedReason = value;
+                              });
+                            },
+                          ),
+                        ),
+
+
+                        SizedBox(height: 30,),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(AppLocalizations.of(context).translate("referralLocation"), style: TextStyle(fontSize: 20),)
+                        ),
+                        SizedBox(height: 10,),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 20),
+                          color: kSecondaryTextField,
+                          child: DropdownButtonFormField(
+                            hint: Text(AppLocalizations.of(context).translate("clinicType"), style: TextStyle(fontSize: 20, color: kTextGrey),),
+                            decoration: InputDecoration(
+                              fillColor: kSecondaryTextField,
+                              contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                              border: UnderlineInputBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(4),
+                                topRight: Radius.circular(4),
+                              )
+                            ),
+                            ),
+                            items: [
+                              ...clinicTypes.map((item) =>
+                                DropdownMenuItem(
+                                  child: Text(getName(context, item)),
+                                  value: item
+                                )
+                              ).toList(),
+                            ],
+                            value: selectedtype,
+                            isExpanded: true,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedtype = value;
+                                print('selectedtype $selectedtype');
+                              });
+                            },
+                          ),
+                        ),
+
+                        SizedBox(height: 20,),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 20),
+                          color: kSecondaryTextField,
+                          child: TextField(
+                            controller: clinicNameController,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.only(left: 10, right: 10),
+                              hintText: 'Name of Clinic',
+                              hintStyle: TextStyle(fontSize: 18)
+                            ),
+                          )
+                        ),
+
+                        SizedBox(height: 50,),
+                        Row(
+                        children: <Widget>[
+                          // Expanded(
+                          //   child: Container(
+                          //     width: double.infinity,
+                          //     margin: EdgeInsets.only(left: 20, right: 20),
+                          //     height: 50,
+                          //     decoration: BoxDecoration(
+                          //       color: kPrimaryColor,
+                          //       borderRadius: BorderRadius.circular(3)
+                          //     ),
+                          //     child: FlatButton(
+                          //       onPressed: () async {
+                          //         // Navigator.of(context).pushNamed('/chwNavigation',);
+
+                          //         var referralType;
+                          //         if(role == 'chw')
+                          //         {
+                          //           referralType = 'community';
+                          //         } else if(role == 'nurse'){
+                          //           referralType = 'center';
+                          //         }  else if(role == 'chcp'){
+                          //           referralType = 'chcp';
+                          //         } else{
+                          //           referralType = '';
+                          //         }
+
+                          //         var data = {
+                          //           'meta': {
+                          //             'patient_id': Patient().getPatient()['id'],
+                          //             "collected_by": Auth().getAuth()['uid'],
+                          //             "status": "pending",
+                          //             "created_at": DateTime.now().toString()
+                          //           },
+                          //           'body': {
+                          //             'reason': selectedReason,
+                          //             'type' : referralType,
+                          //             'location' : {
+                          //               'clinic_type' : selectedtype,
+                          //               'clinic_name' : clinicNameController,
+                          //             },
+                          //           },
+                          //           'referred_from': 'new questionnaire chcp',
+                          //         };
+
+                          //         // data['body']['reason'] = selectedReason;
+                          //         // data['body']['type'] = referralType;
+                          //         // data['body']['location'] = {};
+                          //         // data['body']['location']['clinic_type'] = selectedtype;
+                          //         // data['body']['location']['clinic_name'] = clinicNameController.text;
+
+                          //         print(data);
+
+                          //         // setState(() {
+                          //         //   isLoading = true;
+                          //         // });
+                          //         // var response =
+                          //         //     await ReferralController()
+                          //         //         .create(context, data);
+                          //         // setState(() {
+                          //         //   isLoading = false;
+                          //         // });
+                          //         // print('response');
+                          //         // print(response.runtimeType);
+
+                          //         // return;
+
+                          //         // if (response.runtimeType != int &&
+                          //         //     response != null &&
+                          //         //     response['error'] == true &&
+                          //         //     response['message'] ==
+                          //         //         'referral exists') {
+                          //         //   await showDialog(
+                          //         //     context: context,
+                          //         //     builder: (BuildContext context) {
+                          //         //       // return object of type Dialog
+                          //         //       return AlertDialog(
+                          //         //         content: new Text(
+                          //         //           AppLocalizations.of(context)
+                          //         //               .translate(
+                          //         //                   "referralAlreadyExists"),
+                          //         //           style:
+                          //         //               TextStyle(fontSize: 20),
+                          //         //         ),
+                          //         //         actions: <Widget>[
+                          //         //           // usually buttons at the bottom of the dialog
+                          //         //           new FlatButton(
+                          //         //             child: new Text(
+                          //         //                 AppLocalizations.of(
+                          //         //                         context)
+                          //         //                     .translate(
+                          //         //                         "referralUpdate"),
+                          //         //                 style: TextStyle(
+                          //         //                     color:
+                          //         //                         kPrimaryColor)),
+                          //         //             onPressed: () {
+                          //         //               Navigator.of(context)
+                          //         //                   .pop();
+                          //         //               Navigator.of(context)
+                          //         //                   .pushNamed(
+                          //         //                 '/referralList',
+                          //         //               );
+                          //         //             },
+                          //         //           ),
+                          //         //         ],
+                          //         //       );
+                          //         //     },
+                          //         //   );
+                          //         // } else {
+                          //         //   Navigator.of(context).pushNamed(
+                          //         //     '/chwHome',
+                          //         //   );
+                          //         // }
+
+                          //         await showDialog(
+                          //           context: context,
+                          //           builder: (BuildContext context) {
+                          //             // return object of type Dialog
+                          //             return AlertDialog(
+                          //               content: new Text(
+                          //                 AppLocalizations.of(context).translate("wantToCompleteVisit"),
+                          //                 style: TextStyle(fontSize: 20),
+                          //               ),
+                          //               actions: <Widget>[
+                          //                 // usually buttons at the bottom of the dialog
+                          //                 FlatButton(
+                          //                   child: new Text(AppLocalizations.of(context).translate("yes"),
+                          //                       style: TextStyle(color: kPrimaryColor)),
+                          //                   onPressed: () {
+                          //                     // Navigator.of(context).pop(false);
+                          //                     Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
+                          //                   },
+                          //                 ),
+                          //                 FlatButton(
+                          //                   child: new Text(
+                          //                       AppLocalizations.of(context).translate("NO"),
+                          //                       style: TextStyle(color: kPrimaryColor)),
+                          //                   onPressed: () {
+                          //                     Navigator.of(context).pop(false);
+                          //                   },
+                          //                 ),
+                          //               ],
+                          //             );
+                          //         });
+                          //       },
+                          //       materialTapTargetSize:
+                          //           MaterialTapTargetSize.shrinkWrap,
+                          //       child: Text(
+                          //         AppLocalizations.of(context)
+                          //             .translate('referralCreate')
+                          //             .toUpperCase(),
+                          //         style: TextStyle(
+                          //             fontSize: 14,
+                          //             color: Colors.white,
+                          //             fontWeight: FontWeight.normal),
+                          //         )),
+                          //         ),
+                          //       ),
+                              ],
+                            ),
+                            isLoading
+                            ? Container(
+                                height: MediaQuery.of(context).size.height,
+                                width: double.infinity,
+                                color: Color(0x90FFFFFF),
+                                child: Center(
+                                    child: CircularProgressIndicator(
+                                  valueColor:
+                                      AlwaysStoppedAnimation<Color>(kPrimaryColor),
+                                  backgroundColor: Color(0x30FFFFFF),
+                                )),
+                              )
+                            : Container(),
+                        // Container(
+                        //   height: 300,
+                        //   width: double.infinity,
+                        //   color: Colors.black12,
+                        // )
+                      ],
+                    )
+                    : Container(),
+                    ],
+                  ),
+                ),   
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class RiskFactors extends StatefulWidget {
