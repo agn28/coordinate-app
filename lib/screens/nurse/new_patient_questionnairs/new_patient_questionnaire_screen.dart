@@ -203,6 +203,7 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     weightEditingController.text = '';
     waistEditingController.text = '';
     hipEditingController.text = '';
+    bmiEditingController.text = '';
 
     randomBloodController.text = '';
     fastingBloodController.text = '';
@@ -357,7 +358,10 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     if (hipEditingController.text != '') {
       BodyMeasurement().addItem('hip', hipEditingController.text, 'cm', '', '');
     }
-
+    if (bmiEditingController.text != '') {
+      BodyMeasurement()
+          .addItem('bmi', bmiEditingController.text.toString(), 'bmi', '', '');
+    }
     BodyMeasurement().addBmItem();
 
     if (randomBloodController.text != '') {
@@ -1368,9 +1372,9 @@ var bloodSugerEditingController = TextEditingController();
 
 class _MeasurementsState extends State<Measurements> {
   calculateBmi() {
-    if (heightEditingController != '' && weightEditingController.text != '') {
-      var height = int.parse(heightEditingController.text) / 100;
-      var weight = int.parse(weightEditingController.text);
+    if (heightEditingController.text != '' && weightEditingController.text != '') {
+      var height = double.parse(heightEditingController.text) / 100;
+      var weight = double.parse(weightEditingController.text);
 
       var bmi = weight / (height * height);
 
@@ -1595,7 +1599,7 @@ class _MeasurementsState extends State<Measurements> {
                       ),
                       SizedBox(height: 24),
                       Container(
-                        height: 230,
+                        height: 260,
                         decoration: BoxDecoration(
                             border: Border.all(
                                 width: 0.5, color: Colors.grey.shade400),
@@ -1715,9 +1719,6 @@ class _MeasurementsState extends State<Measurements> {
                                       textAlign: TextAlign.center,
                                       keyboardType: TextInputType.number,
                                       controller: waistEditingController,
-                                      onChanged: (value) {
-                                        calculateBmi();
-                                      },
                                       decoration: InputDecoration(
                                         contentPadding: EdgeInsets.only(
                                             top: 5, left: 10, right: 10),
@@ -1783,6 +1784,43 @@ class _MeasurementsState extends State<Measurements> {
                                 ],
                               ),
                             ),
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate("bmi"),
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      )),
+                                  SizedBox(
+                                    width: 47,
+                                  ),
+                                  Container(
+                                    width: 80,
+                                    height: 40,
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      keyboardType: TextInputType.number,
+                                      readOnly: true,
+                                      // enabled: false,
+                                      controller: bmiEditingController,
+                                      // enabled: _isBodyMeasurementsEnable,
+                                      onChanged: (value) {},
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.only(
+                                            top: 5, left: 10, right: 10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.red, width: 0.0)),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       )
@@ -1829,17 +1867,6 @@ var selectedProteinUnit = 'mg/dL';
 var proteinController = TextEditingController();
 
 class _BloodTestsState extends State<BloodTests> {
-  calculateBmi() {
-    if (heightEditingController != '' && weightEditingController.text != '') {
-      var height = int.parse(heightEditingController.text) / 100;
-      var weight = int.parse(weightEditingController.text);
-
-      var bmi = weight / (height * height);
-
-      bmiEditingController.text = bmi.toStringAsFixed(2);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(

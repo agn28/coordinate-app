@@ -1235,7 +1235,7 @@ class _MeasurementsState extends State<Measurements> {
   // }
 
   calculateBmi() {
-    if (heightEditingController != '' && weightEditingController.text != '') {
+    if (heightEditingController.text != '' && weightEditingController.text != '') {
       var height = int.parse(heightEditingController.text) / 100;
       var weight = int.parse(weightEditingController.text);
 

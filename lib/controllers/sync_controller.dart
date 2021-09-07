@@ -265,6 +265,13 @@ class SyncController extends GetxController {
     await getLocalNotSyncedReferrals();
     return;
   }
+  getAllLocalPatients() async{
+    var lpatients = await patientRepoLocal.getAllLocalPatients();
+    for(var lpatient in lpatients){
+      var data = jsonDecode(lpatient['data']);
+      print("lpatient ${data['body']['first_name']}");
+    }
+  }
 
   initializeSync() async {
     // retryForStableNetwork();
@@ -281,10 +288,10 @@ class SyncController extends GetxController {
       // if (!isPoorNetwork.value) {
 
       await Future.delayed(const Duration(seconds: 2));
-      await syncLivePatientsToLocal();
-      await Future.delayed(const Duration(seconds: 2));
       // await syncLocalPatientsToLive();
       await syncLocalDataToLive();
+      await Future.delayed(const Duration(seconds: 2));
+      await syncLivePatientsToLocal();
       isSyncing.value = false;
     }
     else {
