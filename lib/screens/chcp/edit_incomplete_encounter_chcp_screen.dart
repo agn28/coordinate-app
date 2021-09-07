@@ -3747,6 +3747,8 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
   bool actionsActive = false;
   bool carePlansEmpty = false;
   var dueDate = '';
+  var smokingAnswer;
+  var smokelessTobaccoAnswer;
 
   @override
   void initState() {
@@ -3786,10 +3788,16 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
     riskQuestions['items'].forEach((item) {
        print('risk factor: ${item} \n');
       if(item['type'] == 'smoking'){
-        print('SMOKING');
+       print('riskAnswers: ${riskAnswers} \n');
+        smokingAnswer = riskAnswers[riskQuestions['items'].indexOf(item)];
+        // riskAnswers[0]
+        print('riskAnswers: answer: $smokingAnswer');
+        print('SMOKING $smokingAnswer');
       }
       if(item['type'] == 'smokeless-tobacco'){
-        print('SMOKEless tobacco');
+        smokelessTobaccoAnswer = riskAnswers[riskQuestions['items'].indexOf(item)];
+        print('riskAnswers: smokelessTobaccoAnswer: $smokelessTobaccoAnswer');
+        print('SMOKEless tobacco $smokelessTobaccoAnswer');
       }
     });
 
@@ -4454,7 +4462,7 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            Text('dummy smoking',
+                                            Text(smokingAnswer,
                                               style: TextStyle(
                                                 fontSize: 18,
                                                 // color: ColorUtils.statusColor[report['body']['result']['assessments']['lifestyle']['components']['smoking']['tfl']] ?? Colors.black
@@ -4491,7 +4499,7 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: <Widget>[
-                                              Text("dummy tobacco",
+                                              Text(smokelessTobaccoAnswer,
                                                 style: TextStyle(
                                                   fontSize: 18,
                                                   // color: ColorUtils.statusColor[report['body']['result']['assessments']['body_composition']['components']['bmi']['tfl']] ?? Colors.black
