@@ -869,7 +869,6 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                     }
 
                     if (_currentStep == 5) {
-                      Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);
                           
                       var relativeAdditionalData = {
                         'religion': selectedReligion,
