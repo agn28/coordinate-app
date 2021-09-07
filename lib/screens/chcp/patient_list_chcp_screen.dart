@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
+import 'package:nhealth/app_localizations.dart';
 
 import 'package:nhealth/configs/configs.dart';
 import 'package:nhealth/constants/constants.dart';
@@ -21,7 +22,6 @@ import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:get/get.dart';
 import 'package:nhealth/helpers/functions.dart';
-import '../../../../app_localizations.dart';
 
 
 final birthDateController = TextEditingController();

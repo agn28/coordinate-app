@@ -18,6 +18,7 @@ import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:nhealth/controllers/referral_controller.dart';
 import 'package:nhealth/controllers/sync_controller.dart';
 import 'package:nhealth/controllers/user_controller.dart';
+import 'package:nhealth/custom-classes/custom_stepper.dart';
 import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/screens/chw/careplan_actions/careplan_feeling_screen.dart';
@@ -37,7 +38,6 @@ import 'package:nhealth/screens/chw/unwell/create_referral_screen.dart';
 import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
-import '../../../custom-classes/custom_stepper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart';
 
