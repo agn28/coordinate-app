@@ -425,6 +425,8 @@ class _TabAuthState extends State<TabAuth> {
                             });
                             if (response['role'] == 'chw') {
                               Navigator.of(context).pushReplacementNamed('/chwHome');
+                            } else if (response['role'] == 'chcp') {
+                              Navigator.of(context).pushReplacementNamed('/chcpHome');
                             } else {
                               Navigator.of(context).pushReplacementNamed('/home');
                             }

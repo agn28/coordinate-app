@@ -34,7 +34,9 @@ getName(context, item) {
   var locale = Localizations.localeOf(context);
 
   if (locale == Locale('bn', 'BN')) {
-    return item['bn_name'];
+    if(item['bn_name'] != null){
+      return item['bn_name'];
+    }
   }
   return item['name'];
 }
