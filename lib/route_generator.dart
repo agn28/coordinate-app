@@ -69,6 +69,9 @@ import 'screens/chcp/edit_incomplete_encounter_chcp_screen.dart';
 import 'screens/chcp/followup_visit_chcp_screen.dart';
 import 'screens/chcp/full_assessment_chcp_screen.dart';
 import 'screens/chcp/new_followup_chcp_screen.dart';
+import 'screens/chcp/new_visit/new_patient_questionnaire_chcp_screen.dart';
+import 'screens/chcp/new_visit/new_visit_chcp_feeling_screen.dart';
+import 'screens/chcp/new_visit/new_visit_unwell_chcp_screen.dart';
 import 'screens/chcp/patient_summery_chcp_screen.dart';
 import 'screens/chcp/unwell_chcp_screen.dart';
 import 'screens/chcp/unwell_full_assessment_chcp_screen.dart';
@@ -258,6 +261,14 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => ChcpShortFollowupFeelingScreen());
       case UnwellShortFollowupChcpScreen.path:
         return CupertinoPageRoute(builder: (_) => UnwellShortFollowupChcpScreen());
+      // chcp new visit 
+      case NewPatientQuestionnaireChcpScreen.path:
+        return CupertinoPageRoute(builder: (_) => NewPatientQuestionnaireChcpScreen());
+      case NewVisitChcpFeelingScreen.path:
+        return CupertinoPageRoute(builder: (_) => NewVisitChcpFeelingScreen());
+      case NewVisitUnwellChcpScreen.path:
+      return CupertinoPageRoute(builder: (_) => NewVisitUnwellChcpScreen());
+
     }
   }
 }

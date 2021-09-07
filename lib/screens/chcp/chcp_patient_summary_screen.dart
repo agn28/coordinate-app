@@ -20,13 +20,14 @@ import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
 import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_questionnaire_acute_screen.dart';
 import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_questionnaire_feeling_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.dart';
 
 import 'chcp_feeling_screen.dart';
 import 'new_followup_chcp_screen.dart';
+import 'new_visit/new_patient_questionnaire_chcp_screen.dart';
+import 'new_visit/new_visit_chcp_feeling_screen.dart';
 
 var dueCarePlans = [];
 var completedCarePlans = [];
@@ -75,6 +76,7 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
   @override
   void initState() {
     super.initState();
+    print('chcp patient summary screen');
     _patient = Patient().getPatient();
     print('_patient $_patient');
     dueCarePlans = [];
@@ -1656,7 +1658,8 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
                             }, ) : Container(),
                             FloatingButton(text: AppLocalizations.of(context).translate('newVisit'), onPressed: () {
                               Navigator.of(context).pop();
-                              Navigator.of(context).pushNamed(NewPatientQuestionnaireNurseScreen.path);
+                              // Navigator.of(context).pushNamed(NewPatientQuestionnaireChcpScreen.path);
+                              Navigator.of(context).pushNamed(NewVisitChcpFeelingScreen.path);
                             }, ),
                             FloatingButton(text: AppLocalizations.of(context).translate('followUp'), onPressed: () {
                               Navigator.of(context).pop();
