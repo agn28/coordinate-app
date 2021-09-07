@@ -2,18 +2,22 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:http_interceptor/http_interceptor.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/repositories/api_interceptor.dart';
 import '../constants/constants.dart';
 import 'dart:convert';
 
 class FollowupRepository {
-
+  http.Client client = HttpClientWithInterceptor.build(interceptors: [
+    ApiInterceptor(),
+  ]);
   create(data) async {
     print('folowup called');
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
-    return await http.post(
+    return await client.post(
       apiUrl + 'followups',
       headers: {
         'Accept': 'application/json',
@@ -32,7 +36,7 @@ class FollowupRepository {
     print('folowup called');
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
-    return await http.put(
+    return await client.put(
       apiUrl + 'followups/' + data['id'],
       headers: {
         'Accept': 'application/json',
@@ -56,7 +60,7 @@ class FollowupRepository {
     print(apiUrl + 'patients');
 
     try {
-      response = await http
+      response = await client
       .get(apiUrl + 'patients/' + patientID + '/followups',
         headers: {
           'Accept': 'application/json',

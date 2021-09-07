@@ -171,57 +171,59 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
       // }
       var allLocalPatients = syncController.localPatientsAll.value;
       var assessments = await AssessmentController().getAllAssessments();
-
+      
+      var authData = await Auth().getStorageAuth();
       for(var localPatient in allLocalPatients) {
-        print(localPatient);
-        var isListedNew = false;
-        var isListedExisting = false;
-        var isOnlyRegistered = false;
-        for(var assessment in assessments) {
-          print(assessment);
-          // matched assessment
-          if(assessment['data']['patient_id'] == localPatient['id']) {
-            //Existing patient List
-            var localExistingPatientdata = {
+        if(localPatient['data']['address']['district'] == authData['address']['district']) {
+          var isListedNew = false;
+          var isListedExisting = false;
+          var isOnlyRegistered = false;
+          for(var assessment in assessments) {
+            print(assessment);
+            // matched assessment
+            if(assessment['data']['patient_id'] == localPatient['id']) {
+              //Existing patient List
+              var localExistingPatientdata = {
+                'id': localPatient['id'],
+                'data': localPatient['data'],
+                'meta': localPatient['meta']
+              };
+              !isListedExisting ? parsedLocalExistingPatients.add(localExistingPatientdata) : '';
+              isListedExisting = true;
+              //First Center Assessment patient List
+              if(assessment['data']['screening_type'] != 'follow-up' 
+                && assessment['data']['status'] == 'incomplete') {
+                  //add to list
+                  var localNewPatientdata = {
+                    'id': localPatient['id'],
+                    'data': localPatient['data'],
+                    'meta': localPatient['meta']
+                  };
+                  if(isNotNull(assessment['data']['status']) && assessment['data']['status'] == 'incomplete') {
+                    print('status: ${assessment['data']['status']}');
+                    localNewPatientdata['data']['incomplete_encounter'] = true;
+                  }
+                  print('localNewPatientdata $localNewPatientdata');
+                  !isListedNew ? parsedLocalNewPatients.add(localNewPatientdata) : '';
+                  isListedNew = true;
+
+              } else if(assessment['data']['screening_type'] == 'registration') {
+                isOnlyRegistered = true;
+              } else {
+                isOnlyRegistered = false;
+              }
+            }
+          }
+          if(isOnlyRegistered && !isListedNew) {
+            var localNewPatientdata = {
               'id': localPatient['id'],
               'data': localPatient['data'],
               'meta': localPatient['meta']
             };
-            !isListedExisting ? parsedLocalExistingPatients.add(localExistingPatientdata) : '';
-            isListedExisting = true;
-            //First Center Assessment patient List
-            if(assessment['data']['screening_type'] != 'follow-up' 
-              && assessment['data']['status'] == 'incomplete') {
-                //add to list
-                var localNewPatientdata = {
-                  'id': localPatient['id'],
-                  'data': localPatient['data'],
-                  'meta': localPatient['meta']
-                };
-                if(isNotNull(assessment['data']['status']) && assessment['data']['status'] == 'incomplete') {
-                  print('status: ${assessment['data']['status']}');
-                  localNewPatientdata['data']['incomplete_encounter'] = true;
-                }
-                print('localNewPatientdata $localNewPatientdata');
-                !isListedNew ? parsedLocalNewPatients.add(localNewPatientdata) : '';
-                isListedNew = true;
-
-            } else if(assessment['data']['screening_type'] == 'registration') {
-              isOnlyRegistered = true;
-            } else {
-              isOnlyRegistered = false;
-            }
+            print('localNewPatientdata $localNewPatientdata');
+            parsedLocalNewPatients.add(localNewPatientdata);
+            isListedNew = true;
           }
-        }
-        if(isOnlyRegistered && !isListedNew) {
-          var localNewPatientdata = {
-            'id': localPatient['id'],
-            'data': localPatient['data'],
-            'meta': localPatient['meta']
-          };
-          print('localNewPatientdata $localNewPatientdata');
-          parsedLocalNewPatients.add(localNewPatientdata);
-          isListedNew = true;
         }
       }
       setState(() {
@@ -265,7 +267,9 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
         isLoading = false;
       });
     }
-
+    setState(() {
+      isLoading = false;
+    });
   }
 
   search(query) {

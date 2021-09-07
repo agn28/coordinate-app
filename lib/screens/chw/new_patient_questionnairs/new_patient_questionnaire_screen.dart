@@ -487,10 +487,10 @@ class _NewPatientQuestionnaireScreenState
                                     // Navigator.of(context).pop(true);
                                     setState(() {
                                       _currentStep = _currentStep + 1;
+                                      nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                                     });
-                                    await AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
-                      
                                     createObservations();
+                                    await AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
                                     Navigator.of(context).pop(true);
                                   },
                                 ),
@@ -1235,7 +1235,7 @@ class _MeasurementsState extends State<Measurements> {
   // }
 
   calculateBmi() {
-    if (heightEditingController != '' && weightEditingController.text != '') {
+    if (heightEditingController.text != '' && weightEditingController.text != '') {
       var height = int.parse(heightEditingController.text) / 100;
       var weight = int.parse(weightEditingController.text);
 

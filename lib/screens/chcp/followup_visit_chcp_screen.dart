@@ -11,6 +11,7 @@ import 'package:nhealth/configs/configs.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
+import 'package:nhealth/custom-classes/custom_stepper.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
@@ -25,7 +26,6 @@ import 'package:nhealth/screens/patients/ncd/followup_patient_summary_screen.dar
 import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
-import '../../../custom-classes/custom_stepper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final _temperatureController = TextEditingController();

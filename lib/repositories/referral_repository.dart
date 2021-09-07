@@ -2,12 +2,17 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:http_interceptor/http_interceptor.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/repositories/api_interceptor.dart';
 import '../constants/constants.dart';
 import 'dart:convert';
 
 class ReferralRepository {
+  http.Client client = HttpClientWithInterceptor.build(interceptors: [
+    ApiInterceptor(),
+  ]);
   create(data) async {
     print('referral called');
     var authData = await Auth().getStorageAuth();
@@ -17,7 +22,7 @@ class ReferralRepository {
     print('referralData');
     print(jsonEncode(data));
     try {
-      response = await http
+      response = await client
           .post(apiUrl + 'followups',
               headers: {
                 'Accept': 'application/json',
@@ -56,7 +61,7 @@ class ReferralRepository {
     print('folowup called');
     var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
-    return await http
+    return await client
         .put(apiUrl + 'followups/' + data['id'],
             headers: {
               'Accept': 'application/json',
@@ -74,7 +79,7 @@ class ReferralRepository {
   getFollowupsByPatient(patientID) async {
     var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
-    return await http.get(
+    return await client.get(
       apiUrl + 'patients/' + patientID + '/followups',
       headers: {
         'Accept': 'application/json',
@@ -98,7 +103,7 @@ class ReferralRepository {
     print(apiUrl + 'followups/' + id);
 
     try {
-      response = await http.get(apiUrl + 'followups/' + id, headers: {
+      response = await client.get(apiUrl + 'followups/' + id, headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token

@@ -339,7 +339,7 @@ class PatientController {
       content: Text('Saving data...'),
       backgroundColor: kPrimaryGreenColor,
     ));
-    await PatientReposioryLocal().create(context, uuid, data, false);
+    await PatientReposioryLocal().createNew(context, uuid, data, false);
 
     return 'success';
   }

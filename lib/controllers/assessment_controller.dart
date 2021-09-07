@@ -1021,6 +1021,7 @@ class AssessmentController {
     var incompleteAssessments = [];
     incompleteAssessments = await this.getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: type);
     if(incompleteAssessments.isNotEmpty) {
+      print('not empty');
       print('assessmentId ${incompleteAssessments.first['id']}');
       var obs = await this.getObservationsByAssessment(incompleteAssessments.first);
       print('obs $obs');
@@ -1032,6 +1033,7 @@ class AssessmentController {
         await ObservationRepositoryLocal().update(observation['id'], observation, false, localStatus: 'incomplete');
       }
     } else {
+      print('empty');
       var response;
       var data = _prepareData(type, screening_type, comment);
       print('data prepareData: $data');
@@ -1075,13 +1077,14 @@ class AssessmentController {
     
     // return response;
   }
-  createAssessmentWithObservationsLive(type) async {
+  createAssessmentWithObservationsLive(type, {assessmentStatus:'incomplete'}) async {
     var localNotSyncedAssessment = [];
     localNotSyncedAssessment = await this.getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: type);
     if(localNotSyncedAssessment.isNotEmpty) {
       var localNotSyncedObservations = await this.getObservationsByAssessment(localNotSyncedAssessment.first);
       print('obs $localNotSyncedObservations');
       print('localNotSyncedAssessment ${localNotSyncedAssessment.first})');
+      localNotSyncedAssessment.first['body']['status'] = assessmentStatus;
       var apiDataObservations = await updateObservations(localNotSyncedAssessment.first['body']['status'], localNotSyncedAssessment.first, localNotSyncedObservations);
       Map<String, dynamic> apiData = {
         'assessment': localNotSyncedAssessment.first,
@@ -1092,6 +1095,22 @@ class AssessmentController {
     }
     if (localNotSyncedAssessment.first['body']['status'] == 'complete') {
       await HealthReportController().generateReport(localNotSyncedAssessment.first['body']['patient_id']);
+    }
+    Helpers().clearObservationItems();
+  }
+
+  updateAssessmentWithObservationsLive(assessmentStatus, encounter, observations) async {
+    
+    var apiDataObservations = await updateObservations(assessmentStatus, encounter, observations);
+    Map<String, dynamic> apiData = {
+      'assessment': encounter,
+      'observations': apiDataObservations
+    };
+    print('apiData $apiData');
+    var response = await storeAssessmentWithObservationsLive(encounter, apiDataObservations, apiData);
+  
+    if (assessmentStatus == 'complete') {
+      await HealthReportController().generateReport(encounter['patient_id']);
     }
     Helpers().clearObservationItems();
   }

@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:http_interceptor/http_interceptor.dart';
 import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/models/auth.dart';
+import 'package:nhealth/repositories/api_interceptor.dart';
 import 'package:nhealth/services/api_service.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:uuid/uuid.dart';
@@ -13,6 +15,9 @@ import 'dart:convert';
 import 'local/database_creator.dart';
 
 class SyncRepository {
+  http.Client client = HttpClientWithInterceptor.build(interceptors: [
+    ApiInterceptor(),
+  ]);
   login(email, password) async {
 
   }
@@ -29,7 +34,7 @@ class SyncRepository {
     print(apiUrl + 'syncs/patient');
 
     try {
-      response = await http
+      response = await client
       .post(apiUrl + 'syncs/patient',
           headers: {
             'Accept': 'application/json',
@@ -73,7 +78,7 @@ class SyncRepository {
     print(apiUrl + 'syncs/verify');
 
     try {
-      response =  await http.post(
+      response =  await client.post(
         apiUrl + 'syncs/verify',
         headers: {
           'Accept': 'application/json',

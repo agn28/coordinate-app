@@ -10,19 +10,29 @@ class ApiInterceptor implements InterceptorContract {
   Future<RequestData> interceptRequest({RequestData data}) async {
     try {
       var authData = await Auth().getStorageAuth() ;
+
       var currentTime = DateTime.now();
       var currentTimeTz = int.parse(DateTime.now().timeZoneOffset.inHours.toString());
       var expireTime = DateTime.parse(authData['expirationTime']).add(Duration(hours: currentTimeTz));
-      var diff = (expireTime.difference(currentTime).inMinutes);
+      var timeDifference = (expireTime.difference(currentTime).inMinutes);
+      // var expireTime = DateTime.parse(authData['expirationTime']).add(DateTime.now().timeZoneOffset);
+      // var timeDifference = (expireTime.difference(DateTime.now()).inMinutes);
+      print('current ${DateTime.now()}');
       print('expireTime ${expireTime}');
-      print('currentTime ${currentTime}');
-      print('currentTimeTz ${currentTimeTz}');
-      print('diff ${diff}');
-      // if(diff <= 5) 
+      print('timeDifference ${timeDifference}');
+      if(timeDifference <= 5) 
       {
         // call api to replace access token
         var newAuthData = await getNewToken(authData['refreshToken']);
-        print('newAuthData $newAuthData');
+        if (newAuthData['access_token'] != null) {
+          print('authDataBefore ${authData['expirationTime']}');
+          authData['accessToken'] = newAuthData['access_token'];
+          authData['refreshToken'] = newAuthData['refresh_token'];
+          authData['expirationTime'] = DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now().toUtc().add(Duration(seconds: int.parse(newAuthData['expires_in']))));
+          print('authDataAfter ${authData['expirationTime']}');
+          await Auth().setAuth(authData);
+          // return response;
+        }
       }
     } catch (e) {
       print(e);
@@ -36,15 +46,13 @@ class ApiInterceptor implements InterceptorContract {
         "grant_type": "refresh_token",
         "refresh_token": refreshToken
     };
-    print(reqBody);
-    http.post('https://securetoken.googleapis.com/v1/token?key=AIzaSyCl7r4QoD06uiVTRSRDtjLySwoamlfD6zM',
+    return await http.post('https://securetoken.googleapis.com/v1/token?key=AIzaSyCl7r4QoD06uiVTRSRDtjLySwoamlfD6zM',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
       body: json.encode(reqBody)
     ).then((response) {
-      print('reponse ${json.decode(response.body)}');
       return json.decode(response.body);
     }).catchError((error) {
       print('error ' + error.toString());

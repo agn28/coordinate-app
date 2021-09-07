@@ -17,6 +17,8 @@ import 'package:nhealth/models/devices.dart';
 import 'package:nhealth/models/language.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
+import 'package:nhealth/repositories/local/assessment_repository_local.dart';
+import 'package:nhealth/repositories/local/observation_repository_local.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chw/unwell/create_referral_screen.dart';
 import 'package:nhealth/screens/patients/ncd/followup_patient_summary_screen.dart';
@@ -112,7 +114,7 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
 
     prepareQuestions();
     prepareAnswers();
-
+    deleteIncompleteAssessmentLocal();
     getLanguage();
   }
 
@@ -169,7 +171,23 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
       }
     });
   }
-
+  deleteIncompleteAssessmentLocal() async {
+    print('deleteIncompleteAssessmentLocal');
+    var encounters = await AssessmentController().getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: 'new ncd center assessment');
+    if(encounters.isNotEmpty) {
+      for (var encounter in encounters) {    
+        print('incencounter $encounter');
+        var observations = await AssessmentController().getObservationsByAssessment(encounter);
+        await AssessmentRepositoryLocal().deleteLocalAssessment(encounter['id']);
+        if(observations.isNotEmpty){
+          for (var observation in observations) {
+            print('incobs $observation');
+            await ObservationRepositoryLocal().deleteLocalObservation(observation['id']);
+          }
+        }
+      }
+    }
+  }
   clearForm() {
     selectedCauses = [];
     selectedIssues = [];
@@ -185,6 +203,7 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     weightEditingController.text = '';
     waistEditingController.text = '';
     hipEditingController.text = '';
+    bmiEditingController.text = '';
 
     randomBloodController.text = '';
     fastingBloodController.text = '';
@@ -339,7 +358,10 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     if (hipEditingController.text != '') {
       BodyMeasurement().addItem('hip', hipEditingController.text, 'cm', '', '');
     }
-
+    if (bmiEditingController.text != '') {
+      BodyMeasurement()
+          .addItem('bmi', bmiEditingController.text.toString(), 'bmi', '', '');
+    }
     BodyMeasurement().addBmItem();
 
     if (randomBloodController.text != '') {
@@ -493,24 +515,25 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
             Expanded(
               child: _currentStep < _mySteps().length || nextHide ? FlatButton(
                 onPressed: ()async {
-                  setState(() {
                     print(_currentStep);
                     if (_currentStep == 0) {
-                      Questionnaire().addNewMedicalHistoryNcd(
-                          'medical_history', medicalHistoryAnswers);
+                      Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
                       print(Questionnaire().qnItems);
+                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
                     }
 
                     if (_currentStep == 1) {
                       Questionnaire().addNewMedicationNcd(
                           'medication', medicationAnswers);
                       print(Questionnaire().qnItems);
+                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
                     }
 
                     if (_currentStep == 2) {
                       Questionnaire().addNewRiskFactorsNcd(
                           'risk_factors', riskAnswers);
                       print(Questionnaire().qnItems);
+                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
                     }
 
                     if (_currentStep == 3) {
@@ -538,11 +561,14 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
                                 ),
                                 FlatButton(
                                   child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
-                                  onPressed: () {
+                                  onPressed: () async{
                                     // Navigator.of(context).pop(true);
                                     setState(() {
                                       _currentStep = _currentStep + 1;
                                     });
+                                    createObservations();
+                                    await AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                    
                                     print('_currentStep $_currentStep');
                                     Navigator.of(context).pop(true);
                                   },
@@ -552,15 +578,16 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
                           }
                         );
                       } else {
-                        _currentStep = _currentStep + 1;
+                        createObservations();
+                        await AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                        setState(() {
+                          _currentStep = _currentStep + 1;
+                        });
                         return;
                       }
                     }
 
                     if (_currentStep == 5) {
-                      Questionnaire().addNewCounselling(
-                          'counselling_provided', counsellingAnswers);
-                          
                       var relativeAdditionalData = {
                         'religion': selectedReligion,
                         'occupation': occupationController.text,
@@ -572,6 +599,7 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
                       };
                       print('relativeAdditionalData $relativeAdditionalData');
                       Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
+                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
 
                       _completeStep();
                       return;
@@ -608,12 +636,13 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
                                 ),
                                 FlatButton(
                                   child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
-                                  onPressed: () {
+                                  onPressed: () async{
                                     // Navigator.of(context).pop(true);
                                     setState(() {
                                       _currentStep = _currentStep + 1;
                                     });
                                     createObservations();
+                                    await AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
                                     nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                                     print('_currentStep $_currentStep');
                                     Navigator.of(context).pop(true);
@@ -625,17 +654,21 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
                         );
                       } else {
                         createObservations();
+                        await AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                        setState(() {
+                          _currentStep = _currentStep + 1;                     
+                        });
                         nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
-                        _currentStep = _currentStep + 1;
                         return;
                       }
 
                     }
                     if (_currentStep < 3) {
-                      // If the form is valid, display a Snackbar.
-                      _currentStep = _currentStep + 1;
+                      setState(() {
+                        // If the form is valid, display a Snackbar.
+                        _currentStep = _currentStep + 1;
+                      });
                     }
-                  });
                 },
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 child: Row(
@@ -1339,9 +1372,9 @@ var bloodSugerEditingController = TextEditingController();
 
 class _MeasurementsState extends State<Measurements> {
   calculateBmi() {
-    if (heightEditingController != '' && weightEditingController.text != '') {
-      var height = int.parse(heightEditingController.text) / 100;
-      var weight = int.parse(weightEditingController.text);
+    if (heightEditingController.text != '' && weightEditingController.text != '') {
+      var height = double.parse(heightEditingController.text) / 100;
+      var weight = double.parse(weightEditingController.text);
 
       var bmi = weight / (height * height);
 
@@ -1566,7 +1599,7 @@ class _MeasurementsState extends State<Measurements> {
                       ),
                       SizedBox(height: 24),
                       Container(
-                        height: 230,
+                        height: 260,
                         decoration: BoxDecoration(
                             border: Border.all(
                                 width: 0.5, color: Colors.grey.shade400),
@@ -1686,9 +1719,6 @@ class _MeasurementsState extends State<Measurements> {
                                       textAlign: TextAlign.center,
                                       keyboardType: TextInputType.number,
                                       controller: waistEditingController,
-                                      onChanged: (value) {
-                                        calculateBmi();
-                                      },
                                       decoration: InputDecoration(
                                         contentPadding: EdgeInsets.only(
                                             top: 5, left: 10, right: 10),
@@ -1754,6 +1784,43 @@ class _MeasurementsState extends State<Measurements> {
                                 ],
                               ),
                             ),
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate("bmi"),
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      )),
+                                  SizedBox(
+                                    width: 47,
+                                  ),
+                                  Container(
+                                    width: 80,
+                                    height: 40,
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      keyboardType: TextInputType.number,
+                                      readOnly: true,
+                                      // enabled: false,
+                                      controller: bmiEditingController,
+                                      // enabled: _isBodyMeasurementsEnable,
+                                      onChanged: (value) {},
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.only(
+                                            top: 5, left: 10, right: 10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.red, width: 0.0)),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       )
@@ -1800,17 +1867,6 @@ var selectedProteinUnit = 'mg/dL';
 var proteinController = TextEditingController();
 
 class _BloodTestsState extends State<BloodTests> {
-  calculateBmi() {
-    if (heightEditingController != '' && weightEditingController.text != '') {
-      var height = int.parse(heightEditingController.text) / 100;
-      var weight = int.parse(weightEditingController.text);
-
-      var bmi = weight / (height * height);
-
-      bmiEditingController.text = bmi.toStringAsFixed(2);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(

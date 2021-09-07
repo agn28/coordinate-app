@@ -19,9 +19,15 @@ class PatientReposioryLocal {
   /// Get all patietns
   getAllPatients() async {
     final sql = '''SELECT * FROM ${DatabaseCreator.patientTable}''';
-    final data = await db.rawQuery(sql);
-
-    return data;
+    var patients;
+    try {
+      patients = await db.rawQuery(sql);
+    } catch (error) {
+      print('error');
+      print(error);
+      return;
+    }
+    return patients;
   }
 
   getNewPatients() async {
@@ -138,6 +144,85 @@ class PatientReposioryLocal {
     }
 
     return [];
+  }
+  
+  createNew(context, id, data, synced) async {
+
+    var allPatients = await getAllPatients();
+    print(allPatients);
+
+    // if (!synced) {
+    //   final sql = '''SELECT * FROM ${DatabaseCreator.patientTable} WHERE nid="${data['body']['nid']}"''';
+    //   var existingPatient;
+    //   try {
+    //     existingPatient = await db.rawQuery(sql);
+    //     print('existingPatient $existingPatient');
+    //   } catch (err) {
+    //     print(err);
+    //     return;
+    //   }
+
+    //   if (isNotNull(existingPatient) && existingPatient.isNotEmpty) {
+    //     Scaffold.of(context).showSnackBar(SnackBar(
+    //       content: Text(
+    //           "Error: ${AppLocalizations.of(context).translate('nidValidation')}"),
+    //       backgroundColor: kPrimaryRedColor,
+    //     ));
+    //     return;
+    //   }
+    // }
+
+    final sql = '''INSERT INTO ${DatabaseCreator.patientTable}
+    (
+      id,
+      data,
+      nid,
+      status,
+      is_synced
+    )
+    VALUES (?,?,?,?,?)''';
+    List<dynamic> params = [
+      id,
+      jsonEncode(data),
+      data['body']['nid'],
+      '',
+      synced
+    ];
+
+    var response;
+
+    try {
+      response = await db.rawInsert(sql, params);
+    } catch (err) {
+      print(err);
+      return;
+    }
+
+    if (isNull(response)) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text(
+            "Error: ${AppLocalizations.of(context).translate('somethingWrong')}"),
+        backgroundColor: kPrimaryRedColor,
+      ));
+      return;
+    }
+    var assessmentData = _prepareAssessmentData('registration', 'registration', '', id);
+    var assessment = await AssessmentRepositoryLocal().createLocalAssessment(assessmentData['id'], assessmentData, synced);
+    if (isNull(assessment)) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text(
+            "Error: ${AppLocalizations.of(context).translate('somethingWrong')}"),
+        backgroundColor: kPrimaryRedColor,
+      ));
+      return;
+    }
+    var patient = {'id': id, 'data': data['body'], 'meta': data['meta']};
+    data['id'] = id;
+
+    await Patient().setPatient(patient);
+
+    // DatabaseCreator.databaseLog('Add patient', sql, null, response, params);
+    return 'success';
   }
 
   /// Create a patient.
@@ -363,6 +448,21 @@ class PatientReposioryLocal {
     }
 
     print(response);
+    return response;
+  }
+
+  getAllLocalPatients() async {
+    final sql = '''SELECT * FROM ${DatabaseCreator.patientTable}''';
+    var response;
+
+    try {
+      response = await db.rawQuery(sql);
+    } catch (error) {
+      print('error');
+      print(error);
+      return;
+    }
+
     return response;
   }
 

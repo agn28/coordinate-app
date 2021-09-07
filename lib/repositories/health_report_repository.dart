@@ -2,18 +2,22 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:http_interceptor/http_interceptor.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/repositories/api_interceptor.dart';
 import '../constants/constants.dart';
 import 'dart:convert';
 
 class HealthReportRepository {
-
+  http.Client client = HttpClientWithInterceptor.build(interceptors: [
+    ApiInterceptor(),
+  ]);
   getReport() async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     var patientID = Patient().getPatient()['id'];
-    return await http.post(
+    return await client.post(
       apiUrl + 'health-reports/generate/' + patientID,
       headers: {
         'Accept': 'application/json',
@@ -37,7 +41,7 @@ class HealthReportRepository {
     var response;
 
     try {
-      response = await http
+      response = await client
         .post(apiUrl + 'health-reports/generate/' + patientId,
             headers: {
               'Accept': 'application/json',
@@ -75,7 +79,7 @@ class HealthReportRepository {
     var response;
 
     try {
-      response = await http
+      response = await client
         .get(apiUrl + 'health-reports/patient/' + patientID + '?filter=last',
             headers: {
               'Accept': 'application/json',
@@ -110,7 +114,7 @@ class HealthReportRepository {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     var patientID = Patient().getPatient()['id'];
-    return await http.get(
+    return await client.get(
       apiUrl + 'health-reports/patient/' + patientID,
       headers: {
         'Accept': 'application/json',
@@ -128,7 +132,7 @@ class HealthReportRepository {
   create(data) async {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
-    return await http.post(
+    return await client.post(
       apiUrl + 'health-reports',
       headers: {
         'Accept': 'application/json',
@@ -153,7 +157,7 @@ class HealthReportRepository {
     print(apiUrl + 'health-reports/' + id,);
 
     try {
-      response = await http
+      response = await client
       .get(apiUrl + 'health-reports/' + id,
         headers: {
           'Accept': 'application/json',
