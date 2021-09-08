@@ -1341,7 +1341,7 @@ var bloodSugerEditingController = TextEditingController();
 
 class _MeasurementsState extends State<Measurements> {
   calculateBmi() {
-    if (heightEditingController != '' && weightEditingController.text != '') {
+    if (heightEditingController.text != '' && weightEditingController.text != '') {
       var height = int.parse(heightEditingController.text) / 100;
       var weight = int.parse(weightEditingController.text);
 
@@ -1803,7 +1803,7 @@ var proteinController = TextEditingController();
 
 class _BloodTestsState extends State<BloodTests> {
   calculateBmi() {
-    if (heightEditingController != '' && weightEditingController.text != '') {
+    if (heightEditingController.text != '' && weightEditingController.text != '') {
       var height = int.parse(heightEditingController.text) / 100;
       var weight = int.parse(weightEditingController.text);
 
