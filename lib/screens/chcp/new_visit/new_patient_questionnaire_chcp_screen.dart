@@ -358,6 +358,9 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
     if (hipEditingController.text != '') {
       BodyMeasurement().addItem('hip', hipEditingController.text, 'cm', '', '');
     }
+    if (bmiEditingController.text != '') {
+      BodyMeasurement().addItem('bmi', bmiEditingController.text, 'bmi', '', '');
+    }
 
     BodyMeasurement().addBmItem();
 
@@ -730,7 +733,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
   }
 
 
-    var role = '';
+  var role = '';
   _getAuthData() async {
     var data = await Auth().getStorageAuth();
 
@@ -4286,10 +4289,13 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                   // child: Text('dummy age', style: TextStyle(fontSize: 17,)),
                                   // Text(Helpers().getPatientAgeAndGender(Patient().getPatient()),)
                                   child: 
-                                    Helpers().getPatientAge(Patient().getPatient()) != '' &&
-                                    Helpers().getPatientAge(Patient().getPatient()) != null
-                                    ? Text(Helpers().getPatientAge(Patient().getPatient()),style: TextStyle(fontSize: 17,))
-                                    : Text('N/A',style: TextStyle(fontSize: 17,)),
+                                    Text(
+                                      Helpers().getPatientAge(Patient().getPatient()) != '' &&
+                                      Helpers().getPatientAge(Patient().getPatient()) != null
+                                      ? Helpers().getPatientAge(Patient().getPatient())
+                                      : 'N/A',
+                                    style: TextStyle(fontSize: 17,)
+                                    )
                                 ),
                               ],
                             ),
@@ -4317,10 +4323,12 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: <Widget>[
-                                              Helpers().getPatientGender(Patient().getPatient()) != '' && 
-                                              Helpers().getPatientGender(Patient().getPatient()) != null
-                                              ? Text(Helpers().getPatientGender(Patient().getPatient()),style: TextStyle(fontSize: 17,))
-                                              : Text('N/A',style: TextStyle(fontSize: 17,)),
+                                              Text(
+                                                Helpers().getPatientGender(Patient().getPatient()) != '' && 
+                                                Helpers().getPatientGender(Patient().getPatient()) != null
+                                                  ? Helpers().getPatientGender(Patient().getPatient())
+                                                  : 'N/A',
+                                                style: TextStyle(fontSize: 17,)),
                                             ]
                                           ),
                                         ]
@@ -4351,19 +4359,13 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            smokingAnswer != ''
-                                            ? Text(smokingAnswer,
+                                            Text(smokingAnswer != ''
+                                              ? smokingAnswer
+                                              : 'N/A',
                                               style: TextStyle(
                                                 fontSize: 18,
-                                                // color: ColorUtils.statusColor[report['body']['result']['assessments']['lifestyle']['components']['smoking']['tfl']] ?? Colors.black
                                               ),
                                             )
-                                            : Text('N/A',
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                // color: ColorUtils.statusColor[report['body']['result']['assessments']['lifestyle']['components']['smoking']['tfl']] ?? Colors.black
-                                              ),
-                                            ),
                                           ]
                                         ),
                                       ]
@@ -4395,14 +4397,9 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: <Widget>[
-                                              smokelessTobaccoAnswer != ''
-                                              ? Text(smokelessTobaccoAnswer,
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  // color: ColorUtils.statusColor[report['body']['result']['assessments']['body_composition']['components']['bmi']['tfl']] ?? Colors.black
-                                                ),
-                                              )
-                                              : Text('N/A',
+                                              Text(smokelessTobaccoAnswer != ''
+                                                ? smokelessTobaccoAnswer
+                                                : 'N/A',
                                                 style: TextStyle(
                                                   fontSize: 18,
                                                   // color: ColorUtils.statusColor[report['body']['result']['assessments']['body_composition']['components']['bmi']['tfl']] ?? Colors.black
@@ -4439,17 +4436,11 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: <Widget>[
-                                              bmiEditingController.text != ''
-                                              ? Text("${bmiEditingController.text}",
+                                              Text(bmiEditingController.text != '' 
+                                                  ? "${bmiEditingController.text}"
+                                                  :"N/A",
                                                 style: TextStyle(
                                                   fontSize: 18,
-                                                  // color: ColorUtils.statusColor[report['body']['result']['assessments']['lifestyle']['components']['physical_activity']['tfl']] ?? Colors.black
-                                                ),
-                                              )
-                                              : Text("N/A",
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  // color: ColorUtils.statusColor[report['body']['result']['assessments']['lifestyle']['components']['physical_activity']['tfl']] ?? Colors.black
                                                 ),
                                               ),
                                             ]
@@ -4483,17 +4474,12 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: <Widget>[
-                                              systolicEditingController.text != '' && diastolicEditingController.text != ''
-                                              ? Text(systolicEditingController.text + '/' + diastolicEditingController.text,
+                                              Text(
+                                                systolicEditingController.text != '' && diastolicEditingController.text != ''
+                                                ? systolicEditingController.text + '/' + diastolicEditingController.text
+                                                : 'N/A',
                                                 style: TextStyle(
                                                   fontSize: 18,
-                                                  // color: ColorUtils.statusColor[report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol']['tfl']] ?? Colors.black
-                                                ),
-                                              )
-                                              : Text('N/A',
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  // color: ColorUtils.statusColor[report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol']['tfl']] ?? Colors.black
                                                 ),
                                               ),
                                             ]

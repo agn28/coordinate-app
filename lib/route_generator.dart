@@ -63,6 +63,7 @@ import 'package:nhealth/screens/patients/register_patient_success_screen.dart';
 import 'screens/chcp/chcp_feeling_screen.dart';
 import 'screens/chcp/chcp_full_assessment_feeling_screen.dart';
 import 'screens/chcp/chcp_home_screen.dart';
+import 'screens/chcp/chcp_navigation_screen.dart';
 import 'screens/chcp/chcp_patient_summary_screen.dart';
 import 'screens/chcp/chcp_short_followup_feeling_screen.dart';
 import 'screens/chcp/edit_incomplete_encounter_chcp_screen.dart';
@@ -261,6 +262,9 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => ChcpShortFollowupFeelingScreen());
       case UnwellShortFollowupChcpScreen.path:
         return CupertinoPageRoute(builder: (_) => UnwellShortFollowupChcpScreen());
+      case '/chcpNavigation':
+        var data = settings.arguments;
+        return CupertinoPageRoute(builder: (_) => ChcpNavigationScreen(pageIndex: data,));
       // chcp new visit 
       case NewPatientQuestionnaireChcpScreen.path:
         return CupertinoPageRoute(builder: (_) => NewPatientQuestionnaireChcpScreen());

@@ -44,7 +44,7 @@ class _ChcpHomeState extends State<ChcpHomeScreen> {
   initState() {
     _getAuthData();
     super.initState();
-    print('this is chcp screen!');
+    print('this is chcp home screen!');
     // Connectivity().onConnectivityChanged.listen(syncController.checkConnection);
     
     initConnectivity();
@@ -362,7 +362,7 @@ class _ChcpHomeState extends State<ChcpHomeScreen> {
                                 child: InkWell(
 
                                   onTap: () async {
-                                    Navigator.of(context).pushNamed(FollowupSearchScreen.path);
+                                    Navigator.of(context).pushNamed('/chcpNavigation',);
                                   },
                                   child: Container(
                                     height: 150,
