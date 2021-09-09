@@ -1575,7 +1575,7 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
 
                                       } else {
                                         print('new encounter');
-                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'new chcp assessment', 'chcp', '', 'incomplete', '');
                                       }
                                     } else if(widget.prevScreen == 'followup') {
                                       if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
@@ -1586,7 +1586,7 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
 
                                       } else {
                                         print('new followup');
-                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
+                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (chcp)', 'follow-up', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
                                       }
                                     }
                                     setState(() {
@@ -1625,7 +1625,7 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
                                       } else {
                                         print('new encounter');
                                         print(status);
-                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', status, '');
+                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'new chcp center assessment', 'chcp', '', status, '');
                                       }
                                       status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
 
@@ -1641,7 +1641,7 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
                                         print('new followup');
                                         print(status);
                                         print(widget.encounterData['followupType']);
-                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
+                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (chcp)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
                                       }
                                       status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
                                     }

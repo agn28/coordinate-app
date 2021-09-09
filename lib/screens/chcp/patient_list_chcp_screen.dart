@@ -44,6 +44,7 @@ bool isPendingRecommendation = false;
 // }
 
 class PatientListChcpScreen extends StatefulWidget {
+  static const path = '/patientListChcp';
   @override
   _PatientListChcpState createState() => _PatientListChcpState();
 }
@@ -95,7 +96,7 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
       searchController.text = '';
     });
     
-    var data = await PatientController().getFirstAssessmentPatients();
+    var data = await PatientController().getChcpPatients();
 
     if (data != null && data['message'] == 'Unauthorized') {
       Auth().logout();
@@ -107,64 +108,67 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
     if (isNull(data) || isNotNull(data['exception']))  {
       var allLocalPatients = syncController.localPatientsAll.value;
       var assessments = await AssessmentController().getAllAssessments();
+      var authData = await Auth().getStorageAuth();
 
       for(var localPatient in allLocalPatients) {
-        print(localPatient);
-        var isListed = false;
-        var isOnlyRegistered = false;
-        for(var assessment in assessments) {
-          print(assessment);
-          // matched assessment
-          if(assessment['data']['patient_id'] == localPatient['id']) {
-            if(assessment['data']['screening_type'] != 'follow-up' 
-              && assessment['data']['status'] == 'incomplete') {
-                //add to list
-                var localpatientdata = {
-                  'id': localPatient['id'],
-                  'data': localPatient['data'],
-                  'meta': localPatient['meta']
-                };
-                if(isNotNull(assessment['data']['status']) && assessment['data']['status'] == 'incomplete') {
-                  print('status: ${assessment['data']['status']}');
-                  localpatientdata['data']['incomplete_encounter'] = true;
-                }
-                print('localpatientdata $localpatientdata');
-                !isListed ? parsedLocalPatient.add(localpatientdata) : '';
-                isListed = true;
+        if(localPatient['data']['address']['district'] == authData['address']['district']) {
+          print(localPatient);
+          var isListed = false;
+          var isOnlyRegistered = false;
+          for(var assessment in assessments) {
+            print(assessment);
+            // matched assessment
+            if(assessment['data']['patient_id'] == localPatient['id']) {
+              if(assessment['data']['screening_type'] != 'follow-up' 
+                && assessment['data']['status'] == 'incomplete') {
+                  //add to list
+                  var localpatientdata = {
+                    'id': localPatient['id'],
+                    'data': localPatient['data'],
+                    'meta': localPatient['meta']
+                  };
+                  if(isNotNull(assessment['data']['status']) && assessment['data']['status'] == 'incomplete') {
+                    print('status: ${assessment['data']['status']}');
+                    localpatientdata['data']['incomplete_encounter'] = true;
+                  }
+                  print('localpatientdata $localpatientdata');
+                  !isListed ? parsedLocalPatient.add(localpatientdata) : '';
+                  isListed = true;
 
-            } else if(assessment['data']['screening_type'] == 'registration') {
-              isOnlyRegistered = true;
-            } else {
-              isOnlyRegistered = false;
+              } else if(assessment['data']['screening_type'] == 'registration') {
+                isOnlyRegistered = true;
+              } else {
+                isOnlyRegistered = false;
+              }
             }
+            // if(assessment['data']['patient_id'] == localPatient['id'] 
+            // && (assessment['data']['screening_type'] == 'registration'
+            // || (assessment['data']['screening_type'] != 'follow-up' 
+            // && assessment['data']['status'] != 'complete'))){      
+            //   var localpatientdata = {
+            //     'id': localPatient['id'],
+            //     'data': localPatient['data'],
+            //     'meta': localPatient['meta']
+            //   };
+            //   if (isNotNull(assessment['data']['status']) && assessment['data']['status'] == 'incomplete') {
+            //     print('status: ${assessment['data']['status']}');
+            //     localpatientdata['data']['incomplete_encounter'] = true;
+            //   }
+            //   print('localpatientdata $localpatientdata');
+            //   !isListed ? parsedLocalPatient.add(localpatientdata) : '';
+            //   isListed = true;
+            // }
           }
-          // if(assessment['data']['patient_id'] == localPatient['id'] 
-          // && (assessment['data']['screening_type'] == 'registration'
-          // || (assessment['data']['screening_type'] != 'follow-up' 
-          // && assessment['data']['status'] != 'complete'))){      
-          //   var localpatientdata = {
-          //     'id': localPatient['id'],
-          //     'data': localPatient['data'],
-          //     'meta': localPatient['meta']
-          //   };
-          //   if (isNotNull(assessment['data']['status']) && assessment['data']['status'] == 'incomplete') {
-          //     print('status: ${assessment['data']['status']}');
-          //     localpatientdata['data']['incomplete_encounter'] = true;
-          //   }
-          //   print('localpatientdata $localpatientdata');
-          //   !isListed ? parsedLocalPatient.add(localpatientdata) : '';
-          //   isListed = true;
-          // }
-        }
-        if(isOnlyRegistered && !isListed) {
-          var localpatientdata = {
-            'id': localPatient['id'],
-            'data': localPatient['data'],
-            'meta': localPatient['meta']
-          };
-          print('localpatientdata $localpatientdata');
-          parsedLocalPatient.add(localpatientdata);
-          isListed = true;
+          if(isOnlyRegistered && !isListed) {
+            var localpatientdata = {
+              'id': localPatient['id'],
+              'data': localPatient['data'],
+              'meta': localPatient['meta']
+            };
+            print('localpatientdata $localpatientdata');
+            parsedLocalPatient.add(localpatientdata);
+            isListed = true;
+          }
         }
       }
       setState(() {
@@ -396,18 +400,18 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                               style: TextStyle(color: Colors.black87, fontSize: 18),
                             ),
                           ),
-                          item['data']['incomplete_encounter'] != null && item['data']['incomplete_encounter'] ? 
-                          Container(
-                              alignment: Alignment.center,
-                              width: 160,
-                              height: 24,
+                          // item['data']['incomplete_encounter'] != null && item['data']['incomplete_encounter'] ? 
+                          // Container(
+                          //     alignment: Alignment.center,
+                          //     width: 160,
+                          //     height: 24,
 
-                              // padding: EdgeInsets.symmetric(vertical: 5),
-                              color: Colors.red[400],
-                              child: Text(AppLocalizations.of(context).translate('incompleteEncounter'),
-                                style: TextStyle(color: Colors.white, fontSize: 15),
-                              ),
-                          ) : Container(),
+                          //     // padding: EdgeInsets.symmetric(vertical: 5),
+                          //     color: Colors.red[400],
+                          //     child: Text(AppLocalizations.of(context).translate('incompleteEncounter'),
+                          //       style: TextStyle(color: Colors.white, fontSize: 15),
+                          //     ),
+                          // ) : Container(),
                           Expanded(
                             child: Text(item['data']['age'].toString() + 'Y ' + '${item['data']['gender'][0].toUpperCase()}' + ' - ' + item['data']['nid'].toString(), 
                             style: TextStyle(

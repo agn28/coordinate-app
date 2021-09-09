@@ -592,7 +592,8 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                     }
 
                     if (_currentStep == 7) {
-                      
+                      Questionnaire().addNewCounselling(
+                          'counselling_provided', counsellingAnswers);
                       _currentStep = _currentStep + 1;
                       return;
                     }
@@ -604,9 +605,6 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                     }
 
                     if (_currentStep == 5) {
-                      Questionnaire().addNewCounselling(
-                          'counselling_provided', counsellingAnswers);
-                          
                       var relativeAdditionalData = {
                         'religion': selectedReligion,
                         'occupation': occupationController.text,

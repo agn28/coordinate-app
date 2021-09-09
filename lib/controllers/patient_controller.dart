@@ -59,6 +59,12 @@ class PatientController {
     return response;
   }
 
+  getChcpPatients() async {
+    var response = await PatientRepository().getChcpPatients();
+
+    return response;
+  }
+
   getFollowupPatients() async {
     var response = await PatientRepository().getFollowupPatients();
 
