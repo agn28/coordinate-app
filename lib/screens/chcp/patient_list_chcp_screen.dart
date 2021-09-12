@@ -384,7 +384,50 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                       ],
                     )
                   ),
-                  SizedBox(height: 20,),
+                  // SizedBox(height: 20,),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                    color: Colors.grey.withOpacity(0.15),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 2,
+                            child: Container(
+                            child: Text(AppLocalizations.of(context).translate('name'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                          ),
+                        ),
+                        SizedBox(width: 5,),
+                        Expanded(
+                          flex: 2,
+                            child: Container(
+                            child: Text(AppLocalizations.of(context).translate('fathersOrHusbandsName'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                          ),
+                        ),
+                        SizedBox(width: 5,),
+                        Expanded(
+                          flex: 2,
+                            child: Container(
+                            child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                          ),
+                        ),
+                        SizedBox(width: 5,),
+                        Expanded(
+                          flex: 2,
+                            child: Container(
+                            child: Text(AppLocalizations.of(context).translate('streetPara'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                          ),
+                        ),
+                        SizedBox(width: 5,),
+                        Expanded(
+                          flex: 1,
+                            child: Container(
+                            child: Text(AppLocalizations.of(context).translate('status'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ) ,
                   ...patients.map((item) => GestureDetector(
                     onTap: () {
                       Patient().setPatient(item);
