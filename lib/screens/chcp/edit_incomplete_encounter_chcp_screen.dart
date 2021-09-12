@@ -3926,7 +3926,7 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  child: Text(AppLocalizations.of(context).translate('age')+":", style: TextStyle(fontSize: 17,),),
+                                  child: Text(AppLocalizations.of(context).translate('age')+":", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
                                 ),
                                 SizedBox(width: 10),
                                 Expanded(
@@ -3960,7 +3960,7 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                   Row(
                                     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      Text(AppLocalizations.of(context).translate('gender')+":", style: TextStyle(fontSize: 17)),
+                                      Text(AppLocalizations.of(context).translate('gender')+":", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                       SizedBox(width: 10),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -3996,7 +3996,7 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
                               children: <Widget>[
                                 Row(
                                   children: <Widget>[
-                                    Text(AppLocalizations.of(context).translate('smoking') + ":", style: TextStyle(fontSize: 17)),
+                                    Text(AppLocalizations.of(context).translate('smoking') + ":", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                     SizedBox(width: 10),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -4034,7 +4034,7 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                 children: <Widget>[
                                   Row(
                                     children: <Widget>[
-                                      Text(AppLocalizations.of(context).translate('smokelessTobacco') + ":", style: TextStyle(fontSize: 17)),
+                                      Text(AppLocalizations.of(context).translate('smokelessTobacco') + ":", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                       SizedBox(width: 10),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -4073,7 +4073,7 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                 children: <Widget>[
                                   Row(
                                     children: <Widget>[
-                                      Text(AppLocalizations.of(context).translate('bmi') + ":", style: TextStyle(fontSize: 17)),
+                                      Text(AppLocalizations.of(context).translate('bmi') + ":", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                       SizedBox(width: 10),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -4111,7 +4111,7 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                 children: <Widget>[
                                   Row(
                                     children: <Widget>[
-                                      Text(AppLocalizations.of(context).translate('bp') + ":", style: TextStyle(fontSize: 17)),
+                                      Text(AppLocalizations.of(context).translate('bp') + ":", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                       SizedBox(width: 10),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
