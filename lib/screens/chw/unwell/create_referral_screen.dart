@@ -276,13 +276,14 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                             child: FlatButton(
                               onPressed: () async {
                                 // Navigator.of(context).pushNamed('/chwNavigation',);
-
                                 var referralType;
                                 if(role == 'chw')
                                 {
                                   referralType = 'community';
                                 } else if(role == 'nurse'){
                                   referralType = 'center';
+                                }  else if(role == 'chcp'){
+                                  referralType = 'chcp';
                                 } else{
                                   referralType = '';
                                 }

@@ -32,7 +32,7 @@ class NewFollowupChcpScreen extends StatefulWidget {
 
 class _NewFollowupChcpScreenState extends State<NewFollowupChcpScreen> {
   var _patient;
-  bool isLoading = true;
+  bool isLoading = false;
   bool avatarExists = false;
   var users = [];
   String lastFullAssessmentDate = '';
@@ -43,6 +43,7 @@ class _NewFollowupChcpScreenState extends State<NewFollowupChcpScreen> {
   @override
   void initState() {
     super.initState();
+    print('new followup chcp');
     _patient = Patient().getPatient();
     
     _checkAvatar();

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:basic_utils/basic_utils.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,7 +10,14 @@ import 'package:nhealth/configs/configs.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
+import 'package:nhealth/controllers/care_plan_controller.dart';
+import 'package:nhealth/controllers/followup_controller.dart';
+import 'package:nhealth/controllers/health_report_controller.dart';
+import 'package:nhealth/controllers/observation_controller.dart';
+import 'package:nhealth/controllers/patient_controller.dart';
+import 'package:nhealth/controllers/user_controller.dart';
 import 'package:nhealth/custom-classes/custom_stepper.dart';
+import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/blood_pressure.dart';
@@ -20,11 +29,13 @@ import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chw/unwell/create_referral_screen.dart';
-import 'package:nhealth/screens/patients/ncd/followup_patient_summary_screen.dart';
 import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'followup_visit_chcp_screen.dart';
+import 'patient_summery_chcp_screen.dart';
 
 final GlobalKey<FormState> _patientFormKey = new GlobalKey<FormState>();
 final GlobalKey<FormState> _causesFormKey = new GlobalKey<FormState>();
@@ -61,6 +72,12 @@ int _secondQuestionOption = 1;
 int _thirdQuestionOption = 1;
 int _fourthQuestionOption = 1;
 bool isLoading = false;
+
+var encounterData;
+
+var selectedReason;
+var selectedtype;
+var clinicNameController = TextEditingController();
 
 getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
@@ -187,6 +204,7 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
     weightEditingController.text = '';
     waistEditingController.text = '';
     hipEditingController.text = '';
+    bmiEditingController.text = '';
 
     randomBloodController.text = '';
     fastingBloodController.text = '';
@@ -246,7 +264,7 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
           arguments: data);
     } else {
       Navigator.of(context).pushNamed(
-        '/home',
+        '/chcpHome',
       );
     }
   }
@@ -340,6 +358,9 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
     }
     if (hipEditingController.text != '') {
       BodyMeasurement().addItem('hip', hipEditingController.text, 'cm', '', '');
+    }
+    if (bmiEditingController.text != '') {
+      BodyMeasurement().addItem('bmi', bmiEditingController.text, 'bmi', '', '');
     }
 
     BodyMeasurement().addBmItem();
@@ -499,145 +520,176 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                       ? FlatButton(
                           onPressed: () async {
                             setState(() {
-                              print(_currentStep);
-                              if (_currentStep == 0) {
-                                Questionnaire().addNewMedicalHistoryNcd(
-                                    'medical_history', medicalHistoryAnswers);
-                                print(Questionnaire().qnItems);
-                              }
+                    print(_currentStep);
+                    if (_currentStep == 0) {
+                      Questionnaire().addNewMedicalHistoryNcd(
+                          'medical_history', medicalHistoryAnswers);
+                      print(Questionnaire().qnItems);
+                    }
 
-                              if (_currentStep == 1) {
-                                Questionnaire().addNewMedicationNcd(
-                                    'medication', medicationAnswers);
-                                print(Questionnaire().qnItems);
-                              }
+                    if (_currentStep == 1) {
+                      Questionnaire().addNewMedicationNcd(
+                          'medication', medicationAnswers);
+                      print(Questionnaire().qnItems);
+                    }
 
-                              if (_currentStep == 2) {
-                                Questionnaire().addNewRiskFactorsNcd(
-                                    'risk_factors', riskAnswers);
-                                print(Questionnaire().qnItems);
-                              }
-                              if (_currentStep == 3) {
-                                if(diastolicEditingController.text == '' ||
-                                  systolicEditingController.text == '' ||
-                                  pulseRateEditingController.text == '' ||
-                                  heightEditingController.text == '' ||
-                                  weightEditingController.text == ''||
-                                  waistEditingController.text == ''||
-                                  hipEditingController.text == '') 
-                                {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      // return object of type Dialog
-                                      return AlertDialog(
-                                        content: new Text(AppLocalizations.of(context).translate('missingData'), style: TextStyle(fontSize: 20),),
-                                        actions: <Widget>[
-                                          // usually buttons at the bottom of the dialog
-                                          FlatButton(
-                                            child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(color: kPrimaryColor)),
-                                            onPressed: () {
-                                              Navigator.of(context).pop(false);
-                                            },
-                                          ),
-                                          FlatButton(
-                                            child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
-                                            onPressed: () {
-                                              // Navigator.of(context).pop(true);
-                                              setState(() {
-                                                _currentStep = _currentStep + 1;
-                                              });
-                                              print('_currentStep $_currentStep');
-                                              Navigator.of(context).pop(true);
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    }
-                                  );
-                                } else {
-                                  _currentStep = _currentStep + 1;
-                                  return;
-                                }
-                              }
-                              if (_currentStep == 5) {
-                                Questionnaire().addNewCounselling(
-                                    'counselling_provided', counsellingAnswers);
+                    if (_currentStep == 2) {
+                      Questionnaire().addNewRiskFactorsNcd(
+                          'risk_factors', riskAnswers);
+                      print(Questionnaire().qnItems);
+                    }
 
-                                var relativeAdditionalData = {
-                                  'religion': selectedReligion,
-                                  'occupation': occupationController.text,
-                                  'ethnicity': selectedEthnicity,
-                                  'monthly_income': incomeController.text,
-                                  'blood_group': selectedBloodGroup,
-                                  'education': educationController.text,
-                                  'tribe': isTribe
-                                };
-                                print('relativeAdditionalData $relativeAdditionalData');
-                                Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
+                    if (_currentStep == 3) {
+                      if(diastolicEditingController.text == '' ||
+                        systolicEditingController.text == '' ||
+                        pulseRateEditingController.text == '' ||
+                        heightEditingController.text == '' ||
+                        weightEditingController.text == ''||
+                        waistEditingController.text == ''||
+                        hipEditingController.text == '') 
+                      {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            // return object of type Dialog
+                            return AlertDialog(
+                              content: new Text(AppLocalizations.of(context).translate("missingData"), style: TextStyle(fontSize: 20),),
+                              actions: <Widget>[
+                                // usually buttons at the bottom of the dialog
+                                FlatButton(
+                                  child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(color: kPrimaryColor)),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(false);
+                                  },
+                                ),
+                                FlatButton(
+                                  child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
+                                  onPressed: () {
+                                    // Navigator.of(context).pop(true);
+                                    setState(() {
+                                      _currentStep = _currentStep + 1;
+                                    });
+                                    print('_currentStep $_currentStep');
+                                    Navigator.of(context).pop(true);
+                                  },
+                                ),
+                              ],
+                            );
+                          }
+                        );
+                      } else {
+                        _currentStep = _currentStep + 1;
+                        return;
+                      }
+                    }
 
-                                _completeStep();
-                                return;
-                              }
-                              if (_currentStep == 4) {
-                              print('hello');
-                              if (randomBloodController.text == '' ||
-                                fastingBloodController.text == '' ||
-                                habfController.text == '' ||
-                                hba1cController.text == '' ||
-                                cholesterolController.text == '' ||
-                                ldlController.text == '' ||
-                                hdlController.text == '' ||
-                                tgController.text == '' ||
-                                creatinineController.text == '' ||
-                                sodiumController.text == '' ||
-                                potassiumController.text == '' ||
-                                ketonesController.text == '' ||
-                                proteinController.text == '')
-                              {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    // return object of type Dialog
-                                    return AlertDialog(
-                                      content: new Text(AppLocalizations.of(context).translate("missingData"), style: TextStyle(fontSize: 20),),
-                                      actions: <Widget>[
-                                        // usually buttons at the bottom of the dialog
-                                        FlatButton(
-                                          child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(color: kPrimaryColor)),
-                                            onPressed: () {
-                                              Navigator.of(context).pop(false);
-                                            },
-                                          ),
-                                          FlatButton(
-                                            child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
-                                            onPressed: () {
-                                              // Navigator.of(context).pop(true);
-                                              setState(() {
-                                                _currentStep = _currentStep + 1;
-                                              });
-                                              createObservations();
-                                              nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
-                                              print('_currentStep $_currentStep');
-                                              Navigator.of(context).pop(true);
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    }
-                                  );
-                                } else {
-                                  createObservations();
-                                  nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
-                                  _currentStep = _currentStep + 1;
-                                  return;
-                                }
-                              }
-                              if (_currentStep < 3) {
-                                // If the form is valid, display a Snackbar.
-                                _currentStep = _currentStep + 1;
-                              }
-                            });
+                    if (_currentStep == 9) {
+                      _completeRefer();
+                      return;
+                    }
+
+                    if (_currentStep == 8) {
+                      print('here 8');
+                      _completeStep();
+                      setState(() {
+                        _currentStep = _currentStep + 1;
+                      nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                      });
+                      
+                      return;
+                    }
+
+                    if (_currentStep == 7) {
+                      
+                      _currentStep = _currentStep + 1;
+                      return;
+                    }
+
+                    if (_currentStep == 6) {
+
+                      _currentStep = _currentStep + 1;
+                      return;
+                    }
+
+                    if (_currentStep == 5) {
+                      Questionnaire().addNewCounselling(
+                          'counselling_provided', counsellingAnswers);
+                          
+                      var relativeAdditionalData = {
+                        'religion': selectedReligion,
+                        'occupation': occupationController.text,
+                        'ethnicity': selectedEthnicity,
+                        'monthly_income': incomeController.text,
+                        'blood_group': selectedBloodGroup,
+                        'education': educationController.text,
+                        'tribe': isTribe
+                      };
+                      print('relativeAdditionalData $relativeAdditionalData');
+                      Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
+
+                      _currentStep = _currentStep + 1;
+                      return;
+                    }
+                    if (_currentStep == 4) {
+                      print('hello');
+                      if (randomBloodController.text == '' ||
+                        fastingBloodController.text == '' ||
+                        habfController.text == '' ||
+                        hba1cController.text == '' ||
+                        cholesterolController.text == '' ||
+                        ldlController.text == '' ||
+                        hdlController.text == '' ||
+                        tgController.text == '' ||
+                        creatinineController.text == '' ||
+                        sodiumController.text == '' ||
+                        potassiumController.text == '' ||
+                        ketonesController.text == '' ||
+                        proteinController.text == '')
+                      {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            // return object of type Dialog
+                            return AlertDialog(
+                              content: new Text(AppLocalizations.of(context).translate("missingData"), style: TextStyle(fontSize: 20),),
+                              actions: <Widget>[
+                                // usually buttons at the bottom of the dialog
+                                FlatButton(
+                                  child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(color: kPrimaryColor)),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(false);
+                                  },
+                                ),
+                                FlatButton(
+                                  child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
+                                  onPressed: () {
+                                    // Navigator.of(context).pop(true);
+                                    setState(() {
+                                      _currentStep = _currentStep + 1;
+                                    });
+                                    createObservations();
+                                    // nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                                    print('_currentStep $_currentStep');
+                                    Navigator.of(context).pop(true);
+                                  },
+                                ),
+                              ],
+                            );
+                          }
+                        );
+                      } else {
+                        createObservations();
+                        nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                        _currentStep = _currentStep + 1;
+                        return;
+                      }
+
+                    }
+                    if (_currentStep < 3) {
+                      // If the form is valid, display a Snackbar.
+                      _currentStep = _currentStep + 1;
+                    }
+                  });
                           },
                           materialTapTargetSize:
                               MaterialTapTargetSize.shrinkWrap,
@@ -689,33 +741,182 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
     return response;
   }
 
+  var role = '';
+  _getAuthData() async {
+    var data = await Auth().getStorageAuth();
+
+    print('role');
+    print(data['role']);
+    setState(() {
+      role = data['role'];
+    });
+  }
+
+  Future _completeRefer() async{
+    var referralType;
+    if(role == 'chw')
+    {
+      referralType = 'community';
+    } else if(role == 'nurse'){
+      referralType = 'center';
+    }  else if(role == 'chcp'){
+      referralType = 'chcp';
+    } else{
+      referralType = '';
+    }
+
+    var data = {
+      'meta': {
+        'patient_id': Patient().getPatient()['id'],
+        "collected_by": Auth().getAuth()['uid'],
+        "status": "pending",
+        "created_at": DateTime.now().toString()
+      },
+      'body': {
+        'reason': selectedReason,
+        'type' : referralType,
+        'location' : {
+          'clinic_type' : selectedtype,
+          'clinic_name' : clinicNameController,
+        },
+      },
+      'referred_from': 'new questionnaire chcp',
+    };
+
+    // data['body']['reason'] = selectedReason;
+    // data['body']['type'] = referralType;
+    // data['body']['location'] = {};
+    // data['body']['location']['clinic_type'] = selectedtype;
+    // data['body']['location']['clinic_name'] = clinicNameController.text;
+
+    print('dataaa: $data');
+
+    // setState(() {
+    //   isLoading = true;
+    // });
+    // var response =
+    //     await ReferralController()
+    //         .create(context, data);
+    // setState(() {
+    //   isLoading = false;
+    // });
+    // print('response');
+    // print(response.runtimeType);
+
+    // return;
+
+    // if (response.runtimeType != int &&
+    //     response != null &&
+    //     response['error'] == true &&
+    //     response['message'] ==
+    //         'referral exists') {
+    //   await showDialog(
+    //     context: context,
+    //     builder: (BuildContext context) {
+    //       // return object of type Dialog
+    //       return AlertDialog(
+    //         content: new Text(
+    //           AppLocalizations.of(context)
+    //               .translate(
+    //                   "referralAlreadyExists"),
+    //           style:
+    //               TextStyle(fontSize: 20),
+    //         ),
+    //         actions: <Widget>[
+    //           // usually buttons at the bottom of the dialog
+    //           new FlatButton(
+    //             child: new Text(
+    //                 AppLocalizations.of(
+    //                         context)
+    //                     .translate(
+    //                         "referralUpdate"),
+    //                 style: TextStyle(
+    //                     color:
+    //                         kPrimaryColor)),
+    //             onPressed: () {
+    //               Navigator.of(context)
+    //                   .pop();
+    //               Navigator.of(context)
+    //                   .pushNamed(
+    //                 '/referralList',
+    //               );
+    //             },
+    //           ),
+    //         ],
+    //       );
+    //     },
+    //   );
+    // } else {
+    //   Navigator.of(context).pushNamed(
+    //     '/chwHome',
+    //   );
+    // }
+
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          content: new Text(
+            AppLocalizations.of(context).translate("wantToCompleteVisit"),
+            style: TextStyle(fontSize: 20),
+          ),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            FlatButton(
+              child: new Text(AppLocalizations.of(context).translate("yes"),
+                  style: TextStyle(color: kPrimaryColor)),
+              onPressed: () {
+                // Navigator.of(context).pop(false);
+                Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
+              },
+            ),
+            FlatButton(
+              child: new Text(
+                  AppLocalizations.of(context).translate("NO"),
+                  style: TextStyle(color: kPrimaryColor)),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+          ],
+        );
+    });
+
+  }
+
   Future _completeStep() async {
     print('before missing popup');
+
     var hasMissingData = checkMissingData();
     var hasOptionalMissingData = checkOptionalMissingData();
 
-    if (hasMissingData) {
-      var continueMissing = await missingDataAlert();
-      if (!continueMissing) {
-        return;
-      }
-    }
+    // if (hasMissingData) {
+    //   var continueMissing = await missingDataAlert();
+    //   if (!continueMissing) {
+    //     return;
+    //   }
+    // }
 
-    setLoader(true);
+    // setLoader(true);
 
     var patient = Patient().getPatient();
 
     print(patient['data']['age']);
     var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
-
-    // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow up center', '', status, nextVisitDate, followupType: 'full');
-    !hasMissingData ? Patient().setPatientReviewRequiredTrue() : null;
-    var encounterData = {
-      'context': context,
-      'dataStatus': dataStatus,
-      'followupType': 'full'
-    };
-    setLoader(false);
+    // if (nextVisitDate != '') {
+    //   encounter['body']['next_visit_date'] = nextVisitDate;
+    // }
+    print('dataStatus: $dataStatus');
+     encounterData = {
+        'context': context,
+        'dataStatus': dataStatus,
+      };
+    
+    // var response = await AssessmentController().updateAssessmentWithObservations(status, encounter, observations);
+    // var response = await AssessmentController().createOnlyAssessmentWithStatus('ncd center assessment', 'ncd', '', 'incomplete');
+    // !hasMissingData ? Patient().setPatientReviewRequiredTrue() : null;
+    // setLoader(false);
 
     // if age greater than 40 redirect to referral page
     // if (patient['data']['age'] != null && patient['data']['age'] > 40) {
@@ -733,25 +934,27 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
     //   return;
     // }
 
-    if (isReferralRequired) {
-      var data = {
-        'meta': {
-          'patient_id': Patient().getPatient()['id'],
-          "collected_by": Auth().getAuth()['uid'],
-          "status": "pending"
-        },
-        'body': {},
-        'referred_from': 'new questionnaire'
-      };
-      goToHome(true, data);
+    // if (isReferralRequired) {
+    //   var data = {
+    //     'meta': {
+    //       'patient_id': Patient().getPatient()['id'],
+    //       "collected_by": Auth().getAuth()['uid'],
+    //       "status": "pending"
+    //     },
+    //     'body': {},
+    //     'referred_from': 'new questionnaire'
+    //   };
+    //   goToHome(true, data);
 
-      return;
-    }
-
+    //   return;
+    // }
+  
+    // Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
+    // Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: 'encounter');
+    // Navigator.of(context).pushNamed('/ncdPatientSummary');
     // goToHome(false, null);
-    Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': encounterData ,});
-    // Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': {},});
   }
+
 
   List<CustomStep> _mySteps() {
     List<CustomStep> _steps = [
@@ -785,6 +988,26 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
       CustomStep(
         title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
         content: History(),
+        isActive: _currentStep >= 2,
+      ),
+      CustomStep(
+        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
+        content: ChcpPatientRecordsScreen(),
+        isActive: _currentStep >= 2,
+      ),
+      CustomStep(
+        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
+        content: RecommendedCounsellingChcp(),
+        isActive: _currentStep >= 2,
+      ),
+      CustomStep(
+        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
+        content: MedicationsDispense(),
+        isActive: _currentStep >= 2,
+      ),
+      CustomStep(
+        title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
+        content: CreateRefer(),
         isActive: _currentStep >= 2,
       ),
 
@@ -1342,7 +1565,7 @@ var bloodSugerEditingController = TextEditingController();
 
 class _MeasurementsState extends State<Measurements> {
   calculateBmi() {
-    if (heightEditingController != '' && weightEditingController.text != '') {
+    if (heightEditingController.text != '' && weightEditingController.text != '') {
       var height = int.parse(heightEditingController.text) / 100;
       var weight = int.parse(weightEditingController.text);
 
@@ -1569,7 +1792,7 @@ class _MeasurementsState extends State<Measurements> {
                       ),
                       SizedBox(height: 24),
                       Container(
-                        height: 230,
+                        height: 280,
                         decoration: BoxDecoration(
                             border: Border.all(
                                 width: 0.5, color: Colors.grey.shade400),
@@ -1757,6 +1980,43 @@ class _MeasurementsState extends State<Measurements> {
                                 ],
                               ),
                             ),
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate("bmi"),
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      )),
+                                  SizedBox(
+                                    width: 48,
+                                  ),
+                                  Container(
+                                    width: 80,
+                                    height: 40,
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      keyboardType: TextInputType.number,
+                                      readOnly: true,
+                                      // enabled: false,
+                                      controller: bmiEditingController,
+                                      // enabled: _isBodyMeasurementsEnable,
+                                      onChanged: (value) {},
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.only(
+                                            top: 5, left: 10, right: 10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.red, width: 0.0)),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       )
@@ -1804,7 +2064,7 @@ var proteinController = TextEditingController();
 
 class _BloodTestsState extends State<BloodTests> {
   calculateBmi() {
-    if (heightEditingController != '' && weightEditingController.text != '') {
+    if (heightEditingController.text != '' && weightEditingController.text != '') {
       var height = int.parse(heightEditingController.text) / 100;
       var weight = int.parse(weightEditingController.text);
 
@@ -3344,6 +3604,1581 @@ class _HistoryState extends State<History> {
               ],
             ),
           )),
+    );
+  }
+}
+
+
+class ChcpPatientRecordsScreen extends StatefulWidget {
+  var checkInState = false;
+  var prevScreen = '';
+  var encounterData = {};
+  // ChcpPatientRecordsScreen({this.prevScreen, this.encounterData});
+  @override
+  _ChcpPatientRecordsState createState() => _ChcpPatientRecordsState();
+}
+
+class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
+  var _patient;
+  // bool isLoading = true;
+  var carePlans = [];
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  
+  bool avatarExists = false;
+  var encounters = [];
+  var lastAssessment;
+  var lastFollowup;
+  bool hasIncompleteFollowup = false;
+  String lastEncounterType = '';
+  String lastEncounterDate = '';
+  String nextVisitDateChw = '';
+  String nextVisitPlaceChw = '';
+  String nextVisitDateCc = '';
+  String nextVisitPlaceCc = '';
+  String lastCarePlanDate = '';
+  var conditions = [];
+  var medications = [];
+  var allergies = [];
+  var users = [];
+  var report;
+  var bmi;
+  var cholesterol;
+  var bp;
+  var cvd;
+  int interventionIndex = 0;
+  bool actionsActive = false;
+  bool carePlansEmpty = false;
+  var dueDate = '';
+  var smokingAnswer;
+  var smokelessTobaccoAnswer;
+
+  @override
+  void initState() {
+    super.initState();
+    _patient = Patient().getPatient();
+    print('encounterData ${widget.encounterData}');
+    print(_patient['meta']['review_required']);
+    print('prevScreen ${widget.prevScreen}');
+    dueCarePlans = [];
+    completedCarePlans = [];
+    upcomingCarePlans = [];
+    conditions = [];
+    referrals = [];
+    pendingReferral = null;
+    carePlansEmpty = false;
+    getRiskQuestionAnswer();
+    
+    getLastAssessment();
+
+  }
+
+  getRiskQuestionAnswer(){
+    // print('getRiskQuestionAnswer');
+    var riskQuestions = Questionnaire().questions['new_patient']['risk_factors'];
+    // print('riskQuestions $riskQuestions');
+    riskQuestions['items'].forEach((item) {
+       print('risk factor: ${item} \n');
+      if(item['type'] == 'smoking'){
+       print('riskAnswers: ${riskAnswers} \n');
+        smokingAnswer = riskAnswers[riskQuestions['items'].indexOf(item)];
+        // riskAnswers[0]
+        print('riskAnswers: answer: $smokingAnswer');
+        print('SMOKING $smokingAnswer');
+      }
+      if(item['type'] == 'smokeless-tobacco'){
+        smokelessTobaccoAnswer = riskAnswers[riskQuestions['items'].indexOf(item)];
+        print('riskAnswers: smokelessTobaccoAnswer: $smokelessTobaccoAnswer');
+        print('SMOKEless tobacco $smokelessTobaccoAnswer');
+      }
+    });
+
+  }
+  getDate(date) {
+     if (date.runtimeType == String && date != null && date != '') {
+      return DateFormat("MMMM d, y").format(DateTime.parse(date)).toString();
+    } else if (date['_seconds'] != null) {
+      var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
+
+      return DateFormat("MMMM d, y").format(parsedDate).toString();
+    }
+    return '';
+  }
+
+  getLastAssessment() async {
+    setState(() {
+      isLoading = true;
+    });
+    lastAssessment = await AssessmentController().getLastAssessmentByPatient();
+
+    print('lastAssessment $lastAssessment');
+    if(lastAssessment != null && lastAssessment.isNotEmpty) {
+      if(lastAssessment['data']['body']['follow_up_info'] != null && lastAssessment['data']['body']['follow_up_info'].isNotEmpty){
+        var followUpInfoChw = lastAssessment['data']['body']['follow_up_info'].where((info)=> info['type'] == 'chw');
+        if(followUpInfoChw.isNotEmpty) {
+          followUpInfoChw = followUpInfoChw.first;
+        }
+        var followUpInfoCc= lastAssessment['data']['body']['follow_up_info'].where((info)=> info['type'] == 'cc');
+        if(followUpInfoCc.isNotEmpty) {
+          followUpInfoCc = followUpInfoCc.first;
+        }
+        setState(() {
+          nextVisitDateChw = (followUpInfoChw['date'] != null && followUpInfoChw['date'].isNotEmpty) ? getDate(followUpInfoChw['date']) : '' ;
+          nextVisitPlaceChw = (followUpInfoChw['place'] != null && followUpInfoChw['place'].isNotEmpty) ? (followUpInfoChw['place']) : '' ;
+          nextVisitDateCc = (followUpInfoCc['date'] != null && followUpInfoCc['date'].isNotEmpty) ? getDate(followUpInfoCc['date']) : '' ;
+          nextVisitPlaceCc = (followUpInfoCc['place'] != null && followUpInfoCc['place'].isNotEmpty) ? (followUpInfoCc['place']) : '' ;
+        });
+      }
+
+      setState(() {
+        lastEncounterType = lastAssessment['data']['body']['type'];
+        lastEncounterDate = getDate(lastAssessment['data']['meta']['created_at']);
+        print('lastEncounterDate ${lastEncounterDate}');
+      });
+    }
+    setState(() {
+      isLoading = false;
+    });
+    
+  }
+
+  getCompletedDate(goal) {
+    var data = '';
+    DateTime date;
+    // print(goal['items']);
+    goal['items'].forEach((item) {
+      // print(item['body']['activityDuration']['end']);
+      DateFormat format = new DateFormat("E LLL d y");
+      var endDate;
+      try {
+        endDate = format.parse(item['body']['activityDuration']['end']);
+      } catch(err) {
+        endDate = DateTime.parse(item['body']['activityDuration']['end']);
+      }
+      // print(endDate);
+      date = endDate;
+      if (date != null) {
+        date  = endDate;
+      } else {
+        if (endDate.isBefore(date)) {
+          date = endDate;
+        }
+      }
+      
+    });
+    if (date != null) {
+      var test = DateFormat('MMMM d, y').format(date);
+      data = 'Complete By ' + test;
+    }
+    return data;
+  }
+
+
+
+
+  getObservations(assessment) async {
+    // _observations =  await AssessmentController().getObservationsByAssessment(widget.assessment);
+    var data =  await AssessmentController().getLiveObservationsByAssessment(assessment);
+    // print(data);
+    return data;
+
+  }
+
+  
+
+  convertDateFromSeconds(date) {
+    if (date['_seconds'] != null) {
+      var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
+
+      return DateFormat("MMMM d, y").format(parsedDate).toString();
+    }
+    return '';
+  }
+
+  getTitle(encounter) {
+    var screening_type =  encounter['data']['screening_type'];
+    if (screening_type != null && screening_type != '') {
+      if (screening_type == 'ncd') {
+        screening_type = screening_type.toUpperCase() + ' ';
+      } else {
+        screening_type = screening_type[0].toUpperCase() + screening_type.substring(1) + ' ';
+      }
+      
+      return screening_type + 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
+    }
+    
+    return 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
+  }
+
+    String getLastVisitDate() {
+    var date = '';
+
+    if (encounters.length > 0) {
+      var lastEncounter = encounters[0];
+      var parsedDate = DateTime.tryParse(lastEncounter['meta']['created_at']);
+      if (parsedDate != null) {
+        date = DateFormat('yyyy-MM-dd').format(parsedDate);
+      }
+    }
+
+    return date;
+  }
+  String getNextVisitDate() {
+    var date = '';
+
+    if (encounters.length > 0) {
+    print('encounters ${encounters[0]}');
+      var lastEncounter = encounters[0];
+      date = lastEncounter['data']['next_visit_date'] ?? '';
+    }
+
+    return date;
+  }
+
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+      if(widget.prevScreen == 'followup') {
+          print('WillPopScope if');
+          Navigator.of(context).pushNamed( '/chwNavigation', arguments: 1);
+          return true;
+        } else {
+          print('WillPopScope else');
+          Navigator.pop(context);
+          return true;
+        }
+      },
+      child: Scaffold(
+        key: _scaffoldKey,
+        // appBar: new AppBar(
+        //   title: new Text(AppLocalizations.of(context).translate('patientSummary'), style: TextStyle(color: Colors.white, fontSize: 20),),
+        //   backgroundColor: kPrimaryColor,
+        //   elevation: 0.0,
+        //   iconTheme: IconThemeData(color: Colors.white),
+        //   actions: <Widget>[
+
+        //   ],
+        // ),
+        body: isLoading ? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
+          child: SingleChildScrollView(
+            child: Stack(
+              children: <Widget>[
+                Column(                
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: kBorderLighter),
+                      ),
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),    
+                      
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.only(left: 20, right: 20, top: 15),
+
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  child: Text(AppLocalizations.of(context).translate('age')+":", style: TextStyle(fontSize: 17,),),
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  // padding: EdgeInsets.symmetric(vertical: 9),
+                                  // child: Text('dummy age', style: TextStyle(fontSize: 17,)),
+                                  // Text(Helpers().getPatientAgeAndGender(Patient().getPatient()),)
+                                  child: 
+                                    Text(
+                                      Helpers().getPatientAge(Patient().getPatient()) != '' &&
+                                      Helpers().getPatientAge(Patient().getPatient()) != null
+                                      ? Helpers().getPatientAge(Patient().getPatient())
+                                      : 'N/A',
+                                    style: TextStyle(fontSize: 17,)
+                                    )
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // report != null && report['body']['result']['assessments']['cvd'] != null ?
+                            Container(
+                              padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  // top: BorderSide(color: kBorderLighter)
+                                )
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Row(
+                                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(AppLocalizations.of(context).translate('gender')+":", style: TextStyle(fontSize: 17)),
+                                      SizedBox(width: 10),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(
+                                                Helpers().getPatientGender(Patient().getPatient()) != '' && 
+                                                Helpers().getPatientGender(Patient().getPatient()) != null
+                                                  ? Helpers().getPatientGender(Patient().getPatient())
+                                                  : 'N/A',
+                                                style: TextStyle(fontSize: 17,)),
+                                            ]
+                                          ),
+                                        ]
+                                      )
+                                    ],
+                                  ),
+
+                                  SizedBox(height: 20,),
+
+                                ],
+                              ),
+                            ), 
+                            // : Container(),
+
+                          // report != null && report['body']['result']['assessments']['lifestyle'] != null && report['body']['result']['assessments']['lifestyle']['components']['smoking'] != null ?
+                          Container(
+                            padding: EdgeInsets.only(left: 20, right: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Text(AppLocalizations.of(context).translate('smoking') + ":", style: TextStyle(fontSize: 17)),
+                                    SizedBox(width: 10),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(smokingAnswer != ''
+                                              ? smokingAnswer
+                                              : 'N/A',
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                              ),
+                                            )
+                                          ]
+                                        ),
+                                      ]
+                                    )
+                                  ],
+                                ),
+
+                                SizedBox(height: 20,),
+
+                              ],
+                            ),
+                          ), 
+                          // : Container(),
+
+
+                          // report != null && report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ?
+                          Container(
+                              padding: EdgeInsets.only(left: 20, right: 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Text(AppLocalizations.of(context).translate('smokelessTobacco') + ":", style: TextStyle(fontSize: 17)),
+                                      SizedBox(width: 10),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(smokelessTobaccoAnswer != ''
+                                                ? smokelessTobaccoAnswer
+                                                : 'N/A',
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  // color: ColorUtils.statusColor[report['body']['result']['assessments']['body_composition']['components']['bmi']['tfl']] ?? Colors.black
+                                                ),
+                                              ),
+                                            ]
+                                          ),
+                                        ]
+                                      )
+                                    ],
+                                  ),
+
+                                  SizedBox(height: 20,),
+
+                                ],
+                              ),
+                            ),
+                            // : Container(),
+
+
+                          // report != null && report['body']['result']['assessments']['lifestyle'] != null && report['body']['result']['assessments']['lifestyle']['components']['physical_activity'] != null ?
+                            Container(
+                              padding: EdgeInsets.only(left: 20, right: 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Text(AppLocalizations.of(context).translate('bmi') + ":", style: TextStyle(fontSize: 17)),
+                                      SizedBox(width: 10),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(bmiEditingController.text != '' 
+                                                  ? "${bmiEditingController.text}"
+                                                  :"N/A",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                            ]
+                                          ),
+                                        ]
+                                      )
+                                    ],
+                                  ),
+
+                                  SizedBox(height: 20,),
+
+                                ],
+                              ),
+                            ),
+                            // : Container(),
+
+
+                          // report != null && report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ?
+                            Container(
+                              padding: EdgeInsets.only(left: 20, right: 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Text(AppLocalizations.of(context).translate('bp') + ":", style: TextStyle(fontSize: 17)),
+                                      SizedBox(width: 10),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(
+                                                systolicEditingController.text != '' && diastolicEditingController.text != ''
+                                                ? systolicEditingController.text + '/' + diastolicEditingController.text
+                                                : 'N/A',
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                            ]
+                                          ),
+                                        ]
+                                      )
+                                    ],
+                                  ),
+
+                                  SizedBox(height: 20,),
+
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                    ),
+
+                    Container(
+                      // decoration: BoxDecoration(
+                      //   border: Border(
+                      //     top: BorderSide(width: 4, color: kBorderLighter)
+                      //   ),
+                      // ),
+                      padding: EdgeInsets.only(top: 15, left: 10, right: 10),
+                      child: Column(
+                        children: <Widget>[
+
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: kBorderLighter),
+                            ),
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(AppLocalizations.of(context).translate('ncdCenterVisit'), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+                                SizedBox(height: 15,),
+                                nextVisitDateChw == '' 
+                                ? Container()
+                                : Column(children:[
+                                  Text(AppLocalizations.of(context).translate('nextVisitDateChw') +  ': $nextVisitDateChw', style: TextStyle(fontSize: 17,)),
+                                  SizedBox(height: 10,),
+                                  ]),
+                                nextVisitPlaceChw == '' 
+                                ? Container()
+                                : Column(children:[
+                                  Text(AppLocalizations.of(context).translate('nextVisitPlaceChw') +  ': $nextVisitPlaceChw', style: TextStyle(fontSize: 17,)),
+                                  SizedBox(height: 10,),
+                                  ]),
+                                nextVisitDateCc == '' 
+                                ? Container()
+                                : Column(children:[
+                                  Text(AppLocalizations.of(context).translate('nextVisitDateCc') +  ': $nextVisitDateCc', style: TextStyle(fontSize: 17,)),
+                                  SizedBox(height: 10,),
+                                  ]),
+                                nextVisitPlaceCc == '' 
+                                ? Container()
+                                : Column(children:[
+                                  Text(AppLocalizations.of(context).translate('nextVisitPlaceCc') +  ': $nextVisitPlaceCc', style: TextStyle(fontSize: 17,)),
+                                  SizedBox(height: 10,),
+                                  ]),
+                                Text(AppLocalizations.of(context).translate('lastVisitDate') +  ': $lastEncounterDate', style: TextStyle(fontSize: 17,))
+                              ],
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: kBorderLighter),
+                            ),
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(AppLocalizations.of(context).translate('lastEncounter')+'${(lastEncounterType)}', style: TextStyle(fontSize: 17,)),
+                                SizedBox(height: 10,),
+                                Text(AppLocalizations.of(context).translate('lastEncounterDate')+  ': $lastEncounterDate', style: TextStyle(fontSize: 17,)),
+                              ],
+                            ),
+                          ),
+
+                        ],
+                      )
+                    ),
+                    SizedBox(height: 15,),
+                  ], 
+                  
+                ),
+                isLoading ? Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: double.infinity,
+                  color: Color(0x90FFFFFF),
+                  child: Center(
+                    child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),backgroundColor: Color(0x30FFFFFF),)
+                  ),
+                ) : Container(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class RecommendedCounsellingChcp extends StatefulWidget {
+  @override
+  _RecommendedCounsellingChcpState createState() => _RecommendedCounsellingChcpState();
+}
+
+// var isReferralRequired = null;
+bool dietTitleAdded = false;
+bool tobaccoTitleAdded = false;
+
+class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp> {
+
+  bool activityTitleAdded = false;
+
+  @override
+  initState() {
+    super.initState();
+    dietTitleAdded = false;
+    tobaccoTitleAdded = false;
+    // isReferralRequired = null;
+  }
+
+  checkCounsellingQuestions(counsellingQuestion) {
+    // if (medicationQuestions['items'].length - 1 == medicationQuestions['items'].indexOf(medicationQuestion)) {
+    //   if (showLastMedicationQuestion) {
+    //     return true;
+    //   }
+
+    // }
+
+    if (counsellingQuestion['type'] == 'medical-adherence') {
+      print('medicationAdh $medicationAnswers');
+      if (medicationAnswers[1] == 'no' || medicationAnswers[3] == 'no' ||medicationAnswers[5] == 'no' || medicationAnswers[7] == 'no') {
+        return true;
+      }
+      return false;
+    }
+
+    if (counsellingQuestion['type'] == 'physical-activity-high') {
+      if (riskAnswers[9] == 'no' || riskAnswers[10] == 'no') {
+        return true;
+      }
+      return false;
+    }
+
+    var matchedQuestion;
+    riskQuestions['items'].forEach((item) {
+      if (item['type'] != null && item['type'] == counsellingQuestion['type']) {
+        matchedQuestion = item;
+      }
+    });
+
+    if (matchedQuestion != null) {
+      // print(matchedQuestion.first);
+      var answer = riskAnswers[riskQuestions['items'].indexOf(matchedQuestion)];
+      if ((matchedQuestion['type'] == 'eat-vegetables' ||
+          matchedQuestion['type'] == 'physical-activity-high')) {
+        if (answer == 'no') {
+          return true;
+        }
+      } else {
+        if (answer == 'yes') {
+          return true;
+        }
+        return false;
+      }
+    }
+    return false;
+  }
+
+  addCounsellingGroupTitle(question) {
+    if (question['group'] == 'unhealthy-diet') {
+      print('unhealthy-diet');
+      print(dietTitleAdded);
+      if (!dietTitleAdded) {
+        dietTitleAdded = true;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Divider(),
+            Container(
+                margin: EdgeInsets.only(top: 25, bottom: 30),
+                child: Text(
+                    AppLocalizations.of(context).translate('unhealthyDiet'),
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.w500))),
+          ],
+        );
+      }
+    } else if (question['group'] == 'tobacco') {
+      print('tobacco');
+      print(tobaccoTitleAdded);
+      if (!tobaccoTitleAdded) {
+        tobaccoTitleAdded = true;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Divider(),
+            Container(
+                margin: EdgeInsets.only(top: 25, bottom: 30),
+                child: Text(
+                    AppLocalizations.of(context).translate('tobaccoUse'),
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.w500))),
+          ],
+        );
+      }
+    } else if (question['type'] == 'physical-activity-high') {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Divider(),
+          Container(
+            margin: EdgeInsets.only(top: 25, bottom: 10),
+          ),
+        ],
+      );
+    }
+
+    return Container();
+  }
+
+  Widget titleWidget(title) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Divider(),
+        Container(
+            margin: EdgeInsets.only(top: 25, bottom: 30),
+            child: Text('$title',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500))),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      physics: ClampingScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+          child: Form(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                PatientTopbar(),
+                SizedBox(
+                  height: 30,
+                ),
+                Container(
+                    // alignment: Alignment.center,
+                    margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        // Text(
+                        //   AppLocalizations.of(context).translate('tobaccoUse'),
+                        //   style: TextStyle(
+                        //       fontSize: 20, fontWeight: FontWeight.w500),
+                        // ),
+                        Text(
+                          AppLocalizations.of(context)
+                              .translate('wasCounsellingProvided'),
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    )),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                          padding: EdgeInsets.only(bottom: 35, top: 20),
+                          decoration: BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(color: kBorderLighter))),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ...counsellingQuestions['items'].map((question) {
+                                if (checkCounsellingQuestions(question))
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      addCounsellingGroupTitle(question),
+                                      Container(
+                                          child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            getQuestionText(context, question),
+                                            style: TextStyle(
+                                                fontSize: 18, height: 1.7),
+                                          ),
+                                          Container(
+                                              width: 240,
+                                              child: Row(
+                                                children: <Widget>[
+                                                  ...question['options']
+                                                      .map(
+                                                        (option) => Expanded(
+                                                            child: Container(
+                                                          height: 25,
+                                                          width: 100,
+                                                          margin:
+                                                              EdgeInsets.only(
+                                                                  right: 20,
+                                                                  left: 0),
+                                                          decoration: BoxDecoration(
+                                                              border: Border.all(
+                                                                  width: 1,
+                                                                  color: counsellingAnswers[counsellingQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)]
+                                                                      ? Color(
+                                                                          0xFF01579B)
+                                                                      : Colors
+                                                                          .black),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          3),
+                                                              color: counsellingAnswers[counsellingQuestions['items'].indexOf(
+                                                                          question)] ==
+                                                                      question['options']
+                                                                          [question['options'].indexOf(option)]
+                                                                  ? Color(0xFFE1F5FE)
+                                                                  : null),
+                                                          child: FlatButton(
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                dietTitleAdded = false;
+                                                                tobaccoTitleAdded = false;
+                                                                counsellingAnswers[counsellingQuestions['items'].indexOf(question)] = question['options'][question['options'].indexOf(option)];
+                                                                // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
+                                                              });
+                                                            },
+                                                            materialTapTargetSize:
+                                                                MaterialTapTargetSize
+                                                                    .shrinkWrap,
+                                                            child: Text(
+                                                              getOptionText(
+                                                                  context,
+                                                                  question,
+                                                                  option),
+                                                              style: TextStyle(
+                                                                  color: counsellingAnswers[counsellingQuestions['items'].indexOf(
+                                                                              question)] ==
+                                                                          question['options']
+                                                                              [
+                                                                              question['options'].indexOf(option)]
+                                                                      ? kPrimaryColor
+                                                                      : null),
+                                                            ),
+                                                          ),
+                                                        )),
+                                                      )
+                                                      .toList()
+                                                ],
+                                              )),
+                                        ],
+                                      )),
+                                      SizedBox(
+                                        height: 20,
+                                      )
+                                    ],
+                                  );
+                                else
+                                  return Container();
+                              }).toList(),
+                              // Column(
+                              //   crossAxisAlignment: CrossAxisAlignment.start,
+                              //   children: <Widget>[
+                              //     SizedBox(height: 20),
+                              //     Container(
+                              //         child: Row(
+                              //       mainAxisAlignment:
+                              //           MainAxisAlignment.spaceBetween,
+                              //       children: [
+                              //         Text(
+                              //           AppLocalizations.of(context)
+                              //               .translate('referralRequired'),
+                              //           style: TextStyle(
+                              //               fontSize: 18,
+                              //               height: 1.7,
+                              //               fontWeight: FontWeight.w500),
+                              //         ),
+                              //         Container(
+                              //             width: 240,
+                              //             child: Row(
+                              //               children: <Widget>[
+                              //                 Expanded(
+                              //                     child: Container(
+                              //                   height: 25,
+                              //                   width: 100,
+                              //                   margin: EdgeInsets.only(
+                              //                       right: 20, left: 0),
+                              //                   decoration: BoxDecoration(
+                              //                       border: Border.all(
+                              //                           width: 1,
+                              //                           color: (isReferralRequired !=
+                              //                                       null &&
+                              //                                   isReferralRequired)
+                              //                               ? Color(0xFF01579B)
+                              //                               : Colors.black),
+                              //                       borderRadius:
+                              //                           BorderRadius.circular(
+                              //                               3),
+                              //                       color: (isReferralRequired !=
+                              //                                   null &&
+                              //                               isReferralRequired)
+                              //                           ? Color(0xFFE1F5FE)
+                              //                           : null),
+                              //                   child: FlatButton(
+                              //                     onPressed: () {
+                              //                       setState(() {
+                              //                         dietTitleAdded = false;
+                              //                         tobaccoTitleAdded = false;
+                              //                         isReferralRequired = true;
+                              //                       });
+                              //                     },
+                              //                     materialTapTargetSize:
+                              //                         MaterialTapTargetSize
+                              //                             .shrinkWrap,
+                              //                     child: Text(
+                              //                       AppLocalizations.of(context)
+                              //                           .translate('yes'),
+                              //                       style: TextStyle(
+                              //                           color: (isReferralRequired !=
+                              //                                       null &&
+                              //                                   isReferralRequired)
+                              //                               ? kPrimaryColor
+                              //                               : null),
+                              //                     ),
+                              //                   ),
+                              //                 )),
+                              //                 Expanded(
+                              //                     child: Container(
+                              //                   height: 25,
+                              //                   width: 100,
+                              //                   margin: EdgeInsets.only(
+                              //                       right: 20, left: 0),
+                              //                   decoration: BoxDecoration(
+                              //                       border: Border.all(
+                              //                           width: 1,
+                              //                           color: (isReferralRequired ==
+                              //                                       null ||
+                              //                                   isReferralRequired)
+                              //                               ? Colors.black
+                              //                               : Color(
+                              //                                   0xFF01579B)),
+                              //                       borderRadius:
+                              //                           BorderRadius.circular(
+                              //                               3),
+                              //                       color: (isReferralRequired ==
+                              //                                   null ||
+                              //                               isReferralRequired)
+                              //                           ? null
+                              //                           : Color(0xFFE1F5FE)),
+                              //                   child: FlatButton(
+                              //                     onPressed: () {
+                              //                       setState(() {
+                              //                         dietTitleAdded = false;
+                              //                         tobaccoTitleAdded = false;
+                              //                         isReferralRequired = false;
+                              //                       });
+                              //                     },
+                              //                     materialTapTargetSize:
+                              //                         MaterialTapTargetSize
+                              //                             .shrinkWrap,
+                              //                     child: Text(
+                              //                       AppLocalizations.of(context)
+                              //                           .translate('NO'),
+                              //                       style: TextStyle(
+                              //                           color: (isReferralRequired ==
+                              //                                       null ||
+                              //                                   isReferralRequired)
+                              //                               ? null
+                              //                               : kPrimaryColor),
+                              //                     ),
+                              //                   ),
+                              //                 )),
+                              //               ],
+                              //             )),
+                              //       ],
+                              //     )),
+                              //     SizedBox(
+                              //       height: 20,
+                              //     )
+                              //   ],
+                              // ),
+                            ],
+                          )),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )),
+    );
+  }
+}
+
+class MedicationsDispense extends StatefulWidget {
+  @override
+  _MedicationsDispenseState createState() => _MedicationsDispenseState();
+}
+
+var dispenseEditingController = TextEditingController();
+// var stringListReturnedFromApiCall = ["first", "second", "third", "fourth", "..."];
+  // This list of controllers can be used to set and get the text from/to the TextFields
+  Map<String,TextEditingController> textEditingControllers = {};
+  var textFields = <TextField>[];
+
+class _MedicationsDispenseState extends State<MedicationsDispense> {
+  bool isEmpty = true;
+
+  @override
+  Widget build(BuildContext context) {
+  
+    return SingleChildScrollView(
+      physics: ClampingScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+          child: Form(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        child: Row(
+                          children: [
+                            Text(
+                              AppLocalizations.of(context).translate('medication'),
+                              style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 34,
+                              fontWeight: FontWeight.w500),
+                            ),
+                          ],  
+                        ),                       
+
+                      ),
+                      // SizedBox(height: 24),
+
+                      // Container(
+                      //     child: Text(
+                      //         'Serial Name    Dose Unit    Frequancy    Duration',
+                      //         style: TextStyle(
+                      //         color: Colors.black,
+                      //         fontSize: 18,
+                      //         // fontWeight: FontWeight.w500
+                      //         ),
+                      //       ),
+                      // ),
+                      SizedBox(height: 24),
+                      if(dynamicMedications != null)
+                      ...dynamicMedications.map((item) {
+                        isEmpty = false;
+                        return Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              child: Text(
+                                item['medInfo'],
+                                style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 18,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 24),
+
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              child: Row(
+                                children: [
+                                  Text(AppLocalizations.of(context).translate('dispense'),
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 18,
+                                      )),
+                                  SizedBox(
+                                    width: 28,
+                                  ),
+                                  Container(
+                                    width: 120,
+                                    height: 40,
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      keyboardType: TextInputType.number,
+                                      controller: textEditingControllers[item['medId']],
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.only(
+                                            top: 5, left: 10, right: 10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.red, width: 0.0)),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 16,
+                                  ),
+                                  FlatButton(
+                                    color: Colors.blue[800],
+                                    textColor: Colors.white, 
+                                    onPressed: () async {
+                                      print('id ${item['medId']}');
+                                      var response = await PatientController().dispenseMedicationByPatient(item['medId'], textEditingControllers[item['medId']].text);
+                                      print('response $response');
+                                      if(!response['error']) {
+                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                          content: Text(AppLocalizations.of(context).translate('dataSaved')),
+                                          backgroundColor: kPrimaryGreenColor,
+                                        ));
+                                        return;
+                                      }
+                                      {
+                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                          content: Text(AppLocalizations.of(context).translate('somethingWrong')),
+                                          backgroundColor: kPrimaryRedColor,
+                                        ));
+                                      }
+                                      // Navigator.of(context).pop();
+                                      // if (response == 'success') {
+                                      // // Navigator.of(context).pop();
+                                      // } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
+                                    },
+                                    child: Text(AppLocalizations.of(context).translate('submit')),
+                                  )
+                                ],
+                              ),
+                              ),
+                              SizedBox(height: 24),
+                          ],
+                        ),
+                      );
+                      }).toList(),
+                      isEmpty ? Container(child: Text(AppLocalizations.of(context).translate('noMedication'), style: TextStyle(fontSize: 16),),): Container()
+                      ],
+                    ),
+                  ),
+                ]
+              ),
+          ),
+      ),
+
+    );
+  }
+
+}
+
+class CreateRefer extends StatefulWidget {
+
+  @override
+  _CreateReferState createState() => _CreateReferState();
+}
+
+class _CreateReferState extends State<CreateRefer> {
+  bool refer = false;
+  var role = '';
+  var referralReasonOptions = {
+  'options': ['Urgent medical attempt required', 'NCD screening required'],
+  'options_bn': ['তাৎক্ষণিক মেডিকেল প্রচেষ্টা প্রয়োজন', 'এনসিডি স্ক্রিনিং প্রয়োজন']
+  };
+  List referralReasons;
+  // var selectedReason;
+  // var clinicNameController = TextEditingController();
+  var clinicTypes = [];
+  // var selectedtype;
+  var _patient;
+
+  @override
+  void initState() {
+    super.initState();
+    _patient = Patient().getPatient();
+    print(Language().getLanguage());
+    // _getAuthData();
+    getCenters();
+    referralReasons = referralReasonOptions['options']; 
+    // print('encounterData $encounterData');
+  }
+
+  // _getAuthData() async {
+  //   var data = await Auth().getStorageAuth();
+
+  //   print('role');
+  //   print(data['role']);
+  //   setState(() {
+  //     role = data['role'];
+  //   });
+  // }
+
+  getCenters() async {
+    // setState(() {
+    //   isLoading = true;
+    // });
+    var centerData = await PatientController().getCenter();
+    // setState(() {
+    //   isLoading = false;
+    // });
+
+    print("CenterData: $centerData");
+
+    if (centerData['error'] != null && !centerData['error']) {
+      clinicTypes = centerData['data'];
+      for(var center in clinicTypes) {
+        if(isNotNull(_patient['data']['center']) && center['id'] == _patient['data']['center']['id']) {
+          print('selectedCenter $center');
+          setState(() {
+            selectedtype = center;
+          });
+        }
+      }
+    }
+    print("center: $clinicTypes");
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+       child: SingleChildScrollView(
+          child: Stack(
+            children: <Widget>[
+              Container(
+                
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    // PatientTopbar(),
+                    SizedBox(height: 30,),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Text('Refer', style: TextStyle(fontSize: 20),)
+                          ),
+                          SizedBox(width: 30,),
+                          Container(
+                            height: 25,
+                            width: 100,
+                            margin:
+                                EdgeInsets.only(right: 20,left: 0),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 1,
+                                  color:  Colors.black),
+                                borderRadius: BorderRadius.circular(3),
+                          ),
+                            child: FlatButton(
+                              onPressed: () { 
+                                setState(() {
+                                  refer = true;
+                                });
+                              },
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              child: Text(
+                                AppLocalizations.of(context).translate('yes'),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(width: 20,),
+                          Container(
+                            height: 25,
+                            width: 100,
+                            margin:
+                                EdgeInsets.only(right: 20,left: 0),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 1,
+                                  color:  Colors.black),
+                                borderRadius: BorderRadius.circular(3),
+                          ),
+                            child: FlatButton(
+                              onPressed: () {
+                                setState(() {
+                                  refer = false;
+                                }); 
+                              },
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              child: Text(
+                                AppLocalizations.of(context).translate('NO'),
+                              ),
+                            ),
+                          ),
+                        ],)
+                    ),
+                    SizedBox(height: 50,),
+                    refer == true
+                    ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(AppLocalizations.of(context).translate("reasonForReferral"), style: TextStyle(fontSize: 20),)
+                        ),
+                        SizedBox(height: 10,),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 20),
+                          color: kSecondaryTextField,
+                          child: DropdownButtonFormField(
+                            hint: Text(AppLocalizations.of(context).translate('selectAReason'), style: TextStyle(fontSize: 20, color: kTextGrey),),
+                            decoration: InputDecoration(
+                              fillColor: kSecondaryTextField,
+                              contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                              border: UnderlineInputBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(4),
+                                topRight: Radius.circular(4),
+                              )
+                            ),
+                            ),
+                            items: [
+                              ...referralReasons.map((item) =>
+                                DropdownMenuItem(
+                                  child: Text(getDropdownOptionText(context, referralReasonOptions, item)),
+                                  value: item
+                                )
+                              ).toList(),
+                            ],
+                            value: selectedReason,
+                            isExpanded: true,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedReason = value;
+                              });
+                            },
+                          ),
+                        ),
+
+
+                        SizedBox(height: 30,),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(AppLocalizations.of(context).translate("referralLocation"), style: TextStyle(fontSize: 20),)
+                        ),
+                        SizedBox(height: 10,),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 20),
+                          color: kSecondaryTextField,
+                          child: DropdownButtonFormField(
+                            hint: Text(AppLocalizations.of(context).translate("clinicType"), style: TextStyle(fontSize: 20, color: kTextGrey),),
+                            decoration: InputDecoration(
+                              fillColor: kSecondaryTextField,
+                              contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                              border: UnderlineInputBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(4),
+                                topRight: Radius.circular(4),
+                              )
+                            ),
+                            ),
+                            items: [
+                              ...clinicTypes.map((item) =>
+                                DropdownMenuItem(
+                                  child: Text(getName(context, item)),
+                                  value: item
+                                )
+                              ).toList(),
+                            ],
+                            value: selectedtype,
+                            isExpanded: true,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedtype = value;
+                                print('selectedtype $selectedtype');
+                              });
+                            },
+                          ),
+                        ),
+
+                        SizedBox(height: 20,),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 20),
+                          color: kSecondaryTextField,
+                          child: TextField(
+                            controller: clinicNameController,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.only(left: 10, right: 10),
+                              hintText: 'Name of Clinic',
+                              hintStyle: TextStyle(fontSize: 18)
+                            ),
+                          )
+                        ),
+
+                        SizedBox(height: 50,),
+                        Row(
+                        children: <Widget>[
+                          // Expanded(
+                          //   child: Container(
+                          //     width: double.infinity,
+                          //     margin: EdgeInsets.only(left: 20, right: 20),
+                          //     height: 50,
+                          //     decoration: BoxDecoration(
+                          //       color: kPrimaryColor,
+                          //       borderRadius: BorderRadius.circular(3)
+                          //     ),
+                          //     child: FlatButton(
+                          //       onPressed: () async {
+                          //         // Navigator.of(context).pushNamed('/chwNavigation',);
+
+                          //         var referralType;
+                          //         if(role == 'chw')
+                          //         {
+                          //           referralType = 'community';
+                          //         } else if(role == 'nurse'){
+                          //           referralType = 'center';
+                          //         }  else if(role == 'chcp'){
+                          //           referralType = 'chcp';
+                          //         } else{
+                          //           referralType = '';
+                          //         }
+
+                          //         var data = {
+                          //           'meta': {
+                          //             'patient_id': Patient().getPatient()['id'],
+                          //             "collected_by": Auth().getAuth()['uid'],
+                          //             "status": "pending",
+                          //             "created_at": DateTime.now().toString()
+                          //           },
+                          //           'body': {
+                          //             'reason': selectedReason,
+                          //             'type' : referralType,
+                          //             'location' : {
+                          //               'clinic_type' : selectedtype,
+                          //               'clinic_name' : clinicNameController,
+                          //             },
+                          //           },
+                          //           'referred_from': 'new questionnaire chcp',
+                          //         };
+
+                          //         // data['body']['reason'] = selectedReason;
+                          //         // data['body']['type'] = referralType;
+                          //         // data['body']['location'] = {};
+                          //         // data['body']['location']['clinic_type'] = selectedtype;
+                          //         // data['body']['location']['clinic_name'] = clinicNameController.text;
+
+                          //         print(data);
+
+                          //         // setState(() {
+                          //         //   isLoading = true;
+                          //         // });
+                          //         // var response =
+                          //         //     await ReferralController()
+                          //         //         .create(context, data);
+                          //         // setState(() {
+                          //         //   isLoading = false;
+                          //         // });
+                          //         // print('response');
+                          //         // print(response.runtimeType);
+
+                          //         // return;
+
+                          //         // if (response.runtimeType != int &&
+                          //         //     response != null &&
+                          //         //     response['error'] == true &&
+                          //         //     response['message'] ==
+                          //         //         'referral exists') {
+                          //         //   await showDialog(
+                          //         //     context: context,
+                          //         //     builder: (BuildContext context) {
+                          //         //       // return object of type Dialog
+                          //         //       return AlertDialog(
+                          //         //         content: new Text(
+                          //         //           AppLocalizations.of(context)
+                          //         //               .translate(
+                          //         //                   "referralAlreadyExists"),
+                          //         //           style:
+                          //         //               TextStyle(fontSize: 20),
+                          //         //         ),
+                          //         //         actions: <Widget>[
+                          //         //           // usually buttons at the bottom of the dialog
+                          //         //           new FlatButton(
+                          //         //             child: new Text(
+                          //         //                 AppLocalizations.of(
+                          //         //                         context)
+                          //         //                     .translate(
+                          //         //                         "referralUpdate"),
+                          //         //                 style: TextStyle(
+                          //         //                     color:
+                          //         //                         kPrimaryColor)),
+                          //         //             onPressed: () {
+                          //         //               Navigator.of(context)
+                          //         //                   .pop();
+                          //         //               Navigator.of(context)
+                          //         //                   .pushNamed(
+                          //         //                 '/referralList',
+                          //         //               );
+                          //         //             },
+                          //         //           ),
+                          //         //         ],
+                          //         //       );
+                          //         //     },
+                          //         //   );
+                          //         // } else {
+                          //         //   Navigator.of(context).pushNamed(
+                          //         //     '/chwHome',
+                          //         //   );
+                          //         // }
+
+                          //         await showDialog(
+                          //           context: context,
+                          //           builder: (BuildContext context) {
+                          //             // return object of type Dialog
+                          //             return AlertDialog(
+                          //               content: new Text(
+                          //                 AppLocalizations.of(context).translate("wantToCompleteVisit"),
+                          //                 style: TextStyle(fontSize: 20),
+                          //               ),
+                          //               actions: <Widget>[
+                          //                 // usually buttons at the bottom of the dialog
+                          //                 FlatButton(
+                          //                   child: new Text(AppLocalizations.of(context).translate("yes"),
+                          //                       style: TextStyle(color: kPrimaryColor)),
+                          //                   onPressed: () {
+                          //                     // Navigator.of(context).pop(false);
+                          //                     Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
+                          //                   },
+                          //                 ),
+                          //                 FlatButton(
+                          //                   child: new Text(
+                          //                       AppLocalizations.of(context).translate("NO"),
+                          //                       style: TextStyle(color: kPrimaryColor)),
+                          //                   onPressed: () {
+                          //                     Navigator.of(context).pop(false);
+                          //                   },
+                          //                 ),
+                          //               ],
+                          //             );
+                          //         });
+                          //       },
+                          //       materialTapTargetSize:
+                          //           MaterialTapTargetSize.shrinkWrap,
+                          //       child: Text(
+                          //         AppLocalizations.of(context)
+                          //             .translate('referralCreate')
+                          //             .toUpperCase(),
+                          //         style: TextStyle(
+                          //             fontSize: 14,
+                          //             color: Colors.white,
+                          //             fontWeight: FontWeight.normal),
+                          //         )),
+                          //         ),
+                          //       ),
+                              ],
+                            ),
+                            isLoading
+                            ? Container(
+                                height: MediaQuery.of(context).size.height,
+                                width: double.infinity,
+                                color: Color(0x90FFFFFF),
+                                child: Center(
+                                    child: CircularProgressIndicator(
+                                  valueColor:
+                                      AlwaysStoppedAnimation<Color>(kPrimaryColor),
+                                  backgroundColor: Color(0x30FFFFFF),
+                                )),
+                              )
+                            : Container(),
+                        // Container(
+                        //   height: 300,
+                        //   width: double.infinity,
+                        //   color: Colors.black12,
+                        // )
+                      ],
+                    )
+                    : Container(),
+                    ],
+                  ),
+                ),   
+          ],
+        ),
+      ),
     );
   }
 }

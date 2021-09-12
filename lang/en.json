@@ -540,5 +540,6 @@
   "smoking" : "Smoking",
   "smokelessTobacco" : "Smokeless Tobacco",
   "noMedication" : "There is no Medication",
-  "wantToCompleteVisit" : "Do you want to complete the visit ?"
+  "wantToCompleteVisit" : "Do you want to complete the visit ?",
+  "chcpAssessment" : "Chcp Assessment"
 }

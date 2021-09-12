@@ -20,6 +20,8 @@ import 'package:nhealth/repositories/local/care_plan_repository_local.dart';
 import 'package:nhealth/screens/chw/patients/patient_summary_screen.dart';
 import 'package:get/get.dart';
 
+import 'new_followup_chcp_screen.dart';
+
 final searchController = TextEditingController();
 List allWorklist = [];
 List worklist = [];
@@ -36,12 +38,12 @@ List pastPatients = [];
 int selectedTab = 0;
 
 
-class ChwWorkListSearchScreen extends StatefulWidget {
+class ChcpWorkListSearchScreen extends StatefulWidget {
   @override
-  _ChwWorkListSearchScreenState createState() => _ChwWorkListSearchScreenState();
+  _ChcpWorkListSearchScreenState createState() => _ChcpWorkListSearchScreenState();
 }
 
-class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
+class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
   final syncController = Get.put(SyncController());
   List patients = [];
   bool isLoading = true;
@@ -56,7 +58,7 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
   @override
   initState() {
     super.initState();
-    print('work list search chw screen');
+    print('work list search chcp screen');
     setState(() {
       searchController.text = '';
     });
@@ -103,7 +105,7 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
       var completed = await PatientController().getPatientsWorklist(context, 'completed');
       var past = await PatientController().getPatientsWorklist(context, 'past');
       print('pending $pending');
-
+      
 
       if (pending['error'] != null && !pending['error'] && pending['data'].isNotEmpty) {
         setState(() {
@@ -638,7 +640,8 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
                       onTap: () {
                         Patient().setPatientModify(item);
                         // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
-    Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : 'home', 'encounterData': {}});
+                        // Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : 'home', 'encounterData': {}});
+                        Navigator.of(context).pushNamed(NewFollowupChcpScreen.path);
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),

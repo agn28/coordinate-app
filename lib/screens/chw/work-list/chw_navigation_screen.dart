@@ -29,6 +29,7 @@ class _ChwNavigationState extends State<ChwNavigationScreen> {
   int _currentIndex = 0;
   @override
   initState() {
+    print('chw navigation screen');
     _getAuthData();
     super.initState();
     setPage();

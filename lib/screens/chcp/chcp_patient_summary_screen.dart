@@ -1661,10 +1661,10 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
                               // Navigator.of(context).pushNamed(NewPatientQuestionnaireChcpScreen.path);
                               Navigator.of(context).pushNamed(NewVisitChcpFeelingScreen.path);
                             }, ),
-                            FloatingButton(text: AppLocalizations.of(context).translate('followUp'), onPressed: () {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pushNamed(NewFollowupChcpScreen.path);
-                            }, ),
+                            // FloatingButton(text: AppLocalizations.of(context).translate('followUp'), onPressed: () {
+                            //   Navigator.of(context).pop();
+                            //   Navigator.of(context).pushNamed(NewFollowupChcpScreen.path);
+                            // }, ),
                             // FloatingButton(text: AppLocalizations.of(context).translate('newCommunityVisit'), onPressed: () {
                             //   Navigator.of(context).pop();
                             //   //TODO: change the route

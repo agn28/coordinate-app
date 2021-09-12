@@ -528,6 +528,7 @@ class PatientRepository {
         'Authorization': 'Bearer ' + token
       },
     ).then((response) {
+      print('response ${json.decode(response.body)}');
       return json.decode(response.body);
 
     }).catchError((error) {

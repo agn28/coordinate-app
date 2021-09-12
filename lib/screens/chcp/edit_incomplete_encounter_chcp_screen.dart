@@ -377,6 +377,13 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
             hipEditingController.text = '${obsData['value']}';
             print(hipText);
           }
+
+          if (obsData['name'] == 'bmi' && obsData['value'] != '') {
+            print('into bmi');
+            var bmiText = obsData['value'];
+            bmiEditingController.text = '${obsData['value']}';
+            print('bmiText: $bmiText');
+          }
         }
       }
       if (obs['body']['type'] == 'blood_test') {
@@ -549,6 +556,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
     weightEditingController.text = '';
     waistEditingController.text = '';
     hipEditingController.text = '';
+    bmiEditingController.text = '';
 
     randomBloodController.text = '';
     fastingBloodController.text = '';
@@ -704,6 +712,9 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
     }
     if (hipEditingController.text != '') {
       BodyMeasurement().addItem('hip', hipEditingController.text, 'cm', '', '');
+    }
+    if (bmiEditingController.text != '') {
+      BodyMeasurement().addItem('bmi', bmiEditingController.text, 'bmi', '', '');
     }
 
     BodyMeasurement().addBmItem();
@@ -1900,9 +1911,9 @@ var bloodSugerEditingController = TextEditingController();
 
 class _MeasurementsState extends State<Measurements> {
   calculateBmi() {
-    if (heightEditingController != '' && weightEditingController.text != '') {
-      var height = int.parse(heightEditingController.text) / 100;
-      var weight = int.parse(weightEditingController.text);
+    if (heightEditingController.text != '' && weightEditingController.text != '') {
+      var height = double.parse(heightEditingController.text) / 100;
+      var weight = double.parse(weightEditingController.text);
 
       var bmi = weight / (height * height);
 
@@ -2129,7 +2140,7 @@ class _MeasurementsState extends State<Measurements> {
                       ),
                       SizedBox(height: 24),
                       Container(
-                        height: 230,
+                        height: 280,
                         decoration: BoxDecoration(
                             border: Border.all(
                                 width: 0.5, color: Colors.grey.shade400),
@@ -2262,6 +2273,43 @@ class _MeasurementsState extends State<Measurements> {
                                 ],
                               ),
                             ),
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate("bmi"),
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      )),
+                                  SizedBox(
+                                    width: 48,
+                                  ),
+                                  Container(
+                                    width: 80,
+                                    height: 40,
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      keyboardType: TextInputType.number,
+                                      readOnly: true,
+                                      // enabled: false,
+                                      controller: bmiEditingController,
+                                      // enabled: _isBodyMeasurementsEnable,
+                                      onChanged: (value) {},
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.only(
+                                            top: 5, left: 10, right: 10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.red, width: 0.0)),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                         ],
                       ),
                     )
@@ -2311,20 +2359,6 @@ var selectedProteinUnit = 'mg/dL';
 var proteinController = TextEditingController();
 
 class _BloodTestsState extends State<BloodTests> {
-  calculateBmi() {
-    if (heightEditingController != '' && weightEditingController.text != '') {
-      var height = int.parse(heightEditingController.text) / 100;
-      var weight = int.parse(weightEditingController.text);
-
-      var bmi = weight / (height * height);
-
-      bmiEditingController.text = bmi.toStringAsFixed(2);
-    }
-  }
-
-
-
-
   @override
   Widget build(BuildContext context) {
 
@@ -3727,20 +3761,14 @@ class ChcpPatientRecordsScreen extends StatefulWidget {
   var encounterData = {};
   // ChcpPatientRecordsScreen({this.prevScreen, this.encounterData});
   @override
-  _PatientRecordsState createState() => _PatientRecordsState();
+  _ChcpPatientRecordsState createState() => _ChcpPatientRecordsState();
 }
 
-class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
+class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
   var _patient;
-  // bool isLoading = true;
-  var carePlans = [];
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   
-  bool avatarExists = false;
-  var encounters = [];
   var lastAssessment;
-  var lastFollowup;
-  bool hasIncompleteFollowup = false;
   String lastEncounterType = '';
   String lastEncounterDate = '';
   String nextVisitDateChw = '';
@@ -3748,21 +3776,9 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
   String nextVisitDateCc = '';
   String nextVisitPlaceCc = '';
   String lastCarePlanDate = '';
-  var conditions = [];
   var medications = [];
-  var allergies = [];
-  var users = [];
-  var report;
-  var bmi;
-  var cholesterol;
-  var bp;
-  var cvd;
-  int interventionIndex = 0;
-  bool actionsActive = false;
-  bool carePlansEmpty = false;
-  var dueDate = '';
-  var smokingAnswer;
-  var smokelessTobaccoAnswer;
+  var smokingAnswer = '';
+  var smokelessTobaccoAnswer = '';
 
   @override
   void initState() {
@@ -3771,27 +3787,8 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
     print('encounterData ${widget.encounterData}');
     print(_patient['meta']['review_required']);
     print('prevScreen ${widget.prevScreen}');
-    dueCarePlans = [];
-    completedCarePlans = [];
-    upcomingCarePlans = [];
-    conditions = [];
-    referrals = [];
-    pendingReferral = null;
-    carePlansEmpty = false;
     getRiskQuestionAnswer();
-    
-    // _checkAvatar();
-    // _checkAuth();
-    // getUsers();
-    // getAssessmentDueDate();
-    // getReferrals();
-    // getMedicationsConditions();
-    // getReport();
-    // getLastAssessment();
-    // getLastFollowup();
-    // // getEncounters();
-    // // getAssessments();
-    // _getCarePlan();
+    getLastAssessment();
 
   }
 
@@ -3833,7 +3830,7 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
     });
     lastAssessment = await AssessmentController().getLastAssessmentByPatient();
 
-    print('lastAssessment $lastAssessment');
+    print('lastAssessment1 $lastAssessment');
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
       if(lastAssessment['data']['body']['follow_up_info'] != null && lastAssessment['data']['body']['follow_up_info'].isNotEmpty){
         var followUpInfoChw = lastAssessment['data']['body']['follow_up_info'].where((info)=> info['type'] == 'chw');
@@ -3858,510 +3855,11 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
         print('lastEncounterDate ${lastEncounterDate}');
       });
     }
-    
-  }
-  getLastFollowup() async {
     setState(() {
-      isLoading = true;
-    });
-    lastFollowup = await AssessmentController().getLastAssessmentByPatient(key:'screening_type', value:'follow-up');
-
-    print('lastFollowup $lastFollowup');
-    if(lastFollowup != null && lastFollowup.isNotEmpty) {
-      if(lastFollowup['data']['body']['type'] == 'follow up visit (center)'
-        && lastFollowup['data']['body']['status'] == 'incomplete') {
-          setState(() {
-            hasIncompleteFollowup = true;
-            print('hasIncompleteFollowup $hasIncompleteFollowup');
-          });
-        }
-    }
-    
-  }
-
-
-  getAssessmentDueDate() {
-    // print(DateFormat("MMMM d, y").format(DateTime.parse(_patient['data']['next_assignment']['body']['activityDuration']['start'])));
-
-    if (_patient != null && _patient['data']['next_assignment'] != null && _patient['data']['next_assignment']['body']['activityDuration']['start'] != null) {
-      setState(() {
-        DateFormat format = new DateFormat("E LLL d y");
-        
-        try {
-          dueDate = DateFormat("MMMM d, y").format(format.parse(_patient['data']['next_assignment']['body']['activityDuration']['start']));
-        } catch(err) {
-          dueDate = DateFormat("MMMM d, y").format(DateTime.parse(_patient['data']['next_assignment']['body']['activityDuration']['start']));
-        }
-      });
-    }
-    
-
-    // if (_patient['data']['body']['activityDuration'] != null && item['body']['activityDuration']['start'] != '' && item['body']['activityDuration']['end'] != '') {
-    //   var start = DateTime.parse(item['body']['activityDuration']['start']);
-    // }
-  }
-
-  getStatus(item) {
-    var status = 'completed';
-    item['items'].forEach( (goal) {
-      if (goal['meta']['status'] == 'pending') {
-        setState(() {
-          status = 'pending';
-        });
-      }
-    });
-
-    return status;
-  }
-
-  getCount(item) {
-    var count = 0;
-
-    item['items'].forEach( (goal) {
-      setState(() {
-        count += 1;
-      });
-    });
-    
-
-    return count.toString();
-  }
-
-  getUsers() async {
-  
-    var data = await UserController().getUsers();
-
-
-    setState(() {
-      users = data;
       isLoading = false;
     });
-  }
-
-  getUser(uid) {
-    var user = users.where((user) => user['uid'] == uid);
-    if (user.isNotEmpty) {
-      return user.first['name'];
-    }
-
-    return '';
-  }
-
-  getCompletedDate(goal) {
-    var data = '';
-    DateTime date;
-    // print(goal['items']);
-    goal['items'].forEach((item) {
-      // print(item['body']['activityDuration']['end']);
-      DateFormat format = new DateFormat("E LLL d y");
-      var endDate;
-      try {
-        endDate = format.parse(item['body']['activityDuration']['end']);
-      } catch(err) {
-        endDate = DateTime.parse(item['body']['activityDuration']['end']);
-      }
-      // print(endDate);
-      date = endDate;
-      if (date != null) {
-        date  = endDate;
-      } else {
-        if (endDate.isBefore(date)) {
-          date = endDate;
-        }
-      }
-      
-    });
-    if (date != null) {
-      var test = DateFormat('MMMM d, y').format(date);
-      data = 'Complete By ' + test;
-    }
-    return data;
-  }
-
-  getReferrals() async {
-
-    setState(() {
-      isLoading = true;
-    });
-
-    var patientID = Patient().getPatient()['id'];
-
-    var data = await FollowupController().getFollowupsByPatient(patientID);
-
-    
-    if (data['error'] == true) {
-
-      // Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
-    } else if (data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    } else {
-      setState(() {
-        referrals = data['data'];
-      });
-    }
-
-    referrals.forEach((referral) {
-      if (referral['meta']['status'] == 'pending') {
-        setState(() {
-          pendingReferral = referral;
-        });
-      }
-    });
-  }
-
-  getReport() async {
-
-    setState(() {
-      isLoading = true;
-    });
-
-    var data = await HealthReportController().getLastReport(context);
-    print(data);
-    // return;
-    if (data.isEmpty) {
-      setState(() {
-        carePlansEmpty = true;
-      });
-    } else if(isNotNull(data['error']) && data['error']) {
-      setState(() {
-        carePlansEmpty = true;
-      });
-    } else if (data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-      return;
-    } else {
-      print(data['data']);
-      setState(() {
-        report = data['data'];
-        bmi = report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ? report['body']['result']['assessments']['body_composition']['components']['bmi'] : null;
-        cvd = report['body']['result']['assessments']['cvd'] != null ? report['body']['result']['assessments']['cvd'] : null;
-        bp = report['body']['result']['assessments']['blood_pressure'] != null ? report['body']['result']['assessments']['blood_pressure'] : null;
-        cholesterol = report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ? report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] : null;
-      });
-    }
-
-  }
-
-  getMedicationsConditions() async {
-    isLoading = true;
-    if (Auth().isExpired()) {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    }
-    var fetchedSurveys = await ObservationController().getLiveSurveysByPatient();
-
-    if(fetchedSurveys.isNotEmpty) {
-      fetchedSurveys.forEach((item) {
-        if (item['data']['name'] == 'medical_history') {
-
-          allergies = item['data']['allergy_types'] != null ? item['data']['allergy_types'] : [];
-
-          item['data'].keys.toList().forEach((key) {
-            if (item['data'][key] == 'yes') {
-              setState(() {
-                var text = key.replaceAll('_', ' ');
-                var upperCased = text[0].toUpperCase() + text.substring(1);
-                if (!conditions.contains(upperCased)) {
-                  conditions.add(upperCased);
-                }
-                
-              });
-            }
-          });
-        }
-        if (item['data']['name'] == 'current_medication' && item['data']['medications'].isNotEmpty) {
-          setState(() {
-            medications = item['data']['medications'];
-          });
-        }
-      });
-    }
-
-  }
-
-  getAssessments() async {
-    setState(() {
-      isLoading = true;
-    });
-    var response = await HealthReportController().getLastReport(context);
-    if (response == null) {
-      return;
-    }
-    if (response['error']) {
-      return;
-    }
-
-    setState(() {
-      // lastAssessmentdDate = '';
-      // lastAssessmentdDate = DateFormat("MMMM d, y").format(DateTime.parse(response['data']['meta']['created_at']));
-    });
-
-  }
-
-  getDueCounts() {
-    var goalCount = 0;
-    var actionCount = 0;
-    carePlans.forEach((item) {
-      if(item['meta']['status'] == 'pending') {
-        goalCount = goalCount + 1;
-        if (item['body']['components'] != null) {
-          actionCount = actionCount + item['body']['components'].length;
-        }
-      }
-    });
-
-    return "$goalCount goals & $actionCount actions";
-  }
-
-  getEncounters() async {
-    setState(() {
-      isLoading = true;
-    });
-    encounters = await AssessmentController().getLiveAllAssessmentsByPatient();
-
-
-    if (encounters.isNotEmpty) {
-      var allEncounters = encounters;
-      await Future.forEach(allEncounters, (item) async {
-        var data = await getObservations(item);
-        var completed_observations = [];
-        if (data.isNotEmpty) {
-          data.forEach((obs) {
-            
-            if (obs['body']['type'] == 'survey') {
-              if (!completed_observations.contains(obs['body']['data']['name'])) {
-                completed_observations.add(obs['body']['data']['name']);
-              }
-            } else  {
-              if (!completed_observations.contains(obs['body']['type'])) {
-                completed_observations.add(obs['body']['type']);
-              }
-            }
-          });
-        }
-        encounters[encounters.indexOf(item)]['completed_observations'] = completed_observations;
-      });
-      // print(encounters);
-      encounters.sort((a, b) {
-        return DateTime.parse(b['meta']['created_at']).compareTo(DateTime.parse(a['meta']['created_at']));
-      });
-
-
-    }
     
   }
-
-  getObservations(assessment) async {
-    // _observations =  await AssessmentController().getObservationsByAssessment(widget.assessment);
-    var data =  await AssessmentController().getLiveObservationsByAssessment(assessment);
-    // print(data);
-    return data;
-
-  }
-
-  _checkAvatar() async {
-    avatarExists = await File(Patient().getPatient()['data']['avatar']).exists();
-  }
-
-  _checkAuth() {
-    if (Auth().isExpired()) {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    }
-  }
-
-  _getCarePlan() async {
-
-    var data = await CarePlanController().getCarePlan();
-    
-    if (data != null && data['message'] == 'Unauthorized') {
-
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    } else if (data['error'] == true) {
-
-    } else {
-      // print( data['data']);
-      // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
-      setState(() {
-        carePlans = data['data'];
-      });
-      // carePlans = data['data'];
-      print('carePlans $carePlans');
-      if(data['data'] != null) {
-        data['data'].forEach( (item) {
-        DateFormat format = new DateFormat("E LLL d y");
-        
-        var todayDate = DateTime.now();
-
-        var endDate;
-        var startDate;
-
-        try {
-          endDate = format.parse(item['body']['activityDuration']['end']);
-          startDate = format.parse(item['body']['activityDuration']['start']);
-        } catch(err) {
-          print(item['body']['activityDuration']['start']);
-          print(item['body']['activityDuration']['end']);
-          // print('failed: ' );
-          print(err);
-          DateFormat newFormat = new DateFormat("yyyy-MM-dd");
-          endDate = DateTime.parse(item['body']['activityDuration']['end']);
-          startDate = DateTime.parse(item['body']['activityDuration']['start']);
-          // startDate = DateTime.parse(item['body']['activityDuration']['start']);
-          
-        }
-
-        print('endDate');
-        print(endDate);
-        print(startDate);
-
-
-        print(endDate);
-        print(todayDate.isBefore(endDate));
-        print(todayDate.isAfter(startDate));
-
-        // check due careplans
-        if (item['meta']['status'] == 'pending') {
-          if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
-            var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-            // print(existedCp);
-            // print(item['body']['activityDuration']['start']);
-
-            if (existedCp.isEmpty) {
-              var items = [];
-              items.add(item);
-              dueCarePlans.add({
-                'items': items,
-                'title': item['body']['goal']['title'],
-                'id': item['body']['goal']['id']
-              });
-            } else {
-              dueCarePlans[dueCarePlans.indexOf(existedCp.first)]['items'].add(item);
-
-            }
-          } else if (todayDate.isBefore(startDate)) {
-            var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-            // print(existedCp);
-            // print(item['body']['activityDuration']['start']);
-
-            if (existedCp.isEmpty) {
-              var items = [];
-              items.add(item);
-              upcomingCarePlans.add({
-                'items': items,
-                'title': item['body']['goal']['title'],
-                'id': item['body']['goal']['id']
-              });
-            } else {
-              upcomingCarePlans[upcomingCarePlans.indexOf(existedCp.first)]['items'].add(item);
-
-            }
-          }
-        } else {
-          var existedCp = completedCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-          // print(existedCp);
-          // print(item['body']['activityDuration']['start']);
-
-          if (existedCp.isEmpty) {
-            var items = [];
-            items.add(item);
-            completedCarePlans.add({
-              'items': items,
-              'title': item['body']['goal']['title'],
-              'id': item['body']['goal']['id']
-            });
-          } else {
-            completedCarePlans[completedCarePlans.indexOf(existedCp.first)]['items'].add(item);
-
-          }
-        }
-
-        
-        
-        // var existedCp = carePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-        // // print(existedCp);
-        // // print(item['body']['activityDuration']['start']);
-        
-
-        // if (existedCp.isEmpty) {
-        //   var items = [];
-        //   items.add(item);
-        //   carePlans.add({
-        //     'items': items,
-        //     'title': item['body']['goal']['title'],
-        //     'id': item['body']['goal']['id']
-        //   });
-        // } else {
-        //   carePlans[carePlans.indexOf(existedCp.first)]['items'].add(item);
-
-        // }
-      });
-
-      }
-      
-      // setState(() {
-      //   carePlans = data['data'];
-      //   isLoading = false;
-      // });
-
-    }
-  }
-
-  convertDateFromSeconds(date) {
-    if (date['_seconds'] != null) {
-      var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
-
-      return DateFormat("MMMM d, y").format(parsedDate).toString();
-    }
-    return '';
-  }
-
-  getTitle(encounter) {
-    var screening_type =  encounter['data']['screening_type'];
-    if (screening_type != null && screening_type != '') {
-      if (screening_type == 'ncd') {
-        screening_type = screening_type.toUpperCase() + ' ';
-      } else {
-        screening_type = screening_type[0].toUpperCase() + screening_type.substring(1) + ' ';
-      }
-      
-      return screening_type + 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
-    }
-    
-    return 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
-  }
-
-    String getLastVisitDate() {
-    var date = '';
-
-    if (encounters.length > 0) {
-      var lastEncounter = encounters[0];
-      var parsedDate = DateTime.tryParse(lastEncounter['meta']['created_at']);
-      if (parsedDate != null) {
-        date = DateFormat('yyyy-MM-dd').format(parsedDate);
-      }
-    }
-
-    return date;
-  }
-  String getNextVisitDate() {
-    var date = '';
-
-    if (encounters.length > 0) {
-    print('encounters ${encounters[0]}');
-      var lastEncounter = encounters[0];
-      date = lastEncounter['data']['next_visit_date'] ?? '';
-    }
-
-    return date;
-  }
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -4417,7 +3915,14 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                   // padding: EdgeInsets.symmetric(vertical: 9),
                                   // child: Text('dummy age', style: TextStyle(fontSize: 17,)),
                                   // Text(Helpers().getPatientAgeAndGender(Patient().getPatient()),)
-                                  child: Text(Helpers().getPatientAge(Patient().getPatient()),style: TextStyle(fontSize: 17,)),
+                                  child: 
+                                  Text(
+                                    Helpers().getPatientAge(Patient().getPatient()) != '' &&
+                                    Helpers().getPatientAge(Patient().getPatient()) != null
+                                    ? Helpers().getPatientAge(Patient().getPatient())
+                                    : 'N/A',
+                                  style: TextStyle(fontSize: 17,)
+                                  )
                                 ),
                               ],
                             ),
@@ -4445,7 +3950,12 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: <Widget>[
-                                              Text(Helpers().getPatientGender(Patient().getPatient()),style: TextStyle(fontSize: 17,)),
+                                              Text(
+                                                Helpers().getPatientGender(Patient().getPatient()) != '' && 
+                                                Helpers().getPatientGender(Patient().getPatient()) != null
+                                                  ? Helpers().getPatientGender(Patient().getPatient())
+                                                  : 'N/A',
+                                                style: TextStyle(fontSize: 17,)),
                                             ]
                                           ),
                                         ]
@@ -4476,12 +3986,13 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            Text(smokingAnswer,
+                                            Text(smokingAnswer != ''
+                                              ? smokingAnswer
+                                              : 'N/A',
                                               style: TextStyle(
                                                 fontSize: 18,
-                                                // color: ColorUtils.statusColor[report['body']['result']['assessments']['lifestyle']['components']['smoking']['tfl']] ?? Colors.black
                                               ),
-                                            ),
+                                            )
                                           ]
                                         ),
                                       ]
@@ -4513,7 +4024,9 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: <Widget>[
-                                              Text(smokelessTobaccoAnswer,
+                                              Text(smokelessTobaccoAnswer != ''
+                                                ? smokelessTobaccoAnswer
+                                                : 'N/A',
                                                 style: TextStyle(
                                                   fontSize: 18,
                                                   // color: ColorUtils.statusColor[report['body']['result']['assessments']['body_composition']['components']['bmi']['tfl']] ?? Colors.black
@@ -4549,10 +4062,12 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                         children: <Widget>[
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: <Widget>[Text("${bmiEditingController.text}",
+                                            children: <Widget>[
+                                              Text(bmiEditingController.text != '' 
+                                                  ? "${bmiEditingController.text}"
+                                                  :"N/A",
                                                 style: TextStyle(
                                                   fontSize: 18,
-                                                  // color: ColorUtils.statusColor[report['body']['result']['assessments']['lifestyle']['components']['physical_activity']['tfl']] ?? Colors.black
                                                 ),
                                               ),
                                             ]
@@ -4586,10 +4101,12 @@ class _PatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: <Widget>[
-                                              Text('dummy',
+                                              Text(
+                                                systolicEditingController.text != '' && diastolicEditingController.text != ''
+                                                ? systolicEditingController.text + '/' + diastolicEditingController.text
+                                                : 'N/A',
                                                 style: TextStyle(
                                                   fontSize: 18,
-                                                  // color: ColorUtils.statusColor[report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol']['tfl']] ?? Colors.black
                                                 ),
                                               ),
                                             ]

@@ -404,6 +404,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
         Navigator.of(context).pushNamed('/chwPatientSummary');
         return;
       }
+      
       print('into nurse');
       Navigator.of(context).pushNamed(
         '/home',

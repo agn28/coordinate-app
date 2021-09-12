@@ -5,6 +5,7 @@ import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/screens/chcp/new_visit/new_patient_questionnaire_chcp_screen.dart';
 import 'package:nhealth/screens/chw/new_patient_questionnairs/new_patient_questionnaire_screen.dart';
 import 'package:nhealth/screens/chw/new_patient_questionnairs/new_questionnaire_feeling_screen.dart';
 import 'package:nhealth/screens/home_screen.dart';
@@ -119,7 +120,115 @@ class _RegisterPatientSuccessScreenState extends State<RegisterPatientSuccessScr
 
                   SizedBox(height: 40,),
 
-                  role != 'chw' ? GestureDetector(
+                  role == 'chw' ? GestureDetector(
+                    onTap: () => Navigator.of(context).pushNamed(NewPatientQuestionnaireScreen.path),
+                    child: Container(
+                      // height: 190,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0x10000000),
+                            blurRadius: 5,
+                            offset: Offset(0.0, 1.0,)
+                          ),
+                        ]
+                      ),
+                      child: Card(
+                        elevation: 0,
+                        child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 25, horizontal: 30),
+                              color: kBtnOrangeColor,
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    flex: 4,
+                                    child: Row(
+                                      children: <Widget>[
+                                        Image.asset('assets/images/icons/manage_patient.png'),
+                                        SizedBox(width: 20,),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(AppLocalizations.of(context).translate('newQuestionnaire'), style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w600),),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      alignment: Alignment.topRight,
+                                      child: Icon(Icons.chevron_right, size: 40, color: Colors.white)
+                                    )
+                                  )
+                                ],
+                              ),
+                            ),  
+
+                          ],
+                        )
+                      ),
+                    ),
+                  )
+                  :role == 'chcp' ? GestureDetector(
+                    onTap: () => Navigator.of(context).pushNamed(NewPatientQuestionnaireChcpScreen.path),
+                    child: Container(
+                      // height: 190,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0x10000000),
+                            blurRadius: 5,
+                            offset: Offset(0.0, 1.0,)
+                          ),
+                        ]
+                      ),
+                      child: Card(
+                        elevation: 0,
+                        child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 25, horizontal: 30),
+                              color: kBtnOrangeColor,
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    flex: 4,
+                                    child: Row(
+                                      children: <Widget>[
+                                        Image.asset('assets/images/icons/manage_patient.png'),
+                                        SizedBox(width: 20,),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(AppLocalizations.of(context).translate('chcpAssessment'), style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w600),),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      alignment: Alignment.topRight,
+                                      child: Icon(Icons.chevron_right, size: 40, color: Colors.white)
+                                    )
+                                  )
+                                ],
+                              ),
+                            ),  
+
+                          ],
+                        )
+                      ),
+                    ),
+                  )
+                  : GestureDetector(
                     onTap: () => Navigator.of(context).pushNamed(NewPatientQuestionnaireNurseScreen.path),
                     child: Container(
                       // height: 190,
@@ -164,59 +273,6 @@ class _RegisterPatientSuccessScreenState extends State<RegisterPatientSuccessScr
                                     child: Container(
                                       alignment: Alignment.topRight,
                                       child: Icon(Icons.chevron_right, size: 40, color: Colors.white),
-                                    )
-                                  )
-                                ],
-                              ),
-                            ),  
-
-                          ],
-                        )
-                      ),
-                    ),
-                  ) : GestureDetector(
-                    onTap: () => Navigator.of(context).pushNamed(NewPatientQuestionnaireScreen.path),
-                    child: Container(
-                      // height: 190,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0x10000000),
-                            blurRadius: 5,
-                            offset: Offset(0.0, 1.0,)
-                          ),
-                        ]
-                      ),
-                      child: Card(
-                        elevation: 0,
-                        child: Column(
-                          // mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.symmetric(vertical: 25, horizontal: 30),
-                              color: kBtnOrangeColor,
-                              child: Row(
-                                children: <Widget>[
-                                  Expanded(
-                                    flex: 4,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Image.asset('assets/images/icons/manage_patient.png'),
-                                        SizedBox(width: 20,),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Text(AppLocalizations.of(context).translate('newQuestionnaire'), style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w600),),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                      alignment: Alignment.topRight,
-                                      child: Icon(Icons.chevron_right, size: 40, color: Colors.white)
                                     )
                                   )
                                 ],
@@ -293,7 +349,11 @@ class _RegisterPatientSuccessScreenState extends State<RegisterPatientSuccessScr
                     onTap: () {
                       if (role == 'chw') {
                         Navigator.of(context).pushNamed('/chwHome');
-                      } else {
+                      }
+                      else if(role == 'chcp'){
+                        Navigator.of(context).pushNamed('/chcpHome');
+                      } 
+                      else {
                         Navigator.of(context).pushNamed('/home');
                         // Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => HomeScreen()));
                       }
