@@ -401,17 +401,18 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                             ),
                           ),
                           // item['data']['incomplete_encounter'] != null && item['data']['incomplete_encounter'] ? 
-                          // Container(
-                          //     alignment: Alignment.center,
-                          //     width: 160,
-                          //     height: 24,
+                          item['data']['chcp_complete_encounter'] != null && item['data']['chcp_complete_encounter'] ?
+                          Container(
+                              alignment: Alignment.center,
+                              width: 160,
+                              height: 24,
 
-                          //     // padding: EdgeInsets.symmetric(vertical: 5),
-                          //     color: Colors.red[400],
-                          //     child: Text(AppLocalizations.of(context).translate('incompleteEncounter'),
-                          //       style: TextStyle(color: Colors.white, fontSize: 15),
-                          //     ),
-                          // ) : Container(),
+                              // padding: EdgeInsets.symmetric(vertical: 5),
+                              color: Colors.green[400],
+                              child: Text(AppLocalizations.of(context).translate('completed'),
+                                style: TextStyle(color: Colors.white, fontSize: 15),
+                              ),
+                          ) : Container(),
                           Expanded(
                             child: Text(item['data']['age'].toString() + 'Y ' + '${item['data']['gender'][0].toUpperCase()}' + ' - ' + item['data']['nid'].toString(), 
                             style: TextStyle(
