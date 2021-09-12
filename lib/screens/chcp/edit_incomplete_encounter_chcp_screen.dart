@@ -764,6 +764,19 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
     BloodTest().addBtItem();
   }
 
+  final scrollController = ScrollController();
+
+  void jumpToEnd(){
+    final endPosition = scrollController.position.maxScrollExtent;
+    print('end position: $endPosition');
+    scrollController.jumpTo(endPosition);
+  }
+
+  void jumpToStart(){
+    final startPosition = scrollController.position.minScrollExtent;
+    print('start position: $startPosition');
+    scrollController.jumpTo(startPosition);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -825,6 +838,10 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                   setState(() {
                     nextHide = false;
                     _currentStep = _currentStep - 1;
+                    print('currentStep: $_currentStep');
+                    if( _currentStep == 2){
+                      jumpToStart();
+                    }
                     nextText = AppLocalizations.of(context).translate('next');
                   });
                 },
@@ -844,6 +861,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                   shrinkWrap: true,
                   itemCount: _mySteps().length,
                   scrollDirection: Axis.horizontal,
+                  controller: scrollController,
                   itemBuilder: (BuildContext context, index) {
                     return Padding(
                       padding: EdgeInsets.only(right: 10),
@@ -943,12 +961,12 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                     }
 
                     if (_currentStep == 6) {
-                      
+                      jumpToEnd();
                       _currentStep = _currentStep + 1; 
                       return;
                     }
 
-                    if (_currentStep == 5) {
+                    if (_currentStep == 5) {  
                       Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);
                           
                       var relativeAdditionalData = {

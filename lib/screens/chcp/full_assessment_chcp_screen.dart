@@ -411,6 +411,20 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
 
   }
 
+  final scrollController = ScrollController();
+
+  void jumpToEnd(){
+    final endPosition = scrollController.position.maxScrollExtent;
+    print('end position: $endPosition');
+    scrollController.jumpTo(endPosition);
+  }
+
+  void jumpToStart(){
+    final startPosition = scrollController.position.minScrollExtent;
+    print('start position: $startPosition');
+    scrollController.jumpTo(startPosition);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -478,6 +492,10 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                             setState(() {
                               nextHide = false;
                               _currentStep = _currentStep - 1;
+                              print('currentStep: $_currentStep');
+                              if( _currentStep == 2){
+                                jumpToStart();
+                              }
                               nextText = AppLocalizations.of(context)
                                   .translate('next');
                             });
@@ -501,6 +519,7 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                     shrinkWrap: true,
                     itemCount: _mySteps().length,
                     scrollDirection: Axis.horizontal,
+                    controller: scrollController,
                     itemBuilder: (BuildContext context, index) {
                       return Padding(
                           padding: EdgeInsets.only(right: 10),
@@ -606,7 +625,7 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                     }
 
                     if (_currentStep == 6) {
-
+                      jumpToEnd();
                       _currentStep = _currentStep + 1;
                       return;
                     }
