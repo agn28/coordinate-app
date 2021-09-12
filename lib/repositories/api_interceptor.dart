@@ -37,6 +37,7 @@ class ApiInterceptor implements InterceptorContract {
       data.headers["Accept"] = "application/json";
       data.headers["Content-Type"] = "application/json";
       data.headers["Authorization"] = "Bearer " + authData['accessToken'];
+      // print('t ${authData['accessToken']}');
     } catch (e) {
       print(e);
     }

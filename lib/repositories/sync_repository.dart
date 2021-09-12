@@ -70,15 +70,14 @@ class SyncRepository {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     var  api = ApiService();
-    print('getLatestSyncInfo Data');
-    print(data);
+    print('getLatestSyncInfo Data $data');
 
     var response;
 
     print(apiUrl + 'syncs/verify');
 
     try {
-      response =  await client.post(
+      response =  await http.post(
         apiUrl + 'syncs/verify',
         headers: {
           'Accept': 'application/json',

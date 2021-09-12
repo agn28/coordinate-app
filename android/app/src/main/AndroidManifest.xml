@@ -10,8 +10,8 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="Coordinate 1.0.20"
         android:icon="@mipmap/ic_launcher"
-        android:allowBackup="false"
-        android:fullBackupOnly="false">
+        android:allowBackup="true"
+        android:fullBackupOnly="true">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
