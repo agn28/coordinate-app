@@ -67,6 +67,9 @@ import 'screens/chcp/chcp_navigation_screen.dart';
 import 'screens/chcp/chcp_patient_summary_screen.dart';
 import 'screens/chcp/chcp_short_followup_feeling_screen.dart';
 import 'screens/chcp/edit_incomplete_encounter_chcp_screen.dart';
+import 'screens/chcp/edit_incomplete_full_followup_chcp_screen.dart';
+import 'screens/chcp/edit_incomplete_short_followup_chcp_screen.dart';
+import 'screens/chcp/followup_patient_chcp_summary_screen.dart';
 import 'screens/chcp/followup_visit_chcp_screen.dart';
 import 'screens/chcp/full_assessment_chcp_screen.dart';
 import 'screens/chcp/new_followup_chcp_screen.dart';
@@ -265,6 +268,13 @@ class RouteGenerator {
       case '/chcpNavigation':
         var data = settings.arguments;
         return CupertinoPageRoute(builder: (_) => ChcpNavigationScreen(pageIndex: data,));
+      case FollowupPatientChcpSummaryScreen.path:
+      var data = settings.arguments as Map;
+        return CupertinoPageRoute(builder: (_) => FollowupPatientChcpSummaryScreen( prevScreen: data['prevScreen'], encounterData: data['encounterData']));
+      case '/editIncompleteFullFollowupChcp':
+        return CupertinoPageRoute(builder: (_) => EditIncompleteFullFollowupChcpScreen());
+      case '/editIncompleteShortFollowupChcp':
+        return CupertinoPageRoute(builder: (_) => EditIncompleteShortFollowupChcpScreen());
       // chcp new visit 
       case NewPatientQuestionnaireChcpScreen.path:
         return CupertinoPageRoute(builder: (_) => NewPatientQuestionnaireChcpScreen());

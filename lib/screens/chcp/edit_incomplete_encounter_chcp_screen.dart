@@ -4931,6 +4931,7 @@ class _CreateReferState extends State<CreateRefer> {
                                   refer = true;
                                 });
                               },
+                              color: refer ? Color(0xFFE1F5FE) : Colors.white,
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               child: Text(
                                 AppLocalizations.of(context).translate('yes'),
@@ -4956,6 +4957,7 @@ class _CreateReferState extends State<CreateRefer> {
                                   refer = false;
                                 }); 
                               },
+                              color: !refer ? Color(0xFFE1F5FE) : Colors.white,
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               child: Text(
                                 AppLocalizations.of(context).translate('NO'),

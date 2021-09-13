@@ -20,6 +20,7 @@ import 'package:nhealth/repositories/local/care_plan_repository_local.dart';
 import 'package:nhealth/screens/chw/patients/patient_summary_screen.dart';
 import 'package:get/get.dart';
 
+import 'followup_patient_chcp_summary_screen.dart';
 import 'new_followup_chcp_screen.dart';
 
 final searchController = TextEditingController();
@@ -641,7 +642,8 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
                         Patient().setPatientModify(item);
                         // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
                         // Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : 'home', 'encounterData': {}});
-                        Navigator.of(context).pushNamed(NewFollowupChcpScreen.path);
+                        Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : '/chcpHome', 'encounterData': {},});
+                        // Navigator.of(context).pushNamed(NewFollowupChcpScreen.path);
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
