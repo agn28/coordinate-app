@@ -914,7 +914,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                   _currentStep = _currentStep + 1;
                                 nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                                 });
-                                
+                                Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);
                                 return;
                               }
                               if (_currentStep == 7) {
@@ -928,7 +928,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                 return;
                               }
                               if (_currentStep == 5) {
-                                Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);   
+                                   
                                 var relativeAdditionalData = {
                                   'religion': selectedReligion,
                                   'occupation': occupationController.text,
