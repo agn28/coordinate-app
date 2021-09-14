@@ -640,10 +640,12 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
                     GestureDetector(
                       onTap: () {
                         Patient().setPatientModify(item);
-                        // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
-                        // Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : 'home', 'encounterData': {}});
-                        Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : '/chcpHome', 'encounterData': {},});
-                        // Navigator.of(context).pushNamed(NewFollowupChcpScreen.path);
+                        // // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
+                        
+                        
+                        // Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : '/chcpHome', 'encounterData': {},});
+                        // // Navigator.of(context).pushNamed(NewFollowupChcpScreen.path);
+                        Navigator.of(context).pushNamed('/chcpWorkListSummary', arguments: {'prevScreen' : 'home', 'encounterData': {}});
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),

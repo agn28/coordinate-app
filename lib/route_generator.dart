@@ -60,12 +60,17 @@ import 'package:nhealth/screens/patients/patient_update_summary_screen.dart';
 import 'package:nhealth/screens/chw/unwell/followup_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_success_screen.dart';
 
+import 'screens/chcp/chcp_careplan_delivery_screen.dart';
+import 'screens/chcp/chcp_careplan_feeling_screen.dart';
+import 'screens/chcp/chcp_counselling_confirmation_screen.dart';
 import 'screens/chcp/chcp_feeling_screen.dart';
 import 'screens/chcp/chcp_full_assessment_feeling_screen.dart';
 import 'screens/chcp/chcp_home_screen.dart';
 import 'screens/chcp/chcp_navigation_screen.dart';
 import 'screens/chcp/chcp_patient_summary_screen.dart';
 import 'screens/chcp/chcp_short_followup_feeling_screen.dart';
+import 'screens/chcp/chcp_unwell_careplan_screen.dart';
+import 'screens/chcp/chcp_work_list_summary_screen.dart';
 import 'screens/chcp/edit_incomplete_encounter_chcp_screen.dart';
 import 'screens/chcp/edit_incomplete_full_followup_chcp_screen.dart';
 import 'screens/chcp/edit_incomplete_short_followup_chcp_screen.dart';
@@ -275,6 +280,18 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => EditIncompleteFullFollowupChcpScreen());
       case '/editIncompleteShortFollowupChcp':
         return CupertinoPageRoute(builder: (_) => EditIncompleteShortFollowupChcpScreen());
+      case '/chcpWorkListSummary':
+      var data = settings.arguments as Map;
+        return CupertinoPageRoute(builder: (_) => ChcpWorkListSummaryScreen(prevScreen: data['prevScreen'], encounterData: data['encounterData']));
+      case ChcpCareplanFeelingScreen.path:
+        return CupertinoPageRoute(builder: (_) => ChcpCareplanFeelingScreen());
+      case ChcpCareplanDeliveryScreen.path:
+        return CupertinoPageRoute(builder: (_) => ChcpCareplanDeliveryScreen());
+      case ChcpUnwellCareplanScreen.path:
+        return CupertinoPageRoute(builder: (_) => ChcpUnwellCareplanScreen());
+      case ChcpCounsellingConfirmation.path:
+      var data = settings.arguments as Map;
+        return CupertinoPageRoute(builder: (_) => ChcpCounsellingConfirmation(data: data['data'], parent: data['parent']));
       // chcp new visit 
       case NewPatientQuestionnaireChcpScreen.path:
         return CupertinoPageRoute(builder: (_) => NewPatientQuestionnaireChcpScreen());
