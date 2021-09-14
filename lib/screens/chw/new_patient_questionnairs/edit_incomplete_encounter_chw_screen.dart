@@ -622,8 +622,7 @@ class _EditIncompleteEncounterChwScreenState
                     }
 
                     if (_currentStep == 4) {
-                      Questionnaire().addNewCounselling(
-                          'counselling_provided', counsellingAnswers);
+                      Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);
                       _completeStep();
                       return;
                     }
@@ -657,9 +656,9 @@ class _EditIncompleteEncounterChwScreenState
                                     setState(() {
                                       _currentStep = _currentStep + 1;
                                     });
-                                    // await AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
-                      
                                     createObservations();
+                                    await AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
+                      
                                     Navigator.of(context).pop(true);
                                   },
                                 ),

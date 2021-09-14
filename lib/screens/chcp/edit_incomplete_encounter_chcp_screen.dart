@@ -115,7 +115,6 @@ getOptionText(context, question, option) {
 
 
 class EditIncompleteEncounterChcpScreen extends StatefulWidget {
-
   static const path = '/editIncompleteEncounterChcp';
   @override
   _EditIncompleteEncounterChcpScreenState createState() => _EditIncompleteEncounterChcpScreenState();
@@ -147,64 +146,76 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
 
     getLanguage();
 
-    getIncompleteAssessment();
+    getIncompleteAssessmentLocal();
 
     _getAuthData();
   }
 
-  getIncompleteAssessment() async {
-    print("getIncompleteAssessment");
+  // getIncompleteAssessment() async {
+  //   print("getIncompleteAssessment");
 
-    if (Auth().isExpired()) {
-      Auth().logout();
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+  //   if (Auth().isExpired()) {
+  //     Auth().logout();
+  //     Navigator.pushReplacement(
+  //         context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+  //   }
+
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  //   var patientId = Patient().getPatient()['id'];
+  //   print('patientId $patientId');
+  //   var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
+  //   if(data != null && data.isNotEmpty && !data['error']) {
+  //     if(data['data']['assessment']['body']['type'] == 'community clinic assessment') {
+  //       hasChwEncounter = true;
+  //     }
+  //   } 
+  //   print('hasChwEncounter $hasChwEncounter');
+  //   setState(() {
+  //     isLoading = false;
+  //   });
+
+  //   if (data == null) {
+  //     return;
+  //   } else if (data['message'] == 'Unauthorized') {
+  //     Auth().logout();
+  //     Navigator.pushReplacement(
+  //         context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+  //     return;
+  //   } else if (data['error'] != null && data['error']) {
+  //     return;
+  //   }
+
+  //   setState(() {
+  //     encounter = data['data']['assessment'];
+  //     print("encounter: $encounter");
+  //     observations = data['data']['observations'];
+  //     print("observations: $observations");
+  //   });
+
+  //   // for (var key in obs) {
+  //   //   print(key);
+  //   // }
+
+  //   // var keys = obs.keys();
+  //   print("observations: $observations");
+
+  //   populatePreviousAnswers();
+  // }
+
+  getIncompleteAssessmentLocal() async {
+    encounter = await AssessmentController().getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: 'community clinic assessment');
+    if(encounter.isNotEmpty) {
+      encounter = encounter.first;
+      observations = await AssessmentController().getObservationsByAssessment(encounter);
     }
-
-    setState(() {
-      isLoading = true;
-    });
-    var patientId = Patient().getPatient()['id'];
-    print('patientId $patientId');
-    var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
-    if(data != null && data.isNotEmpty && !data['error']) {
-      if(data['data']['assessment']['body']['type'] == 'new questionnaire') {
-        hasChwEncounter = true;
-      }
-    } 
-    print('hasChwEncounter $hasChwEncounter');
-    setState(() {
-      isLoading = false;
-    });
-
-    if (data == null) {
-      return;
-    } else if (data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-      return;
-    } else if (data['error'] != null && data['error']) {
-      return;
-    }
-
-    setState(() {
-      encounter = data['data']['assessment'];
-      print("encounter: $encounter");
-      observations = data['data']['observations'];
-      print("observations: $observations");
-    });
-
-    // for (var key in obs) {
-    //   print(key);
-    // }
-
-    // var keys = obs.keys();
+    print("encounter: $encounter");
     print("observations: $observations");
-
+    
     populatePreviousAnswers();
   }
-
+  
   populatePreviousAnswers() {
     print("testest");
     observations.forEach((obs) {
@@ -855,25 +866,25 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
             ),
             Expanded(
               child: _currentStep < _mySteps().length || nextHide ? FlatButton(
-                onPressed: ()async {
-                  setState(() {
+                onPressed: () async {
+                  // setState(() {
                     print(_currentStep);
                     if (_currentStep == 0) {
-                      Questionnaire().addNewMedicalHistoryNcd(
-                          'medical_history', medicalHistoryAnswers);
+                      Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
                       print(Questionnaire().qnItems);
+                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
                     }
 
                     if (_currentStep == 1) {
-                      Questionnaire().addNewMedicationNcd(
-                          'medication', medicationAnswers);
+                      Questionnaire().addNewMedicationNcd('medication', medicationAnswers);
                       print(Questionnaire().qnItems);
+                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
                     }
 
                     if (_currentStep == 2) {
-                      Questionnaire().addNewRiskFactorsNcd(
-                          'risk_factors', riskAnswers);
+                      Questionnaire().addNewRiskFactorsNcd('risk_factors', riskAnswers);
                       print(Questionnaire().qnItems);
+                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
                     }
 
                     if (_currentStep == 3) {
@@ -901,11 +912,13 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                                 ),
                                 FlatButton(
                                   child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
-                                  onPressed: () {
+                                  onPressed: () async {
                                     // Navigator.of(context).pop(true);
                                     setState(() {
                                       _currentStep = _currentStep + 1;
                                     });
+                                    createObservations();
+                                    await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
                                     print('_currentStep $_currentStep');
                                     Navigator.of(context).pop(true);
                                   },
@@ -915,42 +928,39 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                           }
                         );
                       } else {
+                        createObservations();
+                        await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
                         _currentStep = _currentStep + 1;
                         return;
                       }
                     }
 
                     if (_currentStep == 9) {
+                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
                       _completeRefer();
                       return;
                     }
 
                     if (_currentStep == 8) {
-                      print('here 8');
-                      _completeStep();
+                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
                       setState(() {
                         _currentStep = _currentStep + 1;
-                      nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                        nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                       });
-                      
+                      _completeStep();
                       return;
                     }
 
                     if (_currentStep == 7) {
-                      
-                      _currentStep = _currentStep + 1; 
-                      return;
-                    }
-
-                    if (_currentStep == 6) {
-                      
-                      _currentStep = _currentStep + 1; 
+                      Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);
+                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      setState(() {
+                        _currentStep = _currentStep + 1;
+                      });
                       return;
                     }
 
                     if (_currentStep == 5) {
-                      Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);
-                          
                       var relativeAdditionalData = {
                         'religion': selectedReligion,
                         'occupation': occupationController.text,
@@ -962,8 +972,10 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                       };
                       print('relativeAdditionalData $relativeAdditionalData');
                       Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
-
-                      _currentStep = _currentStep + 1; 
+                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      setState(() {
+                        _currentStep = _currentStep + 1;
+                      });
                       return;
                     }
                     if (_currentStep == 4) {
@@ -998,13 +1010,13 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                                 ),
                                 FlatButton(
                                   child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
-                                  onPressed: () {
+                                  onPressed: () async {
                                     // Navigator.of(context).pop(true);
                                     setState(() {
                                       _currentStep = _currentStep + 1;
                                     });
                                     createObservations();
-                                    // nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                                    await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
                                     print('_currentStep $_currentStep');
                                     Navigator.of(context).pop(true);
                                   },
@@ -1015,16 +1027,20 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                         );
                       } else {
                         createObservations();
-                        _currentStep = _currentStep + 1;
+                        await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                        setState(() {
+                          _currentStep = _currentStep + 1;
+                        });
                         return;
                       }
 
                     }
-                    if (_currentStep < 3) {
-                      // If the form is valid, display a Snackbar.
-                      _currentStep = _currentStep + 1;
+                    if (_currentStep < 3 || _currentStep == 6) {
+                      setState(() {
+                        _currentStep = _currentStep + 1;
+                      });
                     }
-                  });
+                  // });
                 },
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 child: Row(
@@ -1110,7 +1126,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
           'clinic_name' : clinicNameController,
         },
       },
-      'referred_from': 'new questionnaire chcp',
+      'referred_from': 'community clinic',
     };
 
     // data['body']['reason'] = selectedReason;
@@ -3825,9 +3841,9 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
   }
 
   getLastAssessment() async {
-    setState(() {
-      isLoading = true;
-    });
+    // setState(() {
+    //   isLoading = true;
+    // });
     lastAssessment = await AssessmentController().getLastAssessmentByPatient();
 
     print('lastAssessment1 $lastAssessment');
