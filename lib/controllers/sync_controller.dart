@@ -288,10 +288,10 @@ class SyncController extends GetxController {
       // if (!isPoorNetwork.value) {
 
       await Future.delayed(const Duration(seconds: 2));
+      await syncLivePatientsToLocal();
+      await Future.delayed(const Duration(seconds: 2));
       // await syncLocalPatientsToLive();
       await syncLocalDataToLive();
-      await Future.delayed(const Duration(seconds: 2));
-      await syncLivePatientsToLocal();
       isSyncing.value = false;
     }
     else {
@@ -1404,8 +1404,7 @@ class SyncController extends GetxController {
       showErrorSnackBar('Error', 'Session Expired.');
       return;
     }
-    print('syncs.length');
-    print(syncs.length);
+    print('syncs.length ${syncs.length}');
   }
 
   updateLocalSyncKey(key) async {

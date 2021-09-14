@@ -58,7 +58,7 @@ class _NewVisitChcpFeelingScreenState extends State<NewVisitChcpFeelingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text(AppLocalizations.of(context).translate('followupVisit'), style: TextStyle(color: Colors.white, fontSize: 20),),
+        title: new Text(AppLocalizations.of(context).translate('newVisit'), style: TextStyle(color: Colors.white, fontSize: 20),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),

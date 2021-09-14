@@ -1571,11 +1571,14 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
                                       {
                                         print('edit encounter');
                                         print('${widget.encounterData['encounter']}');
-                                        var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
-
+                                        // var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
+                                        // var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
+                                        // var response = await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
                                       } else {
                                         print('new encounter');
-                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'new chcp assessment', 'chcp', '', 'incomplete', '');
+                                        // var response = await AssessmentController().createAssessmentWithObservations(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                                        // var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic assessment');
+                                        // var response = await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
                                       }
                                     } else if(widget.prevScreen == 'followup') {
                                       if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
@@ -1620,12 +1623,17 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
                                       {
                                         print('edit encounter');
                                         print(status);
-                                        var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
-
+                                        // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
+                                        if(status == 'complete') {
+                                          var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations']);
+                                        }
                                       } else {
                                         print('new encounter');
                                         print(status);
-                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'new chcp center assessment', 'chcp', '', status, '');
+                                        // var response = await AssessmentController().createAssessmentWithObservations(context, 'community clinic assessment', 'chcp', '', status, '');
+                                        if(status == 'complete') {
+                                          var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic assessment');
+                                        }
                                       }
                                       status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
 
