@@ -799,6 +799,9 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
             setState(() {
               nextHide = false;
               _currentStep = _currentStep - 1;
+              if( _currentStep == 2){
+                jumpToStart();
+              }
               nextText = AppLocalizations.of(context).translate('next');
             }) :
             setState(() {
@@ -979,7 +982,9 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                     }
                     if (_currentStep == 6) {
                       jumpToEnd();
-                      _currentStep = _currentStep + 1;
+                      setState(() {
+                        _currentStep = _currentStep + 1;
+                      });
                       return;
                     }
 
@@ -3894,9 +3899,9 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
         print('lastEncounterDate ${lastEncounterDate}');
       });
     }
-    setState(() {
-      isLoading = false;
-    });
+    // setState(() {
+    //   isLoading = false;
+    // });
     
   }
   @override

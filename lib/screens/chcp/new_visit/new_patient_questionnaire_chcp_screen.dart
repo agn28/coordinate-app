@@ -426,6 +426,9 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
             setState(() {
               nextHide = false;
               _currentStep = _currentStep - 1;
+              if( _currentStep == 2){
+                jumpToStart();
+              }
               nextText = AppLocalizations.of(context).translate('next');
             }) :
             setState(() {
@@ -609,7 +612,9 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                     }
                     if (_currentStep == 6) {
                       jumpToEnd();
-                      _currentStep = _currentStep + 1;
+                      setState(() {
+                        _currentStep = _currentStep + 1;
+                      });
                       return;
                     }
 
@@ -626,7 +631,9 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                       print('relativeAdditionalData $relativeAdditionalData');
                       Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
                       await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
-                      _currentStep = _currentStep + 1;
+                      setState(() {
+                        _currentStep = _currentStep + 1;
+                      });
                       return;
                     }
                     if (_currentStep == 4) {
@@ -3691,9 +3698,9 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
   }
 
   getLastAssessment() async {
-    setState(() {
-      isLoading = true;
-    });
+    // setState(() {
+    //   isLoading = true;
+    // });
     lastAssessment = await AssessmentController().getLastAssessmentByPatient();
 
     print('lastAssessment $lastAssessment');
@@ -3721,9 +3728,9 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
         print('lastEncounterDate ${lastEncounterDate}');
       });
     }
-    setState(() {
-      isLoading = false;
-    });
+    // setState(() {
+    //   isLoading = false;
+    // });
     
   }
 
