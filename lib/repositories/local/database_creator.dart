@@ -68,6 +68,7 @@ class DatabaseCreator {
       patient_id TEXT,
       status TEXT,
       is_synced BOOLEAN,
+      local_status TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )''';
 
@@ -204,8 +205,15 @@ class DatabaseCreator {
 
   Future<void> initDatabase() async {
     final path = await getDatabasePath('coordinate_db');
-    db = await openDatabase(path, version: 1, onCreate: onCreate);
-    print(db);
+    db = await openDatabase(path, version: 2, onCreate: onCreate, onUpgrade: _onUpgrade);
+    print('db $db');
+  }
+
+  // UPGRADE DATABASE TABLES
+  void _onUpgrade(Database db, int oldVersion, int newVersion) {
+    if (oldVersion < newVersion) {
+      db.execute("ALTER TABLE $referralTable ADD COLUMN local_status TEXT;");
+    }
   }
 
   Future<void> onCreate(Database db, int version) async {

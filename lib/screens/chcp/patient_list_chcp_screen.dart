@@ -129,24 +129,36 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
           
           print('hasEncounter $hasEncounter');
           if (hasEncounter.runtimeType == bool && !hasEncounter) {
-            print('ccPatient $localPatient');
             localPatient['data']['incomplete_encounter'] = false;
             localPatient['data']['chcp_encounter_status'] = '';
 
             //check patient has incomplete encounter
             assessments.firstWhere((assessment) {
               if (assessment['data']['patient_id'] == localPatient['id']) {
-                if(assessment['data']['type'] == 'community clinic assessment') {
+                // if(assessment['data']['type'] == 'community clinic assessment') {
+                //   localPatient['data']['chcp_encounter_status'] =  assessment['data']['status'];
+                //   localPatient['data']['incomplete_encounter'] = assessment['data']['status'] == 'incomplete' ? true : false;
+                //   return true;
+                // }
+                // //TODO
+                // if ((assessment['data']['type'] == 'new ncd center assessment' || assessment['data']['type'] == 'new questionnaire') && assessment['data']['status'] == 'incomplete') {
+                //   localPatient['data']['incomplete_encounter'] = true;
+                //   return true;
+                // }
+                print('assess $assessment');
+                if(assessment['data']['status'] == 'incomplete') {
+                  localPatient['data']['incomplete_encounter'] = true;
+                  if(assessment['data']['type'] == 'community clinic assessment') {
+                    localPatient['data']['chcp_encounter_status'] =  assessment['data']['status'];
+                  }
+                  return true;
+                } else if (assessment['data']['status'] == 'complete' && assessment['data']['type'] == 'community clinic assessment') {
                   localPatient['data']['chcp_encounter_status'] =  assessment['data']['status'];
                   return true;
-                }
-                else if (assessment['data']['type'] == 'new ncd center assessment' && assessment['data']['status'] == 'incomplete') {
-                  localPatient['data']['incomplete_encounter'] = true;
-                  return true;
-                }
-                return false; 
+                } return false; 
               } return false; 
             }, orElse: () => false);
+            print('ccPatient $localPatient');
             var localpatientdata = {
               'id': localPatient['id'],
               'data': localPatient['data'],

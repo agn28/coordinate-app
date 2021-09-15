@@ -1632,7 +1632,7 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
                                         print(status);
                                         // var response = await AssessmentController().createAssessmentWithObservations(context, 'community clinic assessment', 'chcp', '', status, '');
                                         if(status == 'complete') {
-                                          var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic assessment');
+                                          var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic assessment', assessmentStatus: status);
                                         }
                                       }
                                       status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;

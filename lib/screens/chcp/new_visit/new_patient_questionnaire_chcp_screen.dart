@@ -609,7 +609,9 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                     }
                     if (_currentStep == 6) {
                       jumpToEnd();
-                      _currentStep = _currentStep + 1;
+                      setState(() {
+                        _currentStep = _currentStep + 1;
+                      });
                       return;
                     }
 
@@ -680,7 +682,6 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                       } else {
                         createObservations();
                         await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
-                        nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                         setState(() {
                           _currentStep = _currentStep + 1;
                         });
@@ -753,6 +754,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
   }
 
   Future _completeRefer() async{
+    print('_completeRefer');
     var referralType;
     if(role == 'chw')
     {
@@ -777,7 +779,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
         'type' : referralType,
         'location' : {
           'clinic_type' : selectedtype,
-          'clinic_name' : clinicNameController,
+          'clinic_name' : clinicNameController.text,
         },
       },
       'referred_from': 'community clinic',
@@ -3691,9 +3693,9 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
   }
 
   getLastAssessment() async {
-    setState(() {
-      isLoading = true;
-    });
+    // setState(() {
+    //   isLoading = true;
+    // });
     lastAssessment = await AssessmentController().getLastAssessmentByPatient();
 
     print('lastAssessment $lastAssessment');
@@ -3721,9 +3723,9 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
         print('lastEncounterDate ${lastEncounterDate}');
       });
     }
-    setState(() {
-      isLoading = false;
-    });
+    // setState(() {
+    //   isLoading = false;
+    // });
     
   }
 
