@@ -3896,14 +3896,14 @@ class _HistoryState extends State<History> {
 class ChcpPatientRecordsScreen extends StatefulWidget {
   var checkInState = false;
   var prevScreen = '';
-  var encounterData = {};
+
   // ChcpPatientRecordsScreen({this.prevScreen, this.encounterData});
   @override
   _ChcpPatientRecordsState createState() => _ChcpPatientRecordsState();
 }
 
 class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
-  var _patient;
+  // var _patient;
   // bool isLoading = true;
   var carePlans = [];
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -3940,8 +3940,7 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
-    print('encounterData ${widget.encounterData}');
-    print(_patient['meta']['review_required']);
+
     print('prevScreen ${widget.prevScreen}');
     dueCarePlans = [];
     completedCarePlans = [];

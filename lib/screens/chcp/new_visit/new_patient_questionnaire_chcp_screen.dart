@@ -3636,7 +3636,7 @@ class _HistoryState extends State<History> {
 class ChcpPatientRecordsScreen extends StatefulWidget {
   var checkInState = false;
   var prevScreen = '';
-  var encounterData = {};
+
   // ChcpPatientRecordsScreen({this.prevScreen, this.encounterData});
   @override
   _ChcpPatientRecordsState createState() => _ChcpPatientRecordsState();
@@ -3678,8 +3678,7 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
   @override
   void initState() {
     super.initState();
-    print('encounterData ${widget.encounterData}');
-    print(_patient['meta']['review_required']);
+
     print('prevScreen ${widget.prevScreen}');
     dueCarePlans = [];
     completedCarePlans = [];
