@@ -16,7 +16,7 @@ class AssessmentRepositoryLocal {
   /// Get all assessments.
   getAllAssessments() async {
     final sqlAssessments =
-        '''SELECT * FROM ${DatabaseCreator.assessmentTable}''';
+        '''SELECT * FROM ${DatabaseCreator.assessmentTable} ORDER BY created_at DESC''';
     var assessments = await db.rawQuery(sqlAssessments);
     return assessments;
   }
