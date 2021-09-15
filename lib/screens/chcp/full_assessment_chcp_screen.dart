@@ -78,6 +78,11 @@ var selectedReason;
 var selectedtype;
 var clinicNameController = TextEditingController();
 
+var clinicTypes = [];
+var _patient;
+
+bool refer = false;
+
 getName(context, item) {
   var locale = Localizations.localeOf(context);
 
@@ -128,6 +133,7 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
   void initState() {
     super.initState();
     print('full assessment chcp screen');
+    _patient = Patient().getPatient();
     _checkAuth();
     clearForm();
     Helpers().clearObservationItems();
@@ -140,7 +146,34 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
     prepareAnswers();
 
     getLanguage();
+    getCenters();
   }
+
+  getCenters() async {
+    // setState(() {
+    //   isLoading = true;
+    // });
+    var centerData = await PatientController().getCenter();
+    // setState(() {
+    //   isLoading = false;
+    // });
+
+    print("CenterData: $centerData");
+
+    if (centerData['error'] != null && !centerData['error']) {
+      clinicTypes = centerData['data'];
+      for(var center in clinicTypes) {
+        if(isNotNull(_patient['data']['center']) && center['id'] == _patient['data']['center']['id']) {
+          print('selectedCenter $center');
+          setState(() {
+            selectedtype = center;
+          });
+        }
+      }
+    }
+    print("center: $clinicTypes");
+  }
+
 
   getLanguage() async {
     print('language s');
@@ -3649,7 +3682,7 @@ class ChcpPatientRecordsScreen extends StatefulWidget {
 }
 
 class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
-  var _patient;
+  // var _patient;
   // bool isLoading = true;
   var carePlans = [];
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -3685,7 +3718,7 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
   @override
   void initState() {
     super.initState();
-    _patient = Patient().getPatient();
+    // _patient = Patient().getPatient();
     print('encounterData ${widget.encounterData}');
     print(_patient['meta']['review_required']);
     print('prevScreen ${widget.prevScreen}');
@@ -4791,7 +4824,7 @@ class CreateRefer extends StatefulWidget {
 }
 
 class _CreateReferState extends State<CreateRefer> {
-  bool refer = false;
+  // bool refer = false;
   var role = '';
   var referralReasonOptions = {
   'options': ['Urgent medical attempt required', 'NCD screening required'],
@@ -4800,17 +4833,17 @@ class _CreateReferState extends State<CreateRefer> {
   List referralReasons;
   // var selectedReason;
   // var clinicNameController = TextEditingController();
-  var clinicTypes = [];
+  // var clinicTypes = [];
   // var selectedtype;
-  var _patient;
+  // var _patient;
 
   @override
   void initState() {
     super.initState();
-    _patient = Patient().getPatient();
+    // _patient = Patient().getPatient();
     print(Language().getLanguage());
     // _getAuthData();
-    getCenters();
+    // getCenters();
     referralReasons = referralReasonOptions['options']; 
     // print('encounterData $encounterData');
   }
@@ -4825,31 +4858,7 @@ class _CreateReferState extends State<CreateRefer> {
   //   });
   // }
 
-  getCenters() async {
-    // setState(() {
-    //   isLoading = true;
-    // });
-    var centerData = await PatientController().getCenter();
-    // setState(() {
-    //   isLoading = false;
-    // });
-
-    print("CenterData: $centerData");
-
-    if (centerData['error'] != null && !centerData['error']) {
-      clinicTypes = centerData['data'];
-      for(var center in clinicTypes) {
-        if(isNotNull(_patient['data']['center']) && center['id'] == _patient['data']['center']['id']) {
-          print('selectedCenter $center');
-          setState(() {
-            selectedtype = center;
-          });
-        }
-      }
-    }
-    print("center: $clinicTypes");
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Container(

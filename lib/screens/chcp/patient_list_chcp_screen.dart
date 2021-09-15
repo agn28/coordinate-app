@@ -433,23 +433,23 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                         ),
                         SizedBox(width: 5,),
                         Expanded(
-                          flex: 2,
-                            child: Container(
-                            child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
-                          ),
-                        ),
-                        SizedBox(width: 5,),
-                        Expanded(
-                          flex: 2,
-                            child: Container(
-                            child: Text(AppLocalizations.of(context).translate('streetPara'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
-                          ),
-                        ),
-                        SizedBox(width: 5,),
-                        Expanded(
                           flex: 1,
                             child: Container(
-                            child: Text(AppLocalizations.of(context).translate('status'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),),
+                            child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
+                          ),
+                        ),
+                        SizedBox(width: 5,),
+                        Expanded(
+                          flex: 2,
+                            child: Container(
+                            child: Text(AppLocalizations.of(context).translate('streetPara'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
+                          ),
+                        ),
+                        SizedBox(width: 5,),
+                        Expanded(
+                          flex: 2,
+                            child: Container(
+                            child: Text(AppLocalizations.of(context).translate('status'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),textAlign: TextAlign.center),
                           ),
                         ),
                       ],
@@ -466,44 +466,70 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                       child: Row(
                         children: <Widget>[
                           Expanded(
+                            flex: 2,
                             child: Text(item['data']['first_name'] + ' ' + item['data']['last_name'],
                               style: TextStyle(color: Colors.black87, fontSize: 18),
                             ),
                           ),
-                          // item['data']['incomplete_encounter'] != null && item['data']['incomplete_encounter'] ? 
-                          item['data']['chcp_encounter_status'] != null && item['data']['chcp_encounter_status'] == 'complete' ?
-                          Container(
-                              alignment: Alignment.center,
-                              width: 160,
-                              height: 24,
-
-                              // padding: EdgeInsets.symmetric(vertical: 5),
-                              color: Colors.green[400],
-                              child: Text(AppLocalizations.of(context).translate('completed'),
-                                style: TextStyle(color: Colors.white, fontSize: 15),
-                              ),
-                          ) : Container(),
-                          item['data']['chcp_encounter_status'] != null && item['data']['chcp_encounter_status'] == 'incomplete' ?
-                          Container(
-                              alignment: Alignment.center,
-                              width: 160,
-                              height: 24,
-
-                              // padding: EdgeInsets.symmetric(vertical: 5),
-                              color: Colors.red[400],
-                              child: Text(AppLocalizations.of(context).translate('incomplete'),
-                                style: TextStyle(color: Colors.white, fontSize: 15),
-                              ),
-                          ) : Container(),
                           Expanded(
-                            child: Text(item['data']['age'].toString() + 'Y ' + '${item['data']['gender'][0].toUpperCase()}' + ' - ' + item['data']['nid'].toString(), 
-                            style: TextStyle(
-                                color: Colors.black38,
-                                fontWeight: FontWeight.w400
-                              ), 
-                              textAlign: TextAlign.right,
+                            flex: 2,
+                            child: Text(item['data']['father_name'],
+                              style: TextStyle(color: Colors.black87, fontSize: 18),
+                              textAlign: TextAlign.center,
                             ),
                           ),
+                          Expanded(
+                            flex: 1,
+                            child: Text(item['data']['age'].toString(), 
+                            style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w400
+                              ), 
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Text(item['data']['address']['street_name'],
+                              style: TextStyle(color: Colors.black87, fontSize: 18),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),                      
+                          Expanded(
+                            flex: 2,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                // item['data']['incomplete_encounter'] != null && item['data']['incomplete_encounter'] ?
+                                item['data']['chcp_encounter_status'] != null && item['data']['chcp_encounter_status'] == 'complete' ?
+                                Container(
+                                    alignment: Alignment.center,
+                                    width: 160,
+                                    height: 24,
+
+                                    // padding: EdgeInsets.symmetric(vertical: 5),
+                                    color: Colors.green[400],
+                                    child: Text(AppLocalizations.of(context).translate('completed'),
+                                      style: TextStyle(color: Colors.white, fontSize: 15),
+                                    ),
+                                ) : Container(),
+                                item['data']['chcp_encounter_status'] != null && item['data']['chcp_encounter_status'] == 'incomplete' ?
+                                Container(
+                                    alignment: Alignment.center,
+                                    width: 160,
+                                    height: 24,
+
+                                    // padding: EdgeInsets.symmetric(vertical: 5),
+                                    color: Colors.red[400],
+                                    child: Text(AppLocalizations.of(context).translate('incomplete'),
+                                      style: TextStyle(color: Colors.white, fontSize: 15),
+                                    ),
+                                ) : Container(),
+                              ],
+                            ),
+                          ),
+                          
                         ],
                       ),
                     ),
