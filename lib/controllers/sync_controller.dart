@@ -265,16 +265,15 @@ class SyncController extends GetxController {
     await getLocalNotSyncedReferrals();
     return;
   }
-  getAllLocalPatients() async{
-    var lpatients = await patientRepoLocal.getAllLocalPatients();
-    for(var lpatient in lpatients){
-      var data = jsonDecode(lpatient['data']);
-      print("lpatient ${data['body']['first_name']}");
+  getLocalData() async{
+    var localData = await referralRepoLocal.getAllReferrals();
+    for(var item in localData){
+      var data = jsonDecode(item['data']);
+      print("localData ${item}");
     }
   }
 
   initializeSync() async {
-    // retryForStableNetwork();
   print('initializeSync');
   print(isSyncing.value);
     if (!isSyncing.value) {

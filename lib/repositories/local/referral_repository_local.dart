@@ -5,7 +5,7 @@ import 'package:nhealth/repositories/local/database_creator.dart';
 class ReferralRepositoryLocal {
   /// Create an assessment with observations.
   /// observations [data] is required as parameter.
-  create(id, data, isSynced) async {
+  create(id, data, isSynced, {localStatus:''}) async {
     print('into local referral create');
 
     final sql = '''INSERT INTO ${DatabaseCreator.referralTable}
@@ -14,15 +14,17 @@ class ReferralRepositoryLocal {
       data,
       patient_id,
       status,
-      is_synced
+      is_synced,
+      local_status
     )
-    VALUES (?,?,?,?,?)''';
+    VALUES (?,?,?,?,?,?)''';
     List<dynamic> params = [
       id,
       jsonEncode(data),
       data['meta']['patient_id'],
       '',
-      isSynced
+      isSynced, 
+      localStatus
     ];
     var response;
 
@@ -36,16 +38,17 @@ class ReferralRepositoryLocal {
     return response;
   }
 
-  update(id, data, isSynced) async {
+  update(id, data, isSynced, {localStatus:''}) async {
     print('into local referral update');
     final sql = '''UPDATE ${DatabaseCreator.referralTable} SET
       data = ? , 
       patient_id = ?,
       status = ?,
-      is_synced = ?
+      is_synced = ?,
+      local_status = ?
       WHERE id = ?''';
     List<dynamic> params = [jsonEncode(data), data['meta']['patient_id'],
-      data['meta']['status'], isSynced, id];
+      data['meta']['status'], isSynced, localStatus, id];
     print('sql $sql');
     var response;
 
@@ -71,7 +74,7 @@ class ReferralRepositoryLocal {
 
   getNotSyncedReferrals() async {
     final sql =
-        '''SELECT * FROM ${DatabaseCreator.referralTable} WHERE is_synced=0''';
+        '''SELECT * FROM ${DatabaseCreator.referralTable} WHERE (is_synced=0) AND (local_status!='incomplete')''';
     var response = await db.rawQuery(sql);
 
     try {

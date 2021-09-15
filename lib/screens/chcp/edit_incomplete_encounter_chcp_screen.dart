@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:basic_utils/basic_utils.dart' as basic_utils;
@@ -21,6 +22,7 @@ import 'package:nhealth/controllers/user_controller.dart';
 import 'package:nhealth/custom-classes/custom_stepper.dart';
 import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
+import 'package:nhealth/repositories/local/assessment_repository_local.dart';
 import 'package:nhealth/screens/chw/careplan_actions/careplan_feeling_screen.dart';
 import 'package:nhealth/screens/chw/followup/edit_followup_screen.dart';
 import 'package:nhealth/screens/patients/ncd/followup_feeling_screen.dart';
@@ -58,6 +60,7 @@ String selectedArm = 'left';
 String selectedGlucoseType = 'fasting';
 String selectedGlucoseUnit = 'mg/dL';
 bool hasChwEncounter = false;
+bool hasIncompleteChcpEncounter = false;
 
 var _questions = {};
 var medicalHistoryQuestions = {};
@@ -131,6 +134,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
 
   String nextText = 'NEXT';
   bool nextHide = false;
+  var _patient;
   var encounter;
   var observations = [];
 
@@ -143,6 +147,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
     clearForm();
     isLoading = false;
     hasChwEncounter = false;
+    hasIncompleteChcpEncounter = false;
 
     print(Language().getLanguage());
     nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
@@ -154,6 +159,11 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
 
     getLanguage();
 
+    if(_patient['data']['chcp_encounter_status'] != null && _patient['data']['chcp_encounter_status'] == 'incomplete') {
+      hasIncompleteChcpEncounter = true;
+    } else {
+      hasIncompleteChcpEncounter = false;
+    }
     getIncompleteAssessmentLocal();
 
     _getAuthData();
@@ -238,9 +248,19 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
   // }
 
   getIncompleteAssessmentLocal() async {
-    encounter = await AssessmentController().getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: 'community clinic assessment');
+    // encounter = await AssessmentController().getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: 'community clinic assessment');
+
+    var patientId = Patient().getPatient()['id'];
+    encounter = await AssessmentRepositoryLocal().getIncompleteAssessmentsByPatient(patientId);
     if(encounter.isNotEmpty) {
-      encounter = encounter.first;
+      var lastEncounter = encounter.last;
+      print("lastEncounter: $lastEncounter");
+      var parseData = jsonDecode(lastEncounter['data']);
+      encounter = {
+        'id': lastEncounter['id'],
+        'body': parseData['body'],
+        'meta': parseData['meta'],
+      };
       observations = await AssessmentController().getObservationsByAssessment(encounter);
     }
     print("encounter: $encounter");
@@ -1184,7 +1204,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
         'type' : referralType,
         'location' : {
           'clinic_type' : selectedtype,
-          'clinic_name' : clinicNameController,
+          'clinic_name' : clinicNameController.text,
         },
       },
       'referred_from': 'community clinic',
@@ -1275,6 +1295,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                   style: TextStyle(color: kPrimaryColor)),
               onPressed: () {
                 // Navigator.of(context).pop(false);
+                _patient['data']['chcp_encounter_status'] = encounterData['dataStatus'];
                 Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
               },
             ),
@@ -1316,13 +1337,19 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
     // }
     print('dataStatus: $dataStatus');
     print('encounter: $encounter');
-    
-    encounterData = {
-      'context': context,
-      'dataStatus': dataStatus,
-      'encounter': encounter,
-      'observations': observations
-    };
+    if(hasIncompleteChcpEncounter) {
+      encounterData = {
+        'context': context,
+        'dataStatus': dataStatus,
+        'encounter': encounter,
+        'observations': observations
+      };
+    } else {
+      encounterData = {
+        'context': context,
+        'dataStatus': dataStatus,
+      };
+    }
     
     // var response = await AssessmentController().updateAssessmentWithObservations(status, encounter, observations);
     // var response = await AssessmentController().createOnlyAssessmentWithStatus('ncd center assessment', 'ncd', '', 'incomplete');
@@ -4890,41 +4917,22 @@ class CreateRefer extends StatefulWidget {
 }
 
 class _CreateReferState extends State<CreateRefer> {
-  
+
   var role = '';
   var referralReasonOptions = {
   'options': ['Urgent medical attempt required', 'NCD screening required'],
   'options_bn': ['তাৎক্ষণিক মেডিকেল প্রচেষ্টা প্রয়োজন', 'এনসিডি স্ক্রিনিং প্রয়োজন']
   };
   List referralReasons;
-  // var selectedReason;
-  // var clinicNameController = TextEditingController();
-  // var clinicTypes = [];
-  // var selectedtype;
-  // var _patient;
 
   @override
   void initState() {
     super.initState();
-    // _patient = Patient().getPatient();
     print(Language().getLanguage());
-    // _getAuthData();
-    // getCenters();
     referralReasons = referralReasonOptions['options']; 
     print('encounterData $encounterData');
   }
 
-  // _getAuthData() async {
-  //   var data = await Auth().getStorageAuth();
-
-  //   print('role');
-  //   print(data['role']);
-  //   setState(() {
-  //     role = data['role'];
-  //   });
-  // }
-
-  
 
   @override
   Widget build(BuildContext context) {

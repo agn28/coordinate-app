@@ -7,6 +7,7 @@ import 'package:nhealth/configs/configs.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
+import 'package:nhealth/custom-classes/custom_stepper.dart';
 import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
@@ -19,7 +20,6 @@ import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
-import '../../../custom-classes/custom_stepper.dart';
 import 'patient_summery_chcp_screen.dart';
 
 

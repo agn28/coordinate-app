@@ -719,7 +719,6 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                       } else {
                         createObservations();
                         await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
-                        nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                         setState(() {
                           _currentStep = _currentStep + 1;
                         });
@@ -792,6 +791,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
   }
 
   Future _completeRefer() async{
+    print('_completeRefer');
     var referralType;
     if(role == 'chw')
     {
@@ -816,7 +816,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
         'type' : referralType,
         'location' : {
           'clinic_type' : selectedtype,
-          'clinic_name' : clinicNameController,
+          'clinic_name' : clinicNameController.text,
         },
       },
       'referred_from': 'community clinic',
