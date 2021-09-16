@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +50,7 @@ var clinicNameController = TextEditingController();
 
 var clinicTypes = [];
 var _patient;
-bool hasChwEncounter = false;	
+bool hasChwEncounter = false;
 bool hasIncompleteChcpEncounter = false;
 
 bool refer = false;
@@ -103,6 +101,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
   bool nextHide = false;
   var encounter;
   var observations = [];
+
   var referral;
 
   @override
@@ -116,16 +115,20 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
     hasIncompleteChcpEncounter = false;
     prepareQuestions();
     prepareAnswers();
-    // getCenters();	
-    if(_patient['data']['chcp_encounter_status'] != null && _patient['data']['chcp_encounter_status'] == 'incomplete') {	
-      hasIncompleteChcpEncounter = true;	
-    } else {	
-      hasIncompleteChcpEncounter = false;	
-    }	
-    getIncompleteAssessmentLocal();	
+    // getCenters();
+    if(_patient['data']['chcp_encounter_status'] != null && _patient['data']['chcp_encounter_status'] == 'incomplete') {
+      hasIncompleteChcpEncounter = true;
+    } else {
+      hasIncompleteChcpEncounter = false;
+    }
+    getIncompleteAssessmentLocal();
     _getAuthData();
 
     getMedicationsDispense();
+
+    // getCenters();
+
+    print(Language().getLanguage());
     nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
   }
 
@@ -501,11 +504,11 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
             hipEditingController.text = '${obsData['value']}';
             print(hipText);
           }
-          if (obsData['name'] == 'bmi' && obsData['value'] != '') {	
-            print('into bmi');	
-            var bmiText = obsData['value'];	
-            bmiEditingController.text = '${obsData['value']}';	
-            print('bmiText: $bmiText');	
+          if (obsData['name'] == 'bmi' && obsData['value'] != '') {
+            print('into bmi');
+            var bmiText = obsData['value'];
+            bmiEditingController.text = '${obsData['value']}';
+            print('bmiText: $bmiText');
           }
         }
       }
@@ -759,8 +762,8 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
     if (hipEditingController.text != '') {
       BodyMeasurement().addItem('hip', hipEditingController.text, 'cm', '', '');
     }
-    if (bmiEditingController.text != '') {	
-      BodyMeasurement().addItem('bmi', bmiEditingController.text, 'bmi', '', '');	
+    if (bmiEditingController.text != '') {
+      BodyMeasurement().addItem('bmi', bmiEditingController.text, 'bmi', '', '');
     }
 
     BodyMeasurement().addBmItem();
@@ -1193,10 +1196,10 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
   }
 
   Future _completeRefer() async{
-    var referralData = referral;	
-    referralData['body']['reason'] = selectedReason;	
-    referralData['body']['location']['clinic_type'] = selectedtype;	
-    referralData['body']['location']['clinic_name'] = clinicNameController.text;	
+    var referralData = referral;
+    referralData['body']['reason'] = selectedReason;
+    referralData['body']['location']['clinic_type'] = selectedtype;
+    referralData['body']['location']['clinic_name'] = clinicNameController.text;
     print('referralData: $referralData');
 
     await showDialog(
@@ -1253,18 +1256,18 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
 
     print(patient['data']['age']);
     var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
-    if(hasIncompleteChcpEncounter) {	
-      encounterData = {	
-        'context': context,	
-        'dataStatus': dataStatus,	
-        'encounter': encounter,	
-        'observations': observations	
-      };	
-    } else {	
-      encounterData = {	
-        'context': context,	
-        'dataStatus': dataStatus,	
-      };	
+    if(hasIncompleteChcpEncounter) {
+      encounterData = {
+        'context': context,
+        'dataStatus': dataStatus,
+        'encounter': encounter,
+        'observations': observations
+      };
+    } else {
+      encounterData = {
+        'context': context,
+        'dataStatus': dataStatus,
+      };
     }
   
     // Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': encounterData ,});
@@ -2314,39 +2317,39 @@ class _MeasurementsState extends State<Measurements> {
                                 ],
                               ),
                             ),
-                            Container(	
-                              child: Row(	
-                                mainAxisAlignment: MainAxisAlignment.start,	
-                                children: [	
-                                  Text(	
-                                      AppLocalizations.of(context)	
-                                          .translate("bmi"),	
-                                      style: TextStyle(	
-                                        color: Colors.black,	
-                                        fontSize: 16,	
-                                      )),	
-                                  SizedBox(	
-                                    width: 48,	
-                                  ),	
-                                  Container(	
-                                    width: 80,	
-                                    height: 40,	
-                                    child: TextFormField(	
-                                      textAlign: TextAlign.center,	
-                                      keyboardType: TextInputType.number,	
-                                      readOnly: true,	
-                                      // enabled: false,	
-                                      controller: bmiEditingController,	
-                                      // enabled: _isBodyMeasurementsEnable,	
-                                      onChanged: (value) {},	
-                                      decoration: InputDecoration(	
-                                        contentPadding: EdgeInsets.only(	
-                                            top: 5, left: 10, right: 10),	
-                                        border: OutlineInputBorder(	
-                                            borderSide: BorderSide(	
-                                                color: Colors.red, width: 0.0)),	
-                                      ),	
-                                    ),	
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate("bmi"),
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      )),
+                                  SizedBox(
+                                    width: 48,
+                                  ),
+                                  Container(
+                                    width: 80,
+                                    height: 40,
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      keyboardType: TextInputType.number,
+                                      readOnly: true,
+                                      // enabled: false,
+                                      controller: bmiEditingController,
+                                      // enabled: _isBodyMeasurementsEnable,
+                                      onChanged: (value) {},
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.only(
+                                            top: 5, left: 10, right: 10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.red, width: 0.0)),
+                                      ),
+                                    ),
                                   ),
                                 ]
                               )
@@ -3435,8 +3438,8 @@ var personalQuestions = {
       'options_bn': ['বাংলাদেশী', 'অন্যান্য'],
     },
     'blood_group' : {
-      'options': ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-', "Don't know"],	
-      'options_bn': ['এবি+', 'এবি-', 'এ+', 'এ-', 'বি+', 'বি-', 'ও+', 'ও-', "জানি না"], 
+      'options': ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-', "Don't know"],
+      'options_bn': ['এবি+', 'এবি-', 'এ+', 'এ-', 'বি+', 'বি-', 'ও+', 'ও-', "জানি না"],
     }
 };    
 var religions = personalQuestions['religion']['options'];
@@ -3999,6 +4002,7 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
 
   }
 
+
   getRiskQuestionAnswer(){
     // print('getRiskQuestionAnswer');
     var riskQuestions = Questionnaire().questions['new_patient']['risk_factors'];
@@ -4098,7 +4102,6 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
     }
     return data;
   }
-
 
 
 
@@ -5308,7 +5311,7 @@ class _CreateReferState extends State<CreateRefer> {
                         SizedBox(height: 30,),
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 20),
-                          child: Text('Refer To ', style: TextStyle(fontSize: 20),)
+                          child: Text(AppLocalizations.of(context).translate("referTo"), style: TextStyle(fontSize: 20),)
                         ),
                         SizedBox(height: 10,),
                         Container(

@@ -14,6 +14,7 @@ import 'package:nhealth/screens/settings/settings_screen.dart';
 import 'package:nhealth/screens/work-list/work_list_search_screen.dart';
 import 'package:nhealth/app_localizations.dart';
 
+import 'patient_list_chcp_screen.dart';
 import 'work_list_search_chcp_screen.dart';
 
 
@@ -60,7 +61,7 @@ class _ChcpNavigationState extends State<ChcpNavigationScreen> {
   }
   var navigationItems = [
     ChcpWorkListSearchScreen(),
-    ChwPatientSearchScreen(),
+    PatientListChcpScreen(),
     Container(),
   ];
   @override

@@ -1154,7 +1154,11 @@ class AssessmentController {
         'observations': apiDataObservations
       };
       print('apiData $apiData');
-      var response = await storeAssessmentWithObservationsLive(localNotSyncedAssessment.first, apiDataObservations, apiData, referralData: localNotSyncedReferral);
+      if(localNotSyncedAssessment.first['body']['type'] != 'new questionnaire') {
+        var response = await storeAssessmentWithObservationsLive(localNotSyncedAssessment.first, apiDataObservations, apiData, referralData: localNotSyncedReferral);
+      } else {
+        var response = await storeAssessmentWithObservationsLive(localNotSyncedAssessment.first, apiDataObservations, apiData);
+      }
     }
     if (localNotSyncedAssessment.first['body']['status'] == 'complete') {
       await HealthReportController().generateReport(localNotSyncedAssessment.first['body']['patient_id']);

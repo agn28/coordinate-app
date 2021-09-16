@@ -114,7 +114,7 @@ getOptionText(context, question, option) {
     }
     return option;
   }
-  return StringUtils.capitalize(option);  
+  return StringUtils.capitalize(option);
 }
 
 
@@ -3123,7 +3123,7 @@ var personalQuestions = {
     },
     'blood_group' : {
       'options': ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-', "Don't know"],
-      'options_bn': ['এবি+', 'এবি-', 'এ+', 'এ-', 'বি+', 'বি-', 'ও+', 'ও-', "জানি না"], 
+      'options_bn': ['এবি+', 'এবি-', 'এ+', 'এ-', 'বি+', 'বি-', 'ও+', 'ও-', "জানি না"],
     }
 };    
 var religions = personalQuestions['religion']['options'];
@@ -4989,7 +4989,7 @@ class _CreateReferState extends State<CreateRefer> {
                         SizedBox(height: 30,),
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 20),
-                          child: Text('Refer To ', style: TextStyle(fontSize: 20),)
+                          child: Text(AppLocalizations.of(context).translate("referTo"), style: TextStyle(fontSize: 20),)
                         ),
                         SizedBox(height: 10,),
                         Container(
