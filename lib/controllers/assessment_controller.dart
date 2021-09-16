@@ -115,7 +115,49 @@ class AssessmentController {
 
     return data;
   }
-  
+  getLastAssessmentByPatientLocal({key: '', value: ''}) async {
+    
+
+    var data = {};
+
+    // if (isNull(response) || isNotNull(response['exception'])) {
+      print('into exception');
+      var patientId = Patient().getPatient()['id'];
+      var assessments = await AssessmentRepositoryLocal().getAssessmentsByPatient(patientId);
+      print('localResponse');
+      print(assessments);
+      if (isNotNull(assessments)) {
+        var lastAssessment = assessments.first;
+        print('lastAssessment $lastAssessment');
+        var parseData = json.decode(lastAssessment['data']);
+        if(key == 'screening_type' && value == 'follow-up') {
+          if(parseData['body']['screening_type'] == 'follow-up') {
+            data = {
+              'id': lastAssessment['id'],
+              'data': parseData,
+            };
+          }
+        } else {
+          data = {
+            'id': lastAssessment['id'],
+            'data': parseData,
+          };
+        }
+      }
+        // localResponse.forEach((assessment) {
+        //   var parseData = json.decode(assessment['data']);
+        //   if(parseData['body']['screening_type'] == 'follow-up') {
+        //     data.add({
+        //       'id': assessment['id'],
+        //       'data': parseData['body'],
+        //       'meta': parseData['meta']
+        //     });
+        //   }
+        // });
+    // }
+    return data;
+  }
+
   getLastAssessmentByPatient({key: '', value: ''}) async {
     var response = await AssessmentRepository().getLastAssessment(key: key, value: value);
     
@@ -133,7 +175,7 @@ class AssessmentController {
       print('localResponse');
       print(assessments);
       if (isNotNull(assessments)) {
-        var lastAssessment = assessments.last;
+        var lastAssessment = assessments.first;
         var parseData = json.decode(lastAssessment['data']);
         if(key == 'screening_type' && value == 'follow-up') {
           if(parseData['body']['screening_type'] == 'follow-up') {
@@ -1096,7 +1138,7 @@ class AssessmentController {
     
     // return response;
   }
-  createAssessmentWithObservationsLive(type, {assessmentStatus:'incomplete'}) async {
+  createAssessmentWithObservationsLive(type, {assessmentStatus:'incomplete', followupType:''}) async {
     var localNotSyncedAssessment = [];
     localNotSyncedAssessment = await this.getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: type);
     if(localNotSyncedAssessment.isNotEmpty) {

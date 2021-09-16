@@ -470,14 +470,14 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
   }
 
   getLastFollowup() async {
-    setState(() {
-      isLoading = true;
-    });
-    lastFollowup = await AssessmentController().getLastAssessmentByPatient(key:'screening_type', value:'follow-up');
+    // setState(() {
+    //   isLoading = true;
+    // });
+    lastFollowup = await AssessmentController().getLastAssessmentByPatientLocal(key:'screening_type', value:'follow-up');
 
     print('lastFollowup $lastFollowup');
     if(lastFollowup != null && lastFollowup.isNotEmpty) {
-      if(lastFollowup['data']['body']['type'] == 'follow up visit (community)'
+      if(lastFollowup['data']['body']['type'] == 'community clinic followup'
         && lastFollowup['data']['body']['status'] == 'incomplete') {
           lastFollowupType = lastFollowup['data']['body']['followup_type'];
           print('lastFollowupType ${lastFollowupType}');
@@ -673,13 +673,13 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
         } else if(widget.prevScreen == 'followup') {
           print('WillPopScope else if');
           // Navigator.of(context).pushNamed(FollowupSearchScreen.path);
-          Navigator.of(context).pushNamed('/chcpNavigation',);
+          Navigator.of(context).pushNamed('/chcpHome',);
           return true;
         } else {
           print('WillPopScope home');
           // Navigator.pushNamed(context, '/home');
           // Navigator.of(context).pushNamed(FollowupSearchScreen.path);
-          Navigator.of(context).pushNamed('/chcpNavigation',);
+          Navigator.of(context).pushNamed('/chcpHome',);
           return true;
         }
       },
@@ -1582,18 +1582,18 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                       {
                                         print('edit followup');
                                         print('${widget.encounterData['encounter']}');
-                                        var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
+                                        // var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
 
                                       } else {
                                         print('new followup');
-                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
+                                        // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
                                       }
                                     }
                                     setState(() {
                                       isLoading = false;
                                     });
                                     // return;
-                                    Navigator.of(context).pushNamed('/home',);
+                                    Navigator.of(context).pushNamed('/chcpHome',);
                                   },
                                   color: kPrimaryColor,
                                   child: Text(AppLocalizations.of(context).translate('saveForLater'), style: TextStyle(color: Colors.white),),
@@ -1621,12 +1621,16 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                         print('edit encounter');
                                         print(status);
                                         // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
-                                        var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations']);
+                                        if(status == 'complete') {
+                                          var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations']);
+                                        }
                                       } else {
                                         print('new encounter');
                                         print(status);
                                         // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', status, '');
-                                        var response = await AssessmentController().createAssessmentWithObservationsLive('new ncd center assessment', assessmentStatus: status);
+                                        if(status == 'complete') {
+                                          var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic assessment', assessmentStatus: status);
+                                        }
                                       }
                                       status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
 
@@ -1636,20 +1640,25 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                       {
                                         print('edit followup');
                                         print(status);
-                                        var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
-
+                                        // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
+                                        if(status == 'complete') {
+                                          var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations']);
+                                        }
                                       } else {
                                         print('new followup');
                                         print(status);
                                         print(widget.encounterData['followupType']);
-                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
+                                        // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
+                                        if(status == 'complete') {
+                                          var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic assessment', assessmentStatus: status,);
+                                        }
                                       }
                                       status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
                                     }
                                     setState(() {
                                       isLoading = false;
                                     });
-                                    Navigator.of(context).pushNamed('/home',);
+                                    Navigator.of(context).pushNamed('/chcpHome',);
                                   },
                                   color: kPrimaryColor,
                                   child: Text(AppLocalizations.of(context).translate('completeEncounter'), style: TextStyle(color: Colors.white),),

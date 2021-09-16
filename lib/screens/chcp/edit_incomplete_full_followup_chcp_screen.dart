@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:nhealth/configs/configs.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
+import 'package:nhealth/controllers/referral_controller.dart';
 import 'package:nhealth/custom-classes/custom_stepper.dart';
 import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
@@ -17,6 +20,7 @@ import 'package:nhealth/models/body_measurement.dart';
 import 'package:nhealth/models/language.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
+import 'package:nhealth/repositories/local/assessment_repository_local.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
@@ -48,6 +52,8 @@ var clinicNameController = TextEditingController();
 
 var clinicTypes = [];
 var _patient;
+bool hasChwEncounter = false;	
+bool hasIncompleteChcpEncounter = false;
 
 bool refer = false;
 
@@ -97,6 +103,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
   bool nextHide = false;
   var encounter;
   var observations = [];
+  var referral;
 
   @override
   void initState() {
@@ -106,15 +113,19 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
     _checkAuth();
     clearForm();
     isLoading = false;
+    hasIncompleteChcpEncounter = false;
     prepareQuestions();
     prepareAnswers();
-    getIncompleteFollowup();
+    // getCenters();	
+    if(_patient['data']['chcp_encounter_status'] != null && _patient['data']['chcp_encounter_status'] == 'incomplete') {	
+      hasIncompleteChcpEncounter = true;	
+    } else {	
+      hasIncompleteChcpEncounter = false;	
+    }	
+    getIncompleteAssessmentLocal();	
+    _getAuthData();
 
     getMedicationsDispense();
-
-    getCenters();
-
-    print(Language().getLanguage());
     nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
   }
 
@@ -231,46 +242,94 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
 
   }
 
-  getIncompleteFollowup() async {
-    print("getIncompleteFollowup");
+  getIncompleteAssessmentLocal() async {
+    // encounter = await AssessmentController().getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: 'community clinic assessment');
 
-    if (Auth().isExpired()) {
-      Auth().logout();
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    }
-
-    setState(() {
-      isLoading = true;
-    });
     var patientId = Patient().getPatient()['id'];
-    var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
-    setState(() {
-      isLoading = false;
-    });
-
-    if (data == null) {
-      return;
-    } else if (data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-      return;
-    } else if (data['error'] != null && data['error']) {
-      return;
+    encounter = await AssessmentRepositoryLocal().getIncompleteAssessmentsByPatient(patientId);
+    if(encounter.isNotEmpty) {
+      var lastEncounter = encounter.last;
+      print("lastEncounter: $lastEncounter");
+      var parseData = jsonDecode(lastEncounter['data']);
+      encounter = {
+        'id': lastEncounter['id'],
+        'body': parseData['body'],
+        'meta': parseData['meta'],
+      };
+      observations = await AssessmentController().getObservationsByAssessment(encounter);
+      referral = await ReferralController().getReferralByAssessment(encounter['id']);
     }
-
-    setState(() {
-      encounter = data['data']['assessment'];
-      print("encounter: $encounter");
-      observations = data['data']['observations'];
-      print("observations: $observations");
-    });
-
+    print("encounter: $encounter");
     print("observations: $observations");
+    print("referral: $referral");
 
     populatePreviousAnswers();
+    populateReferral();
   }
+
+  populateReferral() async {
+    var centerData = await PatientController().getCenter();
+
+    if (centerData['error'] != null && !centerData['error']) {
+      clinicTypes = centerData['data'];
+      for(var center in clinicTypes) {
+        if(isNotNull(referral['body']['location']['clinic_type']) && center['id'] == referral['body']['location']['clinic_type']['id']) {
+          print('selectedCenter $center');
+          setState(() {
+            selectedtype = center;
+          });
+        }
+      }
+    }
+    if(isNotNull(referral['body'])) {
+      setState(() {
+        clinicNameController.text = referral['body']['location']['clinic_name'];
+        selectedReason = referral['body']['reason'];
+      });
+    }
+  }
+
+
+  // getIncompleteFollowup() async {
+  //   print("getIncompleteFollowup");
+
+  //   if (Auth().isExpired()) {
+  //     Auth().logout();
+  //     Navigator.pushReplacement(
+  //         context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+  //   }
+
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  //   var patientId = Patient().getPatient()['id'];
+  //   var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
+  //   setState(() {
+  //     isLoading = false;
+  //   });
+
+  //   if (data == null) {
+  //     return;
+  //   } else if (data['message'] == 'Unauthorized') {
+  //     Auth().logout();
+  //     Navigator.pushReplacement(
+  //         context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+  //     return;
+  //   } else if (data['error'] != null && data['error']) {
+  //     return;
+  //   }
+
+  //   setState(() {
+  //     encounter = data['data']['assessment'];
+  //     print("encounter: $encounter");
+  //     observations = data['data']['observations'];
+  //     print("observations: $observations");
+  //   });
+
+  //   print("observations: $observations");
+
+  //   populatePreviousAnswers();
+  // }
 
   populatePreviousAnswers() {
     print("testest");
@@ -442,6 +501,12 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
             hipEditingController.text = '${obsData['value']}';
             print(hipText);
           }
+          if (obsData['name'] == 'bmi' && obsData['value'] != '') {	
+            print('into bmi');	
+            var bmiText = obsData['value'];	
+            bmiEditingController.text = '${obsData['value']}';	
+            print('bmiText: $bmiText');	
+          }
         }
       }
       if (obs['body']['type'] == 'blood_test') {
@@ -585,6 +650,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
     weightEditingController.text = '';
     waistEditingController.text = '';
     hipEditingController.text = '';
+    bmiEditingController.text = '';
 
     randomBloodController.text = '';
     fastingBloodController.text = '';
@@ -692,6 +758,9 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
     }
     if (hipEditingController.text != '') {
       BodyMeasurement().addItem('hip', hipEditingController.text, 'cm', '', '');
+    }
+    if (bmiEditingController.text != '') {	
+      BodyMeasurement().addItem('bmi', bmiEditingController.text, 'bmi', '', '');	
     }
 
     BodyMeasurement().addBmItem();
@@ -883,24 +952,25 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                   child: _currentStep < _mySteps().length || nextHide
                       ? FlatButton(
                           onPressed: () async {
-                            setState(() {
                               print(_currentStep);
                               if (_currentStep == 0) {
-                                Questionnaire().addNewMedicalHistoryNcd(
-                                    'medical_history', medicalHistoryAnswers);
+                                Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
                                 print(Questionnaire().qnItems);
+                                await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                               }
 
                               if (_currentStep == 1) {
                                 Questionnaire().addNewMedicationNcd(
                                     'medication', medicationAnswers);
                                 print(Questionnaire().qnItems);
+                                await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                               }
 
                               if (_currentStep == 2) {
                                 Questionnaire().addNewRiskFactorsNcd(
                                     'risk_factors', riskAnswers);
                                 print(Questionnaire().qnItems);
+                                await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                               }
                               if (_currentStep == 3) {
                                 if(diastolicEditingController.text == '' ||
@@ -927,11 +997,13 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                           ),
                                           FlatButton(
                                             child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
-                                            onPressed: () {
+                                            onPressed: () async {
                                               // Navigator.of(context).pop(true);
                                               setState(() {
                                                 _currentStep = _currentStep + 1;
                                               });
+                                              createObservations();
+                                              await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                                               print('_currentStep $_currentStep');
                                               Navigator.of(context).pop(true);
                                             },
@@ -941,7 +1013,11 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                     }
                                   );
                                 } else {
-                                  _currentStep = _currentStep + 1;
+                                  createObservations();
+                                  await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                                  setState(() {
+                                    _currentStep = _currentStep + 1;
+                                  });
                                   return;
                                 }
                               }
@@ -951,17 +1027,19 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                               }
 
                               if (_currentStep == 8) {
-                                _completeStep();
                                 setState(() {
                                   _currentStep = _currentStep + 1;
-                                nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                                  nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                                 });
-                                Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);
+                                _completeStep();
                                 return;
                               }
                               if (_currentStep == 7) {
-                                
-                                _currentStep = _currentStep + 1;
+                                Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);
+                                await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                                setState(() {
+                                  _currentStep = _currentStep + 1;
+                                });
                                 return;
                               }
                               if (_currentStep == 6) {
@@ -982,7 +1060,10 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                 };
                                 print('relativeAdditionalData $relativeAdditionalData');
                                 Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
-                                _currentStep = _currentStep + 1;
+                                await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                                setState(() {
+                                  _currentStep = _currentStep + 1;
+                                });
                                 return;
                               }
                               if (_currentStep == 4) {
@@ -1017,12 +1098,13 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                           ),
                                           FlatButton(
                                             child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
-                                            onPressed: () {
+                                            onPressed: () async {
                                               // Navigator.of(context).pop(true);
                                               setState(() {
                                                 _currentStep = _currentStep + 1;
                                               });
                                               createObservations();
+                                              await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                                               // nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                                               print('_currentStep $_currentStep');
                                               Navigator.of(context).pop(true);
@@ -1034,17 +1116,20 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                   );
                                 } else {
                                   createObservations();
-                                  // nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
-                                  _currentStep = _currentStep + 1;
+                                  await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                                  setState(() {
+                                    _currentStep = _currentStep + 1;
+                                  });
                                   return;
                                 }
 
                               }
                               if (_currentStep < 3) {
-                                // If the form is valid, display a Snackbar.
-                                _currentStep = _currentStep + 1;
+                                setState(() {
+                                  // If the form is valid, display a Snackbar.
+                                  _currentStep = _currentStep + 1;
+                                });
                               }
-                            });
                           },
                           materialTapTargetSize:
                               MaterialTapTargetSize.shrinkWrap,
@@ -1108,104 +1193,11 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
   }
 
   Future _completeRefer() async{
-    var referralType;
-    if(role == 'chw')
-    {
-      referralType = 'community';
-    } else if(role == 'nurse'){
-      referralType = 'center';
-    }  else if(role == 'chcp'){
-      referralType = 'chcp';
-    } else{
-      referralType = '';
-    }
-
-    var data = {
-      'meta': {
-        'patient_id': Patient().getPatient()['id'],
-        "collected_by": Auth().getAuth()['uid'],
-        "status": "pending",
-        "created_at": DateTime.now().toString()
-      },
-      'body': {
-        'reason': selectedReason,
-        'type' : referralType,
-        'location' : {
-          'clinic_type' : selectedtype,
-          'clinic_name' : clinicNameController,
-        },
-      },
-      'referred_from': 'new questionnaire chcp',
-    };
-
-    // data['body']['reason'] = selectedReason;
-    // data['body']['type'] = referralType;
-    // data['body']['location'] = {};
-    // data['body']['location']['clinic_type'] = selectedtype;
-    // data['body']['location']['clinic_name'] = clinicNameController.text;
-
-    print('dataaa: $data');
-
-    // setState(() {
-    //   isLoading = true;
-    // });
-    // var response =
-    //     await ReferralController()
-    //         .create(context, data);
-    // setState(() {
-    //   isLoading = false;
-    // });
-    // print('response');
-    // print(response.runtimeType);
-
-    // return;
-
-    // if (response.runtimeType != int &&
-    //     response != null &&
-    //     response['error'] == true &&
-    //     response['message'] ==
-    //         'referral exists') {
-    //   await showDialog(
-    //     context: context,
-    //     builder: (BuildContext context) {
-    //       // return object of type Dialog
-    //       return AlertDialog(
-    //         content: new Text(
-    //           AppLocalizations.of(context)
-    //               .translate(
-    //                   "referralAlreadyExists"),
-    //           style:
-    //               TextStyle(fontSize: 20),
-    //         ),
-    //         actions: <Widget>[
-    //           // usually buttons at the bottom of the dialog
-    //           new FlatButton(
-    //             child: new Text(
-    //                 AppLocalizations.of(
-    //                         context)
-    //                     .translate(
-    //                         "referralUpdate"),
-    //                 style: TextStyle(
-    //                     color:
-    //                         kPrimaryColor)),
-    //             onPressed: () {
-    //               Navigator.of(context)
-    //                   .pop();
-    //               Navigator.of(context)
-    //                   .pushNamed(
-    //                 '/referralList',
-    //               );
-    //             },
-    //           ),
-    //         ],
-    //       );
-    //     },
-    //   );
-    // } else {
-    //   Navigator.of(context).pushNamed(
-    //     '/chwHome',
-    //   );
-    // }
+    var referralData = referral;	
+    referralData['body']['reason'] = selectedReason;	
+    referralData['body']['location']['clinic_type'] = selectedtype;	
+    referralData['body']['location']['clinic_name'] = clinicNameController.text;	
+    print('referralData: $referralData');
 
     await showDialog(
       context: context,
@@ -1221,8 +1213,10 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
             FlatButton(
               child: new Text(AppLocalizations.of(context).translate("yes"),
                   style: TextStyle(color: kPrimaryColor)),
-              onPressed: () {
+              onPressed: () async {
+                await AssessmentController().createReferralByAssessmentLocal('community clinic followup', referralData);
                 // Navigator.of(context).pop(false);
+                _patient['data']['chcp_encounter_status'] = encounterData['dataStatus'];
                 Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
               },
             ),
@@ -1259,12 +1253,19 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
 
     print(patient['data']['age']);
     var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
-    encounterData = {
-      'context': context,
-      'dataStatus': dataStatus,
-      'encounter': encounter,
-      'observations': observations
-    };
+    if(hasIncompleteChcpEncounter) {	
+      encounterData = {	
+        'context': context,	
+        'dataStatus': dataStatus,	
+        'encounter': encounter,	
+        'observations': observations	
+      };	
+    } else {	
+      encounterData = {	
+        'context': context,	
+        'dataStatus': dataStatus,	
+      };	
+    }
   
     // Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': encounterData ,});
   }
@@ -1897,8 +1898,8 @@ class Measurements extends StatefulWidget {
 class _MeasurementsState extends State<Measurements> {
   calculateBmi() {
     if (heightEditingController.text != '' && weightEditingController.text != '') {
-      var height = int.parse(heightEditingController.text) / 100;
-      var weight = int.parse(weightEditingController.text);
+      var height = double.parse(heightEditingController.text) / 100;
+      var weight = double.parse(weightEditingController.text);
 
       var bmi = weight / (height * height);
 
@@ -2125,7 +2126,7 @@ class _MeasurementsState extends State<Measurements> {
                       ),
                       SizedBox(height: 24),
                       Container(
-                        height: 230,
+                        height: 280,
                         decoration: BoxDecoration(
                             border: Border.all(
                                 width: 0.5, color: Colors.grey.shade400),
@@ -2313,6 +2314,43 @@ class _MeasurementsState extends State<Measurements> {
                                 ],
                               ),
                             ),
+                            Container(	
+                              child: Row(	
+                                mainAxisAlignment: MainAxisAlignment.start,	
+                                children: [	
+                                  Text(	
+                                      AppLocalizations.of(context)	
+                                          .translate("bmi"),	
+                                      style: TextStyle(	
+                                        color: Colors.black,	
+                                        fontSize: 16,	
+                                      )),	
+                                  SizedBox(	
+                                    width: 48,	
+                                  ),	
+                                  Container(	
+                                    width: 80,	
+                                    height: 40,	
+                                    child: TextFormField(	
+                                      textAlign: TextAlign.center,	
+                                      keyboardType: TextInputType.number,	
+                                      readOnly: true,	
+                                      // enabled: false,	
+                                      controller: bmiEditingController,	
+                                      // enabled: _isBodyMeasurementsEnable,	
+                                      onChanged: (value) {},	
+                                      decoration: InputDecoration(	
+                                        contentPadding: EdgeInsets.only(	
+                                            top: 5, left: 10, right: 10),	
+                                        border: OutlineInputBorder(	
+                                            borderSide: BorderSide(	
+                                                color: Colors.red, width: 0.0)),	
+                                      ),	
+                                    ),	
+                                  ),
+                                ]
+                              )
+                            )
                           ],
                         ),
                       )
@@ -3397,8 +3435,8 @@ var personalQuestions = {
       'options_bn': ['বাংলাদেশী', 'অন্যান্য'],
     },
     'blood_group' : {
-      'options': ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-'],
-      'options_bn': ['এবি+', 'এবি-', 'এ+', 'এ-', 'বি+', 'বি-', 'ও+', 'ও-'], 
+      'options': ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-', "Don't know"],	
+      'options_bn': ['এবি+', 'এবি-', 'এ+', 'এ-', 'বি+', 'বি-', 'ও+', 'ও-', "জানি না"], 
     }
 };    
 var religions = personalQuestions['religion']['options'];
