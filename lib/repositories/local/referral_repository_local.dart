@@ -6,7 +6,7 @@ class ReferralRepositoryLocal {
   /// Create an assessment with observations.
   /// observations [data] is required as parameter.
   create(id, data, isSynced, {localStatus:''}) async {
-    print('into local referral create');
+    print('into local referral create localStatus' + localStatus.toString());
 
     final sql = '''INSERT INTO ${DatabaseCreator.referralTable}
     (
@@ -30,7 +30,7 @@ class ReferralRepositoryLocal {
 
     try {
       response = await db.rawInsert(sql, params);
-      print(response);
+      print('local referral create $response');
     } catch (error) {
       print('local referral create error');
       print(error);
@@ -91,7 +91,7 @@ class ReferralRepositoryLocal {
   getReferralsByPatient(patientId) async {
     final sql =
         '''SELECT * FROM ${DatabaseCreator.referralTable} WHERE patient_id="$patientId"''';
-    var response = await db.rawQuery(sql);
+    var response;
 
     try {
       response = await db.rawQuery(sql);
@@ -100,7 +100,6 @@ class ReferralRepositoryLocal {
       print(error);
       return;
     }
-
     return response;
   }
 
