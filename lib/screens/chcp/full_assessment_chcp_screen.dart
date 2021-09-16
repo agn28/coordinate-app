@@ -834,7 +834,7 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
       referralType = '';
     }
 
-    var data = {
+    var referralData = {
       'meta': {
         'patient_id': Patient().getPatient()['id'],
         "collected_by": Auth().getAuth()['uid'],
@@ -858,7 +858,7 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
     // data['body']['location']['clinic_type'] = selectedtype;
     // data['body']['location']['clinic_name'] = clinicNameController.text;
 
-    print('dataaa: $data');
+    print('referralData: $referralData');
 
     // setState(() {
     //   isLoading = true;
@@ -935,8 +935,9 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
             FlatButton(
               child: new Text(AppLocalizations.of(context).translate("yes"),
                   style: TextStyle(color: kPrimaryColor)),
-              onPressed: () {
+              onPressed: () async {
                 // Navigator.of(context).pop(false);
+                await AssessmentController().createReferralByAssessmentLocal('community clinic assessment', referralData);
                 Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
               },
             ),

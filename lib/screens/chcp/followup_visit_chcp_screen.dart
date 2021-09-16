@@ -812,7 +812,7 @@ var role = '';
       referralType = '';
     }
 
-    var data = {
+    var referralData = {
       'meta': {
         'patient_id': Patient().getPatient()['id'],
         "collected_by": Auth().getAuth()['uid'],
@@ -836,69 +836,9 @@ var role = '';
     // data['body']['location']['clinic_type'] = selectedtype;
     // data['body']['location']['clinic_name'] = clinicNameController.text;
 
-    print('dataaa: $data');
+    print('referralData: $referralData');
 
-    // setState(() {
-    //   isLoading = true;
-    // });
-    // var response =
-    //     await ReferralController()
-    //         .create(context, data);
-    // setState(() {
-    //   isLoading = false;
-    // });
-    // print('response');
-    // print(response.runtimeType);
-
-    // return;
-
-    // if (response.runtimeType != int &&
-    //     response != null &&
-    //     response['error'] == true &&
-    //     response['message'] ==
-    //         'referral exists') {
-    //   await showDialog(
-    //     context: context,
-    //     builder: (BuildContext context) {
-    //       // return object of type Dialog
-    //       return AlertDialog(
-    //         content: new Text(
-    //           AppLocalizations.of(context)
-    //               .translate(
-    //                   "referralAlreadyExists"),
-    //           style:
-    //               TextStyle(fontSize: 20),
-    //         ),
-    //         actions: <Widget>[
-    //           // usually buttons at the bottom of the dialog
-    //           new FlatButton(
-    //             child: new Text(
-    //                 AppLocalizations.of(
-    //                         context)
-    //                     .translate(
-    //                         "referralUpdate"),
-    //                 style: TextStyle(
-    //                     color:
-    //                         kPrimaryColor)),
-    //             onPressed: () {
-    //               Navigator.of(context)
-    //                   .pop();
-    //               Navigator.of(context)
-    //                   .pushNamed(
-    //                 '/referralList',
-    //               );
-    //             },
-    //           ),
-    //         ],
-    //       );
-    //     },
-    //   );
-    // } else {
-    //   Navigator.of(context).pushNamed(
-    //     '/chwHome',
-    //   );
-    // }
-
+    
     await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -913,8 +853,9 @@ var role = '';
             FlatButton(
               child: new Text(AppLocalizations.of(context).translate("yes"),
                   style: TextStyle(color: kPrimaryColor)),
-              onPressed: () {
+              onPressed: () async {
                 // Navigator.of(context).pop(false);
+                await AssessmentController().createReferralByAssessmentLocal('community clinic assessment', referralData);
                 Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
               },
             ),

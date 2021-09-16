@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:nhealth/configs/configs.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
+import 'package:nhealth/controllers/referral_controller.dart';
 import 'package:nhealth/custom-classes/custom_stepper.dart';
 import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
@@ -17,6 +20,7 @@ import 'package:nhealth/models/body_measurement.dart';
 import 'package:nhealth/models/language.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
+import 'package:nhealth/repositories/local/assessment_repository_local.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
@@ -98,6 +102,8 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
   var encounter;
   var observations = [];
 
+  var referral;
+
   @override
   void initState() {
     super.initState();
@@ -112,7 +118,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
 
     getMedicationsDispense();
 
-    getCenters();
+    // getCenters();
 
     print(Language().getLanguage());
     nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
@@ -132,6 +138,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
     if (centerData['error'] != null && !centerData['error']) {
       clinicTypes = centerData['data'];
       for(var center in clinicTypes) {
+        print(center);
         if(isNotNull(_patient['data']['center']) && center['id'] == _patient['data']['center']['id']) {
           print('selectedCenter $center');
           setState(() {
@@ -142,6 +149,55 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
     }
     print("center: $clinicTypes");
   }
+
+  getIncompleteAssessmentLocal() async {
+    // encounter = await AssessmentController().getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: 'community clinic assessment');
+
+    var patientId = Patient().getPatient()['id'];
+    encounter = await AssessmentRepositoryLocal().getIncompleteAssessmentsByPatient(patientId);
+    if(encounter.isNotEmpty) {
+      var lastEncounter = encounter.last;
+      print("lastEncounter: $lastEncounter");
+      var parseData = jsonDecode(lastEncounter['data']);
+      encounter = {
+        'id': lastEncounter['id'],
+        'body': parseData['body'],
+        'meta': parseData['meta'],
+      };
+      observations = await AssessmentController().getObservationsByAssessment(encounter);
+      referral = await ReferralController().getReferralByAssessment(encounter['id']);
+    }
+    print("encounter: $encounter");
+    print("observations: $observations");
+    print("referral: $referral");
+
+    populatePreviousAnswers();
+    populateReferral();
+  }
+
+  populateReferral() async {
+    var centerData = await PatientController().getCenter();
+
+    if (centerData['error'] != null && !centerData['error']) {
+      clinicTypes = centerData['data'];
+      for(var center in clinicTypes) {
+        if(isNotNull(referral['body']['location']['clinic_type']) && center['id'] == referral['body']['location']['clinic_type']['id']) {
+          print('selectedCenter $center');
+          setState(() {
+            selectedtype = center;
+          });
+        }
+      }
+    }
+    if(isNotNull(referral['body'])) {
+      setState(() {
+        clinicNameController.text = referral['body']['location']['clinic_name'];
+        selectedReason = referral['body']['reason'];
+      });
+    }
+  }
+  
+
 
     getMedicationsDispense() async {
       print("getMedications");
@@ -1108,43 +1164,49 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
   }
 
   Future _completeRefer() async{
-    var referralType;
-    if(role == 'chw')
-    {
-      referralType = 'community';
-    } else if(role == 'nurse'){
-      referralType = 'center';
-    }  else if(role == 'chcp'){
-      referralType = 'chcp';
-    } else{
-      referralType = '';
-    }
+    // var referralType;
+    // if(role == 'chw')
+    // {
+    //   referralType = 'community';
+    // } else if(role == 'nurse'){
+    //   referralType = 'center';
+    // }  else if(role == 'chcp'){
+    //   referralType = 'chcp';
+    // } else{
+    //   referralType = '';
+    // }
 
-    var data = {
-      'meta': {
-        'patient_id': Patient().getPatient()['id'],
-        "collected_by": Auth().getAuth()['uid'],
-        "status": "pending",
-        "created_at": DateTime.now().toString()
-      },
-      'body': {
-        'reason': selectedReason,
-        'type' : referralType,
-        'location' : {
-          'clinic_type' : selectedtype,
-          'clinic_name' : clinicNameController,
-        },
-      },
-      'referred_from': 'new questionnaire chcp',
-    };
+    // var data = {
+    //   'meta': {
+    //     'patient_id': Patient().getPatient()['id'],
+    //     "collected_by": Auth().getAuth()['uid'],
+    //     "status": "pending",
+    //     "created_at": DateTime.now().toString()
+    //   },
+    //   'body': {
+    //     'reason': selectedReason,
+    //     'type' : referralType,
+    //     'location' : {
+    //       'clinic_type' : selectedtype,
+    //       'clinic_name' : clinicNameController,
+    //     },
+    //   },
+    //   'referred_from': 'new questionnaire chcp',
+    // };
 
-    // data['body']['reason'] = selectedReason;
-    // data['body']['type'] = referralType;
-    // data['body']['location'] = {};
-    // data['body']['location']['clinic_type'] = selectedtype;
-    // data['body']['location']['clinic_name'] = clinicNameController.text;
+    // // data['body']['reason'] = selectedReason;
+    // // data['body']['type'] = referralType;
+    // // data['body']['location'] = {};
+    // // data['body']['location']['clinic_type'] = selectedtype;
+    // // data['body']['location']['clinic_name'] = clinicNameController.text;
 
-    print('dataaa: $data');
+    // print('dataaa: $data');
+
+    var referralData = referral;
+    referralData['body']['reason'] = selectedReason;
+    referralData['body']['location']['clinic_type'] = selectedtype;
+    referralData['body']['location']['clinic_name'] = clinicNameController.text;
+    print('referralData: $referralData');
 
     // setState(() {
     //   isLoading = true;
@@ -1221,8 +1283,9 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
             FlatButton(
               child: new Text(AppLocalizations.of(context).translate("yes"),
                   style: TextStyle(color: kPrimaryColor)),
-              onPressed: () {
+              onPressed: () async {
                 // Navigator.of(context).pop(false);
+                await AssessmentController().createReferralByAssessmentLocal('community clinic assessment', referralData);
                 Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
               },
             ),
@@ -3961,6 +4024,7 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
 
   }
 
+
   getRiskQuestionAnswer(){
     // print('getRiskQuestionAnswer');
     var riskQuestions = Questionnaire().questions['new_patient']['risk_factors'];
@@ -4060,7 +4124,6 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
     }
     return data;
   }
-
 
 
 
