@@ -265,6 +265,10 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
     selectedEthnicity = null;
     selectedBloodGroup = null;
     isTribe = null;
+
+    selectedReason = null;
+    selectedtype = null;
+    clinicNameController.text = '';
   }
 
   _checkAuth() {

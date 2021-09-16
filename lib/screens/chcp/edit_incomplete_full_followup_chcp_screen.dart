@@ -620,6 +620,10 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
     selectedEthnicity = null;
     selectedBloodGroup = null;
     isTribe = null;
+
+    selectedReason = null;
+    selectedtype = null;
+    clinicNameController.text = '';
   }
 
   _checkAuth() {

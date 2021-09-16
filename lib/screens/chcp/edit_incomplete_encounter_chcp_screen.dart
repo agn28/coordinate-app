@@ -656,6 +656,10 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
     selectedEthnicity = null;
     selectedBloodGroup = null;
     isTribe = null;
+
+    selectedReason = null;
+    selectedtype = null;
+    clinicNameController.text = '';
   }
 
   _checkAuth() {

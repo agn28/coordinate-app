@@ -394,6 +394,10 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
     selectedBloodGroup = null;
     isTribe = null;
     nextVisitDate = '';
+
+    selectedReason = null;
+    selectedtype = null;
+    clinicNameController.text = '';
   }
 
   _checkAuth() {
