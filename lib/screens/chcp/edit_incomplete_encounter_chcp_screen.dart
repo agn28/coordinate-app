@@ -90,6 +90,7 @@ var referrals = [];
 var pendingReferral;
 var encounterData;
 
+var selectedReferralRole;
 var selectedReason;
 var selectedtype;
 var clinicNameController = TextEditingController();
@@ -657,6 +658,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
     selectedBloodGroup = null;
     isTribe = null;
 
+    selectedReferralRole = null;
     selectedReason = null;
     selectedtype = null;
     clinicNameController.text = '';
@@ -4927,11 +4929,19 @@ class _CreateReferState extends State<CreateRefer> {
   };
   List referralReasons;
 
+  var referralToRolesOptions = {
+    'options': ['Chcp', 'Chw'],
+    'options_bn': ['chcp', 'chw']
+  };
+  List referralToRoles;
+
+
   @override
   void initState() {
     super.initState();
     print(Language().getLanguage());
     referralReasons = referralReasonOptions['options']; 
+    referralToRoles = referralToRolesOptions['options'];
     print('encounterData $encounterData');
   }
 
@@ -5108,6 +5118,46 @@ class _CreateReferState extends State<CreateRefer> {
                               hintStyle: TextStyle(fontSize: 18)
                             ),
                           )
+                        ),
+
+                       SizedBox(height: 30,),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Text('Refer To ', style: TextStyle(fontSize: 20),)
+                        ),
+                        SizedBox(height: 10,),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 20),
+                          color: kSecondaryTextField,
+                          child: DropdownButtonFormField(
+                            hint: Text('refer to', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                            decoration: InputDecoration(
+                              fillColor: kSecondaryTextField,
+                              contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                              border: UnderlineInputBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(4),
+                                topRight: Radius.circular(4),
+                              )
+                            ),
+                            ),
+                            items: [
+                              ...referralToRoles.map((item) =>
+                                DropdownMenuItem(
+                                  child: Text(item),
+                                  value: item
+                                )
+                              ).toList(),
+                            ],
+                            value: selectedReferralRole,
+                            isExpanded: true,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedReferralRole = value;
+                                print('selectedReferralRole $selectedReferralRole');
+                              });
+                            },
+                          ),
                         ),
 
                         SizedBox(height: 50,),
