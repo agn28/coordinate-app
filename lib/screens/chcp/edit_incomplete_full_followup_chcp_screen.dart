@@ -5333,7 +5333,7 @@ class _CreateReferState extends State<CreateRefer> {
                         SizedBox(height: 30,),
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 20),
-                          child: Text('Refer To ', style: TextStyle(fontSize: 20),)
+                          child: Text(AppLocalizations.of(context).translate("referTo"), style: TextStyle(fontSize: 20),)
                         ),
                         SizedBox(height: 10,),
                         Container(
