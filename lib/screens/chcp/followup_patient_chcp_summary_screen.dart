@@ -82,6 +82,7 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
     super.initState();
     _patient = Patient().getPatient();
     print('followup_patient ${_patient}');
+    print('_patient data incomplete_encounter: ${_patient['data']['incomplete_encounter']}');
     dueCarePlans = [];
     completedCarePlans = [];
     upcomingCarePlans = [];
@@ -1528,28 +1529,28 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                     ],
                                   ),
                                 ),
-                                SizedBox(height: 20,),
-                                (widget.prevScreen == 'home') && _patient['data']['incomplete_encounter'] != null &&  _patient['data']['incomplete_encounter'] ?
-                                Container(
-                                  width: double.infinity,
-                                    //margin: EdgeInsets.only(left: 15, right: 15),
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    color: kPrimaryColor,
-                                    borderRadius: BorderRadius.circular(3)
-                                  ),
-                                  child: FlatButton(
-                                  onPressed: () async {
-                                    Navigator.of(context).pop();
-                                    lastFollowupType == 'full' ?
-                                    Navigator.of(context).pushNamed('/editIncompleteFullFollowup',)
-                                    : Navigator.of(context).pushNamed('/editIncompleteShortFollowup',);
-                                  },
-                                  color: kPrimaryColor,
-                                  child: Text(AppLocalizations.of(context).translate('updateLastFollowUp'), style: TextStyle(color: Colors.white),),
-                                  ),
-                                ) : Container(),
-                                SizedBox(height: 20,),
+                                // SizedBox(height: 20,),
+                                // (widget.prevScreen == 'home') && _patient['data']['incomplete_encounter'] != null &&  _patient['data']['incomplete_encounter'] ?
+                                // Container(
+                                //   width: double.infinity,
+                                //     //margin: EdgeInsets.only(left: 15, right: 15),
+                                //   height: 50,
+                                //   decoration: BoxDecoration(
+                                //     color: kPrimaryColor,
+                                //     borderRadius: BorderRadius.circular(3)
+                                //   ),
+                                //   child: FlatButton(
+                                //   onPressed: () async {
+                                //     Navigator.of(context).pop();
+                                //     lastFollowupType == 'full' ?
+                                //     Navigator.of(context).pushNamed('/editIncompleteFullFollowup',)
+                                //     : Navigator.of(context).pushNamed('/editIncompleteShortFollowup',);
+                                //   },
+                                //   color: kPrimaryColor,
+                                //   child: Text(AppLocalizations.of(context).translate('updateLastFollowUp'), style: TextStyle(color: Colors.white),),
+                                //   ),
+                                // ) : Container(),
+                                // SizedBox(height: 20,),
                                 (widget.prevScreen == 'encounter' || widget.prevScreen == 'followup') && widget.encounterData['dataStatus'] != 'complete' ?
                                 Container(
                                   width: double.infinity,
@@ -1655,7 +1656,8 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                   ),
                                 ) : Container(),
 
-                                Container(
+                                (widget.prevScreen == 'home') && _patient['data']['incomplete_encounter'] != null &&  _patient['data']['incomplete_encounter']
+                                ? Container(
                                   width: double.infinity,
                                     //margin: EdgeInsets.only(left: 15, right: 15),
                                   height: 50,
@@ -1666,32 +1668,53 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                   child: FlatButton(
                                   onPressed: () async {
                                     Navigator.of(context).pop();
-                                    Navigator.of(context).pushNamed('/editIncompleteFullFollowupChcp',);
-                                    // Navigator.of(context).pushNamed('/editIncompleteFullFollowup',); 
+                                    lastFollowupType == 'full' ?
+                                    Navigator.of(context).pushNamed('/editIncompleteFullFollowupChcp',)
+                                    : Navigator.of(context).pushNamed('/editIncompleteShortFollowupChcp',);
                                   },
                                   color: kPrimaryColor,
-                                  child: Text('edit Incomplete full followup', style: TextStyle(color: Colors.white),),
+                                  child: Text(AppLocalizations.of(context).translate('updateLastFollowUp'), style: TextStyle(color: Colors.white),),
                                   ),
-                                ),
-                                SizedBox(height: 20,),
-                                Container(
-                                  width: double.infinity,
-                                    //margin: EdgeInsets.only(left: 15, right: 15),
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    color: kPrimaryColor,
-                                    borderRadius: BorderRadius.circular(3)
-                                  ),
-                                  child: FlatButton(
-                                  onPressed: () async {
-                                    Navigator.of(context).pop();
-                                    Navigator.of(context).pushNamed('/editIncompleteShortFollowupChcp',);
-                                    // Navigator.of(context).pushNamed('/editIncompleteFullFollowup',); 
-                                  },
-                                  color: kPrimaryColor,
-                                  child: Text('edit Incomplete short followup', style: TextStyle(color: Colors.white),),
-                                  ),
-                                ),
+                                ) 
+                                : Container(),
+
+                                // Container(
+                                //   width: double.infinity,
+                                //     //margin: EdgeInsets.only(left: 15, right: 15),
+                                //   height: 50,
+                                //   decoration: BoxDecoration(
+                                //     color: kPrimaryColor,
+                                //     borderRadius: BorderRadius.circular(3)
+                                //   ),
+                                //   child: FlatButton(
+                                //   onPressed: () async {
+                                //     Navigator.of(context).pop();
+                                //     Navigator.of(context).pushNamed('/editIncompleteFullFollowupChcp',);
+                                //     // Navigator.of(context).pushNamed('/editIncompleteFullFollowup',); 
+                                //   },
+                                //   color: kPrimaryColor,
+                                //   child: Text('edit Incomplete full followup', style: TextStyle(color: Colors.white),),
+                                //   ),
+                                // ),
+                                // SizedBox(height: 20,),
+                                // Container(
+                                //   width: double.infinity,
+                                //     //margin: EdgeInsets.only(left: 15, right: 15),
+                                //   height: 50,
+                                //   decoration: BoxDecoration(
+                                //     color: kPrimaryColor,
+                                //     borderRadius: BorderRadius.circular(3)
+                                //   ),
+                                //   child: FlatButton(
+                                //   onPressed: () async {
+                                //     Navigator.of(context).pop();
+                                //     Navigator.of(context).pushNamed('/editIncompleteShortFollowupChcp',);
+                                //     // Navigator.of(context).pushNamed('/editIncompleteFullFollowup',); 
+                                //   },
+                                //   color: kPrimaryColor,
+                                //   child: Text('edit Incomplete short followup', style: TextStyle(color: Colors.white),),
+                                //   ),
+                                // ),
                               ],
                             )
                           ), 
@@ -2256,13 +2279,13 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: <Widget>[
-                              (widget.prevScreen == 'chcpHome') && _patient['data']['incomplete_encounter'] != null &&  _patient['data']['incomplete_encounter'] ?
-                              FloatingButton(text: AppLocalizations.of(context).translate('updateLastFollowUp'), onPressed: () {
-                                Navigator.of(context).pop();
-                                lastFollowupType == 'full' 
-                                ? Navigator.of(context).pushNamed(ChcpFullAssessmentFeelingScreen.path)
-                                : Navigator.of(context).pushNamed(ChcpShortFollowupFeelingScreen.path);
-                              }, ) : Container(),
+                              (widget.prevScreen == 'home') && _patient['data']['incomplete_encounter'] != null &&  _patient['data']['incomplete_encounter'] 
+                              ? FloatingButton(text: AppLocalizations.of(context).translate('updateLastFollowUp'), onPressed: () {
+                                  Navigator.of(context).pop();
+                                  lastFollowupType == 'full' 
+                                  ? Navigator.of(context).pushNamed(ChcpFullAssessmentFeelingScreen.path)
+                                  : Navigator.of(context).pushNamed(ChcpShortFollowupFeelingScreen.path);
+                                }, ) : Container(),
                               FloatingButton(text: AppLocalizations.of(context).translate('newFollowUp'), onPressed: () {
                                 Navigator.of(context).pop();
                                 Navigator.of(context).pushNamed(NewFollowupChcpScreen.path);

@@ -23,6 +23,8 @@ import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:get/get.dart';
 import 'package:nhealth/helpers/functions.dart';
 
+import 'followup_patient_chcp_summary_screen.dart';
+
 
 final birthDateController = TextEditingController();
 final birthmonthController = TextEditingController();
@@ -470,7 +472,9 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                   ...patients.map((item) => GestureDetector(
                     onTap: () {
                       Patient().setPatient(item);
-                      Navigator.of(context).pushNamed('/chcpPatientSummary');
+                      item['data']['chcp_encounter_status'] != null && item['data']['chcp_encounter_status'] == 'complete'
+                      ? Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : 'home', 'encounterData': {},})
+                      : Navigator.of(context).pushNamed('/chcpPatientSummary');
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 15),

@@ -1303,7 +1303,7 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
                                 // ) :
                                 // // Navigator.of(context).pop();
                                 // Navigator.of(context).pushNamed(FollowupFeelingScreen.path);
-                                Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : '/chcpHome', 'encounterData': {},});
+                                Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : 'home', 'encounterData': {},});
                               }, ),
 
                               FloatingButton(text: AppLocalizations.of(context).translate('deliverCarePlan'), onPressed: () {
