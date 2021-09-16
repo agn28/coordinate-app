@@ -137,6 +137,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
   bool nextHide = false;
   var encounter;
   var observations = [];
+  var referral;
 
   @override
   void initState() {
@@ -155,7 +156,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
     prepareQuestions();
     prepareAnswers();
 
-    getCenters();
+    // getCenters();
 
     getLanguage();
 
@@ -262,11 +263,36 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
         'meta': parseData['meta'],
       };
       observations = await AssessmentController().getObservationsByAssessment(encounter);
+      referral = await ReferralController().getReferralByAssessment(encounter['id']);
     }
     print("encounter: $encounter");
     print("observations: $observations");
+    print("referral: $referral");
 
     populatePreviousAnswers();
+    populateReferral();
+  }
+
+  populateReferral() async {
+    var centerData = await PatientController().getCenter();
+
+    if (centerData['error'] != null && !centerData['error']) {
+      clinicTypes = centerData['data'];
+      for(var center in clinicTypes) {
+        if(isNotNull(referral['body']['location']['clinic_type']) && center['id'] == referral['body']['location']['clinic_type']['id']) {
+          print('selectedCenter $center');
+          setState(() {
+            selectedtype = center;
+          });
+        }
+      }
+    }
+    if(isNotNull(referral['body'])) {
+      setState(() {
+        clinicNameController.text = referral['body']['location']['clinic_name'];
+        selectedReason = referral['body']['reason'];
+      });
+    }
   }
 
   populatePreviousAnswers() {
@@ -1015,13 +1041,13 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                     }
 
                     if (_currentStep == 9) {
-                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      // await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
                       _completeRefer();
                       return;
                     }
 
                     if (_currentStep == 8) {
-                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      // await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
                       setState(() {
                         _currentStep = _currentStep + 1;
                         nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
@@ -1185,104 +1211,12 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
   }
 
   Future _completeRefer() async{
-    var referralType;
-    if(role == 'chw')
-    {
-      referralType = 'community';
-    } else if(role == 'nurse'){
-      referralType = 'center';
-    }  else if(role == 'chcp'){
-      referralType = 'chcp';
-    } else{
-      referralType = '';
-    }
 
-    var data = {
-      'meta': {
-        'patient_id': Patient().getPatient()['id'],
-        "collected_by": Auth().getAuth()['uid'],
-        "status": "pending",
-        "created_at": DateTime.now().toString()
-      },
-      'body': {
-        'reason': selectedReason,
-        'type' : referralType,
-        'location' : {
-          'clinic_type' : selectedtype,
-          'clinic_name' : clinicNameController.text,
-        },
-      },
-      'referred_from': 'community clinic',
-    };
-
-    // data['body']['reason'] = selectedReason;
-    // data['body']['type'] = referralType;
-    // data['body']['location'] = {};
-    // data['body']['location']['clinic_type'] = selectedtype;
-    // data['body']['location']['clinic_name'] = clinicNameController.text;
-
-    print('dataaa: $data');
-
-    // setState(() {
-    //   isLoading = true;
-    // });
-    // var response =
-    //     await ReferralController()
-    //         .create(context, data);
-    // setState(() {
-    //   isLoading = false;
-    // });
-    // print('response');
-    // print(response.runtimeType);
-
-    // return;
-
-    // if (response.runtimeType != int &&
-    //     response != null &&
-    //     response['error'] == true &&
-    //     response['message'] ==
-    //         'referral exists') {
-    //   await showDialog(
-    //     context: context,
-    //     builder: (BuildContext context) {
-    //       // return object of type Dialog
-    //       return AlertDialog(
-    //         content: new Text(
-    //           AppLocalizations.of(context)
-    //               .translate(
-    //                   "referralAlreadyExists"),
-    //           style:
-    //               TextStyle(fontSize: 20),
-    //         ),
-    //         actions: <Widget>[
-    //           // usually buttons at the bottom of the dialog
-    //           new FlatButton(
-    //             child: new Text(
-    //                 AppLocalizations.of(
-    //                         context)
-    //                     .translate(
-    //                         "referralUpdate"),
-    //                 style: TextStyle(
-    //                     color:
-    //                         kPrimaryColor)),
-    //             onPressed: () {
-    //               Navigator.of(context)
-    //                   .pop();
-    //               Navigator.of(context)
-    //                   .pushNamed(
-    //                 '/referralList',
-    //               );
-    //             },
-    //           ),
-    //         ],
-    //       );
-    //     },
-    //   );
-    // } else {
-    //   Navigator.of(context).pushNamed(
-    //     '/chwHome',
-    //   );
-    // }
+    var referralData = referral;
+    referralData['body']['reason'] = selectedReason;
+    referralData['body']['location']['clinic_type'] = selectedtype;
+    referralData['body']['location']['clinic_name'] = clinicNameController.text;
+    print('referralData: $referralData');
 
     await showDialog(
       context: context,
@@ -1298,8 +1232,9 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
             FlatButton(
               child: new Text(AppLocalizations.of(context).translate("yes"),
                   style: TextStyle(color: kPrimaryColor)),
-              onPressed: () {
+              onPressed: () async {
                 // Navigator.of(context).pop(false);
+                await AssessmentController().createReferralByAssessmentLocal('community clinic assessment', referralData);
                 _patient['data']['chcp_encounter_status'] = encounterData['dataStatus'];
                 Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
               },

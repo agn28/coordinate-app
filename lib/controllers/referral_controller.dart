@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/helpers/functions.dart';
+import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/repositories/local/patient_repository_local.dart';
 import 'package:nhealth/repositories/local/referral_repository_local.dart';
 import 'package:nhealth/repositories/referral_repository.dart';
@@ -104,6 +107,27 @@ class ReferralController {
     var response = await ReferralRepository().getReferralById(id);
 
     return response;
+  }
+
+  getReferralByAssessment(assessmentId) async {
+    var patientId = Patient().getPatient()['id'];
+    var referrals = await ReferralRepositoryLocal().getReferralsByPatient(patientId);
+    print('referrals $referrals');
+    var data = {};
+    var parsedData;
+
+    await referrals.forEach((item) {
+      parsedData = jsonDecode(item['data']);
+      if (parsedData['meta']['assessment_id'] == assessmentId) {
+        print('referral $item');
+        data = {
+          'id': item['id'],
+          'body': parsedData['body'],
+          'meta': parsedData['meta']
+        };
+      }
+    });
+    return data;
   }
 
   getFollowupsByPatient(patientID) async {

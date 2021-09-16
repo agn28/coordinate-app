@@ -625,13 +625,12 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                     }
 
                     if (_currentStep == 9) {
-                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
                       _completeRefer();
                       return;
                     }
 
                     if (_currentStep == 8) {
-                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      // await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
                       setState(() {
                         _currentStep = _currentStep + 1;
                         nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
@@ -797,7 +796,6 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
   }
 
   Future _completeRefer() async{
-    print('_completeRefer');
     var referralType;
     if(role == 'chw')
     {
@@ -810,7 +808,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
       referralType = '';
     }
 
-    var data = {
+    var referralData = {
       'meta': {
         'patient_id': Patient().getPatient()['id'],
         "collected_by": Auth().getAuth()['uid'],
@@ -827,70 +825,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
       },
       'referred_from': 'community clinic',
     };
-
-    print('referralData: $data');
-
-    // setState(() {
-    //   isLoading = true;
-    // });
-    // var response =
-    //     await ReferralController()
-    //         .create(context, data);
-    // setState(() {
-    //   isLoading = false;
-    // });
-    // print('response');
-    // print(response.runtimeType);
-
-    // return;
-
-    // if (response.runtimeType != int &&
-    //     response != null &&
-    //     response['error'] == true &&
-    //     response['message'] ==
-    //         'referral exists') {
-    //   await showDialog(
-    //     context: context,
-    //     builder: (BuildContext context) {
-    //       // return object of type Dialog
-    //       return AlertDialog(
-    //         content: new Text(
-    //           AppLocalizations.of(context)
-    //               .translate(
-    //                   "referralAlreadyExists"),
-    //           style:
-    //               TextStyle(fontSize: 20),
-    //         ),
-    //         actions: <Widget>[
-    //           // usually buttons at the bottom of the dialog
-    //           new FlatButton(
-    //             child: new Text(
-    //                 AppLocalizations.of(
-    //                         context)
-    //                     .translate(
-    //                         "referralUpdate"),
-    //                 style: TextStyle(
-    //                     color:
-    //                         kPrimaryColor)),
-    //             onPressed: () {
-    //               Navigator.of(context)
-    //                   .pop();
-    //               Navigator.of(context)
-    //                   .pushNamed(
-    //                 '/referralList',
-    //               );
-    //             },
-    //           ),
-    //         ],
-    //       );
-    //     },
-    //   );
-    // } else {
-    //   Navigator.of(context).pushNamed(
-    //     '/chwHome',
-    //   );
-    // }
-
+    print('referralData: $referralData');
     await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -905,8 +840,8 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
             FlatButton(
               child: new Text(AppLocalizations.of(context).translate("yes"),
                   style: TextStyle(color: kPrimaryColor)),
-              onPressed: () {
-                // Navigator.of(context).pop(false);
+              onPressed: () async {
+                await AssessmentController().createReferralByAssessmentLocal('community clinic assessment', referralData);
                 Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
               },
             ),

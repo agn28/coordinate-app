@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/controllers/observation_controller.dart';
+import 'package:nhealth/controllers/referral_controller.dart';
 import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/assessment.dart';
@@ -19,7 +20,9 @@ import 'package:intl/intl.dart';
 import 'package:nhealth/repositories/local/database_creator.dart';
 import 'package:nhealth/repositories/local/observation_repository_local.dart';
 import 'package:nhealth/repositories/local/patient_repository_local.dart';
+import 'package:nhealth/repositories/local/referral_repository_local.dart';
 import 'package:nhealth/repositories/observation_repository.dart';
+import 'package:nhealth/repositories/referral_repository.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import '../constants/constants.dart';
@@ -1016,6 +1019,22 @@ class AssessmentController {
 
     return 'success';
   }
+  createReferralByAssessmentLocal(type, referralData) async {
+    var referral = await ReferralRepositoryLocal().getReferralById(referralData['id']);
+    if(isNotNull(referral)) {
+      await ReferralRepositoryLocal().update(referralData['id'], referralData, false, localStatus: 'incomplete');
+    } else {
+      var incompleteAssessments = [];
+      incompleteAssessments = await this.getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: type);
+      if(incompleteAssessments.isNotEmpty) {
+        print('not empty');
+        referralData['meta']['assessment_id'] = incompleteAssessments.first['id'];
+        print('referralData ${referralData}');
+        var referralId = Uuid().v4();
+        await ReferralRepositoryLocal().create(referralId, referralData, false, localStatus: 'incomplete');
+      }
+    } 
+  }
 
   createAssessmentWithObservationsLocal(context, type, screening_type, comment, completeStatus, nextVisitDate, {followupType: ''}) async {
     var incompleteAssessments = [];
@@ -1082,6 +1101,8 @@ class AssessmentController {
     localNotSyncedAssessment = await this.getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: type);
     if(localNotSyncedAssessment.isNotEmpty) {
       var localNotSyncedObservations = await this.getObservationsByAssessment(localNotSyncedAssessment.first);
+      var localNotSyncedReferral = await ReferralController().getReferralByAssessment(localNotSyncedAssessment.first['id']);
+      print('ref $localNotSyncedReferral');
       print('obs $localNotSyncedObservations');
       print('localNotSyncedAssessment ${localNotSyncedAssessment.first})');
       localNotSyncedAssessment.first['body']['status'] = assessmentStatus;
@@ -1091,7 +1112,7 @@ class AssessmentController {
         'observations': apiDataObservations
       };
       print('apiData $apiData');
-      var response = await storeAssessmentWithObservationsLive(localNotSyncedAssessment.first, apiDataObservations, apiData);
+      var response = await storeAssessmentWithObservationsLive(localNotSyncedAssessment.first, apiDataObservations, apiData, referralData: localNotSyncedReferral);
     }
     if (localNotSyncedAssessment.first['body']['status'] == 'complete') {
       await HealthReportController().generateReport(localNotSyncedAssessment.first['body']['patient_id']);
@@ -1115,11 +1136,14 @@ class AssessmentController {
     Helpers().clearObservationItems();
   }
 
-  storeAssessmentWithObservationsLive(assessmentData, observationsData, apiData) async {
+  storeAssessmentWithObservationsLive(assessmentData, observationsData, apiData, {referralData:''}) async {
     var response;
     response = await AssessmentRepositoryLocal().updateLocalAssessment(assessmentData['id'], assessmentData, false, localStatus: 'complete');
     for (var observation in observationsData) {
       await ObservationRepositoryLocal().update(observation['id'], observation, false, localStatus: 'complete');
+    }
+    if(referralData != '') {
+      await ReferralRepositoryLocal().update(referralData['id'], referralData, false, localStatus: 'complete');
     }
     // Identifying this patient with not synced data
     await PatientReposioryLocal().updateLocalStatus(assessmentData['body']['patient_id'], false);
@@ -1149,7 +1173,27 @@ class AssessmentController {
           print('after updating sync key');
           print(updateSync);
         }
-        return response;
+      } 
+
+      //calling referral create API
+      var referalResponse = await ReferralRepository().create(referralData);
+      print('referalResponse $referalResponse');
+      //API responded success with no error
+      if (referalResponse['error'] != null && !referalResponse['error']) {
+        print('into success');
+        // updating local assessment with synced status
+        response = await ReferralRepositoryLocal().update(referralData['id'], referralData, true, localStatus: 'complete');
+        
+        // Identifying this patient with not synced data
+        await PatientReposioryLocal().updateLocalStatus(referralData['meta']['patient_id'], true);
+      
+        //updating sync key
+        if (isNotNull(referalResponse['data']['sync']) && isNotNull(referalResponse['data']['sync']['key'])) {
+          print('into sync update');
+          var updateSync = await SyncRepository().updateLatestLocalSyncKey(referalResponse['data']['sync']['key']);
+          print('after updating sync key');
+          print(updateSync);
+        }
       } 
     }
     return response;
