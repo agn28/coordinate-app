@@ -17,6 +17,8 @@ import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 
+var selectedReferralRole;
+
 getDropdownOptionText(context, list, value) {
   var locale = Localizations.localeOf(context);
 
@@ -69,9 +71,16 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
   var selectedtype;
   var clinicNameController = TextEditingController();
 
+  var referralToRolesOptions = {
+    'options': ['Chcp'],
+    'options_bn': ['chcp']
+  };
+  List referralToRoles;
+
   @override
   void initState() {
     super.initState();
+    print('create referal screen');
     _patient = Patient().getPatient();
     print('_patient ${_patient}');
     print('referralData ${widget.referralData}');
@@ -80,6 +89,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
     _getAuthData();
     getCenters();  
     referralReasons = referralReasonOptions['options'];
+    referralToRoles = referralToRolesOptions['options']; 
     // clinicTypes = clinicTypeOptions['options'];
   }
 
@@ -258,6 +268,46 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                           hintStyle: TextStyle(fontSize: 18)
                         ),
                       )
+                    ),
+
+                    SizedBox(height: 30,),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Text(AppLocalizations.of(context).translate("referTo"), style: TextStyle(fontSize: 20),)
+                    ),
+                    SizedBox(height: 10,),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      color: kSecondaryTextField,
+                      child: DropdownButtonFormField(
+                        hint: Text('refer to', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                        decoration: InputDecoration(
+                          fillColor: kSecondaryTextField,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                          border: UnderlineInputBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(4),
+                            topRight: Radius.circular(4),
+                          )
+                        ),
+                        ),
+                        items: [
+                          ...referralToRoles.map((item) =>
+                            DropdownMenuItem(
+                              child: Text(item),
+                              value: item
+                            )
+                          ).toList(),
+                        ],
+                        value: selectedReferralRole,
+                        isExpanded: true,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedReferralRole = value;
+                            print('selectedReferralRole $selectedReferralRole');
+                          });
+                        },
+                      ),
                     ),
 
                     SizedBox(height: 50,),
