@@ -431,6 +431,7 @@
   "bloodGlucoseLevel":"রক্তে শর্করার পরিমাণ কত?",
   "reasonForReferral":"রেফারেলের কারণ",
   "clinicType":"ক্লিনিকের ধরণ *",
+  "clinicName":"ক্লিনিকের নাম",
   "whatIsPatientTem": "রোগীর তাপমাত্রা কত?",
   "NCDscreening":"গাইডলাইন অনুযায়ী, রোগীর এনসিডি স্ক্রিনিংয়ের জন্য রেফারেল প্রয়োজন",
   "inputBirthday":"দয়া করে জন্মতারিখ লিখুন",
@@ -543,5 +544,5 @@
   "noMedication" : "কোন ওষুধ দেওয়া হয় নাই",
   "wantToCompleteVisit" : "আপনি কি পরিদর্শন সম্পন্ন করতে চান?",
   "chcpAssessment" : "Chcp মূল্যায়ন",
-  "referTo":"নির্দেশ করে"
+  "referTo":"কাকে রেফার করবেন?"
 }

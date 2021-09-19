@@ -1211,13 +1211,14 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
   }
 
   Future _completeRefer() async{
-
     var referralData = referral;
-    referralData['body']['reason'] = selectedReason;
-    referralData['body']['location']['clinic_type'] = selectedtype;
-    referralData['body']['location']['clinic_name'] = clinicNameController.text;
-    print('referralData: $referralData');
-
+    if(isNotNull(referralData['body'])) {
+      referralData['body']['reason'] = selectedReason;
+      referralData['body']['location']['clinic_type'] = selectedtype;
+      referralData['body']['location']['clinic_name'] = clinicNameController.text;
+      print('referralData: $referralData');
+    }
+    
     await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1234,7 +1235,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                   style: TextStyle(color: kPrimaryColor)),
               onPressed: () async {
                 // Navigator.of(context).pop(false);
-                await AssessmentController().createReferralByAssessmentLocal('community clinic assessment', referralData);
+                isNotNull(referralData['body']) && refer ? await AssessmentController().createReferralByAssessmentLocal('community clinic assessment', referralData) : '';
                 _patient['data']['chcp_encounter_status'] = encounterData['dataStatus'];
                 Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
               },
@@ -5049,231 +5050,12 @@ class _CreateReferState extends State<CreateRefer> {
                             controller: clinicNameController,
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.only(left: 10, right: 10),
-                              hintText: 'Name of Clinic',
+                              hintText: AppLocalizations.of(context).translate("clinicName"),
                               hintStyle: TextStyle(fontSize: 18)
                             ),
                           )
                         ),
-
-                       SizedBox(height: 30,),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          child: Text(AppLocalizations.of(context).translate("referTo"), style: TextStyle(fontSize: 20),)
-                        ),
-                        SizedBox(height: 10,),
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: 20),
-                          color: kSecondaryTextField,
-                          child: DropdownButtonFormField(
-                            hint: Text('refer to', style: TextStyle(fontSize: 20, color: kTextGrey),),
-                            decoration: InputDecoration(
-                              fillColor: kSecondaryTextField,
-                              contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                              border: UnderlineInputBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(4),
-                                topRight: Radius.circular(4),
-                              )
-                            ),
-                            ),
-                            items: [
-                              ...referralToRoles.map((item) =>
-                                DropdownMenuItem(
-                                  child: Text(item),
-                                  value: item
-                                )
-                              ).toList(),
-                            ],
-                            value: selectedReferralRole,
-                            isExpanded: true,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedReferralRole = value;
-                                print('selectedReferralRole $selectedReferralRole');
-                              });
-                            },
-                          ),
-                        ),
-
                         SizedBox(height: 50,),
-                        Row(
-                        children: <Widget>[
-                          // Expanded(
-                          //   child: Container(
-                          //     width: double.infinity,
-                          //     margin: EdgeInsets.only(left: 20, right: 20),
-                          //     height: 50,
-                          //     decoration: BoxDecoration(
-                          //       color: kPrimaryColor,
-                          //       borderRadius: BorderRadius.circular(3)
-                          //     ),
-                          //     child: FlatButton(
-                          //       onPressed: () async {
-                          //         // Navigator.of(context).pushNamed('/chwNavigation',);
-
-                          //         var referralType;
-                          //         if(role == 'chw')
-                          //         {
-                          //           referralType = 'community';
-                          //         } else if(role == 'nurse'){
-                          //           referralType = 'center';
-                          //         }  else if(role == 'chcp'){
-                          //           referralType = 'chcp';
-                          //         } else{
-                          //           referralType = '';
-                          //         }
-
-                          //         var data = {
-                          //           'meta': {
-                          //             'patient_id': Patient().getPatient()['id'],
-                          //             "collected_by": Auth().getAuth()['uid'],
-                          //             "status": "pending",
-                          //             "created_at": DateTime.now().toString()
-                          //           },
-                          //           'body': {
-                          //             'reason': selectedReason,
-                          //             'type' : referralType,
-                          //             'location' : {
-                          //               'clinic_type' : selectedtype,
-                          //               'clinic_name' : clinicNameController,
-                          //             },
-                          //           },
-                          //           'referred_from': 'new questionnaire chcp',
-                          //         };
-
-                          //         // data['body']['reason'] = selectedReason;
-                          //         // data['body']['type'] = referralType;
-                          //         // data['body']['location'] = {};
-                          //         // data['body']['location']['clinic_type'] = selectedtype;
-                          //         // data['body']['location']['clinic_name'] = clinicNameController.text;
-
-                          //         print(data);
-
-                          //         // setState(() {
-                          //         //   isLoading = true;
-                          //         // });
-                          //         // var response =
-                          //         //     await ReferralController()
-                          //         //         .create(context, data);
-                          //         // setState(() {
-                          //         //   isLoading = false;
-                          //         // });
-                          //         // print('response');
-                          //         // print(response.runtimeType);
-
-                          //         // return;
-
-                          //         // if (response.runtimeType != int &&
-                          //         //     response != null &&
-                          //         //     response['error'] == true &&
-                          //         //     response['message'] ==
-                          //         //         'referral exists') {
-                          //         //   await showDialog(
-                          //         //     context: context,
-                          //         //     builder: (BuildContext context) {
-                          //         //       // return object of type Dialog
-                          //         //       return AlertDialog(
-                          //         //         content: new Text(
-                          //         //           AppLocalizations.of(context)
-                          //         //               .translate(
-                          //         //                   "referralAlreadyExists"),
-                          //         //           style:
-                          //         //               TextStyle(fontSize: 20),
-                          //         //         ),
-                          //         //         actions: <Widget>[
-                          //         //           // usually buttons at the bottom of the dialog
-                          //         //           new FlatButton(
-                          //         //             child: new Text(
-                          //         //                 AppLocalizations.of(
-                          //         //                         context)
-                          //         //                     .translate(
-                          //         //                         "referralUpdate"),
-                          //         //                 style: TextStyle(
-                          //         //                     color:
-                          //         //                         kPrimaryColor)),
-                          //         //             onPressed: () {
-                          //         //               Navigator.of(context)
-                          //         //                   .pop();
-                          //         //               Navigator.of(context)
-                          //         //                   .pushNamed(
-                          //         //                 '/referralList',
-                          //         //               );
-                          //         //             },
-                          //         //           ),
-                          //         //         ],
-                          //         //       );
-                          //         //     },
-                          //         //   );
-                          //         // } else {
-                          //         //   Navigator.of(context).pushNamed(
-                          //         //     '/chwHome',
-                          //         //   );
-                          //         // }
-
-                          //         await showDialog(
-                          //           context: context,
-                          //           builder: (BuildContext context) {
-                          //             // return object of type Dialog
-                          //             return AlertDialog(
-                          //               content: new Text(
-                          //                 AppLocalizations.of(context).translate("wantToCompleteVisit"),
-                          //                 style: TextStyle(fontSize: 20),
-                          //               ),
-                          //               actions: <Widget>[
-                          //                 // usually buttons at the bottom of the dialog
-                          //                 FlatButton(
-                          //                   child: new Text(AppLocalizations.of(context).translate("yes"),
-                          //                       style: TextStyle(color: kPrimaryColor)),
-                          //                   onPressed: () {
-                          //                     // Navigator.of(context).pop(false);
-                          //                     Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
-                          //                   },
-                          //                 ),
-                          //                 FlatButton(
-                          //                   child: new Text(
-                          //                       AppLocalizations.of(context).translate("NO"),
-                          //                       style: TextStyle(color: kPrimaryColor)),
-                          //                   onPressed: () {
-                          //                     Navigator.of(context).pop(false);
-                          //                   },
-                          //                 ),
-                          //               ],
-                          //             );
-                          //         });
-                          //       },
-                          //       materialTapTargetSize:
-                          //           MaterialTapTargetSize.shrinkWrap,
-                          //       child: Text(
-                          //         AppLocalizations.of(context)
-                          //             .translate('referralCreate')
-                          //             .toUpperCase(),
-                          //         style: TextStyle(
-                          //             fontSize: 14,
-                          //             color: Colors.white,
-                          //             fontWeight: FontWeight.normal),
-                          //         )),
-                          //         ),
-                          //       ),
-                              ],
-                            ),
-                            isLoading
-                            ? Container(
-                                height: MediaQuery.of(context).size.height,
-                                width: double.infinity,
-                                color: Color(0x90FFFFFF),
-                                child: Center(
-                                    child: CircularProgressIndicator(
-                                  valueColor:
-                                      AlwaysStoppedAnimation<Color>(kPrimaryColor),
-                                  backgroundColor: Color(0x30FFFFFF),
-                                )),
-                              )
-                            : Container(),
-                        // Container(
-                        //   height: 300,
-                        //   width: double.infinity,
-                        //   color: Colors.black12,
-                        // )
                       ],
                     )
                     : Container(),
