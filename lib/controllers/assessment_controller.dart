@@ -1088,20 +1088,21 @@ class AssessmentController {
       print('obs $obs');
       var apiDataObservations = await updateObservations(completeStatus, incompleteAssessments.first, obs);
 
-      await updateLocalAssessmentWithObservations(incompleteAssessments.first, apiDataObservations, false);
+      // await updateLocalAssessmentWithObservations(incompleteAssessments.first, apiDataObservations, false);
       await AssessmentRepositoryLocal().updateLocalAssessment(incompleteAssessments.first['id'], incompleteAssessments.first, false, localStatus: 'incomplete');
       for (var observation in apiDataObservations) {
         await ObservationRepositoryLocal().update(observation['id'], observation, false, localStatus: 'incomplete');
       }
+      await PatientReposioryLocal().updateLocalStatus(incompleteAssessments.first['body']['patient_id'], false);
     } else {
       print('empty');
       var response;
-      var data = _prepareData(type, screening_type, comment);
-      print('data prepareData: $data');
-      data['body']['status'] = completeStatus;
-      data['body']['next_visit_date'] = nextVisitDate;
+      var assessmentData = _prepareData(type, screening_type, comment);
+      print('data prepareData: $assessmentData');
+      assessmentData['body']['status'] = completeStatus;
+      assessmentData['body']['next_visit_date'] = nextVisitDate;
       if (followupType != '') {
-        data['body']['followup_type'] = followupType;
+        assessmentData['body']['followup_type'] = followupType;
       }
       var assessmentId = Uuid().v4();
 
@@ -1109,10 +1110,11 @@ class AssessmentController {
       // Preparing all observations related to assessment
       var observations = await AssessmentRepositoryLocal().prepareObservations(assessmentId);
 
-      response = await AssessmentRepositoryLocal().createLocalAssessment(assessmentId, data, false, localStatus: 'incomplete');
+      response = await AssessmentRepositoryLocal().createLocalAssessment(assessmentId, assessmentData, false, localStatus: 'incomplete');
       for (var observation in observations['localData']) {
         await ObservationRepositoryLocal().create(observation['id'], observation['data'], false, localStatus: 'incomplete');
       }
+      await PatientReposioryLocal().updateLocalStatus(assessmentData['body']['patient_id'], false);
     }
     // var response;
     // var data = _prepareData(type, screening_type, comment);

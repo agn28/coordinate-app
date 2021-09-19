@@ -17,8 +17,6 @@ import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 
-var selectedReferralRole;
-
 getDropdownOptionText(context, list, value) {
   var locale = Localizations.localeOf(context);
 
@@ -63,6 +61,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
   };
   List referralReasons;
   var selectedReason;
+  var selectedReferralRole;
   var clinicTypeOptions = {
     'options': ['community clinic', 'upazila health complex', 'hospital', 'BRAC NCD Centre'],
     'options_bn': ['কমিউনিটি ক্লিনিক', 'উপজেলা স্বাস্থ্য কমপ্লেক্স', 'হাসপাতাল', 'ব্র্যাক এনসিডি কেন্দ্র']
@@ -264,7 +263,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                         controller: clinicNameController,
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.only(left: 10, right: 10),
-                          hintText: 'Name of Clinic',
+                          hintText: AppLocalizations.of(context).translate("clinicName"),
                           hintStyle: TextStyle(fontSize: 18)
                         ),
                       )
@@ -280,7 +279,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                       margin: EdgeInsets.symmetric(horizontal: 20),
                       color: kSecondaryTextField,
                       child: DropdownButtonFormField(
-                        hint: Text('refer to', style: TextStyle(fontSize: 20, color: kTextGrey),),
+                        hint: Text(AppLocalizations.of(context).translate("referTo"), style: TextStyle(fontSize: 20, color: kTextGrey),),
                         decoration: InputDecoration(
                           fillColor: kSecondaryTextField,
                           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
@@ -304,7 +303,6 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                         onChanged: (value) {
                           setState(() {
                             selectedReferralRole = value;
-                            print('selectedReferralRole $selectedReferralRole');
                           });
                         },
                       ),
@@ -342,6 +340,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
 
                                 data['body']['reason'] = selectedReason;
                                 data['body']['type'] = referralType;
+                                data['body']['referred_to'] = selectedReferralRole;
                                 data['body']['location'] = {};
                                 data['body']['location']['clinic_type'] = selectedtype;
                                 data['body']['location']['clinic_name'] = clinicNameController.text;

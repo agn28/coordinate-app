@@ -3262,7 +3262,7 @@ class _CreateReferState extends State<CreateRefer> {
                             controller: clinicNameController,
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.only(left: 10, right: 10),
-                              hintText: 'Name of Clinic',
+                              hintText: AppLocalizations.of(context).translate("clinicName"),
                               hintStyle: TextStyle(fontSize: 18)
                             ),
                           )

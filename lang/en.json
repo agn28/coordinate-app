@@ -430,6 +430,7 @@
   "bloodGlucoseLevel":"What is blood glucose level",
   "reasonForReferral":"Reason for referral",
   "clinicType":"Clinic type *",
+  "clinicName":"ক্লিনিকের নাম",
   "whatIsPatientTem": "What is patient's temperature?",
   "NCDscreening":"Based on guidelines, the patient requires a referral for NCD screening",
   "inputBirthday":"Please input birthday",
