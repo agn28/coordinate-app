@@ -118,7 +118,7 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
           var hasEncounter = assessments.firstWhere((assessment) {
             if (assessment['data']['patient_id'] == localPatient['id']) {
               if (assessment['data']['type'] != 'registration') {
-                if (assessment['data']['screening_type'] == 'follow-up') {
+                if (assessment['data']['type'] == 'follow up visit (center)' || assessment['data']['type'] == 'follow up visit (community)') {
                   return true;
                 }
                 if (assessment['data']['status'] == null || assessment['data']['status'] == "") {
@@ -150,11 +150,13 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                 print('assess $assessment');
                 if(assessment['data']['status'] == 'incomplete') {
                   localPatient['data']['incomplete_encounter'] = true;
-                  if(assessment['data']['type'] == 'community clinic assessment') {
+                  if(assessment['data']['type'] == 'community clinic assessment' || assessment['data']['type'] == 'community clinic followup') {
+                    localPatient['data']['chcp_encounter_type'] =  assessment['data']['type'];
                     localPatient['data']['chcp_encounter_status'] =  assessment['data']['status'];
                   }
                   return true;
-                } else if (assessment['data']['status'] == 'complete' && assessment['data']['type'] == 'community clinic assessment') {
+                } else if (assessment['data']['status'] == 'complete' && (assessment['data']['type'] == 'community clinic assessment'|| assessment['data']['type'] == 'community clinic followup')) {
+                  localPatient['data']['chcp_encounter_type'] =  assessment['data']['type'];
                   localPatient['data']['chcp_encounter_status'] =  assessment['data']['status'];
                   return true;
                 } return false; 
@@ -472,7 +474,8 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                   ...patients.map((item) => GestureDetector(
                     onTap: () {
                       Patient().setPatient(item);
-                      item['data']['chcp_encounter_status'] != null && item['data']['chcp_encounter_status'] == 'complete'
+                      ((item['data']['chcp_encounter_status'] != null && item['data']['chcp_encounter_status'] == 'complete') 
+                      || (item['data']['chcp_encounter_type'] != null && item['data']['chcp_encounter_type'] == 'community clinic followup')) 
                       ? Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : 'home', 'encounterData': {},})
                       : Navigator.of(context).pushNamed('/chcpPatientSummary');
                     },

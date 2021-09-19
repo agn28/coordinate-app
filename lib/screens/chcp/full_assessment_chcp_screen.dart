@@ -28,6 +28,7 @@ import 'package:nhealth/models/language.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/chcp/followup_patient_chcp_summary_screen.dart';
 import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
@@ -589,24 +590,24 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                   child: _currentStep < _mySteps().length || nextHide
                       ? FlatButton(
                           onPressed: () async {
-                            setState(() {
                     print(_currentStep);
                     if (_currentStep == 0) {
-                      Questionnaire().addNewMedicalHistoryNcd(
-                          'medical_history', medicalHistoryAnswers);
+                      Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
                       print(Questionnaire().qnItems);
+                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                     }
 
                     if (_currentStep == 1) {
-                      Questionnaire().addNewMedicationNcd(
-                          'medication', medicationAnswers);
+                      Questionnaire().addNewMedicationNcd('medication', medicationAnswers);
                       print(Questionnaire().qnItems);
+                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                     }
 
                     if (_currentStep == 2) {
                       Questionnaire().addNewRiskFactorsNcd(
                           'risk_factors', riskAnswers);
                       print(Questionnaire().qnItems);
+                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                     }
 
                     if (_currentStep == 3) {
@@ -634,11 +635,13 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                                 ),
                                 FlatButton(
                                   child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
-                                  onPressed: () {
+                                  onPressed: () async {
                                     // Navigator.of(context).pop(true);
                                     setState(() {
                                       _currentStep = _currentStep + 1;
                                     });
+                                    createObservations();
+                                    await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                                     print('_currentStep $_currentStep');
                                     Navigator.of(context).pop(true);
                                   },
@@ -648,7 +651,11 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                           }
                         );
                       } else {
-                        _currentStep = _currentStep + 1;
+                        createObservations();
+                        await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                        setState(() {
+                          _currentStep = _currentStep + 1;
+                        });
                         return;
                       }
                     }
@@ -659,26 +666,28 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                     }
 
                     if (_currentStep == 8) {
-                      print('here 8');
-                      _completeStep();
                       setState(() {
                         _currentStep = _currentStep + 1;
-                      nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                        nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                       });
-                      Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);
-                      
+                      _completeStep();
                       return;
                     }
 
                     if (_currentStep == 7) {
-                      
-                      _currentStep = _currentStep + 1;
+                      Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);
+                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                      setState(() {
+                        _currentStep = _currentStep + 1;
+                      });
                       return;
                     }
 
                     if (_currentStep == 6) {
                       jumpToEnd();
-                      _currentStep = _currentStep + 1;
+                      setState(() {
+                        _currentStep = _currentStep + 1;
+                      });
                       return;
                     }
 
@@ -695,8 +704,10 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                       };
                       print('relativeAdditionalData $relativeAdditionalData');
                       Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
-
-                      _currentStep = _currentStep + 1;
+                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                      setState(() {
+                        _currentStep = _currentStep + 1;
+                      });
                       return;
                     }
                     if (_currentStep == 4) {
@@ -731,12 +742,13 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                                 ),
                                 FlatButton(
                                   child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
-                                  onPressed: () {
+                                  onPressed: () async {
                                     // Navigator.of(context).pop(true);
                                     setState(() {
                                       _currentStep = _currentStep + 1;
                                     });
                                     createObservations();
+                                    await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                                     // nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                                     print('_currentStep $_currentStep');
                                     Navigator.of(context).pop(true);
@@ -748,17 +760,20 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                         );
                       } else {
                         createObservations();
-                        // nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
-                        _currentStep = _currentStep + 1;
+                        await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                        setState(() {
+                          _currentStep = _currentStep + 1;
+                        });
                         return;
                       }
 
                     }
                     if (_currentStep < 3) {
-                      // If the form is valid, display a Snackbar.
-                      _currentStep = _currentStep + 1;
+                      setState(() {
+                        // If the form is valid, display a Snackbar.
+                        _currentStep = _currentStep + 1;
+                      });
                     }
-                  });
                           },
                           materialTapTargetSize:
                               MaterialTapTargetSize.shrinkWrap,
@@ -846,80 +861,11 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
         'type' : referralType,
         'location' : {
           'clinic_type' : selectedtype,
-          'clinic_name' : clinicNameController,
+          'clinic_name' : clinicNameController.text,
         },
       },
-      'referred_from': 'new questionnaire chcp',
+      'referred_from': 'community clinic',
     };
-
-    // data['body']['reason'] = selectedReason;
-    // data['body']['type'] = referralType;
-    // data['body']['location'] = {};
-    // data['body']['location']['clinic_type'] = selectedtype;
-    // data['body']['location']['clinic_name'] = clinicNameController.text;
-
-    print('referralData: $referralData');
-
-    // setState(() {
-    //   isLoading = true;
-    // });
-    // var response =
-    //     await ReferralController()
-    //         .create(context, data);
-    // setState(() {
-    //   isLoading = false;
-    // });
-    // print('response');
-    // print(response.runtimeType);
-
-    // return;
-
-    // if (response.runtimeType != int &&
-    //     response != null &&
-    //     response['error'] == true &&
-    //     response['message'] ==
-    //         'referral exists') {
-    //   await showDialog(
-    //     context: context,
-    //     builder: (BuildContext context) {
-    //       // return object of type Dialog
-    //       return AlertDialog(
-    //         content: new Text(
-    //           AppLocalizations.of(context)
-    //               .translate(
-    //                   "referralAlreadyExists"),
-    //           style:
-    //               TextStyle(fontSize: 20),
-    //         ),
-    //         actions: <Widget>[
-    //           // usually buttons at the bottom of the dialog
-    //           new FlatButton(
-    //             child: new Text(
-    //                 AppLocalizations.of(
-    //                         context)
-    //                     .translate(
-    //                         "referralUpdate"),
-    //                 style: TextStyle(
-    //                     color:
-    //                         kPrimaryColor)),
-    //             onPressed: () {
-    //               Navigator.of(context)
-    //                   .pop();
-    //               Navigator.of(context)
-    //                   .pushNamed(
-    //                 '/referralList',
-    //               );
-    //             },
-    //           ),
-    //         ],
-    //       );
-    //     },
-    //   );
-    // } else {
-    //   Navigator.of(context).pushNamed(
-    //     '/chwHome',
-    //   );
-    // }
 
     await showDialog(
       context: context,
@@ -935,10 +881,10 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
             FlatButton(
               child: new Text(AppLocalizations.of(context).translate("yes"),
                   style: TextStyle(color: kPrimaryColor)),
-              onPressed: () async {
+              onPressed: () async{
                 // Navigator.of(context).pop(false);
-                await AssessmentController().createReferralByAssessmentLocal('community clinic assessment', referralData);
-                Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
+                await AssessmentController().createReferralByAssessmentLocal('community clinic followup', referralData);
+                Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': encounterData ,});
               },
             ),
             FlatButton(
@@ -3176,8 +3122,8 @@ var personalQuestions = {
       'options_bn': ['বাংলাদেশী', 'অন্যান্য'],
     },
     'blood_group' : {
-      'options': ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-'],
-      'options_bn': ['এবি+', 'এবি-', 'এ+', 'এ-', 'বি+', 'বি-', 'ও+', 'ও-'], 
+      'options': ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-', "Don't know"],
+      'options_bn': ['এবি+', 'এবি-', 'এ+', 'এ-', 'বি+', 'বি-', 'ও+', 'ও-', "জানি না"],
     }
 };    
 var religions = personalQuestions['religion']['options'];
@@ -3727,12 +3673,7 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
     super.initState();
     // _patient = Patient().getPatient();
     print('prevScreen ${widget.prevScreen}');
-    dueCarePlans = [];
-    completedCarePlans = [];
-    upcomingCarePlans = [];
     conditions = [];
-    referrals = [];
-    pendingReferral = null;
     carePlansEmpty = false;
     getRiskQuestionAnswer();
     
