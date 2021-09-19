@@ -104,7 +104,17 @@ class _RegisterPatientSuccessScreenState extends State<RegisterPatientSuccessScr
                   SizedBox(height: 40,),
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(context).pushNamed('/patientOverview', arguments: {'prevScreen' : ''});
+                      // Navigator.of(context).pushNamed('/patientOverview', arguments: {'prevScreen' : ''});
+                      if (role == 'chw') {
+                        Navigator.of(context).pushNamed('/patientOverview', arguments: {'prevScreen' : 'home'});
+                      }
+                      else if(role == 'chcp'){
+                        Navigator.of(context).pushNamed('/chcpPatientSummary');
+                      } 
+                      else {
+                        Navigator.of(context).pushNamed('/ncdPatientSummary');
+                        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => HomeScreen()));
+                      }
                     },
                     child: Container(
                       margin: EdgeInsets.symmetric(horizontal: 50),

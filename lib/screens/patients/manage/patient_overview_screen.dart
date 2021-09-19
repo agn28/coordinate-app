@@ -65,6 +65,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
   @override
   void initState() {
     super.initState();
+    print('patient overview screen');
     Helpers().clearObservationItems();
     _patient = Patient().getPatient();
     print('prevScreen ${widget.prevScreen}');

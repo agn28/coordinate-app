@@ -72,6 +72,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
   @override
   void initState() {
     super.initState();
+    print('nurse patient summery');
     _patient = Patient().getPatient();
     print('_patient $_patient');
     dueCarePlans = [];

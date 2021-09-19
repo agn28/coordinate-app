@@ -709,7 +709,7 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
                   child: _currentStep < _mySteps().length || nextHide
                       ? FlatButton(
                           onPressed: () async {
-                            setState(() {
+                            
                               print(_currentStep);
 
                               if (_currentStep == 3) {
@@ -721,22 +721,27 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
                                 print('hello');
                                 createObservations();
                                 _completeStep();
+                                await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'short');
                               }
                               if (_currentStep == 1) {
-                                
+                                createObservations();
+                                await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'short');
                               }
                               if (_currentStep == 0) {
                                 if(dynamicMedicationTitles.isNotEmpty) {
                                   Questionnaire().addNewDynamicMedicationNcd('dynamic_medication', dynamicMedicationTitles, dynamicMedicationAnswers);
+                                  await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'short');
                                 }
                                 // print(Questionnaire().qnItems);
                                 // nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                               }
                               if (_currentStep < 4) {
                                 // If the form is valid, display a Snackbar.
-                                _currentStep = _currentStep + 1;
+                                setState(() {
+                                  _currentStep = _currentStep + 1;
+                                });
                               }
-                            });
+                           
                           },
                           materialTapTargetSize:
                               MaterialTapTargetSize.shrinkWrap,
@@ -3301,10 +3306,10 @@ class _CreateReferState extends State<CreateRefer> {
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 20),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            // padding: EdgeInsets.symmetric(horizontal: 20),
                             child: Text('Refer', style: TextStyle(fontSize: 20),)
                           ),
                           SizedBox(width: 30,),

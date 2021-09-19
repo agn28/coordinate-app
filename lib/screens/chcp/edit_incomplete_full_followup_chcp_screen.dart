@@ -5153,10 +5153,10 @@ class _CreateReferState extends State<CreateRefer> {
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 20),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            // padding: EdgeInsets.symmetric(horizontal: 20),
                             child: Text('Refer', style: TextStyle(fontSize: 20),)
                           ),
                           SizedBox(width: 30,),
