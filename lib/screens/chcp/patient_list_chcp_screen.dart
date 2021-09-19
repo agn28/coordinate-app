@@ -521,7 +521,8 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 // item['data']['incomplete_encounter'] != null && item['data']['incomplete_encounter'] ?
-                                item['data']['chcp_encounter_status'] != null && item['data']['chcp_encounter_status'] == 'complete' ?
+                                item['data']['chcp_encounter_status'] != null && item['data']['chcp_encounter_status'] == 'complete'
+                                && (item['data']['chcp_encounter_type'] != null && item['data']['chcp_encounter_type'] == 'community clinic assessment') ?
                                 Container(
                                     alignment: Alignment.center,
                                     width: 160,
@@ -533,7 +534,8 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                                       style: TextStyle(color: Colors.white, fontSize: 15),
                                     ),
                                 ) : Container(),
-                                item['data']['chcp_encounter_status'] != null && item['data']['chcp_encounter_status'] == 'incomplete' ?
+                                item['data']['chcp_encounter_status'] != null && item['data']['chcp_encounter_status'] == 'incomplete' 
+                                && (item['data']['chcp_encounter_type'] != null && item['data']['chcp_encounter_type'] == 'community clinic assessment') ?
                                 Container(
                                     alignment: Alignment.center,
                                     width: 160,
