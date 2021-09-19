@@ -1118,8 +1118,10 @@ class SyncController extends GetxController {
                 syncs.remove(item);
               }
             }
-          } else if (isNotNull(patient['message']) && patient['message'] == "No such document!") {
+          } else if (isNotNull(patient) && isNotNull(patient['message']) && patient['message'] == "No such document!") {
             syncs.remove(item);
+          } else {
+            retryForStableNetwork();
           }
         }
       }
@@ -1155,8 +1157,10 @@ class SyncController extends GetxController {
                 syncs.remove(item);
               }
             }
-          } else if (isNotNull(assessment['message']) && assessment['message'] == "No such document!") {
+          } else if (isNotNull(assessment) && isNotNull(assessment['message']) && assessment['message'] == "No such document!") {
             syncs.remove(item);
+          } else {
+            retryForStableNetwork();
           }
         }
       } else if (item['collection'] == 'observations') {
@@ -1189,8 +1193,10 @@ class SyncController extends GetxController {
                 syncs.remove(item);
               }
             }
-          } else if (isNotNull(observation['message']) && observation['message'] == "No such document!") {
+          } else if (isNotNull(observation) && isNotNull(observation['message']) && observation['message'] == "No such document!") {
             syncs.remove(item);
+          } else {
+            retryForStableNetwork();
           }
         }
       } else if (item['collection'] == 'referrals') {
@@ -1224,8 +1230,10 @@ class SyncController extends GetxController {
                 syncs.remove(item);
               }
             }
-          } else if (isNotNull(referral['message']) && referral['message'] == "No such document!") {
+          } else if (isNotNull(referral) && isNotNull(referral['message']) && referral['message'] == "No such document!") {
             syncs.remove(item);
+          } else {
+            retryForStableNetwork();
           }
         }
       } else if (item['collection'] == 'care_plans') {
@@ -1259,8 +1267,10 @@ class SyncController extends GetxController {
                 syncs.remove(item);
               }
             }
-          } else if (isNotNull(careplan['message']) && careplan['message'] == "No such document!") {
+          } else if (isNotNull(careplan) && isNotNull(careplan['message']) && careplan['message'] == "No such document!") {
             syncs.remove(item);
+          } else {
+            retryForStableNetwork();
           }
         }
       } else if (item['collection'] == 'health_reports') {
@@ -1291,8 +1301,10 @@ class SyncController extends GetxController {
                 syncs.remove(item);
               }
             }
-          } else if (isNotNull(healthReport['message']) && healthReport['message'] == "No such document!") {
+          } else if (isNotNull(healthReport) && isNotNull(healthReport['message']) && healthReport['message'] == "No such document!") {
             syncs.remove(item);
+          } else {
+            retryForStableNetwork();
           }
         }
       }
