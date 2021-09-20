@@ -75,7 +75,7 @@ import 'screens/chcp/edit_incomplete_encounter_chcp_screen.dart';
 import 'screens/chcp/edit_incomplete_full_followup_chcp_screen.dart';
 import 'screens/chcp/edit_incomplete_short_followup_chcp_screen.dart';
 import 'screens/chcp/followup_patient_chcp_summary_screen.dart';
-import 'screens/chcp/followup_visit_chcp_screen.dart';
+import 'screens/chcp/short_followup_chcp_screen.dart';
 import 'screens/chcp/full_assessment_chcp_screen.dart';
 import 'screens/chcp/new_followup_chcp_screen.dart';
 import 'screens/chcp/new_visit/new_patient_questionnaire_chcp_screen.dart';

@@ -18,7 +18,7 @@ import 'package:nhealth/screens/patients/ncd/followup_visit_screen.dart';
 
 import 'chcp_full_assessment_feeling_screen.dart';
 import 'chcp_short_followup_feeling_screen.dart';
-import 'followup_visit_chcp_screen.dart';
+import 'short_followup_chcp_screen.dart';
 import 'full_assessment_chcp_screen.dart';
 
 class NewFollowupChcpScreen extends StatefulWidget {

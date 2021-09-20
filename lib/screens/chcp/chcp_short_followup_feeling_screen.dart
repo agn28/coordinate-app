@@ -17,7 +17,7 @@ import 'package:nhealth/screens/patients/ncd/followup_visit_screen.dart';
 import 'package:nhealth/screens/patients/ncd/search/unwell_followup_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 
-import 'followup_visit_chcp_screen.dart';
+import 'short_followup_chcp_screen.dart';
 import 'full_assessment_chcp_screen.dart';
 import 'unwell_chcp_screen.dart';
 import 'unwell_full_assessment_chcp_screen.dart';

@@ -34,7 +34,7 @@ import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import '../../../custom-classes/custom_stepper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../followup_visit_chcp_screen.dart';
+import '../short_followup_chcp_screen.dart';
 import '../patient_summery_chcp_screen.dart';
 
 final _temperatureController = TextEditingController();

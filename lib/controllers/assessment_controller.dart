@@ -1251,7 +1251,7 @@ class AssessmentController {
     var data = [];
     var patientId = Patient().getPatient()['id'];
     var localResponse = await AssessmentRepositoryLocal().getAssessmentsByPatientWithLocalStatus(patientId, localStatus);
-    print('localResponse');
+    print('localResponse $localResponse');
     print(localResponse);
     if (isNotNull(localResponse)) {
       localResponse.forEach((assessment) {

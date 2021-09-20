@@ -34,7 +34,7 @@ import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'followup_visit_chcp_screen.dart';
+import 'short_followup_chcp_screen.dart';
 import 'patient_summery_chcp_screen.dart';
 
 final GlobalKey<FormState> _patientFormKey = new GlobalKey<FormState>();
