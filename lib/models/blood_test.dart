@@ -25,9 +25,9 @@ class BloodTest {
       _btItems = [];
     }
 
-    if (name == 'blood_glucose' || name == 'blood_sugar') {
+    if (name == 'blood_glucose') {
       _items.add({
-        'name': name,
+        'name': 'blood_sugar',
         'unit': unit,
         'value': double.parse(value.toString()),
         'comment': comment,
