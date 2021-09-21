@@ -23,7 +23,8 @@ import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
-import 'patient_summery_chcp_screen.dart';
+import 'followup_patient_chcp_summary_screen.dart';
+
 
 // var medicalHistoryQuestions = {};
 // var medicalHistoryAnswers = [];
@@ -53,6 +54,9 @@ var clinicNameController = TextEditingController();
 var _patient;
 
 var clinicTypes = [];
+
+bool refer = false;
+bool _isNextButtonDisabled = true;
 
 getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
@@ -112,6 +116,8 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
     }	
     getIncompleteAssessmentLocal();	
     _getAuthData();
+
+    _isNextButtonDisabled = false;
 
     print(Language().getLanguage());
     nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
@@ -733,6 +739,13 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
     BloodTest().addBtItem();
   }
 
+  void _incrementStepCounter() {
+    setState(() {
+      _isNextButtonDisabled = true;
+      _currentStep++;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -841,39 +854,53 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
               Expanded(
                   child: _currentStep < _mySteps().length || nextHide
                       ? FlatButton(
-                          onPressed: () async {
+                          onPressed: _isNextButtonDisabled ? null : () async {
                             // setState(() {
                               print(_currentStep);
 
-                              if (_currentStep == 3) {
+                              if (_currentStep == 3 && !_isNextButtonDisabled) {
+                                print('hlw 1');
+                                _currentStep = _currentStep + 1;
                                 _completeRefer();
                                 return;
                               }
-                              if (_currentStep == 2) {
+                              if (_currentStep == 2 && !_isNextButtonDisabled) {
                                 nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                                 print('hello');
+                                _incrementStepCounter();
                                 createObservations();
+                                await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'short');
                                 _completeStep();
-                                await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                setState(() {
+                                  _isNextButtonDisabled = false;
+                                });
                               }
-                              if(_currentStep == 1){
+                              if(_currentStep == 1 && !_isNextButtonDisabled){
+                                _incrementStepCounter();
                                 createObservations();
                                 await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                setState(() {
+                                    _isNextButtonDisabled = false;
+                                  });
                               }
-                              if (_currentStep == 0) {
+                              if (_currentStep == 0 && !_isNextButtonDisabled) {
                                 if(dynamicMedicationTitles.isNotEmpty) {
+                                  _incrementStepCounter();
                                   Questionnaire().addNewDynamicMedicationNcd('dynamic_medication', dynamicMedicationTitles, dynamicMedicationAnswers);
                                   await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                  setState(() {
+                                    _isNextButtonDisabled = false;
+                                  });
                                 }
                                 // print(Questionnaire().qnItems);
                                 // nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                               }
-                              if (_currentStep < 4) {
-                                // If the form is valid, display a Snackbar.
-                                setState(() {
-                                  _currentStep = _currentStep + 1;
-                                });
-                              }
+                              // if (_currentStep < 4) {
+                              //   // If the form is valid, display a Snackbar.
+                              //   setState(() {
+                              //     _currentStep = _currentStep + 1;
+                              //   });
+                              // }
                             // });
                           },
                           materialTapTargetSize:
@@ -938,81 +965,15 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
   }
 
   Future _completeRefer() async{
+    var referralData = referral;
     
-    var referralData = referral;	
-    referralData['body']['reason'] = selectedReason;	
-    referralData['body']['location']['clinic_type'] = selectedtype;	
-    referralData['body']['location']['clinic_name'] = clinicNameController.text;	
-    print('referralData: $referralData');
-    // data['body']['reason'] = selectedReason;
-    // data['body']['type'] = referralType;
-    // data['body']['location'] = {};
-    // data['body']['location']['clinic_type'] = selectedtype;
-    // data['body']['location']['clinic_name'] = clinicNameController.text;
-
-  
-
-    // setState(() {
-    //   isLoading = true;
-    // });
-    // var response =
-    //     await ReferralController()
-    //         .create(context, data);
-    // setState(() {
-    //   isLoading = false;
-    // });
-    // print('response');
-    // print(response.runtimeType);
-
-    // return;
-
-    // if (response.runtimeType != int &&
-    //     response != null &&
-    //     response['error'] == true &&
-    //     response['message'] ==
-    //         'referral exists') {
-    //   await showDialog(
-    //     context: context,
-    //     builder: (BuildContext context) {
-    //       // return object of type Dialog
-    //       return AlertDialog(
-    //         content: new Text(
-    //           AppLocalizations.of(context)
-    //               .translate(
-    //                   "referralAlreadyExists"),
-    //           style:
-    //               TextStyle(fontSize: 20),
-    //         ),
-    //         actions: <Widget>[
-    //           // usually buttons at the bottom of the dialog
-    //           new FlatButton(
-    //             child: new Text(
-    //                 AppLocalizations.of(
-    //                         context)
-    //                     .translate(
-    //                         "referralUpdate"),
-    //                 style: TextStyle(
-    //                     color:
-    //                         kPrimaryColor)),
-    //             onPressed: () {
-    //               Navigator.of(context)
-    //                   .pop();
-    //               Navigator.of(context)
-    //                   .pushNamed(
-    //                 '/referralList',
-    //               );
-    //             },
-    //           ),
-    //         ],
-    //       );
-    //     },
-    //   );
-    // } else {
-    //   Navigator.of(context).pushNamed(
-    //     '/chwHome',
-    //   );
-    // }
-
+    if(isNotNull(referralData['body'])) {
+      referralData['body']['reason'] = selectedReason;
+      referralData['body']['location']['clinic_type'] = selectedtype;
+      referralData['body']['location']['clinic_name'] = clinicNameController.text;
+      print('referralData: $referralData');
+    }
+    
     await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1028,11 +989,9 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
               child: new Text(AppLocalizations.of(context).translate("yes"),
                   style: TextStyle(color: kPrimaryColor)),
               onPressed: () async {
-                await AssessmentController().createReferralByAssessmentLocal('community clinic followup', referralData);
-                // Navigator.of(context).pop(false);
+                isNotNull(referralData['body']) && refer ? await AssessmentController().createReferralByAssessmentLocal('community clinic followup', referralData) : '';
                 _patient['data']['chcp_encounter_status'] = encounterData['dataStatus'];
-                // Navigator.of(context).pop(false);
-                Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
+                Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': encounterData ,});
               },
             ),
             FlatButton(
@@ -1046,6 +1005,7 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
           ],
         );
     });
+    print('hlw 4');
 
   }
 
@@ -3140,7 +3100,7 @@ getDropdownOptionText(context, list, value) {
 }
 
 class _CreateReferState extends State<CreateRefer> {
-  bool refer = false;
+
   var role = '';
   var referralReasonOptions = {
   'options': ['Urgent medical attempt required', 'NCD screening required'],

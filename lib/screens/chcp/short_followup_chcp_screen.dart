@@ -29,6 +29,7 @@ import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'followup_patient_chcp_summary_screen.dart';
 import 'patient_summery_chcp_screen.dart';
 
 final _temperatureController = TextEditingController();
@@ -73,6 +74,7 @@ var selectedtype;
 var clinicNameController = TextEditingController();
 
 bool refer = false;
+bool _isNextButtonDisabled = true;
 
 getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
@@ -125,6 +127,8 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
     prepareAnswers();
     getMedications();
     getMedicationsDispense();
+
+    _isNextButtonDisabled = false;
 
     getLanguage();
   }
@@ -601,6 +605,13 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
     BloodTest().addBtItem();
 }
 
+  void _incrementStepCounter() {
+    setState(() {
+      _isNextButtonDisabled = true;
+      _currentStep++;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -708,39 +719,52 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
               Expanded(
                   child: _currentStep < _mySteps().length || nextHide
                       ? FlatButton(
-                          onPressed: () async {
+                          onPressed: _isNextButtonDisabled ? null : () async {
                             
-                              print(_currentStep);
+                              print('_currentStep $_currentStep');
 
-                              if (_currentStep == 3) {
+                              if (_currentStep == 3 && !_isNextButtonDisabled) {
+                                _currentStep = _currentStep + 1;
                                 _completeRefer();
                                 return;
                               }
-                              if (_currentStep == 2) {
+                              if (_currentStep == 2 && !_isNextButtonDisabled) {
                                 nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                                 print('hello');
                                 createObservations();
                                 _completeStep();
+                                _incrementStepCounter();
                                 await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                setState(() {
+                                  _isNextButtonDisabled = false;
+                                });
                               }
-                              if (_currentStep == 1) {
+                              if (_currentStep == 1 && !_isNextButtonDisabled) {
+                                _incrementStepCounter();
                                 createObservations();
                                 await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                setState(() {
+                                  _isNextButtonDisabled = false;
+                                });
                               }
-                              if (_currentStep == 0) {
+                              if (_currentStep == 0 && !_isNextButtonDisabled) {
                                 if(dynamicMedicationTitles.isNotEmpty) {
+                                  _incrementStepCounter();
                                   Questionnaire().addNewDynamicMedicationNcd('dynamic_medication', dynamicMedicationTitles, dynamicMedicationAnswers);
                                   await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                  setState(() {
+                                    _isNextButtonDisabled = false;
+                                  });
                                 }
                                 // print(Questionnaire().qnItems);
                                 // nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                               }
-                              if (_currentStep < 4) {
-                                // If the form is valid, display a Snackbar.
-                                setState(() {
-                                  _currentStep = _currentStep + 1;
-                                });
-                              }
+                              // if (_currentStep < 4) {
+                              //   // If the form is valid, display a Snackbar.
+                              //   setState(() {
+                              //     _currentStep = _currentStep + 1;
+                              //   });
+                              // }
                            
                           },
                           materialTapTargetSize:
@@ -861,7 +885,7 @@ var role = '';
               onPressed: () async {
                 // Navigator.of(context).pop(false);
                 isNotNull(referralData['body']) && refer ? await AssessmentController().createReferralByAssessmentLocal('community clinic followup', referralData) : '';
-                Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
+                Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': encounterData ,});
               },
             ),
             FlatButton(

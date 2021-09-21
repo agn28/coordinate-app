@@ -1650,7 +1650,7 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                         print(widget.encounterData['followupType']);
                                         // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
                                         if(status == 'complete') {
-                                          var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic assessment', assessmentStatus: status,);
+                                          var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic followup', assessmentStatus: status,);
                                         }
                                       }
                                       status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
@@ -1687,6 +1687,7 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                 ) 
                                 : Container(),
 
+                                // SizedBox(height: 20,),
                                 // Container(
                                 //   width: double.infinity,
                                 //     //margin: EdgeInsets.only(left: 15, right: 15),

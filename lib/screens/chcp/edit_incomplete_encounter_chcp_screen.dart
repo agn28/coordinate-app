@@ -100,6 +100,7 @@ var _patient;
 
 bool refer = false;
 bool _isNextButtonDisabled = true;
+bool _isContinueButtonDisabled = true;
 
 getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
@@ -151,6 +152,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
     hasChwEncounter = false;
     hasIncompleteChcpEncounter = false;
     _isNextButtonDisabled = false;
+    _isContinueButtonDisabled = true;
 
     print(Language().getLanguage());
     nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
@@ -875,10 +877,51 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
     scrollController.jumpTo(startPosition);
   }
   void _incrementStepCounter() {
+    print('heree');
     setState(() {
       _isNextButtonDisabled = true;
       _currentStep++;
     });
+  }
+
+  void missingDataDialog() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          content: new Text(AppLocalizations.of(context).translate("missingData"), style: TextStyle(fontSize: 20),),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            FlatButton(
+              child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(color: kPrimaryColor)),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            FlatButton(
+              child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
+              onPressed: _isContinueButtonDisabled ? null : () async {
+                // Navigator.of(context).pop(true);
+                setState(() {
+                  _isContinueButtonDisabled = true;
+                });
+                // _incrementStepCounter();
+                print('_isContinueButtonDisabled = $_isContinueButtonDisabled');
+                createObservations();
+                await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                setState(() {
+                  _isNextButtonDisabled = false;
+                  _currentStep++;
+
+                });
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      }
+    );
   }
 
   @override
@@ -983,9 +1026,14 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                   // setState(() {
                     print('_currentStep $_currentStep');
                     if (_currentStep == 0 && !_isNextButtonDisabled) {
+                    print('_currentStep0 $_currentStep');
                       Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
                       print(Questionnaire().qnItems);
-                      _incrementStepCounter();
+                      // _incrementStepCounter();
+                      setState(() {
+                        _isNextButtonDisabled = true;
+                      });
+                 
                       await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
                       setState(() {
                         _isNextButtonDisabled = false;
@@ -995,7 +1043,11 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                     if (_currentStep == 1 && !_isNextButtonDisabled) {
                       Questionnaire().addNewMedicationNcd('medication', medicationAnswers);
                       print(Questionnaire().qnItems);
-                      _incrementStepCounter();
+                      // _incrementStepCounter();
+                      setState(() {
+                        _isNextButtonDisabled = true;
+                      });
+               
                       await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
                       setState(() {
                         _isNextButtonDisabled = false;
@@ -1005,7 +1057,11 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                     if (_currentStep == 2 && !_isNextButtonDisabled) {
                       Questionnaire().addNewRiskFactorsNcd('risk_factors', riskAnswers);
                       print(Questionnaire().qnItems);
-                      _incrementStepCounter();
+                      // _incrementStepCounter();
+                      setState(() {
+                        _isNextButtonDisabled = true;
+                      });
+                                    
                       await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
                       setState(() {
                         _isNextButtonDisabled = false;
@@ -1021,37 +1077,12 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                         waistEditingController.text == ''||
                         hipEditingController.text == '') 
                       {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            // return object of type Dialog
-                            return AlertDialog(
-                              content: new Text(AppLocalizations.of(context).translate("missingData"), style: TextStyle(fontSize: 20),),
-                              actions: <Widget>[
-                                // usually buttons at the bottom of the dialog
-                                FlatButton(
-                                  child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(color: kPrimaryColor)),
-                                  onPressed: () {
-                                    Navigator.of(context).pop(false);
-                                  },
-                                ),
-                                FlatButton(
-                                  child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
-                                  onPressed: () async {
-                                    // Navigator.of(context).pop(true);
-                                    _incrementStepCounter();
-                                    createObservations();
-                                    await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
-                                    setState(() {
-                                      _isNextButtonDisabled = false;
-                                    });
-                                    Navigator.of(context).pop(true);
-                                  },
-                                ),
-                              ],
-                            );
-                          }
-                        );
+                        setState(() {
+                          _isContinueButtonDisabled = false;
+                        });
+                        await missingDataDialog();
+                        print('_isContinueButtonDisabled $_isContinueButtonDisabled');
+                        
                       } else {
                         _incrementStepCounter();
                         createObservations();
@@ -1127,36 +1158,15 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                         ketonesController.text == '' ||
                         proteinController.text == '')
                       {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            // return object of type Dialog
-                            return AlertDialog(
-                              content: new Text(AppLocalizations.of(context).translate("missingData"), style: TextStyle(fontSize: 20),),
-                              actions: <Widget>[
-                                // usually buttons at the bottom of the dialog
-                                FlatButton(
-                                  child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(color: kPrimaryColor)),
-                                  onPressed: () {
-                                    Navigator.of(context).pop(false);
-                                  },
-                                ),
-                                FlatButton(
-                                  child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
-                                  onPressed: () async {
-                                    _incrementStepCounter();
-                                    createObservations();
-                                    await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
-                                    setState(() {
-                                      _isNextButtonDisabled = false;
-                                    });
-                                    Navigator.of(context).pop(true);
-                                  },
-                                ),
-                              ],
-                            );
-                          }
-                        );
+                        setState(() {
+                          _isContinueButtonDisabled = false;
+                        });
+                        await missingDataDialog();
+                        setState(() {
+                          !_isContinueButtonDisabled
+                           ? null 
+                           : _currentStep++;
+                        });
                       } else {
                         _incrementStepCounter();
                         createObservations();
@@ -1166,6 +1176,11 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                         });
                       }
 
+                    }
+                    if (_currentStep < 3) {
+                      setState(() {
+                        _currentStep = _currentStep + 1;
+                      });
                     }
                   // });
                 },
