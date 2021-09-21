@@ -74,7 +74,7 @@ var selectedtype;
 var clinicNameController = TextEditingController();
 
 bool refer = false;
-bool _isNextButtonDisabled = true;
+bool _isNextButtonDisabled = false;
 
 getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
@@ -608,7 +608,7 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
   void _incrementStepCounter() {
     setState(() {
       _isNextButtonDisabled = true;
-      _currentStep++;
+      _currentStep = _currentStep + 1;
     });
   }
 
@@ -731,10 +731,10 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
                               if (_currentStep == 2 && !_isNextButtonDisabled) {
                                 nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                                 print('hello');
-                                createObservations();
-                                _completeStep();
                                 _incrementStepCounter();
+                                createObservations();
                                 await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                _completeStep();
                                 setState(() {
                                   _isNextButtonDisabled = false;
                                 });
@@ -748,14 +748,14 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
                                 });
                               }
                               if (_currentStep == 0 && !_isNextButtonDisabled) {
+                                _incrementStepCounter();
                                 if(dynamicMedicationTitles.isNotEmpty) {
-                                  _incrementStepCounter();
                                   Questionnaire().addNewDynamicMedicationNcd('dynamic_medication', dynamicMedicationTitles, dynamicMedicationAnswers);
                                   await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'short');
-                                  setState(() {
-                                    _isNextButtonDisabled = false;
-                                  });
                                 }
+                                setState(() {
+                                  _isNextButtonDisabled = false;
+                                });
                                 // print(Questionnaire().qnItems);
                                 // nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                               }

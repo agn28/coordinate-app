@@ -56,7 +56,7 @@ var _patient;
 var clinicTypes = [];
 
 bool refer = false;
-bool _isNextButtonDisabled = true;
+bool _isNextButtonDisabled = false;
 
 getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
@@ -742,7 +742,7 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
   void _incrementStepCounter() {
     setState(() {
       _isNextButtonDisabled = true;
-      _currentStep++;
+      _currentStep = _currentStep + 1;
     });
   }
 
@@ -859,7 +859,6 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
                               print(_currentStep);
 
                               if (_currentStep == 3 && !_isNextButtonDisabled) {
-                                print('hlw 1');
                                 _currentStep = _currentStep + 1;
                                 _completeRefer();
                                 return;
@@ -884,14 +883,14 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
                                   });
                               }
                               if (_currentStep == 0 && !_isNextButtonDisabled) {
+                                _incrementStepCounter();
                                 if(dynamicMedicationTitles.isNotEmpty) {
-                                  _incrementStepCounter();
                                   Questionnaire().addNewDynamicMedicationNcd('dynamic_medication', dynamicMedicationTitles, dynamicMedicationAnswers);
                                   await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'short');
-                                  setState(() {
-                                    _isNextButtonDisabled = false;
-                                  });
                                 }
+                                setState(() {
+                                  _isNextButtonDisabled = false;
+                                });
                                 // print(Questionnaire().qnItems);
                                 // nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                               }

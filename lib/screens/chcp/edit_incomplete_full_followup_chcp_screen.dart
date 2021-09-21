@@ -1079,6 +1079,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                 setState(() {
                                   _isNextButtonDisabled = false;
                                 });
+                                return;
                               }
                               if (_currentStep == 6 && !_isNextButtonDisabled) {
                                 jumpToEnd();
