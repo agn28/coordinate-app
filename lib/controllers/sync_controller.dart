@@ -1076,7 +1076,7 @@ class SyncController extends GetxController {
   }
 
   syncLivePatientsToLocal() async {
-    print('syncLivePatientsToLocal');
+    print('syncLivePatientsToLocal ${isPoorNetwork.value}');
     if (syncs.value.isEmpty) {
       return;
     }
@@ -1322,11 +1322,16 @@ class SyncController extends GetxController {
     print('local key response');
 
     var key = '';
+    var created_at = '';
     if (isNotNull(response) && response.isNotEmpty) {
       key = response[0]['key'];
+      created_at = response[0]['created_at'];
     }
 
-    await getLatestSyncInfo(key);
+    var apiResponse = await getLatestSyncInfo(key);
+    if (key != '' && isNotNull(apiResponse) && isNotNull(apiResponse['message']) && apiResponse['message'] == 'No sync found') {
+      await getLatestSyncInfo(key, createdAt:created_at);
+    }
   }
 
   getLocalAssessments() async {
@@ -1376,10 +1381,12 @@ class SyncController extends GetxController {
     print(response);
   }
 
-  getLatestSyncInfo(key) async {
+  getLatestSyncInfo(key, {createdAt:''}) async {
     var data = {};
 
-    if (key != '') {
+    if(createdAt != '') {
+      data['created_at'] = createdAt;
+    } else if (key != '') {
       data['key'] = key;
     }
 
@@ -1401,8 +1408,7 @@ class SyncController extends GetxController {
       // retryForStableNetwork();
       return;
     }
-    print('getLatestSyncInfo');
-    print(response);
+    print('getLatestSyncInfo $response');
     if (isNotNull(response) && isNotNull(response['error']) && !response['error']) {
       syncs.value = response['data'];
       print('syncs');
@@ -1416,6 +1422,7 @@ class SyncController extends GetxController {
       return;
     }
     print('syncs.length ${syncs.length}');
+    return response;
   }
 
   updateLocalSyncKey(key) async {
