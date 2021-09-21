@@ -57,7 +57,7 @@ bool hasChwEncounter = false;
 bool hasIncompleteChcpEncounter = false;
 
 bool refer = false;
-bool _isNextButtonDisabled = true;
+bool _isNextButtonDisabled = false;
 
 getName(context, item) {
   var locale = Localizations.localeOf(context);
@@ -282,7 +282,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
     if (centerData['error'] != null && !centerData['error']) {
       clinicTypes = centerData['data'];
       for(var center in clinicTypes) {
-        if(isNotNull(referral['body']['location']['clinic_type']) && center['id'] == referral['body']['location']['clinic_type']['id']) {
+        if(isNotNull(referral['body']) && isNotNull(referral['body']['location']) && isNotNull(referral['body']['location']['clinic_type']) && center['id'] == referral['body']['location']['clinic_type']['id']) {
           print('selectedCenter $center');
           setState(() {
             selectedtype = center;
@@ -529,86 +529,74 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
             creatinineController.text = '${obsData['value']}';
             selectedCreatinineUnit = obsData['unit'];
             print(creatinineText);
-          }
-          if (obsData['name'] == 'a1c' && obsData['value'] != '') {
+          } else if (obsData['name'] == 'a1c' && obsData['value'] != '') {
             print('into a1c');
             var hba1cText = obsData['value'];
             hba1cController.text = '${obsData['value']}';
             selectedHba1cUnit = obsData['unit'];
             print(hba1cText);
-          }
-          if (obsData['name'] == 'total_cholesterol' &&
+          } else if (obsData['name'] == 'total_cholesterol' &&
               obsData['value'] != '') {
             print('into total_cholesterol');
             var totalCholesterolText = obsData['value'];
             cholesterolController.text = '${obsData['value']}';
             selectedCholesterolUnit = obsData['unit'];
             print(totalCholesterolText);
-          }
-          if (obsData['name'] == 'potassium' && obsData['value'] != '') {
+          } else if (obsData['name'] == 'potassium' && obsData['value'] != '') {
             print('into potassium');
             var potassiumText = obsData['value'];
             potassiumController.text = '${obsData['value']}';
             selectedPotassiumUnit = obsData['unit'];
             print(potassiumText);
-          }
-          if (obsData['name'] == 'ldl' && obsData['value'] != '') {
+          } else if (obsData['name'] == 'ldl' && obsData['value'] != '') {
             print('into ldl');
             var ldlText = obsData['value'];
             ldlController.text = '${obsData['value']}';
             selectedLdlUnit = obsData['unit'];
             print(ldlText);
-          }
-          if (obsData['name'] == 'blood_sugar' && obsData['value'] != '') {
+          } else if (obsData['name'] == 'blood_sugar' && obsData['value'] != '') {
             print('into blood_sugar');
             var bloodSugarText = obsData['value'];
             randomBloodController.text = '${obsData['value']}';
             selectedRandomBloodUnit = obsData['unit'];
             print(bloodSugarText);
-          }
-          if (obsData['name'] == 'hdl' && obsData['value'] != '') {
-            print('into hdl');
-            var hdlText = obsData['value'];
-            hdlController.text = '${obsData['value']}';
-            selectedHdlUnit = obsData['unit'];
-            print(hdlText);
-          }
-          if (obsData['name'] == 'ketones' && obsData['value'] != '') {
-            print('into ketones');
-            var ketonesText = obsData['value'];
-            ketonesController.text = '${obsData['value']}';
-            selectedKetonesUnit = obsData['unit'];
-            print(ketonesText);
-          }
-          if (obsData['name'] == 'protein' && obsData['value'] != '') {
-            print('into protein');
-            var proteinText = obsData['value'];
-            proteinController.text = '${obsData['value']}';
-            selectedProteinUnit = obsData['unit'];
-            print(proteinText);
-          }
-          if (obsData['name'] == 'sodium' && obsData['value'] != '') {
-            print('into sodium');
-            var sodiumText = obsData['value'];
-            sodiumController.text = '${obsData['value']}';
-            selectedSodiumUnit = obsData['unit'];
-            print(sodiumText);
-          }
-          if (obsData['name'] == 'blood_glucose' && obsData['value'] != '') {
+          } else if ((obsData['name'] == 'blood_glucose' || obsData['name'] == 'blood_sugar') && (obsData['type'] != null && obsData['type'] == 'fasting') && obsData['value'] != '') {
             print('into blood_glucose');
             var bloodGlucoseText = obsData['value'];
             fastingBloodController.text = '${obsData['value']}';
             selectedFastingBloodUnit = obsData['unit'];
             print(bloodGlucoseText);
-          }
-          if (obsData['name'] == 'triglycerides' && obsData['value'] != '') {
+          } else if (obsData['name'] == 'hdl' && obsData['value'] != '') {
+            print('into hdl');
+            var hdlText = obsData['value'];
+            hdlController.text = '${obsData['value']}';
+            selectedHdlUnit = obsData['unit'];
+            print(hdlText);
+          } else if (obsData['name'] == 'ketones' && obsData['value'] != '') {
+            print('into ketones');
+            var ketonesText = obsData['value'];
+            ketonesController.text = '${obsData['value']}';
+            selectedKetonesUnit = obsData['unit'];
+            print(ketonesText);
+          } else if (obsData['name'] == 'protein' && obsData['value'] != '') {
+            print('into protein');
+            var proteinText = obsData['value'];
+            proteinController.text = '${obsData['value']}';
+            selectedProteinUnit = obsData['unit'];
+            print(proteinText);
+          } else if (obsData['name'] == 'sodium' && obsData['value'] != '') {
+            print('into sodium');
+            var sodiumText = obsData['value'];
+            sodiumController.text = '${obsData['value']}';
+            selectedSodiumUnit = obsData['unit'];
+            print(sodiumText);
+          } else if (obsData['name'] == 'triglycerides' && obsData['value'] != '') {
             print('into triglycerides');
             var triglyceridesText = obsData['value'];
             tgController.text = '${obsData['value']}';
             selectedTgUnit = obsData['unit'];
             print(triglyceridesText);
-          }
-          if (obsData['name'] == '2habf' && obsData['value'] != '') {
+          } else if (obsData['name'] == '2habf' && obsData['value'] != '') {
             print('into 2habf');
             var habfText = obsData['value'];
             habfController.text = '${obsData['value']}';
@@ -848,7 +836,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
   void _incrementStepCounter() {
     setState(() {
       _isNextButtonDisabled = true;
-      _currentStep++;
+      _currentStep = _currentStep + 1;
     });
   }
 
@@ -1018,38 +1006,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                   waistEditingController.text == ''||
                                   hipEditingController.text == '') 
                                 {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      // return object of type Dialog
-                                      return AlertDialog(
-                                        content: new Text(AppLocalizations.of(context).translate("missingData"), style: TextStyle(fontSize: 20),),
-                                        actions: <Widget>[
-                                          // usually buttons at the bottom of the dialog
-                                          FlatButton(
-                                            child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(color: kPrimaryColor)),
-                                            onPressed: () {
-                                              Navigator.of(context).pop(false);
-                                            },
-                                          ),
-                                          FlatButton(
-                                            child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
-                                            onPressed: () async {
-                                              // Navigator.of(context).pop(true);
-                                              _incrementStepCounter();
-                                              createObservations();
-                                              await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
-                                              setState(() {
-                                                _isNextButtonDisabled = false;
-                                              });
-                                              print('_currentStep $_currentStep');
-                                              Navigator.of(context).pop(true);
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    }
-                                  );
+                                  await missingDataDialog();
                                 } else {
                                   _incrementStepCounter();
                                   createObservations();
@@ -1066,7 +1023,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
 
                               if (_currentStep == 8 && !_isNextButtonDisabled) {
                                 setState(() {
-                                  _currentStep++;
+                                  _currentStep = _currentStep + 1;
                                   nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                                 });
                                 _completeStep();
@@ -1083,7 +1040,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                               }
                               if (_currentStep == 6 && !_isNextButtonDisabled) {
                                 jumpToEnd();
-                                _currentStep++;
+                                _currentStep = _currentStep + 1;
                                 return;
                               }
                               if (_currentStep == 5 && !_isNextButtonDisabled) {
@@ -1122,39 +1079,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                   ketonesController.text == '' ||
                                   proteinController.text == '')
                                 {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      // return object of type Dialog
-                                      return AlertDialog(
-                                        content: new Text(AppLocalizations.of(context).translate("missingData"), style: TextStyle(fontSize: 20),),
-                                        actions: <Widget>[
-                                          // usually buttons at the bottom of the dialog
-                                          FlatButton(
-                                            child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(color: kPrimaryColor)),
-                                            onPressed: () {
-                                              Navigator.of(context).pop(false);
-                                            },
-                                          ),
-                                          FlatButton(
-                                            child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
-                                            onPressed: () async {
-                                              // Navigator.of(context).pop(true);
-                                              _incrementStepCounter();
-                                              createObservations();
-                                              await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
-                                              // nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
-                                              setState(() {
-                                                _isNextButtonDisabled = false;
-                                              });
-                                              print('_currentStep $_currentStep');
-                                              Navigator.of(context).pop(true);
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    }
-                                  );
+                                  await missingDataDialog();
                                 } else {
                                   _incrementStepCounter();
                                   createObservations();
@@ -1186,6 +1111,42 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
             ],
           )),
     );
+  }
+
+  missingDataDialog() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          content: new Text(AppLocalizations.of(context).translate("missingData"), style: TextStyle(fontSize: 20),),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            FlatButton(
+              child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(color: kPrimaryColor)),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            FlatButton(
+              child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
+              onPressed: () async {
+                // Navigator.of(context).pop(true);
+                _incrementStepCounter();
+                createObservations();
+                await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                setState(() {
+                  _isNextButtonDisabled = false;
+                });
+                print('_currentStep $_currentStep');
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      }
+    );
+
   }
 
   missingDataAlert() async {

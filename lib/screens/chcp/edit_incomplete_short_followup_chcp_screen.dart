@@ -285,7 +285,7 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
     if (centerData['error'] != null && !centerData['error']) {
       clinicTypes = centerData['data'];
       for(var center in clinicTypes) {
-        if(isNotNull(referral['body']['location']['clinic_type']) && center['id'] == referral['body']['location']['clinic_type']['id']) {
+         if(isNotNull(referral['body']) && isNotNull(referral['body']['location']) && isNotNull(referral['body']['location']['clinic_type']) && center['id'] == referral['body']['location']['clinic_type']['id']) {
           print('selectedCenter $center');
           setState(() {
             selectedtype = center;
@@ -426,7 +426,7 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
             selectedLdlUnit = obsData['unit'];
             print(ldlText);
           }
-          if (obsData['name'] == 'blood_sugar' && obsData['value'] != '') {
+          if (obsData['name'] == 'blood_sugar' && obsData['type'] == null && obsData['value'] != '') {
             print('into blood_sugar');
             var bloodSugarText = obsData['value'];
             randomBloodController.text = '${obsData['value']}';
@@ -461,7 +461,7 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
             selectedSodiumUnit = obsData['unit'];
             print(sodiumText);
           }
-          if (obsData['name'] == 'blood_glucose' && obsData['value'] != '') {
+          if ((obsData['name'] == 'blood_glucose' || obsData['name'] == 'blood_sugar') && (obsData['type'] != null && obsData['type'] == 'fasting') && obsData['value'] != '') {
             print('into blood_glucose');
             var bloodGlucoseText = obsData['value'];
             fastingBloodController.text = '${obsData['value']}';
