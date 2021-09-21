@@ -1156,7 +1156,7 @@ class AssessmentController {
         'observations': apiDataObservations
       };
       print('apiData $apiData');
-      if(localNotSyncedAssessment.first['body']['type'] != 'new questionnaire') {
+      if(localNotSyncedAssessment.first['body']['type'] != 'new questionnaire' && localNotSyncedReferral['meta'] != null) {
         var response = await storeAssessmentWithObservationsLive(localNotSyncedAssessment.first, apiDataObservations, apiData, referralData: localNotSyncedReferral);
       } else {
         var response = await storeAssessmentWithObservationsLive(localNotSyncedAssessment.first, apiDataObservations, apiData);
