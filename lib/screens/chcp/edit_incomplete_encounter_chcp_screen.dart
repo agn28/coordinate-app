@@ -99,8 +99,8 @@ var clinicTypes = [];
 var _patient;
 
 bool refer = false;
-bool _isNextButtonDisabled = true;
-bool _isContinueButtonDisabled = true;
+bool _isNextButtonDisabled = false;
+bool _isContinueButtonDisabled = false;
 
 getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
@@ -152,7 +152,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
     hasChwEncounter = false;
     hasIncompleteChcpEncounter = false;
     _isNextButtonDisabled = false;
-    _isContinueButtonDisabled = true;
+    _isContinueButtonDisabled = false;
 
     print(Language().getLanguage());
     nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
@@ -283,7 +283,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
     if (centerData['error'] != null && !centerData['error']) {
       clinicTypes = centerData['data'];
       for(var center in clinicTypes) {
-        if(isNotNull(referral['body']['location']['clinic_type']) && center['id'] == referral['body']['location']['clinic_type']['id']) {
+        if(isNotNull(referral['body']) && isNotNull(referral['body']['location']) && isNotNull(referral['body']['location']['clinic_type']) && center['id'] == referral['body']['location']['clinic_type']['id']) {
           print('selectedCenter $center');
           setState(() {
             selectedtype = center;
@@ -491,85 +491,73 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
             creatinineController.text = '${obsData['value']}';
             selectedCreatinineUnit = obsData['unit'];
             print(creatinineText);
-          }
-          if (obsData['name'] == 'a1c' && obsData['value'] != '') {
+          } else if (obsData['name'] == 'a1c' && obsData['value'] != '') {
             print('into a1c');
             var hba1cText = obsData['value'];
             hba1cController.text = '${obsData['value']}';
             selectedHba1cUnit = obsData['unit'];
             print(hba1cText);
-          }
-          if (obsData['name'] == 'total_cholesterol' && obsData['value'] != '') {
+          } else if (obsData['name'] == 'total_cholesterol' && obsData['value'] != '') {
             print('into total_cholesterol');
             var totalCholesterolText = obsData['value'];
             cholesterolController.text = '${obsData['value']}';
             selectedCholesterolUnit = obsData['unit'];
             print(totalCholesterolText);
-          }
-          if (obsData['name'] == 'potassium' && obsData['value'] != '') {
+          } else if (obsData['name'] == 'potassium' && obsData['value'] != '') {
             print('into potassium');
             var potassiumText = obsData['value'];
             potassiumController.text = '${obsData['value']}';
             selectedPotassiumUnit = obsData['unit'];
             print(potassiumText);
-          }
-          if (obsData['name'] == 'ldl' && obsData['value'] != '') {
+          } else if (obsData['name'] == 'ldl' && obsData['value'] != '') {
             print('into ldl');
             var ldlText = obsData['value'];
             ldlController.text = '${obsData['value']}';
             selectedLdlUnit = obsData['unit'];
             print(ldlText);
-          }
-          if (obsData['name'] == 'blood_sugar' && obsData['value'] != '') {
+          } else if (obsData['name'] == 'blood_sugar' && obsData['type'] == null && obsData['value'] != '') {
             print('into blood_sugar');
             var bloodSugarText = obsData['value'];
             randomBloodController.text = '${obsData['value']}';
             selectedRandomBloodUnit = obsData['unit'];
             print(bloodSugarText);
-          }
-          if (obsData['name'] == 'hdl' && obsData['value'] != '') {
-            print('into hdl');
-            var hdlText = obsData['value'];
-            hdlController.text = '${obsData['value']}';
-            selectedHdlUnit = obsData['unit'];
-            print(hdlText);
-          }
-          if (obsData['name'] == 'ketones' && obsData['value'] != '') {
-            print('into ketones');
-            var ketonesText = obsData['value'];
-            ketonesController.text = '${obsData['value']}';
-            selectedKetonesUnit = obsData['unit'];
-            print(ketonesText);
-          }
-          if (obsData['name'] == 'protein' && obsData['value'] != '') {
-            print('into protein');
-            var proteinText = obsData['value'];
-            proteinController.text = '${obsData['value']}';
-            selectedProteinUnit = obsData['unit'];
-            print(proteinText);
-          }
-          if (obsData['name'] == 'sodium' && obsData['value'] != '') {
-            print('into sodium');
-            var sodiumText = obsData['value'];
-            sodiumController.text = '${obsData['value']}';
-            selectedSodiumUnit = obsData['unit'];
-            print(sodiumText);
-          }
-          if (obsData['name'] == 'blood_glucose' && obsData['value'] != '') {
+          } else if ((obsData['name'] == 'blood_glucose' || obsData['name'] == 'blood_sugar') && (obsData['type'] != null && obsData['type'] == 'fasting') && obsData['value'] != '') {
             print('into blood_glucose');
             var bloodGlucoseText = obsData['value'];
             fastingBloodController.text = '${obsData['value']}';
             selectedFastingBloodUnit = obsData['unit'];
             print(bloodGlucoseText);
-          }
-          if (obsData['name'] == 'triglycerides' && obsData['value'] != '') {
+          } else if (obsData['name'] == 'hdl' && obsData['value'] != '') {
+            print('into hdl');
+            var hdlText = obsData['value'];
+            hdlController.text = '${obsData['value']}';
+            selectedHdlUnit = obsData['unit'];
+            print(hdlText);
+          } else if (obsData['name'] == 'ketones' && obsData['value'] != '') {
+            print('into ketones');
+            var ketonesText = obsData['value'];
+            ketonesController.text = '${obsData['value']}';
+            selectedKetonesUnit = obsData['unit'];
+            print(ketonesText);
+          } else if (obsData['name'] == 'protein' && obsData['value'] != '') {
+            print('into protein');
+            var proteinText = obsData['value'];
+            proteinController.text = '${obsData['value']}';
+            selectedProteinUnit = obsData['unit'];
+            print(proteinText);
+          } else if (obsData['name'] == 'sodium' && obsData['value'] != '') {
+            print('into sodium');
+            var sodiumText = obsData['value'];
+            sodiumController.text = '${obsData['value']}';
+            selectedSodiumUnit = obsData['unit'];
+            print(sodiumText);
+          } else if (obsData['name'] == 'triglycerides' && obsData['value'] != '') {
             print('into triglycerides');
             var triglyceridesText = obsData['value'];
             tgController.text = '${obsData['value']}';
             selectedTgUnit = obsData['unit'];
             print(triglyceridesText);
-          }
-          if (obsData['name'] == '2habf' && obsData['value'] != '') {
+          } else if (obsData['name'] == '2habf' && obsData['value'] != '') {
             print('into 2habf');
             var habfText = obsData['value'];
             habfController.text = '${obsData['value']}';
@@ -880,7 +868,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
     print('heree');
     setState(() {
       _isNextButtonDisabled = true;
-      _currentStep++;
+      _currentStep = _currentStep + 1;
     });
   }
 
@@ -901,19 +889,12 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
             ),
             FlatButton(
               child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
-              onPressed: _isContinueButtonDisabled ? null : () async {
-                // Navigator.of(context).pop(true);
-                setState(() {
-                  _isContinueButtonDisabled = true;
-                });
-                // _incrementStepCounter();
-                print('_isContinueButtonDisabled = $_isContinueButtonDisabled');
+              onPressed: () async {
+                _incrementStepCounter();
                 createObservations();
                 await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
                 setState(() {
                   _isNextButtonDisabled = false;
-                  _currentStep++;
-
                 });
                 Navigator.of(context).pop(true);
               },
@@ -1026,7 +1007,6 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                   // setState(() {
                     print('_currentStep $_currentStep');
                     if (_currentStep == 0 && !_isNextButtonDisabled) {
-                    print('_currentStep0 $_currentStep');
                       Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
                       print(Questionnaire().qnItems);
                       // _incrementStepCounter();
@@ -1077,12 +1057,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                         waistEditingController.text == ''||
                         hipEditingController.text == '') 
                       {
-                        setState(() {
-                          _isContinueButtonDisabled = false;
-                        });
                         await missingDataDialog();
-                        print('_isContinueButtonDisabled $_isContinueButtonDisabled');
-                        
                       } else {
                         _incrementStepCounter();
                         createObservations();
@@ -1101,7 +1076,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
 
                     if (_currentStep == 8 && !_isNextButtonDisabled) {
                       setState(() {
-                        _currentStep++;
+                        _currentStep = _currentStep + 1;
                         nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                       });
                       _completeStep();
@@ -1119,7 +1094,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                     if (_currentStep == 6 && !_isNextButtonDisabled) {
                       jumpToEnd();
                       setState(() {
-                        _currentStep++;
+                        _currentStep = _currentStep + 1;
                       });
                       return;
                     }
@@ -1158,15 +1133,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                         ketonesController.text == '' ||
                         proteinController.text == '')
                       {
-                        setState(() {
-                          _isContinueButtonDisabled = false;
-                        });
                         await missingDataDialog();
-                        setState(() {
-                          !_isContinueButtonDisabled
-                           ? null 
-                           : _currentStep++;
-                        });
                       } else {
                         _incrementStepCounter();
                         createObservations();

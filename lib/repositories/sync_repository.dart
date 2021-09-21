@@ -85,7 +85,7 @@ class SyncRepository {
           'Authorization': 'Bearer ' + token
         },
         body: json.encode(data)
-      ).timeout(Duration(seconds: httpRequestTimeout));
+      ).timeout(Duration(seconds: 120));
 
       print(response.body);
       return json.decode(response.body);
