@@ -719,43 +719,57 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
               Expanded(
                   child: _currentStep < _mySteps().length || nextHide
                       ? FlatButton(
-                          onPressed: _isNextButtonDisabled ? null : () async {
+                          onPressed: () async {
+                            if(_isNextButtonDisabled)
+                              return;
                             
                               print('_currentStep $_currentStep');
 
-                              if (_currentStep == 3 && !_isNextButtonDisabled) {
+                              if (_currentStep == 3) {
                                 _currentStep = _currentStep + 1;
                                 _completeRefer();
                                 return;
                               }
-                              if (_currentStep == 2 && !_isNextButtonDisabled) {
+                              if (_currentStep == 2) {
                                 nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                                 print('hello');
-                                _incrementStepCounter();
                                 createObservations();
+                                setState(() {
+                                  _isNextButtonDisabled = true;
+                                });
                                 await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'short');
                                 _completeStep();
                                 setState(() {
                                   _isNextButtonDisabled = false;
+                                  _currentStep = _currentStep + 1;
                                 });
+                                return;
                               }
-                              if (_currentStep == 1 && !_isNextButtonDisabled) {
-                                _incrementStepCounter();
+                              if (_currentStep == 1) {
                                 createObservations();
+                                setState(() {
+                                  _isNextButtonDisabled = true;
+                                });
                                 await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'short');
                                 setState(() {
                                   _isNextButtonDisabled = false;
+                                  _currentStep = _currentStep + 1;
                                 });
+                                return;
                               }
-                              if (_currentStep == 0 && !_isNextButtonDisabled) {
-                                _incrementStepCounter();
+                              if (_currentStep == 0) {
+                                setState(() {
+                                  _isNextButtonDisabled = true;
+                                });
                                 if(dynamicMedicationTitles.isNotEmpty) {
                                   Questionnaire().addNewDynamicMedicationNcd('dynamic_medication', dynamicMedicationTitles, dynamicMedicationAnswers);
                                   await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'short');
                                 }
                                 setState(() {
                                   _isNextButtonDisabled = false;
+                                  _currentStep = _currentStep + 1;
                                 });
+                                return;
                                 // print(Questionnaire().qnItems);
                                 // nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                               }

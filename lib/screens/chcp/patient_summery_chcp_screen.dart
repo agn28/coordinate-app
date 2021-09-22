@@ -1552,8 +1552,8 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
                                   ),
                                 ) : Container(),
                                 SizedBox(height: 20,),
-                                (widget.prevScreen == 'encounter' || widget.prevScreen == 'followup') && widget.encounterData['dataStatus'] != 'complete' ?
-                                Container(
+                                (widget.prevScreen == 'encounter' || widget.prevScreen == 'followup')
+                                ? Container(
                                   width: double.infinity,
                                     //margin: EdgeInsets.only(left: 15, right: 15),
                                   height: 50,
