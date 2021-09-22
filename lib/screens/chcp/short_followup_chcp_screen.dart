@@ -726,7 +726,6 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
                               print('_currentStep $_currentStep');
 
                               if (_currentStep == 3) {
-                                _currentStep = _currentStep + 1;
                                 _completeRefer();
                                 return;
                               }

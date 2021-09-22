@@ -861,7 +861,6 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
                               print(_currentStep);
 
                               if (_currentStep == 3) {
-                                _currentStep = _currentStep + 1;
                                 _completeRefer();
                                 return;
                               }
