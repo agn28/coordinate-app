@@ -1063,7 +1063,7 @@ class AssessmentController {
   }
   createReferralByAssessmentLocal(type, referralData) async {
     var referral = await ReferralRepositoryLocal().getReferralById(referralData['id']);
-    if(isNotNull(referral)) {
+    if(isNotNull(referral) && referral.isNotEmpty) {
       await ReferralRepositoryLocal().update(referralData['id'], referralData, false, localStatus: 'incomplete');
     } else {
       var incompleteAssessments = [];
@@ -1071,7 +1071,7 @@ class AssessmentController {
       if(incompleteAssessments.isNotEmpty) {
         print('not empty');
         referralData['meta']['assessment_id'] = incompleteAssessments.first['id'];
-        print('referralData ${referralData}');
+        print('testt: referralData ${referralData}');
         var referralId = Uuid().v4();
         await ReferralRepositoryLocal().create(referralId, referralData, false, localStatus: 'incomplete');
       }

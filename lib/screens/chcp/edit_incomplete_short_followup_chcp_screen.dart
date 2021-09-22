@@ -986,6 +986,36 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
       referralData['body']['location']['clinic_type'] = selectedtype;
       referralData['body']['location']['clinic_name'] = clinicNameController.text;
       print('referralData: $referralData');
+    } else if (refer) {
+      var referralType;
+      if(role == 'chw')
+      {
+        referralType = 'community';
+      } else if(role == 'nurse'){
+        referralType = 'center';
+      }  else if(role == 'chcp'){
+        referralType = 'chcp';
+      } else{
+        referralType = '';
+      }
+
+      referralData = {
+        'meta': {
+          'patient_id': Patient().getPatient()['id'],
+          "collected_by": Auth().getAuth()['uid'],
+          "status": "pending",
+          "created_at": DateTime.now().toString()
+        },
+        'body': {
+          'reason': selectedReason,
+          'type' : referralType,
+          'location' : {
+            'clinic_type' : selectedtype,
+            'clinic_name' : clinicNameController.text,
+          },
+        },
+        'referred_from': 'community clinic',
+      };
     }
     
     await showDialog(

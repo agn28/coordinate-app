@@ -207,7 +207,7 @@ class _UnwellChcpScreen extends State<UnwellChcpScreen> {
           },
         child: Icon(Icons.arrow_back, color: Colors.white,)
         ),
-        title: Text(AppLocalizations.of(context).translate('followUp')),
+        title: Text(AppLocalizations.of(context).translate('editIncompleteEncounter')),
       ),
       body: GestureDetector(
         onTap: () {
