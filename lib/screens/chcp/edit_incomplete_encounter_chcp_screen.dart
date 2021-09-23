@@ -1348,6 +1348,14 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             FlatButton(
+              child: new Text(
+                  AppLocalizations.of(context).translate("NO"),
+                  style: TextStyle(color: kPrimaryColor)),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            FlatButton(
               child: new Text(AppLocalizations.of(context).translate("yes"),
                   style: TextStyle(color: kPrimaryColor)),
               onPressed: () async {
@@ -1355,14 +1363,6 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                 isNotNull(referralData['body']) && refer ? await AssessmentController().createReferralByAssessmentLocal('community clinic assessment', referralData) : '';
                 _patient['data']['chcp_encounter_status'] = encounterData['dataStatus'];
                 Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
-              },
-            ),
-            FlatButton(
-              child: new Text(
-                  AppLocalizations.of(context).translate("NO"),
-                  style: TextStyle(color: kPrimaryColor)),
-              onPressed: () {
-                Navigator.of(context).pop(false);
               },
             ),
           ],
@@ -5041,7 +5041,7 @@ class _CreateReferState extends State<CreateRefer> {
                         children: [
                           Container(
                             // padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Text('Refer', style: TextStyle(fontSize: 20),)
+                            child: Text(AppLocalizations.of(context).translate("referralRequired"), style: TextStyle(fontSize: 20),)
                           ),
                           SizedBox(width: 30,),
                           Container(

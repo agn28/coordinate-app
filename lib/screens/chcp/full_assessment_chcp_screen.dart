@@ -930,6 +930,14 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             FlatButton(
+              child: new Text(
+                  AppLocalizations.of(context).translate("NO"),
+                  style: TextStyle(color: kPrimaryColor)),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            FlatButton(
               child: new Text(AppLocalizations.of(context).translate("yes"),
                   style: TextStyle(color: kPrimaryColor)),
               onPressed: () async{
@@ -937,14 +945,6 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                 isNotNull(referralData['body']) && refer ? await AssessmentController().createReferralByAssessmentLocal('community clinic followup', referralData) : '';
                 _patient['data']['chcp_encounter_status'] = encounterData['dataStatus'];
                 Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': encounterData ,});
-              },
-            ),
-            FlatButton(
-              child: new Text(
-                  AppLocalizations.of(context).translate("NO"),
-                  style: TextStyle(color: kPrimaryColor)),
-              onPressed: () {
-                Navigator.of(context).pop(false);
               },
             ),
           ],
@@ -4262,6 +4262,8 @@ class RecommendedCounsellingChcp extends StatefulWidget {
 // var isReferralRequired = null;
 bool dietTitleAdded = false;
 bool tobaccoTitleAdded = false;
+var dietCurrentCount = 0;
+var tobaccoCurrentCount = 0;
 
 class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp> {
 
@@ -4324,11 +4326,18 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
   }
 
   addCounsellingGroupTitle(question) {
+    var totalUnhealthyDiet = counsellingQuestions['items'].where((item) => (item['group'] == 'unhealthy-diet') && checkCounsellingQuestions(item)).toList().length;
+    var totalTobacco = counsellingQuestions['items'].where((item) => (item['group'] == 'tobacco') && checkCounsellingQuestions(item)).toList().length;
+
     if (question['group'] == 'unhealthy-diet') {
-      print('unhealthy-diet');
-      print(dietTitleAdded);
-      if (!dietTitleAdded) {
+      dietCurrentCount++;
+      if(dietCurrentCount == 1) 
+      {
         dietTitleAdded = true;
+        if(dietCurrentCount%totalUnhealthyDiet == 0) 
+        {
+          dietCurrentCount = 0;
+        }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -4342,11 +4351,19 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
           ],
         );
       }
+      if(dietCurrentCount%totalUnhealthyDiet == 0) 
+      {
+        dietCurrentCount = 0;
+      }
     } else if (question['group'] == 'tobacco') {
-      print('tobacco');
-      print(tobaccoTitleAdded);
-      if (!tobaccoTitleAdded) {
+      tobaccoCurrentCount++;
+      if(tobaccoCurrentCount == 1) 
+      {
         tobaccoTitleAdded = true;
+        if(tobaccoCurrentCount%totalTobacco == 0)
+        {
+          tobaccoCurrentCount = 0;
+        }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -4359,6 +4376,10 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
                         TextStyle(fontSize: 20, fontWeight: FontWeight.w500))),
           ],
         );
+      } 
+      if(tobaccoCurrentCount%totalTobacco == 0)
+      {
+        tobaccoCurrentCount = 0;
       }
     } else if (question['type'] == 'physical-activity-high') {
       return Column(
@@ -4886,7 +4907,7 @@ class _CreateReferState extends State<CreateRefer> {
                         children: [
                           Container(
                             // padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Text('Refer', style: TextStyle(fontSize: 20),)
+                            child: Text(AppLocalizations.of(context).translate("referralRequired"), style: TextStyle(fontSize: 20),)
                           ),
                           SizedBox(width: 30,),
                           Container(
@@ -5050,227 +5071,6 @@ class _CreateReferState extends State<CreateRefer> {
         ),
       ),
     );
-  }
-}
-
-class Followup extends StatefulWidget {
-  _FullAssessmentChcpScreenState parent;
-  Followup({this.parent});
-
-  @override
-  _FollowupState createState() => _FollowupState();
-}
-
-var isReferralRequired = false;
-var followups = ['1 week', '2 weeks', '1 month', '2 months', '3 months', '6 months', '1 year'];
-var selectedFollowup = null;
-var nextVisitDate = '';
-class _FollowupState extends State<Followup> {
-
-  bool tobaccoTitleAdded = false;
-  bool dietTitleAdded = false;
-  bool activityTitleAdded = false;
-
-  checkCounsellingQuestions(counsellingQuestion) {
-    // if (medicationQuestions['items'].length - 1 == medicationQuestions['items'].indexOf(medicationQuestion)) {
-    //   if (showLastMedicationQuestion) {
-    //     return true;
-    //   }
-
-    // }
-
-    var matchedQuestion;
-    riskQuestions['items'].forEach((item) {
-      if (item['type'] != null && item['type'] == counsellingQuestion['type']) {
-        matchedQuestion = item;
-      }
-    });
-
-    if (matchedQuestion != null) {
-      // print(matchedQuestion.first);
-      var answer = riskAnswers[riskQuestions['items'].indexOf(matchedQuestion)];
-      if (answer == 'yes') {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  addCounsellingGroupTitle(question) {
-    if (question['group'] == 'unhealthy-diet') {
-      print('group');
-      if (!dietTitleAdded) {
-        dietTitleAdded = true;
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Divider(),
-            Container(
-                margin: EdgeInsets.only(top: 25, bottom: 30),
-                child: Text(
-                    AppLocalizations.of(context).translate('unhealthyDiet'),
-                    style:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.w500))),
-          ],
-        );
-      }
-    } else if (question['type'] == 'physical-activity-high') {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Divider(),
-          Container(
-            margin: EdgeInsets.only(top: 25, bottom: 10),
-          ),
-        ],
-      );
-    }
-
-    return Container();
-  }
-
-  Widget titleWidget(title) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Divider(),
-        Container(
-            margin: EdgeInsets.only(top: 25, bottom: 30),
-            child: Text('$title',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500))),
-      ],
-    );
-  }
-
-  getNextVisitDate() {
-    print(selectedFollowup);
-    ['1 week', '2 weeks', '1 month', '2 months', '3 months', '6 months', '1 year'];
-    var date = '';
-    if (selectedFollowup == '1 week') {
-      date = DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: 7)));
-
-    } else if (selectedFollowup == '2 weeks') {
-      date = DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: 14)));
-    } else if (selectedFollowup == '1 month') {
-      date = DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: 30)));
-    } else if (selectedFollowup == '2 months') {
-      date = DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: 60)));
-    } else if (selectedFollowup == '3 months') {
-      date = DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: 90)));
-    } else if (selectedFollowup == '6 months') {
-      date = DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: 180)));
-    } else if (selectedFollowup == '1 year') {
-      date = DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: 365)));
-    }
-
-    setState(() {
-      nextVisitDate = date;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-        child: Form(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              PatientTopbar(),
-              SizedBox(
-                height: 30,
-              ),
-              Container(
-                  // alignment: Alignment.center,
-                  margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context).translate('followupVisit'),
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500),
-                      ),
-                    ],
-                  )),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 10),
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                        AppLocalizations.of(context)
-                                .translate('followupVisit') +
-                            ' in',
-                        style: TextStyle(color: Colors.black, fontSize: 16)),
-                    SizedBox(
-                      width: 30,
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 15),
-                      color: kSecondaryTextField,
-                      child: DropdownButton<String>(
-                        items: checkMissingData()
-                            ? []
-                            : followups.map((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-                        value: selectedFollowup,
-                        onChanged: (String newValue) {
-                          setState(() {
-                            selectedFollowup = newValue;
-                            getNextVisitDate();
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              nextVisitDate != ''
-                  ? Container(
-                      margin: EdgeInsets.symmetric(vertical: 10),
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                                AppLocalizations.of(context)
-                                    .translate('nextVisitDate' + ': $nextVisitDate'),
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 16)),
-                            SizedBox(
-                              width: 30,
-                            ),
-                          ]))
-                  : Container(),
-              Container(
-                width: double.infinity,
-                margin: EdgeInsets.only(top: 60, left: 50, right: 50),
-                height: 50,
-                decoration: BoxDecoration(
-                    color: kPrimaryColor,
-                    borderRadius: BorderRadius.circular(3)),
-                child: FlatButton(
-                    onPressed: () async {
-                      widget.parent._completeStep();
-                    },
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    child: Text(
-                      AppLocalizations.of(context).translate('completeVisit'),
-                      style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.white,
-                          fontWeight: FontWeight.normal),
-                    )),
-              ),
-            ],
-          ),
-        ));
   }
 }
 

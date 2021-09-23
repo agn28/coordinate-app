@@ -1,10 +1,7 @@
 import 'dart:io';
-import 'package:basic_utils/basic_utils.dart' as basic_utils;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'dart:math';
-import 'package:expandable/expandable.dart';
 
 
 import 'package:nhealth/app_localizations.dart';
@@ -15,20 +12,14 @@ import 'package:nhealth/controllers/followup_controller.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/controllers/observation_controller.dart';
 import 'package:nhealth/controllers/user_controller.dart';
-import 'package:nhealth/custom-classes/custom_toast.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/repositories/local/assessment_repository_local.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chcp/edit_incomplete_encounter_chcp_screen.dart';
-import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_questionnaire_acute_screen.dart';
-import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_questionnaire_feeling_screen.dart';
-import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.dart';
 
 import 'chcp_feeling_screen.dart';
-import 'new_followup_chcp_screen.dart';
-import 'new_visit/new_patient_questionnaire_chcp_screen.dart';
 import 'new_visit/new_visit_chcp_feeling_screen.dart';
 
 var dueCarePlans = [];
@@ -53,6 +44,7 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
   bool avatarExists = false;
   var encounters = [];
   var lastAssessment;
+  var nextVisitDate = '';
   String lastEncounterType = '';
   String lastEncounterDate = '';
   String lastAssessmentdDate = '';
