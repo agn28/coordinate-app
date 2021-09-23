@@ -118,11 +118,11 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
   @override
   void initState() {
     super.initState();
+    Helpers().clearObservationItems();
     print('new patient questionniare chcp screen');
     _patient = Patient().getPatient();
     _checkAuth();
     clearForm();
-    Helpers().clearObservationItems();
     isLoading = false;
 
     print(Language().getLanguage());
@@ -902,6 +902,8 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                   style: TextStyle(color: kPrimaryColor)),
               onPressed: () async {
                 isNotNull(referralData['body']) && refer ? await AssessmentController().createReferralByAssessmentLocal('community clinic assessment', referralData) : '';
+                _patient['data']['chcp_encounter_status'] = encounterData['dataStatus'];
+                _patient['data']['chcp_encounter_type'] = 'community clinic assessment';
                 Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
               },
             ),
@@ -4326,10 +4328,10 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
 
     if (question['group'] == 'unhealthy-diet') {
       dietCurrentCount++;
-      if(dietCurrentCount == 1) 
+      if(dietCurrentCount == 1)
       {
         dietTitleAdded = true;
-        if(dietCurrentCount%totalUnhealthyDiet == 0) 
+        if(dietCurrentCount%totalUnhealthyDiet == 0)
         {
           dietCurrentCount = 0;
         }
@@ -4346,13 +4348,13 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
           ],
         );
       }
-      if(dietCurrentCount%totalUnhealthyDiet == 0) 
+      if(dietCurrentCount%totalUnhealthyDiet == 0)
       {
         dietCurrentCount = 0;
       }
     } else if (question['group'] == 'tobacco') {
       tobaccoCurrentCount++;
-      if(tobaccoCurrentCount == 1) 
+      if(tobaccoCurrentCount == 1)
       {
         tobaccoTitleAdded = true;
         if(tobaccoCurrentCount%totalTobacco == 0)
@@ -4371,7 +4373,7 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
                         TextStyle(fontSize: 20, fontWeight: FontWeight.w500))),
           ],
         );
-      } 
+      }
       if(tobaccoCurrentCount%totalTobacco == 0)
       {
         tobaccoCurrentCount = 0;

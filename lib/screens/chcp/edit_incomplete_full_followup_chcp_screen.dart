@@ -1304,6 +1304,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
               onPressed: () async {
                 isNotNull(referralData['body']) && refer ? await AssessmentController().createReferralByAssessmentLocal('community clinic followup', referralData) : '';
                 _patient['data']['chcp_encounter_status'] = encounterData['dataStatus'];
+                _patient['data']['chcp_encounter_type'] = 'community clinic followup';
                 Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': encounterData ,});
               },
             ),
