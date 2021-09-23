@@ -143,6 +143,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
   @override
   void initState() {
     super.initState();
+    Helpers().clearObservationItems();
     print("Edit incomplete Chcp");
     _patient = Patient().getPatient();
     _checkAuth();
@@ -4381,6 +4382,8 @@ class RecommendedCounsellingChcp extends StatefulWidget {
 // var isReferralRequired = null;
 bool dietTitleAdded = false;
 bool tobaccoTitleAdded = false;
+var dietCurrentCount = 0;
+var tobaccoCurrentCount = 0;
 
 class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp> {
 
@@ -4443,11 +4446,18 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
   }
 
   addCounsellingGroupTitle(question) {
+    var totalUnhealthyDiet = counsellingQuestions['items'].where((item) => (item['group'] == 'unhealthy-diet') && checkCounsellingQuestions(item)).toList().length;
+    var totalTobacco = counsellingQuestions['items'].where((item) => (item['group'] == 'tobacco') && checkCounsellingQuestions(item)).toList().length;
+
     if (question['group'] == 'unhealthy-diet') {
-      print('unhealthy-diet');
-      print(dietTitleAdded);
-      if (!dietTitleAdded) {
+      dietCurrentCount++;
+      if(dietCurrentCount == 1) 
+      {
         dietTitleAdded = true;
+        if(dietCurrentCount%totalUnhealthyDiet == 0) 
+        {
+          dietCurrentCount = 0;
+        }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -4461,11 +4471,19 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
           ],
         );
       }
+      if(dietCurrentCount%totalUnhealthyDiet == 0) 
+      {
+        dietCurrentCount = 0;
+      }
     } else if (question['group'] == 'tobacco') {
-      print('tobacco');
-      print(tobaccoTitleAdded);
-      if (!tobaccoTitleAdded) {
+      tobaccoCurrentCount++;
+      if(tobaccoCurrentCount == 1) 
+      {
         tobaccoTitleAdded = true;
+        if(tobaccoCurrentCount%totalTobacco == 0)
+        {
+          tobaccoCurrentCount = 0;
+        }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -4478,6 +4496,10 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
                         TextStyle(fontSize: 20, fontWeight: FontWeight.w500))),
           ],
         );
+      } 
+      if(tobaccoCurrentCount%totalTobacco == 0)
+      {
+        tobaccoCurrentCount = 0;
       }
     } else if (question['type'] == 'physical-activity-high') {
       return Column(

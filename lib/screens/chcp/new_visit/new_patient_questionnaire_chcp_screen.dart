@@ -118,11 +118,11 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
   @override
   void initState() {
     super.initState();
+    Helpers().clearObservationItems();
     print('new patient questionniare chcp screen');
     _patient = Patient().getPatient();
     _checkAuth();
     clearForm();
-    Helpers().clearObservationItems();
     isLoading = false;
 
     print(Language().getLanguage());

@@ -13,6 +13,7 @@ import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:nhealth/custom-classes/custom_stepper.dart';
 import 'package:nhealth/helpers/functions.dart';
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
@@ -113,6 +114,7 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
   @override
   void initState() {
     super.initState();
+    Helpers().clearObservationItems();
     print('followup visit Chcp screen!');
     _checkAuth();
     clearForm();

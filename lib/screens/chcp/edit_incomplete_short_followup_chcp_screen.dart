@@ -11,6 +11,7 @@ import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:nhealth/controllers/referral_controller.dart';
 import 'package:nhealth/custom-classes/custom_stepper.dart';
 import 'package:nhealth/helpers/functions.dart';
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/repositories/local/assessment_repository_local.dart';
 import 'package:nhealth/screens/patients/ncd/followup_patient_summary_screen.dart';
 import 'package:nhealth/models/auth.dart';
@@ -98,6 +99,7 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
   @override
   void initState() {
     super.initState();
+    Helpers().clearObservationItems();
     print("Edit incomplete short Followup chcp");
     _patient = Patient().getPatient();
     _checkAuth();

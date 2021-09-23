@@ -111,6 +111,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
   @override
   void initState() {
     super.initState();
+    Helpers().clearObservationItems();
     print("Edit incomplete full Followup chcp");
     _patient = Patient().getPatient();
     _checkAuth();
