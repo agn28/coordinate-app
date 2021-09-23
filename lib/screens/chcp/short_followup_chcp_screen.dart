@@ -74,6 +74,8 @@ var selectedReason;
 var selectedtype;
 var clinicNameController = TextEditingController();
 
+var _patient;
+
 bool refer = false;
 bool _isNextButtonDisabled = false;
 
@@ -116,6 +118,7 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
     super.initState();
     Helpers().clearObservationItems();
     print('followup visit Chcp screen!');
+    _patient = Patient().getPatient();
     _checkAuth();
     clearForm();
     isLoading = false;
@@ -868,7 +871,7 @@ var role = '';
         'type' : referralType,
         'location' : {
           'clinic_type' : selectedtype,
-          'clinic_name' : clinicNameController,
+          'clinic_name' : clinicNameController.text,
         },
       },
       'referred_from': 'new questionnaire chcp',
@@ -900,6 +903,7 @@ var role = '';
               onPressed: () async {
                 // Navigator.of(context).pop(false);
                 isNotNull(referralData['body']) && refer ? await AssessmentController().createReferralByAssessmentLocal('community clinic followup', referralData) : '';
+                _patient['data']['chcp_encounter_status'] = encounterData['dataStatus'];
                 Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': encounterData ,});
               },
             ),

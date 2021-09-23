@@ -54,7 +54,6 @@ class ReferralRepositoryLocal {
 
     try {
       response = await db.rawUpdate(sql, params);
-      print(response);
     } catch(error) {
       print('local referral update error');
       print(error);

@@ -36,6 +36,7 @@ class _ChcpFeelingScreenState extends State<ChcpFeelingScreen> {
   @override
   void initState() {
     super.initState();
+    print('edit incomplete encounter feeling screen');
     _patient = Patient().getPatient();
 
   }
@@ -55,7 +56,7 @@ class _ChcpFeelingScreenState extends State<ChcpFeelingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text(AppLocalizations.of(context).translate('followupVisit'), style: TextStyle(color: Colors.white, fontSize: 20),),
+        title: new Text(AppLocalizations.of(context).translate('editIncompleteEncounter'), style: TextStyle(color: Colors.white, fontSize: 20),),
         backgroundColor: kPrimaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.white),
