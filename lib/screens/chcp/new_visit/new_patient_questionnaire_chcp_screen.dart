@@ -894,6 +894,8 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                   style: TextStyle(color: kPrimaryColor)),
               onPressed: () async {
                 isNotNull(referralData['body']) && refer ? await AssessmentController().createReferralByAssessmentLocal('community clinic assessment', referralData) : '';
+                _patient['data']['chcp_encounter_status'] = encounterData['dataStatus'];
+                _patient['data']['chcp_encounter_type'] = 'community clinic assessment';
                 Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
               },
             ),
