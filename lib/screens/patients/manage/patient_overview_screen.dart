@@ -44,7 +44,10 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
 
   bool avatarExists = false;
   var encounters = [];
-  String lastEncounterdDate = '';
+  var lastAssessment;
+  var nextVisitDate = '';
+  String lastEncounterType = '';
+  String lastEncounterDate = '';
   String lastAssessmentdDate = '';
   String lastCarePlanDate = '';
   var conditions = [];
@@ -74,6 +77,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
     _getAuthData();
     getEncounters();
     getIncompleteAssessmentLocal();
+    getLastAssessment();
     // _getCarePlan();
     // getAssessments();
     // getAssessmentDueDate();
@@ -297,6 +301,35 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
     return "$goalCount goals & $actionCount actions";
   }
 
+  getDate(date) {
+    if (date.runtimeType == String && date != null && date != '') {
+      return DateFormat("MMMM d, y").format(DateTime.parse(date)).toString();
+    } else if (date['_seconds'] != null) {
+      var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
+
+      return DateFormat("MMMM d, y").format(parsedDate).toString();
+    }
+    return '';
+  }
+
+  getLastAssessment() async {
+    lastAssessment = await AssessmentController().getLastAssessmentByPatient();
+
+    print('lastAssessment $lastAssessment');
+    if(lastAssessment != null && lastAssessment.isNotEmpty) {
+      // lastEncounterDate = lastAssessment['data']['meta']['created_at'];
+      // nextVisitDate = lastAssessment['data']['body']['next_visit_date'];
+      setState(() {
+        nextVisitDate = lastAssessment['data']['body']['next_visit_date'] != null && lastAssessment['data']['body']['next_visit_date'] != '' ? DateFormat("MMMM d, y").format(DateTime.parse(lastAssessment['data']['body']['next_visit_date'])):'';
+        lastEncounterType = lastAssessment['data']['body']['type'];
+        lastEncounterDate = getDate(lastAssessment['data']['meta']['created_at']);
+        print('lastEncounterDate ${lastEncounterDate}');
+      });
+    }
+    
+  }
+
+
   getEncounters() async {
     
     setState(() {
@@ -342,12 +375,6 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
       // encounters.sort((a, b) {
       //   return DateTime.parse(b['meta']['created_at']).compareTo(DateTime.parse(a['meta']['created_at']));
       // });
-
-      setState(() {
-        isLoading = false;
-        //TODO: fix the date format and add lastencounterdate
-        lastEncounterdDate = DateFormat("MMMM d, y").format(DateTime.parse(encounters.first['meta']['created_at']));
-      });
 
     }
     
@@ -803,7 +830,7 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                               ),
                               Container(
                                 padding: EdgeInsets.symmetric(vertical: 9),
-                                child: Text(lastEncounterdDate, style: TextStyle(fontSize: 17,),),
+                                child: Text(lastEncounterDate, style: TextStyle(fontSize: 17,),),
                               ),
                             ]
                           ),
@@ -811,49 +838,11 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
                             children: [
                               Container(
                                 padding: EdgeInsets.symmetric(vertical: 9),
-                                child: Text(AppLocalizations.of(context).translate('nextAssessmentDate'), style: TextStyle(fontSize: 17,),),
+                                child: Text(AppLocalizations.of(context).translate('lastEncounter'), style: TextStyle(fontSize: 17,),),
                               ),
                               Container(
                                 padding: EdgeInsets.symmetric(vertical: 9),
-                                child: Text(dueDate != null ? dueDate : '', style: TextStyle(fontSize: 17,),),
-                              ),
-                            ]
-                          ),
-                          TableRow( 
-                            children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(vertical: 9),
-                                child: Text(AppLocalizations.of(context).translate('currentConditions'), style: TextStyle(fontSize: 17,),),
-                              ),
-                              Container(
-                                padding: EdgeInsets.symmetric(vertical: 9),
-                                child: Wrap(
-                                  children: <Widget>[
-                                    Container(),
-                                    ...conditions.map((item) {
-                                      return Text(item + '${conditions.length - 1 == conditions.indexOf(item) ? '' : ', '}', style: TextStyle(fontSize: 17,));
-                                    }).toList()
-                                  ],
-                                ),
-                              ),
-                            ]
-                          ),
-                          TableRow( 
-                            children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(vertical: 9),
-                                child: Text(AppLocalizations.of(context).translate('medicationsTitle'), style: TextStyle(fontSize: 17,),),
-                              ),
-                              Container(
-                                padding: EdgeInsets.symmetric(vertical: 9),
-                                child: Wrap(
-                                  children: <Widget>[
-                                    Container(),
-                                    ...medications.map((item) {
-                                      return Text(item + '${medications.length - 1 == medications.indexOf(item) ? '' : ', '}', style: TextStyle(fontSize: 17,));
-                                    }).toList()
-                                  ],
-                                ),
+                                child: Text(lastEncounterType, style: TextStyle(fontSize: 17,),),
                               ),
                             ]
                           ),

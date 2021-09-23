@@ -93,7 +93,7 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
     // getMedicationsConditions();
     // getReport();
     // getIncompleteAssessment();
-    // getLastAssessment();
+    getLastAssessment();
     // getUsers();
     // getReferrals();
     // getAssessmentDueDate();
@@ -403,9 +403,6 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
   }
 
   getLastAssessment() async {
-    setState(() {
-      isLoading = true;
-    });
     lastAssessment = await AssessmentController().getLastAssessmentByPatient();
 
     print('lastAssessment $lastAssessment');
