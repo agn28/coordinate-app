@@ -869,7 +869,7 @@ var role = '';
         'type' : referralType,
         'location' : {
           'clinic_type' : selectedtype,
-          'clinic_name' : clinicNameController,
+          'clinic_name' : clinicNameController.text,
         },
       },
       'referred_from': 'new questionnaire chcp',
