@@ -135,6 +135,7 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
   @override
   void initState() {
     super.initState();
+    Helpers().clearObservationItems();
     print('full assessment chcp screen');
     _patient = Patient().getPatient();
     _checkAuth();

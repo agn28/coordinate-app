@@ -143,6 +143,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
   @override
   void initState() {
     super.initState();
+    Helpers().clearObservationItems();
     print("Edit incomplete Chcp");
     _patient = Patient().getPatient();
     _checkAuth();
@@ -489,73 +490,85 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
             creatinineController.text = '${obsData['value']}';
             selectedCreatinineUnit = obsData['unit'];
             print(creatinineText);
-          } else if (obsData['name'] == 'a1c' && obsData['value'] != '') {
+          }
+          if (obsData['name'] == 'a1c' && obsData['value'] != '') {
             print('into a1c');
             var hba1cText = obsData['value'];
             hba1cController.text = '${obsData['value']}';
             selectedHba1cUnit = obsData['unit'];
             print(hba1cText);
-          } else if (obsData['name'] == 'total_cholesterol' && obsData['value'] != '') {
+          } 
+          if (obsData['name'] == 'total_cholesterol' && obsData['value'] != '') {
             print('into total_cholesterol');
             var totalCholesterolText = obsData['value'];
             cholesterolController.text = '${obsData['value']}';
             selectedCholesterolUnit = obsData['unit'];
             print(totalCholesterolText);
-          } else if (obsData['name'] == 'potassium' && obsData['value'] != '') {
+          }
+          if (obsData['name'] == 'potassium' && obsData['value'] != '') {
             print('into potassium');
             var potassiumText = obsData['value'];
             potassiumController.text = '${obsData['value']}';
             selectedPotassiumUnit = obsData['unit'];
             print(potassiumText);
-          } else if (obsData['name'] == 'ldl' && obsData['value'] != '') {
+          }
+          if (obsData['name'] == 'ldl' && obsData['value'] != '') {
             print('into ldl');
             var ldlText = obsData['value'];
             ldlController.text = '${obsData['value']}';
             selectedLdlUnit = obsData['unit'];
             print(ldlText);
-          } else if (obsData['name'] == 'blood_sugar' && obsData['type'] == null && obsData['value'] != '') {
+          }
+          if (obsData['name'] == 'blood_sugar' && obsData['type'] == null && obsData['value'] != '') {
             print('into blood_sugar');
             var bloodSugarText = obsData['value'];
             randomBloodController.text = '${obsData['value']}';
             selectedRandomBloodUnit = obsData['unit'];
             print(bloodSugarText);
-          } else if ((obsData['name'] == 'blood_glucose' || obsData['name'] == 'blood_sugar') && (obsData['type'] != null && obsData['type'] == 'fasting') && obsData['value'] != '') {
+          }
+          if ((obsData['name'] == 'blood_glucose' || obsData['name'] == 'blood_sugar') && (obsData['type'] != null && obsData['type'] == 'fasting') && obsData['value'] != '') {
             print('into blood_glucose');
             var bloodGlucoseText = obsData['value'];
             fastingBloodController.text = '${obsData['value']}';
             selectedFastingBloodUnit = obsData['unit'];
             print(bloodGlucoseText);
-          } else if (obsData['name'] == 'hdl' && obsData['value'] != '') {
+          }
+          if (obsData['name'] == 'hdl' && obsData['value'] != '') {
             print('into hdl');
             var hdlText = obsData['value'];
             hdlController.text = '${obsData['value']}';
             selectedHdlUnit = obsData['unit'];
             print(hdlText);
-          } else if (obsData['name'] == 'ketones' && obsData['value'] != '') {
+          }
+          if (obsData['name'] == 'ketones' && obsData['value'] != '') {
             print('into ketones');
             var ketonesText = obsData['value'];
             ketonesController.text = '${obsData['value']}';
             selectedKetonesUnit = obsData['unit'];
             print(ketonesText);
-          } else if (obsData['name'] == 'protein' && obsData['value'] != '') {
+          }
+          if (obsData['name'] == 'protein' && obsData['value'] != '') {
             print('into protein');
             var proteinText = obsData['value'];
             proteinController.text = '${obsData['value']}';
             selectedProteinUnit = obsData['unit'];
             print(proteinText);
-          } else if (obsData['name'] == 'sodium' && obsData['value'] != '') {
+          }
+          if (obsData['name'] == 'sodium' && obsData['value'] != '') {
             print('into sodium');
             var sodiumText = obsData['value'];
             sodiumController.text = '${obsData['value']}';
             selectedSodiumUnit = obsData['unit'];
             print(sodiumText);
-          } else if (obsData['name'] == 'triglycerides' && obsData['value'] != '') {
+          }
+          if (obsData['name'] == 'triglycerides' && obsData['value'] != '') {
             print('into triglycerides');
             var triglyceridesText = obsData['value'];
             tgController.text = '${obsData['value']}';
             selectedTgUnit = obsData['unit'];
             print(triglyceridesText);
-          } else if (obsData['name'] == '2habf' && obsData['value'] != '') {
+          } 
+          if (obsData['name'] == '2habf' && obsData['value'] != '') {
             print('into 2habf');
             var habfText = obsData['value'];
             habfController.text = '${obsData['value']}';
@@ -4369,6 +4382,8 @@ class RecommendedCounsellingChcp extends StatefulWidget {
 // var isReferralRequired = null;
 bool dietTitleAdded = false;
 bool tobaccoTitleAdded = false;
+var dietCurrentCount = 0;
+var tobaccoCurrentCount = 0;
 
 class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp> {
 
@@ -4431,11 +4446,18 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
   }
 
   addCounsellingGroupTitle(question) {
+    var totalUnhealthyDiet = counsellingQuestions['items'].where((item) => (item['group'] == 'unhealthy-diet') && checkCounsellingQuestions(item)).toList().length;
+    var totalTobacco = counsellingQuestions['items'].where((item) => (item['group'] == 'tobacco') && checkCounsellingQuestions(item)).toList().length;
+
     if (question['group'] == 'unhealthy-diet') {
-      print('unhealthy-diet');
-      print(dietTitleAdded);
-      if (!dietTitleAdded) {
+      dietCurrentCount++;
+      if(dietCurrentCount == 1) 
+      {
         dietTitleAdded = true;
+        if(dietCurrentCount%totalUnhealthyDiet == 0) 
+        {
+          dietCurrentCount = 0;
+        }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -4449,11 +4471,19 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
           ],
         );
       }
+      if(dietCurrentCount%totalUnhealthyDiet == 0) 
+      {
+        dietCurrentCount = 0;
+      }
     } else if (question['group'] == 'tobacco') {
-      print('tobacco');
-      print(tobaccoTitleAdded);
-      if (!tobaccoTitleAdded) {
+      tobaccoCurrentCount++;
+      if(tobaccoCurrentCount == 1) 
+      {
         tobaccoTitleAdded = true;
+        if(tobaccoCurrentCount%totalTobacco == 0)
+        {
+          tobaccoCurrentCount = 0;
+        }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -4466,6 +4496,10 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
                         TextStyle(fontSize: 20, fontWeight: FontWeight.w500))),
           ],
         );
+      } 
+      if(tobaccoCurrentCount%totalTobacco == 0)
+      {
+        tobaccoCurrentCount = 0;
       }
     } else if (question['type'] == 'physical-activity-high') {
       return Column(

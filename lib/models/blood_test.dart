@@ -43,7 +43,7 @@ class BloodTest {
         'device': device
       });
     }
-
+    print('_items $_items');
     return;
   }
 
@@ -68,16 +68,34 @@ class BloodTest {
       bool updated = false;
       for (var bt in _btItems) {
         if (bt['body']['data']['name'] == item['name']) {
-          _btItems[_btItems.indexOf(bt)]['body']['data'] = item;
-          updated = true;
-          break;
+          if(item['name'] == 'blood_sugar') {
+            print('item $item');
+            print('btitem $bt');
+            if(item['type'] == null && bt['body']['data']['type'] == null) {
+              print('if');
+              _btItems[_btItems.indexOf(bt)]['body']['data'] = item;
+              updated = true;
+              break;
+            } else if (item['type'] != null && bt['body']['data']['type'] != null
+              && bt['body']['data']['type'] == item['type']) {
+                print('elif');
+              _btItems[_btItems.indexOf(bt)]['body']['data'] = item;
+              updated = true;
+              break;
+            } else {
+              print('else');
+            };
+          } else {
+            _btItems[_btItems.indexOf(bt)]['body']['data'] = item;
+            updated = true;
+            break;
+          }
         }
       }
 
       if(!updated) {
         _btItems.add(_prepareData(item));
       }
-      
     }
 
     return 'success';

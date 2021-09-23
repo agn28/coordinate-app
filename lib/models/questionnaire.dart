@@ -491,7 +491,7 @@ var _questions = {
             'question_bn': 'প্রক্রিয়াজাত খাবার',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
-            'group': 'unhealth-diet',
+            'group': 'unhealthy-diet',
             'type': 'processed-food',
             'key': 'processed_foods'
           },

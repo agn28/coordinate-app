@@ -1589,11 +1589,33 @@ class AssessmentController {
         .where((observation) => observation['body']['type'] == 'blood_test')
         .toList();
     print('btobs ${btobs}');
+    print('btests ${bloodTests}');
     for (var bt in bloodTests) {
       if (btobs.isNotEmpty) {
-        var matchedObs = btobs.where((btob) =>
-            btob['body']['data']['name'] == bt['body']['data']['name']);
-        print('matchedObs ${matchedObs}');
+        // var matchedObs = btobs.where((btob) =>
+        //     btob['body']['data']['name'] == bt['body']['data']['name']);
+        // print('matchedObs ${matchedObs}');
+        var matchedObs;
+        if(bt['body']['data']['name'] == 'blood_sugar') {
+          matchedObs = btobs.where((btob) {
+            if(btob['body']['data']['name'] == bt['body']['data']['name']) {
+              if(btob['body']['data']['type'] == null && bt['body']['data']['type'] == null) {
+                print('btif');
+                return true;
+              } else if(btob['body']['data']['type'] != null && bt['body']['data']['type'] != null
+                && btob['body']['data']['type'] == bt['body']['data']['type']) {
+                print('btelif');
+                return true;
+              } 
+              print('btel');
+              return false;
+            } return false;
+          });
+        } else {
+          matchedObs = btobs.where((btob) => btob['body']['data']['name'] == bt['body']['data']['name']);
+        }
+        print('matchedbtObs ${matchedObs}');
+        
         if (matchedObs.isNotEmpty) {
           matchedObs = matchedObs.first;
           var apiData = {'id': matchedObs['id']};
