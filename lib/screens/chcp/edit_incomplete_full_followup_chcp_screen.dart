@@ -253,8 +253,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
   }
 
   getIncompleteAssessmentLocal() async {
-    // encounter = await AssessmentController().getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: 'community clinic assessment');
-
     var patientId = Patient().getPatient()['id'];
     encounter = await AssessmentRepositoryLocal().getIncompleteAssessmentsByPatient(patientId);
     if(encounter.isNotEmpty) {
@@ -1027,7 +1025,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                               setState(() {
                                                 _isNextButtonDisabled = true;
                                               });
-                                              await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                                              await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '');
                                               setState(() {
                                                 _isNextButtonDisabled = false;
                                                 _currentStep = _currentStep + 1;
@@ -1145,7 +1143,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                               setState(() {
                                                 _isNextButtonDisabled = true;
                                               });
-                                              await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                                              await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '');
                                               setState(() {
                                                 _isNextButtonDisabled = false;
                                                 _currentStep = _currentStep + 1;
@@ -1344,6 +1342,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
       encounterData = {
         'context': context,
         'dataStatus': dataStatus,
+        'followupType': 'full'
       };
     }
   

@@ -257,8 +257,6 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
   // }
 
     getIncompleteAssessmentLocal() async {
-    // encounter = await AssessmentController().getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: 'community clinic assessment');
-
     var patientId = Patient().getPatient()['id'];
     encounter = await AssessmentRepositoryLocal().getIncompleteAssessmentsByPatient(patientId);
     if(encounter.isNotEmpty) {
@@ -1084,7 +1082,8 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
     } else {	
       encounterData = {	
         'context': context,	
-        'dataStatus': dataStatus,	
+        'dataStatus': dataStatus,
+        'followupType': 'short'
       };	
     }
     print('dataStatus $dataStatus');

@@ -669,7 +669,7 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                                     setState(() {
                                       _isNextButtonDisabled = true;
                                     });
-                                    await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                                    await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '');
                                     setState(() {
                                       _isNextButtonDisabled = false;
                                       _currentStep = _currentStep + 1;
@@ -793,7 +793,7 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                                     setState(() {
                                       _isNextButtonDisabled = true;
                                     });
-                                    await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                                    await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '');
                                     setState(() {
                                       _isNextButtonDisabled = false;
                                       _currentStep = _currentStep + 1;
