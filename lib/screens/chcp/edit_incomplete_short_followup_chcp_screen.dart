@@ -880,16 +880,74 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
                                 return;
                               }
                               if(_currentStep == 1){
-                                createObservations();
-                                setState(() {
-                                  _isNextButtonDisabled = true;
-                                });
-                                await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'short');
-                                setState(() {
-                                    _isNextButtonDisabled = false;
-                                    _currentStep = _currentStep + 1;
-                                  });
-
+                                if(diastolicEditingController.text == '' ||
+                                  systolicEditingController.text == '' ||
+                                  pulseRateEditingController.text == '' ||
+                                  heightEditingController.text == '' ||
+                                  weightEditingController.text == ''||
+                                  waistEditingController.text == ''||
+                                  hipEditingController.text == '' ||
+                                  randomBloodController.text == '' ||
+                                  fastingBloodController.text == '' ||
+                                  habfController.text == '' ||
+                                  hba1cController.text == '' ||
+                                  cholesterolController.text == '' ||
+                                  ldlController.text == '' ||
+                                  hdlController.text == '' ||
+                                  tgController.text == '' ||
+                                  creatinineController.text == '' ||
+                                  sodiumController.text == '' ||
+                                  potassiumController.text == '' ||
+                                  ketonesController.text == '' ||
+                                  proteinController.text == '') 
+                                {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      // return object of type Dialog
+                                      return AlertDialog(
+                                        content: new Text(AppLocalizations.of(context).translate("missingData"), style: TextStyle(fontSize: 20),),
+                                        actions: <Widget>[
+                                          // usually buttons at the bottom of the dialog
+                                          FlatButton(
+                                            child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(color: kPrimaryColor)),
+                                            onPressed: () {
+                                              Navigator.of(context).pop(false);
+                                            },
+                                          ),
+                                          FlatButton(
+                                            child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
+                                            onPressed: () async {
+                                              if(_isNextButtonDisabled)
+                                                return;
+                                              createObservations();
+                                              setState(() {
+                                                _isNextButtonDisabled = true;
+                                              });
+                                              await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'follow-up', '', 'incomplete', '');
+                                              setState(() {
+                                                _isNextButtonDisabled = false;
+                                                _currentStep = _currentStep + 1;
+                                              });
+                                              Navigator.of(context).pop(true);
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                  );
+                                } else {
+                                    createObservations();
+                                    setState(() {
+                                      _isNextButtonDisabled = true;
+                                    });
+                                    await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                    setState(() {
+                                        _isNextButtonDisabled = false;
+                                        _currentStep = _currentStep + 1;
+                                      });
+                                    return;
+                                  }
                                 return;
                               }
                               if (_currentStep == 0) {
