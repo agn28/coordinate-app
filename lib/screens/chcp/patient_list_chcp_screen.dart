@@ -34,6 +34,7 @@ final ageToController = TextEditingController();
 final upazilaController = TextEditingController();
 final unionController = TextEditingController();
 final villageController = TextEditingController();
+final streetController = TextEditingController();
 List patients = [];
 List allPatients = [];
 final searchController = TextEditingController();
@@ -74,6 +75,7 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
       selectedUpazila = {};
       unionController.clear();
       villageController.clear();
+      streetController.clear();
       birthDateController.clear();
       birthMonthController.clear();
       birthYearController.clear();
@@ -974,6 +976,17 @@ class _FiltersDialogState extends State<FiltersDialog> {
       });
     }
 
+    if (streetController.text != '') {
+      print(streetController.text);
+      var filteredPatients = [];
+      filteredPatients =  allPatients.where((item) => item['data']['address']['street_name'] == streetController.text).toList();
+      print('filteredPatients $filteredPatients');
+      this.widget.parent.setState(() => {
+        allPatients = filteredPatients,
+        patients = allPatients
+      });
+    }
+
     var birthDate = '';
     if (birthDateController.text != '' && birthMonthController.text != '' && birthYearController.text != '') {
       birthDate = birthYearController.text + '-' + birthMonthController.text + '-' + birthDateController.text;
@@ -1237,6 +1250,18 @@ class _FiltersDialogState extends State<FiltersDialog> {
                   hintText: AppLocalizations.of(context).translate('village'),
                   controller: villageController,
                   name: AppLocalizations.of(context).translate('village'),
+                ),
+              ),
+              Divider(),
+              SizedBox(height: 10,),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 25),
+                child: PrimaryTextField(
+                  topPaadding: 10,
+                  bottomPadding: 10,
+                  hintText: AppLocalizations.of(context).translate('streetPara'),
+                  controller: streetController,
+                  name: AppLocalizations.of(context).translate('streetPara'),
                 ),
               ),
               Divider(),

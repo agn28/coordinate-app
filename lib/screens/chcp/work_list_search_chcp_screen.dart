@@ -113,7 +113,7 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
           allPendingPatients = pending['data'];
           pendingPatientsSort();
           pendingPatients = allPendingPatients;
-          print(pendingPatients[0]['body']);
+          print('pendingPatients: ${pendingPatients[0]['body']}');
         });
       }
       if (completed['error'] != null && !completed['error']) {
@@ -595,41 +595,48 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
                           child: Text(AppLocalizations.of(context).translate('appointmentDate'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
                         ),
                       ),
+                      // SizedBox(width: 5,),
+                      // Expanded(
+                      //   flex: 2,
+                      //     child: Container(
+                      //     child: Text(AppLocalizations.of(context).translate('village'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                      //   ),
+                      // ),
                       SizedBox(width: 5,),
                       Expanded(
                         flex: 2,
                           child: Container(
-                          child: Text(AppLocalizations.of(context).translate('village'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                          child: Text(AppLocalizations.of(context).translate('name'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center,),
                         ),
                       ),
                       SizedBox(width: 5,),
                       Expanded(
                         flex: 2,
                           child: Container(
-                          child: Text(AppLocalizations.of(context).translate('name'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
-                        ),
-                      ),
-                      SizedBox(width: 5,),
-                      Expanded(
-                        flex: 2,
-                          child: Container(
-                          child: Text(AppLocalizations.of(context).translate('fathersOrHusbandsName'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                          child: Text(AppLocalizations.of(context).translate('fathersOrHusbandsName'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center,),
                         ),
                       ),
                       SizedBox(width: 5,),
                       Expanded(
                         flex: 1,
                           child: Container(
-                          child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),),
+                          child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),textAlign: TextAlign.center,),
                         ),
                       ),
+                      // SizedBox(width: 5,),
+                      // Expanded(
+                      //   flex: 1,
+                      //     child: Container(
+                      //     child: Text(AppLocalizations.of(context).translate('gender'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),),
+                      //   ),
+                      // )
                       SizedBox(width: 5,),
                       Expanded(
-                        flex: 1,
+                        flex: 2,
                           child: Container(
-                          child: Text(AppLocalizations.of(context).translate('gender'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),),
+                          child: Text(AppLocalizations.of(context).translate('streetPara'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ) ,
@@ -659,41 +666,48 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
                                 child: Text("${item['body']['next_visit_date'] ?? 'N/A'}", style: TextStyle(fontSize: 14, color: Colors.black),),
                               ),
                             ),
+                            // SizedBox(width: 5,),
+                            // Expanded(
+                            //   flex: 2,
+                            //     child: Container(
+                            //     child: Text(item['body']['address']['village'], style: TextStyle(fontSize: 14, color: Colors.black),),
+                            //   ),
+                            // ),
                             SizedBox(width: 5,),
                             Expanded(
                               flex: 2,
                                 child: Container(
-                                child: Text(item['body']['address']['village'], style: TextStyle(fontSize: 14, color: Colors.black),),
+                                child: Text(item['body']['first_name'] + ' ' + item['body']['last_name'], style: TextStyle(fontSize: 14, color: Colors.black,),textAlign: TextAlign.center,),
                               ),
                             ),
                             SizedBox(width: 5,),
                             Expanded(
                               flex: 2,
                                 child: Container(
-                                child: Text(item['body']['first_name'] + ' ' + item['body']['last_name'], style: TextStyle(fontSize: 14, color: Colors.black,),),
-                              ),
-                            ),
-                            SizedBox(width: 5,),
-                            Expanded(
-                              flex: 2,
-                                child: Container(
-                                child: Text(item['body']['father_name'] != null ? item['body']['father_name'] : item['body']['husband_name'], style: TextStyle(fontSize: 14, color: Colors.black),),
+                                child: Text(item['body']['father_name'] != null ? item['body']['father_name'] : item['body']['husband_name'], style: TextStyle(fontSize: 14, color: Colors.black), textAlign: TextAlign.center,),
                               ),
                             ),
                             SizedBox(width: 5,),
                             Expanded(
                               flex: 1,
                                 child: Container(
-                                child: Text(item['body']['age'].toString(), style: TextStyle(fontSize: 14, color: Colors.black),),
+                                child: Text(item['body']['age'].toString(), style: TextStyle(fontSize: 14, color: Colors.black),textAlign: TextAlign.center,),
                               ),
                             ),
-                            SizedBox(width: 5,),
+                            // SizedBox(width: 5,),
+                            // Expanded(
+                            //   flex: 1,
+                            //     child: Container(
+                            //     child: Text(item['body']['gender'], style: TextStyle(fontSize: 14, color: Colors.black),),
+                            //   ),
+                            // )
                             Expanded(
-                              flex: 1,
-                                child: Container(
-                                child: Text(item['body']['gender'], style: TextStyle(fontSize: 14, color: Colors.black),),
+                              flex: 2,
+                              child: Text(item['body']['address']['street_name'],
+                                style: TextStyle(color: Colors.black87, fontSize: 18),
+                                textAlign: TextAlign.center,
                               ),
-                            )
+                            ),  
                           ],
                         ),
                        ),
