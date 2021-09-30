@@ -1399,14 +1399,14 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
     if(hasIncompleteChcpEncounter) {
       encounterData = {
         'context': context,
-        'dataStatus': dataStatus,
+        'dataStatus': 'incomplete',
         'encounter': encounter,
         'observations': observations
       };
     } else {
       encounterData = {
         'context': context,
-        'dataStatus': dataStatus,
+        'dataStatus': 'incomplete',
       };
     }
     

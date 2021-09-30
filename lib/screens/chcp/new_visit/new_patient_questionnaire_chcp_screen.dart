@@ -938,7 +938,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
     print('dataStatus: $dataStatus');
      encounterData = {
         'context': context,
-        'dataStatus': dataStatus,
+        'dataStatus': 'incomplete',
       };
     
     // var response = await AssessmentController().updateAssessmentWithObservations(status, encounter, observations);
