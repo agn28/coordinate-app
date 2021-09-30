@@ -432,6 +432,13 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
             selectedRandomBloodUnit = obsData['unit'];
             print(bloodSugarText);
           }
+          if ((obsData['name'] == 'blood_glucose' || obsData['name'] == 'blood_sugar') && (obsData['type'] != null && obsData['type'] == 'fasting') && obsData['value'] != '') {
+            print('into blood_glucose');
+            var bloodGlucoseText = obsData['value'];
+            fastingBloodController.text = '${obsData['value']}';
+            selectedFastingBloodUnit = obsData['unit'];
+            print(bloodGlucoseText);
+          }
           if (obsData['name'] == 'hdl' && obsData['value'] != '') {
             print('into hdl');
             var hdlText = obsData['value'];

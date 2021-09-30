@@ -553,7 +553,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
             ldlController.text = '${obsData['value']}';
             selectedLdlUnit = obsData['unit'];
             print(ldlText);
-          } else if (obsData['name'] == 'blood_sugar' && obsData['value'] != '') {
+          } else if (obsData['name'] == 'blood_sugar' && obsData['type'] == null && obsData['value'] != '') {
             print('into blood_sugar');
             var bloodSugarText = obsData['value'];
             randomBloodController.text = '${obsData['value']}';

@@ -270,8 +270,7 @@ class _EditIncompleteEncounterChwScreenState
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
           print(obsData['name']);
-          
-          if (obsData['name'] == 'blood_sugar' && obsData['value'] != '') {
+          if (obsData['name'] == 'blood_sugar' && obsData['type'] == null && obsData['value'] != '') {
             print('into blood_sugar');
             var bloodSugarText = obsData['value'];
             bloodSugerEditingController.text = '${obsData['value']}';
@@ -279,7 +278,7 @@ class _EditIncompleteEncounterChwScreenState
             selectedBloodSugarType == 'RBS';
             print(bloodSugarText);
           }
-          if (obsData['name'] == 'blood_glucose' && obsData['value'] != '') {
+          if ((obsData['name'] == 'blood_glucose' || obsData['name'] == 'blood_sugar') && (obsData['type'] != null && obsData['type'] == 'fasting') && obsData['value'] != '') {
             print('into blood_glucose');
             var bloodGlucoseText = obsData['value'];
             bloodSugerEditingController.text = '${obsData['value']}';
