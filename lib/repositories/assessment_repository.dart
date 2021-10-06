@@ -214,14 +214,18 @@ class AssessmentRepository {
     }
   }
 
-  getIncompleteEncounterWithObservation(patientId) async {
+  getIncompleteEncounterWithObservation(patientId, {key: '', value: ''}) async {
     var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
-    print(patientId);
+    var qParam = '';
+
+    if (key != '' && value!= '') {
+      qParam = '?'+ key +'=' + value;
+    }
     var response;
     try {
       response = await client.get(
-        apiUrl + 'assessments/patients/' + patientId + '/incomplete-assessment',
+        apiUrl + 'assessments/patients/' + patientId + '/incomplete-assessment' + qParam,
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',

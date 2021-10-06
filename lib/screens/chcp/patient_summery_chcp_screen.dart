@@ -1618,7 +1618,7 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
                                       isLoading = true;
                                     });
                                     if(widget.prevScreen == 'encounter') {
-                                      var status = widget.encounterData['dataStatus'] == 'incomplete' ? 'incomplete' : 'complete';
+                                      var status = 'incomplete';
                                       if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
                                       {
                                         print('edit encounter');

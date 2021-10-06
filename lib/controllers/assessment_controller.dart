@@ -254,7 +254,7 @@ class AssessmentController {
     return data;
   }
 
-  getIncompleteEncounterWithObservation(patientId) async {
+  getIncompleteEncounterWithObservation(patientId, {key: '', value: ''}) async {
     var apiResponse;
     var response;
     var connectivityResult = await (Connectivity().checkConnectivity());
@@ -265,7 +265,7 @@ class AssessmentController {
 
       print('live incomplete encounter');
       print(patientId);
-      apiResponse = await AssessmentRepository().getIncompleteEncounterWithObservation(patientId);
+      apiResponse = await AssessmentRepository().getIncompleteEncounterWithObservation(patientId, key: key, value: value);
       print('apiResponse');
 
       print(apiResponse);
@@ -1190,7 +1190,7 @@ class AssessmentController {
     for (var observation in observationsData) {
       await ObservationRepositoryLocal().update(observation['id'], observation, false, localStatus: 'complete');
     }
-    if(referralData != '') {
+    if(referralData != '' && referralData != null && referralData.isNotEmpty) {
       await ReferralRepositoryLocal().update(referralData['id'], referralData, false, localStatus: 'complete');
     }
     // Identifying this patient with not synced data
