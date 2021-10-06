@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
@@ -62,6 +63,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
   List referralReasons;
   var selectedReason;
   var selectedReferralRole;
+  var selectedFollowupIn;
   var clinicTypeOptions = {
     'options': ['community clinic', 'upazila health complex', 'hospital', 'BRAC NCD Centre'],
     'options_bn': ['কমিউনিটি ক্লিনিক', 'উপজেলা স্বাস্থ্য কমপ্লেক্স', 'হাসপাতাল', 'ব্র্যাক এনসিডি কেন্দ্র']
@@ -76,6 +78,14 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
   };
   List referralToRoles;
 
+  var followupInOptions = {
+    'options': ['1 week', '2 weeks', '3 weeks', '1 month', '3 months', '6 months', '1 year'],
+    'options_bn': ['1 সপ্তাহ', '2 সপ্তাহ', '3 সপ্তাহ', '1 মাস', '3 মাস', '6 মাস', '1 বছর']
+  };
+  List followupIn;
+
+  var nextVisitDate = '';
+
   @override
   void initState() {
     super.initState();
@@ -89,6 +99,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
     getCenters();  
     referralReasons = referralReasonOptions['options'];
     referralToRoles = referralToRolesOptions['options']; 
+    followupIn = followupInOptions['options'];
     // clinicTypes = clinicTypeOptions['options'];
   }
 
@@ -136,6 +147,38 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
       }
     }
     print("center: $clinicTypes");
+  }
+
+  getNextVisitDate() {
+    print(selectedFollowupIn);
+    // ['1 week', '2 weeks', '1 month', '2 months', '3 months', '6 months', '1 year'];
+    var date = '';
+    if (selectedFollowupIn == '1 week') {
+      date = DateFormat('yyyy-MM-dd')
+          .format(DateTime.now().add(Duration(days: 7)));
+    } else if (selectedFollowupIn == '2 weeks') {
+      date = DateFormat('yyyy-MM-dd')
+          .format(DateTime.now().add(Duration(days: 14)));
+    } else if (selectedFollowupIn == '3 weeks') {
+      date = DateFormat('yyyy-MM-dd')
+          .format(DateTime.now().add(Duration(days: 14)));
+    } else if (selectedFollowupIn == '1 month') {
+      date = DateFormat('yyyy-MM-dd')
+          .format(DateTime.now().add(Duration(days: 30)));
+    } else if (selectedFollowupIn == '3 months') {
+      date = DateFormat('yyyy-MM-dd')
+          .format(DateTime.now().add(Duration(days: 90)));
+    } else if (selectedFollowupIn == '6 months') {
+      date = DateFormat('yyyy-MM-dd')
+          .format(DateTime.now().add(Duration(days: 180)));
+    } else if (selectedFollowupIn == '1 year') {
+      date = DateFormat('yyyy-MM-dd')
+          .format(DateTime.now().add(Duration(days: 365)));
+    }
+
+    setState(() {
+      nextVisitDate = date;
+    });
   }
 
   @override
@@ -308,6 +351,55 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                       ),
                     ),
 
+                    SizedBox(height: 30,),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Text(AppLocalizations.of(context).translate("followupIn"), style: TextStyle(color: Colors.black, fontSize: 20)),
+                    ),
+                      
+                    SizedBox(height: 10,),
+                    
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      color: kSecondaryTextField,
+                      child: DropdownButtonFormField(
+                        hint: Text(AppLocalizations.of(context).translate("followupIn"), style: TextStyle(fontSize: 20, color: kTextGrey),),
+                        
+                        items: followupIn.map((value) {
+                          return DropdownMenuItem(
+                            value: value,
+                            child: Text(getDropdownOptionText(context, followupInOptions, value)),
+                          );
+                        }).toList(),
+                        value: selectedFollowupIn,
+                        onChanged: (newValue) {
+                          setState(() {
+                            selectedFollowupIn = newValue;
+                            print('selectedFollowupIn: $selectedFollowupIn');
+                            getNextVisitDate();
+                          });
+                        },
+                      ),
+                    ),
+                    nextVisitDate != ''
+                    ? Container(
+                        margin: EdgeInsets.symmetric(vertical: 10),
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                  AppLocalizations.of(context)
+                                      .translate("nextVisitDate")+nextVisitDate,
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 16)),
+                              SizedBox(
+                                width: 30,
+                              ),
+                            ]))
+                    : Container(),
+
                     SizedBox(height: 50,),
 
                     Row(
@@ -327,9 +419,9 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                                 var referralType;
                                 if(role == 'chw')
                                 {
-                                  referralType = 'community';
+                                  referralType = 'chw';
                                 } else if(role == 'nurse'){
-                                  referralType = 'center';
+                                  referralType = 'nurse';
                                 }  else if(role == 'chcp'){
                                   referralType = 'chcp';
                                 } else{
@@ -344,6 +436,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                                 data['body']['location'] = {};
                                 data['body']['location']['clinic_type'] = selectedtype;
                                 data['body']['location']['clinic_name'] = clinicNameController.text;
+                                data['body']['follow_up_date'] = nextVisitDate;
 
                                 print(data);
 

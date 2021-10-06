@@ -543,5 +543,6 @@
   "noMedication" : "There is no Medication",
   "wantToCompleteVisit" : "Do you want to complete the visit ?",
   "chcpAssessment" : "Chcp Assessment",
-  "referTo":"Refer To"
+  "referTo":"Refer To",
+  "followupIn": "Community Clinic Follow Up In"
 }

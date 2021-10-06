@@ -1425,7 +1425,7 @@ class AssessmentController {
           return;
         }
         // exception type known (e.g: slow/no net)
-        Scaffold.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Warning: ${apiResponse['message']}. Using offline...'),
           backgroundColor: kPrimaryYellowColor,
         ));

@@ -472,7 +472,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
 
     print('lastFollowup $lastFollowup');
     if(lastFollowup != null && lastFollowup.isNotEmpty) {
-      if(lastFollowup['data']['body']['type'] == 'follow up visit (community)'
+      if(lastFollowup['data']['body']['type'] == 'follow up visit (center)'
         && lastFollowup['data']['body']['status'] == 'incomplete') {
           lastFollowupType = lastFollowup['data']['body']['followup_type'];
           print('lastFollowupType ${lastFollowupType}');
@@ -1628,13 +1628,10 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                       if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
                                       {
                                         print('edit followup');
-                                        print(status);
                                         var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
 
                                       } else {
                                         print('new followup');
-                                        print(status);
-                                        print(widget.encounterData['followupType']);
                                         var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
                                       }
                                       status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;

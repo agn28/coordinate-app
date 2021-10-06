@@ -544,5 +544,6 @@
   "noMedication" : "কোন ওষুধ দেওয়া হয় নাই",
   "wantToCompleteVisit" : "আপনি কি পরিদর্শন সম্পন্ন করতে চান?",
   "chcpAssessment" : "Chcp মূল্যায়ন",
-  "referTo":"কাকে রেফার করবেন?"
+  "referTo":"কাকে রেফার করবেন?",
+  "followupIn": "ফলোআপ পরিদর্শন"
 }
