@@ -734,12 +734,10 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                                     // setState(() {
                                     //   isLoading = false;
                                     // });
-                                    // Navigator.of(_scaffoldKey.currentContext).pushNamed('/chcpHome');
                                     setState(() {
                                       _currentStep++;
                                       nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                                     });
-                                    _completeStep();
                                     return;
                                   },
                                 ),
@@ -759,17 +757,19 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                         // setState(() {
                         //   isLoading = false;
                         // });
-                        // Navigator.of(_scaffoldKey.currentContext).pushNamed('/chcpHome');
-                      
+                        setState(() {
+                          _currentStep++;
+                          nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                        });
+                          return;
                         }
-                      
-                      
                       return;
                     }
                     if (_currentStep == 8) {
                       setState(() {
                         _currentStep = _currentStep + 1;
                       });
+                      _completeStep();
                       return;
                     }
 
@@ -5189,76 +5189,9 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
 
 
                         //previous patient history steps
-                      dueCarePlans.length > 0 ?
-                      Container(
-                        // width: double.infinity,
-                        // margin: EdgeInsets.only(left: 20, right: 20, top: 20),
-                        // height: 50,
-                        // decoration: BoxDecoration(
-                        //   color: kPrimaryColor,
-                        //   borderRadius: BorderRadius.circular(3)
-                        // ),
-                        // child: FlatButton(
-                        //   onPressed: () async {
-                        //     // print('cpUpdateCountbt $cpUpdateCount');
-                        //     // if(cpUpdateCount > 0) {
-                        //     //   print('if');
-                        //     //   //Navigator.of(context).pushNamed('/chwPatientSummary');
-                        //     //   showDialog(
-                        //     //     context: context,
-                        //     //     builder: (BuildContext context) {
-                        //     //       // return object of type Dialog
-                        //     //       return AlertDialog(
-                        //     //         content: new Text(AppLocalizations.of(context).translate("carePlanActionsNotCompleted"), style: TextStyle(fontSize: 20),),
-                        //     //         actions: <Widget>[
-                        //     //           // usually buttons at the bottom of the dialog
-                        //     //           FlatButton(
-                        //     //             child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(color: kPrimaryColor)),
-                        //     //             onPressed: () {
-                        //     //               Navigator.of(context).pop();
-                        //     //             },
-                        //     //           ),
-                        //     //           FlatButton(
-                        //     //             child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
-                        //     //             onPressed: () async {
-                        //     //               // Navigator.of(context).pop();
-                        //     //               var result;
-                        //     //               setState(() {
-                        //     //                 isLoading = true;
-                        //     //               });
-                        //     //               // result = await AssessmentController().createOnlyAssessment(context, 'Care Plan Delivery', 'care-plan-delivered', '', 'complete', '');
-
-                        //     //               setState(() {
-                        //     //                 isLoading = false;
-                        //     //               });
-                        //     //               // Navigator.of(_scaffoldKey.currentContext).pushNamed('/chcpHome');
-                                          
-                        //     //             },
-                        //     //           ),
-                        //     //         ],
-                        //     //       );
-                        //     //     }
-                        //     //   );
-                        //     // }
-                        //     // else {
-                        //     //   print('else');
-                        //     //   var result;
-                        //     //   setState(() {
-                        //     //     isLoading = true;
-                        //     //   });
-                        //     //   // result = await AssessmentController().createOnlyAssessment(context, 'Care Plan Delivery', 'care-plan-delivered', '', 'complete', '');
-
-                        //     //   setState(() {
-                        //     //     isLoading = false;
-                        //     //   });
-                        //     //   // Navigator.of(_scaffoldKey.currentContext).pushNamed('/chcpHome');
-                            
-                        //     //   }
-                        //     },
-                        //     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        //     child: Text(AppLocalizations.of(context).translate('completeVisit'), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
-                        // ),
-                      ): Container(
+                      dueCarePlans.length > 0 
+                      ? Container()
+                      : Container(
                         width: double.infinity,
                         margin: EdgeInsets.only(left: 20, right: 20, top: 20),
                         height: 50,
@@ -5408,18 +5341,7 @@ class _GoalItemState extends State<GoalItem> {
   }
   setStatus(completedItem) {
     print('goal set status');
-    // print(completedItem);
-
-    // set all the actions as completed
-    // setState(() {
-    //   dueCarePlans.remove(completedItem);
-    //   var data = completedItem;
-    //   data['items'].forEach( (goal) {
-    //     completedItem['items'][completedItem['items'].indexOf(goal)]['meta']['status'] = 'completed';
-    //   });
-    //   completedCarePlans.add(completedItem);
-    //   // status = 'completed';
-    // });
+    
   }
   
   getCompletedDate(goal) {
@@ -5427,7 +5349,6 @@ class _GoalItemState extends State<GoalItem> {
     DateTime date;
     print('asdknas');
     goal['items'].forEach((item) {
-      // print(item['body']['activityDuration']['end']);
       DateFormat format = new DateFormat("E LLL d y");
       var endDate;
         try {
@@ -5480,22 +5401,7 @@ class _GoalItemState extends State<GoalItem> {
               Container(
                 child: Row(
                   children: <Widget>[
-                    // Container(
-                    //   padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                    //   decoration: BoxDecoration(
-                    //     border: Border.all(color: status == 'pending' ? kPrimaryRedColor : kPrimaryGreenColor),
-                    //     borderRadius: BorderRadius.circular(3)
-                    //   ),
-                    //   child: Row(
-                    //     children: <Widget>[
-                    //       // Text('${report['body']['result']['actions'].length} Actions  ', style: TextStyle(color: status == 'pending' ? kPrimaryRedColor : kPrimaryGreenColor, fontWeight: FontWeight.w500),),
-                    //       Text('${getCount()}'+AppLocalizations.of(context).translate("actions"), style: TextStyle(color: status == 'pending' ? kPrimaryRedColor : kPrimaryGreenColor, fontWeight: FontWeight.w500),),
-                    //       if (status != 'pending') 
-                    //       Icon(Icons.check_circle, color: kPrimaryGreenColor, size: 14,)
-                    //     ],
-                    //   ),
-                    // ),
-                    // Icon(Icons.chevron_right, color: kBorderLight,)
+                    
                   ],
                 ),
               ),
@@ -5510,42 +5416,12 @@ class _GoalItemState extends State<GoalItem> {
               }).toList(),
             ],
           ),
-          // Column(
-          //   children: <Widget>[
-          //     ...widget.item['items'].map((item) {
-          //       return ActionItem(item: item, parent: this);
-          //     }).toList(),
-          //   ],
-          // ),
+          
         ],
       ),
     );
   }
   
-  // return Container(
-  //   child: Column(
-  //     children: [
-  //     // Container(
-  //     //   width: double.infinity,
-  //     //   child: Text(AppLocalizations.of(context).translate('pendingActions'), style: TextStyle( fontSize: 16),),
-  //     //   padding: EdgeInsets.only(bottom: 15, left: 20),
-  //     //   decoration: BoxDecoration(
-  //     //     border: Border(
-  //     //       bottom: BorderSide(color: kBorderLighter)
-  //     //     )
-  //     //   ),
-  //     // ),
-  //     Column(
-  //       children: <Widget>[
-  //         ...widget.item['items'].map((item) {
-  //           return ActionItem(item: item, parent: this);
-  //         }).toList(),
-  //       ],
-  //     ),
-  //     ],
-  //   ),
-  // );
-  // }
 }
 
 bool btnDisabled = true;
