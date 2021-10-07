@@ -526,7 +526,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                 onPressed: () {
                   setState(() {
                     nextHide = false;
-                    _currentStep = _currentStep - 1;
+                    _currentStep > 0 ? _currentStep = _currentStep - 1:null;
                     print('currentStep: $_currentStep');
                     if( _currentStep == 2){
                       jumpToStart();
