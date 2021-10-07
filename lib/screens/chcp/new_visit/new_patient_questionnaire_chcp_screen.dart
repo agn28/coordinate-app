@@ -485,7 +485,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
           },
         child: Icon(Icons.arrow_back, color: Colors.white,)
         ),
-        title: Text(AppLocalizations.of(context).translate('newQuestionnaire')),
+        title: Text(AppLocalizations.of(context).translate('newVisit')),
       ),
       body: !isLoading ? GestureDetector(
         onTap: () {
@@ -674,7 +674,6 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                       _completeStep();
                       return;
                     }
-
                     if (_currentStep == 7) {
                       Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);
                       setState(() {
@@ -3675,12 +3674,7 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
     super.initState();
 
     print('prevScreen ${widget.prevScreen}');
-    dueCarePlans = [];
-    completedCarePlans = [];
-    upcomingCarePlans = [];
     conditions = [];
-    referrals = [];
-    pendingReferral = null;
     carePlansEmpty = false;
     getRiskQuestionAnswer();
   

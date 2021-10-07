@@ -11,7 +11,8 @@
         android:label="Coordinate 1.0.27_http"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"
-        android:fullBackupOnly="true">
+        android:fullBackupOnly="true"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
