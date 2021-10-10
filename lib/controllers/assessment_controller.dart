@@ -1171,11 +1171,14 @@ class AssessmentController {
   updateAssessmentWithObservationsLive(assessmentStatus, encounter, observations) async {
     
     var apiDataObservations = await updateObservations(assessmentStatus, encounter, observations);
+    print('encounter : ${encounter}');
+    assessmentStatus == 'complete' ? encounter['meta']['completed_at'] = DateTime.now().toString() : null;
     Map<String, dynamic> apiData = {
       'assessment': encounter,
       'observations': apiDataObservations
     };
     print('apiData $apiData');
+    
     var response = await storeAssessmentWithObservationsLive(encounter, apiDataObservations, apiData);
   
     if (assessmentStatus == 'complete') {
