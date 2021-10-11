@@ -1616,8 +1616,8 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                         // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
                                         var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations']);
                                       } else {
-
-                                        print('status: ()$status');
+                                        print('new encounter');
+                                        print('status: $status');
                                         // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', status, '');
                                         var response = await AssessmentController().createAssessmentWithObservationsLive('new ncd center assessment', assessmentStatus: status);
                                       }
