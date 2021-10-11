@@ -94,7 +94,7 @@ class _EditIncompleteFullFollowupScreenState extends State<EditIncompleteFullFol
       isLoading = true;
     });
     var patientId = Patient().getPatient()['id'];
-    var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
+    var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId, key:'type', value:'follow up visit (center)');
     setState(() {
       isLoading = false;
     });

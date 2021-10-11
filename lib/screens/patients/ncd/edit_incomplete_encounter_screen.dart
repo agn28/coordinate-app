@@ -138,7 +138,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     });
     var patientId = Patient().getPatient()['id'];
     print('patientId $patientId');
-    var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
+    var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId, key:'type', value:'new ncd center assessment');
     if(data != null && data.isNotEmpty && !data['error']) {
       if(data['data']['assessment']['body']['type'] == 'new questionnaire') {
         hasChwEncounter = true;

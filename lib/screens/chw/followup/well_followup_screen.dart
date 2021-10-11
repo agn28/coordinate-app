@@ -79,7 +79,7 @@ getIncompleteFollowup() async {
   observations = [];
 
   var patientId = Patient().getPatient()['id'];
-  var incompleteEncounter = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
+  var incompleteEncounter = await AssessmentController().getIncompleteEncounterWithObservation(patientId, key:'type', value:'follow up visit (community)');
 
   if(incompleteEncounter != null && incompleteEncounter.isNotEmpty && !incompleteEncounter['error']) {
     if(incompleteEncounter['data']['assessment']['body']['type'] == 'follow up visit (center)') {

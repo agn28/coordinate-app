@@ -155,7 +155,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
 
     print('lastFollowup $lastFollowup');
     if(lastFollowup != null && lastFollowup.isNotEmpty) {
-      if(lastFollowup['data']['body']['type'] == 'follow up visit (center)'
+      if(lastFollowup['data']['body']['type'] == 'follow up visit (community)'
         && lastFollowup['data']['body']['status'] == 'incomplete') {
           setState(() {
             hasIncompleteFollowup = true;
@@ -1172,7 +1172,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
 
                                       } else {
                                         print('new followup');
-                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
+                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (community)', 'follow-up', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
                                       }
                                     }
                                     setState(() {
@@ -1212,7 +1212,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                         print('new followup');
                                         print(status);
                                         print(widget.encounterData['followupType']);
-                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
+                                        var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (community)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
                                       }
                                       status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
                                     }

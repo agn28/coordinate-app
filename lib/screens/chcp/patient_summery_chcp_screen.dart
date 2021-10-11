@@ -1650,7 +1650,7 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
                                         print(widget.encounterData['followupType']);
                                         // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (chcp)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
                                         if(status == 'complete') {
-                                          var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic assessment', assessmentStatus: status,);
+                                          var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic followup', assessmentStatus: status,);
                                         }
                                       }
                                       status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;

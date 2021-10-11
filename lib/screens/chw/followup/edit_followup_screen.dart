@@ -106,7 +106,7 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
       isLoading = true;
     });
     var patientId = Patient().getPatient()['id'];
-    var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
+    var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId, key:'type', value:'follow up visit (community)');
     setState(() {
       isLoading = false;
     });
@@ -1235,7 +1235,7 @@ class _MeasurementsState extends State<Measurements> {
     observations = [];
 
     var patientId = Patient().getPatient()['id'];
-    var incompleteEncounter = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
+    var incompleteEncounter = await AssessmentController().getIncompleteEncounterWithObservation(patientId, key:'type', value:'follow up visit (community)');
 
     if(incompleteEncounter != null && incompleteEncounter.isNotEmpty && !incompleteEncounter['error']) {
       if(incompleteEncounter['data']['assessment']['body']['type'] == 'follow up visit (center)') {
