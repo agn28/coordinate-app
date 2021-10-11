@@ -111,7 +111,7 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
       if (pending['error'] != null && !pending['error'] && pending['data'].isNotEmpty) {
         setState(() {
           allPendingPatients = pending['data'];
-          pendingPatientsSort();
+          // pendingPatientsSort();
           pendingPatients = allPendingPatients;
           print('pendingPatients: ${pendingPatients[0]['body']}');
         });
@@ -663,8 +663,8 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
                             Expanded(
                               flex: 2,
                               child: Container(
-                                // child: Text("${item['body']['next_visit_date'] ?? 'N/A'}", style: TextStyle(fontSize: 14, color: Colors.black),),
-                                child: Text("${item['body']['follow_up_info'][item['body']['follow_up_info'].indexWhere((t)=> t['type'] == 'chw')]['date'] ?? 'N/A'}", style: TextStyle(fontSize: 14, color: Colors.black),),
+                                child: Text("${item['body']['appointment_date'] ?? 'N/A'}", style: TextStyle(fontSize: 14, color: Colors.black),),
+                                // child: Text("${item['body']['follow_up_info'][item['body']['follow_up_info'].indexWhere((t)=> t['type'] == 'chw')]['date'] ?? 'N/A'}", style: TextStyle(fontSize: 14, color: Colors.black),),
                               ),
                             ),
                             // SizedBox(width: 5,),
