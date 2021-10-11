@@ -1144,6 +1144,7 @@ class AssessmentController {
     var localNotSyncedAssessment = [];
     localNotSyncedAssessment = await this.getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: type);
     if(localNotSyncedAssessment.isNotEmpty) {
+      assessmentStatus == 'complete' ? localNotSyncedAssessment.first['meta']['completed_at'] = DateTime.now().toString() : null;
       var localNotSyncedObservations = await this.getObservationsByAssessment(localNotSyncedAssessment.first);
       var localNotSyncedReferral = await ReferralController().getReferralByAssessment(localNotSyncedAssessment.first['id']);
       print('ref $localNotSyncedReferral');
@@ -1171,7 +1172,6 @@ class AssessmentController {
   updateAssessmentWithObservationsLive(assessmentStatus, encounter, observations) async {
     
     var apiDataObservations = await updateObservations(assessmentStatus, encounter, observations);
-    print('encounter : ${encounter}');
     assessmentStatus == 'complete' ? encounter['meta']['completed_at'] = DateTime.now().toString() : null;
     Map<String, dynamic> apiData = {
       'assessment': encounter,

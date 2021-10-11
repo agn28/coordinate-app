@@ -1612,12 +1612,12 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                       if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
                                       {
                                         print('edit encounter');
-                                        print('statusss: $status');
+                                        print('status: $status');
                                         // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
                                         var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations']);
                                       } else {
-                                        print('new encounter');
-                                        print('stattusss: $status');
+
+                                        print('status: ()$status');
                                         // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', status, '');
                                         var response = await AssessmentController().createAssessmentWithObservationsLive('new ncd center assessment', assessmentStatus: status);
                                       }
