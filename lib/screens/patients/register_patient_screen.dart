@@ -52,6 +52,7 @@ final mobilePhoneController = TextEditingController();
 final emailController = TextEditingController();
 final nidController = TextEditingController();
 final bracPatientIdContoller = TextEditingController();
+final educationController = TextEditingController();
 
 final contactFirstNameController = TextEditingController();
 final contactLastNameController = TextEditingController();
@@ -292,6 +293,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     emailController.text = patient['data']['email'];
     nidController.text = patient['data']['nid'];
     bracPatientIdContoller.text = patient['data']['brac_id'];
+    educationController.text = patient['data']['education'];
     //centers = patient['data']['centers'];
     hhNumberController.text = patient['data']['hh_number'];
     serialController.text = patient['data']['serial'];
@@ -351,6 +353,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
     emailController.clear();
     nidController.clear();
     bracPatientIdContoller.clear();
+    educationController.clear();
     selectedCenters = null;
     townController.clear();
     contactFirstNameController.clear();
@@ -587,6 +590,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
       'birth_year': birthYearController.text,
       'nid': nidController.text,
       'brac_id': bracPatientIdContoller.text,
+      'education' : educationController.text,
 
       'registration_date': DateFormat('y-MM-dd').format(DateTime.now()),
       'address': {
@@ -1222,6 +1226,17 @@ class _PatientDetailsState extends State<PatientDetails> {
                       print("centerssss: $value");
                     },
                   ),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                PrimaryTextField(
+                  topPaadding: 10,
+                  bottomPadding: 10,
+                  hintText: AppLocalizations.of(context).translate('educationYear'),
+                  controller: educationController,
+                  name: AppLocalizations.of(context).translate('educationYear'),
+                  // validation: true,
                 ),
                 SizedBox(
                   height: 30,
@@ -1982,7 +1997,28 @@ class _ViewSummaryState extends State<ViewSummary> {
                         )
                       : Container(
                           height: 0,
-                        )
+                        ),
+                      SizedBox(
+                        height: 7,
+                      ),
+                      educationController.text.isNotEmpty
+                          ? Row(
+                              children: <Widget>[
+                                Text(
+                                  AppLocalizations.of(context)
+                                          .translate('educationYear') +
+                                      ': ',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                Text(
+                                  educationController.text,
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ],
+                            )
+                          : Container(
+                              height: 0,
+                            ),
                 ],
               ),
             ),
