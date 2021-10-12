@@ -179,7 +179,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
       isLoading = true;
     });
     var patientId = Patient().getPatient()['id'];
-    var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
+    var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId, key:'type', value:'new ncd center assessment');
     print('incompleteData ${data}');
     //TODO: need to get performer name from local
     // if(data != null && data['data']['assessment']['body']['performed_by'] != null)
