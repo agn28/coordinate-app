@@ -12,7 +12,6 @@
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"
         android:fullBackupOnly="true"
-        android:usesCleartextTraffic="true"
         android:hasFragileUserData="true">
         <activity
             android:name=".MainActivity"

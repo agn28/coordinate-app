@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:basic_utils/basic_utils.dart' as basic_utils;
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -1552,6 +1553,37 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
                                   ),
                                 ) : Container(),
                                 SizedBox(height: 20,),
+                                Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 25),
+                                  child: DateTimeField(
+                                    format: DateFormat("yyyy-MM-dd"),
+                                    controller: lastVisitDateController,
+                                    decoration: InputDecoration(
+                                      hintText: AppLocalizations.of(context).translate("lastVisitDate"),
+                                      hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                                      contentPadding: EdgeInsets.only(top: 18, bottom: 18),
+                                      prefixIcon: Icon(Icons.date_range),
+                                      filled: true,
+                                      fillColor: kSecondaryTextField,
+                                      border: new UnderlineInputBorder(
+                                        borderSide: new BorderSide(color: Colors.white),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(4),
+                                          topRight: Radius.circular(4),
+                                        )
+                                      ),
+                                    ),
+                                    
+                                    onShowPicker: (context, currentValue) {
+                                      return showDatePicker(
+                                          context: context,
+                                          firstDate: DateTime(1900),
+                                          initialDate: currentValue ?? DateTime.now(),
+                                          lastDate: DateTime(2100));
+                                    },
+                                  ),
+                                ),
+                                SizedBox(height: 20,),
                                 (widget.prevScreen == 'encounter' || widget.prevScreen == 'followup')
                                 ? Container(
                                   width: double.infinity,
@@ -1563,38 +1595,38 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
                                   ),
                                   child: FlatButton(
                                   onPressed: () async {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
-                                    if(widget.prevScreen == 'encounter') {
-                                      if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
-                                      {
-                                        print('edit encounter');
-                                        print('${widget.encounterData['encounter']}');
-                                        // var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
-                                        var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
-                                        // var response = await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
-                                      } else {
-                                        print('new encounter');
-                                        // var response = await AssessmentController().createAssessmentWithObservations(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
-                                        var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic assessment');
-                                        // var response = await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
-                                      }
-                                    } else if(widget.prevScreen == 'followup') {
-                                      if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
-                                      {
-                                        print('edit followup');
-                                        print('${widget.encounterData['encounter']}');
-                                        // var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
+                                    // setState(() {
+                                    //   isLoading = true;
+                                    // });
+                                    // if(widget.prevScreen == 'encounter') {
+                                    //   if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
+                                    //   {
+                                    //     print('edit encounter');
+                                    //     print('${widget.encounterData['encounter']}');
+                                    //     // var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
+                                    //     var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
+                                    //     // var response = await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                                    //   } else {
+                                    //     print('new encounter');
+                                    //     // var response = await AssessmentController().createAssessmentWithObservations(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                                    //     var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic assessment');
+                                    //     // var response = await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                                    //   }
+                                    // } else if(widget.prevScreen == 'followup') {
+                                    //   if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
+                                    //   {
+                                    //     print('edit followup');
+                                    //     print('${widget.encounterData['encounter']}');
+                                    //     // var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
 
-                                      } else {
-                                        print('new followup');
-                                        // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (chcp)', 'follow-up', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
-                                      }
-                                    }
-                                    setState(() {
-                                      isLoading = false;
-                                    });
+                                    //   } else {
+                                    //     print('new followup');
+                                    //     // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (chcp)', 'follow-up', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
+                                    //   }
+                                    // }
+                                    // setState(() {
+                                    //   isLoading = false;
+                                    // });
                                     // return;
                                     Navigator.of(context).pushNamed('/chcpHome',);
                                   },
@@ -1614,50 +1646,50 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
                                   ),
                                   child: FlatButton(
                                   onPressed: () async {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
-                                    if(widget.prevScreen == 'encounter') {
-                                      var status = 'incomplete';
-                                      if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
-                                      {
-                                        print('edit encounter');
-                                        print(status);
-                                        // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
-                                        var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations']);
+                                    // setState(() {
+                                    //   isLoading = true;
+                                    // });
+                                    // if(widget.prevScreen == 'encounter') {
+                                    //   var status = 'incomplete';
+                                    //   if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
+                                    //   {
+                                    //     print('edit encounter');
+                                    //     print(status);
+                                    //     // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
+                                    //     var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations']);
                                         
-                                      } else {
-                                        print('new encounter');
-                                        print(status);
-                                        // var response = await AssessmentController().createAssessmentWithObservations(context, 'community clinic assessment', 'chcp', '', status, '');
-                                        var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic assessment', assessmentStatus: status);
-                                      }
-                                      status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
+                                    //   } else {
+                                    //     print('new encounter');
+                                    //     print(status);
+                                    //     // var response = await AssessmentController().createAssessmentWithObservations(context, 'community clinic assessment', 'chcp', '', status, '');
+                                    //     var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic assessment', assessmentStatus: status);
+                                    //   }
+                                    //   status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
 
-                                    } else if(widget.prevScreen == 'followup') {
-                                      var status = widget.encounterData['dataStatus'] == 'incomplete' ? 'incomplete' : 'complete';
-                                      if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
-                                      {
-                                        print('edit followup');
-                                        print(status);
-                                        // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
-                                        if(status == 'complete') {
-                                          var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations']);
-                                        }
-                                      } else {
-                                        print('new followup');
-                                        print(status);
-                                        print(widget.encounterData['followupType']);
-                                        // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (chcp)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
-                                        if(status == 'complete') {
-                                          var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic followup', assessmentStatus: status,);
-                                        }
-                                      }
-                                      status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
-                                    }
-                                    setState(() {
-                                      isLoading = false;
-                                    });
+                                    // } else if(widget.prevScreen == 'followup') {
+                                    //   var status = widget.encounterData['dataStatus'] == 'incomplete' ? 'incomplete' : 'complete';
+                                    //   if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
+                                    //   {
+                                    //     print('edit followup');
+                                    //     print(status);
+                                    //     // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
+                                    //     if(status == 'complete') {
+                                    //       var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations']);
+                                    //     }
+                                    //   } else {
+                                    //     print('new followup');
+                                    //     print(status);
+                                    //     print(widget.encounterData['followupType']);
+                                    //     // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (chcp)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
+                                    //     if(status == 'complete') {
+                                    //       var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic followup', assessmentStatus: status,);
+                                    //     }
+                                    //   }
+                                    //   status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
+                                    // }
+                                    // setState(() {
+                                    //   isLoading = false;
+                                    // });
                                     Navigator.of(context).pushNamed('/chcpHome',);
                                   },
                                   color: kPrimaryColor,
