@@ -53,8 +53,10 @@ var medicalHistoryAnswers = [];
 var medicationQuestions = {};
 var medicationAnswers = [];
 var riskQuestions = {};
+var relativeQuestions = {};
 var counsellingQuestions = {};
 var riskAnswers = [];
+var relativeAnswers = [];
 var counsellingAnswers = [];
 var answers = [];
 
@@ -66,6 +68,8 @@ bool isLoading = false;
 
 var encounter;
 var observations = [];
+
+bool _isNextButtonDisabled = false;
 
 // bool _isBloodPressureEnable = false;
 // bool _isBodyMeasurementsEnable = false;
@@ -116,6 +120,8 @@ class _EditIncompleteEncounterChwScreenState
     _checkAuth();
     clearForm();
     isLoading = false;
+
+    _isNextButtonDisabled = false;
 
     print(Language().getLanguage());
     nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
@@ -202,6 +208,45 @@ class _EditIncompleteEncounterChwScreenState
                       obsData[key];
                 });
               }
+            }
+          });
+        } else if (obsData['name'] == 'relative_problems') {
+          print('into relative problems');
+          var keys = obsData.keys.toList();
+          print(keys);
+          keys.forEach((key) {
+            if (obsData[key] != '') {
+              print('into keys');
+              var matchedMhq =
+                  relativeQuestions['items'].where((mhq) => mhq['key'] == key);
+              if (matchedMhq.isNotEmpty) {
+                matchedMhq = matchedMhq.first;
+                setState(() {
+                  relativeAnswers[relativeQuestions['items']
+                      .indexOf(matchedMhq)] = obsData[key];
+                });
+              }
+            }
+            if (key == 'religion') {
+              selectedReligion = obsData[key];
+            }
+            if (key == 'occupation') {
+              occupationController.text = '${obsData[key]}';
+            }
+            if (key == 'ethnicity') {
+              selectedEthnicity = obsData[key];
+            }
+            if (key == 'monthly_income') {
+              incomeController.text = '${obsData[key]}';
+            }
+            if (key == 'blood_group') {
+              selectedBloodGroup = obsData[key];
+            }
+            if (key == 'education') {
+              educationController.text = '${obsData[key]}';
+            }
+            if (key == 'tribe') {
+              isTribe = obsData[key];
             }
           });
         } else if (obsData['name'] == 'counselling_provided') {
@@ -304,6 +349,7 @@ class _EditIncompleteEncounterChwScreenState
     medicationQuestions =
         Questionnaire().questions['new_patient']['medication'];
     riskQuestions = Questionnaire().questions['new_patient']['risk_factors'];
+    relativeQuestions = Questionnaire().questions['new_patient']['relative_problems'];
     counsellingQuestions =
         Questionnaire().questions['new_patient']['counselling_provided'];
   }
@@ -312,6 +358,7 @@ class _EditIncompleteEncounterChwScreenState
     medicalHistoryAnswers = [];
     medicationAnswers = [];
     riskAnswers = [];
+    relativeAnswers = [];
     counsellingAnswers = [];
     medicalHistoryQuestions['items'].forEach((qtn) {
       medicalHistoryAnswers.add('');
@@ -324,6 +371,9 @@ class _EditIncompleteEncounterChwScreenState
     });
     riskQuestions['items'].forEach((qtn) {
       riskAnswers.add('');
+    });
+    relativeQuestions['items'].forEach((qtn) {
+      relativeAnswers.add('');
     });
   }
 
@@ -564,7 +614,7 @@ class _EditIncompleteEncounterChwScreenState
                   
                   setState(() {
                     nextHide = false;
-                    _currentStep = _currentStep - 1;
+                    _currentStep > 0 ? _currentStep = _currentStep - 1:null;
                     nextText = AppLocalizations.of(context).translate('next');
                   });
                 },
@@ -596,33 +646,73 @@ class _EditIncompleteEncounterChwScreenState
             Expanded(
               child: _currentStep < _mySteps().length || nextHide ? FlatButton(
                 onPressed: ()async {
+                  if(_isNextButtonDisabled)
+                      return;
                   print(_currentStep);
                   if (_currentStep == 0) {
                       Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
                       print("addNewMedicalHistoryNcd ${Questionnaire().qnItems}");
+                      setState(() {
+                        _isNextButtonDisabled = true;
+                      });
                       await AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
-                          
+                      setState(() {
+                        _isNextButtonDisabled = false;
+                      });  
                     }
 
                     if (_currentStep == 1) {
                       Questionnaire().addNewMedicationNcd(
                           'medication', medicationAnswers);
                       print(Questionnaire().qnItems);
+                      setState(() {
+                        _isNextButtonDisabled = true;
+                      });
                       await AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
-                      
+                      setState(() {
+                        _isNextButtonDisabled = false;
+                      }); 
                     }
 
                     if (_currentStep == 2) {
                       Questionnaire().addNewRiskFactorsNcd(
                           'risk_factors', riskAnswers);
                       print(Questionnaire().qnItems);
+                      setState(() {
+                        _isNextButtonDisabled = true;
+                      });
                       await AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
-                      
+                      setState(() {
+                        _isNextButtonDisabled = false;
+                      });
                     }
 
-                    if (_currentStep == 4) {
+                    if (_currentStep == 5) {
                       Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);
                       _completeStep();
+                      return;
+                    }
+                    if (_currentStep == 4) {
+                      var relativeAdditionalData = {
+                        'religion': selectedReligion,
+                        'occupation': occupationController.text,
+                        'ethnicity': selectedEthnicity,
+                        'monthly_income': incomeController.text,
+                        'blood_group': selectedBloodGroup,
+                        'education': educationController.text,
+                        'tribe': isTribe
+                      };
+                      print('relativeAdditionalData $relativeAdditionalData');
+                      Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
+                      setState(() {
+                        _isNextButtonDisabled = true;
+                      });
+                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
+                      setState(() {
+                        _isNextButtonDisabled = false;
+                        _currentStep = _currentStep + 1;
+                        nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                      });
                       return;
                     }
                     if (_currentStep == 3) {
@@ -652,12 +742,15 @@ class _EditIncompleteEncounterChwScreenState
                                   child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
                                   onPressed: () async{
                                     // Navigator.of(context).pop(true);
+                                    createObservations();
                                     setState(() {
+                                      _isNextButtonDisabled = true;
+                                    });
+                                    await AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
+                                    setState(() {
+                                      _isNextButtonDisabled = false;
                                       _currentStep = _currentStep + 1;
                                     });
-                                    createObservations();
-                                    await AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
-                      
                                     Navigator.of(context).pop(true);
                                   },
                                 ),
@@ -870,6 +963,15 @@ class _EditIncompleteEncounterChwScreenState
           textAlign: TextAlign.center,
         ),
         content: Measurements(),
+        isActive: _currentStep >= 2,
+      ),
+
+      CustomStep(
+        title: Text(
+          AppLocalizations.of(context).translate("permission"),
+          textAlign: TextAlign.center,
+        ),
+        content: History(),
         isActive: _currentStep >= 2,
       ),
 
@@ -1982,6 +2084,401 @@ class _MeasurementsState extends State<Measurements> {
                     ],
                   ),
                 )
+              ],
+            ),
+          )),
+    );
+  }
+}
+
+var occupationController = TextEditingController();
+var incomeController = TextEditingController();
+var educationController = TextEditingController();
+var personalQuestions = {
+  'religion' :
+    {
+      'options': ['Islam', 'Hindu', 'Cristianity', 'Others'],
+      'options_bn': ['ইসলাম', 'হিন্দু', 'খ্রিস্টান', 'অন্যান্য']
+    },
+    'ethnicity' :
+    {
+      'options': ['Bengali', 'Others'],
+      'options_bn': ['বাংলাদেশী', 'অন্যান্য'],
+    },
+    'blood_group' : {
+      'options': ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-', "Don't know"],
+      'options_bn': ['এবি+', 'এবি-', 'এ+', 'এ-', 'বি+', 'বি-', 'ও+', 'ও-', "জানি না"],
+    }
+};    
+var religions = personalQuestions['religion']['options'];
+var selectedReligion = null;
+var ethnicity = personalQuestions['ethnicity']['options'];
+var selectedEthnicity = null;
+var bloodGroups = personalQuestions['blood_group']['options'];
+var selectedBloodGroup = null;
+var isTribe = null;
+
+getDropdownOptionText(context, list, value) {
+  var locale = Localizations.localeOf(context);
+
+  if (locale == Locale('bn', 'BN')) {
+
+    if (list['options_bn'] != null) {
+      var matchedIndex = list['options'].indexOf(value);
+      print('matchedIndex $matchedIndex');
+      print(list['options_bn'][matchedIndex]);
+      return list['options_bn'][matchedIndex];
+    }
+    return StringUtils.capitalize(value);
+  }
+  return StringUtils.capitalize(value);
+}
+class History extends StatefulWidget {
+  @override
+  _HistoryState createState() => _HistoryState();
+}
+class _HistoryState extends State<History> {
+  @override
+   void initState() {
+    super.initState();
+   }
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      physics: ClampingScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+          child: Form(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  AppLocalizations.of(context).translate('familyHistory'),
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500),
+                ),
+                SizedBox(
+                  height: 24,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      border:
+                          Border.all(width: 0.5, color: Colors.grey.shade400),
+                      borderRadius: BorderRadius.circular(10)),
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        child: Column(
+                          children: [
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate('religion'),
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 16)),
+                                  SizedBox(
+                                    width: 85,
+                                  ),
+                                  Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 15),
+                                    color: kSecondaryTextField,
+                                    child: DropdownButton(
+                                      items: religions.map((value) {
+                                        return DropdownMenuItem(
+                                          value: value,
+                                          child: Text(getDropdownOptionText(context, personalQuestions['religion'], value)),
+                                        );
+                                      }).toList(),
+                                      value: selectedReligion,
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          selectedReligion = newValue;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate('occupation'),
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 16)),
+                                  SizedBox(
+                                    width: 60,
+                                  ),
+                                  Container(
+                                    width: 110,
+                                    height: 40,
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      controller: occupationController,
+                                      onChanged: (value) {},
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.only(
+                                            top: 5, left: 10, right: 10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.red, width: 0.0)),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate('ethnicity'),
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 16)),
+                                  SizedBox(
+                                    width: 80,
+                                  ),
+                                  Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 15),
+                                    color: kSecondaryTextField,
+                                    child: DropdownButton<String>(
+                                      items: ethnicity.map((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(getDropdownOptionText(context, personalQuestions['ethnicity'], value)),
+                                        );
+                                      }).toList(),
+                                      value: selectedEthnicity,
+                                      onChanged: (String newValue) {
+                                        setState(() {
+                                          selectedEthnicity = newValue;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate('monthlyIncome'),
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 16)),
+                                  SizedBox(
+                                    width: 27,
+                                  ),
+                                  Container(
+                                    width: 110,
+                                    height: 40,
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      keyboardType: TextInputType.number,
+                                      controller: incomeController,
+                                      onChanged: (value) {},
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.only(
+                                            top: 5, left: 10, right: 10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.red, width: 0.0)),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(AppLocalizations.of(context).translate('bloodGroup'),style: TextStyle(color: Colors.black, fontSize: 16)),
+                                  SizedBox(width: 53,),
+                                  Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 25),
+                                    color: kSecondaryTextField,
+                                    child: DropdownButton<String>(
+                                      items: bloodGroups.map((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(getDropdownOptionText(context, personalQuestions['blood_group'], value)),
+                                        );
+                                      }).toList(),
+                                      value: selectedBloodGroup,
+                                      onChanged: (String newValue) {
+                                        setState(() {
+                                          selectedBloodGroup = newValue;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate('educationYear'),
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 16)),
+                                  SizedBox(
+                                    width: 18,
+                                  ),
+                                  Container(
+                                    width: 110,
+                                    height: 40,
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      keyboardType: TextInputType.number,
+                                      controller: educationController,
+                                      onChanged: (value) {},
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.only(
+                                            top: 5, left: 10, right: 10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.red, width: 0.0)),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 16),
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate('tribe'),
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 16)),
+                                  SizedBox(
+                                    width: 110,
+                                  ),
+                                  Container(
+                                      width: 200,
+                                      child: Row(
+                                        children: <Widget>[
+                                          Expanded(
+                                              child: Container(
+                                            height: 25,
+                                            width: 100,
+                                            margin: EdgeInsets.only(
+                                                right: 20, left: 0),
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 1,
+                                                    color: (isTribe != null &&
+                                                            isTribe)
+                                                        ? Color(0xFF01579B)
+                                                        : Colors.black),
+                                                borderRadius:
+                                                    BorderRadius.circular(3),
+                                                color:
+                                                    (isTribe != null && isTribe)
+                                                        ? Color(0xFFE1F5FE)
+                                                        : null),
+                                            child: FlatButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  isTribe = true;
+                                                });
+                                              },
+                                              materialTapTargetSize:
+                                                  MaterialTapTargetSize
+                                                      .shrinkWrap,
+                                              child: Text(
+                                                AppLocalizations.of(context)
+                                                    .translate('yes'),
+                                                style: TextStyle(
+                                                    color: (isTribe != null &&
+                                                            isTribe)
+                                                        ? kPrimaryColor
+                                                        : null),
+                                              ),
+                                            ),
+                                          )),
+                                          Expanded(
+                                              child: Container(
+                                            height: 25,
+                                            width: 100,
+                                            margin: EdgeInsets.only(
+                                                right: 20, left: 0),
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 1,
+                                                    color: (isTribe == null ||
+                                                            isTribe)
+                                                        ? Colors.black
+                                                        : Color(0xFF01579B)),
+                                                borderRadius:
+                                                    BorderRadius.circular(3),
+                                                color:
+                                                    (isTribe == null || isTribe)
+                                                        ? null
+                                                        : Color(0xFFE1F5FE)),
+                                            child: FlatButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  isTribe = false;
+                                                });
+                                              },
+                                              materialTapTargetSize:
+                                                  MaterialTapTargetSize
+                                                      .shrinkWrap,
+                                              child: Text(
+                                                AppLocalizations.of(context)
+                                                    .translate('NO'),
+                                                style: TextStyle(
+                                                    color: (isTribe == null ||
+                                                            isTribe)
+                                                        ? null
+                                                        : kPrimaryColor),
+                                              ),
+                                            ),
+                                          )),
+                                        ],
+                                      )),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           )),
