@@ -2526,7 +2526,14 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
     }
 
     if (counsellingQuestion['type'] == 'physical-activity-high') {
-      if (riskAnswers[9] == 'no' || riskAnswers[10] == 'no') {
+      if (riskAnswers[9] == 'no' && riskAnswers[10] == 'no') {
+        return true;
+      }
+      return false;
+    }
+
+    if (counsellingQuestion['type'] == 'salt') {
+      if (riskAnswers[4] == 'yes' || riskAnswers[5] == 'yes') {
         return true;
       }
       return false;

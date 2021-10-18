@@ -979,31 +979,41 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
                                     builder: (BuildContext context) {
                                       // return object of type Dialog
                                       return AlertDialog(
-                                        content: new Text(AppLocalizations.of(context).translate("missingData"), style: TextStyle(fontSize: 20),),
+                                        content: new Text(AppLocalizations.of(context).translate("missingData"), style: TextStyle(fontSize: 22),),
                                         actions: <Widget>[
                                           // usually buttons at the bottom of the dialog
-                                          FlatButton(
-                                            child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(color: kPrimaryColor)),
-                                            onPressed: () {
-                                              Navigator.of(context).pop(false);
-                                            },
+                                          Container(  
+                                            margin: EdgeInsets.all(20),  
+                                            child: FlatButton(
+                                              child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(fontSize: 20),),
+                                              color: kPrimaryColor,  
+                                              textColor: Colors.white, 
+                                              onPressed: () {
+                                                Navigator.of(context).pop(false);
+                                              },
+                                            ),
                                           ),
-                                          FlatButton(
-                                            child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
-                                            onPressed: () async {
-                                              if(_isNextButtonDisabled)
-                                                return;
-                                              createObservations();
-                                              setState(() {
-                                                _isNextButtonDisabled = true;
-                                              });
-                                              await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'follow-up', '', 'incomplete', '');
-                                              setState(() {
-                                                _isNextButtonDisabled = false;
-                                                _currentStep = _currentStep + 1;
-                                              });
-                                              Navigator.of(context).pop(true);
-                                            },
+                                          Container(  
+                                            margin: EdgeInsets.all(20),  
+                                            child: FlatButton(
+                                              child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(fontSize: 20),),
+                                              color: kPrimaryColor,  
+                                              textColor: Colors.white,
+                                              onPressed: () async {
+                                                if(_isNextButtonDisabled)
+                                                  return;
+                                                createObservations();
+                                                setState(() {
+                                                  _isNextButtonDisabled = true;
+                                                });
+                                                await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'follow-up', '', 'incomplete', '');
+                                                setState(() {
+                                                  _isNextButtonDisabled = false;
+                                                  _currentStep = _currentStep + 1;
+                                                });
+                                                Navigator.of(context).pop(true);
+                                              },
+                                            ),
                                           ),
                                         ],
                                       );
@@ -1155,27 +1165,37 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
         return AlertDialog(
           content: new Text(
             AppLocalizations.of(context).translate("wantToCompleteVisit"),
-            style: TextStyle(fontSize: 20),
+            style: TextStyle(fontSize: 22),
           ),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
-            FlatButton(
-              child: new Text(
+            Container(  
+              margin: EdgeInsets.all(20),  
+              child: FlatButton(
+                child: new Text(
                   AppLocalizations.of(context).translate("NO"),
-                  style: TextStyle(color: kPrimaryColor)),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
+                  style: TextStyle(fontSize: 20),),
+                color: kPrimaryColor,  
+                textColor: Colors.white,
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
             ),
-            FlatButton(
-              child: new Text(AppLocalizations.of(context).translate("yes"),
-                  style: TextStyle(color: kPrimaryColor)),
-              onPressed: () async {
-                isNotNull(referralData['body']) && refer ? await AssessmentController().createReferralByAssessmentLocal('community clinic followup', referralData) : '';
-                _patient['data']['chcp_encounter_status'] = encounterData['dataStatus'];
-                _patient['data']['chcp_encounter_type'] = 'community clinic followup';
-                Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': encounterData ,});
-              },
+            Container(  
+              margin: EdgeInsets.all(20),  
+              child: FlatButton(
+                child: new Text(AppLocalizations.of(context).translate("yes"),
+                    style: TextStyle(fontSize: 20),),
+                color: kPrimaryColor,  
+                textColor: Colors.white,
+                onPressed: () async {
+                  isNotNull(referralData['body']) && refer ? await AssessmentController().createReferralByAssessmentLocal('community clinic followup', referralData) : '';
+                  _patient['data']['chcp_encounter_status'] = encounterData['dataStatus'];
+                  _patient['data']['chcp_encounter_type'] = 'community clinic followup';
+                  Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': encounterData ,});
+                },
+              ),
             ),
           ],
         );
