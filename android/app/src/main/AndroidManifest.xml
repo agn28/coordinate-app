@@ -8,11 +8,12 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="Coordinate 1.0.28_http"
+        android:label="Coordinate 1.0.29_http"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"
         android:fullBackupOnly="true"
-        android:hasFragileUserData="true">
+        android:hasFragileUserData="true"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
