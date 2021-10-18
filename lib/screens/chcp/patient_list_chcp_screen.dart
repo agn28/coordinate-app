@@ -157,7 +157,7 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                     localPatient['data']['chcp_encounter_status'] =  assessment['data']['status'];
                   }
                   return true;
-                } else if (assessment['data']['status'] == 'complete' && (assessment['data']['type'] == 'community clinic assessment'|| assessment['data']['type'] == 'community clinic followup')) {
+                } else if (assessment['data']['status'] == 'complete') {
                   localPatient['data']['chcp_encounter_type'] =  assessment['data']['type'];
                   localPatient['data']['chcp_encounter_status'] =  assessment['data']['status'];
                   return true;

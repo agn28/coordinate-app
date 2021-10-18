@@ -43,7 +43,7 @@ final otherIssuesController = TextEditingController();
 String selectedArm = 'left';
 String selectedGlucoseType = 'fasting';
 String selectedGlucoseUnit = 'mg/dL';
-bool hasChwEncounter = false;
+bool hasNcdEncounter = false;
 
 var _questions = {};
 var medicalHistoryQuestions = {};
@@ -64,6 +64,7 @@ int _secondQuestionOption = 1;
 int _thirdQuestionOption = 1;
 int _fourthQuestionOption = 1;
 bool isLoading = false;
+bool _isNextButtonDisabled = false;
 
 getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
@@ -111,7 +112,8 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     _checkAuth();
     clearForm();
     isLoading = false;
-    hasChwEncounter = false;
+    hasNcdEncounter = false;
+    _isNextButtonDisabled = false;
 
     print(Language().getLanguage());
     nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
@@ -138,13 +140,13 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     });
     var patientId = Patient().getPatient()['id'];
     print('patientId $patientId');
-    var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId, key:'type', value:'new ncd center assessment');
+    var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
     if(data != null && data.isNotEmpty && !data['error']) {
-      if(data['data']['assessment']['body']['type'] == 'new questionnaire') {
-        hasChwEncounter = true;
+      if(data['data']['assessment']['body']['type'] == 'new ncd center assessment') {
+        hasNcdEncounter = true;
       }
     } 
-    print('hasChwEncounter $hasChwEncounter');
+    print('hasNcdEncounter $hasNcdEncounter');
     setState(() {
       isLoading = false;
     });
@@ -811,24 +813,46 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
             ),
             Expanded(
               child: _currentStep < _mySteps().length || nextHide ? FlatButton(
-                onPressed: ()async {
-                  setState(() {
+                onPressed: () async {
+                    if(_isNextButtonDisabled)
+                      return;
                     print(_currentStep);
                     if (_currentStep == 0) {
                       Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
                       print(Questionnaire().qnItems);
+                      setState(() {
+                        _isNextButtonDisabled = true;
+                      });
+                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                      setState(() {
+                        _isNextButtonDisabled = false;
+                      });
                     }
 
                     if (_currentStep == 1) {
                       Questionnaire().addNewMedicationNcd(
                           'medication', medicationAnswers);
                       print(Questionnaire().qnItems);
+                      setState(() {
+                        _isNextButtonDisabled = true;
+                      });
+                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                      setState(() {
+                        _isNextButtonDisabled = false;
+                      });
                     }
 
                     if (_currentStep == 2) {
                       Questionnaire().addNewRiskFactorsNcd(
                           'risk_factors', riskAnswers);
                       print(Questionnaire().qnItems);
+                      setState(() {
+                        _isNextButtonDisabled = true;
+                      });
+                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                      setState(() {
+                        _isNextButtonDisabled = false;
+                      });
                     }
 
                     if (_currentStep == 3) {
@@ -848,29 +872,35 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                               content: new Text(AppLocalizations.of(context).translate("missingData"), style: TextStyle(fontSize: 22),),
                               actions: <Widget>[
                                 // usually buttons at the bottom of the dialog
-                                Container(  
-                                  margin: EdgeInsets.all(20),  
+                                Container(
+                                  margin: EdgeInsets.all(20),
                                   child:FlatButton(
                                     child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(fontSize: 20),),
-                                    color: kPrimaryColor,  
+                                    color: kPrimaryColor,
                                     textColor: Colors.white,
                                     onPressed: () {
                                       Navigator.of(context).pop(false);
                                     },
                                   ),
                                 ),
-                                Container(  
-                                  margin: EdgeInsets.all(20),  
+                                Container(
+                                  margin: EdgeInsets.all(20),
                                   child:FlatButton(
                                     child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(fontSize: 20),),
-                                    color: kPrimaryColor,  
+                                    color: kPrimaryColor,
                                     textColor: Colors.white,
                                     onPressed: () {
-                                      // Navigator.of(context).pop(true);
+                                      if(_isNextButtonDisabled)
+                                        return;
+                                      createObservations();
                                       setState(() {
+                                        _isNextButtonDisabled = true;
+                                      });
+                                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                                      setState(() {
+                                        _isNextButtonDisabled = false;
                                         _currentStep = _currentStep + 1;
                                       });
-                                      print('_currentStep $_currentStep');
                                       Navigator.of(context).pop(true);
                                     },
                                   ),
@@ -880,9 +910,18 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                           }
                         );
                       } else {
-                        _currentStep = _currentStep + 1;
+                        createObservations();
+                        setState(() {
+                          _isNextButtonDisabled = true;
+                        });
+                        await AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                        setState(() {
+                          _isNextButtonDisabled = false;
+                          _currentStep = _currentStep + 1;
+                        });
                         return;
                       }
+                      return;
                     }
 
                     if (_currentStep == 5) {
@@ -898,7 +937,6 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                       };
                       print('relativeAdditionalData $relativeAdditionalData');
                       Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
-
                       _completeStep();
                       return;
                     }
@@ -926,31 +964,36 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                               content: new Text(AppLocalizations.of(context).translate("missingData"), style: TextStyle(fontSize: 22),),
                               actions: <Widget>[
                                 // usually buttons at the bottom of the dialog
-                                Container(  
-                                  margin: EdgeInsets.all(20),  
+                                Container(
+                                  margin: EdgeInsets.all(20),
                                   child:FlatButton(
                                     child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(fontSize: 20),),
-                                    color: kPrimaryColor,  
+                                    color: kPrimaryColor,
                                     textColor: Colors.white,
                                     onPressed: () {
                                       Navigator.of(context).pop(false);
                                     },
                                   ),
                                 ),
-                                Container(  
-                                  margin: EdgeInsets.all(20),  
+                                Container(
+                                  margin: EdgeInsets.all(20),
                                   child:FlatButton(
                                     child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(fontSize: 20),),
-                                    color: kPrimaryColor,  
+                                    color: kPrimaryColor,
                                     textColor: Colors.white,
                                     onPressed: () {
-                                      // Navigator.of(context).pop(true);
-                                      setState(() {
-                                        _currentStep = _currentStep + 1;
-                                      });
+                                      if(_isNextButtonDisabled)
+                                        return;
                                       createObservations();
-                                      nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
-                                      print('_currentStep $_currentStep');
+                                      setState(() {
+                                        _isNextButtonDisabled = true;
+                                      });
+                                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                                      setState(() {
+                                        _isNextButtonDisabled = false;
+                                        _currentStep = _currentStep + 1;
+                                        nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                                      });
                                       Navigator.of(context).pop(true);
                                     },
                                   ),
@@ -961,17 +1004,25 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                         );
                       } else {
                         createObservations();
-                        nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
-                        _currentStep = _currentStep + 1;
+                        setState(() {
+                          _isNextButtonDisabled = true;
+                        });
+                        await AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                        setState(() {
+                          _isNextButtonDisabled = false;
+                          _currentStep = _currentStep + 1;
+                          nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
+                        });
+                        Navigator.of(context).pop(true);
                         return;
                       }
-
+                      return;
                     }
                     if (_currentStep < 3) {
-                      // If the form is valid, display a Snackbar.
-                      _currentStep = _currentStep + 1;
+                      setState(() {
+                        _currentStep = _currentStep + 1;
+                      });
                     }
-                  });
                 },
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 child: Row(
@@ -1043,19 +1094,19 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     print('dataStatus: $dataStatus');
     print('encounter: $encounter');
     var encounterData;
-    // if(!hasChwEncounter) {
+    if(hasNcdEncounter) {
       encounterData = {
         'context': context,
         'dataStatus': dataStatus,
         'encounter': encounter,
         'observations': observations
       };
-    // } else {
-    //   encounterData = {
-    //     'context': context,
-    //     'dataStatus': dataStatus,
-    //   };
-    // }
+    } else {
+      encounterData = {
+        'context': context,
+        'dataStatus': dataStatus,
+      };
+    }
     
     // var response = await AssessmentController().updateAssessmentWithObservations(status, encounter, observations);
     // var response = await AssessmentController().createOnlyAssessmentWithStatus('ncd center assessment', 'ncd', '', 'incomplete');

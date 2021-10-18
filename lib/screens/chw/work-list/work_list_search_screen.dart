@@ -145,7 +145,7 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
           for(var careplan in careplans) {
             parsedData = jsonDecode(careplan['data']);
             if (parsedData['meta']['status'] == 'pending'
-            && parsedData['meta']['assigned_to'] == Auth().getAuth()['uid']) {
+            && parsedData['meta']['assigned_to'].contains(Auth().getAuth()['uid'])) {
               isAssigned = true;
               break;
             }
