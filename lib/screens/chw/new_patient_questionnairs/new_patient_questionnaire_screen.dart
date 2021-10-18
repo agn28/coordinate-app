@@ -45,7 +45,7 @@ List selectedIssues = [];
 final otherIssuesController = TextEditingController();
 String selectedArm = 'left';
 String selectedGlucoseType = 'fasting';
-String selectedGlucoseUnit = 'mg/dL';
+String selectedGlucoseUnit = 'mmol/L';
 
 var _questions = {};
 var medicalHistoryQuestions = {};
@@ -199,7 +199,7 @@ class _NewPatientQuestionnaireScreenState
     weightEditingController.text = '';
     bmiEditingController.text = '';
     bloodSugerEditingController.text = '';
-    selectedGlucoseUnit = 'mg/dL';
+    selectedGlucoseUnit = 'mmol/L';
 
     occupationController.text = '';
     incomeController.text = '';
@@ -1794,23 +1794,6 @@ class _MeasurementsState extends State<Measurements> {
                             Radio(
                               materialTapTargetSize:
                                   MaterialTapTargetSize.shrinkWrap,
-                              value: 'mg/dL',
-                              groupValue: selectedGlucoseUnit,
-                              activeColor: kPrimaryColor,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedGlucoseUnit = value;
-                                });
-                              },
-                            ),
-                            Text('mg/dL',
-                                style: TextStyle(color: Colors.black)),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Radio(
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
                               value: 'mmol/L',
                               groupValue: selectedGlucoseUnit,
                               activeColor: kPrimaryColor,
@@ -1822,6 +1805,24 @@ class _MeasurementsState extends State<Measurements> {
                             ),
                             Text('mmol/L',
                                 style: TextStyle(color: Colors.black)),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Radio(
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              value: 'mg/dL',
+                              groupValue: selectedGlucoseUnit,
+                              activeColor: kPrimaryColor,
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedGlucoseUnit = value;
+                                });
+                              },
+                            ),
+                            Text('mg/dL',
+                                style: TextStyle(color: Colors.black)),
+                            
                           ],
                         ),
                       ),
@@ -2328,22 +2329,30 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
     }
 
     if (counsellingQuestion['type'] == 'physical-activity-high') {
-      if (riskAnswers[9] == 'no' || riskAnswers[10] == 'no') {
+      if (riskAnswers[9] == 'no' && riskAnswers[10] == 'no') {
         return true;
       }
       return false;
     }
 
+    if (counsellingQuestion['type'] == 'salt') {
+      if (riskAnswers[4] == 'yes' || riskAnswers[5] == 'yes') {
+        return true;
+      }
+      return false;
+    }
+    // 
     var matchedQuestion;
     riskQuestions['items'].forEach((item) {
       if (item['type'] != null && item['type'] == counsellingQuestion['type']) {
         matchedQuestion = item;
       }
     });
-
+  
     if (matchedQuestion != null) {
-      // print(matchedQuestion.first);
+      print('matchedQuestion: ${matchedQuestion}');
       var answer = riskAnswers[riskQuestions['items'].indexOf(matchedQuestion)];
+      print('matchedQuestion: (answer) $answer');
       if ((matchedQuestion['type'] == 'eat-vegetables' ||
           matchedQuestion['type'] == 'physical-activity-high')) {
         if (answer == 'no') {

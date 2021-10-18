@@ -45,7 +45,7 @@ List selectedIssues = [];
 final otherIssuesController = TextEditingController();
 String selectedArm = 'left';
 String selectedGlucoseType = 'fasting';
-String selectedGlucoseUnit = 'mg/dL';
+String selectedGlucoseUnit = 'mmol/L';
 
 var _questions = {};
 var medicalHistoryQuestions = {};
@@ -407,7 +407,7 @@ class _EditIncompleteEncounterChwScreenState
     weightEditingController.text = '';
     bmiEditingController.text = '';
     bloodSugerEditingController.text = '';
-    selectedGlucoseUnit = 'mg/dL';
+    selectedGlucoseUnit = 'mmol/L';
   }
 
   _checkAuth() {
@@ -1991,23 +1991,6 @@ class _MeasurementsState extends State<Measurements> {
                             Radio(
                               materialTapTargetSize:
                                   MaterialTapTargetSize.shrinkWrap,
-                              value: 'mg/dL',
-                              groupValue: selectedGlucoseUnit,
-                              activeColor: kPrimaryColor,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedGlucoseUnit = value;
-                                });
-                              },
-                            ),
-                            Text('mg/dL',
-                                style: TextStyle(color: Colors.black)),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Radio(
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
                               value: 'mmol/L',
                               groupValue: selectedGlucoseUnit,
                               activeColor: kPrimaryColor,
@@ -2019,6 +2002,25 @@ class _MeasurementsState extends State<Measurements> {
                             ),
                             Text('mmol/L',
                                 style: TextStyle(color: Colors.black)),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Radio(
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              value: 'mg/dL',
+                              groupValue: selectedGlucoseUnit,
+                              activeColor: kPrimaryColor,
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedGlucoseUnit = value;
+                                });
+                              },
+                            ),
+                            Text('mg/dL',
+                                style: TextStyle(color: Colors.black)),
+                            
+                            
                           ],
                         ),
                       ),

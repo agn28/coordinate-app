@@ -371,6 +371,8 @@ var _questions = {
             'question_bn': 'আপনি কি আপনার খাবারে অতিরিক্ত লবণ যুক্ত করেন বা বেশিরভাগ দিন অতিরিক্ত লবণ বা নোনতা খাবার খান?',
             'options': ['yes', 'no'],
             'options_bn': ['হ্যা', 'না'],
+            'group': 'unhealth-diet',
+            'type': 'salt',
             'key': 'extra_salt'
           },
           {
