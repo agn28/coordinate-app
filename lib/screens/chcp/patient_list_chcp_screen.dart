@@ -150,22 +150,18 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                 //   return true;
                 // }
                 print('assess $assessment');
-                if ((assessment['data']['status'] == 'complete' && (assessment['data']['type'] == 'new questionnaire'|| assessment['data']['type'] == 'community clinic assessment'|| assessment['data']['type'] == 'new ncd center assessment'))) {
-                  localPatient['data']['enrollment_complete'] = true;
-                  return true;
-                }
-                else if(assessment['data']['type'] == 'community clinic followup') {
-                  localPatient['data']['enrollment_complete'] = true;
-                  return true;
-                } else if(assessment['data']['status'] == 'incomplete' && assessment['data']['type'] == 'community clinic assessment' ) {
+                if(assessment['data']['status'] == 'incomplete') {
                   localPatient['data']['incomplete_encounter'] = true;
-                  // if(assessment['data']['type'] == 'community clinic assessment' || assessment['data']['type'] == 'community clinic followup') {
-                  //   localPatient['data']['chcp_encounter_type'] =  assessment['data']['type'];
-                  //   localPatient['data']['chcp_encounter_status'] =  assessment['data']['status'];
-                  // }
+                  if(assessment['data']['type'] == 'community clinic assessment' || assessment['data']['type'] == 'community clinic followup') {
+                    localPatient['data']['chcp_encounter_type'] =  assessment['data']['type'];
+                    localPatient['data']['chcp_encounter_status'] =  assessment['data']['status'];
+                  }
                   return true;
-                }
-                return false; 
+                } else if (assessment['data']['status'] == 'complete') {
+                  localPatient['data']['chcp_encounter_type'] =  assessment['data']['type'];
+                  localPatient['data']['chcp_encounter_status'] =  assessment['data']['status'];
+                  return true;
+                } return false; 
               } return false; 
             }, orElse: () => false);
             print('ccPatient $localPatient');
@@ -480,7 +476,8 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                   ...patients.map((item) => GestureDetector(
                     onTap: () {
                       Patient().setPatient(item);
-                      ((item['data']['enrollment_complete'] != null && item['data']['enrollment_complete']) ) 
+                      ((item['data']['chcp_encounter_status'] != null && item['data']['chcp_encounter_status'] == 'complete') 
+                      || (item['data']['chcp_encounter_type'] != null && item['data']['chcp_encounter_type'] == 'community clinic followup')) 
                       ? Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : 'home', 'encounterData': {},})
                       : Navigator.of(context).pushNamed('/chcpPatientSummary');
                     },
@@ -528,7 +525,8 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 // item['data']['incomplete_encounter'] != null && item['data']['incomplete_encounter'] ?
-                                item['data']['enrollment_complete'] != null && item['data']['enrollment_complete'] ?
+                                item['data']['chcp_encounter_status'] != null && item['data']['chcp_encounter_status'] == 'complete'
+                                && (item['data']['chcp_encounter_type'] != null && item['data']['chcp_encounter_type'] == 'community clinic assessment') ?
                                 Container(
                                     alignment: Alignment.center,
                                     width: 160,
@@ -540,8 +538,8 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                                       style: TextStyle(color: Colors.white, fontSize: 15),
                                     ),
                                 ) : Container(),
-                                item['data']['enrollment_complete'] != null && !item['data']['enrollment_complete'] 
-                                || (item['data']['incomplete_encounter'] != null && item['data']['incomplete_encounter']) ?
+                                item['data']['chcp_encounter_status'] != null && item['data']['chcp_encounter_status'] == 'incomplete' 
+                                && (item['data']['chcp_encounter_type'] != null && item['data']['chcp_encounter_type'] == 'community clinic assessment') ?
                                 Container(
                                     alignment: Alignment.center,
                                     width: 160,

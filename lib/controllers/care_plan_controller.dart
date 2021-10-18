@@ -55,7 +55,7 @@ class CarePlanController {
         } else {
           if (parsedData['body']['patient_id'] == Patient().getPatient()['id']
           && parsedData['meta']['status'] == 'pending'
-          && parsedData['meta']['assigned_to'] == Auth().getAuth()['uid']) {
+          && parsedData['meta']['assigned_to'].contains(Auth().getAuth()['uid'])) {
             data.add({
               'id': careplan['id'],
               'body': parsedData['body'],
