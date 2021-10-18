@@ -269,19 +269,19 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
     ketonesController.text = '';
     proteinController.text = '';
 
-    selectedRandomBloodUnit = 'mg/dL';
-    selectedFastingBloodUnit = 'mg/dL';
-    selectedHabfUnit = 'mg/dL';
-    selectedHba1cUnit = 'mg/dL';
-    selectedCholesterolUnit = 'mg/dL';
-    selectedLdlUnit = 'mg/dL';
-    selectedHdlUnit = 'mg/dL';
-    selectedTgUnit = 'mg/dL';
-    selectedCreatinineUnit = 'mg/dL';
-    selectedSodiumUnit = 'mg/dL';
-    selectedPotassiumUnit = 'mg/dL';
-    selectedKetonesUnit = 'mg/dL';
-    selectedProteinUnit = 'mg/dL';
+    selectedRandomBloodUnit = 'mmol/L';
+    selectedFastingBloodUnit = 'mmol/L';
+    selectedHabfUnit = 'mmol/L';
+    selectedHba1cUnit = 'mmol/L';
+    selectedCholesterolUnit = 'mmol/L';
+    selectedLdlUnit = 'mmol/L';
+    selectedHdlUnit = 'mmol/L';
+    selectedTgUnit = 'mmol/L';
+    selectedCreatinineUnit = 'mmol/L';
+    selectedSodiumUnit = 'mmol/L';
+    selectedPotassiumUnit = 'mmol/L';
+    selectedKetonesUnit = 'mmol/L';
+    selectedProteinUnit = 'mmol/L';
 
     occupationController.text = '';
     incomeController.text = '';
@@ -1341,31 +1341,31 @@ var hipEditingController = TextEditingController();
 var bmiEditingController = TextEditingController();
 
 //Blood Test
-var selectedRandomBloodUnit = 'mg/dL';
+var selectedRandomBloodUnit = 'mmol/L';
 var randomBloodController = TextEditingController();
-var selectedFastingBloodUnit = 'mg/dL';
+var selectedFastingBloodUnit = 'mmol/L';
 var fastingBloodController = TextEditingController();
-var selectedHabfUnit = 'mg/dL';
+var selectedHabfUnit = 'mmol/L';
 var habfController = TextEditingController();
-var selectedHba1cUnit = 'mg/dL';
+var selectedHba1cUnit = 'mmol/L';
 var hba1cController = TextEditingController();
-var selectedCholesterolUnit = 'mg/dL';
+var selectedCholesterolUnit = 'mmol/L';
 var cholesterolController = TextEditingController();
-var selectedLdlUnit = 'mg/dL';
+var selectedLdlUnit = 'mmol/L';
 var ldlController = TextEditingController();
-var selectedHdlUnit = 'mg/dL';
+var selectedHdlUnit = 'mmol/L';
 var hdlController = TextEditingController();
-var selectedTgUnit = 'mg/dL';
+var selectedTgUnit = 'mmol/L';
 var tgController = TextEditingController();
-var selectedCreatinineUnit = 'mg/dL';
+var selectedCreatinineUnit = 'mmol/L';
 var creatinineController = TextEditingController();
-var selectedSodiumUnit = 'mg/dL';
+var selectedSodiumUnit = 'mmol/L';
 var sodiumController = TextEditingController();
-var selectedPotassiumUnit = 'mg/dL';
+var selectedPotassiumUnit = 'mmol/L';
 var potassiumController = TextEditingController();
-var selectedKetonesUnit = 'mg/dL';
+var selectedKetonesUnit = 'mmol/L';
 var ketonesController = TextEditingController();
-var selectedProteinUnit = 'mg/dL';
+var selectedProteinUnit = 'mmol/L';
 var proteinController = TextEditingController();
 
 class _MeasurementsState extends State<Measurements> {
@@ -1848,19 +1848,6 @@ class _MeasurementsState extends State<Measurements> {
                                     children: <Widget>[
                                       Radio(
                                         activeColor: kPrimaryColor,
-                                        value: 'mg/dL',
-                                        groupValue: selectedRandomBloodUnit,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            selectedRandomBloodUnit = value;
-                                          });
-                                        },
-                                      ),
-                                      Text("mg/dL",
-                                          style:
-                                              TextStyle(color: Colors.black)),
-                                      Radio(
-                                        activeColor: kPrimaryColor,
                                         value: 'mmol/L',
                                         groupValue: selectedRandomBloodUnit,
                                         onChanged: (value) {
@@ -1872,6 +1859,19 @@ class _MeasurementsState extends State<Measurements> {
                                       Text(
                                         "mmol/L",
                                       ),
+                                      Radio(
+                                        activeColor: kPrimaryColor,
+                                        value: 'mg/dL',
+                                        groupValue: selectedRandomBloodUnit,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedRandomBloodUnit = value;
+                                          });
+                                        },
+                                      ),
+                                      Text("mg/dL",
+                                          style:
+                                              TextStyle(color: Colors.black)),
                                       SizedBox(
                                         width: 20,
                                       ),
@@ -1913,19 +1913,6 @@ class _MeasurementsState extends State<Measurements> {
                                     children: <Widget>[
                                       Radio(
                                         activeColor: kPrimaryColor,
-                                        value: 'mg/dL',
-                                        groupValue: selectedFastingBloodUnit,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            selectedFastingBloodUnit = value;
-                                          });
-                                        },
-                                      ),
-                                      Text("mg/dL",
-                                          style:
-                                              TextStyle(color: Colors.black)),
-                                      Radio(
-                                        activeColor: kPrimaryColor,
                                         value: 'mmol/L',
                                         groupValue: selectedFastingBloodUnit,
                                         onChanged: (value) {
@@ -1937,6 +1924,19 @@ class _MeasurementsState extends State<Measurements> {
                                       Text(
                                         "mmol/L",
                                       ),
+                                      Radio(
+                                        activeColor: kPrimaryColor,
+                                        value: 'mg/dL',
+                                        groupValue: selectedFastingBloodUnit,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedFastingBloodUnit = value;
+                                          });
+                                        },
+                                      ),
+                                      Text("mg/dL",
+                                          style:
+                                              TextStyle(color: Colors.black)),
                                       SizedBox(
                                         width: 20,
                                       ),
@@ -1978,19 +1978,6 @@ class _MeasurementsState extends State<Measurements> {
                                     children: <Widget>[
                                       Radio(
                                         activeColor: kPrimaryColor,
-                                        value: 'mg/dL',
-                                        groupValue: selectedHabfUnit,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            selectedHabfUnit = value;
-                                          });
-                                        },
-                                      ),
-                                      Text("mg/dL",
-                                          style:
-                                              TextStyle(color: Colors.black)),
-                                      Radio(
-                                        activeColor: kPrimaryColor,
                                         value: 'mmol/L',
                                         groupValue: selectedHabfUnit,
                                         onChanged: (value) {
@@ -2002,6 +1989,19 @@ class _MeasurementsState extends State<Measurements> {
                                       Text(
                                         "mmol/L",
                                       ),
+                                      Radio(
+                                        activeColor: kPrimaryColor,
+                                        value: 'mg/dL',
+                                        groupValue: selectedHabfUnit,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedHabfUnit = value;
+                                          });
+                                        },
+                                      ),
+                                      Text("mg/dL",
+                                          style:
+                                              TextStyle(color: Colors.black)),
                                       SizedBox(
                                         width: 20,
                                       ),
@@ -2153,21 +2153,6 @@ class _MeasurementsState extends State<Measurements> {
                                           children: <Widget>[
                                             Radio(
                                               activeColor: kPrimaryColor,
-                                              value: 'mg/dL',
-                                              groupValue:
-                                                  selectedCholesterolUnit,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  selectedCholesterolUnit =
-                                                      value;
-                                                });
-                                              },
-                                            ),
-                                            Text("mg/dL",
-                                                style: TextStyle(
-                                                    color: Colors.black)),
-                                            Radio(
-                                              activeColor: kPrimaryColor,
                                               value: 'mmol/L',
                                               groupValue:
                                                   selectedCholesterolUnit,
@@ -2181,6 +2166,21 @@ class _MeasurementsState extends State<Measurements> {
                                             Text(
                                               "mmol/L",
                                             ),
+                                            Radio(
+                                              activeColor: kPrimaryColor,
+                                              value: 'mg/dL',
+                                              groupValue:
+                                                  selectedCholesterolUnit,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  selectedCholesterolUnit =
+                                                      value;
+                                                });
+                                              },
+                                            ),
+                                            Text("mg/dL",
+                                                style: TextStyle(
+                                                    color: Colors.black)),
                                             SizedBox(
                                               width: 20,
                                             ),
@@ -2225,19 +2225,6 @@ class _MeasurementsState extends State<Measurements> {
                                           children: <Widget>[
                                             Radio(
                                               activeColor: kPrimaryColor,
-                                              value: 'mg/dL',
-                                              groupValue: selectedLdlUnit,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  selectedLdlUnit = value;
-                                                });
-                                              },
-                                            ),
-                                            Text("mg/dL",
-                                                style: TextStyle(
-                                                    color: Colors.black)),
-                                            Radio(
-                                              activeColor: kPrimaryColor,
                                               value: 'mmol/L',
                                               groupValue: selectedLdlUnit,
                                               onChanged: (value) {
@@ -2249,6 +2236,19 @@ class _MeasurementsState extends State<Measurements> {
                                             Text(
                                               "mmol/L",
                                             ),
+                                            Radio(
+                                              activeColor: kPrimaryColor,
+                                              value: 'mg/dL',
+                                              groupValue: selectedLdlUnit,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  selectedLdlUnit = value;
+                                                });
+                                              },
+                                            ),
+                                            Text("mg/dL",
+                                                style: TextStyle(
+                                                    color: Colors.black)),
                                             SizedBox(
                                               width: 20,
                                             ),
@@ -2293,19 +2293,6 @@ class _MeasurementsState extends State<Measurements> {
                                           children: <Widget>[
                                             Radio(
                                               activeColor: kPrimaryColor,
-                                              value: 'mg/dL',
-                                              groupValue: selectedHdlUnit,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  selectedHdlUnit = value;
-                                                });
-                                              },
-                                            ),
-                                            Text("mg/dL",
-                                                style: TextStyle(
-                                                    color: Colors.black)),
-                                            Radio(
-                                              activeColor: kPrimaryColor,
                                               value: 'mmol/L',
                                               groupValue: selectedHdlUnit,
                                               onChanged: (value) {
@@ -2317,6 +2304,19 @@ class _MeasurementsState extends State<Measurements> {
                                             Text(
                                               "mmol/L",
                                             ),
+                                            Radio(
+                                              activeColor: kPrimaryColor,
+                                              value: 'mg/dL',
+                                              groupValue: selectedHdlUnit,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  selectedHdlUnit = value;
+                                                });
+                                              },
+                                            ),
+                                            Text("mg/dL",
+                                                style: TextStyle(
+                                                    color: Colors.black)),
                                             SizedBox(
                                               width: 20,
                                             ),
@@ -2361,19 +2361,6 @@ class _MeasurementsState extends State<Measurements> {
                                           children: <Widget>[
                                             Radio(
                                               activeColor: kPrimaryColor,
-                                              value: 'mg/dL',
-                                              groupValue: selectedTgUnit,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  selectedTgUnit = value;
-                                                });
-                                              },
-                                            ),
-                                            Text("mg/dL",
-                                                style: TextStyle(
-                                                    color: Colors.black)),
-                                            Radio(
-                                              activeColor: kPrimaryColor,
                                               value: 'mmol/L',
                                               groupValue: selectedTgUnit,
                                               onChanged: (value) {
@@ -2385,6 +2372,19 @@ class _MeasurementsState extends State<Measurements> {
                                             Text(
                                               "mmol/L",
                                             ),
+                                            Radio(
+                                              activeColor: kPrimaryColor,
+                                              value: 'mg/dL',
+                                              groupValue: selectedTgUnit,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  selectedTgUnit = value;
+                                                });
+                                              },
+                                            ),
+                                            Text("mg/dL",
+                                                style: TextStyle(
+                                                    color: Colors.black)),
                                             SizedBox(
                                               width: 20,
                                             ),
@@ -2468,21 +2468,6 @@ class _MeasurementsState extends State<Measurements> {
                                           children: <Widget>[
                                             Radio(
                                               activeColor: kPrimaryColor,
-                                              value: 'mg/dL',
-                                              groupValue:
-                                                  selectedCreatinineUnit,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  selectedCreatinineUnit =
-                                                      value;
-                                                });
-                                              },
-                                            ),
-                                            Text("mg/dL",
-                                                style: TextStyle(
-                                                    color: Colors.black)),
-                                            Radio(
-                                              activeColor: kPrimaryColor,
                                               value: 'mmol/L',
                                               groupValue:
                                                   selectedCreatinineUnit,
@@ -2496,6 +2481,21 @@ class _MeasurementsState extends State<Measurements> {
                                             Text(
                                               "mmol/L",
                                             ),
+                                            Radio(
+                                              activeColor: kPrimaryColor,
+                                              value: 'mg/dL',
+                                              groupValue:
+                                                  selectedCreatinineUnit,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  selectedCreatinineUnit =
+                                                      value;
+                                                });
+                                              },
+                                            ),
+                                            Text("mg/dL",
+                                                style: TextStyle(
+                                                    color: Colors.black)),
                                             SizedBox(
                                               width: 20,
                                             ),
@@ -2540,19 +2540,6 @@ class _MeasurementsState extends State<Measurements> {
                                           children: <Widget>[
                                             Radio(
                                               activeColor: kPrimaryColor,
-                                              value: 'mg/dL',
-                                              groupValue: selectedSodiumUnit,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  selectedSodiumUnit = value;
-                                                });
-                                              },
-                                            ),
-                                            Text("mg/dL",
-                                                style: TextStyle(
-                                                    color: Colors.black)),
-                                            Radio(
-                                              activeColor: kPrimaryColor,
                                               value: 'mmol/L',
                                               groupValue: selectedSodiumUnit,
                                               onChanged: (value) {
@@ -2564,6 +2551,19 @@ class _MeasurementsState extends State<Measurements> {
                                             Text(
                                               "mmol/L",
                                             ),
+                                            Radio(
+                                              activeColor: kPrimaryColor,
+                                              value: 'mg/dL',
+                                              groupValue: selectedSodiumUnit,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  selectedSodiumUnit = value;
+                                                });
+                                              },
+                                            ),
+                                            Text("mg/dL",
+                                                style: TextStyle(
+                                                    color: Colors.black)),
                                             SizedBox(
                                               width: 20,
                                             ),
@@ -2608,19 +2608,6 @@ class _MeasurementsState extends State<Measurements> {
                                           children: <Widget>[
                                             Radio(
                                               activeColor: kPrimaryColor,
-                                              value: 'mg/dL',
-                                              groupValue: selectedPotassiumUnit,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  selectedPotassiumUnit = value;
-                                                });
-                                              },
-                                            ),
-                                            Text("mg/dL",
-                                                style: TextStyle(
-                                                    color: Colors.black)),
-                                            Radio(
-                                              activeColor: kPrimaryColor,
                                               value: 'mmol/L',
                                               groupValue: selectedPotassiumUnit,
                                               onChanged: (value) {
@@ -2632,6 +2619,19 @@ class _MeasurementsState extends State<Measurements> {
                                             Text(
                                               "mmol/L",
                                             ),
+                                            Radio(
+                                              activeColor: kPrimaryColor,
+                                              value: 'mg/dL',
+                                              groupValue: selectedPotassiumUnit,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  selectedPotassiumUnit = value;
+                                                });
+                                              },
+                                            ),
+                                            Text("mg/dL",
+                                                style: TextStyle(
+                                                    color: Colors.black)),
                                             SizedBox(
                                               width: 20,
                                             ),
@@ -2676,19 +2676,6 @@ class _MeasurementsState extends State<Measurements> {
                                           children: <Widget>[
                                             Radio(
                                               activeColor: kPrimaryColor,
-                                              value: 'mg/dL',
-                                              groupValue: selectedKetonesUnit,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  selectedKetonesUnit = value;
-                                                });
-                                              },
-                                            ),
-                                            Text("mg/dL",
-                                                style: TextStyle(
-                                                    color: Colors.black)),
-                                            Radio(
-                                              activeColor: kPrimaryColor,
                                               value: 'mmol/L',
                                               groupValue: selectedKetonesUnit,
                                               onChanged: (value) {
@@ -2700,6 +2687,19 @@ class _MeasurementsState extends State<Measurements> {
                                             Text(
                                               "mmol/L",
                                             ),
+                                            Radio(
+                                              activeColor: kPrimaryColor,
+                                              value: 'mg/dL',
+                                              groupValue: selectedKetonesUnit,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  selectedKetonesUnit = value;
+                                                });
+                                              },
+                                            ),
+                                            Text("mg/dL",
+                                                style: TextStyle(
+                                                    color: Colors.black)),
                                             SizedBox(
                                               width: 20,
                                             ),
@@ -2744,19 +2744,6 @@ class _MeasurementsState extends State<Measurements> {
                                           children: <Widget>[
                                             Radio(
                                               activeColor: kPrimaryColor,
-                                              value: 'mg/dL',
-                                              groupValue: selectedProteinUnit,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  selectedProteinUnit = value;
-                                                });
-                                              },
-                                            ),
-                                            Text("mg/dL",
-                                                style: TextStyle(
-                                                    color: Colors.black)),
-                                            Radio(
-                                              activeColor: kPrimaryColor,
                                               value: 'mmol/L',
                                               groupValue: selectedProteinUnit,
                                               onChanged: (value) {
@@ -2768,6 +2755,19 @@ class _MeasurementsState extends State<Measurements> {
                                             Text(
                                               "mmol/L",
                                             ),
+                                            Radio(
+                                              activeColor: kPrimaryColor,
+                                              value: 'mg/dL',
+                                              groupValue: selectedProteinUnit,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  selectedProteinUnit = value;
+                                                });
+                                              },
+                                            ),
+                                            Text("mg/dL",
+                                                style: TextStyle(
+                                                    color: Colors.black)),
                                             SizedBox(
                                               width: 20,
                                             ),
@@ -2881,18 +2881,6 @@ class _BloodTestsState extends State<BloodTests> {
                                   children: <Widget>[
                                     Radio(
                                       activeColor: kPrimaryColor,
-                                      value: 'mg/dL',
-                                      groupValue: selectedRandomBloodUnit,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          selectedRandomBloodUnit = value;
-                                        });
-                                      },
-                                    ),
-                                    Text("mg/dL",
-                                        style: TextStyle(color: Colors.black)),
-                                    Radio(
-                                      activeColor: kPrimaryColor,
                                       value: 'mmol/L',
                                       groupValue: selectedRandomBloodUnit,
                                       onChanged: (value) {
@@ -2904,6 +2892,19 @@ class _BloodTestsState extends State<BloodTests> {
                                     Text(
                                       "mmol/L",
                                     ),
+                                    Radio(
+                                      activeColor: kPrimaryColor,
+                                      value: 'mg/dL',
+                                      groupValue: selectedRandomBloodUnit,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedRandomBloodUnit = value;
+                                        });
+                                      },
+                                    ),
+                                    Text("mg/dL",
+                                        style: TextStyle(color: Colors.black)),
+                                    
                                     SizedBox(
                                       width: 20,
                                     ),
@@ -2945,18 +2946,6 @@ class _BloodTestsState extends State<BloodTests> {
                                   children: <Widget>[
                                     Radio(
                                       activeColor: kPrimaryColor,
-                                      value: 'mg/dL',
-                                      groupValue: selectedFastingBloodUnit,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          selectedFastingBloodUnit = value;
-                                        });
-                                      },
-                                    ),
-                                    Text("mg/dL",
-                                        style: TextStyle(color: Colors.black)),
-                                    Radio(
-                                      activeColor: kPrimaryColor,
                                       value: 'mmol/L',
                                       groupValue: selectedFastingBloodUnit,
                                       onChanged: (value) {
@@ -2968,6 +2957,18 @@ class _BloodTestsState extends State<BloodTests> {
                                     Text(
                                       "mmol/L",
                                     ),
+                                    Radio(
+                                      activeColor: kPrimaryColor,
+                                      value: 'mg/dL',
+                                      groupValue: selectedFastingBloodUnit,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedFastingBloodUnit = value;
+                                        });
+                                      },
+                                    ),
+                                    Text("mg/dL",
+                                        style: TextStyle(color: Colors.black)),
                                     SizedBox(
                                       width: 20,
                                     ),
@@ -3009,18 +3010,6 @@ class _BloodTestsState extends State<BloodTests> {
                                   children: <Widget>[
                                     Radio(
                                       activeColor: kPrimaryColor,
-                                      value: 'mg/dL',
-                                      groupValue: selectedHabfUnit,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          selectedHabfUnit = value;
-                                        });
-                                      },
-                                    ),
-                                    Text("mg/dL",
-                                        style: TextStyle(color: Colors.black)),
-                                    Radio(
-                                      activeColor: kPrimaryColor,
                                       value: 'mmol/L',
                                       groupValue: selectedHabfUnit,
                                       onChanged: (value) {
@@ -3032,6 +3021,18 @@ class _BloodTestsState extends State<BloodTests> {
                                     Text(
                                       "mmol/L",
                                     ),
+                                    Radio(
+                                      activeColor: kPrimaryColor,
+                                      value: 'mg/dL',
+                                      groupValue: selectedHabfUnit,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedHabfUnit = value;
+                                        });
+                                      },
+                                    ),
+                                    Text("mg/dL",
+                                        style: TextStyle(color: Colors.black)),
                                     SizedBox(
                                       width: 20,
                                     ),
@@ -3181,19 +3182,6 @@ class _BloodTestsState extends State<BloodTests> {
                                         children: <Widget>[
                                           Radio(
                                             activeColor: kPrimaryColor,
-                                            value: 'mg/dL',
-                                            groupValue: selectedCholesterolUnit,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                selectedCholesterolUnit = value;
-                                              });
-                                            },
-                                          ),
-                                          Text("mg/dL",
-                                              style: TextStyle(
-                                                  color: Colors.black)),
-                                          Radio(
-                                            activeColor: kPrimaryColor,
                                             value: 'mmol/L',
                                             groupValue: selectedCholesterolUnit,
                                             onChanged: (value) {
@@ -3205,6 +3193,19 @@ class _BloodTestsState extends State<BloodTests> {
                                           Text(
                                             "mmol/L",
                                           ),
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mg/dL',
+                                            groupValue: selectedCholesterolUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedCholesterolUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text("mg/dL",
+                                              style: TextStyle(
+                                                  color: Colors.black)),
                                           SizedBox(
                                             width: 20,
                                           ),
@@ -3248,19 +3249,6 @@ class _BloodTestsState extends State<BloodTests> {
                                         children: <Widget>[
                                           Radio(
                                             activeColor: kPrimaryColor,
-                                            value: 'mg/dL',
-                                            groupValue: selectedLdlUnit,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                selectedLdlUnit = value;
-                                              });
-                                            },
-                                          ),
-                                          Text("mg/dL",
-                                              style: TextStyle(
-                                                  color: Colors.black)),
-                                          Radio(
-                                            activeColor: kPrimaryColor,
                                             value: 'mmol/L',
                                             groupValue: selectedLdlUnit,
                                             onChanged: (value) {
@@ -3272,6 +3260,20 @@ class _BloodTestsState extends State<BloodTests> {
                                           Text(
                                             "mmol/L",
                                           ),
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mg/dL',
+                                            groupValue: selectedLdlUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedLdlUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text("mg/dL",
+                                              style: TextStyle(
+                                                  color: Colors.black)),
+                                          
                                           SizedBox(
                                             width: 20,
                                           ),
@@ -3315,19 +3317,6 @@ class _BloodTestsState extends State<BloodTests> {
                                         children: <Widget>[
                                           Radio(
                                             activeColor: kPrimaryColor,
-                                            value: 'mg/dL',
-                                            groupValue: selectedHdlUnit,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                selectedHdlUnit = value;
-                                              });
-                                            },
-                                          ),
-                                          Text("mg/dL",
-                                              style: TextStyle(
-                                                  color: Colors.black)),
-                                          Radio(
-                                            activeColor: kPrimaryColor,
                                             value: 'mmol/L',
                                             groupValue: selectedHdlUnit,
                                             onChanged: (value) {
@@ -3339,6 +3328,19 @@ class _BloodTestsState extends State<BloodTests> {
                                           Text(
                                             "mmol/L",
                                           ),
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mg/dL',
+                                            groupValue: selectedHdlUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedHdlUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text("mg/dL",
+                                              style: TextStyle(
+                                                  color: Colors.black)),
                                           SizedBox(
                                             width: 20,
                                           ),
@@ -3382,19 +3384,6 @@ class _BloodTestsState extends State<BloodTests> {
                                         children: <Widget>[
                                           Radio(
                                             activeColor: kPrimaryColor,
-                                            value: 'mg/dL',
-                                            groupValue: selectedTgUnit,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                selectedTgUnit = value;
-                                              });
-                                            },
-                                          ),
-                                          Text("mg/dL",
-                                              style: TextStyle(
-                                                  color: Colors.black)),
-                                          Radio(
-                                            activeColor: kPrimaryColor,
                                             value: 'mmol/L',
                                             groupValue: selectedTgUnit,
                                             onChanged: (value) {
@@ -3406,6 +3395,19 @@ class _BloodTestsState extends State<BloodTests> {
                                           Text(
                                             "mmol/L",
                                           ),
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mg/dL',
+                                            groupValue: selectedTgUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedTgUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text("mg/dL",
+                                              style: TextStyle(
+                                                  color: Colors.black)),
                                           SizedBox(
                                             width: 20,
                                           ),
@@ -3488,19 +3490,6 @@ class _BloodTestsState extends State<BloodTests> {
                                         children: <Widget>[
                                           Radio(
                                             activeColor: kPrimaryColor,
-                                            value: 'mg/dL',
-                                            groupValue: selectedCreatinineUnit,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                selectedCreatinineUnit = value;
-                                              });
-                                            },
-                                          ),
-                                          Text("mg/dL",
-                                              style: TextStyle(
-                                                  color: Colors.black)),
-                                          Radio(
-                                            activeColor: kPrimaryColor,
                                             value: 'mmol/L',
                                             groupValue: selectedCreatinineUnit,
                                             onChanged: (value) {
@@ -3512,6 +3501,19 @@ class _BloodTestsState extends State<BloodTests> {
                                           Text(
                                             "mmol/L",
                                           ),
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mg/dL',
+                                            groupValue: selectedCreatinineUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedCreatinineUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text("mg/dL",
+                                              style: TextStyle(
+                                                  color: Colors.black)),
                                           SizedBox(
                                             width: 20,
                                           ),
@@ -3555,19 +3557,6 @@ class _BloodTestsState extends State<BloodTests> {
                                         children: <Widget>[
                                           Radio(
                                             activeColor: kPrimaryColor,
-                                            value: 'mg/dL',
-                                            groupValue: selectedSodiumUnit,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                selectedSodiumUnit = value;
-                                              });
-                                            },
-                                          ),
-                                          Text("mg/dL",
-                                              style: TextStyle(
-                                                  color: Colors.black)),
-                                          Radio(
-                                            activeColor: kPrimaryColor,
                                             value: 'mmol/L',
                                             groupValue: selectedSodiumUnit,
                                             onChanged: (value) {
@@ -3579,6 +3568,19 @@ class _BloodTestsState extends State<BloodTests> {
                                           Text(
                                             "mmol/L",
                                           ),
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mg/dL',
+                                            groupValue: selectedSodiumUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedSodiumUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text("mg/dL",
+                                              style: TextStyle(
+                                                  color: Colors.black)),
                                           SizedBox(
                                             width: 20,
                                           ),
@@ -3622,19 +3624,6 @@ class _BloodTestsState extends State<BloodTests> {
                                         children: <Widget>[
                                           Radio(
                                             activeColor: kPrimaryColor,
-                                            value: 'mg/dL',
-                                            groupValue: selectedPotassiumUnit,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                selectedPotassiumUnit = value;
-                                              });
-                                            },
-                                          ),
-                                          Text("mg/dL",
-                                              style: TextStyle(
-                                                  color: Colors.black)),
-                                          Radio(
-                                            activeColor: kPrimaryColor,
                                             value: 'mmol/L',
                                             groupValue: selectedPotassiumUnit,
                                             onChanged: (value) {
@@ -3646,6 +3635,19 @@ class _BloodTestsState extends State<BloodTests> {
                                           Text(
                                             "mmol/L",
                                           ),
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mg/dL',
+                                            groupValue: selectedPotassiumUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedPotassiumUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text("mg/dL",
+                                              style: TextStyle(
+                                                  color: Colors.black)),
                                           SizedBox(
                                             width: 20,
                                           ),
@@ -3689,19 +3691,6 @@ class _BloodTestsState extends State<BloodTests> {
                                         children: <Widget>[
                                           Radio(
                                             activeColor: kPrimaryColor,
-                                            value: 'mg/dL',
-                                            groupValue: selectedKetonesUnit,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                selectedKetonesUnit = value;
-                                              });
-                                            },
-                                          ),
-                                          Text("mg/dL",
-                                              style: TextStyle(
-                                                  color: Colors.black)),
-                                          Radio(
-                                            activeColor: kPrimaryColor,
                                             value: 'mmol/L',
                                             groupValue: selectedKetonesUnit,
                                             onChanged: (value) {
@@ -3713,6 +3702,19 @@ class _BloodTestsState extends State<BloodTests> {
                                           Text(
                                             "mmol/L",
                                           ),
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mg/dL',
+                                            groupValue: selectedKetonesUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedKetonesUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text("mg/dL",
+                                              style: TextStyle(
+                                                  color: Colors.black)),
                                           SizedBox(
                                             width: 20,
                                           ),
@@ -3756,19 +3758,6 @@ class _BloodTestsState extends State<BloodTests> {
                                         children: <Widget>[
                                           Radio(
                                             activeColor: kPrimaryColor,
-                                            value: 'mg/dL',
-                                            groupValue: selectedProteinUnit,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                selectedProteinUnit = value;
-                                              });
-                                            },
-                                          ),
-                                          Text("mg/dL",
-                                              style: TextStyle(
-                                                  color: Colors.black)),
-                                          Radio(
-                                            activeColor: kPrimaryColor,
                                             value: 'mmol/L',
                                             groupValue: selectedProteinUnit,
                                             onChanged: (value) {
@@ -3780,6 +3769,19 @@ class _BloodTestsState extends State<BloodTests> {
                                           Text(
                                             "mmol/L",
                                           ),
+                                          Radio(
+                                            activeColor: kPrimaryColor,
+                                            value: 'mg/dL',
+                                            groupValue: selectedProteinUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedProteinUnit = value;
+                                              });
+                                            },
+                                          ),
+                                          Text("mg/dL",
+                                              style: TextStyle(
+                                                  color: Colors.black)),
                                           SizedBox(
                                             width: 20,
                                           ),
