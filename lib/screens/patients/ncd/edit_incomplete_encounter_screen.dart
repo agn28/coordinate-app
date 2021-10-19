@@ -889,7 +889,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                                     child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(fontSize: 20),),
                                     color: kPrimaryColor,
                                     textColor: Colors.white,
-                                    onPressed: () {
+                                    onPressed: () async {
                                       if(_isNextButtonDisabled)
                                         return;
                                       createObservations();
@@ -981,7 +981,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                                     child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(fontSize: 20),),
                                     color: kPrimaryColor,
                                     textColor: Colors.white,
-                                    onPressed: () {
+                                    onPressed: () async{
                                       if(_isNextButtonDisabled)
                                         return;
                                       createObservations();
