@@ -712,20 +712,30 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          content: new Text(AppLocalizations.of(context).translate("incompleteNcd"), style: TextStyle(fontSize: 20),),
+          content: new Text(AppLocalizations.of(context).translate("incompleteNcd"), style: TextStyle(fontSize: 22),),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
-            FlatButton(
-              child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(color: kPrimaryColor)),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
+            Container(  
+              margin: EdgeInsets.all(20),  
+              child:FlatButton(
+                child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(fontSize: 20),),
+                color: kPrimaryColor,  
+                textColor: Colors.white,
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
             ),
-            FlatButton(
-              child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(color: kPrimaryColor)),
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
+            Container(  
+              margin: EdgeInsets.all(20),  
+              child:FlatButton(
+                child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(fontSize: 20),),
+                color: kPrimaryColor,  
+                textColor: Colors.white,
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
             ),
           ],
         );

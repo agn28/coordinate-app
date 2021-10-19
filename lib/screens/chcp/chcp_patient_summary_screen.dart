@@ -954,21 +954,31 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
                                   context: context,
                                   builder: (BuildContext context){
                                     return AlertDialog(
-                                      content: new Text(AppLocalizations.of(context).translate("editExistingAssessment"), style: TextStyle(fontSize: 20),),
+                                      content: new Text(AppLocalizations.of(context).translate("editExistingAssessment"), style: TextStyle(fontSize: 22),),
                                       actions: <Widget>[
                                         // usually buttons at the bottom of the dialog
-                                        FlatButton(
-                                          child: new Text(AppLocalizations.of(context).translate("edit"), style: TextStyle(color: kPrimaryColor)),
-                                          onPressed: () {
-                                            Navigator.of(context).pushNamed(EditIncompleteEncounterChcpScreen.path);
-                                          },
+                                        Container(  
+                                          margin: EdgeInsets.all(20),  
+                                          child:FlatButton(
+                                            child: new Text(AppLocalizations.of(context).translate("edit"), style: TextStyle(fontSize: 20),),
+                                            color: kPrimaryColor,  
+                                            textColor: Colors.white,
+                                            onPressed: () {
+                                              Navigator.of(context).pushNamed(EditIncompleteEncounterChcpScreen.path);
+                                            },
+                                          ),
                                         ),
-                                        FlatButton(
-                                          child: new Text(AppLocalizations.of(context).translate("newVisit"), style: TextStyle(color: kPrimaryColor)),
-                                          onPressed: () async {
-                                            await deleteIncompleteAssessmentLocal();
-                                            Navigator.of(context).pushNamed(NewVisitChcpFeelingScreen.path);
-                                          },
+                                        Container(  
+                                          margin: EdgeInsets.all(20),  
+                                          child:FlatButton(
+                                            child: new Text(AppLocalizations.of(context).translate("newVisit"), style: TextStyle(fontSize: 20),),
+                                            color: kPrimaryColor,  
+                                            textColor: Colors.white,
+                                            onPressed: () async {
+                                              await deleteIncompleteAssessmentLocal();
+                                              Navigator.of(context).pushNamed(NewVisitChcpFeelingScreen.path);
+                                            },
+                                          ),
                                         ),
                                       ],
                                     );     

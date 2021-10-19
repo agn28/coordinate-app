@@ -193,23 +193,33 @@ class Helpers {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(AppLocalizations.of(context).translate('areYouSure'), style: TextStyle(fontWeight: FontWeight.w500),),
-          content: Text(AppLocalizations.of(context).translate('logoutDetails')),
+          content: Text(AppLocalizations.of(context).translate('logoutDetails'), style: TextStyle(fontSize: 22),),
           actions: [
-            FlatButton(
-              child: new Text(AppLocalizations.of(context).translate("cancel"), style: TextStyle(color: kPrimaryColor)),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
+            Container(  
+              margin: EdgeInsets.all(20),  
+              child:FlatButton(
+                child: new Text(AppLocalizations.of(context).translate("cancel"), style: TextStyle(fontSize: 20),),
+                color: kPrimaryColor,  
+                textColor: Colors.white,
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
             ),
-            FlatButton(
-              child: Text(AppLocalizations.of(context).translate('logout'), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500, color: kPrimaryColor),),
-              onPressed:  () async {
-                await Auth().logout();
-              
-                Navigator.of(context)
-                  .pushAndRemoveUntil(MaterialPageRoute(builder: (ctx) => AuthScreen()), (Route<dynamic> route) => false);
-                // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-              },
+            Container(  
+              margin: EdgeInsets.all(20),  
+              child:FlatButton(
+                child: Text(AppLocalizations.of(context).translate('logout'), style: TextStyle(fontSize: 20),),
+                color: kPrimaryColor,  
+                textColor: Colors.white,
+                onPressed:  () async {
+                  await Auth().logout();
+                
+                  Navigator.of(context)
+                    .pushAndRemoveUntil(MaterialPageRoute(builder: (ctx) => AuthScreen()), (Route<dynamic> route) => false);
+                  // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+                },
+              ),
             ),
           ],
         );
