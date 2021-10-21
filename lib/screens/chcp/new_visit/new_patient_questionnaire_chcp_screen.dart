@@ -27,6 +27,7 @@ import 'package:nhealth/models/language.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
+import 'package:nhealth/screens/chcp/followup_patient_chcp_summary_screen.dart';
 import 'package:nhealth/screens/chw/unwell/create_referral_screen.dart';
 import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
@@ -942,7 +943,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                   isNotNull(referralData['body']) && refer ? await AssessmentController().createReferralByAssessmentLocal('community clinic assessment', referralData) : '';
                   _patient['data']['chcp_encounter_status'] = encounterData['dataStatus'];
                   _patient['data']['chcp_encounter_type'] = 'community clinic assessment';
-                  Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
+                  Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
                 },
               ),
             ),

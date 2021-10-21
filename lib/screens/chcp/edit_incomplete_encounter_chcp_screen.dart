@@ -23,6 +23,7 @@ import 'package:nhealth/custom-classes/custom_stepper.dart';
 import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/repositories/local/assessment_repository_local.dart';
+import 'package:nhealth/screens/chcp/followup_patient_chcp_summary_screen.dart';
 import 'package:nhealth/screens/chw/careplan_actions/careplan_feeling_screen.dart';
 import 'package:nhealth/screens/chw/followup/edit_followup_screen.dart';
 import 'package:nhealth/screens/patients/ncd/followup_feeling_screen.dart';
@@ -1412,7 +1413,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                   isNotNull(referralData['body']) && refer ? await AssessmentController().createReferralByAssessmentLocal('community clinic assessment', referralData) : '';
                   _patient['data']['chcp_encounter_status'] = encounterData['dataStatus'];
                   _patient['data']['chcp_encounter_type'] = 'community clinic assessment';
-                  Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
+                  Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
                 },
               ),
             ),
