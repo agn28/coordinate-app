@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:basic_utils/basic_utils.dart' as basic_utils;
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -72,6 +73,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
   bool actionsActive = false;
   bool carePlansEmpty = false;
   var dueDate = '';
+  var creationDateTimeController = TextEditingController();
 
   @override
   void initState() {
@@ -103,7 +105,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     if(widget.prevScreen != 'encounter'){
       getReport();
     }
-    
+    creationDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
   }
 
   getAssessmentDueDate() {
@@ -1543,6 +1545,55 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                   child: Text(AppLocalizations.of(context).translate('updateLastFollowUp'), style: TextStyle(color: Colors.white),),
                                   ),
                                 ) : Container(),
+                                SizedBox(height: 20,),
+                                (widget.prevScreen == 'encounter' || widget.prevScreen == 'followup') && widget.encounterData['dataStatus'] != 'complete'
+                                ? Container(
+                                  width: double.infinity,
+                                  child: DateTimeField(
+                                    resetIcon: null,
+                                    format: DateFormat("yyyy-MM-dd HH:mm"),
+                                    controller: creationDateTimeController,
+                                    decoration: InputDecoration(
+                                      // hintText: AppLocalizations.of(context).translate("lastVisitDate"),
+                                      hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                                      contentPadding: EdgeInsets.only(top: 18, bottom: 18),
+                                      prefixIcon: Icon(Icons.date_range),
+                                      filled: true,
+                                      fillColor: kSecondaryTextField,
+                                      border: new UnderlineInputBorder(
+                                        borderSide: new BorderSide(color: Colors.white),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(4),
+                                          topRight: Radius.circular(4),
+                                        )
+                                      ),
+                                    ),
+                                    
+                                    onShowPicker: (context, currentValue) async  {
+                                      final date = await showDatePicker(
+                                          context: context,
+                                          firstDate: DateTime(1900),
+                                          initialDate: currentValue ?? DateTime.now(),
+                                          lastDate: DateTime(2100));
+                                      if (date != null) {
+                                        final time = await showTimePicker(
+                                          context: context,
+                                          initialTime:
+                                              TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                                        );
+                                        return DateTimeField.combine(date, time);
+                                      } else {
+                                        return currentValue;
+                                      }
+                                      // return showDatePicker(
+                                      //     context: context,
+                                      //     firstDate: DateTime(1900),
+                                      //     initialDate: currentValue ?? DateTime.now(),
+                                      //     lastDate: DateTime(2100));
+                                    },
+                                  ),
+                                )
+                                : Container(),
                                 SizedBox(height: 20,),
                                 (widget.prevScreen == 'encounter' || widget.prevScreen == 'followup') && widget.encounterData['dataStatus'] != 'complete' ?
                                 Container(
