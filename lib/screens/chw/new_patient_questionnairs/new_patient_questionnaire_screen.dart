@@ -2332,6 +2332,7 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
     dietTitleAdded = false;
     tobaccoTitleAdded = false;
     isReferralRequired = null;
+    creationDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
   }
 
   checkCounsellingQuestions(counsellingQuestion) {
@@ -2718,12 +2719,13 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
                           )),
                           SizedBox(height: 20,),
                           Container(
-                            margin: EdgeInsets.symmetric(horizontal: 25),
+                            // margin: EdgeInsets.symmetric(horizontal: 25),
                             child: DateTimeField(
+                              resetIcon: null,
                               format: format,
                               controller: creationDateTimeController,
                               decoration: InputDecoration(
-                                hintText: AppLocalizations.of(context).translate("lastVisitDate"),
+                                // hintText: AppLocalizations.of(context).translate("lastVisitDate"),
                                 hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
                                 contentPadding: EdgeInsets.only(top: 18, bottom: 18),
                                 prefixIcon: Icon(Icons.date_range),
