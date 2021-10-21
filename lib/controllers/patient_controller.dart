@@ -372,18 +372,18 @@ class PatientController {
 
     }
 
-    // var creationDateTime = formData['creationDateTime'];
+    var creationDateTime = formData['creationDateTime'];
     formData.remove('birth_date');
     formData.remove('birth_month');
     formData.remove('birth_year');
-    // formData.remove('creationDateTime');
+    formData.remove('creationDateTime');
     formData['age'] = age;
     formData['birth_date'] = birthDate;
 
     var data = {
       "meta": {
         "collected_by": Auth().getAuth()['uid'],
-        "created_at": DateTime.now().toString()//creationDateTime
+        "created_at": creationDateTime
       },
       "body": formData
     };

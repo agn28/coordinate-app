@@ -53,7 +53,7 @@ final emailController = TextEditingController();
 final nidController = TextEditingController();
 final bracPatientIdContoller = TextEditingController();
 final educationController = TextEditingController();
-// final creationDateTimeController = TextEditingController();
+final creationDateTimeController = TextEditingController();
 
 final contactFirstNameController = TextEditingController();
 final contactLastNameController = TextEditingController();
@@ -591,7 +591,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
       'nid': nidController.text,
       'brac_id': bracPatientIdContoller.text,
       'education' : educationController.text,
-      // 'creationDateTime' : creationDateTimeController.text,
+      'creationDateTime' : creationDateTimeController.text,
 
       'registration_date': DateFormat('y-MM-dd').format(DateTime.now()),
       'address': {
@@ -1574,7 +1574,7 @@ class _ViewSummaryState extends State<ViewSummary> {
     super.initState();
     _isRegisterButtonDisabled = false;
     print('parent ${widget.parent}');
-    // creationDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
+    creationDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
   }
 
   uploadImage() async {
@@ -2021,49 +2021,49 @@ class _ViewSummaryState extends State<ViewSummary> {
                       : Container(
                           height: 0,
                         ),
-                      // SizedBox(
-                      //   height: 7,
-                      // ),
-                      // Container(
-                      //   // margin: EdgeInsets.symmetric(horizontal: 10),
-                      //   child: DateTimeField(
-                      //     resetIcon: null,
-                      //     format: DateFormat("yyyy-MM-dd HH:mm"),
-                      //     controller: creationDateTimeController,
-                      //     decoration: InputDecoration(
-                      //       // hintText: '${DateTime.now()}',//AppLocalizations.of(context).translate("lastVisitDate"),
-                      //       hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
-                      //       contentPadding: EdgeInsets.only(top: 18, bottom: 18),
-                      //       prefixIcon: Icon(Icons.date_range),
-                      //       filled: true,
-                      //       fillColor: kSecondaryTextField,
-                      //       border: new UnderlineInputBorder(
-                      //         borderSide: new BorderSide(color: Colors.white),
-                      //         borderRadius: BorderRadius.only(
-                      //           topLeft: Radius.circular(4),
-                      //           topRight: Radius.circular(4),
-                      //         )
-                      //       ),
-                      //     ),
+                      SizedBox(
+                        height: 7,
+                      ),
+                      Container(
+                        // margin: EdgeInsets.symmetric(horizontal: 10),
+                        child: DateTimeField(
+                          resetIcon: null,
+                          format: DateFormat("yyyy-MM-dd HH:mm"),
+                          controller: creationDateTimeController,
+                          decoration: InputDecoration(
+                            // hintText: '${DateTime.now()}',//AppLocalizations.of(context).translate("lastVisitDate"),
+                            hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                            contentPadding: EdgeInsets.only(top: 18, bottom: 18),
+                            prefixIcon: Icon(Icons.date_range),
+                            filled: true,
+                            fillColor: kSecondaryTextField,
+                            border: new UnderlineInputBorder(
+                              borderSide: new BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(4),
+                                topRight: Radius.circular(4),
+                              )
+                            ),
+                          ),
                           
-                      //     onShowPicker: (context, currentValue) async{
-                      //       final date = await showDatePicker(
-                      //           context: context,
-                      //           firstDate: DateTime(1900),
-                      //           initialDate: currentValue ?? DateTime.now(),
-                      //           lastDate: DateTime(2100));
-                      //           if (date != null) {
-                      //             final time = await showTimePicker(
-                      //               context: context,
-                      //               initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
-                      //             );
-                      //             return DateTimeField.combine(date, time);
-                      //           } else {
-                      //             return currentValue;
-                      //           }
-                      //     },
-                      //   ),
-                      // ),
+                          onShowPicker: (context, currentValue) async{
+                            final date = await showDatePicker(
+                                context: context,
+                                firstDate: DateTime(1900),
+                                initialDate: currentValue ?? DateTime.now(),
+                                lastDate: DateTime(2100));
+                                if (date != null) {
+                                  final time = await showTimePicker(
+                                    context: context,
+                                    initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                                  );
+                                  return DateTimeField.combine(date, time);
+                                } else {
+                                  return currentValue;
+                                }
+                          },
+                        ),
+                      ),
                       SizedBox(height: 20,),
                 ],
               ),
