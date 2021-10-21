@@ -1140,17 +1140,18 @@ class AssessmentController {
     
     // return response;
   }
-  createAssessmentWithObservationsLive(type, {assessmentStatus:'incomplete', followupType:''}) async {
+  createAssessmentWithObservationsLive(type, {assessmentStatus:'incomplete', followupType:'', createdAt:''}) async {
     var localNotSyncedAssessment = [];
     localNotSyncedAssessment = await this.getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: type);
     if(localNotSyncedAssessment.isNotEmpty) {
-      assessmentStatus == 'complete' ? localNotSyncedAssessment.first['meta']['completed_at'] = DateTime.now().toString() : null;
       var localNotSyncedObservations = await this.getObservationsByAssessment(localNotSyncedAssessment.first);
       var localNotSyncedReferral = await ReferralController().getReferralByAssessment(localNotSyncedAssessment.first['id']);
       print('ref $localNotSyncedReferral');
       print('obs $localNotSyncedObservations');
       print('localNotSyncedAssessment ${localNotSyncedAssessment.first})');
       localNotSyncedAssessment.first['body']['status'] = assessmentStatus;
+      assessmentStatus == 'complete' ? localNotSyncedAssessment.first['meta']['completed_at'] = DateTime.now().toString() : null;
+      createdAt == '' ? localNotSyncedAssessment.first['meta']['created_at'] = DateTime.now().toString() : createdAt;
       var apiDataObservations = await updateObservations(localNotSyncedAssessment.first['body']['status'], localNotSyncedAssessment.first, localNotSyncedObservations);
       Map<String, dynamic> apiData = {
         'assessment': localNotSyncedAssessment.first,
@@ -1158,6 +1159,7 @@ class AssessmentController {
       };
       print('apiData $apiData');
       if(localNotSyncedAssessment.first['body']['type'] == 'community clinic assessment' || localNotSyncedAssessment.first['body']['type'] == 'community clinic followup') {
+        createdAt == '' ? localNotSyncedReferral['meta']['created_at'] = DateTime.now().toString() : createdAt;
         var response = await storeAssessmentWithObservationsLive(localNotSyncedAssessment.first, apiDataObservations, apiData, referralData: localNotSyncedReferral);
       } else {
         var response = await storeAssessmentWithObservationsLive(localNotSyncedAssessment.first, apiDataObservations, apiData);
@@ -1520,8 +1522,8 @@ class AssessmentController {
           matchedObs = matchedObs.first;
           var apiData = {'id': matchedObs['id']};
           apiData.addAll(bm);
-          apiData['body']['assessment_id'] =
-              matchedObs['body']['assessment_id'];
+          apiData['body']['assessment_id'] = matchedObs['body']['assessment_id'];
+          apiData['meta']['created_at'] = encounter['meta']['created_at'];
           print('body Measurements_if $apiData');
           apiDataObservations.add(apiData);
           await obsRepoLocal.update(matchedObs['id'], apiData, false);
@@ -1532,6 +1534,7 @@ class AssessmentController {
           Map<String, dynamic> apiData = {'id': id};
           apiData.addAll(bm);
           apiData['body']['assessment_id'] = encounter['id'];
+          apiData['meta']['created_at'] = encounter['meta']['created_at'];
           print('body Measurements_else $apiData');
           apiDataObservations.add(apiData);
           await obsRepoLocal.create(id, apiData, false);
@@ -1543,6 +1546,7 @@ class AssessmentController {
         Map<String, dynamic> apiData = {'id': id};
         apiData.addAll(bm);
         apiData['body']['assessment_id'] = encounter['id'];
+        apiData['meta']['created_at'] = encounter['meta']['created_at'];
         print('body Measurements_else $apiData');
         apiDataObservations.add(apiData);
         await obsRepoLocal.create(id, apiData, false);
@@ -1563,8 +1567,8 @@ class AssessmentController {
           matchedObs = matchedObs.first;
           var apiData = {'id': matchedObs['id']};
           apiData.addAll(bp);
-          apiData['body']['assessment_id'] =
-              matchedObs['body']['assessment_id'];
+          apiData['body']['assessment_id'] = matchedObs['body']['assessment_id'];
+          apiData['meta']['created_at'] = encounter['meta']['created_at'];
           print('Blood Pressure_if $apiData');
           apiDataObservations.add(apiData);
           await obsRepoLocal.update(matchedObs['id'], apiData, false);
@@ -1573,6 +1577,7 @@ class AssessmentController {
           Map<String, dynamic> apiData = {'id': id};
           apiData.addAll(bp);
           apiData['body']['assessment_id'] = encounter['id'];
+          apiData['meta']['created_at'] = encounter['meta']['created_at'];
           print('Blood Pressure_else $apiData');
           apiDataObservations.add(apiData);
           await obsRepoLocal.create(id, apiData, false);
@@ -1582,6 +1587,7 @@ class AssessmentController {
         Map<String, dynamic> apiData = {'id': id};
         apiData.addAll(bp);
         apiData['body']['assessment_id'] = encounter['id'];
+        apiData['meta']['created_at'] = encounter['meta']['created_at'];
         print('Blood Pressure_else $apiData');
         apiDataObservations.add(apiData);
         await obsRepoLocal.create(id, apiData, false);
@@ -1623,8 +1629,8 @@ class AssessmentController {
           matchedObs = matchedObs.first;
           var apiData = {'id': matchedObs['id']};
           apiData.addAll(bt);
-          apiData['body']['assessment_id'] =
-              matchedObs['body']['assessment_id'];
+          apiData['body']['assessment_id'] = matchedObs['body']['assessment_id'];
+          apiData['meta']['created_at'] = encounter['meta']['created_at'];
           print('Blood Test_if $apiData');
           apiDataObservations.add(apiData);
           await obsRepoLocal.update(matchedObs['id'], apiData, false);
@@ -1633,6 +1639,7 @@ class AssessmentController {
           Map<String, dynamic> apiData = {'id': id};
           apiData.addAll(bt);
           apiData['body']['assessment_id'] = encounter['id'];
+          apiData['meta']['created_at'] = encounter['meta']['created_at'];
           print('Blood Test_else $apiData');
           apiDataObservations.add(apiData);
           await obsRepoLocal.create(id, apiData, false);
@@ -1642,6 +1649,7 @@ class AssessmentController {
         Map<String, dynamic> apiData = {'id': id};
         apiData.addAll(bt);
         apiData['body']['assessment_id'] = encounter['id'];
+        apiData['meta']['created_at'] = encounter['meta']['created_at'];
         print('Blood Test_else $apiData');
         apiDataObservations.add(apiData);
         await obsRepoLocal.create(id, apiData, false);
@@ -1659,8 +1667,8 @@ class AssessmentController {
           matchedObs = matchedObs.first;
           var apiData = {'id': matchedObs['id']};
           apiData.addAll(qstn);
-          apiData['body']['assessment_id'] =
-              matchedObs['body']['assessment_id'];
+          apiData['body']['assessment_id'] = matchedObs['body']['assessment_id'];
+          apiData['meta']['created_at'] = encounter['meta']['created_at'];
           print('Questionnaires_if $apiData');
           apiDataObservations.add(apiData);
           await obsRepoLocal.update(matchedObs['id'], apiData, false);
@@ -1669,6 +1677,7 @@ class AssessmentController {
           Map<String, dynamic> apiData = {'id': id};
           apiData.addAll(qstn);
           apiData['body']['assessment_id'] = encounter['id'];
+          apiData['meta']['created_at'] = encounter['meta']['created_at'];
           print('Questionnaires_else $apiData');
           apiDataObservations.add(apiData);
           await obsRepoLocal.create(id, apiData, false);
@@ -1678,6 +1687,7 @@ class AssessmentController {
         Map<String, dynamic> apiData = {'id': id};
         apiData.addAll(qstn);
         apiData['body']['assessment_id'] = encounter['id'];
+        apiData['meta']['created_at'] = encounter['meta']['created_at'];
         print('Questionnaires_else $apiData');
         apiDataObservations.add(apiData);
         await obsRepoLocal.create(id, apiData, false);
