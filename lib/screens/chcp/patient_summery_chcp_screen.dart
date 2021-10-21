@@ -73,6 +73,7 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
   bool actionsActive = false;
   bool carePlansEmpty = false;
   var dueDate = '';
+  var creationDateTimeController = TextEditingController();
 
   @override
   void initState() {
@@ -105,6 +106,7 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
     if(widget.prevScreen != 'encounter'){
       getReport();
     }
+    creationDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
     
   }
 
@@ -1552,37 +1554,53 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
                                   child: Text(AppLocalizations.of(context).translate('updateLastFollowUp'), style: TextStyle(color: Colors.white),),
                                   ),
                                 ) : Container(),
-                                // SizedBox(height: 20,),
-                                // Container(
-                                //   margin: EdgeInsets.symmetric(horizontal: 25),
-                                //   child: DateTimeField(
-                                //     format: DateFormat("yyyy-MM-dd"),
-                                //     controller: lastVisitDateController,
-                                //     decoration: InputDecoration(
-                                //       hintText: AppLocalizations.of(context).translate("lastVisitDate"),
-                                //       hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
-                                //       contentPadding: EdgeInsets.only(top: 18, bottom: 18),
-                                //       prefixIcon: Icon(Icons.date_range),
-                                //       filled: true,
-                                //       fillColor: kSecondaryTextField,
-                                //       border: new UnderlineInputBorder(
-                                //         borderSide: new BorderSide(color: Colors.white),
-                                //         borderRadius: BorderRadius.only(
-                                //           topLeft: Radius.circular(4),
-                                //           topRight: Radius.circular(4),
-                                //         )
-                                //       ),
-                                //     ),
+                                SizedBox(height: 20,),
+                                Container(
+                                  // margin: EdgeInsets.symmetric(horizontal: 25),
+                                  child: DateTimeField(
+                                    resetIcon: null,
+                                    format: DateFormat("yyyy-MM-dd HH:mm"),
+                                    controller: creationDateTimeController,
+                                    decoration: InputDecoration(
+                                      // hintText: AppLocalizations.of(context).translate("lastVisitDate"),
+                                      hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                                      contentPadding: EdgeInsets.only(top: 18, bottom: 18),
+                                      prefixIcon: Icon(Icons.date_range),
+                                      filled: true,
+                                      fillColor: kSecondaryTextField,
+                                      border: new UnderlineInputBorder(
+                                        borderSide: new BorderSide(color: Colors.white),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(4),
+                                          topRight: Radius.circular(4),
+                                        )
+                                      ),
+                                    ),
                                     
-                                //     onShowPicker: (context, currentValue) {
-                                //       return showDatePicker(
-                                //           context: context,
-                                //           firstDate: DateTime(1900),
-                                //           initialDate: currentValue ?? DateTime.now(),
-                                //           lastDate: DateTime(2100));
-                                //     },
-                                //   ),
-                                // ),
+                                    onShowPicker: (context, currentValue) async  {
+                                      final date = await showDatePicker(
+                                          context: context,
+                                          firstDate: DateTime(1900),
+                                          initialDate: currentValue ?? DateTime.now(),
+                                          lastDate: DateTime(2100));
+                                      if (date != null) {
+                                        final time = await showTimePicker(
+                                          context: context,
+                                          initialTime:
+                                              TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                                        );
+                                        return DateTimeField.combine(date, time);
+                                      } else {
+                                        return currentValue;
+                                      }
+                                      // return showDatePicker(
+                                      //     context: context,
+                                      //     firstDate: DateTime(1900),
+                                      //     initialDate: currentValue ?? DateTime.now(),
+                                      //     lastDate: DateTime(2100));
+                                    },
+                                  ),
+                                ),
                                 SizedBox(height: 20,),
                                 (widget.prevScreen == 'encounter' || widget.prevScreen == 'followup')
                                 ? Container(

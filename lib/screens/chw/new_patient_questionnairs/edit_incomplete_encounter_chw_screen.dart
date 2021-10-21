@@ -868,7 +868,7 @@ class _EditIncompleteEncounterChwScreenState
 
     print(patient['data']['age']);
     var status = hasMissingData ? 'incomplete' : 'complete';
-    var response = await AssessmentController().createAssessmentWithObservationsLive('new questionnaire');
+    var response = await AssessmentController().createAssessmentWithObservationsLive('new questionnaire', createdAt: creationDateTimeController.text);
     // var response = await AssessmentController().createOnlyAssessmentWithStatus('new questionnaire', 'new-questionnaire', '', 'incomplete', nextVisitDate);
 
     setLoader(false);
