@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:basic_utils/basic_utils.dart' as basic_utils;
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -76,6 +77,7 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
   bool actionsActive = false;
   bool carePlansEmpty = false;
   var dueDate = '';
+  var creationDateTimeController = TextEditingController();
 
   @override
   void initState() {
@@ -108,7 +110,8 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
     if(widget.prevScreen != 'encounter'){
       getReport();
     }
-    
+
+    creationDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
   }
 
   getAssessmentDueDate() {
@@ -1550,7 +1553,58 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                 //   child: Text(AppLocalizations.of(context).translate('updateLastFollowUp'), style: TextStyle(color: Colors.white),),
                                 //   ),
                                 // ) : Container(),
-                                // SizedBox(height: 20,),
+                                SizedBox(height: 20,),
+                                (widget.prevScreen == 'encounter' || widget.prevScreen == 'followup')
+                                ? Container(
+                                  width: double.infinity,
+                                  child: Container(
+                                    child: DateTimeField(
+                                      resetIcon: null,
+                                      format: DateFormat("yyyy-MM-dd HH:mm"),
+                                      controller: creationDateTimeController,
+                                      decoration: InputDecoration(
+                                        // hintText: AppLocalizations.of(context).translate("lastVisitDate"),
+                                        hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                                        contentPadding: EdgeInsets.only(top: 18, bottom: 18),
+                                        prefixIcon: Icon(Icons.date_range),
+                                        filled: true,
+                                        fillColor: kSecondaryTextField,
+                                        border: new UnderlineInputBorder(
+                                          borderSide: new BorderSide(color: Colors.white),
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(4),
+                                            topRight: Radius.circular(4),
+                                          )
+                                        ),
+                                      ),
+                                      
+                                      onShowPicker: (context, currentValue) async  {
+                                        final date = await showDatePicker(
+                                            context: context,
+                                            firstDate: DateTime(1900),
+                                            initialDate: currentValue ?? DateTime.now(),
+                                            lastDate: DateTime(2100));
+                                        if (date != null) {
+                                          final time = await showTimePicker(
+                                            context: context,
+                                            initialTime:
+                                                TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                                          );
+                                          return DateTimeField.combine(date, time);
+                                        } else {
+                                          return currentValue;
+                                        }
+                                        // return showDatePicker(
+                                        //     context: context,
+                                        //     firstDate: DateTime(1900),
+                                        //     initialDate: currentValue ?? DateTime.now(),
+                                        //     lastDate: DateTime(2100));
+                                      },
+                                    ),
+                                  ),
+                                ) 
+                                : Container(),
+                                SizedBox(height: 20,),
                                 (widget.prevScreen == 'encounter' || widget.prevScreen == 'followup')
                                 ? Container(
                                   width: double.infinity,
@@ -1561,42 +1615,42 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                     borderRadius: BorderRadius.circular(3)
                                   ),
                                   child: FlatButton(
-                                  onPressed: () async {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
-                                    if(widget.prevScreen == 'encounter') {
-                                      if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
-                                      {
-                                        print('edit encounter');
-                                        print('${widget.encounterData['encounter']}');
-                                        var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
+                                    onPressed: () async {
+                                      setState(() {
+                                        isLoading = true;
+                                      });
+                                      if(widget.prevScreen == 'encounter') {
+                                        if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
+                                        {
+                                          print('edit encounter');
+                                          print('${widget.encounterData['encounter']}');
+                                          var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
 
-                                      } else {
-                                        print('new encounter');
-                                        // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
-                                        var response = await AssessmentController().createAssessmentWithObservationsLive('new ncd center assessment', assessmentStatus: 'incomplete');
-                                      }
-                                    } else if(widget.prevScreen == 'followup') {
-                                      if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
-                                      {
-                                        print('edit followup');
-                                        print('${widget.encounterData['encounter']}');
-                                        // var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
+                                        } else {
+                                          print('new encounter');
+                                          // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                                          var response = await AssessmentController().createAssessmentWithObservationsLive('new ncd center assessment', assessmentStatus: 'incomplete');
+                                        }
+                                      } else if(widget.prevScreen == 'followup') {
+                                        if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
+                                        {
+                                          print('edit followup');
+                                          print('${widget.encounterData['encounter']}');
+                                          // var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
 
-                                      } else {
-                                        print('new followup');
-                                        // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
+                                        } else {
+                                          print('new followup');
+                                          // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
+                                        }
                                       }
-                                    }
-                                    setState(() {
-                                      isLoading = false;
-                                    });
-                                    // return;
-                                    Navigator.of(context).pushNamed('/chcpHome',);
-                                  },
-                                  color: kPrimaryColor,
-                                  child: Text(AppLocalizations.of(context).translate('saveForLater'), style: TextStyle(color: Colors.white),),
+                                      setState(() {
+                                        isLoading = false;
+                                      });
+                                      // return;
+                                      Navigator.of(context).pushNamed('/chcpHome',);
+                                    },
+                                    color: kPrimaryColor,
+                                    child: Text(AppLocalizations.of(context).translate('saveForLater'), style: TextStyle(color: Colors.white),),
                                   ),
                                 ) : Container(),
                                 SizedBox(height: 20,),
@@ -1610,58 +1664,58 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                     borderRadius: BorderRadius.circular(3)
                                   ),
                                   child: FlatButton(
-                                  onPressed: () async {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
-                                    if(widget.prevScreen == 'encounter') {
-                                      var status = widget.encounterData['dataStatus'] == 'incomplete' ? 'incomplete' : 'complete';
-                                      if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
-                                      {
-                                        print('edit encounter');
-                                        print(status);
-                                        // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
-                                        if(status == 'complete') {
-                                          var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations']);
+                                    onPressed: () async {
+                                      setState(() {
+                                        isLoading = true;
+                                      });
+                                      if(widget.prevScreen == 'encounter') {
+                                        var status = widget.encounterData['dataStatus'] == 'incomplete' ? 'incomplete' : 'complete';
+                                        if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
+                                        {
+                                          print('edit encounter');
+                                          print(status);
+                                          // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
+                                          if(status == 'complete') {
+                                            var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations']);
+                                          }
+                                        } else {
+                                          print('new encounter');
+                                          print(status);
+                                          // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', status, '');
+                                          if(status == 'complete') {
+                                            var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic assessment', assessmentStatus: status);
+                                          }
                                         }
-                                      } else {
-                                        print('new encounter');
-                                        print(status);
-                                        // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', status, '');
-                                        if(status == 'complete') {
-                                          var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic assessment', assessmentStatus: status);
-                                        }
-                                      }
-                                      status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
+                                        status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
 
-                                    } else if(widget.prevScreen == 'followup') {
-                                      var status = widget.encounterData['dataStatus'] == 'incomplete' ? 'incomplete' : 'complete';
-                                      if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
-                                      {
-                                        print('edit followup');
-                                        print(status);
-                                        // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
-                                        if(status == 'complete') {
-                                          var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations']);
+                                      } else if(widget.prevScreen == 'followup') {
+                                        var status = widget.encounterData['dataStatus'] == 'incomplete' ? 'incomplete' : 'complete';
+                                        if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
+                                        {
+                                          print('edit followup');
+                                          print(status);
+                                          // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
+                                          if(status == 'complete') {
+                                            var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations']);
+                                          }
+                                        } else {
+                                          print('new followup');
+                                          print(status);
+                                          print(widget.encounterData['followupType']);
+                                          // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
+                                          if(status == 'complete') {
+                                            var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic followup', assessmentStatus: status,);
+                                          }
                                         }
-                                      } else {
-                                        print('new followup');
-                                        print(status);
-                                        print(widget.encounterData['followupType']);
-                                        // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
-                                        if(status == 'complete') {
-                                          var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic followup', assessmentStatus: status,);
-                                        }
+                                        status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
                                       }
-                                      status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
-                                    }
-                                    setState(() {
-                                      isLoading = false;
-                                    });
-                                    Navigator.of(context).pushNamed('/chcpHome',);
-                                  },
-                                  color: kPrimaryColor,
-                                  child: Text(AppLocalizations.of(context).translate('completeEncounter'), style: TextStyle(color: Colors.white),),
+                                      setState(() {
+                                        isLoading = false;
+                                      });
+                                      Navigator.of(context).pushNamed('/chcpHome',);
+                                    },
+                                    color: kPrimaryColor,
+                                    child: Text(AppLocalizations.of(context).translate('completeEncounter'), style: TextStyle(color: Colors.white),),
                                   ),
                                 ) : Container(),
 
