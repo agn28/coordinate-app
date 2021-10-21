@@ -1674,30 +1674,30 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                       setState(() {
                                         isLoading = true;
                                       });
-                                    if(widget.prevScreen == 'encounter') {
-                                      if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
-                                      {
-                                        print('edit encounter');
-                                        print('${widget.encounterData['encounter']}');
-                                        var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
+                                      if(widget.prevScreen == 'encounter') {
+                                        if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
+                                        {
+                                          print('edit encounter');
+                                          print('${widget.encounterData['encounter']}');
+                                          var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
 
-                                      } else {
-                                        print('new encounter');
-                                        // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
-                                        var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic assessment', assessmentStatus: 'incomplete', createdAt: creationDateTimeController.text);
-                                      }
-                                    } else if(widget.prevScreen == 'followup') {
-                                      if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
-                                      {
-                                        print('edit followup');
-                                        print('${widget.encounterData['encounter']}');
-                                        var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
+                                        } else {
+                                          print('new encounter');
+                                          // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                                          var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic assessment', assessmentStatus: 'incomplete', createdAt: creationDateTimeController.text);
+                                        }
+                                      } else if(widget.prevScreen == 'followup') {
+                                        if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
+                                        {
+                                          print('edit followup');
+                                          print('${widget.encounterData['encounter']}');
+                                          var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
 
-                                      } else {
-                                        print('new followup');
-                                        var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic followup', assessmentStatus: 'incomplete', createdAt: creationDateTimeController.text);
+                                        } else {
+                                          print('new followup');
+                                          var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic followup', assessmentStatus: 'incomplete', createdAt: creationDateTimeController.text);
+                                        }
                                       }
-                                    }
                                       setState(() {
                                         isLoading = false;
                                       });
