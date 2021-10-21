@@ -78,6 +78,7 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
   bool carePlansEmpty = false;
   var dueDate = '';
   var creationDateTimeController = TextEditingController();
+  var completionDateTimeController = TextEditingController();
 
   @override
   void initState() {
@@ -112,6 +113,7 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
     }
 
     creationDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
+    completionDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
   }
 
   getAssessmentDueDate() {
@@ -1554,14 +1556,67 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                 //   ),
                                 // ) : Container(),
                                 SizedBox(height: 20,),
-                                (widget.prevScreen == 'encounter' || widget.prevScreen == 'followup')
-                                ? Container(
+                                (widget.prevScreen == 'encounter' || widget.prevScreen == 'followup' && (!(widget.encounterData).containsKey("encounter") && !(widget.encounterData).containsKey("observations")))
+                                ? 
+                                Container(
                                   width: double.infinity,
                                   child: Container(
                                     child: DateTimeField(
                                       resetIcon: null,
                                       format: DateFormat("yyyy-MM-dd HH:mm"),
                                       controller: creationDateTimeController,
+                                      decoration: InputDecoration(
+                                        // hintText: AppLocalizations.of(context).translate("lastVisitDate"),
+                                        hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                                        contentPadding: EdgeInsets.only(top: 18, bottom: 18),
+                                        prefixIcon: Icon(Icons.date_range),
+                                        filled: true,
+                                        fillColor: kSecondaryTextField,
+                                        border: new UnderlineInputBorder(
+                                          borderSide: new BorderSide(color: Colors.white),
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(4),
+                                            topRight: Radius.circular(4),
+                                          )
+                                        ),
+                                      ),
+
+                                      onShowPicker: (context, currentValue) async  {
+                                        final date = await showDatePicker(
+                                            context: context,
+                                            firstDate: DateTime(1900),
+                                            initialDate: currentValue ?? DateTime.now(),
+                                            lastDate: DateTime(2100));
+                                        if (date != null) {
+                                          final time = await showTimePicker(
+                                            context: context,
+                                            initialTime:
+                                                TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                                          );
+                                          return DateTimeField.combine(date, time);
+                                        } else {
+                                          return currentValue;
+                                        }
+                                        // return showDatePicker(
+                                        //     context: context,
+                                        //     firstDate: DateTime(1900),
+                                        //     initialDate: currentValue ?? DateTime.now(),
+                                        //     lastDate: DateTime(2100));
+                                      },
+                                    ),
+                                  ),
+                                )
+                                : Container(),
+                                SizedBox(height: 20,),
+                                (widget.prevScreen == 'followup' && widget.encounterData['dataStatus'] != 'incomplete')
+                                ? 
+                                Container(
+                                  width: double.infinity,
+                                  child: Container(
+                                    child: DateTimeField(
+                                      resetIcon: null,
+                                      format: DateFormat("yyyy-MM-dd HH:mm"),
+                                      controller: completionDateTimeController,
                                       decoration: InputDecoration(
                                         // hintText: AppLocalizations.of(context).translate("lastVisitDate"),
                                         hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
@@ -1619,17 +1674,17 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                       setState(() {
                                         isLoading = true;
                                       });
-                                      if(widget.prevScreen == 'encounter') {
-                                        if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
-                                        {
-                                          print('edit encounter');
-                                          print('${widget.encounterData['encounter']}');
-                                          var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
+                                    if(widget.prevScreen == 'encounter') {
+                                      if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
+                                      {
+                                        print('edit encounter');
+                                        print('${widget.encounterData['encounter']}');
+                                        var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
 
                                       } else {
                                         print('new encounter');
                                         // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
-                                        var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic assessment', assessmentStatus: 'incomplete');
+                                        var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic assessment', assessmentStatus: 'incomplete', createdAt: creationDateTimeController.text);
                                       }
                                     } else if(widget.prevScreen == 'followup') {
                                       if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
@@ -1691,7 +1746,7 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                           print(status);
                                           // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
                                           if(status == 'complete') {
-                                            var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations']);
+                                            var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations'], completedAt: completionDateTimeController.text);
                                           }
                                         } else {
                                           print('new followup');
@@ -1699,7 +1754,7 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                           print(widget.encounterData['followupType']);
                                           // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
                                           if(status == 'complete') {
-                                            var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic followup', assessmentStatus: status,);
+                                            var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic followup', assessmentStatus: status, completedAt: completionDateTimeController.text);
                                           }
                                         }
                                         status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
