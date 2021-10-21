@@ -1608,7 +1608,7 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                 )
                                 : Container(),
                                 SizedBox(height: 20,),
-                                (widget.prevScreen == 'followup' && ((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations")) && widget.encounterData['dataStatus'] != 'incomplete')
+                                (widget.prevScreen == 'followup' && widget.encounterData['dataStatus'] != 'incomplete')
                                 ? 
                                 Container(
                                   width: double.infinity,
