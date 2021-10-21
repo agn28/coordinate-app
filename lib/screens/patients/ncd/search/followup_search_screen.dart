@@ -101,7 +101,7 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
     });
 
     var data = await PatientController().getFollowupPatients();
-
+    
     if (data != null && data['message'] == 'Unauthorized') {
       Auth().logout();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));

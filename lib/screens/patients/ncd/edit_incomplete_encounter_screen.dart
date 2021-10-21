@@ -1008,12 +1008,12 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                           _isNextButtonDisabled = true;
                         });
                         await AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                        print('here!');
                         setState(() {
                           _isNextButtonDisabled = false;
                           _currentStep = _currentStep + 1;
                           nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                         });
-                        Navigator.of(context).pop(true);
                         return;
                       }
                       return;
