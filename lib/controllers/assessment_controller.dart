@@ -1140,7 +1140,7 @@ class AssessmentController {
     
     // return response;
   }
-  createAssessmentWithObservationsLive(type, {assessmentStatus:'incomplete', followupType:'', createdAt:''}) async {
+  createAssessmentWithObservationsLive(type, {assessmentStatus:'incomplete', followupType:'', createdAt:'', completedAt:''}) async {
     var localNotSyncedAssessment = [];
     localNotSyncedAssessment = await this.getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: type);
     if(localNotSyncedAssessment.isNotEmpty) {
@@ -1150,7 +1150,7 @@ class AssessmentController {
       print('obs $localNotSyncedObservations');
       print('localNotSyncedAssessment ${localNotSyncedAssessment.first})');
       localNotSyncedAssessment.first['body']['status'] = assessmentStatus;
-      assessmentStatus == 'complete' ? localNotSyncedAssessment.first['meta']['completed_at'] = DateTime.now().toString() : null;
+      assessmentStatus == 'complete' ? (completedAt == '' ? localNotSyncedAssessment.first['meta']['completed_at'] = DateTime.now().toString() : completedAt) : null;
       createdAt == '' ? localNotSyncedAssessment.first['meta']['created_at'] = DateTime.now().toString() : createdAt;
       var apiDataObservations = await updateObservations(localNotSyncedAssessment.first['body']['status'], localNotSyncedAssessment.first, localNotSyncedObservations);
       Map<String, dynamic> apiData = {
@@ -1171,16 +1171,16 @@ class AssessmentController {
     Helpers().clearObservationItems();
   }
 
-  updateAssessmentWithObservationsLive(assessmentStatus, encounter, observations) async {
+  updateAssessmentWithObservationsLive(assessmentStatus, encounter, observations, {completedAt: ''}) async {
     
     var apiDataObservations = await updateObservations(assessmentStatus, encounter, observations);
-    assessmentStatus == 'complete' ? encounter['meta']['completed_at'] = DateTime.now().toString() : null;
     Map<String, dynamic> apiData = {
       'assessment': encounter,
       'observations': apiDataObservations
     };
     print('apiData $apiData');
-    
+    assessmentStatus == 'complete' ? (completedAt == '' ? encounter['meta']['completed_at'] = DateTime.now().toString() : completedAt) : null;
+      
     var response = await storeAssessmentWithObservationsLive(encounter, apiDataObservations, apiData);
   
     if (assessmentStatus == 'complete') {
