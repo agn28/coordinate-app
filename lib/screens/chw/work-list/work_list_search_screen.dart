@@ -670,7 +670,12 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
                             Expanded(
                               flex: 2,
                                 child: Container(
-                                child: Text(item['body']['father_name'] != null ? item['body']['father_name'] : item['body']['husband_name'], style: TextStyle(fontSize: 14, color: Colors.black),),
+                                  child: Text(item['body']['gender'] == 'male' 
+                                    ? item['body']['father_name']
+                                    : item['body']['husband_name'] != null && item['body']['husband_name'].isNotEmpty ? item['body']['husband_name'] : 'n/a',
+                                  style: TextStyle(color: Colors.black87, fontSize: 18),
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                             ),
                             SizedBox(width: 5,),

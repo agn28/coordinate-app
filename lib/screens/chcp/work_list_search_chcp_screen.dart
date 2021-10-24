@@ -71,7 +71,6 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
     dueDateSort = 'asc';
     patientSortActive = false;
     dueDateSortActive = false;
-    print("pendingPatients: $pendingPatients");
   }
   
   loaderHandle(value) {
@@ -113,7 +112,8 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
           allPendingPatients = pending['data'];
           // pendingPatientsSort();
           pendingPatients = allPendingPatients;
-          print('pendingPatients: ${pendingPatients[0]['body']}');
+          print('heeeree');
+          print('pendingPatientss: ${pendingPatients[1]['body']['gender']}');
         });
       }
       if (completed['error'] != null && !completed['error']) {
@@ -168,7 +168,7 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
         allPendingPatients = localPatientPending;
         pendingPatientsSort();
         pendingPatients = allPendingPatients;
-        print(pendingPatients[0]['body']);
+        print('pendingPatients ${pendingPatients[1]}');
       });
       setState(() {
         isLoading = false;
@@ -685,7 +685,12 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
                             Expanded(
                               flex: 2,
                                 child: Container(
-                                child: Text(item['body']['father_name'] != null ? item['body']['father_name'] : item['body']['husband_name'], style: TextStyle(fontSize: 14, color: Colors.black), textAlign: TextAlign.center,),
+                                  child: Text(item['body']['gender'] == 'male' 
+                                  ? item['body']['father_name']
+                                  : item['body']['husband_name'] != null && item['body']['husband_name'].isNotEmpty ? item['body']['husband_name'] : 'n/a',
+                                style: TextStyle(color: Colors.black87, fontSize: 18),
+                                textAlign: TextAlign.center,
+                                ),
                               ),
                             ),
                             SizedBox(width: 5,),

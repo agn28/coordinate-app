@@ -496,7 +496,7 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                             flex: 2,
                             child: Text(item['data']['gender'] == 'male' 
                                 ? item['data']['father_name']
-                                : item['data']['husband_name'] != null && item['data']['husband_name'].isNotEmpty ? item['data']['husband_name'] : '',
+                                : item['data']['husband_name'] != null && item['data']['husband_name'].isNotEmpty ? item['data']['husband_name'] : 'n/a',
                               style: TextStyle(color: Colors.black87, fontSize: 18),
                               textAlign: TextAlign.center,
                             ),
