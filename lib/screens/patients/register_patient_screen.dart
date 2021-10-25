@@ -2025,45 +2025,54 @@ class _ViewSummaryState extends State<ViewSummary> {
                         height: 7,
                       ),
                       Container(
-                        // margin: EdgeInsets.symmetric(horizontal: 10),
-                        child: DateTimeField(
-                          resetIcon: null,
-                          format: DateFormat("yyyy-MM-dd HH:mm"),
-                          controller: creationDateTimeController,
-                          decoration: InputDecoration(
-                            // hintText: '${DateTime.now()}',//AppLocalizations.of(context).translate("lastVisitDate"),
-                            hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
-                            contentPadding: EdgeInsets.only(top: 18, bottom: 18),
-                            prefixIcon: Icon(Icons.date_range),
-                            filled: true,
-                            fillColor: kSecondaryTextField,
-                            border: new UnderlineInputBorder(
-                              borderSide: new BorderSide(color: Colors.white),
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(4),
-                                topRight: Radius.circular(4),
-                              )
-                            ),
-                          ),
-                          
-                          onShowPicker: (context, currentValue) async{
-                            final date = await showDatePicker(
-                                context: context,
-                                firstDate: DateTime(1900),
-                                initialDate: currentValue ?? DateTime.now(),
-                                lastDate: DateTime(2100));
-                                if (date != null) {
-                                  final time = await showTimePicker(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(AppLocalizations.of(context).translate('creationDateAndTime'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                            Container(
+                              // margin: EdgeInsets.symmetric(horizontal: 10),
+                              child: DateTimeField(
+                                resetIcon: null,
+                                format: DateFormat("yyyy-MM-dd HH:mm"),
+                                controller: creationDateTimeController,
+                                decoration: InputDecoration(
+                                  // hintText: '${DateTime.now()}',//AppLocalizations.of(context).translate("lastVisitDate"),
+                                  hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                                  contentPadding: EdgeInsets.only(top: 18, bottom: 18),
+                                  prefixIcon: Icon(Icons.date_range),
+                                  filled: true,
+                                  fillColor: kSecondaryTextField,
+                                  border: new UnderlineInputBorder(
+                                    borderSide: new BorderSide(color: Colors.white),
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(4),
+                                      topRight: Radius.circular(4),
+                                    )
+                                  ),
+                                ),
+                                
+                                onShowPicker: (context, currentValue) async{
+                                  final date = await showDatePicker(
                                     context: context,
-                                    initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
-                                  );
-                                  return DateTimeField.combine(date, time);
-                                } else {
-                                  return currentValue;
-                                }
-                          },
-                        ),
+                                    firstDate: DateTime(1900),
+                                    initialDate: currentValue ?? DateTime.now(),
+                                    lastDate: DateTime(2100));
+                                    if (date != null) {
+                                      final time = await showTimePicker(
+                                        context: context,
+                                        initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                                      );
+                                      return DateTimeField.combine(date, time);
+                                    } else {
+                                      return currentValue;
+                                    }
+                                },
+                              ),
+                            ),
+                          ],
+                        )
                       ),
+                      
                       SizedBox(height: 20,),
                 ],
               ),
