@@ -1141,6 +1141,7 @@ class AssessmentController {
     // return response;
   }
   createAssessmentWithObservationsLive(type, {assessmentStatus:'incomplete', followupType:'', createdAt:'', completedAt:''}) async {
+    print('dateTimeSeleceted $createdAt $completedAt');
     var localNotSyncedAssessment = [];
     localNotSyncedAssessment = await this.getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: type);
     if(localNotSyncedAssessment.isNotEmpty) {
@@ -1150,16 +1151,16 @@ class AssessmentController {
       print('obs $localNotSyncedObservations');
       print('localNotSyncedAssessment ${localNotSyncedAssessment.first})');
       localNotSyncedAssessment.first['body']['status'] = assessmentStatus;
-      assessmentStatus == 'complete' ? (completedAt == '' ? localNotSyncedAssessment.first['meta']['completed_at'] = DateTime.now().toString() : completedAt) : null;
-      createdAt == '' ? localNotSyncedAssessment.first['meta']['created_at'] = DateTime.now().toString() : createdAt;
+      assessmentStatus == 'complete' ? (localNotSyncedAssessment.first['meta']['completed_at'] = completedAt == '' ?  DateTime.now().toString() : completedAt) : null;
+      localNotSyncedAssessment.first['meta']['created_at'] = createdAt == '' ? DateTime.now().toString() : createdAt;
       var apiDataObservations = await updateObservations(localNotSyncedAssessment.first['body']['status'], localNotSyncedAssessment.first, localNotSyncedObservations);
       Map<String, dynamic> apiData = {
         'assessment': localNotSyncedAssessment.first,
         'observations': apiDataObservations
       };
       print('apiData $apiData');
-      if(localNotSyncedAssessment.first['body']['type'] == 'community clinic assessment' || localNotSyncedAssessment.first['body']['type'] == 'community clinic followup') {
-        createdAt == '' ? localNotSyncedReferral['meta']['created_at'] = DateTime.now().toString() : createdAt;
+      if(localNotSyncedReferral != null && (localNotSyncedAssessment.first['body']['type'] == 'community clinic assessment' || localNotSyncedAssessment.first['body']['type'] == 'community clinic followup')) {
+        // localNotSyncedReferral['meta']['created_at'] = createdAt == '' ? DateTime.now().toString() : createdAt;
         var response = await storeAssessmentWithObservationsLive(localNotSyncedAssessment.first, apiDataObservations, apiData, referralData: localNotSyncedReferral);
       } else {
         var response = await storeAssessmentWithObservationsLive(localNotSyncedAssessment.first, apiDataObservations, apiData);
@@ -1172,14 +1173,14 @@ class AssessmentController {
   }
 
   updateAssessmentWithObservationsLive(assessmentStatus, encounter, observations, {completedAt: ''}) async {
-    
+    print('dateTimeSeleceted $completedAt');
     var apiDataObservations = await updateObservations(assessmentStatus, encounter, observations);
     Map<String, dynamic> apiData = {
       'assessment': encounter,
       'observations': apiDataObservations
     };
     print('apiData $apiData');
-    assessmentStatus == 'complete' ? (completedAt == '' ? encounter['meta']['completed_at'] = DateTime.now().toString() : completedAt) : null;
+    assessmentStatus == 'complete' ? (encounter['meta']['completed_at'] = completedAt == '' ?  DateTime.now().toString() : completedAt) : null;
       
     var response = await storeAssessmentWithObservationsLive(encounter, apiDataObservations, apiData);
   

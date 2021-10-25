@@ -1548,7 +1548,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                   ),
                                 ) : Container(),
                                 SizedBox(height: 20,),
-                                (widget.prevScreen == 'encounter' || widget.prevScreen == 'followup' && (!(widget.encounterData).containsKey("encounter") && !(widget.encounterData).containsKey("observations")))
+                                ((widget.prevScreen == 'encounter' || widget.prevScreen == 'followup') && (!(widget.encounterData).containsKey("encounter") && !(widget.encounterData).containsKey("observations")))
                                 ? Container(
                                   width: double.infinity,
                                   child: DateTimeField(
@@ -1597,7 +1597,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                 )
                                 : Container(),
                                 SizedBox(height: 20,),
-                                (widget.prevScreen == 'encounter' || widget.prevScreen == 'followup' && widget.encounterData['dataStatus'] != 'incomplete')
+                                ((widget.prevScreen == 'encounter' || widget.prevScreen == 'followup') && widget.encounterData['dataStatus'] != 'incomplete')
                                 ? 
                                 Container(
                                   width: double.infinity,

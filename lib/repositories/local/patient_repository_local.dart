@@ -206,7 +206,7 @@ class PatientReposioryLocal {
       ));
       return;
     }
-    var assessmentData = _prepareAssessmentData('registration', 'registration', '', id);
+    var assessmentData = _prepareAssessmentData('registration', 'registration', data['meta']['created_at'], id);
     var assessment = await AssessmentRepositoryLocal().createLocalAssessment(assessmentData['id'], assessmentData, synced);
     if (isNull(assessment)) {
       Scaffold.of(context).showSnackBar(SnackBar(
@@ -296,7 +296,7 @@ class PatientReposioryLocal {
       ));
       return;
     }
-    var assessmentData = _prepareAssessmentData('registration', 'registration', '', id);
+    var assessmentData = _prepareAssessmentData('registration', 'registration', data['meta']['created_at'], id);
     await AssessmentRepositoryLocal().createLocalAssessment(assessmentData['id'], assessmentData, synced);
 
     print('result 1');
@@ -312,7 +312,7 @@ class PatientReposioryLocal {
     return 'success';
   }
 
-  _prepareAssessmentData(type, screening_type, comment, patientId) {
+  _prepareAssessmentData(type, screening_type, createdAt, patientId) {
 
     var assessmentId = Uuid().v4();
 
@@ -320,14 +320,14 @@ class PatientReposioryLocal {
       "id": assessmentId,
       "meta": {
         "collected_by": Auth().getAuth()['uid'],
-        "created_at": DateTime.now().toString()
+        "created_at": createdAt
       },
       "body": {
         "type": type == 'In-clinic Screening' ? 'in-clinic' : type,
         "screening_type": screening_type,
-        "comment": comment,
+        "comment": "",
         "performed_by": Auth().getAuth()['uid'],
-        "assessment_date": DateFormat('y-MM-dd').format(DateTime.now()),
+        "assessment_date": DateFormat('y-MM-dd').format(DateTime.parse(createdAt)),
         "patient_id": patientId
       }
     };
