@@ -545,5 +545,7 @@
   "wantToCompleteVisit" : "আপনি কি পরিদর্শন সম্পন্ন করতে চান?",
   "chcpAssessment" : "Chcp মূল্যায়ন",
   "referTo":"কাকে রেফার করবেন?",
-  "followupIn": "ফলোআপ পরিদর্শন"
+  "followupIn": "ফলোআপ পরিদর্শন",
+  "creationDateAndTime": "উত্পত্তির তারিখ এবং সময়",
+  "completionDateAndTime": "সমাপ্তির তারিখ এবং সময়"
 }

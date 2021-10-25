@@ -52,7 +52,6 @@ final mobilePhoneController = TextEditingController();
 final emailController = TextEditingController();
 final nidController = TextEditingController();
 final bracPatientIdContoller = TextEditingController();
-final educationController = TextEditingController();
 final creationDateTimeController = TextEditingController();
 
 final contactFirstNameController = TextEditingController();
@@ -293,7 +292,6 @@ class _RegisterPatientState extends State<RegisterPatient> {
     emailController.text = patient['data']['email'];
     nidController.text = patient['data']['nid'];
     bracPatientIdContoller.text = patient['data']['brac_id'];
-    educationController.text = patient['data']['education'];
     //centers = patient['data']['centers'];
     hhNumberController.text = patient['data']['hh_number'];
     serialController.text = patient['data']['serial'];
@@ -353,7 +351,6 @@ class _RegisterPatientState extends State<RegisterPatient> {
     emailController.clear();
     nidController.clear();
     bracPatientIdContoller.clear();
-    educationController.clear();
     selectedCenters = null;
     townController.clear();
     contactFirstNameController.clear();
@@ -590,7 +587,6 @@ class _RegisterPatientState extends State<RegisterPatient> {
       'birth_year': birthYearController.text,
       'nid': nidController.text,
       'brac_id': bracPatientIdContoller.text,
-      'education' : educationController.text,
       'creationDateTime' : creationDateTimeController.text,
 
       'registration_date': DateFormat('y-MM-dd').format(DateTime.now()),
@@ -1226,17 +1222,6 @@ class _PatientDetailsState extends State<PatientDetails> {
                       print("centerssss: $value");
                     },
                   ),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                PrimaryTextField(
-                  topPaadding: 10,
-                  bottomPadding: 10,
-                  hintText: AppLocalizations.of(context).translate('educationYear'),
-                  controller: educationController,
-                  name: AppLocalizations.of(context).translate('educationYear'),
-                  // validation: true,
                 ),
                 SizedBox(
                   height: 30,
@@ -2003,67 +1988,55 @@ class _ViewSummaryState extends State<ViewSummary> {
                       SizedBox(
                         height: 7,
                       ),
-                      educationController.text.isNotEmpty
-                      ? Row(
-                          children: <Widget>[
-                            Text(
-                              AppLocalizations.of(context)
-                                      .translate('educationYear') +
-                                  ': ',
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            Text(
-                              educationController.text,
-                              style: TextStyle(fontSize: 18),
+                      Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(AppLocalizations.of(context).translate('creationDateAndTime'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                            Container(
+                              // margin: EdgeInsets.symmetric(horizontal: 10),
+                              child: DateTimeField(
+                                resetIcon: null,
+                                format: DateFormat("yyyy-MM-dd HH:mm"),
+                                controller: creationDateTimeController,
+                                decoration: InputDecoration(
+                                  // hintText: '${DateTime.now()}',//AppLocalizations.of(context).translate("lastVisitDate"),
+                                  hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                                  contentPadding: EdgeInsets.only(top: 18, bottom: 18),
+                                  prefixIcon: Icon(Icons.date_range),
+                                  filled: true,
+                                  fillColor: kSecondaryTextField,
+                                  border: new UnderlineInputBorder(
+                                    borderSide: new BorderSide(color: Colors.white),
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(4),
+                                      topRight: Radius.circular(4),
+                                    )
+                                  ),
+                                ),
+                                
+                                onShowPicker: (context, currentValue) async{
+                                  final date = await showDatePicker(
+                                    context: context,
+                                    firstDate: DateTime(1900),
+                                    initialDate: currentValue ?? DateTime.now(),
+                                    lastDate: DateTime(2100));
+                                    if (date != null) {
+                                      final time = await showTimePicker(
+                                        context: context,
+                                        initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                                      );
+                                      return DateTimeField.combine(date, time);
+                                    } else {
+                                      return currentValue;
+                                    }
+                                },
+                              ),
                             ),
                           ],
                         )
-                      : Container(
-                          height: 0,
-                        ),
-                      SizedBox(
-                        height: 7,
                       ),
-                      Container(
-                        // margin: EdgeInsets.symmetric(horizontal: 10),
-                        child: DateTimeField(
-                          resetIcon: null,
-                          format: DateFormat("yyyy-MM-dd HH:mm"),
-                          controller: creationDateTimeController,
-                          decoration: InputDecoration(
-                            // hintText: '${DateTime.now()}',//AppLocalizations.of(context).translate("lastVisitDate"),
-                            hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
-                            contentPadding: EdgeInsets.only(top: 18, bottom: 18),
-                            prefixIcon: Icon(Icons.date_range),
-                            filled: true,
-                            fillColor: kSecondaryTextField,
-                            border: new UnderlineInputBorder(
-                              borderSide: new BorderSide(color: Colors.white),
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(4),
-                                topRight: Radius.circular(4),
-                              )
-                            ),
-                          ),
-                          
-                          onShowPicker: (context, currentValue) async{
-                            final date = await showDatePicker(
-                                context: context,
-                                firstDate: DateTime(1900),
-                                initialDate: currentValue ?? DateTime.now(),
-                                lastDate: DateTime(2100));
-                                if (date != null) {
-                                  final time = await showTimePicker(
-                                    context: context,
-                                    initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
-                                  );
-                                  return DateTimeField.combine(date, time);
-                                } else {
-                                  return currentValue;
-                                }
-                          },
-                        ),
-                      ),
+                      
                       SizedBox(height: 20,),
                 ],
               ),
