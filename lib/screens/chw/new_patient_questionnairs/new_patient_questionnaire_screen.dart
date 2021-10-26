@@ -68,7 +68,6 @@ int _thirdQuestionOption = 1;
 int _fourthQuestionOption = 1;
 bool isLoading = false;
 
-bool _isNextButtonDisabled = false;
 
 // bool _isBloodPressureEnable = false;
 // bool _isBodyMeasurementsEnable = false;
@@ -126,7 +125,6 @@ class _NewPatientQuestionnaireScreenState
     prepareQuestions();
     prepareAnswers();
 
-    _isNextButtonDisabled = false;
     getLanguage();
   }
 
@@ -447,46 +445,28 @@ class _NewPatientQuestionnaireScreenState
             ),
             Expanded(
               child: _currentStep < _mySteps().length || nextHide ? FlatButton(
-                onPressed: () async {
-                  // if(_isNextButtonDisabled)
-                  //     return;
+                onPressed: () {
                   print(_currentStep);
                   if (_currentStep == 0) {
                       Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
-                      // setState(() {
-                      //   _isNextButtonDisabled = true;
-                      // });
                       print("addNewMedicalHistoryNcd ${Questionnaire().qnItems}");
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
-                      // setState(() {
-                      //   _isNextButtonDisabled = false;
-                      // });    
+                      AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');   
                     }
 
                     if (_currentStep == 1) {
                       Questionnaire().addNewMedicationNcd(
                           'medication', medicationAnswers);
                       print(Questionnaire().qnItems);
-                      // setState(() {
-                      //   _isNextButtonDisabled = true;
-                      // });
                       AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
-                      // setState(() {
-                      //   _isNextButtonDisabled = false;
-                      // });
+
                     }
 
                     if (_currentStep == 2) {
                       Questionnaire().addNewRiskFactorsNcd(
                           'risk_factors', riskAnswers);
                       print(Questionnaire().qnItems);
-                      // setState(() {
-                      //   _isNextButtonDisabled = true;
-                      // });
                       AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
-                      // setState(() {
-                      //   _isNextButtonDisabled = false;
-                      // });
+
                     }
 
                     if (_currentStep == 5) {
@@ -508,12 +488,8 @@ class _NewPatientQuestionnaireScreenState
                       };
                       print('relativeAdditionalData $relativeAdditionalData');
                       Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
-                      // setState(() {
-                      //   _isNextButtonDisabled = true;
-                      // });
                       AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
                       setState(() {
-                        // _isNextButtonDisabled = false;
                         _currentStep = _currentStep + 1;
                         nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                       });
@@ -557,12 +533,8 @@ class _NewPatientQuestionnaireScreenState
                                     onPressed: () async{
                                       // Navigator.of(context).pop(true);
                                       createObservations();
-                                      // setState(() {
-                                      //   _isNextButtonDisabled = true;
-                                      // });
                                       AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
                                       setState(() {
-                                        // _isNextButtonDisabled = false;
                                         _currentStep = _currentStep + 1;
                                       });
                                       Navigator.of(context).pop(true);

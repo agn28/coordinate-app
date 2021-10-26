@@ -1132,10 +1132,10 @@ class AssessmentController {
 
   //   response = await storeLocalAssessmentWithObservations(assessmentId, data, observations['localData'], false);
 
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text("Saved in Local"),
-      backgroundColor: kPrimaryGreenColor,
-    ));
+    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    //   content: Text("Saved in Local"),
+    //   backgroundColor: kPrimaryGreenColor,
+    // ));
     // print('localResponse $response');
     
     // return response;
