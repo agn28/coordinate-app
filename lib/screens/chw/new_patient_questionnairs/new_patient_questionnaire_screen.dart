@@ -230,9 +230,9 @@ class _NewPatientQuestionnaireScreenState
           MedicalRecommendationScreen.path,
           arguments: data);
     } else {
-      // Navigator.of(context).pushNamed('/chwHome',);
+      Navigator.of(context).pushNamed('/chwHome');
       
-      Navigator.of(context).pushNamed('/patientOverview', arguments: {'prevScreen' : 'encounter'});
+      // Navigator.of(context).pushNamed('/patientOverview', arguments: {'prevScreen' : 'encounter'});
     }
   }
 
