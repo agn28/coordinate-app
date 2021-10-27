@@ -135,9 +135,11 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
       print('not connected');
       var allLocalPatients = syncController.localPatientsAll.value;
       var localPatientPending = [];
+      var authData = await Auth().getStorageAuth();
       for(var localPatient in allLocalPatients) {
         print('localPatient ${localPatient['data']['first_name']} ${localPatient['meta']}');
-        if(isNotNull(localPatient["meta"]["has_pending"]) && localPatient["meta"]["has_pending"]) {
+        if(localPatient['data']['address']['district'] == authData['address']['district'] 
+          && isNotNull(localPatient["meta"]["has_pending"]) && localPatient["meta"]["has_pending"]) {
           var isAssigned = false;
           var careplans = await CarePlanRepositoryLocal().getCareplanByPatient(localPatient['id']);
           print('cp $careplans');

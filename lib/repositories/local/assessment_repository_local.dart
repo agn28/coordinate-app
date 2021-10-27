@@ -86,7 +86,7 @@ class AssessmentRepositoryLocal {
     print('patient id ' + id);
     var status = 'incomplete';
     final sql =
-        '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE (status='incomplete') AND (patient_id='$id')''';
+        '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE (status='incomplete') AND (patient_id='$id') ORDER BY created_at ASC''';
     print('sql $sql');
     var assessments;
 
@@ -123,6 +123,20 @@ class AssessmentRepositoryLocal {
     final sqlObservations = '''SELECT * FROM ${DatabaseCreator.observationTable}''';
     final observations = await db.rawQuery(sqlObservations);
 
+    return observations;
+  }
+  // Get observation by patient
+  getObservationsByPatient(patientId) async {
+    final sql = '''SELECT * FROM ${DatabaseCreator.observationTable} WHERE patient_id="$patientId"''';
+    var observations;
+
+    try {
+      observations = await db.rawQuery(sql);
+    } catch (error) {
+      print('error');
+      print(error);
+      return;
+    }
     return observations;
   }
 

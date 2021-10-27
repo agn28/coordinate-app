@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:basic_utils/basic_utils.dart' as basic_utils;
 import 'package:expandable/expandable.dart';
@@ -11,23 +10,15 @@ import 'package:nhealth/configs/configs.dart';
 
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
-import 'package:nhealth/controllers/care_plan_controller.dart';
-import 'package:nhealth/controllers/followup_controller.dart';
-import 'package:nhealth/controllers/health_report_controller.dart';
-import 'package:nhealth/controllers/observation_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:nhealth/controllers/referral_controller.dart';
 import 'package:nhealth/controllers/sync_controller.dart';
-import 'package:nhealth/controllers/user_controller.dart';
 import 'package:nhealth/custom-classes/custom_stepper.dart';
 import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/repositories/local/assessment_repository_local.dart';
 import 'package:nhealth/screens/chcp/followup_patient_chcp_summary_screen.dart';
-import 'package:nhealth/screens/chw/careplan_actions/careplan_feeling_screen.dart';
 import 'package:nhealth/screens/chw/followup/edit_followup_screen.dart';
-import 'package:nhealth/screens/patients/ncd/followup_feeling_screen.dart';
-import 'package:nhealth/screens/patients/ncd/followup_patient_summary_screen.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
@@ -43,8 +34,6 @@ import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart';
-
-import 'patient_summery_chcp_screen.dart';
 
 final _temperatureController = TextEditingController();
 final _systolicController = TextEditingController();
@@ -257,17 +246,20 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
 
     var patientId = Patient().getPatient()['id'];
     encounter = await AssessmentRepositoryLocal().getIncompleteAssessmentsByPatient(patientId);
+    //check type of encounter
     if(encounter.isNotEmpty) {
       var lastEncounter = encounter.last;
       print("lastEncounter: $lastEncounter");
       var parseData = jsonDecode(lastEncounter['data']);
-      encounter = {
-        'id': lastEncounter['id'],
-        'body': parseData['body'],
-        'meta': parseData['meta'],
-      };
-      observations = await AssessmentController().getObservationsByAssessment(encounter);
-      referral = await ReferralController().getReferralByAssessment(encounter['id']);
+      if(parseData['body']['type'] == 'new questionnaire' || parseData['body']['type'] == 'community clinic assessment') {
+        encounter = {
+          'id': lastEncounter['id'],
+          'body': parseData['body'],
+          'meta': parseData['meta'],
+        };
+        observations = await AssessmentController().getObservationsByAssessment(encounter);
+        referral = await ReferralController().getReferralByAssessment(encounter['id']);
+      }
     }
     print("encounter: $encounter");
     print("observations: $observations");

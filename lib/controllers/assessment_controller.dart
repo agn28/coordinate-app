@@ -370,15 +370,13 @@ class AssessmentController {
   /// Get observations under a specific assessment.
   /// [assessment] object is required as parameter.
   getObservationsByAssessment(assessment) async {
-    var observations = await AssessmentRepositoryLocal().getAllObservations();
+    var observations = await AssessmentRepositoryLocal().getObservationsByPatient(assessment['body']['patient_id']);
     var data = [];
     var parsedData;
 
     await observations.forEach((item) {
       parsedData = jsonDecode(item['data']);
-      if (parsedData['body']['patient_id'] == Patient().getPatient()['id'] &&
-          parsedData['body']['assessment_id'] == assessment['id']) {
-
+      if (parsedData['body']['assessment_id'] == assessment['id']) {
       print(item);
         data.add({
           'id': item['id'],
