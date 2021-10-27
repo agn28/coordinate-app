@@ -545,6 +545,6 @@
   "chcpAssessment" : "Chcp Assessment",
   "referTo":"Refer To",
   "followupIn": "Community Clinic Follow Up In",
-  "creationDateAndTime": "Creation Date and Time",
-  "completionDateAndTime": "Completion Date and Time"
+  "creationDateAndTime": "Interview start date and time",
+  "completionDateAndTime": "Interview end date and time"
 }

@@ -85,7 +85,6 @@ var clinicTypes = [];
 var _patient;
 
 bool refer = false;
-bool _isNextButtonDisabled = false;
 
 getName(context, item) {
   var locale = Localizations.localeOf(context);
@@ -153,7 +152,6 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
     getLanguage();
     getCenters();
 
-    _isNextButtonDisabled = false;
   }
 
   getCenters() async {
@@ -479,13 +477,6 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
     scrollController.jumpTo(startPosition);
   }
 
-  void _incrementStepCounter() {
-    setState(() {
-      _isNextButtonDisabled = true;
-      _currentStep++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -601,41 +592,22 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
               Expanded(
                   child: _currentStep < _mySteps().length || nextHide
                       ? FlatButton(
-                          onPressed: () async {
-                    if(_isNextButtonDisabled) return;
+                          onPressed: () {
                     print('_currentStep $_currentStep');
                     if (_currentStep == 0) {
                       Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
-                      setState(() {
-                        _isNextButtonDisabled = true;
-                      });
-                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
-                      setState(() {
-                        _isNextButtonDisabled = false;
-                      });
+                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                     }
 
                     if (_currentStep == 1) {
                       Questionnaire().addNewMedicationNcd('medication', medicationAnswers);
-                      setState(() {
-                        _isNextButtonDisabled = true;
-                      });
-                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
-                      setState(() {
-                        _isNextButtonDisabled = false;
-                      });
+                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                     }
 
                     if (_currentStep == 2) {
                       Questionnaire().addNewRiskFactorsNcd(
                           'risk_factors', riskAnswers);
-                      setState(() {
-                        _isNextButtonDisabled = true;
-                      });
-                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
-                      setState(() {
-                        _isNextButtonDisabled = false;
-                      });
+                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                     }
 
                     if (_currentStep == 3) {
@@ -673,15 +645,9 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                                     color: kPrimaryColor,  
                                     textColor: Colors.white,
                                     onPressed: () async {
-                                      if(_isNextButtonDisabled)
-                                        return;
                                       createObservations();
+                                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '');
                                       setState(() {
-                                        _isNextButtonDisabled = true;
-                                      });
-                                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '');
-                                      setState(() {
-                                        _isNextButtonDisabled = false;
                                         _currentStep = _currentStep + 1;
                                       });
                                       Navigator.of(context).pop(true);
@@ -694,12 +660,8 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                         );
                       } else {
                         createObservations();
+                        AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                         setState(() {
-                          _isNextButtonDisabled = true;
-                        });
-                        await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
-                        setState(() {
-                          _isNextButtonDisabled = false;
                           _currentStep = _currentStep + 1;
                         });
                         return;
@@ -795,12 +757,8 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
 
                     if (_currentStep == 7) {
                       Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);
+                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                       setState(() {
-                        _isNextButtonDisabled = true;
-                      });
-                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
-                      setState(() {
-                        _isNextButtonDisabled = false;
                         _currentStep = _currentStep + 1;
                       });
                       return;
@@ -827,12 +785,8 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                       };
                       print('relativeAdditionalData $relativeAdditionalData');
                       Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
+                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                       setState(() {
-                        _isNextButtonDisabled = true;
-                      });
-                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
-                      setState(() {
-                        _isNextButtonDisabled = false;
                         _currentStep = _currentStep + 1;
                       });
                       return;
@@ -879,15 +833,9 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                                     color: kPrimaryColor,  
                                     textColor: Colors.white,
                                     onPressed: () async {
-                                      if(_isNextButtonDisabled)
-                                        return;
                                       createObservations();
+                                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '');
                                       setState(() {
-                                        _isNextButtonDisabled = true;
-                                      });
-                                      await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '');
-                                      setState(() {
-                                        _isNextButtonDisabled = false;
                                         _currentStep = _currentStep + 1;
                                       });
                                       Navigator.of(context).pop(true);
@@ -900,12 +848,8 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                         );
                       } else {
                         createObservations();
+                        AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                         setState(() {
-                          _isNextButtonDisabled = true;
-                        });
-                        await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
-                        setState(() {
-                          _isNextButtonDisabled = false;
                           _currentStep = _currentStep + 1;
                         });
                         return;
