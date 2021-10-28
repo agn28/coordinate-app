@@ -250,7 +250,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
       var lastEncounter = encounter.last;
       print("lastEncounter: $lastEncounter");
       var parseData = jsonDecode(lastEncounter['data']);
-      if(parseData['body']['type'] == 'new questionnaire' || parseData['body']['type'] == 'community clinic assessment') {
+      if(parseData['body']['type'] == 'new questionnaire' || (parseData['body']['type'] == 'community clinic assessment' && parseData['local_status'] == 'incomplete')) {
         encounter = {
           'id': lastEncounter['id'],
           'body': parseData['body'],

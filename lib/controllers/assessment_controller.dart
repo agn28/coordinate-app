@@ -323,47 +323,12 @@ class AssessmentController {
     return data;
   }
 
-  getIncompleteAssessmentWithObservations(patientId) async {
-    var response = await AssessmentRepository().getIncompleteEncounterWithObservation(patientId);
-
-    print('encounter respose ' + response.toString());
+  getIncompleteAssessmentWithObservations(patientId, {assessmentType: ''}) async {
     var data = [];
-    // if (response == null) {
-    //   return data;
-    // }
-
-    if (isNull(response) || isNotNull(response['exception'])) {
-      print('into exception');
-      var patientId = Patient().getPatient()['id'];
-      var localResponse =
-          await AssessmentRepositoryLocal().getAssessmentsByPatient(patientId);
-      print('localResponse');
-      print(localResponse);
-      if (isNotNull(localResponse)) {
-        localResponse.forEach((assessment) {
-          var parseData = json.decode(assessment['data']);
-
-          data.add({
-            'id': assessment['id'],
-            'data': parseData['body'],
-            'meta': parseData['meta']
-          });
-        });
-      }
-
-      return data;
+    var encounter = await AssessmentRepositoryLocal().getIncompleteAssessmentsByPatient(patientId);
+    //check type of encounter
+    if(encounter.isNotEmpty) {
     }
-
-    if (response['error'] != null && !response['error']) {
-      await response['data'].forEach((assessment) {
-        data.add({
-          'id': assessment['id'],
-          'data': assessment['body'],
-          'meta': assessment['meta']
-        });
-      });
-    }
-
     return data;
   }
 
@@ -1076,10 +1041,11 @@ class AssessmentController {
     } 
   }
 
-  createAssessmentWithObservationsLocal(context, type, screening_type, comment, completeStatus, nextVisitDate, {followupType: ''}) async {
+  createAssessmentWithObservationsLocal(context, type, screening_type, comment, completeStatus, nextVisitDate, {followupType: '', createdAt: ''}) async {
     var incompleteAssessments = [];
     incompleteAssessments = await this.getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: type);
     if(incompleteAssessments.isNotEmpty) {
+      incompleteAssessments.first['meta']['created_at'] = createdAt == '' ? DateTime.now().toString() : createdAt;
       print('not empty');
       print('assessmentId ${incompleteAssessments.first['id']}');
       var obs = await this.getObservationsByAssessment(incompleteAssessments.first);
@@ -1102,6 +1068,7 @@ class AssessmentController {
       if (followupType != '') {
         assessmentData['body']['followup_type'] = followupType;
       }
+      assessmentData['meta']['created_at'] = createdAt == '' ? DateTime.now().toString() : createdAt;
       var assessmentId = Uuid().v4();
 
       print('assessmentId ${assessmentId})');

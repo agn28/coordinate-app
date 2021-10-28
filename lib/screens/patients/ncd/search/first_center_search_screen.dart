@@ -104,7 +104,7 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
     var parsedPatients = [];
     var parsedLocalPatient = [];
     if (isNull(data) || isNotNull(data['exception']))  {
-      var allLocalPatients = syncController.localPatientsAll.value;
+      var allLocalPatients = await PatientController().getAllLocalPatients();
       var assessments = await AssessmentController().getAllAssessments();
       var authData = await Auth().getStorageAuth();
       

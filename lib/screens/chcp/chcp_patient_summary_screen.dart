@@ -88,18 +88,36 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
     _checkAuth();
     // _getCarePlan();
     // getEncounters();
-    getIncompleteAssessmentLocal();
+    // getIncompleteAssessmentLocal();
     // // getAssessments();
     // getMedicationsConditions();
     // getReport();
-    // getIncompleteAssessment();
+    getIncompleteAssessment();
     getLastAssessment();
     // getUsers();
     // getReferrals();
     // getAssessmentDueDate();
 
   }
-
+  getIncompleteAssessment() async {
+    var patientId = Patient().getPatient()['id'];
+    encounter = await AssessmentController().getIncompleteAssessmentsByPatient(patientId);
+    print('encounter: $encounter');
+    if(encounter.isNotEmpty && (encounter.last['data']['type'] == 'new questionnaire' || (encounter.last['data']['type'] == 'community clinic assessment' && encounter.last['local_status'] == 'incomplete'))) {
+      print('if');
+      setState(() {
+        hasIncompleteAssessment = true;
+        incompleteEncounterDate = DateFormat("MMMM d, y").format(DateTime.parse(encounter.last['meta']['created_at']));
+        isLoading = false;
+      });
+    } else {
+      print('else');
+      setState(() {
+        hasIncompleteAssessment = false;
+        isLoading = false;
+      });
+    }
+  }
   getIncompleteAssessmentLocal() async {
     encounter = await AssessmentController().getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: 'community clinic assessment');
     print('incencounter $encounter');
@@ -190,45 +208,45 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
     return '';
   }
 
-  getIncompleteAssessment() async {
+  // getIncompleteAssessment() async {
 
-    print("getIncompleteAssessment");
+  //   print("getIncompleteAssessment");
 
-    if (Auth().isExpired()) {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    }
+  //   if (Auth().isExpired()) {
+  //     Auth().logout();
+  //     Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+  //   }
 
-    setState(() {
-      isLoading = true;
-    });
-    var patientId = Patient().getPatient()['id'];
-    var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
-    print('incompleteData ${data}');
-    //TODO: need to get performer name from local
-    // if(data != null && data['data']['assessment']['body']['performed_by'] != null)
-    // {
-    //   performer = await getPerformer(data['data']['assessment']['body']['performed_by']);
-    //   print('performer $performer');
-    // }
-    setState(() {
-      isLoading = false;
-      incompleteEncounterDate = !data['error'] && data['data'] != null ? DateFormat("MMMM d, y").format(DateTime.parse(data['data']['assessment']['meta']['created_at'])) : '';
-      performerName = performer != null ? performer['data']['name'] : '';
-      performerRole = performer != null ? performer['data']['role'] : '';
-    });
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  //   var patientId = Patient().getPatient()['id'];
+  //   var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
+  //   print('incompleteData ${data}');
+  //   //TODO: need to get performer name from local
+  //   // if(data != null && data['data']['assessment']['body']['performed_by'] != null)
+  //   // {
+  //   //   performer = await getPerformer(data['data']['assessment']['body']['performed_by']);
+  //   //   print('performer $performer');
+  //   // }
+  //   setState(() {
+  //     isLoading = false;
+  //     incompleteEncounterDate = !data['error'] && data['data'] != null ? DateFormat("MMMM d, y").format(DateTime.parse(data['data']['assessment']['meta']['created_at'])) : '';
+  //     performerName = performer != null ? performer['data']['name'] : '';
+  //     performerRole = performer != null ? performer['data']['role'] : '';
+  //   });
 
-    if (data == null) {
-      return;
-    } else if (data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-      return;
-    } else if (data['error'] != null && data['error']) {
-      return;
-    }
+  //   if (data == null) {
+  //     return;
+  //   } else if (data['message'] == 'Unauthorized') {
+  //     Auth().logout();
+  //     Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+  //     return;
+  //   } else if (data['error'] != null && data['error']) {
+  //     return;
+  //   }
 
-  }
+  // }
 
   getCompletedDate(goal) {
     var data = '';
@@ -726,7 +744,7 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
                     ),
                   ),
                   
-                  _patient['data']['incomplete_encounter'] != null &&  _patient['data']['incomplete_encounter'] ?
+                  hasIncompleteAssessment ?
 
                   Container(
                     padding: EdgeInsets.only(left: 20, right: 20, top: 15,),
@@ -940,7 +958,7 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: <Widget>[
-                            _patient['data']['incomplete_encounter'] != null &&  _patient['data']['incomplete_encounter'] ?
+                            hasIncompleteAssessment ?
                             FloatingButton(text: AppLocalizations.of(context).translate('updateLastEncounter'), onPressed: () {
                               Navigator.of(context).pop();
                               Navigator.of(context).pushNamed(ChcpFeelingScreen.path);
@@ -949,41 +967,41 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
                               text: AppLocalizations.of(context).translate('newVisit'), 
                               onPressed: () {
                                 // Navigator.of(context).pop();
-                                hasIncompleteAssessment ?
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context){
-                                    return AlertDialog(
-                                      content: new Text(AppLocalizations.of(context).translate("editExistingAssessment"), style: TextStyle(fontSize: 22),),
-                                      actions: <Widget>[
-                                        // usually buttons at the bottom of the dialog
-                                        Container(  
-                                          margin: EdgeInsets.all(20),  
-                                          child:FlatButton(
-                                            child: new Text(AppLocalizations.of(context).translate("edit"), style: TextStyle(fontSize: 20),),
-                                            color: kPrimaryColor,  
-                                            textColor: Colors.white,
-                                            onPressed: () {
-                                              Navigator.of(context).pushNamed(EditIncompleteEncounterChcpScreen.path);
-                                            },
-                                          ),
-                                        ),
-                                        Container(  
-                                          margin: EdgeInsets.all(20),  
-                                          child:FlatButton(
-                                            child: new Text(AppLocalizations.of(context).translate("newVisit"), style: TextStyle(fontSize: 20),),
-                                            color: kPrimaryColor,  
-                                            textColor: Colors.white,
-                                            onPressed: () async {
-                                              await deleteIncompleteAssessmentLocal();
-                                              Navigator.of(context).pushNamed(NewVisitChcpFeelingScreen.path);
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    );     
-                                  }
-                                ) :
+                                // hasIncompleteAssessment ?
+                                // showDialog(
+                                //   context: context,
+                                //   builder: (BuildContext context){
+                                //     return AlertDialog(
+                                //       content: new Text(AppLocalizations.of(context).translate("editExistingAssessment"), style: TextStyle(fontSize: 22),),
+                                //       actions: <Widget>[
+                                //         // usually buttons at the bottom of the dialog
+                                //         Container(  
+                                //           margin: EdgeInsets.all(20),  
+                                //           child:FlatButton(
+                                //             child: new Text(AppLocalizations.of(context).translate("edit"), style: TextStyle(fontSize: 20),),
+                                //             color: kPrimaryColor,  
+                                //             textColor: Colors.white,
+                                //             onPressed: () {
+                                //               Navigator.of(context).pushNamed(EditIncompleteEncounterChcpScreen.path);
+                                //             },
+                                //           ),
+                                //         ),
+                                //         Container(  
+                                //           margin: EdgeInsets.all(20),  
+                                //           child:FlatButton(
+                                //             child: new Text(AppLocalizations.of(context).translate("newVisit"), style: TextStyle(fontSize: 20),),
+                                //             color: kPrimaryColor,  
+                                //             textColor: Colors.white,
+                                //             onPressed: () async {
+                                //               await deleteIncompleteAssessmentLocal();
+                                //               Navigator.of(context).pushNamed(NewVisitChcpFeelingScreen.path);
+                                //             },
+                                //           ),
+                                //         ),
+                                //       ],
+                                //     );     
+                                //   }
+                                // ) :
                                 // Navigator.of(context).pop();
                                 Navigator.of(context).pushNamed(NewVisitChcpFeelingScreen.path);
                                 // Navigator.of(context).pushNamed(EditIncompleteEncounterChwScreen.path);

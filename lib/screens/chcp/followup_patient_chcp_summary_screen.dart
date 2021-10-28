@@ -1693,12 +1693,12 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                         {
                                           print('edit encounter');
                                           print('${widget.encounterData['encounter']}');
-                                          var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
+                                          var response = await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
 
                                         } else {
                                           print('new encounter');
                                           // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
-                                          var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic assessment', assessmentStatus: 'incomplete', createdAt: creationDateTimeController.text);
+                                          var response = await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '', createdAt: creationDateTimeController.text);
                                         }
                                       } else if(widget.prevScreen == 'followup') {
                                         if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
