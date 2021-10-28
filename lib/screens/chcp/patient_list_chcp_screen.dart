@@ -111,7 +111,7 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
     var parsedLocalPatient = [];
     // if (isNull(data) || isNotNull(data['exception']))  {
       var allLocalPatients = await PatientController().getAllLocalPatients();
-      var assessments = await AssessmentController().getAllLocalAssessments();
+      var assessments = await AssessmentController().getAllLocalAssessments(localStatus: true);
       var authData = await Auth().getStorageAuth();
 
       for(var localPatient in allLocalPatients) {
@@ -150,7 +150,7 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                 //   return true;
                 // }
                 print('assess $assessment');
-                if(assessment['data']['status'] == 'incomplete' && assessment['data']['local_status'] == 'incomplete') {
+                if(assessment['data']['status'] == 'incomplete' && assessment['local_status'] == 'incomplete') {
                   localPatient['data']['incomplete_encounter'] = true;
                   if(assessment['data']['type'] == 'community clinic assessment' || assessment['data']['type'] == 'community clinic followup') {
                     localPatient['data']['chcp_encounter_type'] =  assessment['data']['type'];

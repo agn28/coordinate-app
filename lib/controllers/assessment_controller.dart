@@ -238,18 +238,27 @@ class AssessmentController {
     return data;
   }
 
-  getAllLocalAssessments() async {
+  getAllLocalAssessments({localStatus:''}) async {
     var assessments = await AssessmentRepositoryLocal().getAllAssessments();
     var data = [];
     var parsedData;
 
     await assessments.forEach((assessment) {
       parsedData = jsonDecode(assessment['data']);
-      data.add({
-        'id': assessment['id'],
-        'data': parsedData['body'],
-        'meta': parsedData['meta']
-      });
+      if (localStatus == '') {
+        data.add({
+          'id': assessment['id'],
+          'data': parsedData['body'],
+          'meta': parsedData['meta']
+        });
+      } else {
+        data.add({
+          'id': assessment['id'],
+          'data': parsedData['body'],
+          'meta': parsedData['meta'],
+          'local_status': assessment['local_status']
+        });
+      }
     });
     return data;
   }
@@ -316,7 +325,8 @@ class AssessmentController {
         data.add({
           'id': assessment['id'],
           'data': parsedData['body'],
-          'meta': parsedData['meta']
+          'meta': parsedData['meta'],
+          'local_status': assessment['local_status']
         });
       }
     });
@@ -1045,8 +1055,8 @@ class AssessmentController {
     var incompleteAssessments = [];
     incompleteAssessments = await this.getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: type);
     if(incompleteAssessments.isNotEmpty) {
+      
       incompleteAssessments.first['meta']['created_at'] = createdAt == '' ? DateTime.now().toString() : createdAt;
-      print('not empty');
       print('assessmentId ${incompleteAssessments.first['id']}');
       var obs = await this.getObservationsByAssessment(incompleteAssessments.first);
       print('obs $obs');

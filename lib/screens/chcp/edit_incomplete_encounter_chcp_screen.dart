@@ -244,17 +244,17 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
     // encounter = await AssessmentController().getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: 'community clinic assessment');
 
     var patientId = Patient().getPatient()['id'];
-    encounter = await AssessmentRepositoryLocal().getIncompleteAssessmentsByPatient(patientId);
+    encounter = await AssessmentController().getIncompleteAssessmentsByPatient(patientId);
     //check type of encounter
     if(encounter.isNotEmpty) {
       var lastEncounter = encounter.last;
       print("lastEncounter: $lastEncounter");
-      var parseData = jsonDecode(lastEncounter['data']);
-      if(parseData['body']['type'] == 'new questionnaire' || (parseData['body']['type'] == 'community clinic assessment' && parseData['local_status'] == 'incomplete')) {
+      // var parseData = jsonDecode(lastEncounter['data']);
+      if(lastEncounter['data']['type'] == 'new questionnaire' || (lastEncounter['data']['type'] == 'community clinic assessment' && lastEncounter['local_status'] == 'incomplete')) {
         encounter = {
           'id': lastEncounter['id'],
-          'body': parseData['body'],
-          'meta': parseData['meta'],
+          'body': lastEncounter['data'],
+          'meta': lastEncounter['meta'],
         };
         observations = await AssessmentController().getObservationsByAssessment(encounter);
         referral = await ReferralController().getReferralByAssessment(encounter['id']);
