@@ -546,6 +546,6 @@
   "chcpAssessment" : "Chcp মূল্যায়ন",
   "referTo":"কাকে রেফার করবেন?",
   "followupIn": "ফলোআপ পরিদর্শন",
-  "creationDateAndTime": "ইন্টারভিউ শুরুর তারিখ এবং সময়",
-  "completionDateAndTime": "সাক্ষাৎকারের শেষ তারিখ এবং সময়"
+  "creationDateAndTime": "সাক্ষাৎকার গ্রহনের শুরুর তারিখ এবং সময়",
+  "completionDateAndTime": "সাক্ষাৎকার শেষের তারিখ এবং সময়"
 }
