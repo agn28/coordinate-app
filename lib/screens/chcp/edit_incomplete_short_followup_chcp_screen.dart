@@ -2348,6 +2348,39 @@ class _MeasurementsState extends State<Measurements> {
                                       ),
                                     ),
                                   ),
+                                  Row(
+                                    children: <Widget>[
+                                      Radio(
+                                        activeColor: kPrimaryColor,
+                                        value: 'mmol/L',
+                                        groupValue: selectedHba1cUnit,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedHba1cUnit = value;
+                                          });
+                                        },
+                                      ),
+                                      Text(
+                                        "mmol/L",
+                                      ),
+                                      Radio(
+                                        activeColor: kPrimaryColor,
+                                        value: 'mg/dL',
+                                        groupValue: selectedHba1cUnit,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedHba1cUnit = value;
+                                          });
+                                        },
+                                      ),
+                                      Text("mg/dL",
+                                          style:
+                                              TextStyle(color: Colors.black)),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                    ],
+                                  )
                                 ],
                               ),
                             ),
