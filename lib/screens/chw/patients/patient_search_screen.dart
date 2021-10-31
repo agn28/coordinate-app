@@ -144,7 +144,7 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
     });
     var parsedLocalNewPatients = [];
     var parsedLocalExistingPatients = [];
-    var allLocalPatients = await PatientController().getAllLocalPatients();
+    var allLocalPatients = syncController.localPatientsAll.value;
     var assessments = await AssessmentController().getAllAssessments();
       
     var authData = await Auth().getStorageAuth();

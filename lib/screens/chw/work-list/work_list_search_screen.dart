@@ -133,7 +133,7 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
     }
     else {
       print('not connected');
-      var allLocalPatients = await PatientController().getAllLocalPatients();
+      var allLocalPatients = syncController.localPatientsAll.value;
       var localPatientPending = [];
       var authData = await Auth().getStorageAuth();
       for(var localPatient in allLocalPatients) {
