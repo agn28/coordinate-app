@@ -1743,11 +1743,19 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                       {
                                         print('edit encounter');
                                         print(status);
-                                        var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
-                                      } else {
+                                        if(status == 'complete') {
+                                          var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
+                                        } else {
+                                          var response = await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                                        }
+                                        } else {
                                         print('new encounter');
                                         print(status);
-                                        var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic assessment', assessmentStatus: 'incomplete', createdAt: creationDateTimeController.text);
+                                        if(status == 'complete') {
+                                          var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic assessment', assessmentStatus: 'incomplete', createdAt: creationDateTimeController.text);
+                                        } else {
+                                          var response = await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                                        }
                                       }
 
                                       } else if(widget.prevScreen == 'followup') {

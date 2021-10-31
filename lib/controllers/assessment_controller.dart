@@ -1192,12 +1192,12 @@ class AssessmentController {
         for (var observation in observationsData) {
           await ObservationRepositoryLocal().update(observation['id'], observation, true);
         }
-        // Identifying this patient with not synced data
-        await PatientReposioryLocal().updateLocalStatus(assessmentData['body']['patient_id'], true);
       
         //updating sync key
         if (isNotNull(apiResponse['data']['sync']) && isNotNull(apiResponse['data']['sync']['key'])) {
           print('into sync update');
+          // Identifying this patient with not synced data
+          await PatientReposioryLocal().updateLocalStatus(assessmentData['body']['patient_id'], true);
           var updateSync = await SyncRepository().updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
           print('after updating sync key');
           print(updateSync);
@@ -1213,12 +1213,12 @@ class AssessmentController {
         // updating local assessment with synced status
         response = await ReferralRepositoryLocal().update(referralData['id'], referralData, true, localStatus: 'complete');
         
-        // Identifying this patient with not synced data
-        await PatientReposioryLocal().updateLocalStatus(referralData['meta']['patient_id'], true);
       
         //updating sync key
         if (isNotNull(referalResponse['data']['sync']) && isNotNull(referalResponse['data']['sync']['key'])) {
           print('into sync update');
+          // Identifying this patient with not synced data
+          await PatientReposioryLocal().updateLocalStatus(referralData['meta']['patient_id'], true);
           var updateSync = await SyncRepository().updateLatestLocalSyncKey(referalResponse['data']['sync']['key']);
           print('after updating sync key');
           print(updateSync);
@@ -1349,12 +1349,12 @@ class AssessmentController {
       //API responded success with no error
       else if (apiResponse['error'] != null && !apiResponse['error']) {
         print('into success');
-        // creating local assessment with synced status
-        response = await storeLocalAssessmentWithObservations(assessmentId, assessmentData, observationsData, true);
 
         //updating sync key
         if (isNotNull(apiResponse['data']['sync']) && isNotNull(apiResponse['data']['sync']['key'])) {
           print('into sync update');
+          // creating local assessment with synced status
+          response = await storeLocalAssessmentWithObservations(assessmentId, assessmentData, observationsData, true);
           var updateSync = await SyncRepository().updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
           print('after updating sync key');
           print(updateSync);
@@ -1426,12 +1426,12 @@ class AssessmentController {
       //API responded success with no error
       else if (apiResponse['error'] != null && !apiResponse['error']) {
         print('into success');
-        // creating local assessment with synced status
-        response = await updateLocalAssessmentWithObservations(assessmentData, observationsData, true);
 
         //updating sync key
         if (isNotNull(apiResponse['data']['sync']) && isNotNull(apiResponse['data']['sync']['key'])) {
           print('into sync update');
+          // creating local assessment with synced status
+          response = await updateLocalAssessmentWithObservations(assessmentData, observationsData, true);
           var updateSync = await SyncRepository().updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
           print('after updating sync key');
           print(updateSync);

@@ -821,7 +821,6 @@ class SyncController extends GetxController {
       };
 
       var response = await assessmentRepo.create(data);
-      print('assessment create resposne');
       print(response);
 
       // check slow network
@@ -855,6 +854,10 @@ class SyncController extends GetxController {
             await syncRepo.updateLatestLocalSyncKey(response['data']['sync']['key']);
             localNotSyncedAssessments.remove(assessment);
           }
+        }
+        // check for failed assessment
+        else if (isNotNull(response) && response['message'] == 'Assessment could not be created!') {
+          await patientRepoLocal.updateLocalStatus(assessment['data']['patient_id'], 0);
         }
       }
     }
