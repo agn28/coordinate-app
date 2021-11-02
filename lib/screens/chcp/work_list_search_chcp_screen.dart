@@ -136,7 +136,7 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
     }
     else {
       print('not connected');
-      var allLocalPatients = syncController.localPatientsAll.value;
+      var allLocalPatients = await PatientController().getAllLocalPatients();
       var localPatientPending = [];
       for(var localPatient in allLocalPatients) {
         print('localPatient ${localPatient['data']['first_name']} ${localPatient['meta']}');
