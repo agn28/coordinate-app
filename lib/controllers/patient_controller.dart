@@ -96,19 +96,13 @@ class PatientController {
   }
 
   getPatient(patientId) async {
-    var response = await PatientRepository().getPatient(patientId);
-
-    // await patients.forEach((patient) {
-    //   parsedData = jsonDecode(patient['data']);
-    //   data.add({
-    //     'id': patient['id'],
-    //     'data': parsedData['body'],
-    //     'meta': parsedData['meta']
-    //   });
-    // });
-
-    return response;
+    return await PatientRepository().getPatient(patientId);
   }
+
+  getPatientByIds(ids) async {
+    return await PatientRepository().getPatientByIds(ids);
+  }  
+
   getPatientsPendingWorklist(context) async {
     var response = await PatientRepository().getPatientsPendingWorklist();
 

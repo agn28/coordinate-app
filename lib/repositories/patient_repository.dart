@@ -111,6 +111,24 @@ class PatientRepository {
     });
   }
 
+  getPatientByIds(ids) async {
+    var authData = await Auth().getStorageAuth();
+    var token = authData['accessToken'];
+    return client.post(
+      apiUrl + 'patients/batch',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: json.encode({"id": ids}),
+    ).then((response) {
+      return json.decode(response.body);
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
+  }
+
   getPatients() async {
     var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];

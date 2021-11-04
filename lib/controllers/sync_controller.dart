@@ -974,7 +974,14 @@ class SyncController extends GetxController {
       return;
     }
     var tempSyncs = [...syncs.value];
+    
+    var subPatients = [];
+    var subAssessments = [];
     var subObservations = [];
+    var subReferrals = [];
+    var subCarePlans = []; 
+    var subHealthReports = [];
+
     for (var item in tempSyncs) {
       isSyncingToLocal.value = true;
 
@@ -1032,6 +1039,31 @@ class SyncController extends GetxController {
       //     }
       //   }
       // } 
+
+      if (item['collection'] == 'patients') {
+        if (item['action'] == 'create') {
+          subPatients.add(item['document_id']);
+          
+          if (subPatients.length == 10) {
+            insertPatients(subPatients);
+            subPatients = [];
+          }
+        }
+      }
+
+      if (item['collection'] == 'assessments') {
+        if (item['action'] == 'create') {
+          subAssessments.add(item['document_id']);
+          
+          if (subAssessments.length == 10) {
+            insertAssessments(subAssessments);
+            subAssessments = [];
+          }
+        }
+      }
+
+     
+
       
       // TODO Call same function for orphan
       if (item['collection'] == 'observations') {
@@ -1044,8 +1076,41 @@ class SyncController extends GetxController {
           }
         }
       }
-      
-      
+
+      if (item['collection'] == 'referrals') {
+        if (item['action'] == 'create') {
+          subReferrals.add(item['document_id']);
+          
+          if (subReferrals.length == 10) {
+            insertReferrals(subReferrals);
+            subReferrals = [];
+          }
+        }
+      }
+
+      if (item['collection'] == 'care_plans') {
+        if (item['action'] == 'create') {
+          subCarePlans.add(item['document_id']);
+          
+          if (subCarePlans.length == 10) {
+            insertCarePlans(subCarePlans);
+            subCarePlans = [];
+          }
+        }
+      }
+
+      if (item['collection'] == 'health_reports') {
+        if (item['action'] == 'create') {
+          subHealthReports.add(item['document_id']);
+          
+          if (subHealthReports.length == 10) {
+            insertHealthReports(subHealthReports);
+            subHealthReports = [];
+          }
+        }
+      }
+
+
       // if (item['collection'] == 'referrals') {
       //   if (item['action'] == 'create') {
       //     var referral = await referralRepo.getReferralById(item['document_id']);
@@ -1122,9 +1187,35 @@ class SyncController extends GetxController {
       // }
     }
 
+    
+    if (subPatients.length > 0) {
+      insertPatients(subPatients);
+      subPatients = [];
+    }
+
+    if (subAssessments.length > 0) {
+      insertAssessments(subAssessments);
+      subAssessments = [];
+    }
+
     if (subObservations.length > 0) {
       insertObservations(subObservations);
       subObservations = [];
+    }
+
+    if (subReferrals.length > 0) {
+      insertReferrals(subReferrals);
+      subReferrals = [];
+    }
+
+    if (subCarePlans.length > 0) {
+      insertCarePlans(subCarePlans);
+      subCarePlans = [];
+    }
+
+    if (subHealthReports.length > 0) {
+      insertHealthReports(subHealthReports);
+      subHealthReports = [];
     }
             
     await Future.delayed(const Duration(seconds: 10));
@@ -1132,36 +1223,191 @@ class SyncController extends GetxController {
     getAllStatsData();
   }
 
-  insertObservations(subObservations) async {
-        var observations = await observationController.getLiveObservationsByIds(subObservations);
+  insertPatients(subPatients) async {
+    var patients = await patientController.getPatientByIds(subPatients);
 
-          if (isNotNull(observations) && isNotNull(observations['error']) && !observations['error'] && isNotNull(observations['data'])) {
-            
-            for (var observation in observations['data']) {
-              var existingLocalObservation = await observationRepoLocal.getObservationById(observation['id']);
-              //Observation already exists in local, needs to be updated
-              var localObservation;
-              if(isNotNull(existingLocalObservation) && existingLocalObservation.isNotEmpty) {
-              
-                localObservation = await observationRepoLocal.update(observation['id'], observation, true);
-              } else {
-                localObservation = await observationRepoLocal.create(observation['id'], observation, true);
-              }
+    if (isNotNull(patients) && isNotNull(patients['error']) && !patients['error'] && isNotNull(patients['data'])) {
+      
+      for (var patient in patients['data']) {
+        var existingLocalPatient = await PatientReposioryLocal().getPatientById(patient['id']);
+        //Assessment already exists in local, needs to be updated
+        var localPatient;
+        if(isNotNull(existingLocalPatient) && existingLocalPatient.isNotEmpty) {
+        
+          localPatient = await patientRepoLocal.updateFromLive(patient['id'], patient);
+        } else {
+          localPatient = await patientRepoLocal.createFromLive(patient['id'], patient);
+        }
 
-            if (isNotNull(localObservation)) {
-              var item = [...syncs.value].where((element) {
-                return (element['document_id'] == observation['id']) && (element['collection'] == 'observations');
-              }).toList()[0];
+        if (isNotNull(localPatient)) {
+          var item = [...syncs.value].where((element) {
+            return (element['document_id'] == patient['id']) && (element['collection'] == 'patients');
+          }).toList()[0];
 
-              var updateSync = await updateLocalSyncKey(item['key']);
-              if (isNotNull(updateSync)) {
-                syncs.remove(item);
-              }
-            }
-            }
-            
+          var updateSync = await updateLocalSyncKey(item['key']);
+          if (isNotNull(updateSync)) {
+            syncs.remove(item);
           }
+        }
+      }
+    }
   }
+
+  insertAssessments(subAssessments) async {
+  var assessments = await assessmentController.getAssessmentByIds(subAssessments);
+
+    if (isNotNull(assessments) && isNotNull(assessments['error']) && !assessments['error'] && isNotNull(assessments['data'])) {
+      
+      for (var assessment in assessments['data']) {
+        var existingLocalAssessment = await assessmentRepoLocal.getAssessmentById(assessment['id']);
+        //Assessment already exists in local, needs to be updated
+        var localAssessment;
+        if(isNotNull(existingLocalAssessment) && existingLocalAssessment.isNotEmpty) {
+        
+          localAssessment = await assessmentRepoLocal.updateLocalAssessment(assessment['id'], assessment, true); 
+        } else {
+          localAssessment = await assessmentRepoLocal.createLocalAssessment(assessment['id'], assessment, true);
+        }
+
+        if (isNotNull(localAssessment)) {
+          var item = [...syncs.value].where((element) {
+            return (element['document_id'] == assessment['id']) && (element['collection'] == 'assessments');
+          }).toList()[0];
+
+          var updateSync = await updateLocalSyncKey(item['key']);
+          if (isNotNull(updateSync)) {
+            syncs.remove(item);
+          }
+        }
+      }
+    }
+  }
+
+  insertObservations(subObservations) async {
+  var observations = await observationController.getLiveObservationsByIds(subObservations);
+
+    if (isNotNull(observations) && isNotNull(observations['error']) && !observations['error'] && isNotNull(observations['data'])) {
+      
+      for (var observation in observations['data']) {
+        var existingLocalObservation = await observationRepoLocal.getObservationById(observation['id']);
+        //Observation already exists in local, needs to be updated
+        var localObservation;
+        if(isNotNull(existingLocalObservation) && existingLocalObservation.isNotEmpty) {
+        
+          localObservation = await observationRepoLocal.update(observation['id'], observation, true);
+        } else {
+          localObservation = await observationRepoLocal.create(observation['id'], observation, true);
+        }
+
+        if (isNotNull(localObservation)) {
+          var item = [...syncs.value].where((element) {
+            return (element['document_id'] == observation['id']) && (element['collection'] == 'observations');
+          }).toList()[0];
+
+          var updateSync = await updateLocalSyncKey(item['key']);
+          if (isNotNull(updateSync)) {
+            syncs.remove(item);
+          }
+        }
+      }
+      
+    }
+  }
+
+  insertReferrals(subReferrals) async {
+  var referrals = await referralRepo.getReferralByIds(subReferrals);
+
+    if (isNotNull(referrals) && isNotNull(referrals['error']) && !referrals['error'] && isNotNull(referrals['data'])) {
+      
+      for (var referral in referrals['data']) {
+        var existingLocalReferral = await referralRepoLocal.getReferralById(referral['id']);
+        //Observation already exists in local, needs to be updated
+        var localReferral;
+        if(isNotNull(existingLocalReferral) && existingLocalReferral.isNotEmpty) {
+        
+          localReferral = await referralRepoLocal.update(referral['id'], referral, true);
+        } else {
+          localReferral = await referralRepoLocal.create(referral['id'], referral, true);
+        }
+
+        if (isNotNull(localReferral)) {
+          var item = [...syncs.value].where((element) {
+            return (element['document_id'] == referral['id']) && (element['collection'] == 'referrals');
+          }).toList()[0];
+
+          var updateSync = await updateLocalSyncKey(item['key']);
+          if (isNotNull(updateSync)) {
+            syncs.remove(item);
+          }
+        }
+      }
+      
+    }
+  }
+
+
+  insertCarePlans(subCarePlans) async {
+  var careplans = await careplanRepo.getCarePlanByIds(subCarePlans);
+
+    if (isNotNull(careplans) && isNotNull(careplans['error']) && !careplans['error'] && isNotNull(careplans['data'])) {
+      
+      for (var careplan in careplans['data']) {
+
+        var existingLocalCarePlan = await careplanRepoLocal.getCareplanById(careplan['id']);
+        //Observation already exists in local, needs to be updated
+        var localcareplan;
+        if(isNotNull(existingLocalCarePlan) && existingLocalCarePlan.isNotEmpty) {
+        
+          localcareplan = await careplanRepoLocal.update(careplan['id'], careplan, true); 
+        } else {
+          localcareplan = await careplanRepoLocal.create(careplan['id'], careplan, true);
+        }
+
+        if (isNotNull(localcareplan)) {
+          var item = [...syncs.value].where((element) {
+            return (element['document_id'] == careplan['id']) && (element['collection'] == 'care_plans');
+          }).toList()[0];
+
+          var updateSync = await updateLocalSyncKey(item['key']);
+          if (isNotNull(updateSync)) {
+            syncs.remove(item);
+          }
+        }
+      }
+      
+    }
+  }  
+
+  insertHealthReports(subHealthReports) async {
+  var healthreports = await healthReportRepo.getHealthReportByIds(subHealthReports); 
+
+    if (isNotNull(healthreports) && isNotNull(healthreports['error']) && !healthreports['error'] && isNotNull(healthreports['data'])) {
+      
+      for (var healthreport in healthreports['data']) {
+        
+        var existingLocalHealthReport = await healthReportRepoLocal.getHealthReportById(healthreport['id']);
+        print('existingLocalHealthReport: $existingLocalHealthReport');
+        var localhealthreport;
+        if(isNotNull(existingLocalHealthReport) && existingLocalHealthReport.isNotEmpty) {
+          localhealthreport = await healthReportRepoLocal.update(healthreport['id'], healthreport, true); 
+        } else {
+          localhealthreport = await healthReportRepoLocal.create(healthreport['id'], healthreport, true);
+        }
+        
+        if (isNotNull(localhealthreport)) {
+          var item = [...syncs.value].where((element) {
+            return (element['document_id'] == healthreport['id']) && (element['collection'] == 'health_reports');
+          }).toList()[0];
+
+          var updateSync = await updateLocalSyncKey(item['key']);
+          if (isNotNull(updateSync)) {
+            syncs.remove(item);
+          }
+        }
+      }
+      
+    }
+  }  
 
   getLocalSyncKey() async {
     var response = await syncRepo.getLocalSyncKey();

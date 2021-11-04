@@ -172,6 +172,26 @@ class AssessmentRepository {
     });
   }
 
+  getAssessmentsByIds(ids) async {
+    var authData = await Auth().getStorageAuth();
+    var token = authData['accessToken'];
+
+    return client.post(
+      apiUrl + 'assessments/batch',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: json.encode({"id": ids}),
+    ).then((response) {
+      return json.decode(response.body);
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
+  }
+
+
   getLastAssessment({key: '', value: ''}) async {
     var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
