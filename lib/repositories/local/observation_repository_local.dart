@@ -90,55 +90,39 @@ class ObservationRepositoryLocal {
 
   getObservationById(id) async {
     final sql = '''SELECT * FROM ${DatabaseCreator.observationTable} WHERE id = "$id"''';
-    var observation;
 
     try {
-      observation = await db.rawQuery(sql);
-      print('observationbyId $observation');
+      return await db.rawQuery(sql);
     } catch (error) {
-      print('error');
       print(error);
       return;
     }
-    return observation;
   }
 
   getNotSyncedObservations() async {
     final sql =
         '''SELECT * FROM ${DatabaseCreator.observationTable} WHERE (is_synced=0) AND (local_status!='incomplete')''';
-    var response = await db.rawQuery(sql);
-
     try {
-      response = await db.rawQuery(sql);
+      return await db.rawQuery(sql);
     } catch (error) {
-      print('error');
       print(error);
       return;
     }
-
-    return response;
   }
 
   Future<void> updateLocalStatus(uuid, isSynced) async {
-    print('into updating observation status');
-    print('uuid ' + uuid);
 
     final sql = '''UPDATE ${DatabaseCreator.observationTable} SET
       is_synced = ?
       WHERE id = ?''';
     List<dynamic> params = [isSynced, uuid];
-    var response;
 
     try {
-      response = await db.rawUpdate(sql, params);
-      print('update local response');
-      print(response);
+      return await db.rawUpdate(sql, params);
     } catch(error) {
-      print('error');
       print(error);
       return;
     }
-    return response;
 
   }
 }
