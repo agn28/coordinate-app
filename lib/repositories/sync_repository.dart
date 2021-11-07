@@ -174,6 +174,65 @@ class SyncRepository {
     return updateResponse;
   }
 
+  getTempSyncs() async {
+    final sql = '''SELECT * FROM ${DatabaseCreator.latestSyncTable}''';
+    var response;
+    try {
+      response = await db.rawQuery(sql);
+      print('latestSyncTable $response');
+    } on DatabaseException catch (error) {
+      print('latestSyncTableError $error');
+    }
+    return response;
+  }
+
+  createTempSyncs(tempSyncs) async {
+    await db.transaction((txn) async {
+      // final batch = txn.batch();
+      // try {
+        final sql = '''INSERT INTO ${DatabaseCreator.latestSyncTable}
+        (id, document_id, collection, action, key, created_at)
+        VALUES (?, ?, ?, ?, ?, ?)''';
+        for (var item in tempSyncs) {
+          try {
+            print('syncId ${item['id']}');
+            List<dynamic> params = [item['id'], item['document_id'], item['collection'], item['action'], item['key'], item['created_at']];
+            await txn.rawInsert(sql, params);
+          } catch (error) {
+            print('error $error');
+          }
+        }
+      // } on DatabaseException catch (error) {
+      // } finally {
+      //   print('temp sync stored');
+      //   // for (var item in tempSyncs) {
+      //   //   batch.rawDelete('DELETE FROM ${DatabaseCreator.latestSyncTable} WHERE id = ?', [item['id']]);
+      //   // }
+      // }
+      // await batch.commit();
+    });
+  }
+
+  clearTempSyncs(tempSyncs) async {
+    await db.transaction((txn) async {
+      final batch = txn.batch();
+      // try {
+        for (var item in tempSyncs) {
+          try {  
+            await txn.rawDelete('DELETE FROM ${DatabaseCreator.latestSyncTable} WHERE id = ?', [item['id']]);
+          } catch (error) {
+            print('deleteError $error');
+          }
+        }
+      // } on DatabaseException catch (error) {
+      //   print('error $error');
+      // } finally {
+      //   print('temp sync cleared');
+      // }
+      // await batch.commit();
+    });
+  }
+
   updateLocalSyncKey(newKey, oldKey) async {
 
     if (oldKey != '') {

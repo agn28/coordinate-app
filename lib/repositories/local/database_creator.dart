@@ -15,6 +15,7 @@ class DatabaseCreator {
   static const conceptManagerTable = 'concept_manager';
   static const observationConceptsTable = 'observation_concepts';
   static const syncTable = 'syncs';
+  static const latestSyncTable = 'latest_syncs';
   static const locationTable = 'locations';
   static const centerTable = 'centers';
 
@@ -136,6 +137,22 @@ class DatabaseCreator {
     print('${syncTable} table created');
   }
 
+  Future<void> createLatestSyncsTable(Database db) async {
+    final sql = '''CREATE TABLE $latestSyncTable
+    (
+      id TEXT PRIMARY KEY,
+      document_id TEXT,
+      collection TEXT,
+      action TEXT,
+      key TEXT,
+      status TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )''';
+
+    await db.execute(sql);
+    print('${latestSyncTable} table created');
+  }
+
   Future<void> createLocationsTable(Database db) async {
     final sql = '''CREATE TABLE $locationTable
     (
@@ -222,6 +239,7 @@ class DatabaseCreator {
     await createAssessmentsTable(db);
     await createObservationsTable(db);
     await createSyncsTable(db);
+    await createLatestSyncsTable(db);
     await createLocationsTable(db);
     await createReferralsTable(db);
     await createcareplansTable(db);
