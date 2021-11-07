@@ -43,8 +43,6 @@ class ObservationRepository {
               },
               body: json.encode(data))
           .timeout(Duration(seconds: httpRequestTimeout));
-      print('observations created');
-      print(response.body);
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
@@ -106,6 +104,24 @@ class ObservationRepository {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
       },
+    ).then((response) {
+      return json.decode(response.body);
+    }).catchError((error) {
+      print('error ' + error.toString());
+    });
+  }
+
+  getObservationsByIds(ids) async {
+    var authData = await Auth().getStorageAuth();
+    var token = authData['accessToken'];
+    return client.post(
+      apiUrl + 'observations/batch',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: json.encode({"id": ids}),
     ).then((response) {
       return json.decode(response.body);
     }).catchError((error) {

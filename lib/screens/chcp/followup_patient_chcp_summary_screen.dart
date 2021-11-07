@@ -673,7 +673,7 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
       onWillPop: () async {
         if(widget.prevScreen == 'encounter') {
           print('WillPopScope if');
-          Navigator.of(context).pushNamed('/firstCenterSearch');
+          Navigator.of(context).pushNamed('/chcpHome');
           return true;
         } else if(widget.prevScreen == 'followup') {
           print('WillPopScope else if');
@@ -1692,7 +1692,7 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                         if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
                                         {
                                           print('edit encounter');
-                                          print('${widget.encounterData['encounter']}');
+                                          print('encounterData[encounter]: ${widget.encounterData['encounter']['body']['type']}');
                                           var response = await AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
 
                                         } else {

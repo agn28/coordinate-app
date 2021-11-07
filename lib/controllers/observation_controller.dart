@@ -495,24 +495,11 @@ class ObservationController {
   }
 
   getLiveObservationsById(id) async {
-    var response = await observationRepo.getObservationById(id);
-    var data = {};
+    return await observationRepo.getObservationById(id);
+  }
 
-    // if (response['error'] != null && !response['error']) {
-    //   var item = response['data'];
-    //   data = {
-    //     'id': item['id'],
-    //     'body': {
-    //       'type': item['body']['type'],
-    //       'data': item['body']['data'],
-    //       'comment': item['body']['comment'],
-    //       'patient_id': item['body']['patient_id'],
-    //       'assessment_id': item['body']['assessment_id'],
-    //     },
-    //     'meta': item['meta']
-    //   };
-    // }
-    return response;
+  getLiveObservationsByIds(ids) async {
+    return await observationRepo.getObservationsByIds(ids);
   }
 
   getAllLocalObservations() async {

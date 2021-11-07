@@ -18,16 +18,12 @@ import '../../app_localizations.dart';
 class PatientReposioryLocal {
   /// Get all patietns
   getAllPatients() async {
-    final sql = '''SELECT * FROM ${DatabaseCreator.patientTable}''';
-    var patients;
     try {
-      patients = await db.rawQuery(sql);
+      return await db.rawQuery('''SELECT * FROM ${DatabaseCreator.patientTable}''');
     } catch (error) {
-      print('error');
       print(error);
       return;
     }
-    return patients;
   }
 
   getNewPatients() async {

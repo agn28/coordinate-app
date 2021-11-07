@@ -206,19 +206,11 @@ class AssessmentController {
   }
 
   getAssessmentById(id) async {
-    var assessment = await AssessmentRepository().getAssessmentsById(id);
+    return await AssessmentRepository().getAssessmentsById(id); 
+  }
 
-    var data;
-
-    // if (assessment['error'] != null && !assessment['error']) {
-    //   data = {
-    //     'id': assessment['data']['id'],
-    //     'data': assessment['data']['body'],
-    //     'meta': assessment['data']['meta']
-    //   };
-    // }
-
-    return assessment;
+  getAssessmentByIds(ids) async {
+    return await AssessmentRepository().getAssessmentsByIds(ids); 
   }
 
   /// Get all the assessments.

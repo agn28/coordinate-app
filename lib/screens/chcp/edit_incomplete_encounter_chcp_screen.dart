@@ -152,11 +152,11 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
 
     getLanguage();
 
-    if(_patient['data']['chcp_encounter_status'] != null && _patient['data']['chcp_encounter_status'] == 'incomplete') {
-      hasIncompleteChcpEncounter = true;
-    } else {
-      hasIncompleteChcpEncounter = false;
-    }
+    // if(_patient['data']['chcp_encounter_status'] != null && _patient['data']['chcp_encounter_status'] == 'incomplete') {
+    //   hasIncompleteChcpEncounter = true;
+    // } else {
+    //   hasIncompleteChcpEncounter = false;
+    // }
     getIncompleteAssessmentLocal();
 
     _getAuthData();
@@ -251,6 +251,8 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
       print("lastEncounter: $lastEncounter");
       // var parseData = jsonDecode(lastEncounter['data']);
       if(lastEncounter['data']['type'] == 'new questionnaire' || (lastEncounter['data']['type'] == 'community clinic assessment' && lastEncounter['local_status'] == 'incomplete')) {
+        if(lastEncounter['data']['type'] == 'community clinic assessment')
+          hasIncompleteChcpEncounter = true;
         encounter = {
           'id': lastEncounter['id'],
           'body': lastEncounter['data'],
