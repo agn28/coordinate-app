@@ -48,7 +48,6 @@ class _PatientUpdateSummaryState extends State<PatientUpdateSummary> {
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
-    print(_patient);
     setData();
   }
 
@@ -179,7 +178,6 @@ class _PatientUpdateSummaryState extends State<PatientUpdateSummary> {
                         });
                         // var url = await uploadImage();
                         // var formData = _RegisterPatientState()._prepareFormData();
-                        print('formdata');
                         // var response = isEditState != null ? await PatientController().update(formData) : await PatientController().create(formData);
                         setState(() {
                           isLoading = false;

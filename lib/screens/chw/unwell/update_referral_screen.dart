@@ -189,8 +189,6 @@ class _UpdateReferralScreenState extends State<UpdateReferralScreen> {
                         onChanged: (value) {
 
                           setState(() {
-                            print("selectedtype");
-                            print(value);
                             selectedtype = value;
                           });
                         },
@@ -351,9 +349,6 @@ class _UpdateReferralScreenState extends State<UpdateReferralScreen> {
                                   data['meta']['completed_at'] = dateController.text;
                                   data['meta']['status'] = 'completed';
                                 }
-                                
-
-                                print(data);
 
                                 // return;
 
@@ -366,8 +361,6 @@ class _UpdateReferralScreenState extends State<UpdateReferralScreen> {
                                 setState(() {
                                   isLoading = false;
                                 });
-                                print('response');
-                                print(response);
                                 // return;
                                  
                               },

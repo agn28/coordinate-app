@@ -11,7 +11,6 @@ class BodyMeasurement {
   /// [type], [value], [unit], [comment], [device] are required as parameter
   addItem(name, value, unit, comment, device) {
     // String convertedType = Helpers().getType(name);
-    print('name ' + value);
     _items.removeWhere((item) => item['name'] == name.toLowerCase());
     
     if (value == '') {
@@ -49,7 +48,6 @@ class BodyMeasurement {
   
   /// Add Body Measurement item
   addBmItem() {
-    print(items);
     if (items.length == 0) {
       return 'Error! Minimum 1 step should be completed';
     }
@@ -69,7 +67,6 @@ class BodyMeasurement {
       }
       
     }
-    print('_bmItems $_bmItems');
     return 'success';
   }
 

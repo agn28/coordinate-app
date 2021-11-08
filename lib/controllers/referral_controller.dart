@@ -26,17 +26,10 @@ class ReferralController {
         connectivityResult == ConnectivityResult.wifi) {
       // I am connected to a mobile network.
 
-      print('connected');
-      // return;
-
-      print('live referral create');
       var apiData = data;
       // apiData['id'] = referralId;
 
       var apiResponse = await ReferralRepository().create(apiData);
-      print('apiResponse');
-
-      print(apiResponse);
 
       if (isNull(apiResponse)) {
         Scaffold.of(context).showSnackBar(SnackBar(
@@ -70,22 +63,17 @@ class ReferralController {
         // ));
         return;
       } else if (apiResponse['error'] != null && !apiResponse['error']) {
-        print('into success');
         response = await referralRepoLocal.create(referralId, data, true);
 
         if (isNotNull(apiResponse['data']['sync']) &&
             isNotNull(apiResponse['data']['sync']['key'])) {
-          print('into assessment sync update');
           var updateSync = await SyncRepository()
               .updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
-          print('after updating sync key');
-          print(updateSync);
         }
         return response;
       }
       return response;
     } else {
-      print('not connected');
       // Scaffold.of(context).showSnackBar(SnackBar(
       //   content: Text('Warning: No Internet. Using offline...'),
       //   backgroundColor: kPrimaryYellowColor,
@@ -112,14 +100,12 @@ class ReferralController {
   getReferralByAssessment(assessmentId) async {
     var patientId = Patient().getPatient()['id'];
     var referrals = await ReferralRepositoryLocal().getReferralsByPatient(patientId);
-    print('referrals $referrals');
     var data = {};
     var parsedData;
 
     await referrals.forEach((item) {
       parsedData = jsonDecode(item['data']);
       if (parsedData['meta']['assessment_id'] == assessmentId) {
-        print('referral $item');
         data = {
           'id': item['id'],
           'body': parsedData['body'],

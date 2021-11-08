@@ -42,7 +42,7 @@ class DatabaseCreator {
     )''';
 
     await db.execute(sql);
-    print('${patientTable} table created');
+
   }
 
   Future<void> createAssessmentsTable(Database db) async {
@@ -58,7 +58,7 @@ class DatabaseCreator {
     )''';
 
     await db.execute(sql);
-    print('${assessmentTable} table created');
+
   }
 
   Future<void> createReferralsTable(Database db) async {
@@ -74,7 +74,7 @@ class DatabaseCreator {
     )''';
 
     await db.execute(sql);
-    print('${referralTable} table created');
+
   }
 
   Future<void> createcareplansTable(Database db) async {
@@ -89,7 +89,6 @@ class DatabaseCreator {
     )''';
 
     await db.execute(sql);
-    print('${careplanTable} table created');
   }
 
   Future<void> createHealthReportsTable(Database db) async {
@@ -104,7 +103,6 @@ class DatabaseCreator {
     )''';
 
     await db.execute(sql);
-    print('${healthReportTable} table created');
   }
 
   Future<void> createObservationsTable(Database db) async {
@@ -120,7 +118,7 @@ class DatabaseCreator {
     )''';
 
     await db.execute(sql);
-    print('${observationTable} table created');
+
   }
 
   Future<void> createSyncsTable(Database db) async {
@@ -137,7 +135,6 @@ class DatabaseCreator {
     )''';
 
     await db.execute(sql);
-    print('${syncTable} table created');
   }
 
   Future<void> createLatestSyncsTable(Database db) async {
@@ -154,7 +151,6 @@ class DatabaseCreator {
     )''';
 
     await db.execute(sql);
-    print('${latestSyncTable} table created');
   }
 
   Future<void> createLocationsTable(Database db) async {
@@ -167,7 +163,7 @@ class DatabaseCreator {
     )''';
 
     await db.execute(sql);
-    print('${locationTable} table created');
+
   }
 
   Future<void> createCentersTable(Database db) async {
@@ -180,7 +176,6 @@ class DatabaseCreator {
     )''';
 
     await db.execute(sql);
-    print('${centerTable} table created');
   }
 
   Future<void> createConceptManagerTable(Database db) async {
@@ -192,7 +187,6 @@ class DatabaseCreator {
     )''';
 
     await db.execute(sql);
-    print('${conceptManagerTable} table created');
   }
 
   Future<void> createObservationConceptsTable(Database db) async {
@@ -204,7 +198,6 @@ class DatabaseCreator {
     )''';
 
     await db.execute(sql);
-    print('${observationConceptsTable} table created');
 
   }
 
@@ -217,7 +210,6 @@ class DatabaseCreator {
       // await deleteDatabase(path);
       // isDbCreated = true;
     } else {
-      print('db created');
       isDbCreated = true;
       await Directory(dirname(path)).create(recursive: true);
     }
@@ -227,7 +219,6 @@ class DatabaseCreator {
   Future<void> initDatabase() async {
     final path = await getDatabasePath('coordinate_db');
     db = await openDatabase(path, version: 4, onCreate: onCreate, onUpgrade: _onUpgrade);
-    print('db $db');
   }
 
   // UPGRADE DATABASE TABLES
@@ -240,7 +231,6 @@ class DatabaseCreator {
       db.execute("ALTER TABLE $syncTable ADD COLUMN collection TEXT;");
       db.execute("ALTER TABLE $syncTable ADD COLUMN is_synced BOOLEAN;");
       db.execute("ALTER TABLE $latestSyncTable ADD COLUMN is_synced BOOLEAN;");
-      print('altered db');
     }
   }
 

@@ -43,7 +43,6 @@ class _NewFollowupChcpScreenState extends State<NewFollowupChcpScreen> {
   @override
   void initState() {
     super.initState();
-    print('new followup chcp');
     _patient = Patient().getPatient();
     
     _checkAvatar();
@@ -56,8 +55,7 @@ class _NewFollowupChcpScreenState extends State<NewFollowupChcpScreen> {
   getLastAssessments() async {
   
     var lastFullAssessment = await AssessmentController().getLastAssessmentByPatient(key:'followup_type', value:'full');
-    print('lastFullAssessment ${lastFullAssessment['data']['meta']['created_at']}');
-
+    
     if (lastFullAssessment['error'] == true) {
 
     } else if (lastFullAssessment['message'] == 'Unauthorized') {
@@ -70,7 +68,6 @@ class _NewFollowupChcpScreenState extends State<NewFollowupChcpScreen> {
     }
 
     var lastShortAssessment = await AssessmentController().getLastAssessmentByPatient(key:'followup_type', value:'short');
-    print('lastShortAssessment $lastShortAssessment');
     if (lastShortAssessment['error'] == true) {
 
     } else if (lastFullAssessment['message'] == 'Unauthorized') {

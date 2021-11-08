@@ -61,7 +61,6 @@ class _CarePlanDetailsState extends State<CarePlanDetailsScreen> {
       }
     });
 
-    print(preParedCarePlans[0]);
   }
 
 
@@ -1234,7 +1233,6 @@ class InterventionsState extends State<Interventions> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 ...widget.carePlan['items'].map( (item) {
-                  print(item);
                   return Column(
                     children: <Widget>[
                       SizedBox(height: 20,),

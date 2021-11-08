@@ -42,10 +42,10 @@ void main() async {
   _getDevices();
   runApp(MyApp());
   // Connectivity().onConnectivityChanged.listen(syncController.checkConnection);
-  print(DatabaseCreator().dBCreatedStatus());
+
 
   if (DatabaseCreator().dBCreatedStatus()) {
-    print('codings');
+
     await ObservationConcepts().getItems().forEach((item) {
       ObservationConceptsRepositoryLocal().create(item);
     });
@@ -55,11 +55,9 @@ void main() async {
   const oneSec = const Duration(minutes: 20);
 
   Timer.periodic(oneSec, (Timer timer) {
-    print('timer ${DateTime.now()}'); 
     syncController.fetchLatestSyncs();// This statement will be printed after every one second
   }); 
   Timer.periodic(Duration(seconds: 30), (Timer timer) {
-    print('checktimer ${DateTime.now()}'); 
     syncController.checktoSync();// This statement will be printed after every one second
   });
 }

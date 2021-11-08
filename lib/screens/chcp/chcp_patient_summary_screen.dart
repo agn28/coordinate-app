@@ -72,9 +72,9 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
   @override
   void initState() {
     super.initState();
-    print('chcp patient summary screen');
+
     _patient = Patient().getPatient();
-    print('_patient $_patient');
+
     dueCarePlans = [];
     completedCarePlans = [];
     upcomingCarePlans = [];
@@ -82,7 +82,7 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
     referrals = [];
     pendingReferral = null;
     carePlansEmpty = false;
-    print(widget.checkInState);
+
     
     _checkAvatar();
     _checkAuth();
@@ -102,16 +102,16 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
   getIncompleteAssessment() async {
     var patientId = Patient().getPatient()['id'];
     encounter = await AssessmentController().getIncompleteAssessmentsByPatient(patientId);
-    print('encounter: $encounter');
+
     if(encounter.isNotEmpty && (encounter.last['data']['type'] == 'new questionnaire' || (encounter.last['data']['type'] == 'community clinic assessment' && encounter.last['local_status'] == 'incomplete'))) {
-      print('if');
+
       setState(() {
         hasIncompleteAssessment = true;
         incompleteEncounterDate = DateFormat("MMMM d, y").format(DateTime.parse(encounter.last['meta']['created_at']));
         isLoading = false;
       });
     } else {
-      print('else');
+
       setState(() {
         hasIncompleteAssessment = false;
         isLoading = false;
@@ -120,15 +120,15 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
   }
   getIncompleteAssessmentLocal() async {
     encounter = await AssessmentController().getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: 'community clinic assessment');
-    print('incencounter $encounter');
+
     if(encounter.isNotEmpty) {
-      print('if');
+
       setState(() {
         hasIncompleteAssessment = true;
         isLoading = false;
       });
     } else {
-      print('else');
+
       setState(() {
         hasIncompleteAssessment = false;
         isLoading = false;
@@ -423,7 +423,6 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
   getLastAssessment() async {
     lastAssessment = await AssessmentController().getLastAssessmentByPatient();
 
-    print('lastAssessment $lastAssessment');
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
       // lastEncounterDate = lastAssessment['data']['meta']['created_at'];
       // nextVisitDate = lastAssessment['data']['body']['next_visit_date'];
@@ -431,7 +430,6 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
         nextVisitDate = lastAssessment['data']['body']['next_visit_date'] != null && lastAssessment['data']['body']['next_visit_date'] != '' ? DateFormat("MMMM d, y").format(DateTime.parse(lastAssessment['data']['body']['next_visit_date'])):'';
         lastEncounterType = lastAssessment['data']['body']['type'];
         lastEncounterDate = getDate(lastAssessment['data']['meta']['created_at']);
-        print('lastEncounterDate ${lastEncounterDate}');
       });
     }
     
@@ -481,7 +479,6 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
 
   getPerformer(userId) async {
     var data =  await UserController().getUser(userId);
-    print('getPerformer $data');
     return data;
 
   }
@@ -522,8 +519,6 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
         carePlans = data['data'];
       });
       // carePlans = data['data'];
-      print('carePlans');
-      print(carePlans);
       data['data'].forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");
         
@@ -536,10 +531,8 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
           endDate = format.parse(item['body']['activityDuration']['end']);
           startDate = format.parse(item['body']['activityDuration']['start']);
         } catch(err) {
-          print(item['body']['activityDuration']['start']);
-          print(item['body']['activityDuration']['end']);
-          // print('failed: ' );
-          print(err);
+
+
           DateFormat newFormat = new DateFormat("yyyy-MM-dd");
           endDate = DateTime.parse(item['body']['activityDuration']['end']);
           startDate = DateTime.parse(item['body']['activityDuration']['start']);
@@ -547,21 +540,12 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
           
         }
 
-        print('endDate');
-        print(endDate);
-        print(startDate);
-
-
-        print(endDate);
-        print(todayDate.isBefore(endDate));
-        print(todayDate.isAfter(startDate));
 
         // check due careplans
         if (item['meta']['status'] == 'pending') {
           if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
             var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-            // print(existedCp);
-            // print(item['body']['activityDuration']['start']);
+
 
             if (existedCp.isEmpty) {
               var items = [];
@@ -577,8 +561,7 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
             }
           } else if (todayDate.isBefore(startDate)) {
             var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-            // print(existedCp);
-            // print(item['body']['activityDuration']['start']);
+
 
             if (existedCp.isEmpty) {
               var items = [];
@@ -595,8 +578,7 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
           }
         } else {
           var existedCp = completedCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-          // print(existedCp);
-          // print(item['body']['activityDuration']['start']);
+
 
           if (existedCp.isEmpty) {
             var items = [];
@@ -767,8 +749,6 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
                             Container(
                               child: FlatButton(
                                 onPressed: () {
-                                  print('hello');
-                                  print("patientDataincomplete ${_patient['data']} ");
                                   // Navigator.of(context).pushNamed('/editIncompleteEncounter',);
                                   Navigator.of(context).pushNamed(ChcpFeelingScreen.path);
 

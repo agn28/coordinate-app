@@ -80,15 +80,13 @@ class PatientController {
 
     var localResponse = await PatientReposioryLocal().getLocations();
 
-    print('local lcations');
-    print(localResponse);
+
     if (isNotNull(localResponse) && localResponse.isNotEmpty) {
-      print('into local if');
+
       var locations = {
         'data': jsonDecode(localResponse[0]['data']),
         'error': false
       };
-      print(locations);
       return locations;
     }
 
@@ -210,15 +208,14 @@ class PatientController {
 
     var localResponse = await PatientReposioryLocal().getCenters();
 
-    print('local centers');
-    print(localResponse);
+
     if (isNotNull(localResponse) && localResponse.isNotEmpty) {
-      print('into local if');
+
       var locations = {
         'data': jsonDecode(localResponse[0]['data']),
         'error': false
       };
-      print(locations);
+
       return locations;
     }
 
@@ -230,7 +227,7 @@ class PatientController {
   create(context, formData) async {
     var uuid = Uuid().v4();
     final data = _prepareData(formData);
-    print('create data');
+
 
     var apiResponse;
     var response;
@@ -247,15 +244,12 @@ class PatientController {
     //TODO: checking the new process
     if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
       // I am connected to a mobile network.
-      print('connected');
+
       data['id'] = uuid;
 
-      print('live patient create');
-      print('before create patient id ' + uuid.toString());
-      apiResponse = await PatientRepository().create(data);
-      print('apiResponse');
 
-      print(apiResponse);
+      apiResponse = await PatientRepository().create(data);
+
 
       if (isNull(apiResponse)) {
         Scaffold.of(context).showSnackBar(SnackBar(
@@ -309,8 +303,6 @@ class PatientController {
             isNotNull(apiResponse['data']['sync']['key'])) {
           var updateSync = await SyncRepository()
               .updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
-          print('after updating sync key');
-          print(updateSync);
         }
 
         return 'success';
@@ -319,7 +311,6 @@ class PatientController {
       // response = await PatientReposioryLocal().create(data);
 
     } else {
-      print('not connected');
       Scaffold.of(context).showSnackBar(SnackBar(
         content: Text('Warning: No Internet. Using offline...'),
         backgroundColor: kPrimaryYellowColor,
@@ -333,7 +324,6 @@ class PatientController {
   createOffline(context, formData) async {
     var uuid = Uuid().v4();
     final data = _prepareData(formData);
-    print('patient create');
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text('Saving data...'),

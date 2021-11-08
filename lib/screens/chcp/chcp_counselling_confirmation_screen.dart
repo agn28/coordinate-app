@@ -31,7 +31,6 @@ class _ChcpCounsellingConfirmationState extends State<ChcpCounsellingConfirmatio
     super.initState();
     isLoading = false;
     isCounsellingProvided = null;
-    print('chcp counseling confirmation');
   }
   @override
   Widget build(BuildContext context) {
@@ -176,7 +175,6 @@ class _ChcpCounsellingConfirmationState extends State<ChcpCounsellingConfirmatio
                                         });
                                         // var result = await Questionnaire().addCounselling(withFramework, widget.data);
                                         // print(result);
-                                        print('widget.data ${widget.data}');
 
                                         var response = await CarePlanController().update(context, widget.data, commentController.text);
                                         // print('response $response');

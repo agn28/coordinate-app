@@ -51,7 +51,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
     var value = '';
     data.forEach((item) {
       if (item['name'] == 'blood_sugar') {
-      print(item);
+
         value = item['value'].toString() + ' ' + item['units'];
       }
     });
@@ -61,7 +61,7 @@ class _MeasurementsState extends State<MeasurementsTab> {
     var value = '';
     data.forEach((item) {
       if (item['name'] == 'a1c') {
-      print(item);
+
         value = item['value'].toString() + ' ' + item['units'];
       }
     });

@@ -68,10 +68,8 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
   @override
   void initState() {
     super.initState();
-    print('patient overview screen');
     Helpers().clearObservationItems();
     _patient = Patient().getPatient();
-    print('prevScreen ${widget.prevScreen}');
     _checkAvatar();
     _checkAuth();
     _getAuthData();
@@ -88,14 +86,11 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
   }
   getIncompleteAssessmentLocal() async {
     encounter = await AssessmentController().getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: 'new questionnaire');
-    print('incencounter $encounter');
     if(encounter.isNotEmpty) {
-      print('if');
       setState(() {
         hasIncompleteAssessment = true;
       });
     } else {
-      print('else');
       setState(() {
         hasIncompleteAssessment = false;
       });
@@ -225,7 +220,6 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
       cholesterol = report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ? report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] : null;
     });
 
-    print(cvd);
   }
 
   getMedicationsConditions() async {
@@ -264,7 +258,6 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
   }
 
   getAssessments() async {
-    print('assessments');
     setState(() {
       isLoading = true;
     });
@@ -315,7 +308,6 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
   getLastAssessment() async {
     lastAssessment = await AssessmentController().getLastAssessmentByPatient();
 
-    print('lastAssessment $lastAssessment');
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
       // lastEncounterDate = lastAssessment['data']['meta']['created_at'];
       // nextVisitDate = lastAssessment['data']['body']['next_visit_date'];
@@ -323,7 +315,6 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
         nextVisitDate = lastAssessment['data']['body']['next_visit_date'] != null && lastAssessment['data']['body']['next_visit_date'] != '' ? DateFormat("MMMM d, y").format(DateTime.parse(lastAssessment['data']['body']['next_visit_date'])):'';
         lastEncounterType = lastAssessment['data']['body']['type'];
         lastEncounterDate = getDate(lastAssessment['data']['meta']['created_at']);
-        print('lastEncounterDate ${lastEncounterDate}');
       });
     }
     
@@ -336,11 +327,8 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
       isLoading = true;
     });
 
-    print('before encounter');
     encounters = await AssessmentController().getLiveAllAssessmentsByPatient();
-    print('encounters');
-    print(encounters);
-
+    
     setState(() {
       isLoading = false;
     });
@@ -368,7 +356,6 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
           });
         }
         encounters[encounters.indexOf(item)]['completed_observations'] = completed_observations;
-        print(encounters[0]['data']);
       });
       // print(encounters);
       //TODO: fix the datetime for sorting
@@ -400,7 +387,6 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
   }
 
   _getCarePlan() async {
-    print('careplans');
     setState(() {
       isLoading = true;
     });
@@ -529,11 +515,9 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
     return WillPopScope(
       onWillPop: () async {
         if(widget.prevScreen == 'encounter') {
-          print('WillPopScope if');
           Navigator.of(context).pushNamed( '/chwNavigation', arguments: 1);
           return true;
         } else {
-          print('WillPopScope else');
           Navigator.pop(context);
           return true;
         }
@@ -1302,7 +1286,6 @@ class _CareplanAccordionState extends State<CareplanAccordion> {
 
   getTitle(action) {
 
-    print(action);
     return 'asda';
   }
 

@@ -158,9 +158,7 @@ class Helpers {
   }
 
   getPatientPid(patient) {
-    print('patient topbar');
     if (patient["data"]["pid"] != null && patient["data"]["pid"] != '') {
-      print(patient["data"]["pid"]);
       return 'PID:  ${patient["data"]["pid"]}';
     }
     return '';
@@ -239,7 +237,6 @@ getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
 
   if (locale == Locale('bn', 'BN')) {
-    print('true');
     return question['question_bn'];
   }
   return question['question'];

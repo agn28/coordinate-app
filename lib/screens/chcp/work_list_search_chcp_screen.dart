@@ -59,7 +59,6 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
   @override
   initState() {
     super.initState();
-    print('work list search chcp screen');
     setState(() {
       searchController.text = '';
     });
@@ -104,7 +103,6 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
       var pending = await PatientController().getPatientsPendingWorklist(context);
       var completed = await PatientController().getPatientsWorklist(context, 'completed');
       var past = await PatientController().getPatientsWorklist(context, 'past');
-      print('pending $pending');
       
 
       if (pending['error'] != null && !pending['error'] && pending['data'].isNotEmpty) {
@@ -112,8 +110,6 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
           allPendingPatients = pending['data'];
           // pendingPatientsSort();
           pendingPatients = allPendingPatients;
-          print('heeeree');
-          print('pendingPatientss: ${pendingPatients[1]['body']['gender']}');
         });
       }
       if (completed['error'] != null && !completed['error']) {
@@ -135,15 +131,12 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
       });
     }
     else {
-      print('not connected');
       var allLocalPatients = await PatientController().getAllLocalPatients();
       var localPatientPending = [];
       for(var localPatient in allLocalPatients) {
-        print('localPatient ${localPatient['data']['first_name']} ${localPatient['meta']}');
         if(isNotNull(localPatient["meta"]["has_pending"]) && localPatient["meta"]["has_pending"]) {
           var isAssigned = false;
           var careplans = await CarePlanRepositoryLocal().getCareplanByPatient(localPatient['id']);
-          print('cp $careplans');
           var parsedData;
           for(var careplan in careplans) {
             parsedData = jsonDecode(careplan['data']);
@@ -163,12 +156,10 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
           }
         }
       }
-      print('pending $localPatientPending');
       setState(() {
         allPendingPatients = localPatientPending;
         pendingPatientsSort();
         pendingPatients = allPendingPatients;
-        print('pendingPatients ${pendingPatients[1]}');
       });
       setState(() {
         isLoading = false;
@@ -243,7 +234,6 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
   }
 
   getNexDueDate(assignment) {
-    print(assignment['meta']);
   }
 
   update(carePlan) {
@@ -326,7 +316,6 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
 
   pendingSearch(query) {
     var modifiedWorklist = [...allPendingPatients].map((item)  {
-      print(item['body']['pid']);
       item['body']['name'] = '${item['body']['first_name']} ${item['body']['last_name']}';
       return item;
     }).toList();
@@ -356,7 +345,6 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
 
   pastSearch(query) {
     var modifiedWorklist = [...allPastPatients].map((item)  {
-      print(item['body']['pid']);
       item['body']['name'] = '${item['body']['first_name']} ${item['body']['last_name']}';
       return item;
     }).toList();
@@ -386,7 +374,6 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
 
   completedSearch(query) {
     var modifiedWorklist = [...allCompletedPatients].map((item)  {
-      print(item['body']['pid']);
       item['body']['name'] = '${item['body']['first_name']} ${item['body']['last_name']}';
       return item;
     }).toList();

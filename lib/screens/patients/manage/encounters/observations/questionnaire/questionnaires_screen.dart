@@ -102,7 +102,6 @@ class _QuestionnairesState extends State<Questionnaires> {
                     icon: Image.asset('assets/images/icons/blood_test.png'),
                     text: AppLocalizations.of(context).translate('alcohol'),
                     onTap: () {
-                      print('adslsalkd');
                       Navigator.of(context).push(AlcoholScreen());
                     },
                   ),
@@ -238,7 +237,6 @@ class EncounnterStepsState extends State<EncounnterSteps> {
   }
 
   setStatus(value) {
-    print(AppLocalizations.of(context).locale);
     status = Questionnaire().isCompleted(value) ? 'Complete' : 'Incomplete';
   }
 

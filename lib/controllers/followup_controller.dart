@@ -34,9 +34,6 @@ class FollowupController {
     } else {
       response = await ReferralRepositoryLocal().getReferralsByPatient(patientID);
 
-      print('no internet');
-      print(response);
-
       var data;
 
       if (isNotNull(response)) {
@@ -53,8 +50,6 @@ class FollowupController {
             'meta': parsedData['meta']
           });
         });
-        print('data');
-        print(data);
 
         return data;
         

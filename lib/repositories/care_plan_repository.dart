@@ -26,8 +26,6 @@ class CarePlanRepository {
 
     var response;
 
-    print(apiUrl + 'care-plans/' + patientID,);
-
     try {
       response = await client
       .get(apiUrl + 'care-plans/patient/' + patientID + qParam,
@@ -39,15 +37,12 @@ class CarePlanRepository {
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {'exception': true, 'type': 'poor_network', 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -63,7 +58,6 @@ class CarePlanRepository {
 
     var response;
 
-    print(apiUrl + 'care-plans/' + id,);
 
     try {
       response = await client
@@ -79,15 +73,14 @@ class CarePlanRepository {
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {'exception': true, 'type': 'poor_network', 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -116,15 +109,14 @@ class CarePlanRepository {
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {'exception': true, 'type': 'poor_network', 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -149,7 +141,7 @@ class CarePlanRepository {
       return json.decode(response.body);
       
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
 
@@ -168,14 +160,14 @@ class CarePlanRepository {
       return json.decode(response.body);
       
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
 
   update(data, comment) async {
-    print(apiUrl + 'care-plans/' + data['id']);
+
     var authData = await Auth().getStorageAuth();
-    print('after get token');
+
     var token = authData['accessToken'];
 
     var response;
@@ -192,20 +184,18 @@ class CarePlanRepository {
         "comment": comment,
         "completed_at": DateFormat('y-MM-d').format(DateTime.now())
       })).timeout(Duration(seconds: httpRequestTimeout));
-      print('assessment created');
-      print(response.body);
+
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {'exception': true, 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,

@@ -30,7 +30,6 @@ class _ChcpUnwellCareplanScreen extends State<ChcpUnwellCareplanScreen> {
   @override
   void initState() {
     super.initState();
-    print('chcp unwell careplan screen');
     nextText = (Language().getLanguage() == 'Bengali') ? 'এগিয়ে যান' : 'Ok to Proceed';
     _checkAuth();
   }
@@ -226,7 +225,6 @@ class _UnwellCausesState extends State<UnwellCauses> {
                 onChanged: (value) {
                   setState(() {
                     selectedReason = value;
-                    print('selectedReason $selectedReason');
                   });
                 },
               ),

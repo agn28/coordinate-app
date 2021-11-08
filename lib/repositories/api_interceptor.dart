@@ -17,18 +17,15 @@ class ApiInterceptor implements InterceptorContract {
       var timeDifference = (expireTime.difference(currentTime).inMinutes);
       // var expireTime = DateTime.parse(authData['expirationTime']).add(DateTime.now().timeZoneOffset);
       // var timeDifference = (expireTime.difference(DateTime.now()).inMinutes);
-      print('timeRemaining ${timeDifference}');
       if(timeDifference <= 5) 
       {
         // call api to replace access token
         var newAuthData = await getNewToken(authData['refreshToken']);
         if (newAuthData['access_token'] != null) {
-          print('authDataBefore ${authData['expirationTime']}');
           authData['uid'] = newAuthData['user_id'];
           authData['accessToken'] = newAuthData['access_token'];
           authData['refreshToken'] = newAuthData['refresh_token'];
           authData['expirationTime'] = DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now().toUtc().add(Duration(seconds: int.parse(newAuthData['expires_in']))));
-          print('authDataAfter ${authData['expirationTime']}');
           await Auth().setAuth(authData);
           // return response;
         }
@@ -37,7 +34,7 @@ class ApiInterceptor implements InterceptorContract {
       data.headers["Content-Type"] = "application/json";
       data.headers["Authorization"] = "Bearer " + authData['accessToken'];
     } catch (e) {
-      print(e);
+
     }
     return data;
   }
@@ -57,7 +54,7 @@ class ApiInterceptor implements InterceptorContract {
     ).then((response) {
       return json.decode(response.body);
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
 

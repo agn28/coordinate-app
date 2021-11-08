@@ -78,9 +78,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
-    print('encounterData ${widget.encounterData}');
-    print(_patient['meta']['review_required']);
-    print('prevScreen ${widget.prevScreen}');
     dueCarePlans = [];
     completedCarePlans = [];
     upcomingCarePlans = [];
@@ -120,7 +117,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     });
     lastAssessment = await AssessmentController().getLastAssessmentByPatient();
 
-    print('lastAssessment $lastAssessment');
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
       if(lastAssessment['data']['body']['follow_up_info'] != null && lastAssessment['data']['body']['follow_up_info'].isNotEmpty){
         var followUpInfoChw = lastAssessment['data']['body']['follow_up_info'].where((info)=> info['type'] == 'chw');
@@ -142,7 +138,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
       setState(() {
         lastEncounterType = lastAssessment['data']['body']['type'];
         lastEncounterDate = getDate(lastAssessment['data']['meta']['created_at']);
-        print('lastEncounterDate ${lastEncounterDate}');
       });
     }
     
@@ -153,13 +148,11 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     });
     lastFollowup = await AssessmentController().getLastAssessmentByPatient(key:'screening_type', value:'follow-up');
 
-    print('lastFollowup $lastFollowup');
     if(lastFollowup != null && lastFollowup.isNotEmpty) {
       if(lastFollowup['data']['body']['type'] == 'follow up visit (community)'
         && lastFollowup['data']['body']['status'] == 'incomplete') {
           setState(() {
             hasIncompleteFollowup = true;
-            print('hasIncompleteFollowup $hasIncompleteFollowup');
           });
         }
     }
@@ -168,8 +161,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
 
 
   getAssessmentDueDate() {
-    // print(DateFormat("MMMM d, y").format(DateTime.parse(_patient['data']['next_assignment']['body']['activityDuration']['start'])));
-
+    
     if (_patient != null && _patient['data']['next_assignment'] != null && _patient['data']['next_assignment']['body']['activityDuration']['start'] != null) {
       setState(() {
         DateFormat format = new DateFormat("E LLL d y");
@@ -304,7 +296,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     });
 
     var data = await HealthReportController().getLastReport(context);
-    print(data);
     // return;
     if (data.isEmpty) {
       setState(() {
@@ -319,7 +310,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
       return;
     } else {
-      print(data['data']);
       setState(() {
         report = data['data'];
         bmi = report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ? report['body']['result']['assessments']['body_composition']['components']['bmi'] : null;
@@ -476,7 +466,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
         carePlans = data['data'];
       });
       // carePlans = data['data'];
-      print('carePlans $carePlans');
       if(data['data'] != null) {
         data['data'].forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");
@@ -490,25 +479,12 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
           endDate = format.parse(item['body']['activityDuration']['end']);
           startDate = format.parse(item['body']['activityDuration']['start']);
         } catch(err) {
-          print(item['body']['activityDuration']['start']);
-          print(item['body']['activityDuration']['end']);
-          // print('failed: ' );
-          print(err);
           DateFormat newFormat = new DateFormat("yyyy-MM-dd");
           endDate = DateTime.parse(item['body']['activityDuration']['end']);
           startDate = DateTime.parse(item['body']['activityDuration']['start']);
           // startDate = DateTime.parse(item['body']['activityDuration']['start']);
           
         }
-
-        print('endDate');
-        print(endDate);
-        print(startDate);
-
-
-        print(endDate);
-        print(todayDate.isBefore(endDate));
-        print(todayDate.isAfter(startDate));
 
         // check due careplans
         if (item['meta']['status'] == 'pending') {
@@ -638,7 +614,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     var date = '';
 
     if (encounters.length > 0) {
-    print('encounters ${encounters[0]}');
       var lastEncounter = encounters[0];
       date = lastEncounter['data']['next_visit_date'] ?? '';
     }
@@ -652,11 +627,9 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     return WillPopScope(
       onWillPop: () async {
       if(widget.prevScreen == 'followup') {
-          print('WillPopScope if');
           Navigator.of(context).pushNamed( '/chwNavigation', arguments: 1);
           return true;
         } else {
-          print('WillPopScope else');
           Navigator.pop(context);
           return true;
         }
@@ -1159,19 +1132,15 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                   ),
                                   child: FlatButton(
                                   onPressed: () async {
-                                    print('widget.prevScreennn: ${widget.prevScreen}');
                                     setState(() {
                                       isLoading = true;
                                     });
                                     if(widget.prevScreen == 'followup') {
                                       if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
                                       {
-                                        print('edit followup');
-                                        print('${widget.encounterData['encounter']}');
                                         var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
 
                                       } else {
-                                        print('new followup');
                                         var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (community)', 'follow-up', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
                                       }
                                     }
@@ -1204,14 +1173,9 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
                                       var status = widget.encounterData['dataStatus'] == 'incomplete' ? 'incomplete' : 'complete';
                                       if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
                                       {
-                                        print('edit followup');
-                                        print(status);
                                         var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
 
                                       } else {
-                                        print('new followup');
-                                        print(status);
-                                        print(widget.encounterData['followupType']);
                                         var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (community)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
                                       }
                                       status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
@@ -1506,7 +1470,6 @@ class _GoalItemState extends State<GoalItem> {
   getCompletedDate(goal) {
     var data = '';
     DateTime date;
-    print('asdknas');
     goal['items'].forEach((item) {
       // print(item['body']['activityDuration']['end']);
       DateFormat format = new DateFormat("E LLL d y");
@@ -1650,7 +1613,6 @@ class _ActionItemState extends State<ActionItem> {
   }
 
   isCounselling() {
-    print(widget.item['body']['title']);
     return widget.item['body']['title'].split(" ").contains('Counseling') || widget.item['body']['title'].split(" ").contains('Counselling');
   }
 
@@ -1667,8 +1629,6 @@ class _ActionItemState extends State<ActionItem> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        print(widget.item['body']);
-        print(isCounselling());
         if (isCounselling()) {
           Navigator.of(context).pushNamed(CounsellingFrameworkScreen.path, arguments: { 'data': widget.item, 'parent': this});
           return;

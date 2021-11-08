@@ -81,10 +81,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
-    print('chcp work list summary screen');
-    print('encounterData ${widget.encounterData}');
-    print(_patient['meta']['review_required']);
-    print('prevScreen ${widget.prevScreen}');
     dueCarePlans = [];
     completedCarePlans = [];
     upcomingCarePlans = [];
@@ -124,7 +120,7 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
     });
     lastAssessment = await AssessmentController().getLastAssessmentByPatient();
 
-    print('lastAssessment $lastAssessment');
+
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
       if(lastAssessment['data']['body']['follow_up_info'] != null && lastAssessment['data']['body']['follow_up_info'].isNotEmpty){
         var followUpInfoChw = lastAssessment['data']['body']['follow_up_info'].where((info)=> info['type'] == 'chw');
@@ -146,7 +142,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
       setState(() {
         lastEncounterType = lastAssessment['data']['body']['type'];
         lastEncounterDate = getDate(lastAssessment['data']['meta']['created_at']);
-        print('lastEncounterDate ${lastEncounterDate}');
       });
     }
     
@@ -157,13 +152,11 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
     });
     lastFollowup = await AssessmentController().getLastAssessmentByPatient(key:'screening_type', value:'follow-up');
 
-    print('lastFollowup $lastFollowup');
     if(lastFollowup != null && lastFollowup.isNotEmpty) {
       if(lastFollowup['data']['body']['type'] == 'follow up visit (center)'
         && lastFollowup['data']['body']['status'] == 'incomplete') {
           setState(() {
             hasIncompleteFollowup = true;
-            print('hasIncompleteFollowup $hasIncompleteFollowup');
           });
         }
     }
@@ -308,7 +301,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
     });
 
     var data = await HealthReportController().getLastReport(context);
-    print(data);
     // return;
     if (data.isEmpty) {
       setState(() {
@@ -323,7 +315,7 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
       return;
     } else {
-      print(data['data']);
+
       setState(() {
         report = data['data'];
         bmi = report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ? report['body']['result']['assessments']['body_composition']['components']['bmi'] : null;
@@ -480,7 +472,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
         carePlans = data['data'];
       });
       // carePlans = data['data'];
-      print('carePlans $carePlans');
       if(data['data'] != null) {
         data['data'].forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");
@@ -494,10 +485,7 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
           endDate = format.parse(item['body']['activityDuration']['end']);
           startDate = format.parse(item['body']['activityDuration']['start']);
         } catch(err) {
-          print(item['body']['activityDuration']['start']);
-          print(item['body']['activityDuration']['end']);
-          // print('failed: ' );
-          print(err);
+
           DateFormat newFormat = new DateFormat("yyyy-MM-dd");
           endDate = DateTime.parse(item['body']['activityDuration']['end']);
           startDate = DateTime.parse(item['body']['activityDuration']['start']);
@@ -505,22 +493,11 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
           
         }
 
-        print('endDate');
-        print(endDate);
-        print(startDate);
-
-
-        print(endDate);
-        print(todayDate.isBefore(endDate));
-        print(todayDate.isAfter(startDate));
-
         // check due careplans
         if (item['meta']['status'] == 'pending') {
           if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
             var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-            // print(existedCp);
-            // print(item['body']['activityDuration']['start']);
-
+            
             if (existedCp.isEmpty) {
               var items = [];
               items.add(item);
@@ -535,9 +512,7 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
             }
           } else if (todayDate.isBefore(startDate)) {
             var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-            // print(existedCp);
-            // print(item['body']['activityDuration']['start']);
-
+            
             if (existedCp.isEmpty) {
               var items = [];
               items.add(item);
@@ -553,9 +528,7 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
           }
         } else {
           var existedCp = completedCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-          // print(existedCp);
-          // print(item['body']['activityDuration']['start']);
-
+          
           if (existedCp.isEmpty) {
             var items = [];
             items.add(item);
@@ -573,8 +546,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
         
         
         // var existedCp = carePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-        // // print(existedCp);
-        // // print(item['body']['activityDuration']['start']);
         
 
         // if (existedCp.isEmpty) {
@@ -642,7 +613,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
     var date = '';
 
     if (encounters.length > 0) {
-    print('encounters ${encounters[0]}');
       var lastEncounter = encounters[0];
       date = lastEncounter['data']['next_visit_date'] ?? '';
     }
@@ -656,11 +626,9 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
     return WillPopScope(
       onWillPop: () async {
       if(widget.prevScreen == 'followup') {
-          print('WillPopScope if');
           Navigator.of(context).pushNamed( '/chcpNavigation', arguments: 1);
           return true;
         } else {
-          print('WillPopScope else');
           Navigator.pop(context);
           return true;
         }
@@ -1163,19 +1131,15 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
                                   ),
                                   child: FlatButton(
                                   onPressed: () async {
-                                    print('widget.prevScreennn: ${widget.prevScreen}');
                                     setState(() {
                                       isLoading = true;
                                     });
                                     if(widget.prevScreen == 'followup') {
                                       if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
                                       {
-                                        print('edit followup');
-                                        print('${widget.encounterData['encounter']}');
                                         var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
 
                                       } else {
-                                        print('new followup');
                                         var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
                                       }
                                     }
@@ -1208,14 +1172,10 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
                                       var status = widget.encounterData['dataStatus'] == 'incomplete' ? 'incomplete' : 'complete';
                                       if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
                                       {
-                                        print('edit followup');
-                                        print(status);
+
                                         var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
 
                                       } else {
-                                        print('new followup');
-                                        print(status);
-                                        print(widget.encounterData['followupType']);
                                         var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
                                       }
                                       status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;

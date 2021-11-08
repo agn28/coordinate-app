@@ -81,7 +81,7 @@ class _PatientDetailsState extends State<PatientDetailsScreen> {
     // var data;
     // var data = await HealthReportController().getReports();
     var data = await HealthReportController().getReports();
-    // print(test);
+
 
     // data = test['data'][0]['result'];
 
@@ -132,10 +132,9 @@ class _PatientDetailsState extends State<PatientDetailsScreen> {
       setState(() {
         reports = data['data'][data['data'].length - 1];
         data['data'].removeLast();
-        print(data['data']);
+  
          previousReports = data['data'];
-        // print(previousReports);
-        // print(data['data'].removeLast());
+
         // previousReports = data['data'];
         isLoading = false;
       });

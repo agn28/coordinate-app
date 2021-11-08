@@ -62,7 +62,6 @@ class _HomeState extends State<HomeScreen> {
     try {
       result = await _connectivity.checkConnectivity();
     } on PlatformException catch (e) {
-      print(e.toString());
       return;
     }
 
@@ -79,17 +78,17 @@ class _HomeState extends State<HomeScreen> {
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
     setState(() {
       _connectionStatus = result;
-      print('_connectionStatus $_connectionStatus');
+
     });
-    print('checkConnection');
+
     if (result == ConnectivityResult.wifi || result == ConnectivityResult.mobile) {
-      print('connected');
+
       syncController.isConnected.value = true;
       await syncController.initializeSync();
     } else {
       syncController.isConnected.value = false;
       syncController.isSyncing.value = false;
-      print('not connected');
+
     }
   }
   _getAuthData() async {

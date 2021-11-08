@@ -30,7 +30,6 @@ class _CounsellingFrameworkScreenState extends State<CounsellingFrameworkScreen>
   bool checkValue = false;
 
   handleComplete() {
-    print(widget.data);
     if (ask && advise && assess && assist && arrange) {
       Navigator.of(context).pushNamed(CounsellingConfirmation.path, arguments: { 'data': widget.data, 'actionsState': widget.parent});
       return;

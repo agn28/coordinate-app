@@ -38,7 +38,6 @@ class _RegisterPatientSuccessScreenState extends State<RegisterPatientSuccessScr
     super.initState();
 
     _getAuthData();
-    print('widget.isEditState ${widget.isEditState}');
   }
 
   _getAuthData() async {
@@ -47,8 +46,6 @@ class _RegisterPatientSuccessScreenState extends State<RegisterPatientSuccessScr
       Helpers().logout(context);
     }
 
-    print('role');
-    print(data['role']);
     setState(() {
       role = data['role'];
     });

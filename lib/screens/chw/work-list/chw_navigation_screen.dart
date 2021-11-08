@@ -29,7 +29,6 @@ class _ChwNavigationState extends State<ChwNavigationScreen> {
   int _currentIndex = 0;
   @override
   initState() {
-    print('chw navigation screen');
     _getAuthData();
     super.initState();
     setPage();
@@ -66,7 +65,6 @@ class _ChwNavigationState extends State<ChwNavigationScreen> {
 
     return WillPopScope(
       onWillPop: () async {
-        print('WillPopScope here');
         Navigator.pushNamed(context, '/chwHome');
         return true;
       },

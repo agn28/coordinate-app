@@ -285,7 +285,6 @@ class EncounnterStepsState extends State<EncounnterSteps> {
                   keyboardType: TextInputType.number,
                   controller: valueController,
                   onChanged: (value) {
-                    print('value' + value);
                     _addItem(value, widget.name == 'weight' ? 'kg' : 'cm');
                   },
                   decoration: InputDecoration(
@@ -355,7 +354,6 @@ class _AddDialogueState extends State<AddDialogue> {
     super.initState();
     selectedUnit = widget.name == 'weight' ? 'kg' : 'cm';
     devices = Device().getDevices();
-    print(devices);
     _getItem();
   }
 

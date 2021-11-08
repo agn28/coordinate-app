@@ -39,8 +39,7 @@ class _NewVisitChcpFeelingScreenState extends State<NewVisitChcpFeelingScreen> {
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
-    print('new visit chcp feeling screen');
-
+    
   }
 
   _checkAvatar() async {

@@ -230,12 +230,10 @@ class _ChwFollowupState extends State<ChwFollowupScreen> {
               child: _currentStep < _mySteps().length ? FlatButton(
                 onPressed: () {
                   setState(() {
-                    print(_currentStep);
                     if (nextText =='COMPLETE') {
                       checkData();
                     }
                     if (_currentStep == 3) {
-                      print(_currentStep);
                      nextText = 'COMPLETE';
                     }
                     if (_currentStep < 4) {

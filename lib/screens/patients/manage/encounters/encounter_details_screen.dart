@@ -91,8 +91,6 @@ class EncounterDetailsState extends State<EncounterDetailsScreen> {
   }
 
   getCommunityVisitContent(item) {
-    print('community visit');
-    print(item);
     if (item['body']['data']['5a_framework'] != null) {
       return [
         Text('5A framework completed: ', style: TextStyle(fontSize: 20, height: 1.6),),
@@ -162,7 +160,6 @@ class EncounterDetailsState extends State<EncounterDetailsScreen> {
     });
 
     _surveys.forEach((item) {
-      print(item);
       setState(() {
         surveyItems.add(
           Column(

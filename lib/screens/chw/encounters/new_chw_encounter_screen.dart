@@ -305,9 +305,7 @@ class _NewChwEncounterState extends State<NewChwEncounterScreen> {
                       var btWarning; 
                       bt.forEach((item) {
                         if (item['body']['data']['name'] == 'blood_glucose') {
-                          // print(item['body']['data']);
                           if (item['body']['data']['unit'] == 'mmol/L' ) {
-                            print(item['body']['data']);
                             if (item['body']['data']['value'] > 13.99) {
                               btWarning = item;
                               return;
@@ -320,9 +318,7 @@ class _NewChwEncounterState extends State<NewChwEncounterScreen> {
                           }
                           
                         } else if (item['body']['data']['name'] == 'blood_sugar') {
-                          // print(item['body']['data']);
                           if (item['body']['data']['unit'] == 'mmol/L' ) {
-                            print(item['body']['data']);
                             if (item['body']['data']['value'] > 17.99) {
                               btWarning = item;
                               return;
@@ -438,8 +434,7 @@ class _NewChwEncounterState extends State<NewChwEncounterScreen> {
                     }
 
                     if (bt.length > 0) {
-                      print(bt[0]);
-
+                      
                       bt.forEach((item) async  {
                         if (item['body']['data']['name'] == 'blood_glucose') {
                           if (item['body']['data']['value'] > 250) {
@@ -467,8 +462,7 @@ class _NewChwEncounterState extends State<NewChwEncounterScreen> {
                     setState(() {
                       isLoading = false;
                     });
-                    print('before if');
-
+                    
                     // _scaffoldKey.currentState.showSnackBar(
                     //   SnackBar(
                     //     content: Text(AppLocalizations.of(context).translate('dataSaved')),
@@ -486,7 +480,7 @@ class _NewChwEncounterState extends State<NewChwEncounterScreen> {
                       }
                       
                     } else {
-                      print('else');
+                   
                       Navigator.of(context).pop();
                       // _scaffoldKey.currentState.showSnackBar(
                       //   SnackBar(
@@ -596,7 +590,6 @@ class _MedicalRecommendationWidgetState extends State<MedicalRecommendationWidge
                             }
                             
                           } else {
-                            print('else');
                             Navigator.of(context).pop();
                             // _scaffoldKey.currentState.showSnackBar(
                             //   SnackBar(

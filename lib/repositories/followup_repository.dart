@@ -14,7 +14,7 @@ class FollowupRepository {
     ApiInterceptor(),
   ]);
   create(data) async {
-    print('folowup called');
+
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     return await client.post(
@@ -28,12 +28,12 @@ class FollowupRepository {
     ).then((response) {
       return json.decode(response.body);
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
 
   update(data) async {
-    print('folowup called');
+
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     return await client.put(
@@ -47,7 +47,7 @@ class FollowupRepository {
     ).then((response) {
       return json.decode(response.body);
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
 
@@ -57,7 +57,6 @@ class FollowupRepository {
 
     var response;
 
-    print(apiUrl + 'patients');
 
     try {
       response = await client
@@ -72,15 +71,13 @@ class FollowupRepository {
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
       return {'exception': true, 'type': 'poor_network', 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,

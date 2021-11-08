@@ -333,8 +333,6 @@ class _NcdCenterAssessmentState extends State<NcdCenterAssessment> {
                                               setState(() {
                                                 isLoading = false;
                                               });
-                                              print('before if');
-
                                               // _scaffoldKey.currentState.showSnackBar(
                                               //   SnackBar(
                                               //     content: Text(AppLocalizations.of(context).translate('dataSaved')),
@@ -343,7 +341,6 @@ class _NcdCenterAssessmentState extends State<NcdCenterAssessment> {
                                               // );
 
                                               if (result == 'success') {
-                                                print('hello');
                                                 Navigator.of(_scaffoldKey.currentContext).pushNamed('/patientOverview');
                                                 _dataSaved = true;
                                                 // _scaffoldKey.currentState.showSnackBar(
@@ -360,7 +357,6 @@ class _NcdCenterAssessmentState extends State<NcdCenterAssessment> {
                                                 }
                                                 
                                               } else {
-                                                print('else');
                                                 Navigator.of(context).pop();
                                                 // _scaffoldKey.currentState.showSnackBar(
                                                 //   SnackBar(
@@ -386,7 +382,6 @@ class _NcdCenterAssessmentState extends State<NcdCenterAssessment> {
                     );
                     if (_dataSaved) {
                       await Future.delayed(const Duration(seconds: 1));
-                      print('hello');
                       Navigator.of(context).pushNamed('/patientOverview');
                       // Navigator.pop(context);
                     }

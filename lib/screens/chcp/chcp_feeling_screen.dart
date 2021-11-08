@@ -36,7 +36,6 @@ class _ChcpFeelingScreenState extends State<ChcpFeelingScreen> {
   @override
   void initState() {
     super.initState();
-    print('edit incomplete encounter feeling screen');
     _patient = Patient().getPatient();
 
   }

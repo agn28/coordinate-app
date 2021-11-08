@@ -78,7 +78,6 @@ getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
 
   if (locale == Locale('bn', 'BN')) {
-    print('true');
     return question['question_bn'];
   }
   return question['question'];
@@ -119,7 +118,6 @@ class _NewPatientQuestionnaireScreenState
     clearForm();
     isLoading = false;
 
-    print(Language().getLanguage());
     nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
 
     prepareQuestions();
@@ -129,10 +127,8 @@ class _NewPatientQuestionnaireScreenState
   }
 
   getLanguage() async {
-    print('language s');
     final prefs = await SharedPreferences.getInstance();
 
-    print(Localizations.localeOf(context));
   }
 
   prepareQuestions() {
@@ -175,7 +171,6 @@ class _NewPatientQuestionnaireScreenState
         _currentStep = _currentStep + 1;
         nextText = 'COMPLETE';
       } else if (_currentStep == 4) {
-        print("sttep4");
         checkData();
       } else {
         _currentStep = _currentStep + 1;
@@ -446,17 +441,14 @@ class _NewPatientQuestionnaireScreenState
             Expanded(
               child: _currentStep < _mySteps().length || nextHide ? FlatButton(
                 onPressed: () {
-                  print(_currentStep);
                   if (_currentStep == 0) {
                       Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
-                      print("addNewMedicalHistoryNcd ${Questionnaire().qnItems}");
                       AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');   
                     }
 
                     if (_currentStep == 1) {
                       Questionnaire().addNewMedicationNcd(
                           'medication', medicationAnswers);
-                      print(Questionnaire().qnItems);
                       AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
 
                     }
@@ -464,7 +456,6 @@ class _NewPatientQuestionnaireScreenState
                     if (_currentStep == 2) {
                       Questionnaire().addNewRiskFactorsNcd(
                           'risk_factors', riskAnswers);
-                      print(Questionnaire().qnItems);
                       AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
 
                     }
@@ -486,7 +477,6 @@ class _NewPatientQuestionnaireScreenState
                         'education': educationController.text,
                         'tribe': isTribe
                       };
-                      print('relativeAdditionalData $relativeAdditionalData');
                       Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
                       AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
                       setState(() {
@@ -497,7 +487,6 @@ class _NewPatientQuestionnaireScreenState
                     }
 
                     if (_currentStep == 3) {
-                      print('hello');
                       if(diastolicEditingController.text == '' ||
                         systolicEditingController.text == '' ||
                         pulseRateEditingController.text == '' ||
@@ -627,7 +616,6 @@ class _NewPatientQuestionnaireScreenState
   // }
 
   Future _completeStep() async {
-    print('before missing popup');
     var hasMissingData = checkMissingData();
 
     if (hasMissingData) {
@@ -641,7 +629,6 @@ class _NewPatientQuestionnaireScreenState
 
     var patient = Patient().getPatient();
 
-    print(patient['data']['age']);
     var status = hasMissingData ? 'incomplete' : 'complete';
     var response = await AssessmentController().createAssessmentWithObservationsLive('new questionnaire', createdAt: creationDateTimeController.text);
     // var response = await AssessmentController().createOnlyAssessmentWithStatus('new questionnaire', 'new-questionnaire', '', 'incomplete', nextVisitDate);
@@ -723,7 +710,6 @@ class _NewPatientQuestionnaireScreenState
             ],
           );
         });
-    print("NoYes : $response");
     return response;
   }
 
@@ -804,18 +790,15 @@ checkMissingData() {
   if (diastolicEditingController.text == '' ||
       systolicEditingController.text == '' ||
       pulseRateEditingController.text == '') {
-    print('blood pressure missing');
     return true;
   }
 
   if (heightEditingController.text == '' ||
       weightEditingController.text == '') {
-    print('body measurement missing');
     return true;
   }
 
   if (bloodSugerEditingController.text == '') {
-    print('blood sugar missing');
     return true;
   }
 
@@ -923,7 +906,6 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                                                                   .indexOf(
                                                                       option)];
                                                           var selectedOption = medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)];
-                                                          print('selectedOption $selectedOption');
                                                           medicationQuestions['items'].forEach((qtn) {
                                                             if(qtn['type'].contains('heart') || qtn['type'].contains('heart_bp_diabetes')) {
 
@@ -931,21 +913,14 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                                                               medicalHistoryAnswers.forEach((ans) {
                                                                 if(ans == 'yes') {
                                                                   medicalHistoryAnswerYes = true;
-                                                                  print('medicalHistoryAnswerYes $ans');
                                                                 }
                                                               });
                                                               if (!medicalHistoryAnswerYes) {
                                                                 medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
-                                                                print('exceptional if');
                                                               }
                                                             } else if(qtn['type'].contains(question['type']) && selectedOption == 'no') {
                                                               medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
-                                                              print('if');
                                                             }
-                                                            print(qtn['type']);
-                                                            print(question['type']);
-                                                            print('qtn $qtn');
-                                                            print('medicationAnswers ${medicationAnswers}');
                                                           });
                                                         });
                                                       },
@@ -1133,8 +1108,6 @@ class _MedicationState extends State<Medication> {
                               ...medicationQuestions['items'].map((question) {
                                 if (checkMedicalHistoryAnswers(question)) {
                                   if (question['category'] == 'sub') {
-                                    print('subCategoryQuestion $question');
-                                    print('subCategory');
                                   }
                                   isEmpty = false;
                                   return Container(
@@ -1202,8 +1175,6 @@ class _MedicationState extends State<Medication> {
                                                         child: FlatButton(
                                                           onPressed: () {
                                                             setState(() {
-                                                              print(
-                                                                  medicalHistoryAnswers);
                                                               medicationAnswers[
                                                                   medicationQuestions[
                                                                           'items']
@@ -1923,8 +1894,6 @@ getDropdownOptionText(context, list, value) {
 
     if (list['options_bn'] != null) {
       var matchedIndex = list['options'].indexOf(value);
-      print('matchedIndex $matchedIndex');
-      print(list['options_bn'][matchedIndex]);
       return list['options_bn'][matchedIndex];
     }
     return StringUtils.capitalize(value);
@@ -2316,7 +2285,6 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
     // }
 
     if (counsellingQuestion['type'] == 'medical-adherence') {
-      print('medicationAdh $medicationAnswers');
       if (medicationAnswers[1] == 'no' || medicationAnswers[3] == 'no' ||medicationAnswers[5] == 'no' || medicationAnswers[7] == 'no') {
         return true;
       }
@@ -2345,9 +2313,7 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
     });
   
     if (matchedQuestion != null) {
-      print('matchedQuestion: ${matchedQuestion}');
       var answer = riskAnswers[riskQuestions['items'].indexOf(matchedQuestion)];
-      print('matchedQuestion: (answer) $answer');
       if ((matchedQuestion['type'] == 'eat-vegetables' ||
           matchedQuestion['type'] == 'physical-activity-high')) {
         if (answer == 'no') {
@@ -2365,8 +2331,6 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
 
   addCounsellingGroupTitle(question) {
     if (question['group'] == 'unhealthy-diet') {
-      print('unhealthy-diet');
-      print(dietTitleAdded);
       if (!dietTitleAdded) {
         dietTitleAdded = true;
         return Column(
@@ -2383,8 +2347,6 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
         );
       }
     } else if (question['group'] == 'tobacco') {
-      print('tobacco');
-      print(tobaccoTitleAdded);
       if (!tobaccoTitleAdded) {
         tobaccoTitleAdded = true;
         return Column(
@@ -3478,18 +3440,15 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                         borderRadius: BorderRadius.circular(3)),
                                     child: FlatButton(
                                         onPressed: () async {
-                                          print("hello");
-
+                                          
                                           widget.parent.setLoader(true);
 
                                           var patient = Patient().getPatient();
 
-                                          print(patient['data']['age']);
                                           // return;
                                           // var response = await AssessmentController().createOnlyAssessment('new patient questionnaire', '', '');
 
                                           widget.parent.setLoader(false);
-                                          print('successss');
                                           return;
 
                                           if (patient['data']['age'] != null &&
@@ -3513,8 +3472,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
 
                                     widget.parent.goToHome(false, null);
 
-                                          print('response');
-                                          // print(response);
+                                         
                                         },
                                         materialTapTargetSize:
                                             MaterialTapTargetSize.shrinkWrap,

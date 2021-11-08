@@ -21,7 +21,7 @@ class PatientReposioryLocal {
     try {
       return await db.rawQuery('''SELECT * FROM ${DatabaseCreator.patientTable}''');
     } catch (error) {
-      print(error);
+
       return;
     }
   }
@@ -39,10 +39,9 @@ class PatientReposioryLocal {
 
     try {
       patient = await db.rawQuery(sql);
-      print('patientbyId $patient');
+
     } catch (error) {
-      print('error');
-      print(error);
+
       return;
     }
     return patient;
@@ -56,8 +55,7 @@ class PatientReposioryLocal {
     try {
       response = await db.rawQuery(sql);
     } catch (error) {
-      print('error');
-      print(error);
+
       return;
     }
 
@@ -73,8 +71,7 @@ class PatientReposioryLocal {
     try {
       referrals = await db.rawQuery(referralSql);
     } catch (error) {
-      print('error');
-      print(error);
+
       return;
     }
 
@@ -82,13 +79,12 @@ class PatientReposioryLocal {
       var patientIds = referrals.map((item) => '"${item['patient_id']}"').toList();
 
       final patientSql = '''SELECT * FROM ${DatabaseCreator.patientTable} WHERE id IN (${patientIds.join(', ')})''';
-      print(patientSql);
+
 
       try {
         patients = await db.rawQuery(patientSql);
       } catch (error) {
-        print('error');
-        print(error);
+
         return;
       }
 
@@ -97,9 +93,7 @@ class PatientReposioryLocal {
         var tempPatients = patients;
 
         for(var patient in patients) {
-          print(patients.indexOf(patient));
-          print(patient);
-          print('patient loop');
+
           var matchedReferral = referrals.where((ref) => ref['patient_id'] == patient['id']).first;
           var copyPatient = new Map.from(patient);
           var parsedPatientData = jsonDecode(copyPatient['data']);
@@ -128,8 +122,6 @@ class PatientReposioryLocal {
         //   responseData.add(data);
         // });
 
-        print('response data');
-        print(responseData);
 
         return {
           'data': responseData
@@ -145,7 +137,6 @@ class PatientReposioryLocal {
   createNew(context, id, data, synced) async {
 
     var allPatients = await getAllPatients();
-    print(allPatients);
 
     // if (!synced) {
     //   final sql = '''SELECT * FROM ${DatabaseCreator.patientTable} WHERE nid="${data['body']['nid']}"''';
@@ -190,7 +181,7 @@ class PatientReposioryLocal {
     try {
       response = await db.rawInsert(sql, params);
     } catch (err) {
-      print(err);
+
       return;
     }
 
@@ -226,26 +217,21 @@ class PatientReposioryLocal {
   create(context, id, data, synced) async {
 
     var allPatients = await getAllPatients();
-    print(allPatients);
 
     if (!synced) {
-      print('not synced');
-      print(data);
+
       final sql =
           '''SELECT * FROM ${DatabaseCreator.patientTable} WHERE nid="${data['body']['nid']}"''';
       var existingPatient;
 
       try {
         existingPatient = await db.rawQuery(sql);
-        print('existingPatient');
-        print(existingPatient);
-        print(sql);
+
       } catch (err) {
-        print(err);
+
         return;
       }
 
-      print(existingPatient);
 
       if (isNotNull(existingPatient) && existingPatient.isNotEmpty) {
         // await delete(existingPatient[0]['id']);
@@ -279,7 +265,6 @@ class PatientReposioryLocal {
     try {
       response = await db.rawInsert(sql, params);
     } catch (err) {
-      print(err);
 
       return;
     }
@@ -295,15 +280,10 @@ class PatientReposioryLocal {
     var assessmentData = _prepareAssessmentData('registration', 'registration', data['meta']['created_at'], id);
     await AssessmentRepositoryLocal().createLocalAssessment(assessmentData['id'], assessmentData, synced);
 
-    print('result 1');
-    print(response);
     var patient = {'id': id, 'data': data['body'], 'meta': data['meta']};
 
     data['id'] = id;
-    print('result 2');
     await Patient().setPatient(patient);
-    print('result 3');
-    print(response);
     // DatabaseCreator.databaseLog('Add patient', sql, null, response, params);
     return 'success';
   }
@@ -333,7 +313,7 @@ class PatientReposioryLocal {
 
   createFromLive(id, data) async {
     var allPatients = await getAllPatients();
-    print(allPatients);
+
 
     final sql = '''INSERT INTO ${DatabaseCreator.patientTable}
     (
@@ -356,8 +336,6 @@ class PatientReposioryLocal {
     try {
       response = await db.rawInsert(sql, params);
     } on DatabaseException catch(error) {
-      print('error');
-      print(error);
       error.isUniqueConstraintError();
       if (error.isUniqueConstraintError()) {
         return {
@@ -390,7 +368,6 @@ class PatientReposioryLocal {
   }
   
   updateFromLive(id, data) async {
-    print('into updating patient $id');
 
     final sql = '''UPDATE ${DatabaseCreator.patientTable} SET
       data = ?, is_synced = ? WHERE id = ?''';
@@ -399,10 +376,9 @@ class PatientReposioryLocal {
 
     try {
       response = await db.rawUpdate(sql, params);
-      print('update local patient $response');
+
     } catch(error) {
-      print('error');
-      print(error);
+
       return;
     }
     return response;
@@ -410,8 +386,7 @@ class PatientReposioryLocal {
   }
 
   Future<void> updateLocalStatus(uuid, isSynced) async {
-    print('into updating patient status');
-    print('uuid ' + uuid);
+
 
     final sql = '''UPDATE ${DatabaseCreator.patientTable} SET
       is_synced = ?
@@ -421,11 +396,9 @@ class PatientReposioryLocal {
 
     try {
       response = await db.rawUpdate(sql, params);
-      print('update local response');
-      print(response);
+
     } catch(error) {
-      print('error');
-      print(error);
+
       return;
     }
     return response;
@@ -439,11 +412,10 @@ class PatientReposioryLocal {
       response = await db.rawQuery(
           'DELETE FROM ${DatabaseCreator.patientTable} WHERE uuid = ?', [id]);
     } catch (err) {
-      print(err);
+
       return;
     }
 
-    print(response);
     return response;
   }
 
@@ -454,8 +426,7 @@ class PatientReposioryLocal {
     try {
       response = await db.rawQuery(sql);
     } catch (error) {
-      print('error');
-      print(error);
+
       return;
     }
 
@@ -469,8 +440,7 @@ class PatientReposioryLocal {
     try {
       response = await db.rawQuery(sql);
     } catch (error) {
-      print('error');
-      print(error);
+
       return;
     }
 
@@ -483,8 +453,7 @@ class PatientReposioryLocal {
     try {
       response = await db.rawQuery(sql);
     } catch (error) {
-      print('error');
-      print(error);
+
       return;
     }
 

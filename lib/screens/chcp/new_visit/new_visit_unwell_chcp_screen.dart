@@ -46,7 +46,6 @@ getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
 
   if (locale == Locale('bn', 'BN')) {
-    print('true');
     return question['question_bn'];
   }
   return question['question'];
@@ -79,7 +78,6 @@ class _NewVisitUnwellChcpScreen extends State<NewVisitUnwellChcpScreen> {
   @override
   void initState() {
     super.initState();
-    print('new visit unwell chcp');
     nextText = (Language().getLanguage() == 'Bengali') ? 'এগিয়ে যান' : 'Ok to Proceed';
     _checkAuth();
     clearForm();
@@ -286,7 +284,6 @@ class _NewVisitUnwellChcpScreen extends State<NewVisitUnwellChcpScreen> {
               child: _currentStep < _mySteps().length ? FlatButton(
                 onPressed: () {
                   setState(() {
-                    print('_currentStep $_currentStep');
                     if (_currentStep == 1) {
                     }
                     if (_currentStep == 0) {
@@ -439,7 +436,6 @@ class _UnwellCausesState extends State<UnwellCauses> {
                 onChanged: (value) {
                   setState(() {
                     selectedReason = value;
-                    print('selectedReason $selectedReason');
                   });
                 },
               ),

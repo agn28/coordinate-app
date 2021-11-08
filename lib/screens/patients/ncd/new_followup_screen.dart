@@ -50,8 +50,6 @@ class _NewFollowupScreenState extends State<NewFollowupScreen> {
   getLastAssessments() async {
   
     var lastFullAssessment = await AssessmentController().getLastAssessmentByPatient(key:'followup_type', value:'full');
-    print('lastFullAssessment ${lastFullAssessment['data']['meta']['created_at']}');
-
     if (lastFullAssessment['error'] == true) {
 
     } else if (lastFullAssessment['message'] == 'Unauthorized') {
@@ -64,7 +62,6 @@ class _NewFollowupScreenState extends State<NewFollowupScreen> {
     }
 
     var lastShortAssessment = await AssessmentController().getLastAssessmentByPatient(key:'followup_type', value:'short');
-    print('lastShortAssessment $lastShortAssessment');
     if (lastShortAssessment['error'] == true) {
 
     } else if (lastFullAssessment['message'] == 'Unauthorized') {

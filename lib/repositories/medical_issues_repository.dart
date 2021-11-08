@@ -26,7 +26,7 @@ class MedicalIssuesRepository {
       return jsonDecode(response.body);
       
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
     
   }

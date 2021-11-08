@@ -32,20 +32,17 @@ class HealthReportController {
     var response = await HealthReportRepository().getLastReport();
     
     if (response['error'] != null && !response['error']) {
-      print('response ${response['data']['id']}');
       return response;
     }
 
     var data = {};
     if (isNull(response) || isNotNull(response['exception'])) {
-      print('into exception');
       var patientId = Patient().getPatient()['id'];
       var localHealthReport = await HealthReportRepositoryLocal().getLastReport(patientId);
-      print('localHealthReport ${localHealthReport[0]}');
+
       if (localHealthReport.isNotEmpty) {
         var parseData = json.decode(localHealthReport[0]['data']);
-        print('parseData ${parseData["body"]}');
-        // print('parseData ${parseData["data"]["body"]}');
+
         data = {
           'error': false,
           'data': {

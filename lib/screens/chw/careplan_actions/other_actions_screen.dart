@@ -44,7 +44,6 @@ class _OtherActionsScreenState extends State<OtherActionsScreen> {
     super.initState();
     _patient = Patient().getPatient();
     btnDisabled = true;
-    print(widget.data['items'][0]['id']);
   }
   getCount() {
     var completedCount = 0;
@@ -268,7 +267,6 @@ class _ActionItemState extends State<ActionItem> {
   }
 
   isCounselling() {
-    print(widget.item['body']['title']);
     return widget.item['body']['title'].split(" ").contains('Counseling') || widget.item['body']['title'].split(" ").contains('Counselling');
   }
 
@@ -285,8 +283,6 @@ class _ActionItemState extends State<ActionItem> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        print(widget.item['body']);
-        print(isCounselling());
         if (isCounselling()) {
           Navigator.of(context).pushNamed(CounsellingFrameworkScreen.path, arguments: { 'data': widget.item, 'parent': this});
           return;

@@ -27,17 +27,16 @@ class CarePlanController {
     var apiResponse = await CarePlanRepository().getCarePlan(checkAssignedTo: checkAssignedTo);
     
     if (apiResponse['error'] != null && !apiResponse['error']) {
-      print('response ${apiResponse}');
       return apiResponse;
     }
 
     var data = [];
 
     if (isNull(apiResponse) || isNotNull(apiResponse['exception'])) {
-      print('into exception');
+
       var patientId = Patient().getPatient()['id'];
       var careplans = await CarePlanRepositoryLocal().getCareplanByPatient(patientId);
-      print('cp $careplans');
+
       var data = [];
       var parsedData;
 
@@ -71,7 +70,6 @@ class CarePlanController {
         'data': data,
         'error': false
       };
-      print('localresponse $response');
       return response;
       // return data;
     }
@@ -98,11 +96,8 @@ class CarePlanController {
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
       // I am connected to internet.
-      print('connected');
-      //creating live careplan
-      print('live careplan create');
+
       var apiResponse = await CarePlanRepository().update(data, comment);
-      print('careplan apiResponse $apiResponse');
 
       //Could not get any response from API
       if (isNull(apiResponse)) {
@@ -143,25 +138,19 @@ class CarePlanController {
       }
       //API responded success with no error
       else if (apiResponse['error'] != null && !apiResponse['error']) {
-        print('into success');
         // creating local careplan with synced status
         response = await CarePlanRepositoryLocal().completeLocalCarePlan(data['id'], data, comment, true);
 
         //updating sync key
         if (isNotNull(apiResponse['data']['sync']) &&
             isNotNull(apiResponse['data']['sync']['key'])) {
-          print('into careplan sync update');
           var updateSync = await SyncRepository()
               .updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
-          print('after updating sync key');
-          print(updateSync);
         }
         return 'success';
       }
       return 'error';
     } else {
-      print('not connected');
-      print(context);
       // return;
       // Scaffold.of(context).showSnackBar(SnackBar(
       //   content: Text('Warning: No Internet. Using offline...'),

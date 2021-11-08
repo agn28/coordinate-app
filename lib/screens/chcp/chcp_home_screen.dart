@@ -44,7 +44,6 @@ class _ChcpHomeState extends State<ChcpHomeScreen> {
   initState() {
     _getAuthData();
     super.initState();
-    print('this is chcp home screen!');
     // Connectivity().onConnectivityChanged.listen(syncController.checkConnection);
     
     initConnectivity();
@@ -64,7 +63,6 @@ class _ChcpHomeState extends State<ChcpHomeScreen> {
     try {
       result = await _connectivity.checkConnectivity();
     } on PlatformException catch (e) {
-      print(e.toString());
       return;
     }
 
@@ -81,17 +79,16 @@ class _ChcpHomeState extends State<ChcpHomeScreen> {
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
     setState(() {
       _connectionStatus = result;
-      print('_connectionStatus $_connectionStatus');
     });
-    print('checkConnection');
+
     if (result == ConnectivityResult.wifi || result == ConnectivityResult.mobile) {
-      print('connected');
+
       syncController.isConnected.value = true;
       await syncController.initializeSync();
     } else {
       syncController.isConnected.value = false;
       syncController.isSyncing.value = false;
-      print('not connected');
+
     }
   }
   _getAuthData() async {

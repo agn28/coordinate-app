@@ -89,11 +89,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
   @override
   void initState() {
     super.initState();
-    print('create referal screen');
     _patient = Patient().getPatient();
-    print('_patient ${_patient}');
-    print('referralData ${widget.referralData}');
-    print(Language().getLanguage());
     // referralReasons = Language().getLanguage() == 'Bengali' ? : ;
     _getAuthData();
     getCenters();  
@@ -106,8 +102,6 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
   _getAuthData() async {
     var data = await Auth().getStorageAuth();
 
-    print('role');
-    print(data['role']);
     setState(() {
       role = data['role'];
     });
@@ -133,24 +127,20 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
       isLoading = false;
     });
 
-    print("CenterData: $centerData");
-
+    
     if (centerData['error'] != null && !centerData['error']) {
       clinicTypes = centerData['data'];
       for(var center in clinicTypes) {
         if(isNotNull(_patient['data']['center']) && center['id'] == _patient['data']['center']['id']) {
-          print('selectedCenter $center');
           setState(() {
             selectedtype = center;
           });
         }
       }
     }
-    print("center: $clinicTypes");
   }
 
   getNextVisitDate() {
-    print(selectedFollowupIn);
     // ['1 week', '2 weeks', '1 month', '2 months', '3 months', '6 months', '1 year'];
     var date = '';
     if (selectedFollowupIn == '1 week') {
@@ -292,7 +282,6 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                         onChanged: (value) {
                           setState(() {
                             selectedtype = value;
-                            print('selectedtype $selectedtype');
                           });
                         },
                       ),
@@ -376,7 +365,6 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                         onChanged: (newValue) {
                           setState(() {
                             selectedFollowupIn = newValue;
-                            print('selectedFollowupIn: $selectedFollowupIn');
                             getNextVisitDate();
                           });
                         },
@@ -438,8 +426,6 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                                 data['body']['location']['clinic_name'] = clinicNameController.text;
                                 data['body']['follow_up_date'] = nextVisitDate;
 
-                                print(data);
-
                                         setState(() {
                                           isLoading = true;
                                         });
@@ -449,9 +435,6 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                                         setState(() {
                                           isLoading = false;
                                         });
-                                        print('response');
-                                        print(response.runtimeType);
-
                                         // return;
 
                                         if (response.runtimeType != int &&

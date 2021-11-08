@@ -30,7 +30,6 @@ class _NewQuestionnaireFeelingNurseScreenState extends State<NewQuestionnaireFee
   @override
   void initState() {
     super.initState();
-    print('testtest');
     _patient = Patient().getPatient();
   }
 

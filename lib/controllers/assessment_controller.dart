@@ -50,7 +50,6 @@ class AssessmentController {
         });
       }
     });
-    print('AssessmentController return data:  $data');
     return data;
   }
 
@@ -74,20 +73,15 @@ class AssessmentController {
 
   getLiveAllAssessmentsByPatient() async {
     var response = await AssessmentRepository().getAllAssessments();
-
-    print('encounter respose ' + response.toString());
     var data = [];
     // if (response == null) {
     //   return data;
     // }
 
     if (isNull(response) || isNotNull(response['exception'])) {
-      print('into exception');
       var patientId = Patient().getPatient()['id'];
       var localResponse =
           await AssessmentRepositoryLocal().getAssessmentsByPatient(patientId);
-      print('localResponse');
-      print(localResponse);
       if (isNotNull(localResponse)) {
         localResponse.forEach((assessment) {
           var parseData = json.decode(assessment['data']);
@@ -121,14 +115,10 @@ class AssessmentController {
     var data = {};
 
     // if (isNull(response) || isNotNull(response['exception'])) {
-      print('into exception');
       var patientId = Patient().getPatient()['id'];
       var assessments = await AssessmentRepositoryLocal().getAssessmentsByPatient(patientId);
-      print('localResponse');
-      print(assessments);
       if (isNotNull(assessments)) {
         var lastAssessment = assessments.first;
-        print('lastAssessment $lastAssessment');
         var parseData = json.decode(lastAssessment['data']);
         if(key == 'screening_type' && value == 'follow-up') {
           if(parseData['body']['screening_type'] == 'follow-up') {
@@ -162,18 +152,14 @@ class AssessmentController {
     var response = await AssessmentRepository().getLastAssessment(key: key, value: value);
     
     if (response['error'] != null && !response['error']) {
-      print('response ${response['data']['id']}');
       return response;
     }
 
     var data = {};
 
     if (isNull(response) || isNotNull(response['exception'])) {
-      print('into exception');
       var patientId = Patient().getPatient()['id'];
       var assessments = await AssessmentRepositoryLocal().getAssessmentsByPatient(patientId);
-      print('localResponse');
-      print(assessments);
       if (isNotNull(assessments)) {
         var lastAssessment = assessments.first;
         var parseData = json.decode(lastAssessment['data']);
@@ -262,27 +248,16 @@ class AssessmentController {
     if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
       // I am connected to a mobile network.
 
-      print('connected');
-
-      print('live incomplete encounter');
-      print(patientId);
       apiResponse = await AssessmentRepository().getIncompleteEncounterWithObservation(patientId, key: key, value: value);
-      print('apiResponse');
-
-      print(apiResponse);
       return apiResponse;
     } else {
-      print('not connected');
       // Scaffold.of(context).showSnackBar(SnackBar(
       //   content: Text('Warning: No Internet. Using offline...'),
       //   backgroundColor: kPrimaryYellowColor,
       // ));
       var assessment = await AssessmentRepositoryLocal().getIncompleteAssessmentsByPatient(patientId);
       var observations = await getObservationsByAssessment(assessment.last);
-      print('local assessment ${(assessment.last)}');
-      print('local observations $observations');
       if (isNotNull(assessment) && assessment.isNotEmpty) {
-        print('into local assessment');
         var parsedAssessment = {
           'id': assessment.last['id'],
           'body': jsonDecode(assessment.last['data'])['body'],
@@ -295,7 +270,6 @@ class AssessmentController {
           },
           'error': false
         };
-        print(response);
         return response;
       }
 
@@ -344,7 +318,6 @@ class AssessmentController {
     await observations.forEach((item) {
       parsedData = jsonDecode(item['data']);
       if (parsedData['body']['assessment_id'] == assessment['id']) {
-      print(item);
         data.add({
           'id': item['id'],
           'body': {
@@ -411,16 +384,12 @@ class AssessmentController {
     var data = [];
 
     if (isNull(response) || isNotNull(response['exception'])) {
-      print('into exception');
       var patientId = Patient().getPatient()['id'];
       var localResponse = await ObservationRepositoryLocal().getObservationsByPatient(patientId);
-      print('localResponse');
-      print(localResponse);
       if (isNotNull(localResponse)) {
         var localObservations = [];
         localResponse.forEach((observation) {
           var parseData = json.decode(observation['data']);
-          print('observation ${parseData["body"]}');
           if(parseData['body']["assessment_id"] == assessment['id']) {
             data.add({
               'id': observation['id'],
@@ -467,15 +436,9 @@ class AssessmentController {
       Helpers().clearObservationItems();
     }
 
-    print('before health report');
-
     await Future.delayed(const Duration(seconds: 20));
 
-    print('after health report');
-
     await HealthReportController().getReport();
-
-    print('after health report');
 
     return status;
   }
@@ -499,12 +462,8 @@ class AssessmentController {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
-      // I am connected to internet.
-      print('connected');
-      //creating live assesment
-      print('live assessment create');
+
       var apiResponse = await AssessmentRepository().create(apiData);
-      print('assessment apiResponse $apiResponse');
 
       //Could not get any response from API
       if (isNull(apiResponse)) {
@@ -547,23 +506,17 @@ class AssessmentController {
       }
       //API responded success with no error
       else if (apiResponse['error'] != null && !apiResponse['error']) {
-        print('into success');
         // creating local assessment with synced status
         response = await AssessmentRepositoryLocal().createLocalAssessment(assessmentId, data, true);
 
         //updating sync key
         if (isNotNull(apiResponse['data']['sync']) && isNotNull(apiResponse['data']['sync']['key'])) {
-          print('into assessment sync update');
           var updateSync = await SyncRepository().updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
-          print('after updating sync key');
-          print(updateSync);
         }
         return response;
       }
       return response;
     } else {
-      print('not connected');
-      print(context);
       // return;
       // Scaffold.of(context).showSnackBar(SnackBar(
       //   content: Text('Warning: No Internet. Using offline...'),
@@ -603,11 +556,8 @@ class AssessmentController {
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
       // I am connected to internet.
-      print('connected');
-      //creating live assesment
-      print('live assessment create');
+
       var apiResponse = await AssessmentRepository().create(apiData);
-      print('assessment apiResponse $apiResponse');
 
       //Could not get any response from API
       if (isNull(apiResponse)) {
@@ -648,7 +598,6 @@ class AssessmentController {
       }
       //API responded success with no error
       else if (apiResponse['error'] != null && !apiResponse['error']) {
-        print('into success');
         // creating local assessment with synced status
         response = await AssessmentRepositoryLocal()
             .createLocalAssessment(assessmentId, data, true);
@@ -656,17 +605,12 @@ class AssessmentController {
         //updating sync key
         if (isNotNull(apiResponse['data']['sync']) &&
             isNotNull(apiResponse['data']['sync']['key'])) {
-          print('into assessment sync update');
           var updateSync = await SyncRepository().updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
-          print('after updating sync key');
-          print(updateSync);
         }
         return response;
       }
       return response;
     } else {
-      print('not connected');
-      print(context);
       // return;
       // Scaffold.of(context).showSnackBar(SnackBar(
       //   content: Text('Warning: No Internet. Using offline...'),
@@ -690,12 +634,10 @@ class AssessmentController {
     data['body']['followup_type'] = followupType;
     data['body']['next_visit_date'] = nextVisitDate;
 
-    print('before health report');
     var status =
         await AssessmentRepositoryLocal().createOnlyAssessmentWithStatus(data);
 
     Future.delayed(const Duration(seconds: 5));
-    print('after health report');
 
     if (completeStatus == 'complete') {
       HealthReportController().generateReport(data['body']['patient_id']);
@@ -767,12 +709,10 @@ class AssessmentController {
     var data = _prepareData(type, screening_type, comment);
     data['body']['status'] = completeStatus;
     data['body']['next_visit_date'] = nextVisitDate;
-    print('before health report');
     var status =
         await AssessmentRepositoryLocal().createOnlyAssessmentWithStatus(data);
 
     Future.delayed(const Duration(seconds: 5));
-    print('after health report');
 
     if (completeStatus == 'complete') {
       HealthReportController().generateReport(data['body']['patient_id']);
@@ -797,19 +737,16 @@ class AssessmentController {
         .where(
             (observation) => observation['body']['type'] == 'body_measurement')
         .toList();
-    print('bmobs ${bmobs}');
     for (var bm in bodyMeasurements) {
       if (bmobs.isNotEmpty) {
         var matchedObs = bmobs.where((bmob) =>
             bmob['body']['data']['name'] == bm['body']['data']['name']);
-        print('matchedObs ${matchedObs}');
         if (matchedObs.isNotEmpty) {
           matchedObs = matchedObs.first;
           var apiData = {'id': matchedObs['id']};
           apiData.addAll(bm);
           apiData['body']['assessment_id'] =
               matchedObs['body']['assessment_id'];
-          print('body Measurements_if $apiData');
           await obsRepo.create(apiData);
         }
       } else {
@@ -817,7 +754,6 @@ class AssessmentController {
         Map<String, dynamic> apiData = {'id': id};
         apiData.addAll(bm);
         apiData['body']['assessment_id'] = encounter['id'];
-        print('body Measurements_else $apiData');
         await obsRepo.create(apiData);
       }
     }
@@ -825,20 +761,17 @@ class AssessmentController {
     var bpobs = observations
         .where((observation) => observation['body']['type'] == 'blood_pressure')
         .toList();
-    print('bpobs ${bpobs}');
 
     for (var bp in bloodPressures) {
       if (bpobs.isNotEmpty) {
         var matchedObs = bpobs.where((bpob) =>
             bpob['body']['data']['name'] == bp['body']['data']['name']);
-        print('matchedObs ${matchedObs}');
         if (matchedObs.isNotEmpty) {
           matchedObs = matchedObs.first;
           var apiData = {'id': matchedObs['id']};
           apiData.addAll(bp);
           apiData['body']['assessment_id'] =
               matchedObs['body']['assessment_id'];
-          print('Blood Pressure_if $apiData');
           await obsRepo.create(apiData);
         }
       } else {
@@ -846,7 +779,6 @@ class AssessmentController {
         Map<String, dynamic> apiData = {'id': id};
         apiData.addAll(bp);
         apiData['body']['assessment_id'] = encounter['id'];
-        print('Blood Pressure_else $apiData');
         await obsRepo.create(apiData);
       }
     }
@@ -854,19 +786,16 @@ class AssessmentController {
     var btobs = observations
         .where((observation) => observation['body']['type'] == 'blood_test')
         .toList();
-    print('btobs ${btobs}');
     for (var bt in bloodTests) {
       if (btobs.isNotEmpty) {
         var matchedObs = btobs.where((btob) =>
             btob['body']['data']['name'] == bt['body']['data']['name']);
-        print('matchedObs ${matchedObs}');
         if (matchedObs.isNotEmpty) {
           matchedObs = matchedObs.first;
           var apiData = {'id': matchedObs['id']};
           apiData.addAll(bt);
           apiData['body']['assessment_id'] =
               matchedObs['body']['assessment_id'];
-          print('Blood Test_if $apiData');
           await obsRepo.create(apiData);
         }
       } else {
@@ -874,7 +803,6 @@ class AssessmentController {
         Map<String, dynamic> apiData = {'id': id};
         apiData.addAll(bt);
         apiData['body']['assessment_id'] = encounter['id'];
-        print('Blood Test_else $apiData');
         await obsRepo.create(apiData);
       }
     }
@@ -883,37 +811,30 @@ class AssessmentController {
         .where((observation) => observation['body']['type'] == 'survey')
         .toList();
     for (var qstn in questionnaires) {
-      print('qstn ${qstn['body']['data']['name']}');
       if (qstnobs.isNotEmpty) {
         var matchedObs = qstnobs.where((qstnob) =>
             qstnob['body']['data']['name'] == qstn['body']['data']['name']);
-        print('matchedObs ${matchedObs}');
         if (matchedObs.isNotEmpty) {
           matchedObs = matchedObs.first;
           var apiData = {'id': matchedObs['id']};
           apiData.addAll(qstn);
           apiData['body']['assessment_id'] =
               matchedObs['body']['assessment_id'];
-          print('Questionnaires_if $apiData');
           await obsRepo.create(apiData);
         } else {
           var id = Uuid().v4();
           Map<String, dynamic> apiData = {'id': id};
           apiData.addAll(qstn);
           apiData['body']['assessment_id'] = encounter['id'];
-          print('Questionnaires_else $apiData');
           await obsRepo.create(apiData);
         }
       }
     }
 
-    print('before health report');
 
     if (status == 'complete') {
       HealthReportController().generateReport(encounter['body']['patient_id']);
     }
-
-    print('after health report');
 
     Helpers().clearObservationItems();
   }
@@ -921,9 +842,7 @@ class AssessmentController {
   updateSyncIncompleteAssessment(context, status, encounter, observations) async {
     //creating assesment
     encounter['body']['status'] = status;
-    print('upencounter $encounter');
     var response = await updateAssessment(context, encounter["id"], encounter);
-    print('update response $response');
     //creating observations
     if (isNotNull(response)) {
       ObservationController().UpdateOrCreateObservations(context, status, encounter, observations);
@@ -943,11 +862,7 @@ class AssessmentController {
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
       // I am connected to internet.
-      print('connected');
-      //creating live assesment
-      print('live assessment update');
       var apiResponse = await AssessmentRepository().create(data);
-      print('assessment apiResponse $apiResponse');
 
       //Could not get any response from API
       if (isNull(apiResponse)) {
@@ -988,7 +903,6 @@ class AssessmentController {
       }
       //API responded success with no error
       else if (apiResponse['error'] != null && !apiResponse['error']) {
-        print('into success');
         // creating local assessment with synced status
         response = await AssessmentRepositoryLocal()
             .updateLocalAssessment(assessmentId, data, true);
@@ -996,16 +910,12 @@ class AssessmentController {
         //updating sync key
         if (isNotNull(apiResponse['data']['sync']) &&
             isNotNull(apiResponse['data']['sync']['key'])) {
-          print('into assessment sync update');
           var updateSync = await SyncRepository().updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
-          print('after updating sync key');
-          print(updateSync);
         }
         return response;
       }
       return response;
     } else {
-      print('not connected');
       // return;
       // Scaffold.of(context).showSnackBar(SnackBar(
       //   content: Text('Warning: No Internet. Using offline...'),
@@ -1020,8 +930,6 @@ class AssessmentController {
 
   updateIncompleteAssessmentData(status, encounter, observations) async {
     createObservations(status, encounter, observations);
-    print('before assessment');
-    print(DateTime.now());
     await AssessmentRepository().createOnlyAssessment(encounter);
 
     return 'success';
@@ -1034,9 +942,7 @@ class AssessmentController {
       var incompleteAssessments = [];
       incompleteAssessments = await this.getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: type);
       if(incompleteAssessments.isNotEmpty) {
-        print('not empty');
         referralData['meta']['assessment_id'] = incompleteAssessments.first['id'];
-        print('testt: referralData ${referralData}');
         var referralId = Uuid().v4();
         await ReferralRepositoryLocal().create(referralId, referralData, false, localStatus: 'incomplete');
       }
@@ -1049,9 +955,7 @@ class AssessmentController {
     if(incompleteAssessments.isNotEmpty) {
       
       incompleteAssessments.first['meta']['created_at'] = createdAt == '' ? DateTime.now().toString() : createdAt;
-      print('assessmentId ${incompleteAssessments.first['id']}');
       var obs = await this.getObservationsByAssessment(incompleteAssessments.first);
-      print('obs $obs');
       var apiDataObservations = await updateObservations(completeStatus, incompleteAssessments.first, obs);
 
       // await updateLocalAssessmentWithObservations(incompleteAssessments.first, apiDataObservations, false);
@@ -1061,10 +965,8 @@ class AssessmentController {
       }
       await PatientReposioryLocal().updateLocalStatus(incompleteAssessments.first['body']['patient_id'], false);
     } else {
-      print('empty');
       var response;
       var assessmentData = _prepareData(type, screening_type, comment);
-      print('data prepareData: $assessmentData');
       assessmentData['body']['status'] = completeStatus;
       assessmentData['body']['next_visit_date'] = nextVisitDate;
       if (followupType != '') {
@@ -1073,7 +975,6 @@ class AssessmentController {
       assessmentData['meta']['created_at'] = createdAt == '' ? DateTime.now().toString() : createdAt;
       var assessmentId = Uuid().v4();
 
-      print('assessmentId ${assessmentId})');
       // Preparing all observations related to assessment
       var observations = await AssessmentRepositoryLocal().prepareObservations(assessmentId);
 
@@ -1108,15 +1009,12 @@ class AssessmentController {
     // return response;
   }
   createAssessmentWithObservationsLive(type, {assessmentStatus:'incomplete', followupType:'', createdAt:'', completedAt:''}) async {
-    print('dateTimeSeleceted $createdAt $completedAt');
     var localNotSyncedAssessment = [];
     localNotSyncedAssessment = await this.getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: type);
     if(localNotSyncedAssessment.isNotEmpty) {
       var localNotSyncedObservations = await this.getObservationsByAssessment(localNotSyncedAssessment.first);
       var localNotSyncedReferral = await ReferralController().getReferralByAssessment(localNotSyncedAssessment.first['id']);
-      print('ref $localNotSyncedReferral');
-      print('obs $localNotSyncedObservations');
-      print('localNotSyncedAssessment ${localNotSyncedAssessment.first})');
+
       localNotSyncedAssessment.first['body']['status'] = assessmentStatus;
       assessmentStatus == 'complete' ? (localNotSyncedAssessment.first['meta']['completed_at'] = completedAt == '' ?  DateTime.now().toString() : completedAt) : null;
       localNotSyncedAssessment.first['meta']['created_at'] = createdAt == '' ? DateTime.now().toString() : createdAt;
@@ -1125,7 +1023,6 @@ class AssessmentController {
         'assessment': localNotSyncedAssessment.first,
         'observations': apiDataObservations
       };
-      print('apiData $apiData');
       if(localNotSyncedReferral != null && (localNotSyncedAssessment.first['body']['type'] == 'community clinic assessment' || localNotSyncedAssessment.first['body']['type'] == 'community clinic followup')) {
         // localNotSyncedReferral['meta']['created_at'] = createdAt == '' ? DateTime.now().toString() : createdAt;
         var response = await storeAssessmentWithObservationsLive(localNotSyncedAssessment.first, apiDataObservations, apiData, referralData: localNotSyncedReferral);
@@ -1140,13 +1037,11 @@ class AssessmentController {
   }
 
   updateAssessmentWithObservationsLive(assessmentStatus, encounter, observations, {completedAt: ''}) async {
-    print('dateTimeSeleceted $completedAt');
     var apiDataObservations = await updateObservations(assessmentStatus, encounter, observations);
     Map<String, dynamic> apiData = {
       'assessment': encounter,
       'observations': apiDataObservations
     };
-    print('apiData $apiData');
     assessmentStatus == 'complete' ? (encounter['meta']['completed_at'] = completedAt == '' ?  DateTime.now().toString() : completedAt) : null;
       
     var response = await storeAssessmentWithObservationsLive(encounter, apiDataObservations, apiData);
@@ -1172,12 +1067,9 @@ class AssessmentController {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
       // I am connected to internet.
-      print('connected');
       var apiResponse = await AssessmentRepository().createAssessmentWithObservations(apiData);
-      print('apiResponse $apiResponse');
       //API responded success with no error
       if (apiResponse['error'] != null && !apiResponse['error']) {
-        print('into success');
         // updating local assessment with synced status
         // response = await updateLocalAssessmentWithObservations(assessmentData, observationsData, true);
         response = await AssessmentRepositoryLocal().updateLocalAssessment(assessmentData['id'], assessmentData, true, localStatus: 'complete');
@@ -1187,33 +1079,26 @@ class AssessmentController {
       
         //updating sync key
         if (isNotNull(apiResponse['data']['sync']) && isNotNull(apiResponse['data']['sync']['key'])) {
-          print('into sync update');
+
           // Identifying this patient with not synced data
           await PatientReposioryLocal().updateLocalStatus(assessmentData['body']['patient_id'], true);
           var updateSync = await SyncRepository().updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
-          print('after updating sync key');
-          print(updateSync);
         }
       } 
 
       //calling referral create API
       var referalResponse = await ReferralRepository().create(referralData);
-      print('referalResponse $referalResponse');
       //API responded success with no error
       if (referalResponse['error'] != null && !referalResponse['error']) {
-        print('into success');
         // updating local assessment with synced status
         response = await ReferralRepositoryLocal().update(referralData['id'], referralData, true, localStatus: 'complete');
         
       
         //updating sync key
         if (isNotNull(referalResponse['data']['sync']) && isNotNull(referalResponse['data']['sync']['key'])) {
-          print('into sync update');
           // Identifying this patient with not synced data
           await PatientReposioryLocal().updateLocalStatus(referralData['meta']['patient_id'], true);
           var updateSync = await SyncRepository().updateLatestLocalSyncKey(referalResponse['data']['sync']['key']);
-          print('after updating sync key');
-          print(updateSync);
         }
       } 
     }
@@ -1224,8 +1109,6 @@ class AssessmentController {
     var data = [];
     var patientId = Patient().getPatient()['id'];
     var localResponse = await AssessmentRepositoryLocal().getAssessmentsByPatientWithLocalStatus(patientId, localStatus);
-    print('localResponse $localResponse');
-    print(localResponse);
     if (isNotNull(localResponse)) {
       localResponse.forEach((assessment) {
         var parseData = json.decode(assessment['data']);
@@ -1253,7 +1136,6 @@ class AssessmentController {
   createAssessmentWithObservations(context, type, screening_type, comment, completeStatus, nextVisitDate, {followupType: ''}) async {
     var response;
     var data = _prepareData(type, screening_type, comment);
-    print('data prepareData: $data');
     data['body']['status'] = completeStatus;
     data['body']['next_visit_date'] = nextVisitDate;
     if (followupType != '') {
@@ -1275,9 +1157,7 @@ class AssessmentController {
       'assessment': apiDataAssessment,
       'observations': observations['apiData']
     };
-    print('apiData $apiData');
     response = await storeAssessmentWithObservations(context, assessmentId, data, observations['localData'], apiData);
-    print('apiResponse $response');
 
     //TODO: online offline generate
     if (completeStatus == 'complete') {
@@ -1285,8 +1165,6 @@ class AssessmentController {
     }
 
     Helpers().clearObservationItems();
-
-    print('createAssessmentWithObservations response:  $response');
 
     return response;
   }
@@ -1296,11 +1174,9 @@ class AssessmentController {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
       // I am connected to internet.
-      print('connected');
-      //creating live assesment & observation
-      print('live assessment & observation create');
+
+
       var apiResponse = await AssessmentRepository().createAssessmentWithObservations(apiData);
-      print('apiResponse $apiResponse');
 
       //Could not get any response from API
       if (isNull(apiResponse)) {
@@ -1340,23 +1216,17 @@ class AssessmentController {
       }
       //API responded success with no error
       else if (apiResponse['error'] != null && !apiResponse['error']) {
-        print('into success');
 
         //updating sync key
         if (isNotNull(apiResponse['data']['sync']) && isNotNull(apiResponse['data']['sync']['key'])) {
-          print('into sync update');
           // creating local assessment with synced status
           response = await storeLocalAssessmentWithObservations(assessmentId, assessmentData, observationsData, true);
           var updateSync = await SyncRepository().updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
-          print('after updating sync key');
-          print(updateSync);
         }
         return response;
       }
       return response;
     } else {
-      print('not connected');
-      print(context);
       // return;
       // Scaffold.of(context).showSnackBar(SnackBar(
       //   content: Text('Warning: No Internet. Using offline...'),
@@ -1373,11 +1243,8 @@ class AssessmentController {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
       // I am connected to internet.
-      print('connected');
-      //creating live assesment & observation
-      print('live assessment & observation create');
+
       var apiResponse = await AssessmentRepository().createAssessmentWithObservations(apiData);
-      print('apiResponse $apiResponse');
 
       //Could not get any response from API
       if (isNull(apiResponse)) {
@@ -1417,23 +1284,18 @@ class AssessmentController {
       }
       //API responded success with no error
       else if (apiResponse['error'] != null && !apiResponse['error']) {
-        print('into success');
 
         //updating sync key
         if (isNotNull(apiResponse['data']['sync']) && isNotNull(apiResponse['data']['sync']['key'])) {
-          print('into sync update');
+
           // creating local assessment with synced status
           response = await updateLocalAssessmentWithObservations(assessmentData, observationsData, true);
           var updateSync = await SyncRepository().updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
-          print('after updating sync key');
-          print(updateSync);
         }
         return response;
       }
       return response;
     } else {
-      print('not connected');
-      print(context);
       // return;
       // Scaffold.of(context).showSnackBar(SnackBar(
       //   content: Text('Warning: No Internet. Using offline...'),
@@ -1471,20 +1333,16 @@ class AssessmentController {
     var bloodTests = BloodTest().btItems;
     var bodyMeasurements = BodyMeasurement().bmItems;
     var questionnaires = Questionnaire().qnItems;
-    print(encounter);
     encounter['body']['status'] = status;
 
     var obsRepoLocal = ObservationRepositoryLocal();
 
     var bmobs = observations.where((observation) => observation['body']['type'] == 'body_measurement').toList();
-    print('bmobs ${bmobs}');
     for (var bm in bodyMeasurements) {
-      print('bm $bm');
       // If previous observation exists
       if (bmobs.isNotEmpty) {
         var matchedObs = bmobs.where((bmob) =>
             bmob['body']['data']['name'] == bm['body']['data']['name']);
-        print('matchedObs ${matchedObs}');
         // Previous observation is updated
         if (matchedObs.isNotEmpty) {
           matchedObs = matchedObs.first;
@@ -1492,7 +1350,6 @@ class AssessmentController {
           apiData.addAll(bm);
           apiData['body']['assessment_id'] = matchedObs['body']['assessment_id'];
           apiData['meta']['created_at'] = encounter['meta']['created_at'];
-          print('body Measurements_if $apiData');
           apiDataObservations.add(apiData);
           await obsRepoLocal.update(matchedObs['id'], apiData, false);
         }
@@ -1503,7 +1360,6 @@ class AssessmentController {
           apiData.addAll(bm);
           apiData['body']['assessment_id'] = encounter['id'];
           apiData['meta']['created_at'] = encounter['meta']['created_at'];
-          print('body Measurements_else $apiData');
           apiDataObservations.add(apiData);
           await obsRepoLocal.create(id, apiData, false);
         }
@@ -1515,7 +1371,6 @@ class AssessmentController {
         apiData.addAll(bm);
         apiData['body']['assessment_id'] = encounter['id'];
         apiData['meta']['created_at'] = encounter['meta']['created_at'];
-        print('body Measurements_else $apiData');
         apiDataObservations.add(apiData);
         await obsRepoLocal.create(id, apiData, false);
       }
@@ -1524,20 +1379,17 @@ class AssessmentController {
     var bpobs = observations
         .where((observation) => observation['body']['type'] == 'blood_pressure')
         .toList();
-    print('bpobs ${bpobs}');
 
     for (var bp in bloodPressures) {
       if (bpobs.isNotEmpty) {
         var matchedObs = bpobs.where((bpob) =>
             bpob['body']['data']['name'] == bp['body']['data']['name']);
-        print('matchedObs ${matchedObs}');
         if (matchedObs.isNotEmpty) {
           matchedObs = matchedObs.first;
           var apiData = {'id': matchedObs['id']};
           apiData.addAll(bp);
           apiData['body']['assessment_id'] = matchedObs['body']['assessment_id'];
           apiData['meta']['created_at'] = encounter['meta']['created_at'];
-          print('Blood Pressure_if $apiData');
           apiDataObservations.add(apiData);
           await obsRepoLocal.update(matchedObs['id'], apiData, false);
         } else {
@@ -1546,7 +1398,6 @@ class AssessmentController {
           apiData.addAll(bp);
           apiData['body']['assessment_id'] = encounter['id'];
           apiData['meta']['created_at'] = encounter['meta']['created_at'];
-          print('Blood Pressure_else $apiData');
           apiDataObservations.add(apiData);
           await obsRepoLocal.create(id, apiData, false);
         }
@@ -1556,7 +1407,6 @@ class AssessmentController {
         apiData.addAll(bp);
         apiData['body']['assessment_id'] = encounter['id'];
         apiData['meta']['created_at'] = encounter['meta']['created_at'];
-        print('Blood Pressure_else $apiData');
         apiDataObservations.add(apiData);
         await obsRepoLocal.create(id, apiData, false);
       }
@@ -1565,33 +1415,27 @@ class AssessmentController {
     var btobs = observations
         .where((observation) => observation['body']['type'] == 'blood_test')
         .toList();
-    print('btobs ${btobs}');
-    print('btests ${bloodTests}');
     for (var bt in bloodTests) {
       if (btobs.isNotEmpty) {
         // var matchedObs = btobs.where((btob) =>
         //     btob['body']['data']['name'] == bt['body']['data']['name']);
-        // print('matchedObs ${matchedObs}');
         var matchedObs;
         if(bt['body']['data']['name'] == 'blood_sugar') {
           matchedObs = btobs.where((btob) {
             if(btob['body']['data']['name'] == bt['body']['data']['name']) {
               if(btob['body']['data']['type'] == null && bt['body']['data']['type'] == null) {
-                print('btif');
+
                 return true;
               } else if(btob['body']['data']['type'] != null && bt['body']['data']['type'] != null
                 && btob['body']['data']['type'] == bt['body']['data']['type']) {
-                print('btelif');
                 return true;
               } 
-              print('btel');
               return false;
             } return false;
           });
         } else {
           matchedObs = btobs.where((btob) => btob['body']['data']['name'] == bt['body']['data']['name']);
         }
-        print('matchedbtObs ${matchedObs}');
         
         if (matchedObs.isNotEmpty) {
           matchedObs = matchedObs.first;
@@ -1599,7 +1443,7 @@ class AssessmentController {
           apiData.addAll(bt);
           apiData['body']['assessment_id'] = matchedObs['body']['assessment_id'];
           apiData['meta']['created_at'] = encounter['meta']['created_at'];
-          print('Blood Test_if $apiData');
+
           apiDataObservations.add(apiData);
           await obsRepoLocal.update(matchedObs['id'], apiData, false);
         } else {
@@ -1608,7 +1452,7 @@ class AssessmentController {
           apiData.addAll(bt);
           apiData['body']['assessment_id'] = encounter['id'];
           apiData['meta']['created_at'] = encounter['meta']['created_at'];
-          print('Blood Test_else $apiData');
+
           apiDataObservations.add(apiData);
           await obsRepoLocal.create(id, apiData, false);
         }
@@ -1618,7 +1462,7 @@ class AssessmentController {
         apiData.addAll(bt);
         apiData['body']['assessment_id'] = encounter['id'];
         apiData['meta']['created_at'] = encounter['meta']['created_at'];
-        print('Blood Test_else $apiData');
+
         apiDataObservations.add(apiData);
         await obsRepoLocal.create(id, apiData, false);
       }
@@ -1626,18 +1470,16 @@ class AssessmentController {
 
     var qstnobs = observations.where((observation) => observation['body']['type'] == 'survey').toList();
     for (var qstn in questionnaires) {
-      print('qstn ${qstn['body']['data']['name']}');
       if (qstnobs.isNotEmpty) {
         var matchedObs = qstnobs.where((qstnob) =>
             qstnob['body']['data']['name'] == qstn['body']['data']['name']);
-        print('matchedObs ${matchedObs}');
         if (matchedObs.isNotEmpty) {
           matchedObs = matchedObs.first;
           var apiData = {'id': matchedObs['id']};
           apiData.addAll(qstn);
           apiData['body']['assessment_id'] = matchedObs['body']['assessment_id'];
           apiData['meta']['created_at'] = encounter['meta']['created_at'];
-          print('Questionnaires_if $apiData');
+
           apiDataObservations.add(apiData);
           await obsRepoLocal.update(matchedObs['id'], apiData, false);
         } else {
@@ -1646,7 +1488,7 @@ class AssessmentController {
           apiData.addAll(qstn);
           apiData['body']['assessment_id'] = encounter['id'];
           apiData['meta']['created_at'] = encounter['meta']['created_at'];
-          print('Questionnaires_else $apiData');
+
           apiDataObservations.add(apiData);
           await obsRepoLocal.create(id, apiData, false);
         }
@@ -1656,7 +1498,7 @@ class AssessmentController {
         apiData.addAll(qstn);
         apiData['body']['assessment_id'] = encounter['id'];
         apiData['meta']['created_at'] = encounter['meta']['created_at'];
-        print('Questionnaires_else $apiData');
+
         apiDataObservations.add(apiData);
         await obsRepoLocal.create(id, apiData, false);
       }
@@ -1676,9 +1518,8 @@ class AssessmentController {
       'assessment': encounter,
       'observations': apiDataObservations
     };
-    print('apiData $apiData');
+
     response = await storeUpdatedAssessmentWithObservations(context, encounter, apiDataObservations, apiData);
-    print('apiResponse $response');
 
     if (status == 'complete') {
       await HealthReportController().generateReport(encounter['body']['patient_id']);
@@ -1688,15 +1529,13 @@ class AssessmentController {
 
     // return;
     // var apiDataObservations = await updateObservations(status, encounter, observations);
-    // print('apiDataObservations $apiDataObservations');
+
     // // Preparing API request data
     // Map<String, dynamic> apiData = {
     //   'assessment': encounter,
     //   'observations': apiDataObservations
     // };
-    // print('apiData $apiData');
-    // print('before assessment');
-    // print(DateTime.now());
+
     // // Call API
     // var apiResponse = await AssessmentRepository().createAssessmentWithObservations(apiData);
     // //Could not get any response from API
@@ -1726,15 +1565,15 @@ class AssessmentController {
     // }
     // //API responded success with no error
     // else if (apiResponse['error'] != null && !apiResponse['error']) {
-    //   print('into success');
+
     //   // creating local assessment with synced status
     //   // response = await AssessmentRepositoryLocal().createLocalAssessment(assessmentId, data, true);
-    //   // print('response $response');
+
 
     //   if (status == 'complete') {
-    //     print('before health report');
+
     //     HealthReportController().generateReport(encounter['body']['patient_id']);
-    //     print('after health report');
+
     //   }
     //   // return response;
     // }

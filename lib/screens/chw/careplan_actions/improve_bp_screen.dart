@@ -80,13 +80,9 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
       });
     }
 
-    print('reports');
-    print(reports);
     reports.forEach((report) {
       var data = {};
-      print(report['result']);
       if (report['result']['assessments']['blood_pressure'] != null) {
-        print('hello');
         var parsedDate = DateTime.fromMillisecondsSinceEpoch(report['report_date']['_seconds'] * 1000);
         var date = DateFormat('MMM d, y').format(parsedDate);
         data = report['result']['assessments']['blood_pressure'];
@@ -94,8 +90,6 @@ class _ImproveBpControlState extends State<ImproveBpControlScreen> {
         bloodPressures.add(data);
       }
     });
-
-    print(bloodPressures);
 
   }
   getCount() {
@@ -392,7 +386,6 @@ class _ActionItemState extends State<ActionItem> {
   }
 
   isCounselling() {
-    print(widget.item['body']['title']);
     return widget.item['body']['title'].split(" ").contains('Counseling') || widget.item['body']['title'].split(" ").contains('Counselling');
   }
 
@@ -408,7 +401,6 @@ class _ActionItemState extends State<ActionItem> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        print(widget.item['body']);
         if (isCounselling()) {
           Navigator.of(context).pushNamed(CounsellingFrameworkScreen.path, arguments: { 'data': widget.item, 'parent': this});
           return;

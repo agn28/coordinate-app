@@ -68,7 +68,6 @@ getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
 
   if (locale == Locale('bn', 'BN')) {
-    print('true');
     return question['question_bn'];
   }
   return question['question'];
@@ -109,7 +108,6 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     Helpers().clearObservationItems();
     isLoading = false;
 
-    print(Language().getLanguage());
     nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
 
     prepareQuestions();
@@ -119,10 +117,8 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
   }
 
   getLanguage() async {
-    print('language s');
     final prefs = await SharedPreferences.getInstance();
 
-    print(Localizations.localeOf(context));
   }
 
 
@@ -164,7 +160,6 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
         _currentStep = _currentStep + 1;
         nextText = 'COMPLETE';
       } else if (_currentStep == 4) {
-        print("sttep4");
         checkData();
       } else {
         _currentStep = _currentStep + 1;
@@ -172,16 +167,13 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     });
   }
   deleteIncompleteAssessmentLocal() async {
-    print('deleteIncompleteAssessmentLocal');
     var encounters = await AssessmentController().getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: 'new ncd center assessment');
     if(encounters.isNotEmpty) {
       for (var encounter in encounters) {    
-        print('incencounter $encounter');
         var observations = await AssessmentController().getObservationsByAssessment(encounter);
         await AssessmentRepositoryLocal().deleteLocalAssessment(encounter['id']);
         if(observations.isNotEmpty){
           for (var observation in observations) {
-            print('incobs $observation');
             await ObservationRepositoryLocal().deleteLocalObservation(observation['id']);
           }
         }
@@ -330,7 +322,6 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
 
   createObservations() {
 
-    print('_currentStep $_currentStep');
     if (diastolicEditingController.text != '' && systolicEditingController.text != '' && pulseRateEditingController.text != "") {
     BloodPressure().addItem('left', int.parse(systolicEditingController.text), int.parse(diastolicEditingController.text), int.tryParse(pulseRateEditingController.text), null);
       var formData = {
@@ -515,24 +506,20 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
             Expanded(
               child: _currentStep < _mySteps().length || nextHide ? FlatButton(
                 onPressed: () {
-                    print(_currentStep);
                     if (_currentStep == 0) {
                       Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
-                      print(Questionnaire().qnItems);
                       AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
                     }
 
                     if (_currentStep == 1) {
                       Questionnaire().addNewMedicationNcd(
                           'medication', medicationAnswers);
-                      print(Questionnaire().qnItems);
                       AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
                     }
 
                     if (_currentStep == 2) {
                       Questionnaire().addNewRiskFactorsNcd(
                           'risk_factors', riskAnswers);
-                      print(Questionnaire().qnItems);
                       AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
                     }
 
@@ -578,7 +565,6 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
                                       createObservations();
                                       AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
                       
-                                      print('_currentStep $_currentStep');
                                       Navigator.of(context).pop(true);
                                     },
                                   ),
@@ -607,7 +593,6 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
                         'education': educationController.text,
                         'tribe': isTribe
                       };
-                      print('relativeAdditionalData $relativeAdditionalData');
                       Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
                       AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
 
@@ -615,7 +600,6 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
                       return;
                     }
                     if (_currentStep == 4) {
-                      print('hello');
                       if (randomBloodController.text == '' ||
                         fastingBloodController.text == '' ||
                         habfController.text == '' ||
@@ -663,7 +647,6 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
                                       createObservations();
                                       AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
                                       nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
-                                      print('_currentStep $_currentStep');
                                       Navigator.of(context).pop(true);
                                     },
                                   ),
@@ -741,12 +724,10 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
         );
       }
     );
-    print("NoYes : $response");
     return response;
   }
 
   Future _completeStep() async {
-    print('before missing popup');
     var hasMissingData = checkMissingData();
     var hasOptionalMissingData = checkOptionalMissingData();
 
@@ -761,7 +742,6 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
 
     var patient = Patient().getPatient();
 
-    print(patient['data']['age']);
     var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
     if(dataStatus == 'incomplete' || dataStatus == 'complete'){
       // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', dataStatus, '');
@@ -872,13 +852,11 @@ checkMissingData() {
   if (diastolicEditingController.text == '' ||
       systolicEditingController.text == '' ||
       pulseRateEditingController.text == '') {
-    print('blood pressure missing');
     return true;
   }
 
   if (heightEditingController.text == '' ||
       weightEditingController.text == '') {
-    print('body measurement missing');
     return true;
   }
 
@@ -886,7 +864,6 @@ checkMissingData() {
       fastingBloodController.text == '' &&
       habfController.text == '' &&
       hba1cController.text == '') {
-    print('blood sugar missing');
     return true;
   }
 
@@ -898,7 +875,6 @@ checkOptionalMissingData() {
     weightEditingController.text == '' ||
     waistEditingController.text == ''||
     hipEditingController.text == '') {
-    print('body measurement optional missing');
     return true;
   }
 
@@ -906,7 +882,6 @@ checkOptionalMissingData() {
       fastingBloodController.text == '' ||
       habfController.text == '' ||
       hba1cController.text == '') {
-    print('blood sugar optinal missing');
     return true;
   }
 
@@ -914,7 +889,6 @@ checkOptionalMissingData() {
     ldlController.text == '' ||
     hdlController.text == '' ||
     tgController.text == '') {
-    print('lipid profile optinal missing');
     return true;
   }
 
@@ -923,7 +897,6 @@ checkOptionalMissingData() {
     potassiumController.text == '' ||
     ketonesController.text == '' ||
     proteinController.text == '') {
-    print('additional optinal missing');
     return true;
   }
 
@@ -1033,7 +1006,6 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                                                                       option)];
 
                                                             var selectedOption = medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)];
-                                                            print('selectedOption $selectedOption');
                                                             medicationQuestions['items'].forEach((qtn) {
                                                               if(qtn['type'].contains('heart') || qtn['type'].contains('heart_bp_diabetes')) {
 
@@ -1041,21 +1013,14 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                                                                 medicalHistoryAnswers.forEach((ans) {
                                                                   if(ans == 'yes') {
                                                                     medicalHistoryAnswerYes = true;
-                                                                    print('medicalHistoryAnswerYes $ans');
                                                                   }
                                                                 });
                                                                 if (!medicalHistoryAnswerYes) {
                                                                   medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
-                                                                  print('exceptional if');
                                                                 }
                                                               } else if(qtn['type'].contains(question['type']) && selectedOption == 'no') {
                                                                 medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
-                                                                print('if');
                                                               }
-                                                              print(qtn['type']);
-                                                              print(question['type']);
-                                                              print('qtn $qtn');
-                                                              print('medicationAnswers ${medicationAnswers}');
                                                             });
                                                         });
                                                       },
@@ -1131,7 +1096,6 @@ class _MedicationState extends State<Medication> {
     if (medicationQuestion['type'].contains('medication')) {
       var mainType =
           medicationQuestion['type'].replaceAll('_regular_medication', '');
-      print('mainType ' + mainType);
       var matchedMedicationQuestion = medicationQuestions['items']
           .where((item) => item['type'] == mainType)
           .first;
@@ -1310,8 +1274,6 @@ class _MedicationState extends State<Medication> {
                                                         child: FlatButton(
                                                           onPressed: () {
                                                             setState(() {
-                                                              print(
-                                                                  medicalHistoryAnswers);
                                                               medicationAnswers[
                                                                   medicationQuestions[
                                                                           'items']
@@ -2982,8 +2944,6 @@ getDropdownOptionText(context, list, value) {
 
     if (list['options_bn'] != null) {
       var matchedIndex = list['options'].indexOf(value);
-      print('matchedIndex $matchedIndex');
-      print(list['options_bn'][matchedIndex]);
       return list['options_bn'][matchedIndex];
     }
     return StringUtils.capitalize(value);
@@ -3514,7 +3474,6 @@ class _FollowupState extends State<Followup> {
 
   addCounsellingGroupTitle(question) {
     if (question['group'] == 'unhealthy-diet') {
-      print('group');
       if (!dietTitleAdded) {
         dietTitleAdded = true;
         return Column(
@@ -3559,7 +3518,6 @@ class _FollowupState extends State<Followup> {
   }
 
   getNextVisitDate() {
-    print(selectedFollowup);
     ['1 week', '2 weeks', '1 month', '2 months', '3 months', '6 months', '1 year'];
     var date = '';
     if (selectedFollowup == '1 week') {
@@ -4414,18 +4372,13 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                         borderRadius: BorderRadius.circular(3)),
                                     child: FlatButton(
                                         onPressed: () async {
-                                          print("hello");
-
                                           widget.parent.setLoader(true);
 
                                           var patient = Patient().getPatient();
-
-                                          print(patient['data']['age']);
-                                          // return;
+// return;
                                           // var response = await AssessmentController().createOnlyAssessment('new patient questionnaire', '', '');
 
                                           widget.parent.setLoader(false);
-                                          print('successss');
                                           return;
 
                                           if (patient['data']['age'] != null &&
@@ -4449,8 +4402,6 @@ class _InitialCounsellingState extends State<InitialCounselling> {
 
                                           widget.parent.goToHome(false, null);
 
-                                          print('response');
-                                          // print(response);
                                         },
                                         materialTapTargetSize:
                                             MaterialTapTargetSize.shrinkWrap,

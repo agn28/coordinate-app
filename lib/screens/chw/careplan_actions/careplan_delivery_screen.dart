@@ -78,7 +78,6 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
     referrals = [];
     pendingReferral = null;
     carePlansEmpty = false;
-    print(widget.checkInState);
     
     _checkAvatar();
     _checkAuth();
@@ -201,9 +200,7 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
       setState(() {
         carePlans = data['data'];
       });
-      print('carePlans $carePlans');
       carePlans.forEach( (item) {
-        print('carePlanItem ${item}');
         DateFormat format = new DateFormat("E LLL d y");
         
         var todayDate = DateTime.now();
@@ -215,10 +212,6 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
           endDate = format.parse(item['body']['activityDuration']['end']);
           startDate = format.parse(item['body']['activityDuration']['start']);
         } catch(err) {
-          print(item['body']['activityDuration']['start']);
-          print(item['body']['activityDuration']['end']);
-          // print('failed: ' );
-          print(err);
           DateFormat newFormat = new DateFormat("yyyy-MM-dd");
           endDate = DateTime.parse(item['body']['activityDuration']['end']);
           startDate = DateTime.parse(item['body']['activityDuration']['start']);
@@ -226,23 +219,13 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
           
         }
 
-        print('endDate');
-        print(endDate);
-        print(startDate);
-
-
-        print(endDate);
-        print(todayDate.isBefore(endDate));
-        print(todayDate.isAfter(startDate));
-
+        
         // check due careplans
         if (item['body']['category'] != null && item['body']['category'] != 'investigation') {
           if (item['meta']['status'] == 'pending') {
             if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
               var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-              print(existedCp);
-              // print(item['body']['activityDuration']['start']);
-
+              
               if (existedCp.isEmpty) {
                 var items = [];
                 items.add(item);
@@ -261,12 +244,9 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
                 
               }
               cpUpdateCount = dueCarePlans.length;
-              print('cpUpdateCount ${cpUpdateCount}');
             } else if (todayDate.isBefore(startDate)) {
               var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-              // print(existedCp);
-              // print(item['body']['activityDuration']['start']);
-
+             
               if (existedCp.isEmpty) {
                 var items = [];
                 items.add(item);
@@ -282,9 +262,7 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
             }
           } else {
             var existedCp = completedCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-            // print(existedCp);
-            // print(item['body']['activityDuration']['start']);
-
+            
             if (existedCp.isEmpty) {
               var items = [];
               items.add(item);
@@ -406,9 +384,7 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
                         ),
                         child: FlatButton(
                           onPressed: () async {
-                            print('cpUpdateCountbt $cpUpdateCount');
                             if(cpUpdateCount > 0) {
-                              print('if');
                               //Navigator.of(context).pushNamed('/chwPatientSummary');
                               showDialog(
                                 context: context,
@@ -457,7 +433,6 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
                               );
                             }
                             else {
-                              print('else');
                               var result;
                               setState(() {
                                 isLoading = true;
@@ -602,7 +577,6 @@ class _GoalItemState extends State<GoalItem> {
   void initState() {
     super.initState();
     getStatus();
-    print('goalItem ${widget.item}');
   }
 
   getStatus() {
@@ -616,7 +590,6 @@ class _GoalItemState extends State<GoalItem> {
     });
   }
   setStatus(completedItem) {
-    print('goal set status');
     // print(completedItem);
 
     // set all the actions as completed
@@ -654,9 +627,7 @@ class _GoalItemState extends State<GoalItem> {
   getCompletedDate(goal) {
     var data = '';
     DateTime date;
-    print('asdknas');
     goal['items'].forEach((item) {
-      // print(item['body']['activityDuration']['end']);
       DateFormat format = new DateFormat("E LLL d y");
       var endDate;
         try {
@@ -664,7 +635,6 @@ class _GoalItemState extends State<GoalItem> {
         } catch(err) {
           endDate = DateTime.parse(item['body']['activityDuration']['end']);
         }
-      // print(endDate);
       date = endDate;
       if (date != null) {
         date  = endDate;
@@ -806,12 +776,10 @@ class _ActionItemState extends State<ActionItem> {
   }
 
   isCounselling() {
-    print(widget.item['body']['title']);
     return widget.item['body']['title'].split(" ").contains('Counseling') || widget.item['body']['title'].split(" ").contains('Counselling');
   }
 
   setStatus() {
-    print('action set status');
     setState(() {
       btnDisabled = false;
       status = 'completed';
@@ -825,9 +793,6 @@ class _ActionItemState extends State<ActionItem> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        print(widget.item['body']);
-        print('here');
-        print(isCounselling());
         // if (isCounselling()) {
           Navigator.of(context).pushNamed(CounsellingConfirmation.path, arguments: { 'data': widget.item, 'parent': this});
           // return;
@@ -889,7 +854,6 @@ class CareplanAction extends StatefulWidget {
 class _CareplanActionState extends State<CareplanAction> {
   @override
   void initState() {
-    print('careplanAction ${widget.carePlans}');
     super.initState();
     
   }

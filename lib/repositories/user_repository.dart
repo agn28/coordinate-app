@@ -23,7 +23,7 @@ class UserRepository {
       return json.decode(response.body);
       
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
 
@@ -38,11 +38,11 @@ class UserRepository {
         'Authorization': 'Bearer ' + token
       },
     ).then((response) {
-      print('getuser ${response.body}');
+
       return json.decode(response.body);
       
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
   

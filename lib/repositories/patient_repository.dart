@@ -26,8 +26,6 @@ class PatientRepository {
 
     var response;
 
-    print(apiUrl + 'patients');
-
     try {
       response = await client
       .post(apiUrl + 'patients',
@@ -42,15 +40,13 @@ class PatientRepository {
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
       return {'exception': true, 'type': 'poor_network', 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -72,19 +68,14 @@ class PatientRepository {
         },
       ).timeout(Duration(seconds: httpRequestTimeout));
 
-      print(response.body);
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
       return {'exception': true, 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -107,7 +98,7 @@ class PatientRepository {
     ).then((response) {
       return json.decode(response.body);
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
 
@@ -125,7 +116,7 @@ class PatientRepository {
     ).then((response) {
       return json.decode(response.body);
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
 
@@ -142,7 +133,7 @@ class PatientRepository {
     ).then((response) {
       return json.decode(response.body);
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
 
@@ -164,15 +155,14 @@ class PatientRepository {
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {'exception': true, 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -186,7 +176,6 @@ class PatientRepository {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     var response;
-    print(apiUrl + 'patients/chcp');
     try {
       response = await client
         .get(apiUrl + 'patients/chcp',
@@ -201,15 +190,11 @@ class PatientRepository {
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
       return {'exception': true, 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -236,15 +221,12 @@ class PatientRepository {
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
       return {'exception': true, 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -273,15 +255,12 @@ class PatientRepository {
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {'exception': true, 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -310,15 +289,14 @@ class PatientRepository {
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {'exception': true, 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -348,15 +326,14 @@ class PatientRepository {
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {'exception': true, 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -378,19 +355,17 @@ class PatientRepository {
         },
       ).timeout(Duration(seconds: httpRequestTimeout));
 
-      print(response.body);
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {'exception': true, 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -417,15 +392,13 @@ class PatientRepository {
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {'exception': true, 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -439,7 +412,7 @@ class PatientRepository {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     var response;
-    print('type ' + type);
+
     try {
       response = await client
         .get(apiUrl + 'patients?type=' + type,
@@ -454,15 +427,14 @@ class PatientRepository {
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {'exception': true, 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -476,8 +448,7 @@ class PatientRepository {
     var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
     var uuid = Patient().getPatient()['id'];
-    print('token');
-    print(data);
+
     await client
         .put(apiUrl + 'patients/' + uuid,
             headers: {
@@ -487,9 +458,9 @@ class PatientRepository {
             },
             body: json.encode(data))
         .then((response) {
-      print(response.body);
+
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
 
@@ -499,7 +470,6 @@ class PatientRepository {
 
     var response;
 
-    print(apiUrl + 'patients/' + patientId + '/sync-status');
 
     try {
       response = await client.put(apiUrl + 'patients/' + patientId + '/sync-status',
@@ -516,15 +486,14 @@ class PatientRepository {
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {'exception': true, 'type': 'poor_network', 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -546,11 +515,11 @@ class PatientRepository {
         'Authorization': 'Bearer ' + token
       },
     ).then((response) {
-      print('response ${json.decode(response.body)}');
+
       return json.decode(response.body);
 
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
 
@@ -560,7 +529,6 @@ class PatientRepository {
 
     var response;
 
-    print(apiUrl + 'patients/' + medId + '/dispense-medication/');
 
     try {
       response = await client.put(apiUrl + 'patients/' + medId + '/dispense-medication/',
@@ -577,15 +545,14 @@ class PatientRepository {
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {'exception': true, 'type': 'poor_network', 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,

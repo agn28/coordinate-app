@@ -76,7 +76,6 @@ getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
 
   if (locale == Locale('bn', 'BN')) {
-    print('true');
     return question['question_bn'];
   }
   return question['question'];
@@ -114,7 +113,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
   void initState() {
     super.initState();
     Helpers().clearObservationItems();
-    print("Edit incomplete full Followup chcp");
     _patient = Patient().getPatient();
     _checkAuth();
     clearForm();
@@ -135,7 +133,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
 
     // getCenters();
 
-    print(Language().getLanguage());
     nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
   }
 
@@ -148,24 +145,19 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
     //   isLoading = false;
     // });
 
-    print("CenterData: $centerData");
-
     if (centerData['error'] != null && !centerData['error']) {
       clinicTypes = centerData['data'];
       for(var center in clinicTypes) {
         if(isNotNull(_patient['data']['center']) && center['id'] == _patient['data']['center']['id']) {
-          print('selectedCenter $center');
           setState(() {
             selectedtype = center;
           });
         }
       }
     }
-    print("center: $clinicTypes");
   }
 
     getMedicationsDispense() async {
-      print("getMedications");
       dynamicMedications = [];
 
       if (Auth().isExpired()) {
@@ -179,7 +171,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
       // });
       var patientId = Patient().getPatient()['id'];
       var data = await PatientController().getMedicationsByPatient(patientId);
-      // print("medication: ${data['data']}");
       // setState(() {
       //   isLoading = false;
       // });
@@ -194,12 +185,9 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
       } else if (data['error'] != null && data['error']) {
         return;
       } else if (data['data'] != null) {
-        print('data ${data['data']}');
         var meds = await prepareDynamicMedications(data['data']);
-        print('meds $meds');
         setState(() {
           dynamicMedications = meds;
-          print("dynamicMedications: $dynamicMedications");
         });
 
       }
@@ -225,8 +213,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
       // dynamicMedicationAnswers.add('');
     }
     dynamicMedications = prepareMedication;
-    // print(dynamicMedicationTitles);
-    print(dynamicMedications);
     return dynamicMedications;
   }
 
@@ -257,7 +243,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
     encounter = await AssessmentRepositoryLocal().getIncompleteAssessmentsByPatient(patientId);
     if(encounter.isNotEmpty) {
       var lastEncounter = encounter.last;
-      print("lastEncounter: $lastEncounter");
       var parseData = jsonDecode(lastEncounter['data']);
       encounter = {
         'id': lastEncounter['id'],
@@ -267,9 +252,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
       observations = await AssessmentController().getObservationsByAssessment(encounter);
       referral = await ReferralController().getReferralByAssessment(encounter['id']);
     }
-    print("encounter: $encounter");
-    print("observations: $observations");
-    print("referral: $referral");
 
     populatePreviousAnswers();
     populateReferral();
@@ -282,7 +264,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
       clinicTypes = centerData['data'];
       for(var center in clinicTypes) {
         if(isNotNull(referral['body']) && isNotNull(referral['body']['location']) && isNotNull(referral['body']['location']['clinic_type']) && center['id'] == referral['body']['location']['clinic_type']['id']) {
-          print('selectedCenter $center');
           setState(() {
             selectedtype = center;
           });
@@ -340,18 +321,13 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
   // }
 
   populatePreviousAnswers() {
-    print("testest");
     observations.forEach((obs) {
       if (obs['body']['type'] == 'survey') {
-        print('into survey');
         var obsData = obs['body']['data'];
         if (obsData['name'] == 'medical_history') {
-          print('into medical history');
           var keys = obsData.keys.toList();
-          print(keys);
           keys.forEach((key) {
             if (obsData[key] != '') {
-              print('into keys');
               var matchedMhq = medicalHistoryQuestions['items']
                   .where((mhq) => mhq['key'] == key);
               if (matchedMhq.isNotEmpty) {
@@ -364,33 +340,24 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
             }
           });
         } else if (obsData['name'] == 'medication') {
-          print('into medical history');
           var keys = obsData.keys.toList();
-          print(keys);
           keys.forEach((key) {
             if (obsData[key] != '') {
-              print('into keys');
               var matchedMhq = medicationQuestions['items']
                   .where((mhq) => mhq['key'] == key);
               if (matchedMhq.isNotEmpty) {
                 matchedMhq = matchedMhq.first;
                 setState(() {
-                  print("medication: ${obsData[key]}");
                   medicationAnswers[medicationQuestions['items']
                       .indexOf(matchedMhq)] = obsData[key];
-                  print("medicationAnswers");
-                  //print(medicationAnswers[medicationQuestions['items'].indexOf(matchedMhq)]);
                 });
               }
             }
           });
         } else if (obsData['name'] == 'risk_factors') {
-          print('into risk factors');
           var keys = obsData.keys.toList();
-          print(keys);
           keys.forEach((key) {
             if (obsData[key] != '') {
-              print('into keys');
               var matchedMhq =
                   riskQuestions['items'].where((mhq) => mhq['key'] == key);
               if (matchedMhq.isNotEmpty) {
@@ -403,12 +370,9 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
             }
           });
         } else if (obsData['name'] == 'relative_problems') {
-          print('into relative problems');
           var keys = obsData.keys.toList();
-          print(keys);
           keys.forEach((key) {
             if (obsData[key] != '') {
-              print('into keys');
               var matchedMhq =
                   relativeQuestions['items'].where((mhq) => mhq['key'] == key);
               if (matchedMhq.isNotEmpty) {
@@ -442,21 +406,16 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
             }
           });
         } else if (obsData['name'] == 'counselling_provided') {
-          print('counselling provided');
           var keys = obsData.keys.toList();
-          print(keys);
           keys.forEach((key) {
             if (obsData[key] != '') {
-              print('into keys');
               var matchedPc = counsellingQuestions['items'].where((pc) => pc['key'] == key);
               if (matchedPc.isNotEmpty) {
                 matchedPc = matchedPc.first;
                 setState(() {
-                  print("counselling provied: ${obsData[key]}");
                  
                   counsellingAnswers[counsellingQuestions['items']
                       .indexOf(matchedPc)] = obsData[key];
-                  print("counsellingAnswers");
                   
                 });
               }
@@ -465,142 +424,97 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
         }
       }
       if (obs['body']['type'] == 'blood_pressure') {
-        print('into blood pressure');
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
-          print('into obsData');
           var systolicText = obsData['systolic'];
           var diastolicText = obsData['diastolic'];
           var pulseRateText = obsData['pulse_rate'];
           systolicEditingController.text = '${obsData['systolic']}';
           pulseRateEditingController.text = '${obsData['pulse_rate']}';
           diastolicEditingController.text = '${obsData['diastolic']}';
-          print(systolicText);
-          print(diastolicText);
-          print(pulseRateText);
         }
       }
       if (obs['body']['type'] == 'body_measurement') {
-        print('into body measurement');
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
-          print(obsData['name']);
           if (obsData['name'] == 'height' && obsData['value'] != '') {
-            print('into height');
             var heightText = obsData['value'];
             heightEditingController.text = '${obsData['value']}';
-            print(heightText);
           }
           if (obsData['name'] == 'weight' && obsData['value'] != '') {
-            print('into weight');
             var weightText = obsData['value'];
             weightEditingController.text = '${obsData['value']}';
-            print(weightText);
           }
           if (obsData['name'] == 'waist' && obsData['value'] != '') {
-            print('into waist');
             var waistText = obsData['value'];
             waistEditingController.text = '${obsData['value']}';
-            print(waistText);
           }
           if (obsData['name'] == 'hip' && obsData['value'] != '') {
-            print('into hip');
             var hipText = obsData['value'];
             hipEditingController.text = '${obsData['value']}';
-            print(hipText);
           }
           if (obsData['name'] == 'bmi' && obsData['value'] != '') {
-            print('into bmi');
             var bmiText = obsData['value'];
             bmiEditingController.text = '${obsData['value']}';
-            print('bmiText: $bmiText');
           }
         }
       }
       if (obs['body']['type'] == 'blood_test') {
-        print('into blood test');
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
-          print(obsData['name']);
           if (obsData['name'] == 'creatinine' && obsData['value'] != '') {
-            print('into creatinine');
             var creatinineText = obsData['value'];
             creatinineController.text = '${obsData['value']}';
             selectedCreatinineUnit = obsData['unit'];
-            print(creatinineText);
           } else if (obsData['name'] == 'a1c' && obsData['value'] != '') {
-            print('into a1c');
             var hba1cText = obsData['value'];
             hba1cController.text = '${obsData['value']}';
             selectedHba1cUnit = obsData['unit'];
-            print(hba1cText);
           } else if (obsData['name'] == 'total_cholesterol' &&
               obsData['value'] != '') {
-            print('into total_cholesterol');
             var totalCholesterolText = obsData['value'];
             cholesterolController.text = '${obsData['value']}';
             selectedCholesterolUnit = obsData['unit'];
-            print(totalCholesterolText);
           } else if (obsData['name'] == 'potassium' && obsData['value'] != '') {
-            print('into potassium');
             var potassiumText = obsData['value'];
             potassiumController.text = '${obsData['value']}';
             selectedPotassiumUnit = obsData['unit'];
-            print(potassiumText);
           } else if (obsData['name'] == 'ldl' && obsData['value'] != '') {
-            print('into ldl');
             var ldlText = obsData['value'];
             ldlController.text = '${obsData['value']}';
             selectedLdlUnit = obsData['unit'];
-            print(ldlText);
           } else if (obsData['name'] == 'blood_sugar' && obsData['type'] == null && obsData['value'] != '') {
-            print('into blood_sugar');
             var bloodSugarText = obsData['value'];
             randomBloodController.text = '${obsData['value']}';
             selectedRandomBloodUnit = obsData['unit'];
-            print(bloodSugarText);
           } else if ((obsData['name'] == 'blood_glucose' || obsData['name'] == 'blood_sugar') && (obsData['type'] != null && obsData['type'] == 'fasting') && obsData['value'] != '') {
-            print('into blood_glucose');
             var bloodGlucoseText = obsData['value'];
             fastingBloodController.text = '${obsData['value']}';
             selectedFastingBloodUnit = obsData['unit'];
-            print(bloodGlucoseText);
           } else if (obsData['name'] == 'hdl' && obsData['value'] != '') {
-            print('into hdl');
             var hdlText = obsData['value'];
             hdlController.text = '${obsData['value']}';
             selectedHdlUnit = obsData['unit'];
-            print(hdlText);
           } else if (obsData['name'] == 'ketones' && obsData['value'] != '') {
-            print('into ketones');
             var ketonesText = obsData['value'];
             ketonesController.text = '${obsData['value']}';
             selectedKetonesUnit = obsData['unit'];
-            print(ketonesText);
           } else if (obsData['name'] == 'protein' && obsData['value'] != '') {
-            print('into protein');
             var proteinText = obsData['value'];
             proteinController.text = '${obsData['value']}';
             selectedProteinUnit = obsData['unit'];
-            print(proteinText);
           } else if (obsData['name'] == 'sodium' && obsData['value'] != '') {
-            print('into sodium');
             var sodiumText = obsData['value'];
             sodiumController.text = '${obsData['value']}';
             selectedSodiumUnit = obsData['unit'];
-            print(sodiumText);
           } else if (obsData['name'] == 'triglycerides' && obsData['value'] != '') {
-            print('into triglycerides');
             var triglyceridesText = obsData['value'];
             tgController.text = '${obsData['value']}';
             selectedTgUnit = obsData['unit'];
-            print(triglyceridesText);
           } else if (obsData['name'] == '2habf' && obsData['value'] != '') {
-            print('into 2habf');
             var habfText = obsData['value'];
             habfController.text = '${obsData['value']}';
             selectedHabfUnit = obsData['unit'];
-            print(habfText);
           }
         }
       }
@@ -717,7 +631,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
   }
 
   createObservations() {
-    print('_currentStep $_currentStep');
     if (diastolicEditingController.text != '' &&
         systolicEditingController.text != '' &&
         pulseRateEditingController.text != '') {
@@ -743,8 +656,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
           .addItem('height', heightEditingController.text, 'cm', '', '');
     }
     if (weightEditingController.text != '') {
-      print('weightEditingController.text');
-      print(weightEditingController.text);
       BodyMeasurement()
           .addItem('weight', weightEditingController.text, 'kg', '', '');
     }
@@ -760,7 +671,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
     }
 
     BodyMeasurement().addBmItem();
-    print('BodyMeasurement().bmItems ${BodyMeasurement().bmItems}');
 
     if (randomBloodController.text != '') {
       BloodTest().addItem('blood_sugar', randomBloodController.text,
@@ -822,13 +732,11 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
 
   void jumpToEnd(){
     final endPosition = scrollController.position.maxScrollExtent;
-    print('end position: $endPosition');
     scrollController.jumpTo(endPosition);
   }
 
   void jumpToStart(){
     final startPosition = scrollController.position.minScrollExtent;
-    print('start position: $startPosition');
     scrollController.jumpTo(startPosition);
   }
 
@@ -948,7 +856,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                   child: _currentStep < _mySteps().length || nextHide
                       ? FlatButton(
                           onPressed: () async {
-                              print('_currentStep $_currentStep');
                               if (_currentStep == 0) {
                                 Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
                                 AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
@@ -963,7 +870,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                               if (_currentStep == 2) {
                                 Questionnaire().addNewRiskFactorsNcd(
                                     'risk_factors', riskAnswers);
-                                print(Questionnaire().qnItems);
                                 AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
 
                               }
@@ -1032,9 +938,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                 return;
                               }
                               if (_currentStep == 9) {
-                                print('cpUpdateCountbt $cpUpdateCount');
                                 if(cpUpdateCount > 0) {
-                                  print('if');
                                   //Navigator.of(context).pushNamed('/chwPatientSummary');
                                   showDialog(
                                     context: context,
@@ -1086,7 +990,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                   );
                                 }
                                 else {
-                                  print('else');
                                   // var result;
                                   // setState(() {
                                   //   isLoading = true;
@@ -1137,7 +1040,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                   'education': educationController.text,
                                   'tribe': isTribe
                                 };
-                                print('relativeAdditionalData $relativeAdditionalData');
                                 Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
                                 AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                                 setState(() {
@@ -1146,7 +1048,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                 return;
                               }
                               if (_currentStep == 4) {
-                                print('hello');
                                 if (randomBloodController.text == '' ||
                                   fastingBloodController.text == '' ||
                                   habfController.text == '' ||
@@ -1274,7 +1175,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
             ],
           );
         });
-    print("NoYes : $response");
     return response;
   }
 
@@ -1282,8 +1182,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
   _getAuthData() async {
     var data = await Auth().getStorageAuth();
 
-    print('role');
-    print(data['role']);
     setState(() {
       role = data['role'];
     });
@@ -1295,7 +1193,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
       referralData['body']['reason'] = selectedReason;
       referralData['body']['location']['clinic_type'] = selectedtype;
       referralData['body']['location']['clinic_name'] = clinicNameController.text;
-      print('referralData: $referralData');
     } else if (refer) {
       var referralType;
       if(role == 'chw')
@@ -1374,7 +1271,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
   }
 
   Future _completeStep() async {
-    print('before missing popup');
 
     var hasMissingData = checkMissingData();
     var hasOptionalMissingData = checkOptionalMissingData();
@@ -1390,7 +1286,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
 
     var patient = Patient().getPatient();
 
-    print(patient['data']['age']);
     var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
     if(hasIncompleteChcpEncounter) {
       encounterData = {
@@ -1517,13 +1412,11 @@ checkMissingData() {
   if (diastolicEditingController.text == '' ||
       systolicEditingController.text == '' ||
       pulseRateEditingController.text == '') {
-    print('blood pressure missing');
     return true;
   }
 
   if (heightEditingController.text == '' ||
       weightEditingController.text == '') {
-    print('body measurement missing');
     return true;
   }
 
@@ -1531,7 +1424,6 @@ checkMissingData() {
       fastingBloodController.text == '' &&
       habfController.text == '' &&
       hba1cController.text == '') {
-    print('blood sugar missing');
     return true;
   }
 
@@ -1542,7 +1434,6 @@ checkOptionalMissingData() {
     weightEditingController.text == '' ||
     waistEditingController.text == ''||
     hipEditingController.text == '') {
-    print('body measurement optional missing');
     return true;
   }
 
@@ -1550,7 +1441,6 @@ checkOptionalMissingData() {
       fastingBloodController.text == '' ||
       habfController.text == '' ||
       hba1cController.text == '') {
-    print('blood sugar optinal missing');
     return true;
   }
 
@@ -1558,7 +1448,6 @@ checkOptionalMissingData() {
     ldlController.text == '' ||
     hdlController.text == '' ||
     tgController.text == '') {
-    print('lipid profile optinal missing');
     return true;
   }
 
@@ -1567,7 +1456,6 @@ checkOptionalMissingData() {
     potassiumController.text == '' ||
     ketonesController.text == '' ||
     proteinController.text == '') {
-    print('additional optinal missing');
     return true;
   }
 
@@ -1675,7 +1563,6 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                                                                   .indexOf(
                                                                       option)];
                                                           var selectedOption = medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)];
-                                                          print('selectedOption $selectedOption');
                                                           medicationQuestions['items'].forEach((qtn) {
                                                             if(qtn['type'].contains('heart') || qtn['type'].contains('heart_bp_diabetes')) {
                                                               
@@ -1683,21 +1570,14 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                                                               medicalHistoryAnswers.forEach((ans) {
                                                                 if(ans == 'yes') {
                                                                   medicalHistoryAnswerYes = true;
-                                                                  print('medicalHistoryAnswerYes $ans');
                                                                 }
                                                               });
                                                               if (!medicalHistoryAnswerYes) {
                                                                 medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
-                                                                print('exceptional if'); 
                                                               }
                                                             } else if(qtn['type'].contains(question['type']) && selectedOption == 'no') {
                                                               medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
-                                                              print('if');
                                                             }
-                                                            print(qtn['type']);
-                                                            print(question['type']);
-                                                            print('qtn $qtn');
-                                                            print('medicationAnswers ${medicationAnswers}');
                                                           });
                                                         });
                                                       },
@@ -1773,14 +1653,11 @@ class _MedicationState extends State<Medication> {
     if (medicationQuestion['type'].contains('medication')) {
       var mainType =
           medicationQuestion['type'].replaceAll('_regular_medication', '');
-      print('mainType ' + mainType);
       var matchedMedicationQuestion = medicationQuestions['items']
           .where((item) => item['type'] == mainType)
           .first;
-      print("matchedMedicationQuestion: $matchedMedicationQuestion");
       var medicationAnswer = medicationAnswers[
           medicationQuestions['items'].indexOf(matchedMedicationQuestion)];
-      print("medicationAnswer: $medicationAnswer");
       if (medicationAnswer == 'yes') {
         return true;
       }
@@ -1951,8 +1828,6 @@ class _MedicationState extends State<Medication> {
                                                         child: FlatButton(
                                                           onPressed: () {
                                                             setState(() {
-                                                              print(
-                                                                  medicalHistoryAnswers);
                                                               medicationAnswers[
                                                                   medicationQuestions[
                                                                           'items']
@@ -3632,8 +3507,6 @@ getDropdownOptionText(context, list, value) {
 
     if (list['options_bn'] != null) {
       var matchedIndex = list['options'].indexOf(value);
-      print('matchedIndex $matchedIndex');
-      print(list['options_bn'][matchedIndex]);
       return list['options_bn'][matchedIndex];
     }
     return StringUtils.capitalize(value);
@@ -4163,7 +4036,6 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
     super.initState();
     _patient = Patient().getPatient();
 
-    print('prevScreen ${widget.prevScreen}');
     dueCarePlans = [];
     completedCarePlans = [];
     upcomingCarePlans = [];
@@ -4183,18 +4055,12 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
     var riskQuestions = Questionnaire().questions['new_patient']['risk_factors'];
     // print('riskQuestions $riskQuestions');
     riskQuestions['items'].forEach((item) {
-       print('risk factor: ${item} \n');
       if(item['type'] == 'smoking'){
-       print('riskAnswers: ${riskAnswers} \n');
-        smokingAnswer = riskAnswers[riskQuestions['items'].indexOf(item)];
+       smokingAnswer = riskAnswers[riskQuestions['items'].indexOf(item)];
         // riskAnswers[0]
-        print('riskAnswers: answer: $smokingAnswer');
-        print('SMOKING $smokingAnswer');
       }
       if(item['type'] == 'smokeless-tobacco'){
         smokelessTobaccoAnswer = riskAnswers[riskQuestions['items'].indexOf(item)];
-        print('riskAnswers: smokelessTobaccoAnswer: $smokelessTobaccoAnswer');
-        print('SMOKEless tobacco $smokelessTobaccoAnswer');
       }
     });
 
@@ -4216,7 +4082,6 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
     // });
     lastAssessment = await AssessmentController().getLastAssessmentByPatient();
 
-    print('lastAssessment $lastAssessment');
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
       if(lastAssessment['data']['body']['follow_up_info'] != null && lastAssessment['data']['body']['follow_up_info'].isNotEmpty){
         var followUpInfoChw = lastAssessment['data']['body']['follow_up_info'].where((info)=> info['type'] == 'chw');
@@ -4238,7 +4103,6 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
       setState(() {
         lastEncounterType = lastAssessment['data']['body']['type'];
         lastEncounterDate = getDate(lastAssessment['data']['meta']['created_at']);
-        print('lastEncounterDate ${lastEncounterDate}');
       });
     }
     // setState(() {
@@ -4331,7 +4195,6 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
     var date = '';
 
     if (encounters.length > 0) {
-    print('encounters ${encounters[0]}');
       var lastEncounter = encounters[0];
       date = lastEncounter['data']['next_visit_date'] ?? '';
     }
@@ -4347,11 +4210,9 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
     return WillPopScope(
       onWillPop: () async {
       if(widget.prevScreen == 'followup') {
-          print('WillPopScope if');
           Navigator.of(context).pushNamed( '/chwNavigation', arguments: 1);
           return true;
         } else {
-          print('WillPopScope else');
           Navigator.pop(context);
           return true;
         }
@@ -4729,7 +4590,6 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
     // }
 
     if (counsellingQuestion['type'] == 'medical-adherence') {
-      print('medicationAdh $medicationAnswers');
       if (medicationAnswers[1] == 'no' || medicationAnswers[3] == 'no' ||medicationAnswers[5] == 'no' || medicationAnswers[7] == 'no') {
         return true;
       }
@@ -5242,9 +5102,7 @@ class _MedicationsDispenseState extends State<MedicationsDispense> {
                                     color: Colors.blue[800],
                                     textColor: Colors.white, 
                                     onPressed: () async {
-                                      print('id ${item['medId']}');
                                       var response = await PatientController().dispenseMedicationByPatient(item['medId'], textEditingControllers[item['medId']].text);
-                                      print('response $response');
                                       if(!response['error']) {
                                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                           content: Text(AppLocalizations.of(context).translate('dataSaved')),
@@ -5338,7 +5196,6 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
     referrals = [];
     pendingReferral = null;
     carePlansEmpty = false;
-    print(widget.checkInState);
     
     _checkAvatar();
     _checkAuth();
@@ -5438,9 +5295,7 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
       setState(() {
         carePlans = data['data'];
       });
-      print('carePlans $carePlans');
       carePlans.forEach( (item) {
-        print('carePlanItem ${item}');
         DateFormat format = new DateFormat("E LLL d y");
         
         var todayDate = DateTime.now();
@@ -5452,10 +5307,6 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
           endDate = format.parse(item['body']['activityDuration']['end']);
           startDate = format.parse(item['body']['activityDuration']['start']);
         } catch(err) {
-          print(item['body']['activityDuration']['start']);
-          print(item['body']['activityDuration']['end']);
-          // print('failed: ' );
-          print(err);
           DateFormat newFormat = new DateFormat("yyyy-MM-dd");
           endDate = DateTime.parse(item['body']['activityDuration']['end']);
           startDate = DateTime.parse(item['body']['activityDuration']['start']);
@@ -5463,21 +5314,11 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
           
         }
 
-        print('endDate');
-        print(endDate);
-        print(startDate);
-
-
-        print(endDate);
-        print(todayDate.isBefore(endDate));
-        print(todayDate.isAfter(startDate));
-
         // check due careplans
         if (item['body']['category'] != null && item['body']['category'] != 'investigation') {
           if (item['meta']['status'] == 'pending') {
             if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
               var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-              print(existedCp);
               // print(item['body']['activityDuration']['start']);
 
               if (existedCp.isEmpty) {
@@ -5498,7 +5339,6 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
                 
               }
               cpUpdateCount = dueCarePlans.length;
-              print('cpUpdateCount ${cpUpdateCount}');
             } else if (todayDate.isBefore(startDate)) {
               var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
 
@@ -5624,7 +5464,6 @@ class CareplanAction extends StatefulWidget {
 class _CareplanActionState extends State<CareplanAction> {
   @override
   void initState() {
-    print('careplanAction ${widget.carePlans}');
     super.initState();
     
   }
@@ -5707,7 +5546,6 @@ class _GoalItemState extends State<GoalItem> {
   void initState() {
     super.initState();
     getStatus();
-    print('goalItem ${widget.item}');
   }
 
   getStatus() {
@@ -5721,14 +5559,13 @@ class _GoalItemState extends State<GoalItem> {
     });
   }
   setStatus(completedItem) {
-    print('goal set status');
+   
     
   }
   
   getCompletedDate(goal) {
     var data = '';
     DateTime date;
-    print('asdknas');
     goal['items'].forEach((item) {
       DateFormat format = new DateFormat("E LLL d y");
       var endDate;
@@ -5835,12 +5672,10 @@ class _ActionItemState extends State<ActionItem> {
   }
 
   isCounselling() {
-    print(widget.item['body']['title']);
     return widget.item['body']['title'].split(" ").contains('Counseling') || widget.item['body']['title'].split(" ").contains('Counselling');
   }
 
   setStatus() {
-    print('action set status');
     setState(() {
       btnDisabled = false;
       status = 'completed';
@@ -5854,9 +5689,6 @@ class _ActionItemState extends State<ActionItem> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        print(widget.item['body']);
-        print('here');
-        print(isCounselling());
         // if (isCounselling()) {
           Navigator.of(context).pushNamed(ChcpCounsellingConfirmation.path, arguments: { 'data': widget.item, 'parent': this});
           // return;
@@ -5933,7 +5765,6 @@ class _CreateReferState extends State<CreateRefer> {
   void initState() {
     super.initState();
     // _patient = Patient().getPatient();
-    print(Language().getLanguage());
     // _getAuthData();
     // getCenters();
     referralReasons = referralReasonOptions['options'];
@@ -6107,7 +5938,6 @@ class _CreateReferState extends State<CreateRefer> {
                             onChanged: (value) {
                               setState(() {
                                 selectedtype = value;
-                                print('selectedtype $selectedtype');
                               });
                             },
                           ),

@@ -55,7 +55,6 @@ class _ActionsSwipperState extends State<ActionsSwipperScreen> {
     super.initState();
     videoUrl = '';
 
-    print(widget.carePlan['body']['title']);
     _getVideoUrl();
     // _getFormUrl();
     createPages();
@@ -92,7 +91,6 @@ class _ActionsSwipperState extends State<ActionsSwipperScreen> {
   }
 
   createPages() {
-    print(widget.carePlan['body']['id']);
     if (widget.carePlan['body']['id'] == 'a4') {
       setState(() {
         pages.add(

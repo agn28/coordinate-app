@@ -41,7 +41,6 @@ class _ChcpShortFollowupFeelingScreenState extends State<ChcpShortFollowupFeelin
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
-    print('chcp short followup feeling screen');
 
   }
 

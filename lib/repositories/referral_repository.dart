@@ -14,13 +14,12 @@ class ReferralRepository {
     ApiInterceptor(),
   ]);
   create(data) async {
-    print('referral called');
+
     var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
 
     var response;
-    print('referralData');
-    print(jsonEncode(data));
+
     try {
       response = await client
           .post(apiUrl + 'followups',
@@ -35,19 +34,18 @@ class ReferralRepository {
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {
         'exception': true,
         'type': 'poor_network',
         'message': 'Slow internet'
       };
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -58,7 +56,7 @@ class ReferralRepository {
   }
 
   update(data) async {
-    print('folowup called');
+
     var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
     return await client
@@ -72,7 +70,7 @@ class ReferralRepository {
         .then((response) {
       return json.decode(response.body);
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
 
@@ -87,10 +85,10 @@ class ReferralRepository {
         'Authorization': 'Bearer ' + token
       },
     ).then((response) {
-      print(json.decode(response.body));
+
       return json.decode(response.body);
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
 
@@ -99,8 +97,6 @@ class ReferralRepository {
     var token = authData['accessToken'];
 
     var response;
-
-    print(apiUrl + 'followups/' + id);
 
     try {
       response = await client.get(apiUrl + 'followups/' + id, headers: {
@@ -112,19 +108,16 @@ class ReferralRepository {
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
       return {
         'exception': true,
         'type': 'poor_network',
         'message': 'Slow internet'
       };
     } on Error catch (err) {
-      print('test error');
-      print(err);
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -153,19 +146,18 @@ class ReferralRepository {
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {
         'exception': true,
         'type': 'poor_network',
         'message': 'Slow internet'
       };
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,

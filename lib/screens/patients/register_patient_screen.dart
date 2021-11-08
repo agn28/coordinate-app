@@ -149,9 +149,6 @@ class _RegisterPatientState extends State<RegisterPatient> {
   populateLocation() async {
     var data = await Auth().getStorageAuth();
 
-    print('set address');
-    print(districts);
-    print(data['address']);
     setState(() {
       filteredUpazilas = [];
       selectedDistrict = {};
@@ -186,13 +183,11 @@ class _RegisterPatientState extends State<RegisterPatient> {
       isLoading = false;
     });
 
-   print("CenterData: $centerData");
-
+   
     if (centerData['error'] != null && !centerData['error']) {
       centersList = centerData['data'];
     }
-    print("center: $centersList");
-
+   
   }
 
 
@@ -222,7 +217,6 @@ class _RegisterPatientState extends State<RegisterPatient> {
     });
 
     populateLocation();
-    print(districts);
   }
 
   _checkAuth() async {
@@ -656,7 +650,6 @@ class _PatientDetailsState extends State<PatientDetails> {
       upazilaController.text = '';
       filteredUpazilas = district['thanas'];
     });
-    print(allUpazilas);
   }
 
   Widget _customPopupItemBuilderExample2(
@@ -809,8 +802,6 @@ class _PatientDetailsState extends State<PatientDetails> {
                                 onChanged: (value) {
                                   setState(() {
                                     selectedGuardian = value;
-                                    print(
-                                        "selectedGuardian: $selectedGuardian");
                                   });
                                 },
                               ),
@@ -1219,7 +1210,6 @@ class _PatientDetailsState extends State<PatientDetails> {
                       setState(() {
                         selectedCenters = value;
                       });
-                      print("centerssss: $value");
                     },
                   ),
                 ),
@@ -1330,17 +1320,12 @@ class _AddPhotoState extends State<AddPhoto> {
     if (_image != null) {
       String filePath =
           'images/patients/${firstNameController.text}_${DateTime.now().millisecondsSinceEpoch}.jpg';
-      print('file path');
-      print(filePath);
-
       setState(() {
         _uploadTask = _storage.ref().child(filePath).putFile(_image);
       });
       await _uploadTask.onComplete;
       if (_uploadTask.isComplete) {
         var url = await _storage.ref().child(filePath).getDownloadURL();
-        print('url');
-        print(url);
         setState(() {
           uploadedImageUrl = url;
         });
@@ -1512,7 +1497,6 @@ class _AddPhotoState extends State<AddPhoto> {
             ),
             GestureDetector(
               onTap: () async {
-                print(_currentStep);
                 widget.parent.nextStep();
               },
               child: Container(
@@ -1558,7 +1542,6 @@ class _ViewSummaryState extends State<ViewSummary> {
   initState() {
     super.initState();
     _isRegisterButtonDisabled = false;
-    print('parent ${widget.parent}');
     creationDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
   }
 
@@ -1567,17 +1550,12 @@ class _ViewSummaryState extends State<ViewSummary> {
     if (_image != null) {
       String filePath =
           'images/patients/${firstNameController.text}_${DateTime.now().millisecondsSinceEpoch}.jpg';
-      print('file path');
-      print(filePath);
-
       setState(() {
         _uploadTask = _storage.ref().child(filePath).putFile(_image);
       });
       await _uploadTask.onComplete;
       if (_uploadTask.isComplete) {
         var url = await _storage.ref().child(filePath).getDownloadURL();
-        print('url');
-        print(url);
         setState(() {
           uploadedImageUrl = url;
         });
@@ -1617,22 +1595,17 @@ class _ViewSummaryState extends State<ViewSummary> {
   }
   
   completeRegistration() async {
-    print('formd');
     setState(() {
       isLoading = true;
       _isRegisterButtonDisabled = true;
     });
     var url = await uploadImage();
     var formData = _RegisterPatientState()._prepareFormData();
-    print('formdata $formData');
     var response = isEditState != null
       ? await PatientController().update(formData, false)
       : await PatientController().createOffline(context, formData);
-    print('isEditState $isEditState ');
-    print(response);
     if (response != null) {
       if (response == 'success') {
-        print('into success');
         _RegisterPatientState()._clearForm();
         Navigator.of(context).pushReplacementNamed(RegisterPatientSuccessScreen.path, arguments: isEditState);
       } else {

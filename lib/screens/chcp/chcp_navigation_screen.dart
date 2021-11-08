@@ -32,7 +32,6 @@ class _ChcpNavigationState extends State<ChcpNavigationScreen> {
   int _currentIndex = 0;
   @override
   initState() {
-    print('chcp navigation screen');
     _getAuthData();
     super.initState();
     setPage();
@@ -69,7 +68,7 @@ class _ChcpNavigationState extends State<ChcpNavigationScreen> {
 
     return WillPopScope(
       onWillPop: () async {
-        print('WillPopScope here');
+
         Navigator.pushNamed(context, '/chcpHome');
         return true;
       },

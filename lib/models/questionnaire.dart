@@ -709,12 +709,10 @@ class Questionnaire {
     // _questionnaireItems = [];
     // print(data['body']['data']['url']);
 
-    print(_questionnaireItems.where((item) => item['body']['data']['url'] == url).isEmpty);
     if (_questionnaireItems.where((item) => item['body']['data']['url'] == url).isEmpty) {
       _questionnaireItems.add(data);
     }
     
-    print(_questionnaireItems);
     return 'success';
   }
 
@@ -739,7 +737,6 @@ class Questionnaire {
 
     _questionnaireItems.add(data);
     
-    print(_questionnaireItems);
     return 'success';
   }
 
@@ -917,8 +914,7 @@ class Questionnaire {
     if (!updated) {
       _questionnaireItems.add(_prepareNewCounsellingData(questions, answers, type));
     }
-    print(_prepareNewCounsellingData(questions, answers, type));
-
+    
     return 'success';
   }
 
@@ -938,8 +934,7 @@ class Questionnaire {
     if (!updated) {
       _questionnaireItems.add(preparedData);
     }
-    print(preparedData);
-
+    
     return 'success';
   }
 
@@ -1221,7 +1216,6 @@ class Questionnaire {
     }
     prepareData['name'] = type;
 
-    print('prepareData $prepareData');
     var data = {
       "meta": {
         "performed_by": Auth().getAuth()['uid'],

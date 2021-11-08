@@ -15,8 +15,7 @@ class ConceptManagerRepositoryLocal {
       var concept = await db.rawQuery(sql);
       return concept.isNotEmpty ? concept.first : null;
     } catch (error) {
-      print('error');
-      print(error);
+
       return;
     }
   }

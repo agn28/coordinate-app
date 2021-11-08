@@ -58,7 +58,6 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
   @override
   initState() {
     super.initState();
-    print('chcp patient list');
     setState(() {
       searchController.text = '';
     });
@@ -131,7 +130,6 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
             } return false; 
           }, orElse: () => false);
           
-          print('hasEncounter $hasEncounter');
           if (hasEncounter.runtimeType == bool && !hasEncounter) {
             localPatient['data']['incomplete_encounter'] = false;
             localPatient['data']['chcp_encounter_status'] = '';
@@ -149,7 +147,6 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                 //   localPatient['data']['incomplete_encounter'] = true;
                 //   return true;
                 // }
-                print('assess $assessment');
                 if(assessment['data']['status'] == 'incomplete' && assessment['local_status'] == 'incomplete') {
                   localPatient['data']['incomplete_encounter'] = true;
                   if(assessment['data']['type'] == 'community clinic assessment' || assessment['data']['type'] == 'community clinic followup') {
@@ -164,7 +161,6 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                 } return false; 
               } return false; 
             }, orElse: () => false);
-            print('ccPatient $localPatient');
             var localpatientdata = {
               'id': localPatient['id'],
               'data': localPatient['data'],
@@ -264,7 +260,6 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        print('WillPopScope here');
         Navigator.pushNamed(context, '/chcpHome');
         return true;
       },
@@ -880,9 +875,6 @@ class _FiltersDialogState extends State<FiltersDialog> {
   populateUpazilas() async {
     var data = await Auth().getStorageAuth();
 
-    print('set address');
-    // print(districts);
-    print(data['address']);
     setState(() {
       filteredUpazilas = [];
       selectedDistrict = {};
@@ -900,7 +892,6 @@ class _FiltersDialogState extends State<FiltersDialog> {
             // selectedUpazila = authUserUpazila.first;
             // selectedUpazila = {};
             filteredUpazilas = selectedDistrict['thanas'];
-            print('filteredUpazilas $filteredUpazilas');
           } else {
             selectedUpazila = {};
           }
@@ -929,16 +920,12 @@ class _FiltersDialogState extends State<FiltersDialog> {
     await this.widget.parent.getLivePatients();
 
     allPatients.forEach((patient) {
-      print('allPatients $patient');
     });
     if (ageFromController.text != '' || ageToController.text != '') {
-      print(ageFromController.text);
-      print(ageToController.text);
       var filteredPatients = [];
       var startingAge = ageFromController.text != '' ? int.parse(ageFromController.text) : 0 ;
       var endingAge = ageToController.text != '' ? int.parse(ageToController.text) : 150 ;
       filteredPatients =  allPatients.where((item) => item['data']['age'] >= startingAge && item['data']['age'] <= endingAge).toList();
-      print('filteredPatients $filteredPatients');
       this.widget.parent.setState(() => {
         allPatients = filteredPatients,
         patients = allPatients
@@ -946,10 +933,8 @@ class _FiltersDialogState extends State<FiltersDialog> {
     }
 
     if (selectedUpazila.isNotEmpty) {
-      print(selectedUpazila);
       var filteredPatients = [];
       filteredPatients =  allPatients.where((item) => item['data']['address']['upazila'] == selectedUpazila['name']).toList();
-      print('filteredPatients $filteredPatients');
       this.widget.parent.setState(() => {
         allPatients = filteredPatients,
         patients = allPatients
@@ -957,10 +942,8 @@ class _FiltersDialogState extends State<FiltersDialog> {
     }
 
     if (unionController.text != '') {
-      print(unionController.text);
       var filteredPatients = [];
       filteredPatients =  allPatients.where((item) => item['data']['address']['union'] == unionController.text).toList();
-      print('filteredPatients $filteredPatients');
       this.widget.parent.setState(() => {
         allPatients = filteredPatients,
         patients = allPatients
@@ -968,10 +951,8 @@ class _FiltersDialogState extends State<FiltersDialog> {
     }
 
     if (villageController.text != '') {
-      print(villageController.text);
       var filteredPatients = [];
       filteredPatients =  allPatients.where((item) => item['data']['address']['union'] == villageController.text).toList();
-      print('filteredPatients $filteredPatients');
       this.widget.parent.setState(() => {
         allPatients = filteredPatients,
         patients = allPatients
@@ -979,10 +960,8 @@ class _FiltersDialogState extends State<FiltersDialog> {
     }
 
     if (streetController.text != '') {
-      print(streetController.text);
       var filteredPatients = [];
       filteredPatients =  allPatients.where((item) => item['data']['address']['street_name'] == streetController.text).toList();
-      print('filteredPatients $filteredPatients');
       this.widget.parent.setState(() => {
         allPatients = filteredPatients,
         patients = allPatients

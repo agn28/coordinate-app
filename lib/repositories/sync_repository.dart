@@ -27,11 +27,7 @@ class SyncRepository {
     var token = authData['accessToken'];
     var api = ApiService();
 
-    print('data ${json.encode(data)}');
-
     var response;
-
-    print(apiUrl + 'syncs/patient');
 
     try {
       response = await client
@@ -44,19 +40,17 @@ class SyncRepository {
           body: json.encode(data))
       .timeout(Duration(seconds: httpRequestTimeout));
 
-      print(response.body);
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {'exception': true, 'type': 'poor_network', 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -70,11 +64,9 @@ class SyncRepository {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     var  api = ApiService();
-    print('getLatestSyncInfo Data $data');
+
 
     var response;
-
-    print(apiUrl + 'syncs/verify');
 
     try {
       response =  await http.post(
@@ -87,12 +79,10 @@ class SyncRepository {
         body: json.encode(data)
       ).timeout(Duration(seconds: 120));
 
-      print(response.body);
       return json.decode(response.body);
       
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
       return {
         'exception': true,
         'type': 'no_internet',
@@ -100,15 +90,13 @@ class SyncRepository {
       };
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
       return {
         'exception': true,
         'type': 'poor_network',
         'message': 'Slow internet'
       };
     } on Error catch(err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -120,7 +108,6 @@ class SyncRepository {
 
   fetchLatestSyncs() async {  
     var authData = await Auth().getStorageAuth() ;
-    print('fetchLatestSyncs ${authData['deviceId']}');
 
     var response;
 
@@ -161,8 +148,7 @@ class SyncRepository {
     try {
       response = await db.rawQuery(sql);
     } on DatabaseException catch (error) {
-      print('error');
-      print(error);
+
     }
     return response;
   }
@@ -173,8 +159,7 @@ class SyncRepository {
     try {
       response = await db.rawQuery(sql);
     } on DatabaseException catch (error) {
-      print('error');
-      print(error);
+
     }
     return response;
   }
@@ -184,16 +169,13 @@ class SyncRepository {
     var response;
     try {
       response = await db.rawQuery(sql);
-      print('sync response $response');
     } on DatabaseException catch (error) {
-      print('error');
-      print(error);
+
     }
     return response;
   }
 
   updateLatestLocalSyncKey(key) async {
-    print('into update sync key');
     final updateSql = '''UPDATE ${DatabaseCreator.syncTable}
     SET key = ?''';
     List<dynamic> params = [key];
@@ -201,11 +183,9 @@ class SyncRepository {
 
     try {
       updateResponse = await db.rawUpdate(updateSql, params);
-      print('update sync response');
-      print(updateResponse);
+
     } catch (error) {
-      print('error');
-      print(error);
+
       return;
     }
     return updateResponse;
@@ -224,7 +204,7 @@ class SyncRepository {
 
     try {
       updateResponse = await db.rawUpdate(updateSql, params);
-      print('update sync $updateResponse');
+
     } catch (error) {
       return;
     }
@@ -250,7 +230,7 @@ class SyncRepository {
   }
 
   createTempSyncs(tempSyncs) async {
-    print('createTempSyncs');
+
     await db.transaction((txn) async {
       final batch = txn.batch();
       // try {
@@ -259,11 +239,11 @@ class SyncRepository {
         VALUES (?, ?, ?, ?, ?, ?, ?)''';
         for (var item in tempSyncs) {
           try {
-            print('syncId ${item['id']}');
+
             List<dynamic> params = [item['id'], item['document_id'], item['collection'], item['action'], item['key'], item['created_at'], 0];
             await batch.rawInsert(sql, params);
           } catch (error) {
-            print('error $error');
+
           }
         }
       // } on DatabaseException catch (error) {
@@ -281,7 +261,7 @@ class SyncRepository {
     try {  
       return await db.rawDelete('DELETE FROM ${DatabaseCreator.latestSyncTable} WHERE id = ?', [id]);
     } on DatabaseException catch (error) {
-      print('deleteError $error');
+
       return;
     }
   }
@@ -307,7 +287,7 @@ class SyncRepository {
           try {  
             await batch.rawDelete('DELETE FROM ${DatabaseCreator.latestSyncTable} WHERE id = ?', [item['id']]);
           } catch (error) {
-            print('deleteError $error');
+
           }
         }
       // } on DatabaseException catch (error) {
@@ -330,7 +310,7 @@ class SyncRepository {
 
       try {
         updateResponse = await db.rawUpdate(updateSql, params);
-        print('updateResponse $updateResponse $params');
+
       } catch (error) {
         return;
       }
@@ -393,13 +373,6 @@ class SyncRepository {
     final referrals = await db.rawQuery('''DELETE FROM ${DatabaseCreator.referralTable}''');
     final care_plans = await db.rawQuery('''DELETE FROM ${DatabaseCreator.careplanTable}''');
     final health_reports = await db.rawQuery('''DELETE FROM ${DatabaseCreator.healthReportTable}''');
-    print('patient table deleted: ' + patient.toString());
-    print('sync table deleted: ' + syncs.toString());
-    print('assessments table deleted: ' + assessments.toString());
-    print('observations table deleted: ' + observations.toString());
-    print('referrals table deleted: ' + referrals.toString());
-    print('care_plans table deleted: ' + care_plans.toString());
-    print('health_reports table deleted: ' + health_reports.toString());
 
   }
 }

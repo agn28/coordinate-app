@@ -74,7 +74,6 @@ var encounter;
 var observations = [];
 
 getIncompleteFollowup() async {
-  print("getIncompleteFollowup");
   encounter = null;
   observations = [];
 
@@ -84,9 +83,7 @@ getIncompleteFollowup() async {
   if(incompleteEncounter != null && incompleteEncounter.isNotEmpty && !incompleteEncounter['error']) {
     if(incompleteEncounter['data']['assessment']['body']['type'] == 'follow up visit (center)') {
       encounter = incompleteEncounter['data']['assessment'];
-      print("encounter: $encounter");
       observations = incompleteEncounter['data']['observations'];
-      print("observations: $observations");
     }
   } 
 }
@@ -95,7 +92,6 @@ getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
 
   if (locale == Locale('bn', 'BN')) {
-    print('true');
     return question['question_bn'];
   }
   return question['question'];
@@ -128,14 +124,12 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
   @override
   void initState() {
     super.initState();
-    print('well');
     _checkAuth();
     clearForm();
     isLoading = false;
 
     getAuth();
 
-    // print(Language().getLanguage());
      nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
     //  nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
 
@@ -154,10 +148,8 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
   }
 
   getLanguage() async {
-    print('language s');
     final prefs = await SharedPreferences.getInstance();
 
-    print(Localizations.localeOf(context));
   }
   // getLastAssessment() async {
   //   setState(() {
@@ -181,7 +173,6 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
   
 
   getMedications() async {
-    print("getMedications");
     dynamicMedications = [];
 
     if (Auth().isExpired()) {
@@ -210,12 +201,9 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     } else if (data['error'] != null && data['error']) {
       return;
     } else if (data['data'] != null) {
-      print('data ${data['data']}');
       var meds = await prepareDynamicMedications(data['data']);
-      print('meds $meds');
       setState(() {
         dynamicMedications = meds;
-        print("dynamicMedications: $dynamicMedications");
       });
 
     }
@@ -242,7 +230,6 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     }
     dynamicMedications = prepareMedication;
     // print(dynamicMedicationTitles);
-    print(dynamicMedications);
     return dynamicMedications;
   }
 
@@ -309,7 +296,6 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
         _currentStep = _currentStep + 1;
         nextText = 'COMPLETE';
       } else if (_currentStep == 3) {
-        print("sttep3");
         checkData();
       } else {
         _currentStep = _currentStep + 1;
@@ -370,7 +356,6 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
     dispenseEditingController.text = '';
     if(dynamicMedications.isNotEmpty) {
       dynamicMedications.forEach((item) {
-        print('clear');
         textEditingControllers[item['medId']].text = '';
         // return textFields.add( TextField(controller: textEditingController));
       });
@@ -392,20 +377,17 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
   }
 
   goToHome(recommendation, data) {
-    print('after complete');
-
+    
     if (recommendation) {
       Navigator.of(context).pushReplacementNamed(
           MedicalRecommendationScreen.path,
           arguments: data);
     } else {
       if (authUser['role'] == 'chw') {
-        print('into chw');
         Navigator.of(context).pushNamed('/chwPatientSummary');
         return;
       }
       
-      print('into nurse');
       Navigator.of(context).pushNamed(
         '/home',
       );
@@ -479,7 +461,6 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
   }
 
   createObservations() {
-    print('_currentStep $_currentStep');
     if (diastolicEditingController.text != '' &&
         systolicEditingController.text != '') {
       BloodPressure().addItem(
@@ -670,8 +651,7 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
                       ? FlatButton(
                           onPressed: () async {
                             setState(() {
-                              print('$_currentStep');
-
+                              
                               // if (_currentStep == 1) {
                                 // var relativeAdditionalData = {
                                 //   'religion': selectedReligion,
@@ -689,7 +669,6 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
                               //   return;
                               // }
                               if (_currentStep == 1) {
-                                print('hello');
                                 createObservations();
                                 _completeStep();
                                 return;
@@ -821,12 +800,10 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
             ],
           );
         });
-    print("NoYes : $response");
     return response;
   }
 
   Future _completeStep() async {
-    print('before missing popup');
     var hasMissingData = checkMissingData();
     var hasOptionalMissingData = checkOptionalMissingData();
 
@@ -841,13 +818,11 @@ class _WellFollowupScreenState extends State<WellFollowupScreen> {
 
     var patient = Patient().getPatient();
 
-    print(patient['data']['age']);
     var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
     // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (community)', 'follow-up', '', status, nextVisitDate, followupType: 'short');
     !hasMissingData ? Patient().setPatientReviewRequiredTrue() : null;
     var encounterData = {};
     await getIncompleteFollowup();
-    print('eencounter $encounter');
     if(encounter != null) {
       encounterData = {
         'context': context,
@@ -957,12 +932,10 @@ checkMissingData() {
   if (diastolicEditingController.text == '' ||
       systolicEditingController.text == '' ||
       pulseRateEditingController.text == '') {
-    print('blood pressure missing');
     return true;
   }
 
   if (weightEditingController.text == '') {
-    print('body measurement missing');
     return true;
   }
 
@@ -970,7 +943,6 @@ checkMissingData() {
       fastingBloodController.text == '' &&
       habfController.text == '' &&
       hba1cController.text == '') {
-    print('blood sugar missing');
     return true;
   }
 
@@ -979,7 +951,6 @@ checkMissingData() {
 
 checkOptionalMissingData() {
   if (weightEditingController.text == '') {
-    print('body measurement optional missing');
     return true;
   }
 
@@ -987,7 +958,6 @@ checkOptionalMissingData() {
       fastingBloodController.text == '' ||
       habfController.text == '' ||
       hba1cController.text == '') {
-    print('blood sugar optinal missing');
     return true;
   }
 
@@ -995,7 +965,6 @@ checkOptionalMissingData() {
     ldlController.text == '' ||
     hdlController.text == '' ||
     tgController.text == '') {
-    print('lipid profile optinal missing');
     return true;
   }
 
@@ -1004,7 +973,6 @@ checkOptionalMissingData() {
     potassiumController.text == '' ||
     ketonesController.text == '' ||
     proteinController.text == '') {
-    print('additional optinal missing');
     return true;
   }
 
@@ -1099,7 +1067,6 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                                                         medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)] = question['options'][['options'].indexOf(option)];
 
                                                         var selectedOption = medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)];
-                                                        print('selectedOption $selectedOption');
                                                         medicationQuestions['items'].forEach((qtn) {
                                                           if(qtn['type'].contains('heart') || qtn['type'].contains('heart_bp_diabetes')) {
 
@@ -1107,21 +1074,14 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                                                             medicalHistoryAnswers.forEach((ans) {
                                                               if(ans == 'yes') {
                                                                 medicalHistoryAnswerYes = true;
-                                                                print('medicalHistoryAnswerYes $ans');
                                                               }
                                                             });
                                                             if (!medicalHistoryAnswerYes) {
                                                               medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
-                                                              print('exceptional if');
                                                             }
                                                           } else if(qtn['type'].contains(question['type']) && selectedOption == 'no') {
                                                             medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
-                                                            print('if');
                                                           }
-                                                          print(qtn['type']);
-                                                          print(question['type']);
-                                                          print('qtn $qtn');
-                                                          print('medicationAnswers ${medicationAnswers}');
                                                         });
                                                         // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
                                                       });
@@ -1197,7 +1157,6 @@ class _MedicationState extends State<Medication> {
     if (medicationQuestion['type'].contains('medication')) {
       var mainType =
           medicationQuestion['type'].replaceAll('_regular_medication', '');
-      print('mainType ' + mainType);
       var matchedMedicationQuestion = medicationQuestions['items']
           .where((item) => item['type'] == mainType)
           .first;
@@ -1370,8 +1329,6 @@ class _MedicationState extends State<Medication> {
                                                       child: FlatButton(
                                                         onPressed: () {
                                                           setState(() {
-                                                            print(
-                                                                medicalHistoryAnswers);
                                                             medicationAnswers[
                                                                 medicationQuestions[
                                                                         'items']
@@ -1604,12 +1561,9 @@ class _MeasurementsState extends State<Measurements> {
                                     BodyMeasurement().addBmItem();
 
                                     await getIncompleteFollowup();
-                                    print('eencounter $encounter');
                                     if(encounter != null) {
-                                      print('edit followup');
                                       var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
                                     } else {
-                                      print('new followup');
                                       var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
                                     }
                                     
@@ -1866,12 +1820,9 @@ class _MeasurementsState extends State<Measurements> {
 
                                 BloodPressure().addBloodPressure(formData);
                                 await getIncompleteFollowup();
-                                print('eencounter $encounter');
                                 if(encounter != null) {
-                                  print('edit followup');
                                   var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
                                 } else {
-                                  print('new followup');
                                   var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
                                 }
                                 {
@@ -2273,12 +2224,9 @@ class _MeasurementsState extends State<Measurements> {
                               }
                               BloodTest().addBtItem();
                               await getIncompleteFollowup();
-                              print('eencounter $encounter');
                               if(encounter != null) {
-                                print('edit followup');
                                 var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
                               } else {
-                                print('new followup');
                                 var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
                               }
                               
@@ -2652,12 +2600,9 @@ class _MeasurementsState extends State<Measurements> {
                                     }
                                     BloodTest().addBtItem();  
                                     await getIncompleteFollowup();
-                                    print('eencounter $encounter');
                                     if(encounter != null) {
-                                      print('edit followup');
                                       var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
                                     } else {
-                                      print('new followup');
                                       var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
                                     }
                                     
@@ -3111,12 +3056,9 @@ class _MeasurementsState extends State<Measurements> {
                                     }
                                     BloodTest().addBtItem();
                                     await getIncompleteFollowup();
-                                    print('eencounter $encounter');
                                     if(encounter != null) {
-                                      print('edit followup');
                                       var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
                                     } else {
-                                      print('new followup');
                                       var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
                                     }
                                     
@@ -3258,9 +3200,7 @@ class _MedicationsState extends State<Medications> {
                                     color: Colors.blue[800],
                                     textColor: Colors.white, 
                                     onPressed: () async {
-                                      print('id ${item['medId']}');
                                       var response = await PatientController().dispenseMedicationByPatient(item['medId'], textEditingControllers[item['medId']].text);
-                                      print('response $response');
                                       if(!response['error']) {
                                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                           content: Text(AppLocalizations.of(context).translate('dataSaved')),
@@ -4391,8 +4331,6 @@ getDropdownOptionText(context, list, value) {
 
     if (list['options_bn'] != null) {
       var matchedIndex = list['options'].indexOf(value);
-      print('matchedIndex $matchedIndex');
-      print(list['options_bn'][matchedIndex]);
       return list['options_bn'][matchedIndex];
     }
     return StringUtils.capitalize(value);
@@ -4915,7 +4853,6 @@ class _FollowupState extends State<Followup> {
 
   addCounsellingGroupTitle(question) {
     if (question['group'] == 'unhealthy-diet') {
-      print('group');
       if (!dietTitleAdded) {
         dietTitleAdded = true;
         return Column(
@@ -4960,7 +4897,6 @@ class _FollowupState extends State<Followup> {
   }
 
   getNextVisitDate() {
-    print(selectedFollowup);
     // ['1 week', '2 weeks', '1 month', '2 months', '3 months', '6 months', '1 year'];
     var date = '';
     if (selectedFollowup == '1 week') {

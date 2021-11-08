@@ -29,14 +29,13 @@ class AssessmentRepositoryLocal {
     try {
       assessments = await db.rawQuery(sql);
     } catch (error) {
-      print('error');
-      print(error);
+
       return;
     }
     return assessments;
   }
   getAssessmentsByPatientWithLocalStatus(id ,localStatus) async {
-    print('patient id ' + id);
+
     final sql =
         '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE (patient_id="$id") AND (local_status="$localStatus")''';
     var assessments;
@@ -44,15 +43,13 @@ class AssessmentRepositoryLocal {
     try {
       assessments = await db.rawQuery(sql);
     } catch (error) {
-      print('errors');
-      print(error);
+
       return;
     }
     return assessments;
   }
 
   getAssessmentsByPatient(id) async {
-    print('patient id ' + id);
     final sql =
         '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE patient_id="$id" ORDER BY created_at DESC''';
     var assessments;
@@ -60,8 +57,7 @@ class AssessmentRepositoryLocal {
     try {
       assessments = await db.rawQuery(sql);
     } catch (error) {
-      print('errors');
-      print(error);
+
       return;
     }
     return assessments;
@@ -73,26 +69,23 @@ class AssessmentRepositoryLocal {
     try {
       return await db.rawQuery(sql);
     } catch (error) {
-      print(error);
+
       return;
     }
   }
 
   getIncompleteAssessmentsByPatient(id) async {
-    print('patient id ' + id);
+
     var status = 'incomplete';
     final sql =
         '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE (status='incomplete') AND (patient_id='$id') ORDER BY created_at ASC''';
-    print('sql $sql');
+
     var assessments;
 
     try {
-      print('local db');
       assessments = await db.rawQuery(sql);
-      print('assessments $assessments');
+
     } catch (error) {
-      print('errors');
-      print(error);
       return;
     }
     return assessments;
@@ -106,8 +99,7 @@ class AssessmentRepositoryLocal {
     try {
       response = await db.rawQuery(sql);
     } catch (error) {
-      print('error');
-      print(error);
+
       return;
     }
 
@@ -129,8 +121,7 @@ class AssessmentRepositoryLocal {
     try {
       observations = await db.rawQuery(sql);
     } catch (error) {
-      print('error');
-      print(error);
+
       return;
     }
     return observations;
@@ -143,7 +134,6 @@ class AssessmentRepositoryLocal {
     var questionnaires = Questionnaire().qnItems;
 
     for (var item in bloodPressures) {
-      print('into observations');
       var codings = await _getCodings(item);
       item['body']['data']['codings'] = codings;
       item['body']['assessment_id'] = assessmentId;
@@ -163,7 +153,6 @@ class AssessmentRepositoryLocal {
       await _createObservations(item);
     }
     for (var item in questionnaires) {
-      print('into questionnaire');
       item['body']['assessment_id'] = assessmentId;
       await _createObservations(item);
     }
@@ -178,13 +167,9 @@ class AssessmentRepositoryLocal {
     //   return 'No observations added';
     // }
     createObservationsForOnlyAssessmentWithStatus(assessmentId);
-    print('before assessment');
-    print(DateTime.now());
 
     await _createOnlyAssessment(assessmentId, data);
 
-    print('after assessment ');
-    print(DateTime.now());
     // Future.forEach(bloodPressures, (item) async {
     //   print('into observations');
     //   var codings = await _getCodings(item);
@@ -230,10 +215,7 @@ class AssessmentRepositoryLocal {
 
     await _createAssessment(assessmentId, data);
 
-    print('after assessment');
-
     Future.forEach(bloodPressures, (item) async {
-      print('into observations');
       var codings = await _getCodings(item);
       item['body']['data']['codings'] = codings;
       item['body']['assessment_id'] = assessmentId;
@@ -255,7 +237,6 @@ class AssessmentRepositoryLocal {
     });
 
     Future.forEach(questionnaires, (item) async {
-      print('into questionnaire');
       item['body']['assessment_id'] = assessmentId;
       await _createObservations(item);
     });
@@ -433,10 +414,8 @@ class AssessmentRepositoryLocal {
 
     apiData.addAll(data);
 
-    print('before encounter');
     await AssessmentRepository().create(apiData);
 
-    print('into encounter');
   }
 
   _createOnlyAssessment(id, data) async {
@@ -455,16 +434,11 @@ class AssessmentRepositoryLocal {
 
         apiData.addAll(data);
 
-        print('before encounter');
         await AssessmentRepository().createOnlyAssessment(apiData);
 
-        print('into encounter');
   }
 
   createLocalAssessment(id, data, isSynced, {localStatus:''}) async {
-    print('into local assessment create localStatus' + localStatus.toString());
-    print('create patient id ' + data['body']['patient_id']);
-    // print('create patient body ' + data['body']);
     final sql = '''INSERT INTO ${DatabaseCreator.assessmentTable}
     (
       id,
@@ -488,10 +462,8 @@ class AssessmentRepositoryLocal {
 
     try {
       response = await db.rawInsert(sql, params);
-      print('sql $response');
     } catch (error) {
-      print('local assessment error');
-      print(error);
+
     }
     DatabaseCreator.databaseLog('Add assessment', sql, null, response, params);
     return response;
@@ -510,10 +482,8 @@ class AssessmentRepositoryLocal {
     var response;
     try {
       response = await db.rawUpdate(sql, params);
-      print('sql $response');
     } catch (error) {
-      print('local assessment update error');
-      print(error);
+
     }
     DatabaseCreator.databaseLog('Update assessment', sql, null, response, params);
     return response;
@@ -524,9 +494,9 @@ class AssessmentRepositoryLocal {
     final sql = '''DELETE FROM ${DatabaseCreator.assessmentTable} WHERE id = "$id"''';
     try {
       response = await db.rawQuery(sql);
-      print('delete $response');
+
     } catch (err) {
-      print(err);
+
       return;
     }
     return response;
@@ -559,7 +529,6 @@ class AssessmentRepositoryLocal {
 
     if (bloodPressures.isNotEmpty) {
       for (var item in bloodPressures) {
-        print('into bloodPressures');
         var codings = await _getCodings(item);
         item['body']['data']['codings'] = codings;
         item['body']['assessment_id'] = assessmentId;
@@ -576,7 +545,6 @@ class AssessmentRepositoryLocal {
     }
     if (bloodTests.isNotEmpty) {
       for (var item in bloodTests) {
-        print('into bloodTests');
         var codings = await _getCodings(item);
         item['body']['data']['codings'] = codings;
         item['body']['assessment_id'] = assessmentId;
@@ -593,7 +561,6 @@ class AssessmentRepositoryLocal {
     }
     if (bodyMeasurements.isNotEmpty) {
       for (var item in bodyMeasurements) {
-        print('into bodyMeasurements');
         var codings = await _getCodings(item);
         item['body']['data']['codings'] = codings;
         item['body']['assessment_id'] = assessmentId;
@@ -610,7 +577,6 @@ class AssessmentRepositoryLocal {
     }
     if (questionnaires.isNotEmpty) {
       for (var item in questionnaires) {
-        print('into questionnaire');
         item['body']['assessment_id'] = assessmentId;
         // var itemData = await _createLocalObservations(item);
         String id = Uuid().v4();
@@ -623,14 +589,11 @@ class AssessmentRepositoryLocal {
         });
       }
     }
-    print('bloodPressures $bloodPressures');
-    print('bloodTests $bloodTests');
-    print('bodyMeasurements $bodyMeasurements');
     preparedObservations = {
       'apiData': observations,
       'localData': localObservations
     };
-    print('observations $preparedObservations');
+
     return preparedObservations;
   }
 
@@ -656,8 +619,6 @@ class AssessmentRepositoryLocal {
   }
 
   Future<void> updateLocalStatus(uuid, isSynced) async {
-    print('into updating assessment status');
-    print('uuid ' + uuid);
 
     final sql = '''UPDATE ${DatabaseCreator.assessmentTable} SET
       is_synced = ?
@@ -667,11 +628,8 @@ class AssessmentRepositoryLocal {
 
     try {
       response = await db.rawUpdate(sql, params);
-      print('update local response');
-      print(response);
     } catch (error) {
-      print('error');
-      print(error);
+
       return;
     }
     return response;

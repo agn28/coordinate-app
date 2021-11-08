@@ -97,7 +97,6 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
         allPendingPatients = pending['data'];
         pendingPatientsSort();
         pendingPatients = allPendingPatients;
-        print(pendingPatients[0]['body']);
       });
     }
     if (completed['error'] != null && !completed['error']) {
@@ -182,7 +181,6 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
   }
 
   getNexDueDate(assignment) {
-    print(assignment['meta']);
   }
 
   update(carePlan) {
@@ -265,7 +263,6 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
 
   pendingSearch(query) {
     var modifiedWorklist = [...allPendingPatients].map((item)  {
-      print(item['body']['pid']);
       item['body']['name'] = '${item['body']['first_name']} ${item['body']['last_name']}';
       return item;
     }).toList();
@@ -295,7 +292,6 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
 
   pastSearch(query) {
     var modifiedWorklist = [...allPastPatients].map((item)  {
-      print(item['body']['pid']);
       item['body']['name'] = '${item['body']['first_name']} ${item['body']['last_name']}';
       return item;
     }).toList();
@@ -325,7 +321,6 @@ class _WorkListSearchState extends State<ChwWorkListSearchScreen> {
 
   completedSearch(query) {
     var modifiedWorklist = [...allCompletedPatients].map((item)  {
-      print(item['body']['pid']);
       item['body']['name'] = '${item['body']['first_name']} ${item['body']['last_name']}';
       return item;
     }).toList();

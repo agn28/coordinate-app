@@ -44,7 +44,6 @@ getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
 
   if (locale == Locale('bn', 'BN')) {
-    print('true');
     return question['question_bn'];
   }
   return question['question'];
@@ -77,7 +76,6 @@ class _UnwellChcpScreen extends State<UnwellChcpScreen> {
   @override
   void initState() {
     super.initState();
-    print('unwell chcp');
     nextText = (Language().getLanguage() == 'Bengali') ? 'এগিয়ে যান' : 'Ok to Proceed';
     _checkAuth();
     clearForm();
@@ -150,7 +148,6 @@ class _UnwellChcpScreen extends State<UnwellChcpScreen> {
       temp = int.parse(_temperatureController.text);
     }
     if (_systolicController.text != '') {
-      // print(_systolicController.text);
       systolic = int.parse(_systolicController.text);
     }
     if (_diastolicController.text != '') {
@@ -177,12 +174,12 @@ class _UnwellChcpScreen extends State<UnwellChcpScreen> {
 
     // if (temp > 39 || glucose > 250 || systolic > 160 || diastolic > 100 || firstAnswer == 'yes' || secondAnswer == 'yes') {
     //   // var response = FollowupController().create(data);
-    //   // print(response);
+
     //   // if (response['error'] != null && !response['error'])
     //     Navigator.of(context).pushReplacementNamed('/medicalRecommendation', arguments: data);
     // } else {
     //   // var response = FollowupController().create(data);
-    //   // print(response);
+
     //   // if (response['error'] != null && !response['error'])
     //    Navigator.of(context).pushReplacementNamed('/chwContinue');
     // }
@@ -284,7 +281,6 @@ class _UnwellChcpScreen extends State<UnwellChcpScreen> {
               child: _currentStep < _mySteps().length ? FlatButton(
                 onPressed: () {
                   setState(() {
-                    print('_currentStep $_currentStep');
                     if (_currentStep == 1) {
                     }
                     if (_currentStep == 0) {
@@ -436,7 +432,6 @@ class _UnwellCausesState extends State<UnwellCauses> {
                 onChanged: (value) {
                   setState(() {
                     selectedReason = value;
-                    print('selectedReason $selectedReason');
                   });
                 },
               ),

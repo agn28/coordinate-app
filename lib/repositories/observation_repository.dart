@@ -22,17 +22,17 @@ class ObservationRepository {
     ).then((response) {
       return json.decode(response.body);
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
 
   create(data) async {
-    print('into live observation create');
+
     var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
 
     var response;
-    print(json.encode(data));
+
     try {
       response = await client
           .post(apiUrl + 'observations',
@@ -46,15 +46,14 @@ class ObservationRepository {
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {'exception': true, 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -74,7 +73,6 @@ class ObservationRepository {
             body: json.encode(data))
         .then((response) {})
         .catchError((error) {
-      print('error ' + error.toString());
     });
   }
 
@@ -89,7 +87,7 @@ class ObservationRepository {
         )
         .then((response) {})
         .catchError((error) {
-          print('error ' + error.toString());
+
         });
   }
 
@@ -107,7 +105,7 @@ class ObservationRepository {
     ).then((response) {
       return json.decode(response.body);
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
 
@@ -125,7 +123,6 @@ class ObservationRepository {
     ).then((response) {
       return json.decode(response.body);
     }).catchError((error) {
-      print('error ' + error.toString());
     });
   }
 }

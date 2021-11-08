@@ -15,7 +15,6 @@ class AssessmentRepository {
   ]);
   createOnlyAssessment(data) async {
     var authData = await Auth().getStorageAuth();
-    print('after get token');
     var token = authData['accessToken'];
 
     await client
@@ -27,21 +26,18 @@ class AssessmentRepository {
             },
             body: json.encode(data))
         .then((response) {
-      print('assessment created');
-      print(response.body);
+
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
 
 
   create(data) async {
     var authData = await Auth().getStorageAuth();
-    print('after get token');
     var token = authData['accessToken'];
 
     var response;
-    print(json.encode(data));
     try {
       response = await client
           .post(apiUrl + 'assessments/except-oha',
@@ -52,20 +48,18 @@ class AssessmentRepository {
               },
               body: json.encode(data))
           .timeout(Duration(seconds: httpRequestTimeout));
-      print('assessment created');
-      print(response.body);
+
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {'exception': true, 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -77,9 +71,9 @@ class AssessmentRepository {
 
   createAssessmentWithObservations(data) async {
     var authData = await Auth().getStorageAuth();
-    print('after get token');
+
     var token = authData['accessToken'];
-    print('jsonData ${json.encode(data)}');
+
     var response;
   
     try {
@@ -92,20 +86,18 @@ class AssessmentRepository {
             },
             body: json.encode(data))
         .timeout(Duration(seconds: httpRequestTimeout));
-      print('assessment created');
-      print(response.body);
+
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {'exception': true, 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -131,20 +123,18 @@ class AssessmentRepository {
           'Authorization': 'Bearer ' + token
         },
       ).timeout(Duration(seconds: httpRequestTimeout));
-      print('assessment get');
-      print(response.body);
+
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {'exception': true, 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -168,7 +158,7 @@ class AssessmentRepository {
     ).then((response) {
       return json.decode(response.body);
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
 
@@ -187,7 +177,7 @@ class AssessmentRepository {
     ).then((response) {
       return json.decode(response.body);
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
 
@@ -211,20 +201,17 @@ class AssessmentRepository {
           'Authorization': 'Bearer ' + token
         },
       ).timeout(Duration(seconds: httpRequestTimeout));
-      print('last assessment get');
-      print(response.body);
+
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
       return {'exception': true, 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -252,20 +239,18 @@ class AssessmentRepository {
           'Authorization': 'Bearer ' + token
         },
       ).timeout(Duration(seconds: httpRequestTimeout));
-      print('incomplete assessment get');
-      print(response.body);
+
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {'exception': true, 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -290,20 +275,18 @@ class AssessmentRepository {
                 'Authorization': 'Bearer ' + token
               },)
           .timeout(Duration(seconds: httpRequestTimeout));
-      print('assessment created');
-      print(response.body);
+
       return json.decode(response.body);
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('socket exception');
+
       return {'exception': true, 'message': 'No internet'};
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return {'exception': true, 'message': 'Slow internet'};
     } on Error catch (err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return {
         'exception': true,
@@ -328,7 +311,7 @@ class AssessmentRepository {
     ).then((response) {
       return json.decode(response.body);
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
 
@@ -346,7 +329,7 @@ class AssessmentRepository {
             body: json.encode(data))
         .then((response) {})
         .catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
 
@@ -361,7 +344,7 @@ class AssessmentRepository {
         )
         .then((response) {})
         .catchError((error) {
-          print('error ' + error.toString());
+
         });
   }
 

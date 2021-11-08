@@ -45,7 +45,6 @@ getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
 
   if (locale == Locale('bn', 'BN')) {
-    print('true');
     return question['question_bn'];
   }
   return question['question'];
@@ -80,7 +79,6 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
   @override
   void initState() {
     super.initState();
-    print("Edit incomplete short Followup");
     _checkAuth();
     clearForm();
     isLoading = false;
@@ -89,13 +87,11 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
     getMedications();
     getIncompleteFollowup();
 
-    print(Language().getLanguage());
     nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
   }
 
   getIncompleteFollowup() async {
-    print("getIncompleteFollowup");
-
+    
     if (Auth().isExpired()) {
       Auth().logout();
       Navigator.pushReplacement(
@@ -124,39 +120,28 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
 
     setState(() {
       encounter = data['data']['assessment'];
-      print("encounter: $encounter");
       observations = data['data']['observations'];
-      print("observations: $observations");
     });
 
-    print("observations: $observations");
-
+    
     populatePreviousAnswers();
   }
 
   populatePreviousAnswers() {
-    print("testest");
     observations.forEach((obs) {
-      print('obs $obs');
       if (obs['body']['type'] == 'survey') {
-        print('into survey');
         var obsData = obs['body']['data'];
         if (obsData['name'] == 'dynamic_medication') {
-          print('into dynamic_medication');
           var keys = obsData.keys.toList();
-          print(keys);
           keys.forEach((key) {
             if (obsData[key] != '') {
-              print('into keys');
               if(dynamicMedicationQuestions.isNotEmpty)
               {
                 var matchedMhq = dynamicMedicationQuestions['items'].where((mhq) => mhq['key'] == key);
                 if (matchedMhq.isNotEmpty) {
                   matchedMhq = matchedMhq.first;
                   setState(() {
-                    print("medication: ${obsData[key]}");
                     dynamicMedicationAnswers[dynamicMedicationQuestions['items'].indexOf(matchedMhq)] = obsData[key];
-                    print("medicationAnswers");
                     //print(medicationAnswers[medicationQuestions['items'].indexOf(matchedMhq)]);
                   });
                 }
@@ -166,162 +151,116 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
         }
       }
       if (obs['body']['type'] == 'blood_pressure') {
-        print('into blood pressure');
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
-          print('into obsData');
           var systolicText = obsData['systolic'];
           var diastolicText = obsData['diastolic'];
           var pulseRateText = obsData['pulse_rate'];
           systolicEditingController.text = '${obsData['systolic']}';
           pulseRateEditingController.text = '${obsData['pulse_rate']}';
           diastolicEditingController.text = '${obsData['diastolic']}';
-          print(systolicText);
-          print(diastolicText);
-          print(pulseRateText);
         }
       }
       if (obs['body']['type'] == 'body_measurement') {
-        print('into body measurement');
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
-          print(obsData['name']);
           if (obsData['name'] == 'height' && obsData['value'] != '') {
-            print('into height');
             var heightText = obsData['value'];
             heightEditingController.text = '${obsData['value']}';
-            print(heightText);
           }
           if (obsData['name'] == 'weight' && obsData['value'] != '') {
-            print('into weight');
             var weightText = obsData['value'];
             weightEditingController.text = '${obsData['value']}';
-            print(weightText);
           }
           if (obsData['name'] == 'waist' && obsData['value'] != '') {
-            print('into waist');
             var waistText = obsData['value'];
             waistEditingController.text = '${obsData['value']}';
-            print(waistText);
           }
           if (obsData['name'] == 'hip' && obsData['value'] != '') {
-            print('into hip');
             var hipText = obsData['value'];
             hipEditingController.text = '${obsData['value']}';
-            print(hipText);
           }
         }
       }
       if (obs['body']['type'] == 'blood_test') {
-        print('into blood test');
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
-          print(obsData['name']);
           if (obsData['name'] == 'creatinine' && obsData['value'] != '') {
-            print('into creatinine');
             var creatinineText = obsData['value'];
             creatinineController.text = '${obsData['value']}';
             selectedCreatinineUnit = obsData['unit'];
-            print(creatinineText);
           }
           if (obsData['name'] == 'a1c' && obsData['value'] != '') {
-            print('into a1c');
             var hba1cText = obsData['value'];
             hba1cController.text = '${obsData['value']}';
             selectedHba1cUnit = obsData['unit'];
-            print(hba1cText);
           }
           if (obsData['name'] == 'total_cholesterol' &&
               obsData['value'] != '') {
-            print('into total_cholesterol');
             var totalCholesterolText = obsData['value'];
             cholesterolController.text = '${obsData['value']}';
             selectedCholesterolUnit = obsData['unit'];
-            print(totalCholesterolText);
           }
           if (obsData['name'] == 'potassium' && obsData['value'] != '') {
-            print('into potassium');
             var potassiumText = obsData['value'];
             potassiumController.text = '${obsData['value']}';
             selectedPotassiumUnit = obsData['unit'];
-            print(potassiumText);
           }
           if (obsData['name'] == 'ldl' && obsData['value'] != '') {
-            print('into ldl');
             var ldlText = obsData['value'];
             ldlController.text = '${obsData['value']}';
             selectedLdlUnit = obsData['unit'];
-            print(ldlText);
           }
           if (obsData['name'] == 'blood_sugar' && obsData['type'] == null && obsData['value'] != '') {
-            print('into blood_sugar');
             var bloodSugarText = obsData['value'];
             randomBloodController.text = '${obsData['value']}';
             selectedRandomBloodUnit = obsData['unit'];
-            print(bloodSugarText);
           }
           if ((obsData['name'] == 'blood_glucose' || obsData['name'] == 'blood_sugar') && (obsData['type'] != null && obsData['type'] == 'fasting') && obsData['value'] != '') {
-            print('into blood_glucose');
             var bloodGlucoseText = obsData['value'];
             fastingBloodController.text = '${obsData['value']}';
             selectedFastingBloodUnit = obsData['unit'];
-            print(bloodGlucoseText);
           }
           if (obsData['name'] == 'hdl' && obsData['value'] != '') {
-            print('into hdl');
             var hdlText = obsData['value'];
             hdlController.text = '${obsData['value']}';
             selectedHdlUnit = obsData['unit'];
-            print(hdlText);
           }
           if (obsData['name'] == 'ketones' && obsData['value'] != '') {
-            print('into ketones');
             var ketonesText = obsData['value'];
             ketonesController.text = '${obsData['value']}';
             selectedKetonesUnit = obsData['unit'];
-            print(ketonesText);
           }
           if (obsData['name'] == 'protein' && obsData['value'] != '') {
-            print('into protein');
             var proteinText = obsData['value'];
             proteinController.text = '${obsData['value']}';
             selectedProteinUnit = obsData['unit'];
-            print(proteinText);
           }
           if (obsData['name'] == 'sodium' && obsData['value'] != '') {
-            print('into sodium');
             var sodiumText = obsData['value'];
             sodiumController.text = '${obsData['value']}';
             selectedSodiumUnit = obsData['unit'];
-            print(sodiumText);
           }
           if (obsData['name'] == 'blood_glucose' && obsData['value'] != '') {
-            print('into blood_glucose');
             var bloodGlucoseText = obsData['value'];
             fastingBloodController.text = '${obsData['value']}';
             selectedFastingBloodUnit = obsData['unit'];
-            print(bloodGlucoseText);
           }
           if (obsData['name'] == 'triglycerides' && obsData['value'] != '') {
-            print('into triglycerides');
             var triglyceridesText = obsData['value'];
             tgController.text = '${obsData['value']}';
             selectedTgUnit = obsData['unit'];
-            print(triglyceridesText);
           }
           if (obsData['name'] == '2habf' && obsData['value'] != '') {
-            print('into 2habf');
             var habfText = obsData['value'];
             habfController.text = '${obsData['value']}';
             selectedHabfUnit = obsData['unit'];
-            print(habfText);
           }
         }
       }
     });
   }
   getMedications() async {
-    print("getMedications");
     dynamicMedications = [];
 
     if (Auth().isExpired()) {
@@ -335,7 +274,6 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
     // });
     var patientId = Patient().getPatient()['id'];
     var data = await PatientController().getMedicationsByPatient(patientId);
-    // print("medication: ${data['data']}");
     // setState(() {
     //   isLoading = false;
     // });
@@ -351,10 +289,8 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
       return;
     } else if (data['data'] != null) {
       var meds = await prepareDynamicMedications(data['data']);
-      print('meds $meds');
       setState(() {
         dynamicMedications = meds;
-        print("dynamicMedications: $dynamicMedications");
       });
 
     }
@@ -380,7 +316,6 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
     }
     dynamicMedications = prepareMedication;
     // print(dynamicMedicationTitles);
-    print(dynamicMedications);
     return dynamicMedications;
   }
 
@@ -422,8 +357,6 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
       dynamicMedicationAnswers.add('');
     }
     dynamicMedicationQuestions['items'] = prepareQuestion;
-    print(dynamicMedicationTitles);  
-    print(dynamicMedicationQuestions["items"]);  
     return dynamicMedicationQuestions;
   }
 
@@ -525,7 +458,6 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
   }
 
   createObservations() {
-    print('_currentStep $_currentStep');
     if (diastolicEditingController.text != '' &&
         systolicEditingController.text != '' &&
         pulseRateEditingController.text != '') {
@@ -551,8 +483,6 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
           .addItem('height', heightEditingController.text, 'cm', '', '');
     }
     if (weightEditingController.text != '') {
-      print('weightEditingController.text');
-      print(weightEditingController.text);
       BodyMeasurement()
           .addItem('weight', weightEditingController.text, 'kg', '', '');
     }
@@ -565,8 +495,7 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
     }
 
     BodyMeasurement().addBmItem();
-    print('BodyMeasurement().bmItems ${BodyMeasurement().bmItems}');
-
+    
     if (randomBloodController.text != '') {
       BloodTest().addItem('blood_sugar', randomBloodController.text,
           selectedRandomBloodUnit, '', '');
@@ -733,10 +662,8 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
                       ? FlatButton(
                           onPressed: () async {
                             setState(() {
-                              print(_currentStep);
-                              
+                               
                               if (_currentStep == 1) {
-                                print('hello');
                                 if(dynamicMedicationTitles.isNotEmpty) {
                                   Questionnaire().addNewDynamicMedicationNcd('dynamic_medication', dynamicMedicationTitles, dynamicMedicationAnswers);
                                 }
@@ -747,7 +674,6 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
                               if (_currentStep == 0) {
                                 createObservations();
                                 
-                                // print(Questionnaire().qnItems);
                                 nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                               }
                               if (_currentStep < 2) {
@@ -812,13 +738,11 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
             ],
           );
         });
-    print("NoYes : $response");
     return response;
   }
 
   Future _completeStep() async {
-    print('before missing popup');
-
+    
     var hasMissingData = checkMissingData();
     var hasOptionalMissingData = checkOptionalMissingData();
 
@@ -833,7 +757,6 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
 
     var patient = Patient().getPatient();
 
-    print(patient['data']['age']);
     var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
     var encounterData = {
       'context': context,
@@ -842,7 +765,6 @@ class _EditFollowupScreenState extends State<EditFollowupScreen> {
       'observations': observations,
       'followupType': 'short'
     };
-    print('dataStatus $dataStatus');
     // return;
     Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : 'followup', 'encounterData': encounterData});
   }
@@ -883,13 +805,11 @@ checkMissingData() {
   if (diastolicEditingController.text == '' ||
       systolicEditingController.text == '' ||
       pulseRateEditingController.text == '') {
-    print('blood pressure missing');
     return true;
   }
 
   if (heightEditingController.text == '' ||
       weightEditingController.text == '') {
-    print('body measurement missing');
     return true;
   }
 
@@ -897,7 +817,6 @@ checkMissingData() {
       fastingBloodController.text == '' &&
       habfController.text == '' &&
       hba1cController.text == '') {
-    print('blood sugar missing');
     return true;
   }
 
@@ -908,7 +827,6 @@ checkOptionalMissingData() {
     weightEditingController.text == '' ||
     waistEditingController.text == ''||
     hipEditingController.text == '') {
-    print('body measurement optional missing');
     return true;
   }
 
@@ -916,7 +834,6 @@ checkOptionalMissingData() {
       fastingBloodController.text == '' ||
       habfController.text == '' ||
       hba1cController.text == '') {
-    print('blood sugar optinal missing');
     return true;
   }
 
@@ -924,7 +841,6 @@ checkOptionalMissingData() {
     ldlController.text == '' ||
     hdlController.text == '' ||
     tgController.text == '') {
-    print('lipid profile optinal missing');
     return true;
   }
 
@@ -933,7 +849,6 @@ checkOptionalMissingData() {
     potassiumController.text == '' ||
     ketonesController.text == '' ||
     proteinController.text == '') {
-    print('additional optinal missing');
     return true;
   }
 
@@ -1143,7 +1058,6 @@ class _MedicationsState extends State<Medications> {
                                     onPressed: () async {
                                       
                                       var response = await PatientController().dispenseMedicationByPatient(item['medId'], textEditingControllers[item['medId']].text);
-                                      print('response $response');
                                       if(!response['error']) {
                                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                           content: Text(AppLocalizations.of(context).translate('dataSaved')),
@@ -1240,7 +1154,6 @@ class _MeasurementsState extends State<Measurements> {
     _isAdditionalTextEnable = false;
   }
   getIncompleteFollowup() async {
-    print("getIncompleteFollowup");
     encounter = null;
     observations = [];
 
@@ -1250,9 +1163,7 @@ class _MeasurementsState extends State<Measurements> {
     if(incompleteEncounter != null && incompleteEncounter.isNotEmpty && !incompleteEncounter['error']) {
       if(incompleteEncounter['data']['assessment']['body']['type'] == 'follow up visit (center)') {
         encounter = incompleteEncounter['data']['assessment'];
-        print("encounter: $encounter");
         observations = incompleteEncounter['data']['observations'];
-        print("observations: $observations");
       }
     } 
   }
@@ -1379,9 +1290,7 @@ class _MeasurementsState extends State<Measurements> {
                                     BodyMeasurement().addBmItem();
 
                                     await getIncompleteFollowup();
-                                    print('eencounter $encounter');
                                     if(encounter != null) {
-                                      print('edit followup');
                                       var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
                                     }
                                     {
@@ -1636,9 +1545,7 @@ class _MeasurementsState extends State<Measurements> {
 
                                 BloodPressure().addBloodPressure(formData);
                                 await getIncompleteFollowup();
-                                print('eencounter $encounter');
                                 if(encounter != null) {
-                                  print('edit followup');
                                   var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
                                 }
                                 {
@@ -2036,9 +1943,7 @@ class _MeasurementsState extends State<Measurements> {
                               }
                               BloodTest().addBtItem();
                               await getIncompleteFollowup();
-                              print('eencounter $encounter');
                               if(encounter != null) {
-                                print('edit followup');
                                 var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
                               }
                               {
@@ -2411,9 +2316,7 @@ class _MeasurementsState extends State<Measurements> {
                                     }
                                     BloodTest().addBtItem();  
                                     await getIncompleteFollowup();
-                                    print('eencounter $encounter');
                                     if(encounter != null) {
-                                      print('edit followup');
                                       var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
                                     }
                                     {
@@ -2866,9 +2769,7 @@ class _MeasurementsState extends State<Measurements> {
                                     }
                                     BloodTest().addBtItem();
                                     await getIncompleteFollowup();
-                                    print('eencounter $encounter');
                                     if(encounter != null) {
-                                      print('edit followup');
                                       var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
                                     }
                                     {

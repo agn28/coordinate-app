@@ -320,7 +320,6 @@ class _AddDialogueState extends State<AddDialogue> {
     super.initState();
     selectedUnit = widget.name == 'weight' ? 'kg' : 'cm';
     devices = Device().getDevices();
-    print(devices);
     _getItem();
   }
 

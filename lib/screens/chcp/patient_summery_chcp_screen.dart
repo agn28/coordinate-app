@@ -79,7 +79,6 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
-    print('patient summery chcp screen');
     // print('followup_patient ${_patient}');
     dueCarePlans = [];
     completedCarePlans = [];
@@ -88,9 +87,6 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
     referrals = [];
     pendingReferral = null;
     carePlansEmpty = false;
-    print('encounterData ${widget.encounterData}');
-    print('prevScreen ${widget.prevScreen}');
-    print('pid ${Patient().getPatient()['id']}');
     
     _checkAvatar();
     _checkAuth();
@@ -247,13 +243,9 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
 
   var waitCount = 0;
   waitForReport() async {
-    print('In wait Report');
     var lastReport = await HealthReportController().getLastReport(context);
 
-    print('lastReport $lastReport');
-
       if (lastReport['error'] == true && waitCount < 5) {
-        print('waitCount $waitCount');
         waitCount++;
         await Future.delayed(const Duration(seconds: 5));
         waitForReport();
@@ -277,14 +269,12 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
   }
 
   getReport() async {
-    print('In get Report');
     // return;
     setState(() {
       isLoading = true;
     });
 
     var data = await waitForReport();
-    print('getReport $data');
     // var data = await HealthReportController().getLastReport(context);
     
     // if (data['error'] == true) {
@@ -438,7 +428,6 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
     });
     lastAssessment = await AssessmentController().getLastAssessmentByPatient();
 
-    print('lastAssessment $lastAssessment');
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
       // lastEncounterDate = lastAssessment['data']['meta']['created_at'];
     
@@ -464,7 +453,6 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
       setState(() {
         lastEncounterType = lastAssessment['data']['body']['type'];
         lastEncounterDate = getDate(lastAssessment['data']['meta']['created_at']);
-        print('lastEncounterDate ${lastEncounterDate}');
       });
     }
     setState(() {
@@ -526,7 +514,6 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
         carePlans = data['data'];
       });
       carePlans = data['data'];
-      print('carePlans $carePlans');
       carePlans.forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");
         
@@ -539,10 +526,6 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
           endDate = format.parse(item['body']['activityDuration']['end']);
           startDate = format.parse(item['body']['activityDuration']['start']);
         } catch(err) {
-          print(item['body']['activityDuration']['start']);
-          print(item['body']['activityDuration']['end']);
-          // print('failed: ' );
-          print(err);
           DateFormat newFormat = new DateFormat("yyyy-MM-dd");
           endDate = DateTime.parse(item['body']['activityDuration']['end']);
           startDate = DateTime.parse(item['body']['activityDuration']['start']);
@@ -550,22 +533,12 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
           
         }
 
-        print('endDate');
-        print(endDate);
-        print(startDate);
-
-
-        print(endDate);
-        print(todayDate.isBefore(endDate));
-        print(todayDate.isAfter(startDate));
-
+        
         // check due careplans
         if (item['meta']['status'] == 'pending') {
           if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
             var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-            // print(existedCp);
-            // print(item['body']['activityDuration']['start']);
-
+            
             if (existedCp.isEmpty) {
               var items = [];
               items.add(item);
@@ -580,9 +553,7 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
             }
           } else if (todayDate.isBefore(startDate)) {
             var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-            // print(existedCp);
-            // print(item['body']['activityDuration']['start']);
-
+            
             if (existedCp.isEmpty) {
               var items = [];
               items.add(item);
@@ -598,9 +569,7 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
           }
         } else {
           var existedCp = completedCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-          // print(existedCp);
-          // print(item['body']['activityDuration']['start']);
-
+          
           if (existedCp.isEmpty) {
             var items = [];
             items.add(item);
@@ -618,9 +587,7 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
         
         
         // var existedCp = carePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-        // // print(existedCp);
-        // // print(item['body']['activityDuration']['start']);
-        
+         
 
         // if (existedCp.isEmpty) {
         //   var items = [];
@@ -673,15 +640,12 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
     return WillPopScope(
       onWillPop: () async {
         if(widget.prevScreen == 'encounter') {
-          print('WillPopScope if');
           Navigator.of(context).pushNamed('/patientListChcp');
           return true;
         } else if(widget.prevScreen == 'followup') {
-          print('WillPopScope else if');
           Navigator.of(context).pushNamed(FollowupSearchScreen.path);
           return true;
         } else {
-          print('WillPopScope home');
           // Navigator.pushNamed(context, '/home');
           Navigator.of(context).pushNamed(FollowupSearchScreen.path);
           return true;
@@ -2416,7 +2380,6 @@ class _GoalItemState extends State<GoalItem> {
   getCompletedDate(goal) {
     var data = '';
     DateTime date;
-    print('asdknas');
     goal['items'].forEach((item) {
       // print(item['body']['activityDuration']['end']);
       DateFormat format = new DateFormat("E LLL d y");

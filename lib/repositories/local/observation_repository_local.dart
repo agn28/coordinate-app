@@ -8,7 +8,6 @@ class ObservationRepositoryLocal {
   /// observations [data] is required as parameter.
   create(id, data, isSynced, {localStatus:''}) async {
 
-    print('into local observation create');
 
     final sql = '''INSERT INTO ${DatabaseCreator.observationTable}
     (
@@ -25,10 +24,9 @@ class ObservationRepositoryLocal {
 
     try {
       response = await db.rawInsert(sql, params);
-      print('obs $response');
+
     } catch(error) {
-      print('local observation create error');
-      print(error);
+
     }
     return response;
     
@@ -58,9 +56,9 @@ class ObservationRepositoryLocal {
     final sql = '''DELETE FROM ${DatabaseCreator.observationTable} WHERE id = "$id"''';
     try {
       response = await db.rawQuery(sql);
-      print('delete $response');
+
     } catch (err) {
-      print(err);
+
       return;
     }
     return response;
@@ -86,7 +84,7 @@ class ObservationRepositoryLocal {
     try {
       return await db.rawQuery(sql);
     } catch (error) {
-      print(error);
+
       return;
     }
   }
@@ -97,7 +95,7 @@ class ObservationRepositoryLocal {
     try {
       return await db.rawQuery(sql);
     } catch (error) {
-      print(error);
+
       return;
     }
   }
@@ -112,7 +110,7 @@ class ObservationRepositoryLocal {
     try {
       return await db.rawUpdate(sql, params);
     } catch(error) {
-      print(error);
+
       return;
     }
 

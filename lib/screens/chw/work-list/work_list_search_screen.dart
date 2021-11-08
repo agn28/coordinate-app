@@ -56,7 +56,6 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
   @override
   initState() {
     super.initState();
-    print('work list search chw screen');
     setState(() {
       searchController.text = '';
     });
@@ -68,7 +67,6 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
     dueDateSort = 'asc';
     patientSortActive = false;
     dueDateSortActive = false;
-    print("pendingPatients: $pendingPatients");
   }
   
   loaderHandle(value) {
@@ -102,7 +100,6 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
       var pending = await PatientController().getPatientsPendingWorklist(context);
       var completed = await PatientController().getPatientsWorklist(context, 'completed');
       var past = await PatientController().getPatientsWorklist(context, 'past');
-      print('pending $pending');
 
 
       if (pending['error'] != null && !pending['error'] && pending['data'].isNotEmpty) {
@@ -110,7 +107,6 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
           allPendingPatients = pending['data'];
           // pendingPatientsSort();
           pendingPatients = allPendingPatients;
-          print('worklist ${pendingPatients[0]['body']['appointment_date']}');
         });
       }
       if (completed['error'] != null && !completed['error']) {
@@ -132,17 +128,14 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
       });
     }
     else {
-      print('not connected');
       var allLocalPatients = await PatientController().getAllLocalPatients();
       var localPatientPending = [];
       var authData = await Auth().getStorageAuth();
       for(var localPatient in allLocalPatients) {
-        print('localPatient ${localPatient['data']['first_name']} ${localPatient['meta']}');
         if(localPatient['data']['address']['district'] == authData['address']['district'] 
           && isNotNull(localPatient["meta"]["has_pending"]) && localPatient["meta"]["has_pending"]) {
           var isAssigned = false;
           var careplans = await CarePlanRepositoryLocal().getCareplanByPatient(localPatient['id']);
-          print('cp $careplans');
           var parsedData;
           for(var careplan in careplans) {
             parsedData = jsonDecode(careplan['data']);
@@ -162,12 +155,10 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
           }
         }
       }
-      print('pending $localPatientPending');
       setState(() {
         allPendingPatients = localPatientPending;
         pendingPatientsSort();
         pendingPatients = allPendingPatients;
-        print(pendingPatients[0]['body']);
       });
       setState(() {
         isLoading = false;
@@ -242,7 +233,6 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
   }
 
   getNexDueDate(assignment) {
-    print(assignment['meta']);
   }
 
   update(carePlan) {
@@ -325,7 +315,6 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
 
   pendingSearch(query) {
     var modifiedWorklist = [...allPendingPatients].map((item)  {
-      print(item['body']['pid']);
       item['body']['name'] = '${item['body']['first_name']} ${item['body']['last_name']}';
       return item;
     }).toList();
@@ -355,7 +344,6 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
 
   pastSearch(query) {
     var modifiedWorklist = [...allPastPatients].map((item)  {
-      print(item['body']['pid']);
       item['body']['name'] = '${item['body']['first_name']} ${item['body']['last_name']}';
       return item;
     }).toList();
@@ -385,7 +373,6 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
 
   completedSearch(query) {
     var modifiedWorklist = [...allCompletedPatients].map((item)  {
-      print(item['body']['pid']);
       item['body']['name'] = '${item['body']['first_name']} ${item['body']['last_name']}';
       return item;
     }).toList();

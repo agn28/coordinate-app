@@ -79,10 +79,7 @@ class _WorkListSearchState extends State<WorkListSearch> {
           worklistWithoutdate.add(item);
         }
       });
-      // worklist.forEach((item){
-      //   print(worklist.indexOf(item));
-      //   print(DateTime.parse(item['body']['activityDuration']['end']).difference(DateTime.parse(item['body']['activityDuration']['start'])).inDays);
-      // });
+    
       if (dueDateSort == 'asc') {
         worklistWithdate.sort((a, b) {
           return DateTime.parse(a['body']['activityDuration']['end']).difference(DateTime.now()).inDays.compareTo(DateTime.parse(b['body']['activityDuration']['end']).difference(DateTime.now()).inDays);

@@ -36,7 +36,6 @@ class ApiService {
 
 
   Future get(url, { additionalHeaders, auth = true }) async {
-    print(apiUrl + url);
     var response;
     
     try {
@@ -58,17 +57,14 @@ class ApiService {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
       return null;
     } on Error catch(err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return null;
     }
   }
 
   Future post(String url, body, { additionalHeaders, auth = true }) async {
-    print('post');
-    print(apiUrl + url);
-    print(body);
+
     var response;
 
     try {
@@ -77,21 +73,20 @@ class ApiService {
         body: json.encode(body),
         headers: await getHeaders(additionalHeaders, auth)
       ).timeout(Duration(seconds: timeout));
-      print('test response');
+
 
       return response;
       
     } on SocketException {
       // showErrorSnackBar('Error', 'socketError'.tr);
-      print('no internet');
+
       return;
     } on TimeoutException {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
-      print('timeout error');
+
       return;
     } on Error catch(err) {
-      print('unknown error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return;
     }
@@ -99,7 +94,7 @@ class ApiService {
   }
 
   Future put(url, body, { additionalHeaders, auth = true }) async {
-    print(apiUrl + url);
+
     var response;
 
     try {
@@ -118,15 +113,14 @@ class ApiService {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
       return null;
     } on Error catch(err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return null;
     }
 
   }
   Future patch(url, body, { additionalHeaders, auth = true }) async {
-    print(apiUrl + url);
+
     var response;
 
     try {
@@ -145,15 +139,14 @@ class ApiService {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
       return null;
     } on Error catch(err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return null;
     }
   }
   
   Future delete(url, { additionalHeaders, auth = true }) async {
-    print(apiUrl + url);
+
     var response;
 
     try {
@@ -171,8 +164,7 @@ class ApiService {
       // showErrorSnackBar('Error', 'timeoutError'.tr);
       return null;
     } on Error catch(err) {
-      print('test error');
-      print(err);
+
       // showErrorSnackBar('Error', 'unknownError'.tr);
       return null;
     }

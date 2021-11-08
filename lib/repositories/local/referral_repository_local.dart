@@ -6,8 +6,7 @@ class ReferralRepositoryLocal {
   /// Create an assessment with observations.
   /// observations [data] is required as parameter.
   create(id, data, isSynced, {localStatus:''}) async {
-    print('into local referral create localStatus' + localStatus.toString());
-
+    
     final sql = '''INSERT INTO ${DatabaseCreator.referralTable}
     (
       id,
@@ -30,16 +29,14 @@ class ReferralRepositoryLocal {
 
     try {
       response = await db.rawInsert(sql, params);
-      print('local referral create $response');
+
     } catch (error) {
-      print('local referral create error');
-      print(error);
+
     }
     return response;
   }
 
   update(id, data, isSynced, {localStatus:''}) async {
-    print('into local referral update');
     final sql = '''UPDATE ${DatabaseCreator.referralTable} SET
       data = ? , 
       patient_id = ?,
@@ -49,14 +46,13 @@ class ReferralRepositoryLocal {
       WHERE id = ?''';
     List<dynamic> params = [jsonEncode(data), data['meta']['patient_id'],
       data['meta']['status'], isSynced, localStatus, id];
-    print('sql $sql');
+
     var response;
 
     try {
       response = await db.rawUpdate(sql, params);
     } catch(error) {
-      print('local referral update error');
-      print(error);
+
     }
     DatabaseCreator.databaseLog('Update referral', sql, null, response, params);
     return response;
@@ -79,8 +75,7 @@ class ReferralRepositoryLocal {
     try {
       response = await db.rawQuery(sql);
     } catch (error) {
-      print('error');
-      print(error);
+
       return;
     }
 
@@ -95,8 +90,7 @@ class ReferralRepositoryLocal {
     try {
       response = await db.rawQuery(sql);
     } catch (error) {
-      print('error');
-      print(error);
+
       return;
     }
     return response;
@@ -108,18 +102,16 @@ class ReferralRepositoryLocal {
 
     try {
       referral = await db.rawQuery(sql);
-      print('referralbyId $referral');
+
     } catch (error) {
-      print('error');
-      print(error);
+
       return;
     }
     return referral;
   }
 
   Future<void> updateLocalStatus(uuid, isSynced) async {
-    print('into updating referral status');
-    print('uuid ' + uuid);
+
 
     final sql = '''UPDATE ${DatabaseCreator.referralTable} SET
       is_synced = ?
@@ -129,11 +121,9 @@ class ReferralRepositoryLocal {
 
     try {
       response = await db.rawUpdate(sql, params);
-      print('update local response');
-      print(response);
+
     } catch (error) {
-      print('error');
-      print(error);
+
       return;
     }
     return response;

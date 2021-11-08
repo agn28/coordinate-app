@@ -775,7 +775,6 @@ class SyncController extends GetxController {
 
     var localAssessments = [...localNotSyncedAssessments.value];
     for (var assessment in localAssessments) {
-      print('local assessments $assessment');
       var data = {
         'id': assessment['id'],
         'body': assessment['data'],
@@ -783,7 +782,6 @@ class SyncController extends GetxController {
       };
 
       var response = await assessmentRepo.create(data);
-      print(response);
 
       // check slow network
       if (isNotNull(response['exception']) && response['type'] == 'poor_network') {
@@ -978,19 +976,16 @@ class SyncController extends GetxController {
           timer.cancel();
         }
       } catch (error) {
-        print(error);
         timer.cancel();
       }
     });
     return;
   }
   saveTempSyncs(tempSyncs) async {
-    print('saveTempSyncs');
   // await syncRepo.clearTempSyncs(tempSyncs);
   // return;
     await syncRepo.createTempSyncs(tempSyncs);
     var results = await syncRepo.getTempSyncs();
-    print('TempSyncs $results');
 
     var chunkSize = 50;
     var patientChunks = [], assessmentChunks = [], observationChunks = [], referralChunks = [], carePlanChunks = [], healthReportChunks = [];
@@ -1070,18 +1065,11 @@ class SyncController extends GetxController {
       healthReportChunks.add(healthReportSyncs);
     }
 
-    print('patientChunks $patientChunks');
-    print('assessmentChunks $assessmentChunks');
-    print('observationChunks $observationChunks');
-    print('referralChunks $referralChunks');
-    print('carePlanChunks $carePlanChunks');
-    print('healthReportChunks $healthReportChunks');
   }
 
   checktoSync() async {
     //TODO need to check sync_type later
     int syncCount = Sqflite.firstIntValue(await syncRepo.getTempSyncsCount());
-    print('syncCount $syncCount');
     if(syncCount > 0) {
       syncLivePatientsToLocal();
     }
@@ -1098,9 +1086,8 @@ class SyncController extends GetxController {
 
     // await fetchLatestSyncs();
     syncs.value = await syncRepo.getTempSyncs();
-    print('syncs.length ${syncs.length}');
+
     var tempSyncs = [...syncs.value];
-    print('tempSyncs ${tempSyncs}');
     // await syncRepo.clearTempSyncs(tempSyncs);
     // return;
     var subPatients = [];
@@ -1194,9 +1181,7 @@ class SyncController extends GetxController {
       if (item['collection'] == 'observations') {
         if (item['action'] == 'create') {
           subObservations.add(item['document_id']);
-          print('obscoll ${subObservations.length}');
           if (subObservations.length == 10) {
-            print('obscoll length 10');
             await insertObservations(subObservations);
             subObservations = [];
           }
@@ -1371,7 +1356,6 @@ class SyncController extends GetxController {
           for(var item in syncItems) {
             // var updateSync = await updateLocalSyncKey(item['key']);
             // if (isNotNull(updateSync)) {
-              print('syncItem $item');
               await syncRepo.updateSyncStatus(item['id'], 1);
               // syncs.remove(item);
               // print('syncs.length ${syncs.length}');
@@ -1406,7 +1390,6 @@ class SyncController extends GetxController {
           for(var item in syncItems) {
             // var updateSync = await updateLocalSyncKey(item['key']);
             // if (isNotNull(updateSync)) {
-              print('syncItem $item');
               await syncRepo.updateSyncStatus(item['id'], 1);
               // syncs.remove(item);
               // print('syncs.length ${syncs.length}');
@@ -1418,14 +1401,11 @@ class SyncController extends GetxController {
   }
 
   insertObservations(subObservations) async {
-  print('insertObservations $subObservations');
   var observations = await observationController.getLiveObservationsByIds(subObservations);
   
     if (isNotNull(observations) && isNotNull(observations['error']) && !observations['error'] && isNotNull(observations['data'])) {
 
-      print('observations.length ${observations['data'].length}');
       for (var observation in observations['data']) {
-        print('localObservation $observation');
         var existingLocalObservation = await observationRepoLocal.getObservationById(observation['id']);
         //Observation already exists in local, needs to be updated
         var localObservation;
@@ -1444,7 +1424,6 @@ class SyncController extends GetxController {
           for(var item in syncItems) {
             // var updateSync = await updateLocalSyncKey(item['key']);
             // if (isNotNull(updateSync)) {
-              print('syncItem $item');
               await syncRepo.updateSyncStatus(item['id'], 1);
               // syncs.remove(item);
               // print('syncs.length ${syncs.length}');
@@ -1481,7 +1460,6 @@ class SyncController extends GetxController {
           for(var item in syncItems) {
             // var updateSync = await updateLocalSyncKey(item['key']);
             // if (isNotNull(updateSync)) {
-              print('syncItem $item');
               await syncRepo.updateSyncStatus(item['id'], 1);
               // syncs.remove(item);
               // print('syncs.length ${syncs.length}');
@@ -1519,7 +1497,6 @@ class SyncController extends GetxController {
           for(var item in syncItems) {
             // var updateSync = await updateLocalSyncKey(item['key']);
             // if (isNotNull(updateSync)) {
-              print('syncItem $item');
               await syncRepo.updateSyncStatus(item['id'], 1);
               // syncs.remove(item);
               // print('syncs.length ${syncs.length}');
@@ -1539,7 +1516,6 @@ class SyncController extends GetxController {
       for (var healthreport in healthreports['data']) {
 
         var existingLocalHealthReport = await healthReportRepoLocal.getHealthReportById(healthreport['id']);
-        print('existingLocalHealthReport: $existingLocalHealthReport');
         var localhealthreport;
         if(isNotNull(existingLocalHealthReport) && existingLocalHealthReport.isNotEmpty) {
           localhealthreport = await healthReportRepoLocal.update(healthreport['id'], healthreport, true);
@@ -1555,7 +1531,6 @@ class SyncController extends GetxController {
           for(var item in syncItems) {
             // var updateSync = await updateLocalSyncKey(item['key']);
             // if (isNotNull(updateSync)) {
-              print('syncItem $item');
               await syncRepo.updateSyncStatus(item['id'], 1);
               // syncs.remove(item);
               // print('syncs.length ${syncs.length}');
@@ -1583,9 +1558,6 @@ class SyncController extends GetxController {
     }
   }
 
-  getLocalAssessments() async {
-    print(await assessmentController.getAllLocalAssessments());
-  }
 
   checkLocationData() async {
     var response = await syncRepo.checkLocalLocationData();
@@ -1669,7 +1641,6 @@ class SyncController extends GetxController {
     var oldKey = '';
     if (isNotNull(response) && response.isNotEmpty) {
       oldKey = response[0]['key'];
-      print('oldKey $oldKey');
     }
     return await syncRepo.updateLocalSyncKey(key, oldKey);
   }

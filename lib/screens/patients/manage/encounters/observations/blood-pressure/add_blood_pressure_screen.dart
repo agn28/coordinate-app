@@ -67,7 +67,6 @@ class _AddBloodPressureState extends State<AddBloodPressure> {
     _patient = Patient().getPatient();
     selectedArm = 'left';
     devices = Device().getDevices();
-    print(devices);
     _checkAvatar();
     getBloodPressures();
   }

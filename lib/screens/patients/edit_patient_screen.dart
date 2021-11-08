@@ -66,7 +66,6 @@ class _EditPatientScreenState extends State<EditPatientScreen> {
   }
 
   setData() {
-    print(_patient);
     setState(() {
       firstNameController.text = _patient['data']['first_name'];
       lastNameController.text = _patient['data']['last_name'];
@@ -141,17 +140,12 @@ class _EditPatientScreenState extends State<EditPatientScreen> {
     var url = '';
     if (_image != null) {
       String filePath = 'images/patients/${firstNameController.text}_${DateTime.now().millisecondsSinceEpoch}.jpg';
-      print('file path');
-      print(filePath);
-
       setState(() {
         _uploadTask = _storage.ref().child(filePath).putFile(_image);
       });
       await _uploadTask.onComplete;
       if (_uploadTask.isComplete) {
         var url = await _storage.ref().child(filePath).getDownloadURL();
-        print('url');
-        print(url);
         setState(() {
           uploadedImageUrl = url;
         });
@@ -405,22 +399,16 @@ class _EditPatientScreenState extends State<EditPatientScreen> {
                                     data['body']['avatar'] = uploadedImageUrl;
                                   }
 
-                                  print(data);
-
                                   setState(() {
                                     isLoading = true;
                                   });
-                                  print('response');
                                   var response = await PatientController().update(data, true);
-                                  print('response');
-                                  print(response);
                                   setState(() {
                                     isLoading = false;
                                   });
 
                                   Navigator.of(context).pushReplacementNamed('/chwHome',);
                                   
-                                  print('response');
                                   // print(response);
                                   // return;
                                    

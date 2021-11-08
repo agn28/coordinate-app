@@ -8,7 +8,6 @@ class CarePlanRepositoryLocal {
   /// Create an assessment with observations.
   /// observations [data] is required as parameter.
   create(id, data, isSynced) async {
-    print('into local careplan create');
 
     final sql = '''INSERT INTO ${DatabaseCreator.careplanTable}
     (
@@ -30,10 +29,9 @@ class CarePlanRepositoryLocal {
 
     try {
       response = await db.rawInsert(sql, params);
-      print(response);
+
     } catch (error) {
-      print('local careplan create error');
-      print(error);
+
     }
     return response;
   }
@@ -55,13 +53,13 @@ class CarePlanRepositoryLocal {
     try {
       return await db.rawUpdate(sql, params);
     } catch (error) {
-      print('local careplan update error');
+
       return;
     }
   }
 
   completeLocalCarePlan(id, data, comment, isSynced) async {
-    print(data['meta']);
+
     data['body']['comment'] = comment;
     data['meta']['status'] = 'completed';
     data['meta']['completed_at'] = DateFormat('y-MM-d').format(DateTime.now());
@@ -81,10 +79,9 @@ class CarePlanRepositoryLocal {
     var response;
     try {
       response = await db.rawUpdate(sql, params);
-      print('sql $response');
+
     } catch (error) {
-      print('local careplan update error');
-      print(error);
+
     }
     DatabaseCreator.databaseLog('Update careplan', sql, null, response, params);
     return response;
@@ -109,10 +106,9 @@ class CarePlanRepositoryLocal {
 
     try {
       careplan = await db.rawQuery(sql);
-      print('careplanbyId $careplan');
+
     } catch (error) {
-      print('error');
-      print(error);
+
       return;
     }
     return careplan;
@@ -126,8 +122,7 @@ class CarePlanRepositoryLocal {
     try {
       response = await db.rawQuery(sql);
     } catch (error) {
-      print('error');
-      print(error);
+
       return;
     }
 
@@ -135,8 +130,7 @@ class CarePlanRepositoryLocal {
   }
 
   Future<void> updateLocalStatus(uuid, isSynced) async {
-    print('into updating observation status');
-    print('uuid ' + uuid);
+
 
     final sql = '''UPDATE ${DatabaseCreator.observationTable} SET
       is_synced = ?
@@ -146,11 +140,9 @@ class CarePlanRepositoryLocal {
 
     try {
       response = await db.rawUpdate(sql, params);
-      print('update local response');
-      print(response);
+
     } catch (error) {
-      print('error');
-      print(error);
+
       return;
     }
     return response;

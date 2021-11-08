@@ -55,7 +55,6 @@ class Auth {
 
   isExpired() {
     if (localAuth != {} && localAuth['expirationTime'] != null) {
-      print('isexpired ${DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())}');
       return DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now());
     } else return true;
   }

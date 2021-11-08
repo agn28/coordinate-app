@@ -82,7 +82,6 @@ getQuestionText(context, question) {
   var locale = Localizations.localeOf(context);
 
   if (locale == Locale('bn', 'BN')) {
-    print('true');
     return question['question_bn'];
   }
   return question['question'];
@@ -119,13 +118,11 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
   void initState() {
     super.initState();
     Helpers().clearObservationItems();
-    print('new patient questionniare chcp screen');
     _patient = Patient().getPatient();
     _checkAuth();
     clearForm();
     isLoading = false;
 
-    print(Language().getLanguage());
     nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
 
     prepareQuestions();
@@ -136,10 +133,8 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
   }
 
   getLanguage() async {
-    print('language s');
     final prefs = await SharedPreferences.getInstance();
 
-    print(Localizations.localeOf(context));
   }
 
 
@@ -184,20 +179,16 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
     //   isLoading = false;
     // });
 
-    print("CenterData: $centerData");
-
     if (centerData['error'] != null && !centerData['error']) {
       clinicTypes = centerData['data'];
       for(var center in clinicTypes) {
         if(isNotNull(_patient['data']['center']) && center['id'] == _patient['data']['center']['id']) {
-          print('selectedCenter $center');
           setState(() {
             selectedtype = center;
           });
         }
       }
     }
-    print("center: $clinicTypes");
   }
 
 
@@ -207,7 +198,6 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
         _currentStep = _currentStep + 1;
         nextText = 'COMPLETE';
       } else if (_currentStep == 4) {
-        print("sttep4");
         checkData();
       } else {
         _currentStep = _currentStep + 1;
@@ -362,7 +352,6 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
 
   createObservations() {
 
-    print('_currentStep $_currentStep');
     if (diastolicEditingController.text != '' && systolicEditingController.text != '' && pulseRateEditingController.text != "") {
     BloodPressure().addItem('left', int.parse(systolicEditingController.text), int.parse(diastolicEditingController.text), int.tryParse(pulseRateEditingController.text), null);
       var formData = {
@@ -445,13 +434,11 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
 
   void jumpToEnd(){
     final endPosition = scrollController.position.maxScrollExtent;
-    print('end position: $endPosition');
     scrollController.jumpTo(endPosition);
   }
 
   void jumpToStart(){
     final startPosition = scrollController.position.minScrollExtent;
-    print('start position: $startPosition');
     scrollController.jumpTo(startPosition);
   }
 
@@ -518,7 +505,6 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                   setState(() {
                     nextHide = false;
                     _currentStep > 0 ? _currentStep = _currentStep - 1:null;
-                    print('currentStep: $_currentStep');
                     if( _currentStep == 2){
                       jumpToStart();
                     }
@@ -554,7 +540,6 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
             Expanded(
               child: _currentStep < _mySteps().length || nextHide ? FlatButton(
                 onPressed: () {
-                    print('_currentStep $_currentStep');
                     if (_currentStep == 0) {
                       Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
                       AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
@@ -674,7 +659,6 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                         'education': educationController.text,
                         'tribe': isTribe
                       };
-                      print('relativeAdditionalData $relativeAdditionalData');
                       Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
                       AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
                       setState(() {
@@ -683,7 +667,6 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                       return;
                     }
                     if (_currentStep == 4) {
-                      print('hello');
                       if (randomBloodController.text == '' ||
                         fastingBloodController.text == '' ||
                         habfController.text == '' ||
@@ -806,7 +789,6 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
         );
       }
     );
-    print("NoYes : $response");
     return response;
   }
 
@@ -815,8 +797,6 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
   _getAuthData() async {
     var data = await Auth().getStorageAuth();
 
-    print('role');
-    print(data['role']);
     setState(() {
       role = data['role'];
     });
@@ -852,7 +832,6 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
       },
       'referred_from': 'community clinic',
     };
-    print('referralData: $referralData');
     await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -899,8 +878,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
   }
 
   Future _completeStep() async {
-    print('before missing popup');
-
+    
     var hasMissingData = checkMissingData();
     var hasOptionalMissingData = checkOptionalMissingData();
 
@@ -915,13 +893,11 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
 
     var patient = Patient().getPatient();
 
-    print(patient['data']['age']);
     var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
     // if (nextVisitDate != '') {
     //   encounter['body']['next_visit_date'] = nextVisitDate;
     // }
-    print('dataStatus: $dataStatus');
-     encounterData = {
+    encounterData = {
         'context': context,
         'dataStatus': 'incomplete',
       };
@@ -1052,13 +1028,11 @@ checkMissingData() {
   if (diastolicEditingController.text == '' ||
       systolicEditingController.text == '' ||
       pulseRateEditingController.text == '') {
-    print('blood pressure missing');
     return true;
   }
 
   if (heightEditingController.text == '' ||
       weightEditingController.text == '') {
-    print('body measurement missing');
     return true;
   }
 
@@ -1066,7 +1040,6 @@ checkMissingData() {
       fastingBloodController.text == '' &&
       habfController.text == '' &&
       hba1cController.text == '') {
-    print('blood sugar missing');
     return true;
   }
 
@@ -1078,7 +1051,6 @@ checkOptionalMissingData() {
     weightEditingController.text == '' ||
     waistEditingController.text == ''||
     hipEditingController.text == '') {
-    print('body measurement optional missing');
     return true;
   }
 
@@ -1086,7 +1058,6 @@ checkOptionalMissingData() {
       fastingBloodController.text == '' ||
       habfController.text == '' ||
       hba1cController.text == '') {
-    print('blood sugar optinal missing');
     return true;
   }
 
@@ -1094,7 +1065,6 @@ checkOptionalMissingData() {
     ldlController.text == '' ||
     hdlController.text == '' ||
     tgController.text == '') {
-    print('lipid profile optinal missing');
     return true;
   }
 
@@ -1103,7 +1073,6 @@ checkOptionalMissingData() {
     potassiumController.text == '' ||
     ketonesController.text == '' ||
     proteinController.text == '') {
-    print('additional optinal missing');
     return true;
   }
 
@@ -1213,7 +1182,6 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                                                                       option)];
 
                                                             var selectedOption = medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)];
-                                                            print('selectedOption $selectedOption');
                                                             medicationQuestions['items'].forEach((qtn) {
                                                               if(qtn['type'].contains('heart') || qtn['type'].contains('heart_bp_diabetes')) {
 
@@ -1221,21 +1189,14 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                                                                 medicalHistoryAnswers.forEach((ans) {
                                                                   if(ans == 'yes') {
                                                                     medicalHistoryAnswerYes = true;
-                                                                    print('medicalHistoryAnswerYes $ans');
                                                                   }
                                                                 });
                                                                 if (!medicalHistoryAnswerYes) {
                                                                   medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
-                                                                  print('exceptional if');
                                                                 }
                                                               } else if(qtn['type'].contains(question['type']) && selectedOption == 'no') {
                                                                 medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
-                                                                print('if');
                                                               }
-                                                              print(qtn['type']);
-                                                              print(question['type']);
-                                                              print('qtn $qtn');
-                                                              print('medicationAnswers ${medicationAnswers}');
                                                             });
                                                         });
                                                       },
@@ -1311,7 +1272,6 @@ class _MedicationState extends State<Medication> {
     if (medicationQuestion['type'].contains('medication')) {
       var mainType =
           medicationQuestion['type'].replaceAll('_regular_medication', '');
-      print('mainType ' + mainType);
       var matchedMedicationQuestion = medicationQuestions['items']
           .where((item) => item['type'] == mainType)
           .first;
@@ -1490,8 +1450,6 @@ class _MedicationState extends State<Medication> {
                                                         child: FlatButton(
                                                           onPressed: () {
                                                             setState(() {
-                                                              print(
-                                                                  medicalHistoryAnswers);
                                                               medicationAnswers[
                                                                   medicationQuestions[
                                                                           'items']
@@ -3164,8 +3122,6 @@ getDropdownOptionText(context, list, value) {
 
     if (list['options_bn'] != null) {
       var matchedIndex = list['options'].indexOf(value);
-      print('matchedIndex $matchedIndex');
-      print(list['options_bn'][matchedIndex]);
       return list['options_bn'][matchedIndex];
     }
     return StringUtils.capitalize(value);
@@ -3693,7 +3649,6 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
   void initState() {
     super.initState();
 
-    print('prevScreen ${widget.prevScreen}');
     conditions = [];
     carePlansEmpty = false;
     getRiskQuestionAnswer();
@@ -3704,22 +3659,14 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
   }
 
   getRiskQuestionAnswer(){
-    // print('getRiskQuestionAnswer');
     var riskQuestions = Questionnaire().questions['new_patient']['risk_factors'];
-    // print('riskQuestions $riskQuestions');
     riskQuestions['items'].forEach((item) {
-       print('risk factor: ${item} \n');
       if(item['type'] == 'smoking'){
-       print('riskAnswers: ${riskAnswers} \n');
-        smokingAnswer = riskAnswers[riskQuestions['items'].indexOf(item)];
+       smokingAnswer = riskAnswers[riskQuestions['items'].indexOf(item)];
         // riskAnswers[0]
-        print('riskAnswers: answer: $smokingAnswer');
-        print('SMOKING $smokingAnswer');
       }
       if(item['type'] == 'smokeless-tobacco'){
         smokelessTobaccoAnswer = riskAnswers[riskQuestions['items'].indexOf(item)];
-        print('riskAnswers: smokelessTobaccoAnswer: $smokelessTobaccoAnswer');
-        print('SMOKEless tobacco $smokelessTobaccoAnswer');
       }
     });
 
@@ -3741,7 +3688,6 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
     // });
     lastAssessment = await AssessmentController().getLastAssessmentByPatient();
 
-    print('lastAssessment $lastAssessment');
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
       if(lastAssessment['data']['body']['follow_up_info'] != null && lastAssessment['data']['body']['follow_up_info'].isNotEmpty){
         var followUpInfoChw = lastAssessment['data']['body']['follow_up_info'].where((info)=> info['type'] == 'chw');
@@ -3763,7 +3709,6 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
       setState(() {
         lastEncounterType = lastAssessment['data']['body']['type'];
         lastEncounterDate = getDate(lastAssessment['data']['meta']['created_at']);
-        print('lastEncounterDate ${lastEncounterDate}');
       });
     }
     // setState(() {
@@ -3900,13 +3845,12 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
     var date = '';
 
     if (encounters.length > 0) {
-    print('encounters ${encounters[0]}');
       var lastEncounter = encounters[0];
       date = lastEncounter['data']['next_visit_date'] ?? '';
     }
 
     return date;
-  }
+  } 
 
 
 
@@ -3916,11 +3860,9 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
     return WillPopScope(
       onWillPop: () async {
       if(widget.prevScreen == 'followup') {
-          print('WillPopScope if');
           Navigator.of(context).pushNamed( '/chwNavigation', arguments: 1);
           return true;
         } else {
-          print('WillPopScope else');
           Navigator.pop(context);
           return true;
         }
@@ -4297,7 +4239,6 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
     // }
 
     if (counsellingQuestion['type'] == 'medical-adherence') {
-      print('medicationAdh $medicationAnswers');
       if (medicationAnswers[1] == 'no' || medicationAnswers[3] == 'no' ||medicationAnswers[5] == 'no' || medicationAnswers[7] == 'no') {
         return true;
       }
@@ -4811,9 +4752,7 @@ class _MedicationsDispenseState extends State<MedicationsDispense> {
                                     color: Colors.blue[800],
                                     textColor: Colors.white, 
                                     onPressed: () async {
-                                      print('id ${item['medId']}');
                                       var response = await PatientController().dispenseMedicationByPatient(item['medId'], textEditingControllers[item['medId']].text);
-                                      print('response $response');
                                       if(!response['error']) {
                                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                           content: Text(AppLocalizations.of(context).translate('dataSaved')),
@@ -4885,7 +4824,6 @@ class _CreateReferState extends State<CreateRefer> {
   void initState() {
     super.initState();
     // _patient = Patient().getPatient();
-    print(Language().getLanguage());
     // _getAuthData();
     // getCenters();
     referralReasons = referralReasonOptions['options'];
@@ -5059,7 +4997,6 @@ class _CreateReferState extends State<CreateRefer> {
                             onChanged: (value) {
                               setState(() {
                                 selectedtype = value;
-                                print('selectedtype $selectedtype');
                               });
                             },
                           ),
@@ -5816,18 +5753,15 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                         borderRadius: BorderRadius.circular(3)),
                                     child: FlatButton(
                                         onPressed: () async {
-                                          print("hello");
-
+                                          
                                           widget.parent.setLoader(true);
 
                                           var patient = Patient().getPatient();
 
-                                          print(patient['data']['age']);
                                           // return;
                                           // var response = await AssessmentController().createOnlyAssessment('new patient questionnaire', '', '');
 
                                           widget.parent.setLoader(false);
-                                          print('successss');
                                           return;
 
                                           if (patient['data']['age'] != null &&
@@ -5851,7 +5785,6 @@ class _InitialCounsellingState extends State<InitialCounselling> {
 
                                           widget.parent.goToHome(false, null);
 
-                                          print('response');
                                           // print(response);
                                         },
                                         materialTapTargetSize:

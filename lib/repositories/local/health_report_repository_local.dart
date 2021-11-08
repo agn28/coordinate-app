@@ -5,7 +5,6 @@ import 'package:nhealth/repositories/local/database_creator.dart';
 
 class HealthReportRepositoryLocal {
   create(id, data, isSynced) async {
-    print('into local healthreport create');
 
     final sql = '''INSERT INTO ${DatabaseCreator.healthReportTable}
     (
@@ -27,10 +26,9 @@ class HealthReportRepositoryLocal {
 
     try {
       response = await db.rawInsert(sql, params);
-      print(response);
+
     } catch (error) {
-      print('local health report create error');
-      print(error);
+
     }
     return response;
   }
@@ -52,10 +50,9 @@ class HealthReportRepositoryLocal {
     var response;
     try {
       response = await db.rawUpdate(sql, params);
-      print('sql $response');
+
     } catch (error) {
-      print('local health report update error');
-      print(error);
+
     }
     DatabaseCreator.databaseLog('Update health report', sql, null, response, params);
     return response;
@@ -82,10 +79,9 @@ class HealthReportRepositoryLocal {
 
     try {
       healthReport = await db.rawQuery(sql);
-      print('healthReportbyId $healthReport');
+
     } catch (error) {
-      print('error');
-      print(error);
+
       return;
     }
     return healthReport;
@@ -106,8 +102,7 @@ class HealthReportRepositoryLocal {
     try {
       response = await db.rawQuery(sql);
     } catch (error) {
-      print('error');
-      print(error);
+
       return;
     }
 

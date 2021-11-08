@@ -80,7 +80,6 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
-    print('followup_patient ${_patient}');
     dueCarePlans = [];
     completedCarePlans = [];
     upcomingCarePlans = [];
@@ -88,9 +87,6 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     referrals = [];
     pendingReferral = null;
     carePlansEmpty = false;
-    print('encounterData ${widget.encounterData}');
-    print('prevScreen ${widget.prevScreen}');
-    print('pid ${Patient().getPatient()['id']}');
     
     _checkAvatar();
     _checkAuth();
@@ -244,13 +240,10 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
 
   var waitCount = 0;
   waitForReport() async {
-    print('In wait Report');
     var lastReport = await HealthReportController().getLastReport(context);
 
-    print('lastReport $lastReport');
-
+   
       if (lastReport['error'] == true && waitCount < 5) {
-        print('waitCount $waitCount');
         waitCount++;
         await Future.delayed(const Duration(seconds: 5));
         waitForReport();
@@ -274,14 +267,12 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
   }
 
   getReport() async {
-    print('In get Report');
     // return;
     setState(() {
       isLoading = true;
     });
 
     var data = await waitForReport();
-    print('getReport $data');
     // var data = await HealthReportController().getLastReport(context);
     
     // if (data['error'] == true) {
@@ -383,8 +374,6 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     });
     encounters = await AssessmentController().getLiveAllAssessmentsByPatient();
 
-    print('encounters $encounters');
-
     if (encounters.isNotEmpty) {
       var allEncounters = encounters;
       await Future.forEach(allEncounters, (item) async {
@@ -436,7 +425,6 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     });
     lastAssessment = await AssessmentController().getLastAssessmentByPatient();
 
-    print('lastAssessment $lastAssessment');
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
       // lastEncounterDate = lastAssessment['data']['meta']['created_at'];
     
@@ -462,7 +450,6 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
       setState(() {
         lastEncounterType = lastAssessment['data']['body']['type'];
         lastEncounterDate = getDate(lastAssessment['data']['meta']['created_at']);
-        print('lastEncounterDate ${lastEncounterDate}');
       });
     }
     
@@ -474,12 +461,10 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     });
     lastFollowup = await AssessmentController().getLastAssessmentByPatient(key:'screening_type', value:'follow-up');
 
-    print('lastFollowup $lastFollowup');
     if(lastFollowup != null && lastFollowup.isNotEmpty) {
       if(lastFollowup['data']['body']['type'] == 'follow up visit (center)'
         && lastFollowup['data']['body']['status'] == 'incomplete') {
           lastFollowupType = lastFollowup['data']['body']['followup_type'];
-          print('lastFollowupType ${lastFollowupType}');
         }
     }
     
@@ -519,7 +504,6 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
         carePlans = data['data'];
       });
       carePlans = data['data'];
-      print('carePlans $carePlans');
       carePlans.forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");
         
@@ -532,10 +516,6 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
           endDate = format.parse(item['body']['activityDuration']['end']);
           startDate = format.parse(item['body']['activityDuration']['start']);
         } catch(err) {
-          print(item['body']['activityDuration']['start']);
-          print(item['body']['activityDuration']['end']);
-          // print('failed: ' );
-          print(err);
           DateFormat newFormat = new DateFormat("yyyy-MM-dd");
           endDate = DateTime.parse(item['body']['activityDuration']['end']);
           startDate = DateTime.parse(item['body']['activityDuration']['start']);
@@ -543,14 +523,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
           
         }
 
-        print('endDate');
-        print(endDate);
-        print(startDate);
 
-
-        print(endDate);
-        print(todayDate.isBefore(endDate));
-        print(todayDate.isAfter(startDate));
 
         // check due careplans
         if (item['meta']['status'] == 'pending') {
@@ -666,15 +639,15 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     return WillPopScope(
       onWillPop: () async {
         if(widget.prevScreen == 'encounter') {
-          print('WillPopScope if');
+
           Navigator.of(context).pushNamed('/firstCenterSearch');
           return true;
         } else if(widget.prevScreen == 'followup') {
-          print('WillPopScope else if');
+
           Navigator.of(context).pushNamed(FollowupSearchScreen.path);
           return true;
         } else {
-          print('WillPopScope home');
+
           // Navigator.pushNamed(context, '/home');
           Navigator.of(context).pushNamed(FollowupSearchScreen.path);
           return true;
@@ -1680,25 +1653,21 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                     if(widget.prevScreen == 'encounter') {
                                       if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
                                       {
-                                        print('edit encounter');
-                                        print('${widget.encounterData['encounter']}');
                                         var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
 
                                       } else {
-                                        print('new encounter');
+
                                         // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
                                         var response = await AssessmentController().createAssessmentWithObservationsLive('new ncd center assessment', assessmentStatus: 'incomplete', createdAt: creationDateTimeController.text);
                                       }
                                     } else if(widget.prevScreen == 'followup') {
                                       if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
                                       {
-                                        print('edit followup');
-                                        print('${widget.encounterData['encounter']}');
+
                                         // var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
                                         var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
 
                                       } else {
-                                        print('new followup');
                                         // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
                                           var response = await AssessmentController().createAssessmentWithObservationsLive('follow up visit (center)', assessmentStatus: 'incomplete', createdAt: creationDateTimeController.text);
                                       }
@@ -1733,13 +1702,11 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                       var completedAt = status == 'complete' ? completionDateTimeController.text : '';
                                       if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
                                       {
-                                        print('edit encounter');
-                                        print('status: $status');
+
                                         // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
                                         var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations'], completedAt: completedAt);
                                       } else {
-                                        print('new encounter');
-                                        print('status: $status');
+
                                         // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', status, '');
                                         var response = await AssessmentController().createAssessmentWithObservationsLive('new ncd center assessment', assessmentStatus: status, createdAt: creationDateTimeController.text, completedAt: completedAt);
                                       }
@@ -1750,12 +1717,12 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                       var completedAt = status == 'complete' ? completionDateTimeController.text : '';
                                       if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
                                       {
-                                        print('edit followup');
+
                                         // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
                                           var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations'], completedAt: completedAt);
 
                                       } else {
-                                        print('new followup');
+
                                         // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
                                           var response = await AssessmentController().createAssessmentWithObservationsLive('follow up visit (center)', assessmentStatus: status, createdAt: creationDateTimeController.text, completedAt: completedAt);
                                       }
@@ -2463,7 +2430,6 @@ class _GoalItemState extends State<GoalItem> {
   getCompletedDate(goal) {
     var data = '';
     DateTime date;
-    print('asdknas');
     goal['items'].forEach((item) {
       // print(item['body']['activityDuration']['end']);
       DateFormat format = new DateFormat("E LLL d y");

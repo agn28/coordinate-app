@@ -117,9 +117,7 @@ class _ChwReferralPatientsScreenState extends State<ChwReferralPatientsScreen> {
     });
 
     var data = await PatientController().getReferralPatients();
-    print('referral response');
-    print(data);
-
+    
     if (data['message'] == 'Unauthorized') {
       Helpers().logout(context);
     }

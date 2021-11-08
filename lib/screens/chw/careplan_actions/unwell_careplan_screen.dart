@@ -224,7 +224,6 @@ class _UnwellCausesState extends State<UnwellCauses> {
                 onChanged: (value) {
                   setState(() {
                     selectedReason = value;
-                    print('selectedReason $selectedReason');
                   });
                 },
               ),

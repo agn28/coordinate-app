@@ -38,7 +38,6 @@ class _ChcpFullAssessmentFeelingScreenState extends State<ChcpFullAssessmentFeel
   @override
   void initState() {
     super.initState();
-    print('chcp full assessment feeling');
     _patient = Patient().getPatient();
 
   }

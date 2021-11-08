@@ -72,9 +72,8 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
   @override
   void initState() {
     super.initState();
-    print('nurse patient summery');
+
     _patient = Patient().getPatient();
-    print('_patient $_patient');
     dueCarePlans = [];
     completedCarePlans = [];
     upcomingCarePlans = [];
@@ -82,7 +81,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     referrals = [];
     pendingReferral = null;
     carePlansEmpty = false;
-    print(widget.checkInState);
     
     _checkAvatar();
     _checkAuth();
@@ -168,7 +166,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
 
   getIncompleteAssessment() async {
 
-    print("getIncompleteAssessment");
 
     if (Auth().isExpired()) {
       Auth().logout();
@@ -180,7 +177,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     });
     var patientId = Patient().getPatient()['id'];
     var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId, key:'type', value:'new ncd center assessment');
-    print('incompleteData ${data}');
     //TODO: need to get performer name from local
     // if(data != null && data['data']['assessment']['body']['performed_by'] != null)
     // {
@@ -384,7 +380,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     });
     lastAssessment = await AssessmentController().getLastAssessmentByPatient();
 
-    print('lastAssessment $lastAssessment');
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
       // lastEncounterDate = lastAssessment['data']['meta']['created_at'];
       // nextVisitDate = lastAssessment['data']['body']['next_visit_date'];
@@ -392,7 +387,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
         nextVisitDate = lastAssessment['data']['body']['next_visit_date'] != null && lastAssessment['data']['body']['next_visit_date'] != '' ? DateFormat("MMMM d, y").format(DateTime.parse(lastAssessment['data']['body']['next_visit_date'])):'';
         lastEncounterType = lastAssessment['data']['body']['type'];
         lastEncounterDate = getDate(lastAssessment['data']['meta']['created_at']);
-        print('lastEncounterDate ${lastEncounterDate}');
       });
     }
     
@@ -442,7 +436,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
 
   getPerformer(userId) async {
     var data =  await UserController().getUser(userId);
-    print('getPerformer $data');
     return data;
 
   }
@@ -483,8 +476,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
         carePlans = data['data'];
       });
       // carePlans = data['data'];
-      print('carePlans');
-      print(carePlans);
       data['data'].forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");
         
@@ -497,10 +488,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
           endDate = format.parse(item['body']['activityDuration']['end']);
           startDate = format.parse(item['body']['activityDuration']['start']);
         } catch(err) {
-          print(item['body']['activityDuration']['start']);
-          print(item['body']['activityDuration']['end']);
-          // print('failed: ' );
-          print(err);
           DateFormat newFormat = new DateFormat("yyyy-MM-dd");
           endDate = DateTime.parse(item['body']['activityDuration']['end']);
           startDate = DateTime.parse(item['body']['activityDuration']['start']);
@@ -508,22 +495,11 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
           
         }
 
-        print('endDate');
-        print(endDate);
-        print(startDate);
-
-
-        print(endDate);
-        print(todayDate.isBefore(endDate));
-        print(todayDate.isAfter(startDate));
-
         // check due careplans
         if (item['meta']['status'] == 'pending') {
           if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
             var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-            // print(existedCp);
-            // print(item['body']['activityDuration']['start']);
-
+          
             if (existedCp.isEmpty) {
               var items = [];
               items.add(item);
@@ -538,9 +514,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
             }
           } else if (todayDate.isBefore(startDate)) {
             var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-            // print(existedCp);
-            // print(item['body']['activityDuration']['start']);
-
+          
             if (existedCp.isEmpty) {
               var items = [];
               items.add(item);
@@ -1008,8 +982,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                             Container(
                               child: FlatButton(
                                 onPressed: () {
-                                  print('hello');
-                                  print("patientDataincomplete ${_patient['data']} ");
                                   Navigator.of(context).pushNamed('/editIncompleteEncounter',);
                                 },
                                 color: kPrimaryColor,

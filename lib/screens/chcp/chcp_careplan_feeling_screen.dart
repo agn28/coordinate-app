@@ -88,7 +88,6 @@ class _ChcpCareplanFeelingScreenState extends State<ChcpCareplanFeelingScreen> {
                                 ),
                                 child: FlatButton(
                                   onPressed: () async {
-                                    print('hello');
                                     // return;
                                     // Navigator.of(context).pushNamed(NewPatientQuestionnaireScreen.path);
                                     // if (widget.communityClinic != null) {

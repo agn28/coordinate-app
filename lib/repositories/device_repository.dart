@@ -23,7 +23,7 @@ class DeviceRepository {
       return json.decode(response.body);
       
     }).catchError((error) {
-      print('error ' + error.toString());
+
     });
   }
 

@@ -74,8 +74,6 @@ class _ChwReferralListScreenState extends State<ChwReferralListScreen> {
     var patientID = Patient().getPatient()['id'];
 
     var data = await FollowupController().getFollowupsByPatient(patientID);
-    print('DATA');
-    print(data);
     
 
     // if (data['message'] == 'Unauthorized') {
@@ -111,8 +109,6 @@ class _ChwReferralListScreenState extends State<ChwReferralListScreen> {
     });
 
     var data = await PatientController().getReferralPatients();
-
-    print(data['data'][0]['body']['pending_referral']);
 
     if (data['message'] == 'Unauthorized') {
       Helpers().logout(context);
