@@ -1,5 +1,6 @@
 
 import 'dart:convert';
+import 'package:device_info/device_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 var localAuth = {};
@@ -34,6 +35,9 @@ class Auth {
         'status': false
       };
     }
+
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
     
     return {
       'status': true,
@@ -44,7 +48,8 @@ class Auth {
       'address': authData['address'],
       'accessToken': authData['accessToken'],
       'refreshToken': authData['refreshToken'],
-      'expirationTime': authData['expirationTime']
+      'expirationTime': authData['expirationTime'],
+      'deviceId': androidInfo.androidId
     };
   }
 

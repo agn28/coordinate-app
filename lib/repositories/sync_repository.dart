@@ -118,6 +118,43 @@ class SyncRepository {
     }
   }
 
+  fetchLatestSyncs() async {  
+    var authData = await Auth().getStorageAuth() ;
+    print('fetchLatestSyncs ${authData['deviceId']}');
+
+    var response;
+
+    try {
+      response =  await http.get(
+        apiUrl + 'syncs/fetch/'+authData['deviceId'],
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + authData['accessToken']
+        },
+      ).timeout(Duration(seconds: 120));
+      return json.decode(response.body);
+    } on SocketException {
+      return {
+        'exception': true,
+        'type': 'no_internet',
+        'message': 'No internet'
+      };
+    } on TimeoutException {
+      return {
+        'exception': true,
+        'type': 'poor_network',
+        'message': 'Slow internet'
+      };
+    } on Error catch(err) {
+      return {
+        'exception': true,
+        'type': 'unknown',
+        'message': 'Something went wrong'
+      };
+    }
+  }
+
   checkLocalLocationData() async {
     final sql = '''SELECT * FROM ${DatabaseCreator.locationTable}''';
     var response;
@@ -173,31 +210,58 @@ class SyncRepository {
     }
     return updateResponse;
   }
+  
+  updateLatestLocalSync(sync) async {
+    final updateSql = '''UPDATE ${DatabaseCreator.syncTable}
+    SET document_id = ?,
+    collection = ?,
+    key = ?,
+    created_at = ?,
+    action = ?
+    WHERE id = ?''';
+    List<dynamic> params = [sync['document_id'], sync['collection'], sync['key'], sync['created_at'], sync['action'], sync['id']];
+    var updateResponse;
+
+    try {
+      updateResponse = await db.rawUpdate(updateSql, params);
+      print('update sync $updateResponse');
+    } catch (error) {
+      return;
+    }
+    return updateResponse;
+  }
 
   getTempSyncs() async {
-    final sql = '''SELECT * FROM ${DatabaseCreator.latestSyncTable}''';
-    var response;
+    final sql = '''SELECT * FROM ${DatabaseCreator.latestSyncTable} WHERE is_synced=0''';
     try {
-      response = await db.rawQuery(sql);
-      print('latestSyncTable $response');
+      return await db.rawQuery(sql);
     } on DatabaseException catch (error) {
-      print('latestSyncTableError $error');
+      return;
     }
-    return response;
+  }
+
+  getTempSyncsCount() async {
+    final sql = '''SELECT count(*) FROM ${DatabaseCreator.latestSyncTable} WHERE is_synced=0''';
+    try {
+      return await db.rawQuery(sql);
+    } on DatabaseException catch (error) {
+      return;
+    }
   }
 
   createTempSyncs(tempSyncs) async {
+    print('createTempSyncs');
     await db.transaction((txn) async {
-      // final batch = txn.batch();
+      final batch = txn.batch();
       // try {
-        final sql = '''INSERT INTO ${DatabaseCreator.latestSyncTable}
-        (id, document_id, collection, action, key, created_at)
-        VALUES (?, ?, ?, ?, ?, ?)''';
+        final sql = '''INSERT OR REPLACE INTO ${DatabaseCreator.latestSyncTable}
+        (id, document_id, collection, action, key, created_at, is_synced)
+        VALUES (?, ?, ?, ?, ?, ?, ?)''';
         for (var item in tempSyncs) {
           try {
             print('syncId ${item['id']}');
-            List<dynamic> params = [item['id'], item['document_id'], item['collection'], item['action'], item['key'], item['created_at']];
-            await txn.rawInsert(sql, params);
+            List<dynamic> params = [item['id'], item['document_id'], item['collection'], item['action'], item['key'], item['created_at'], 0];
+            await batch.rawInsert(sql, params);
           } catch (error) {
             print('error $error');
           }
@@ -209,8 +273,30 @@ class SyncRepository {
       //   //   batch.rawDelete('DELETE FROM ${DatabaseCreator.latestSyncTable} WHERE id = ?', [item['id']]);
       //   // }
       // }
-      // await batch.commit();
+      await batch.commit();
     });
+  }
+
+  deleteTempSyncs(id) async {
+    try {  
+      return await db.rawDelete('DELETE FROM ${DatabaseCreator.latestSyncTable} WHERE id = ?', [id]);
+    } on DatabaseException catch (error) {
+      print('deleteError $error');
+      return;
+    }
+  }
+  updateSyncStatus(id, isSynced) async {
+    final sql = '''UPDATE ${DatabaseCreator.latestSyncTable} SET
+      is_synced = ?
+      WHERE id = ?''';
+    List<dynamic> params = [isSynced, id];
+    var response;
+    try {
+      response = await db.rawUpdate(sql, params);
+      return response;
+    } catch(error) {
+      return;
+    }
   }
 
   clearTempSyncs(tempSyncs) async {
@@ -219,7 +305,7 @@ class SyncRepository {
       // try {
         for (var item in tempSyncs) {
           try {  
-            await txn.rawDelete('DELETE FROM ${DatabaseCreator.latestSyncTable} WHERE id = ?', [item['id']]);
+            await batch.rawDelete('DELETE FROM ${DatabaseCreator.latestSyncTable} WHERE id = ?', [item['id']]);
           } catch (error) {
             print('deleteError $error');
           }
@@ -229,7 +315,7 @@ class SyncRepository {
       // } finally {
       //   print('temp sync cleared');
       // }
-      // await batch.commit();
+      await batch.commit();
     });
   }
 
@@ -244,9 +330,8 @@ class SyncRepository {
 
       try {
         updateResponse = await db.rawUpdate(updateSql, params);
+        print('updateResponse $updateResponse $params');
       } catch (error) {
-        print('error');
-        print(error);
         return;
       }
       return updateResponse;

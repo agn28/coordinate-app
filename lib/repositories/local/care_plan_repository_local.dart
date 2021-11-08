@@ -52,16 +52,12 @@ class CarePlanRepositoryLocal {
       data['meta']['status'],
       isSynced
     ];
-    var response;
     try {
-      response = await db.rawUpdate(sql, params);
-      print('sql $response');
+      return await db.rawUpdate(sql, params);
     } catch (error) {
       print('local careplan update error');
-      print(error);
+      return;
     }
-    DatabaseCreator.databaseLog('Update careplan', sql, null, response, params);
-    return response;
   }
 
   completeLocalCarePlan(id, data, comment, isSynced) async {

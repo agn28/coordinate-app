@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:nhealth/concept-manager/concept_manager.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -50,6 +52,16 @@ void main() async {
     await ConceptManager().sync();
     DatabaseCreator().dBCreatedStatusChange(false);
   }
+  const oneSec = const Duration(minutes: 20);
+
+  Timer.periodic(oneSec, (Timer timer) {
+    print('timer ${DateTime.now()}'); 
+    syncController.fetchLatestSyncs();// This statement will be printed after every one second
+  }); 
+  Timer.periodic(Duration(seconds: 30), (Timer timer) {
+    print('checktimer ${DateTime.now()}'); 
+    syncController.checktoSync();// This statement will be printed after every one second
+  });
 }
 _getDevices() async {
   var data = await DeviceController().getDevices();

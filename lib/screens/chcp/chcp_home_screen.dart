@@ -75,7 +75,7 @@ class _ChcpHomeState extends State<ChcpHomeScreen> {
       return Future.value(null);
     }
 
-    return _updateConnectionStatus(result);
+    // return _updateConnectionStatus(result);
   }
 
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
@@ -108,8 +108,8 @@ class _ChcpHomeState extends State<ChcpHomeScreen> {
 
   getSyncData() async {
     await syncController.getAllStatsData();
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    await _updateConnectionStatus(connectivityResult);
+    // var connectivityResult = await (Connectivity().checkConnectivity());
+    // await _updateConnectionStatus(connectivityResult);
     // if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
     //   syncController.isConnected.value = true;
     //   await syncController.initializeSync();
