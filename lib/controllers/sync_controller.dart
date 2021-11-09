@@ -249,7 +249,7 @@ class SyncController extends GetxController {
       isSyncing.value = true;
       await checkLocationData();
       await checkCenterData();
-      // await getLocalSyncKey();
+      await fetchLatestSyncs();
 
       //sync to live
       // if (!isPoorNetwork.value) {
@@ -1068,11 +1068,13 @@ class SyncController extends GetxController {
   }
 
   checktoSync() async {
-    //TODO need to check sync_type later
-    int syncCount = Sqflite.firstIntValue(await syncRepo.getTempSyncsCount());
-    if(syncCount > 0) {
-      syncLivePatientsToLocal();
-    }
+    // if(!isSyncingToLocal.value) {
+      //TODO need to check sync_type later
+      int syncCount = Sqflite.firstIntValue(await syncRepo.getTempSyncsCount());
+      if(syncCount > 0) {
+        syncLivePatientsToLocal();
+      }
+    // }
   }
 
   syncLivePatientsToLocal() async {
@@ -1100,61 +1102,6 @@ class SyncController extends GetxController {
     for (var item in tempSyncs) {
       isSyncingToLocal.value = true;
 
-      // if (item['collection'] == 'patients') {
-      //   if (item['action'] == 'create') {
-      //     var patient = await patientController.getPatient(item['document_id']);
-      //     if (isNotNull(patient) && isNotNull(patient['error']) && !patient['error'] && isNotNull(patient['data'])) {
-      //       var existingLocalPatient = await PatientReposioryLocal().getPatientById(patient['data']['id']);
-      //       //Patient already exists in local, needs to be updated
-      //       var localPatient;
-      //       if(isNotNull(existingLocalPatient) && existingLocalPatient.isNotEmpty) {
-      //         localPatient = await PatientReposioryLocal().updateFromLive(patient['data']['id'], patient['data']);
-      //       } else {
-      //         localPatient = await PatientReposioryLocal().createFromLive(patient['data']['id'], patient['data']);
-      //       }
-
-      //       if (isNotNull(localPatient)) {
-      //         var updateSync = await updateLocalSyncKey(item['key']);
-      //         if (isNotNull(updateSync)) {
-      //           syncs.remove(item);
-      //         }
-      //       }
-      //     } else if (isNotNull(patient) && isNotNull(patient['message']) && patient['message'] == "No such document!") {
-      //       syncs.remove(item);
-      //     }
-      //   }
-      // }
-
-      // //TODO: refactor this repeated process
-      // else if (item['collection'] == 'assessments') {
-      //   if (item['action'] == 'create') {
-      //     var assessment =
-      //         await assessmentController.getAssessmentById(item['document_id']);
-      //     if (isNotNull(assessment) && isNotNull(assessment['error']) && !assessment['error'] && isNotNull(assessment['data'])) {
-      //       // print('creating local assessment');
-      //       // var localAssessment = await assessmentRepoLocal.createLocalAssessment(assessment['data']['id'], assessment['data'], true);
-      //       // print('after creating local assessment');
-      //       var existingLocalAssessment = await assessmentRepoLocal.getAssessmentById(assessment['data']['id']);
-      //       //Assessment already exists in local, needs to be updated
-      //       var localAssessment;
-      //       if(isNotNull(existingLocalAssessment) && existingLocalAssessment.isNotEmpty) {
-
-      //         localAssessment = await assessmentRepoLocal.updateLocalAssessment(assessment['data']['id'], assessment['data'], true);
-      //       } else {
-      //         localAssessment = await assessmentRepoLocal.createLocalAssessment(assessment['data']['id'], assessment['data'], true);
-      //       }
-      //       if (isNotNull(localAssessment)) {
-      //         var updateSync = await updateLocalSyncKey(item['key']);
-      //         if (isNotNull(updateSync)) {
-      //           syncs.remove(item);
-      //         }
-      //       }
-      //     } else if (isNotNull(assessment) && isNotNull(assessment['message']) && assessment['message'] == "No such document!") {
-      //       syncs.remove(item);
-      //     }
-      //   }
-      // }
-
       if (item['collection'] == 'patients') {
         if (item['action'] == 'create') {
           subPatients.add(item['document_id']);
@@ -1177,7 +1124,6 @@ class SyncController extends GetxController {
         }
       }
 
-      // TODO Call same function for orphan
       if (item['collection'] == 'observations') {
         if (item['action'] == 'create') {
           subObservations.add(item['document_id']);
@@ -1220,116 +1166,40 @@ class SyncController extends GetxController {
           }
         }
       }
-
-
-      // if (item['collection'] == 'referrals') {
-      //   if (item['action'] == 'create') {
-      //     var referral = await referralRepo.getReferralById(item['document_id']);
-      //     if (isNotNull(referral) && isNotNull(referral['error']) && !referral['error'] && isNotNull(referral['data'])) {
-
-      //       var existingLocalReferral = await referralRepoLocal.getReferralById(referral['data']['id']);
-      //       //Referral already exists in local, needs to be updated
-      //       var localReferral;
-      //       if(isNotNull(existingLocalReferral) && existingLocalReferral.isNotEmpty) {
-      //         localReferral = await referralRepoLocal.update(referral['data']['id'], referral['data'], true);
-      //       } else {
-      //         localReferral = await referralRepoLocal.create(referral['data']['id'], referral['data'], true);
-      //       }
-
-      //       if (isNotNull(localReferral)) {
-      //         var updateSync = await updateLocalSyncKey(item['key']);
-      //         if (isNotNull(updateSync)) {
-      //           syncs.remove(item);
-      //         }
-      //       }
-      //     } else if (isNotNull(referral) && isNotNull(referral['message']) && referral['message'] == "No such document!") {
-      //       syncs.remove(item);
-      //     }
-      //   }
-      // } else if (item['collection'] == 'care_plans') {
-      //   if (item['action'] == 'create') {
-      //     var careplan = await careplanRepo.getCarePlanById(item['document_id']);
-      //     if (isNotNull(careplan) && isNotNull(careplan['error']) && !careplan['error'] && isNotNull(careplan['data'])) {
-
-      //       var existingLocalCareplan = await careplanRepoLocal.getCareplanById(careplan['data']['id']);
-      //       //Careplan already exists in local, needs to be updated
-      //       var localCareplan;
-      //       if(isNotNull(existingLocalCareplan) && existingLocalCareplan.isNotEmpty) {
-      //         localCareplan = await careplanRepoLocal.update(careplan['data']['id'], careplan['data'], true);
-      //       } else {
-      //         localCareplan = await careplanRepoLocal.create(careplan['data']['id'], careplan['data'], true);
-      //       }
-
-      //       if (isNotNull(localCareplan)) {
-      //         var updateSync = await updateLocalSyncKey(item['key']);
-      //         if (isNotNull(updateSync)) {
-      //           syncs.remove(item);
-      //         }
-      //       }
-      //     } else if (isNotNull(careplan) && isNotNull(careplan['message']) && careplan['message'] == "No such document!") {
-      //       syncs.remove(item);
-      //     }
-      //   }
-      // } else if (item['collection'] == 'health_reports') {
-      //   if (item['action'] == 'create') {
-      //     var healthReport = await healthReportRepo.getHealthReportById(item['document_id']);
-
-      //     if (isNotNull(healthReport) && isNotNull(healthReport['error']) && !healthReport['error'] && isNotNull(healthReport['data'])) {
-
-      //       var existingLocalHealthReport = await healthReportRepoLocal.getHealthReportById(healthReport['data']['id']);
-      //       //HealthReport already exists in local, needs to be updated
-      //       var localHealthReport;
-      //       if(isNotNull(existingLocalHealthReport) && existingLocalHealthReport.isNotEmpty) {
-
-      //         localHealthReport = await healthReportRepoLocal.update(healthReport['data']['id'], healthReport['data'], true);
-      //       } else {
-      //         localHealthReport = await healthReportRepoLocal.create(healthReport['data']['id'], healthReport['data'], true);
-      //       }
-      //       if (isNotNull(localHealthReport)) {
-      //         var updateSync = await updateLocalSyncKey(item['key']);
-      //         if (isNotNull(updateSync)) {
-      //           syncs.remove(item);
-      //         }
-      //       }
-      //     } else if (isNotNull(healthReport) && isNotNull(healthReport['message']) && healthReport['message'] == "No such document!") {
-      //       syncs.remove(item);
-      //     }
-      //   }
-      // }
     }
 
 
     if (subPatients.length > 0) {
-      insertPatients(subPatients);
+      await insertPatients(subPatients);
       subPatients = [];
     }
 
     if (subAssessments.length > 0) {
-      insertAssessments(subAssessments);
+      await insertAssessments(subAssessments);
       subAssessments = [];
     }
 
     if (subObservations.length > 0) {
-      insertObservations(subObservations);
+      await insertObservations(subObservations);
       subObservations = [];
     }
 
     if (subReferrals.length > 0) {
-      insertReferrals(subReferrals);
+      await insertReferrals(subReferrals);
       subReferrals = [];
     }
 
     if (subCarePlans.length > 0) {
-      insertCarePlans(subCarePlans);
+      await insertCarePlans(subCarePlans);
       subCarePlans = [];
     }
 
     if (subHealthReports.length > 0) {
-      insertHealthReports(subHealthReports);
+      await insertHealthReports(subHealthReports);
       subHealthReports = [];
     }
 
-    await Future.delayed(const Duration(seconds: 10));
+    await Future.delayed(const Duration(seconds: 2));
     isSyncingToLocal.value = false;
     getAllStatsData();
   }
