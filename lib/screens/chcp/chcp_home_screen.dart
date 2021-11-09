@@ -479,261 +479,285 @@ class _ChcpHomeState extends State<ChcpHomeScreen> {
                             ],
                           ),
 
-                          SizedBox(height: 20,),
+                          SizedBox(height: 50,),
 
-                          Column(
-                              children: [
-                                SizedBox(
-                                  height: 30,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  Icons.arrow_upward_outlined,
+                                  size: 50,
+                                  color: kPrimaryGreenColor,
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    if (syncController.isSyncing.value)
-                                    Column(
-                                      children: [
-                                        Container(
-                                          width: 230,
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 15, horizontal: 10),
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                              color: kPrimaryAmberColor),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              if (syncController.isSyncingToLive.value)
-                                              Column(
-                                                children: [
-                                                  Text('${syncController.localNotSyncedPatients.value.length+syncController.localNotSyncedAssessments.value.length+syncController.localNotSyncedObservations.value.length+syncController.localNotSyncedReferrals.value.length+syncController.localNotSyncedCareplans.value.length+syncController.localNotSyncedHealthReports.value.length} data is syncing to server',
-                                                    style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500),
-                                                  ),
-                                                ],
-                                              )
-                                              else if (syncController.syncs.value.length > 0 && syncController.isSyncingToLocal.value)
-                                              Column(
-                                                children: [
-                                                  Text(
-                                                    '${syncController.syncs.value.length} data is syncing to deivce',
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w500),
-                                                  ),
-                                                ],
-                                              )
-                                              else
-                                              Column(
-                                                children: [
-                                                  Text(
-                                                    'Processing data',
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w500),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 20,
-                                        ),
-                                        CircularProgressIndicator(),
-                                      ],
-                                    )
-                                    else if (syncController.localNotSyncedPatients.value.length > 0 
-                                    || syncController.localNotSyncedAssessments.value.length > 0
-                                    || syncController.localNotSyncedObservations.value.length > 0
-                                    || syncController.localNotSyncedReferrals.value.length > 0
-                                    || syncController.localNotSyncedCareplans.value.length > 0
-                                    || syncController.localNotSyncedHealthReports.value.length > 0)
-                                      Container(
-                                        width: 300,
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 15, horizontal: 10),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            color: kPrimaryAmberColor),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              'You have ${syncController.localNotSyncedPatients.value.length + syncController.localNotSyncedAssessments.value.length + syncController.localNotSyncedObservations.value.length + syncController.localNotSyncedReferrals.value.length + syncController.localNotSyncedCareplans.value.length} device data left to sync',
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500),
-                                            )
-                                          ],
-                                        ),
-                                      )
-                                    else if (syncController.syncs.value.length >
-                                        0)
-                                      Container(
-                                        width: 300,
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 15, horizontal: 10),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            color: kPrimaryAmberColor),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              'You have ${syncController.syncs.value.length} server data left to sync',
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500),
-                                            )
-                                          ],
-                                        ),
-                                      )
-                                    else
-                                      Container(
-                                        width: 240,
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 15, horizontal: 10),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            color: Colors.greenAccent),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(Icons.check),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(
-                                              'All data has been synced',
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    if (!syncController.isSyncing.value)
-                                      IconButton(
-                                          icon: Icon(
-                                            Icons.sync,
-                                            size: 30,
-                                          ),
-                                          onPressed: () {
-                                            syncController.initializeSync();
-                                            // syncController.syncLocalDataToLiveByPatient();
-                                          })
-                                  ],
+                                onPressed: () {
+                               
+                              }),
+                              SizedBox(width: 30,),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.arrow_downward_outlined,
+                                  size: 50,
+                                  color: kPrimaryYellowColor,
                                 ),
+                                onPressed: () {
+                                
+                              })
+                            ]
+                          )
+                          // Column(
+                          //     children: [
+                          //       SizedBox(
+                          //         height: 30,
+                          //       ),
+                          //       Row(
+                          //         mainAxisAlignment: MainAxisAlignment.center,
+                          //         children: [
+                          //           if (syncController.isSyncing.value)
+                          //           Column(
+                          //             children: [
+                          //               Container(
+                          //                 width: 230,
+                          //                 padding: EdgeInsets.symmetric(
+                          //                     vertical: 15, horizontal: 10),
+                          //                 decoration: BoxDecoration(
+                          //                     borderRadius:
+                          //                         BorderRadius.circular(5),
+                          //                     color: kPrimaryAmberColor),
+                          //                 child: Row(
+                          //                   mainAxisAlignment:
+                          //                       MainAxisAlignment.center,
+                          //                   children: [
+                          //                     if (syncController.isSyncingToLive.value)
+                          //                     Column(
+                          //                       children: [
+                          //                         Text('${syncController.localNotSyncedPatients.value.length+syncController.localNotSyncedAssessments.value.length+syncController.localNotSyncedObservations.value.length+syncController.localNotSyncedReferrals.value.length+syncController.localNotSyncedCareplans.value.length+syncController.localNotSyncedHealthReports.value.length} data is syncing to server',
+                          //                           style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500),
+                          //                         ),
+                          //                       ],
+                          //                     )
+                          //                     else if (syncController.syncs.value.length > 0 && syncController.isSyncingToLocal.value)
+                          //                     Column(
+                          //                       children: [
+                          //                         Text(
+                          //                           '${syncController.syncs.value.length} data is syncing to deivce',
+                          //                           style: TextStyle(
+                          //                               fontSize: 16,
+                          //                               fontWeight:
+                          //                                   FontWeight.w500),
+                          //                         ),
+                          //                       ],
+                          //                     )
+                          //                     else
+                          //                     Column(
+                          //                       children: [
+                          //                         Text(
+                          //                           'Processing data',
+                          //                           style: TextStyle(
+                          //                               fontSize: 16,
+                          //                               fontWeight:
+                          //                                   FontWeight.w500),
+                          //                         ),
+                          //                       ],
+                          //                     )
+                          //                   ],
+                          //                 ),
+                          //               ),
+                          //               SizedBox(
+                          //                 height: 20,
+                          //               ),
+                          //               CircularProgressIndicator(),
+                          //             ],
+                          //           )
+                          //           else if (syncController.localNotSyncedPatients.value.length > 0 
+                          //           || syncController.localNotSyncedAssessments.value.length > 0
+                          //           || syncController.localNotSyncedObservations.value.length > 0
+                          //           || syncController.localNotSyncedReferrals.value.length > 0
+                          //           || syncController.localNotSyncedCareplans.value.length > 0
+                          //           || syncController.localNotSyncedHealthReports.value.length > 0)
+                          //             Container(
+                          //               width: 300,
+                          //               padding: EdgeInsets.symmetric(
+                          //                   vertical: 15, horizontal: 10),
+                          //               decoration: BoxDecoration(
+                          //                   borderRadius:
+                          //                       BorderRadius.circular(5),
+                          //                   color: kPrimaryAmberColor),
+                          //               child: Row(
+                          //                 mainAxisAlignment:
+                          //                     MainAxisAlignment.center,
+                          //                 children: [
+                          //                   Text(
+                          //                     'You have ${syncController.localNotSyncedPatients.value.length + syncController.localNotSyncedAssessments.value.length + syncController.localNotSyncedObservations.value.length + syncController.localNotSyncedReferrals.value.length + syncController.localNotSyncedCareplans.value.length} device data left to sync',
+                          //                     style: TextStyle(
+                          //                         fontSize: 16,
+                          //                         fontWeight: FontWeight.w500),
+                          //                   )
+                          //                 ],
+                          //               ),
+                          //             )
+                          //           else if (syncController.syncs.value.length >
+                          //               0)
+                          //             Container(
+                          //               width: 300,
+                          //               padding: EdgeInsets.symmetric(
+                          //                   vertical: 15, horizontal: 10),
+                          //               decoration: BoxDecoration(
+                          //                   borderRadius:
+                          //                       BorderRadius.circular(5),
+                          //                   color: kPrimaryAmberColor),
+                          //               child: Row(
+                          //                 mainAxisAlignment:
+                          //                     MainAxisAlignment.center,
+                          //                 children: [
+                          //                   Text(
+                          //                     'You have ${syncController.syncs.value.length} server data left to sync',
+                          //                     style: TextStyle(
+                          //                         fontSize: 16,
+                          //                         fontWeight: FontWeight.w500),
+                          //                   )
+                          //                 ],
+                          //               ),
+                          //             )
+                          //           else
+                          //             Container(
+                          //               width: 240,
+                          //               padding: EdgeInsets.symmetric(
+                          //                   vertical: 15, horizontal: 10),
+                          //               decoration: BoxDecoration(
+                          //                   borderRadius:
+                          //                       BorderRadius.circular(5),
+                          //                   color: Colors.greenAccent),
+                          //               child: Row(
+                          //                 mainAxisAlignment:
+                          //                     MainAxisAlignment.center,
+                          //                 children: [
+                          //                   Icon(Icons.check),
+                          //                   SizedBox(
+                          //                     width: 10,
+                          //                   ),
+                          //                   Text(
+                          //                     'All data has been synced',
+                          //                     style: TextStyle(
+                          //                         fontSize: 16,
+                          //                         fontWeight: FontWeight.w500),
+                          //                   ),
+                          //                 ],
+                          //               ),
+                          //             ),
+                          //           if (!syncController.isSyncing.value)
+                          //             IconButton(
+                          //                 icon: Icon(
+                          //                   Icons.sync,
+                          //                   size: 30,
+                          //                 ),
+                          //                 onPressed: () {
+                          //                   syncController.initializeSync();
+                          //                   // syncController.syncLocalDataToLiveByPatient();
+                          //                 })
+                          //         ],
+                          //       ),
 
-                                //for development
-                                // Column(
-                                //   children: [
-                                //     Text('Updates in server: ${syncController.syncs.value.length}', style: TextStyle(fontSize: 20),),
-                                //     Text('Updates in Local: ${syncController.localNotSyncedPatients.value.length + syncController.localNotSyncedAssessments.value.length + syncController.localNotSyncedObservations.value.length + syncController.localNotSyncedReferrals.value.length + syncController.localNotSyncedCareplans.value.length}', style: TextStyle(fontSize: 20),),
-                                //     SizedBox(height: 20,),
+                          //       //for development
+                          //       // Column(
+                          //       //   children: [
+                          //       //     Text('Updates in server: ${syncController.syncs.value.length}', style: TextStyle(fontSize: 20),),
+                          //       //     Text('Updates in Local: ${syncController.localNotSyncedPatients.value.length + syncController.localNotSyncedAssessments.value.length + syncController.localNotSyncedObservations.value.length + syncController.localNotSyncedReferrals.value.length + syncController.localNotSyncedCareplans.value.length}', style: TextStyle(fontSize: 20),),
+                          //       //     SizedBox(height: 20,),
 
-                                //     Row(
-                                //       mainAxisAlignment: MainAxisAlignment.center,
-                                //       children: [
-                                //         Text('Assessments Not synced in Local: ${syncController.localNotSyncedAssessments.value.length}', style: TextStyle(fontSize: 20),),
-                                //         SizedBox(width: 20),
-                                //       ],
-                                //     ),
-                                //     Row(
-                                //       mainAxisAlignment: MainAxisAlignment.center,
-                                //       children: [
-                                //         Text('Observations Not synced in Local: ${syncController.localNotSyncedObservations.value.length}', style: TextStyle(fontSize: 20),),
-                                //         SizedBox(width: 20),
-                                //       ],
-                                //     ),
-                                //     Row(
-                                //       mainAxisAlignment: MainAxisAlignment.center,
-                                //       children: [
-                                //         Text('Referrals Not synced in Local: ${syncController.localNotSyncedReferrals.value.length}', style: TextStyle(fontSize: 20),),
-                                //         SizedBox(width: 20),
-                                //       ],
-                                //     ),
-                                //     Row(
-                                //       mainAxisAlignment: MainAxisAlignment.center,
-                                //       children: [
-                                //         Text('Careplans Not synced in Local: ${syncController.localNotSyncedCareplans.value.length}', style: TextStyle(fontSize: 20),),
-                                //         SizedBox(width: 20),
-                                //       ],
-                                //     ),
-                                //     SizedBox(height: 20,),
+                          //       //     Row(
+                          //       //       mainAxisAlignment: MainAxisAlignment.center,
+                          //       //       children: [
+                          //       //         Text('Assessments Not synced in Local: ${syncController.localNotSyncedAssessments.value.length}', style: TextStyle(fontSize: 20),),
+                          //       //         SizedBox(width: 20),
+                          //       //       ],
+                          //       //     ),
+                          //       //     Row(
+                          //       //       mainAxisAlignment: MainAxisAlignment.center,
+                          //       //       children: [
+                          //       //         Text('Observations Not synced in Local: ${syncController.localNotSyncedObservations.value.length}', style: TextStyle(fontSize: 20),),
+                          //       //         SizedBox(width: 20),
+                          //       //       ],
+                          //       //     ),
+                          //       //     Row(
+                          //       //       mainAxisAlignment: MainAxisAlignment.center,
+                          //       //       children: [
+                          //       //         Text('Referrals Not synced in Local: ${syncController.localNotSyncedReferrals.value.length}', style: TextStyle(fontSize: 20),),
+                          //       //         SizedBox(width: 20),
+                          //       //       ],
+                          //       //     ),
+                          //       //     Row(
+                          //       //       mainAxisAlignment: MainAxisAlignment.center,
+                          //       //       children: [
+                          //       //         Text('Careplans Not synced in Local: ${syncController.localNotSyncedCareplans.value.length}', style: TextStyle(fontSize: 20),),
+                          //       //         SizedBox(width: 20),
+                          //       //       ],
+                          //       //     ),
+                          //       //     SizedBox(height: 20,),
 
-                                //     Row(
-                                //       mainAxisAlignment: MainAxisAlignment.center,
-                                //       children: [
-                                //         Text('Patients in server: ${syncController.livePatientsAll.value.length}', style: TextStyle(fontSize: 20),),
-                                //         SizedBox(width: 20),
-                                //         // FlatButton(
-                                //         //   color: kPrimaryColor,
-                                //         //   onPressed: () async {
-                                //         //     await syncController.syncLivePatientsToLocal();
-                                //         //     // Get.offAll(ChwHomeScreen());
-                                //         //   },
-                                //         //   child: Text('Sync', style: TextStyle(color: Colors.white),)
-                                //         // )
-                                //       ],
-                                //     ),
+                          //       //     Row(
+                          //       //       mainAxisAlignment: MainAxisAlignment.center,
+                          //       //       children: [
+                          //       //         Text('Patients in server: ${syncController.livePatientsAll.value.length}', style: TextStyle(fontSize: 20),),
+                          //       //         SizedBox(width: 20),
+                          //       //         // FlatButton(
+                          //       //         //   color: kPrimaryColor,
+                          //       //         //   onPressed: () async {
+                          //       //         //     await syncController.syncLivePatientsToLocal();
+                          //       //         //     // Get.offAll(ChwHomeScreen());
+                          //       //         //   },
+                          //       //         //   child: Text('Sync', style: TextStyle(color: Colors.white),)
+                          //       //         // )
+                          //       //       ],
+                          //       //     ),
 
-                                //     Row(
-                                //       mainAxisAlignment: MainAxisAlignment.center,
-                                //       children: [
-                                //         Text('Patients in Local: ${syncController.localPatientsAll.value.length}', style: TextStyle(fontSize: 20),),
-                                //         SizedBox(width: 20),
-                                //       ],
-                                //     ),
+                          //       //     Row(
+                          //       //       mainAxisAlignment: MainAxisAlignment.center,
+                          //       //       children: [
+                          //       //         Text('Patients in Local: ${syncController.localPatientsAll.value.length}', style: TextStyle(fontSize: 20),),
+                          //       //         SizedBox(width: 20),
+                          //       //       ],
+                          //       //     ),
 
-                                //     Row(
-                                //       mainAxisAlignment: MainAxisAlignment.center,
-                                //       children: [
-                                //         Text('Assessments in Local: ${syncController.localAssessmentsAll.value.length}', style: TextStyle(fontSize: 20),),
-                                //         SizedBox(width: 20),
-                                //       ],
-                                //     ),
+                          //       //     Row(
+                          //       //       mainAxisAlignment: MainAxisAlignment.center,
+                          //       //       children: [
+                          //       //         Text('Assessments in Local: ${syncController.localAssessmentsAll.value.length}', style: TextStyle(fontSize: 20),),
+                          //       //         SizedBox(width: 20),
+                          //       //       ],
+                          //       //     ),
 
-                                //     Row(
-                                //       mainAxisAlignment: MainAxisAlignment.center,
-                                //       children: [
-                                //         Text('Observations in Local: ${syncController.localObservationsAll.value.length}', style: TextStyle(fontSize: 20),),
-                                //         SizedBox(width: 20),
-                                //       ],
-                                //     ),
+                          //       //     Row(
+                          //       //       mainAxisAlignment: MainAxisAlignment.center,
+                          //       //       children: [
+                          //       //         Text('Observations in Local: ${syncController.localObservationsAll.value.length}', style: TextStyle(fontSize: 20),),
+                          //       //         SizedBox(width: 20),
+                          //       //       ],
+                          //       //     ),
 
-                                //     Row(
-                                //       mainAxisAlignment: MainAxisAlignment.center,
-                                //       children: [
-                                //         Text('Careplans in Local: ${syncController.localCareplansAll.value.length}', style: TextStyle(fontSize: 20),),
-                                //         SizedBox(width: 20),
-                                //       ],
-                                //     ),
+                          //       //     Row(
+                          //       //       mainAxisAlignment: MainAxisAlignment.center,
+                          //       //       children: [
+                          //       //         Text('Careplans in Local: ${syncController.localCareplansAll.value.length}', style: TextStyle(fontSize: 20),),
+                          //       //         SizedBox(width: 20),
+                          //       //       ],
+                          //       //     ),
 
-                                //     SizedBox(height: 30),
-                                //     FlatButton(
-                                //       color: kPrimaryRedColor,
-                                //       onPressed: () {
-                                //         syncController.emptyLocalDatabase();
-                                //       },
-                                //       child: Text('Empty Synced Databases', style: TextStyle(color: Colors.white),)
-                                //     ),
+                          //       //     SizedBox(height: 30),
+                          //       //     FlatButton(
+                          //       //       color: kPrimaryRedColor,
+                          //       //       onPressed: () {
+                          //       //         syncController.emptyLocalDatabase();
+                          //       //       },
+                          //       //       child: Text('Empty Synced Databases', style: TextStyle(color: Colors.white),)
+                          //       //     ),
 
-                                //     SizedBox(height: 20),
+                          //       //     SizedBox(height: 20),
 
-                                //   ],
-                                // ),
-                              ],
-                            ),
+                          //       //   ],
+                          //       // ),
+                          //     ],
+                          //   ),
 
                           // InkWell(
 
