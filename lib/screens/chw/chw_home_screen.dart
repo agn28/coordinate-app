@@ -365,8 +365,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                       ],
                     ),
                   ),
-                  Obx(
-                    () => Container(
+                  Container(
                       alignment: Alignment.center,
                       margin: EdgeInsets.only(left: 25, right: 25),
                       width: double.infinity,
@@ -567,31 +566,46 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              IconButton(
-                                icon: Icon(
-                                  Icons.arrow_upward_outlined,
-                                  size: 50,
+                              Container(
+                                decoration: BoxDecoration(
                                   color: kPrimaryGreenColor,
+                                  shape: BoxShape.circle
                                 ),
-                                onPressed: () {
-                               
-                              }),
-                              SizedBox(width: 30,),
-                              IconButton(
-                                icon: Icon(
-                                  Icons.arrow_downward_outlined,
-                                  size: 50,
-                                  color: kPrimaryYellowColor,
-                                ),
-                                onPressed: () {
+                                alignment: Alignment.center,
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.arrow_upward_outlined,
+                                    size: 30,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
                                 
-                              })
+                                }),
+                              ),
+                              
+                              SizedBox(width: 30,),
+
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: kPrimaryYellowColor,
+                                  shape: BoxShape.circle
+                                ),
+                                alignment: Alignment.center,
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.arrow_downward_outlined,
+                                    size: 30,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                  
+                                }),
+                              ),
                             ]
                           )
                         ],
                       ),
                     ),
-                  )
                 ],
               ),
             ),
