@@ -269,7 +269,16 @@ class SyncController extends GetxController {
   }
 
   fetchLatestSyncs() async {
-    var response = await syncRepo.fetchLatestSyncs();
+    var dbEmpty = await syncRepo.checkTempSyncsCount();
+    var response;
+    if(dbEmpty == 0) {
+      print('dbEmpty');
+      // TODO: call another api to fetch all data for first time
+      // response = await syncRepo.fetchLatestSyncs();
+    } else {
+      response = await syncRepo.fetchLatestSyncs();
+    }
+
     if (isNotNull(response['exception']) && response['type'] == 'poor_network') {
       showErrorSnackBar('Error', 'Poor Internet. Cannot sync now');
       return;

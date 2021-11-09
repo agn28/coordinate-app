@@ -229,32 +229,38 @@ class SyncRepository {
     }
   }
 
+  checkTempSyncsCount() async {
+    final sql = '''SELECT count(*) FROM (select 0 from ${DatabaseCreator.latestSyncTable} limit 1)''';
+    try {
+      return await db.rawQuery(sql);
+    } on DatabaseException catch (error) {
+      return;
+    }
+  }
+
   createTempSyncs(tempSyncs) async {
-
-    await db.transaction((txn) async {
-      final batch = txn.batch();
-      // try {
-        final sql = '''INSERT OR REPLACE INTO ${DatabaseCreator.latestSyncTable}
-        (id, document_id, collection, action, key, created_at, is_synced)
-        VALUES (?, ?, ?, ?, ?, ?, ?)''';
-        for (var item in tempSyncs) {
-          try {
-
-            List<dynamic> params = [item['id'], item['document_id'], item['collection'], item['action'], item['key'], item['created_at'], 0];
-            await batch.rawInsert(sql, params);
-          } catch (error) {
-
-          }
+    var batchSize = 0;
+    Batch batch = db.batch();
+    final sql = '''INSERT OR REPLACE INTO ${DatabaseCreator.latestSyncTable}
+    (id, document_id, collection, action, key, created_at, is_synced)
+    VALUES (?, ?, ?, ?, ?, ?, ?)''';
+    for (var item in tempSyncs) {
+      if (batchSize == 1000) { 
+        await batch.commit(noResult: true);
+        batchSize = 0;
+      } else {
+        try {
+          List<dynamic> params = [item['id'], item['document_id'], item['collection'], item['action'], item['key'], item['created_at'], 0];
+          await batch.rawInsert(sql, params);
+        } catch (error) {
+          //TODO: create log here
         }
-      // } on DatabaseException catch (error) {
-      // } finally {
-      //   print('temp sync stored');
-      //   // for (var item in tempSyncs) {
-      //   //   batch.rawDelete('DELETE FROM ${DatabaseCreator.latestSyncTable} WHERE id = ?', [item['id']]);
-      //   // }
-      // }
-      await batch.commit();
-    });
+        batchSize++;
+      }
+    }
+    if (batchSize > 0) { 
+      await batch.commit(noResult: true);
+    }
   }
 
   deleteTempSyncs(id) async {
