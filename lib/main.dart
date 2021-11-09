@@ -52,16 +52,20 @@ void main() async {
     await ConceptManager().sync();
     DatabaseCreator().dBCreatedStatusChange(false);
   }
-  const oneSec = const Duration(minutes: 20);
+  // const oneSec = const Duration(minutes: 20);
 
-  Timer.periodic(oneSec, (Timer timer) {
-    print('timer ${DateTime.now()}'); 
-    syncController.fetchLatestSyncs();// This statement will be printed after every one second
-  }); 
-  Timer.periodic(Duration(seconds: 30), (Timer timer) {
-    print('checktimer ${DateTime.now()}'); 
-    syncController.checktoSync();// This statement will be printed after every one second
-  });
+  // Timer.periodic(oneSec, (Timer timer) {
+  //   print('timer ${DateTime.now()}'); 
+  //   if(!syncController.isSyncingToLocal.value) {
+  //     syncController.fetchLatestSyncs();
+  //   }
+  // }); 
+  // Timer.periodic(Duration(seconds: 30), (Timer timer) {
+  //   print('checktimer ${DateTime.now()}'); 
+  //   if(!syncController.isSyncingToLocal.value) {
+  //     syncController.checktoSync();
+  //   }
+  // });
 }
 _getDevices() async {
   var data = await DeviceController().getDevices();
