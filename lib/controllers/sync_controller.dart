@@ -1115,7 +1115,6 @@ class SyncController extends GetxController {
     }
     //TODO: check subpatient empty
     if(subPatients.length > 0) {
-      print('subPatients ${subPatients.length}');
       await insertPatients(subPatients);
       subPatients = [];
     }
@@ -1125,7 +1124,6 @@ class SyncController extends GetxController {
       subAssessments.add(assessment['document_id']);
     }
     if(subAssessments.length > 0) {
-      print('subAssessments ${subAssessments.length}');
       await insertAssessments(subAssessments);
       subAssessments = [];
     }
@@ -1135,7 +1133,6 @@ class SyncController extends GetxController {
       subObservations.add(observation['document_id']);
     }
     if(subObservations.length > 0) {
-      print('subObservations ${subObservations.length}');
       await insertObservations(subObservations);
       subObservations = [];
     }
@@ -1145,7 +1142,6 @@ class SyncController extends GetxController {
       subReferrals.add(referral['document_id']);
     }
     if(subReferrals.length > 0) {
-      print('subReferrals ${subReferrals.length}');
       await insertReferrals(subReferrals);
       subReferrals = [];
     }
@@ -1155,7 +1151,6 @@ class SyncController extends GetxController {
       subCarePlans.add(carePlan['document_id']);
     }
     if(subCarePlans.length > 0) {
-      print('subCarePlans ${subCarePlans.length}');
       await insertCarePlans(subCarePlans);
       subCarePlans = [];
     }
@@ -1165,7 +1160,6 @@ class SyncController extends GetxController {
       subHealthReports.add(healthReport['document_id']);
     }
     if(subHealthReports.length > 0) {
-      print('subHealthReports ${subHealthReports.length}');
       await insertHealthReports(subHealthReports);
       subHealthReports = [];
     }
@@ -1194,9 +1188,7 @@ class SyncController extends GetxController {
   }
 
   insertObservations(ids) async {
-    print('idlen ${ids.length}');
     var observations = await observationController.getLiveObservationsByIds(ids);
-    print('len ${observations['data'].length}');
     if (isNotNull(observations) && isNotNull(observations['error']) && !observations['error'] && isNotNull(observations['data'])) {
       await observationRepoLocal.syncFromLive(observations['data'], true);
     }
