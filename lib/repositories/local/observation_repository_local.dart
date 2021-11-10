@@ -1,6 +1,8 @@
 import 'package:nhealth/repositories/local/database_creator.dart';
 import 'dart:convert';
 
+import 'package:sqflite/sqflite.dart';
+
 class ObservationRepositoryLocal {
   
 
@@ -97,6 +99,35 @@ class ObservationRepositoryLocal {
     } catch (error) {
 
       return;
+    }
+  }
+
+  syncFromLive(tempSyncs, isSynced, {localStatus:''}) async {
+    Batch batch = db.batch();
+    final sql = '''INSERT OR REPLACE INTO ${DatabaseCreator.observationTable}
+    (
+      id,
+      data,
+      patient_id,
+      status,
+      is_synced,
+      local_status
+    )
+    VALUES (?,?,?,?,?,?)''';
+    
+    for (var item in tempSyncs) {
+      List<dynamic> params = [item['id'], jsonEncode(item), item['body']['patient_id'], '', isSynced, localStatus];
+      await batch.rawInsert(sql, params);
+      print('rawInsert');
+    }
+    try {
+      await batch.commit(noResult: true);
+      print('commit');
+    } catch (error) {
+      //TODO: create log here
+      print('error $error');
+    } finally {
+      print('subObservations batch inserted');
     }
   }
 

@@ -1015,118 +1015,61 @@ class SyncController extends GetxController {
       subPatients.add(patient['document_id']);
     }
     //TODO: check subpatient empty
-    print('subPatients ${subPatients.length}');
-    await insertPatients(subPatients);
-    subPatients = [];
+    if(subPatients.length > 0) {
+      print('subPatients ${subPatients.length}');
+      await insertPatients(subPatients);
+      subPatients = [];
+    }
 
     var assessmentsSync = await syncRepo.getTempSyncs('assessments', 1000);
     for (var assessment in assessmentsSync) {
       subAssessments.add(assessment['document_id']);
     }
-    print('subAssessments ${subAssessments.length}');
-    await insertAssessments(subAssessments);
-    subAssessments = [];
+    if(subAssessments.length > 0) {
+      print('subAssessments ${subAssessments.length}');
+      await insertAssessments(subAssessments);
+      subAssessments = [];
+    }
 
     var observationsSync = await syncRepo.getTempSyncs('observations', 1000);
     for (var observation in observationsSync) {
       subObservations.add(observation['document_id']);
     }
-    print('subObservations ${subObservations.length}');
-    await insertObservations(subObservations);
-    subObservations = [];
-
+    if(subObservations.length > 0) {
+      print('subObservations ${subObservations.length}');
+      await insertObservations(subObservations);
+      subObservations = [];
+    }
+    
     var referralsSync = await syncRepo.getTempSyncs('referrals', 10);
     for (var referral in referralsSync) {
       subReferrals.add(referral['document_id']);
     }
-    print('subReferrals ${subReferrals.length}');
-    await insertReferrals(subReferrals);
-    subReferrals = [];
+    if(subReferrals.length > 0) {
+      print('subReferrals ${subReferrals.length}');
+      await insertReferrals(subReferrals);
+      subReferrals = [];
+    }
 
     var carePlansSync = await syncRepo.getTempSyncs('care_plans', 10);
     for (var carePlan in carePlansSync) {
       subCarePlans.add(carePlan['document_id']);
     }
-    print('subCarePlans ${subCarePlans.length}');
-    await insertCarePlans(subCarePlans);
-    subCarePlans = [];
+    if(subCarePlans.length > 0) {
+      print('subCarePlans ${subCarePlans.length}');
+      await insertCarePlans(subCarePlans);
+      subCarePlans = [];
+    }
 
     var healthReportsSync = await syncRepo.getTempSyncs('health_reports', 10);
     for (var healthReport in healthReportsSync) {
       subHealthReports.add(healthReport['document_id']);
     }
-    print('subHealthReports ${subHealthReports.length}');
-    await insertHealthReports(subHealthReports);
-    subHealthReports = [];
-
-    // for (var item in patients) {
-    //   isSyncingToLocal.value = true;
-
-    //   if (item['collection'] == 'patients') {
-    //     if (item['action'] == 'create') {
-    //       subPatients.add(item['document_id']);
-
-    //       if (subPatients.length == 10) {
-    //         await insertPatients(subPatients);
-    //         subPatients = [];
-    //       }
-    //     }
-    //   }
-
-    //   if (item['collection'] == 'assessments') {
-    //     if (item['action'] == 'create') {
-    //       subAssessments.add(item['document_id']);
-
-    //       if (subAssessments.length == 10) {
-    //         await insertAssessments(subAssessments);
-    //         subAssessments = [];
-    //       }
-    //     }
-    //   }
-
-    //   if (item['collection'] == 'observations') {
-    //     if (item['action'] == 'create') {
-    //       subObservations.add(item['document_id']);
-    //       if (subObservations.length == 10) {
-    //         await insertObservations(subObservations);
-    //         subObservations = [];
-    //       }
-    //     }
-    //   }
-
-    //   if (item['collection'] == 'referrals') {
-    //     if (item['action'] == 'create') {
-    //       subReferrals.add(item['document_id']);
-
-    //       if (subReferrals.length == 10) {
-    //         await insertReferrals(subReferrals);
-    //         subReferrals = [];
-    //       }
-    //     }
-    //   }
-
-    //   if (item['collection'] == 'care_plans') {
-    //     if (item['action'] == 'create') {
-    //       subCarePlans.add(item['document_id']);
-
-    //       if (subCarePlans.length == 10) {
-    //         await insertCarePlans(subCarePlans);
-    //         subCarePlans = [];
-    //       }
-    //     }
-    //   }
-
-    //   if (item['collection'] == 'health_reports') {
-    //     if (item['action'] == 'create') {
-    //       subHealthReports.add(item['document_id']);
-
-    //       if (subHealthReports.length == 10) {
-    //         await insertHealthReports(subHealthReports);
-    //         subHealthReports = [];
-    //       }
-    //     }
-    //   }
-    // }
+    if(subHealthReports.length > 0) {
+      print('subHealthReports ${subHealthReports.length}');
+      await insertHealthReports(subHealthReports);
+      subHealthReports = [];
+    }
 
     await Future.delayed(const Duration(seconds: 2));
     isSyncingToLocal.value = false;
@@ -1138,106 +1081,35 @@ class SyncController extends GetxController {
 
     if (isNotNull(patients) && isNotNull(patients['error']) && !patients['error'] && isNotNull(patients['data'])) {
 
-      for (var patient in patients['data']) {
-        var existingLocalPatient = await PatientReposioryLocal().getPatientById(patient['id']);
-        //Assessment already exists in local, needs to be updated
-        var localPatient;
-        if(isNotNull(existingLocalPatient) && existingLocalPatient.isNotEmpty) {
-          localPatient = await patientRepoLocal.updateFromLive(patient['id'], patient);
-        } else {
-          localPatient = await patientRepoLocal.createFromLive(patient['id'], patient);
-        }
-        //TODO: check id mismatch from sync to api data
-        if (isNotNull(localPatient)) {
-          await syncRepo.updateSyncStatus(patient['id'], 1);
-        }
-      }
-    } else {
-      for(var document_id in ids) {
-       await syncRepo.updateSyncStatus(document_id, 1);
-      }
-    }
+      await patientRepoLocal.syncFromLive(patients['data']);
+    } 
+    await syncRepo.updateSyncStatus(ids, 1);
   }
 
   insertAssessments(ids) async {
   var assessments = await assessmentController.getAssessmentByIds(ids);
     if (isNotNull(assessments) && isNotNull(assessments['error']) && !assessments['error'] && isNotNull(assessments['data'])) {
-     
-      for (var assessment in assessments['data']) {
-        var existingLocalAssessment = await assessmentRepoLocal.getAssessmentById(assessment['id']);
-        //Assessment already exists in local, needs to be updated
-        var localAssessment;
-        if(isNotNull(existingLocalAssessment) && existingLocalAssessment.isNotEmpty) {
-          localAssessment = await assessmentRepoLocal.updateLocalAssessment(assessment['id'], assessment, true);
-        } else {
-          localAssessment = await assessmentRepoLocal.createLocalAssessment(assessment['id'], assessment, true);
-        }
-
-        if (isNotNull(localAssessment)) {
-          await syncRepo.updateSyncStatus(assessment['id'], 1);
-        }
-      }
-    } else {
-      for(var document_id in ids) {
-       await syncRepo.updateSyncStatus(document_id, 1);
-      }
+      await assessmentRepoLocal.syncFromLive(assessments['data'], true);
     }
+    await syncRepo.updateSyncStatus(ids, 1);
   }
 
   insertObservations(ids) async {
-  var observations = await observationController.getLiveObservationsByIds(ids);
-  
+    print('idlen ${ids.length}');
+    var observations = await observationController.getLiveObservationsByIds(ids);
+    print('len ${observations['data'].length}');
     if (isNotNull(observations) && isNotNull(observations['error']) && !observations['error'] && isNotNull(observations['data'])) {
-
-      for (var observation in observations['data']) {
-        var existingLocalObservation = await observationRepoLocal.getObservationById(observation['id']);
-        //Observation already exists in local, needs to be updated
-        var localObservation;
-        if(isNotNull(existingLocalObservation) && existingLocalObservation.isNotEmpty) {
-
-          localObservation = await observationRepoLocal.update(observation['id'], observation, true);
-        } else {
-          localObservation = await observationRepoLocal.create(observation['id'], observation, true);
-        }
-
-        if (isNotNull(localObservation)) {
-          await syncRepo.updateSyncStatus(observation['id'], 1);
-        }
-      }
-
-    } else {
-      for(var document_id in ids) {
-       await syncRepo.updateSyncStatus(document_id, 1);
-      }
+      await observationRepoLocal.syncFromLive(observations['data'], true);
     }
+    await syncRepo.updateSyncStatus(ids, 1);
   }
 
   insertReferrals(ids) async {
   var referrals = await referralRepo.getReferralByIds(ids);
-
     if (isNotNull(referrals) && isNotNull(referrals['error']) && !referrals['error'] && isNotNull(referrals['data'])) {
-
-      for (var referral in referrals['data']) {
-        var existingLocalReferral = await referralRepoLocal.getReferralById(referral['id']);
-        //Observation already exists in local, needs to be updated
-        var localReferral;
-        if(isNotNull(existingLocalReferral) && existingLocalReferral.isNotEmpty) {
-
-          localReferral = await referralRepoLocal.update(referral['id'], referral, true);
-        } else {
-          localReferral = await referralRepoLocal.create(referral['id'], referral, true);
-        }
-
-        if (isNotNull(localReferral)) {
-          await syncRepo.updateSyncStatus(referral['id'], 1);
-        }
-      }
-
-    } else {
-      for(var document_id in ids) {
-       await syncRepo.updateSyncStatus(document_id, 1);
-      }
+      await referralRepoLocal.syncFromLive(referrals['data'], true);
     }
+    await syncRepo.updateSyncStatus(ids, 1);
   }
 
 
@@ -1245,56 +1117,18 @@ class SyncController extends GetxController {
   var careplans = await careplanRepo.getCarePlanByIds(ids);
 
     if (isNotNull(careplans) && isNotNull(careplans['error']) && !careplans['error'] && isNotNull(careplans['data'])) {
-
-      for (var careplan in careplans['data']) {
-
-        var existingLocalCarePlan = await careplanRepoLocal.getCareplanById(careplan['id']);
-        //Observation already exists in local, needs to be updated
-        var localcareplan;
-        if(isNotNull(existingLocalCarePlan) && existingLocalCarePlan.isNotEmpty) {
-
-          localcareplan = await careplanRepoLocal.update(careplan['id'], careplan, true);
-        } else {
-          localcareplan = await careplanRepoLocal.create(careplan['id'], careplan, true);
-        }
-
-        if (isNotNull(localcareplan)) {
-          await syncRepo.updateSyncStatus(careplan['id'], 1);
-        }
-      }
-
-    } else {
-      for(var document_id in ids) {
-       await syncRepo.updateSyncStatus(document_id, 1);
-      }
+      await careplanRepoLocal.syncFromLive(careplans['data'],true);
     }
+    await syncRepo.updateSyncStatus(ids, 1);
   }
 
   insertHealthReports(ids) async {
-  var healthreports = await healthReportRepo.getHealthReportByIds(ids);
+    var healthreports = await healthReportRepo.getHealthReportByIds(ids);
 
     if (isNotNull(healthreports) && isNotNull(healthreports['error']) && !healthreports['error'] && isNotNull(healthreports['data'])) {
-
-      for (var healthreport in healthreports['data']) {
-
-        var existingLocalHealthReport = await healthReportRepoLocal.getHealthReportById(healthreport['id']);
-        var localhealthreport;
-        if(isNotNull(existingLocalHealthReport) && existingLocalHealthReport.isNotEmpty) {
-          localhealthreport = await healthReportRepoLocal.update(healthreport['id'], healthreport, true);
-        } else {
-          localhealthreport = await healthReportRepoLocal.create(healthreport['id'], healthreport, true);
-        }
-
-        if (isNotNull(localhealthreport)) {
-          await syncRepo.updateSyncStatus(healthreport['id'], 1);
-        }
-      }
-
-    } else {
-      for(var document_id in ids) {
-       await syncRepo.updateSyncStatus(document_id, 1);
-      }
+      await healthReportRepoLocal.syncFromLive(healthreports['data'], true);
     }
+    await syncRepo.updateSyncStatus(ids, 1);
   }
 
   getLocalSyncKey() async {

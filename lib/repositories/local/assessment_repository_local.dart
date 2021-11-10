@@ -9,6 +9,7 @@ import 'package:nhealth/repositories/local/concept_manager_repository_local.dart
 import 'package:nhealth/repositories/local/database_creator.dart';
 import 'package:nhealth/repositories/local/observation_concepts_repository_local.dart';
 import 'package:nhealth/repositories/observation_repository.dart';
+import 'package:sqflite/sqlite_api.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:convert';
 
@@ -467,6 +468,34 @@ class AssessmentRepositoryLocal {
     }
     DatabaseCreator.databaseLog('Add assessment', sql, null, response, params);
     return response;
+  }
+
+  syncFromLive(tempSyncs, isSynced, {localStatus:''}) async {
+    Batch batch = db.batch();
+    final sql = '''INSERT OR REPLACE INTO ${DatabaseCreator.assessmentTable}
+    (
+      id,
+      data,
+      patient_id,
+      status,
+      is_synced,
+      local_status
+    )
+    VALUES (?,?,?,?,?,?)''';
+    for (var item in tempSyncs) {
+      List<dynamic> params = [item['id'], jsonEncode(item), item['body']['patient_id'], item['body']['status'], isSynced, localStatus];
+      await batch.rawInsert(sql, params);
+      print('rawInsert');
+    }
+    try {
+      await batch.commit(noResult: true);
+      print('commit');
+    } catch (error) {
+      //TODO: create log here
+      print('error $error');
+    } finally {
+      print('subAssessments batch inserted');
+    }
   }
 
   updateLocalAssessment(id, data, isSynced, {localStatus:''}) async {

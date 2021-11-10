@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:nhealth/repositories/local/database_creator.dart';
+import 'package:sqflite/sqflite.dart';
 
 class ReferralRepositoryLocal {
   /// Create an assessment with observations.
@@ -34,6 +35,34 @@ class ReferralRepositoryLocal {
 
     }
     return response;
+  }
+
+  syncFromLive(tempSyncs, isSynced, {localStatus:''}) async {
+    Batch batch = db.batch();
+    final sql = '''INSERT OR REPLACE INTO ${DatabaseCreator.referralTable}
+    (
+      id,
+      data,
+      patient_id,
+      status,
+      is_synced,
+      local_status
+    )
+    VALUES (?,?,?,?,?,?)''';
+    for (var item in tempSyncs) {
+      List<dynamic> params = [item['id'], jsonEncode(item), item['meta']['patient_id'], '', isSynced, localStatus];
+      await batch.rawInsert(sql, params);
+      print('rawInsert');
+    }
+    try {
+      await batch.commit(noResult: true);
+      print('commit');
+    } catch (error) {
+      //TODO: create log here
+      print('error $error');
+    } finally {
+      print('subReferrals batch inserted');
+    }
   }
 
   update(id, data, isSynced, {localStatus:''}) async {

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/repositories/local/database_creator.dart';
+import 'package:sqflite/sqflite.dart';
 
 class HealthReportRepositoryLocal {
   create(id, data, isSynced) async {
@@ -31,6 +32,33 @@ class HealthReportRepositoryLocal {
 
     }
     return response;
+  }
+
+  syncFromLive(tempSyncs, isSynced) async {
+    Batch batch = db.batch();
+    final sql = '''INSERT OR REPLACE INTO ${DatabaseCreator.healthReportTable}
+    (
+      id,
+      data,
+      patient_id,
+      status,
+      is_synced
+    )
+    VALUES (?,?,?,?,?)''';
+    for (var item in tempSyncs) {
+      List<dynamic> params = [item['id'], jsonEncode(item), item['body']['patient_id'], '', isSynced];
+      await batch.rawInsert(sql, params);
+      print('rawInsert');
+    }
+    try {
+      await batch.commit(noResult: true);
+      print('commit');
+    } catch (error) {
+      //TODO: create log here
+      print('error $error');
+    } finally {
+      print('subHealthReports batch inserted');
+    }
   }
 
   update(id, data, isSynced) async {

@@ -133,7 +133,25 @@ class PatientReposioryLocal {
 
     return [];
   }
-  
+
+  syncFromLive(tempSyncs) async {
+    Batch batch = db.batch();
+    final sql = '''INSERT OR REPLACE INTO ${DatabaseCreator.patientTable}
+    (id, data, nid, status, is_synced) VALUES (?,?,?,?,?)''';
+    for (var item in tempSyncs) {
+      List<dynamic> params = [item['id'], jsonEncode(item), item['body']['nid'], '', true];
+      await batch.rawInsert(sql, params);
+    }
+    try {
+      await batch.commit(noResult: true);
+    } catch (error) {
+      //TODO: create log here
+      print('error $error');
+    } finally {
+      print('patient batch inserted');
+    }
+  }
+
   createNew(context, id, data, synced) async {
 
     var allPatients = await getAllPatients();

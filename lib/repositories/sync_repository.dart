@@ -336,11 +336,13 @@ class SyncRepository {
       return;
     }
   }
-  updateSyncStatus(documentId, isSynced) async {
-    final sql = '''UPDATE ${DatabaseCreator.latestSyncTable} SET
-      is_synced = ?
-      WHERE document_id = ?''';
-    List<dynamic> params = [isSynced, documentId];
+  updateSyncStatus(documentIds, isSynced) async {
+    var ids = documentIds.map((item){
+      return "'" + item + "'";
+    }).join(",");
+    final sql = '''UPDATE ${DatabaseCreator.latestSyncTable} SET is_synced = ? WHERE document_id IN (${ids})''';
+    
+    List<dynamic> params = [isSynced];
     var response;
     try {
       response = await db.rawUpdate(sql, params);
@@ -349,7 +351,6 @@ class SyncRepository {
       return;
     }
   }
-
   clearTempSyncs() async {
     await db.transaction((txn) async {
       final batch = txn.batch();
