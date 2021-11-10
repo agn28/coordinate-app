@@ -1064,44 +1064,44 @@ class AssessmentController {
     // Identifying this patient with not synced data
     await PatientReposioryLocal().updateLocalStatus(assessmentData['body']['patient_id'], false);
       
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
-      // I am connected to internet.
-      var apiResponse = await AssessmentRepository().createAssessmentWithObservations(apiData);
-      //API responded success with no error
-      if (apiResponse['error'] != null && !apiResponse['error']) {
-        // updating local assessment with synced status
-        // response = await updateLocalAssessmentWithObservations(assessmentData, observationsData, true);
-        response = await AssessmentRepositoryLocal().updateLocalAssessment(assessmentData['id'], assessmentData, true, localStatus: 'complete');
-        for (var observation in observationsData) {
-          await ObservationRepositoryLocal().update(observation['id'], observation, true);
-        }
+    // var connectivityResult = await (Connectivity().checkConnectivity());
+    // if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+    //   // I am connected to internet.
+    //   var apiResponse = await AssessmentRepository().createAssessmentWithObservations(apiData);
+    //   //API responded success with no error
+    //   if (apiResponse['error'] != null && !apiResponse['error']) {
+    //     // updating local assessment with synced status
+    //     // response = await updateLocalAssessmentWithObservations(assessmentData, observationsData, true);
+    //     response = await AssessmentRepositoryLocal().updateLocalAssessment(assessmentData['id'], assessmentData, true, localStatus: 'complete');
+    //     for (var observation in observationsData) {
+    //       await ObservationRepositoryLocal().update(observation['id'], observation, true);
+    //     }
       
-        //updating sync key
-        if (isNotNull(apiResponse['data']['sync']) && isNotNull(apiResponse['data']['sync']['key'])) {
+    //     //updating sync key
+    //     if (isNotNull(apiResponse['data']['sync']) && isNotNull(apiResponse['data']['sync']['key'])) {
 
-          // Identifying this patient with not synced data
-          await PatientReposioryLocal().updateLocalStatus(assessmentData['body']['patient_id'], true);
-          var updateSync = await SyncRepository().updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
-        }
-      } 
+    //       // Identifying this patient with not synced data
+    //       await PatientReposioryLocal().updateLocalStatus(assessmentData['body']['patient_id'], true);
+    //       var updateSync = await SyncRepository().updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
+    //     }
+    //   } 
 
-      //calling referral create API
-      var referalResponse = await ReferralRepository().create(referralData);
-      //API responded success with no error
-      if (referalResponse['error'] != null && !referalResponse['error']) {
-        // updating local assessment with synced status
-        response = await ReferralRepositoryLocal().update(referralData['id'], referralData, true, localStatus: 'complete');
+    //   //calling referral create API
+    //   var referalResponse = await ReferralRepository().create(referralData);
+    //   //API responded success with no error
+    //   if (referalResponse['error'] != null && !referalResponse['error']) {
+    //     // updating local assessment with synced status
+    //     response = await ReferralRepositoryLocal().update(referralData['id'], referralData, true, localStatus: 'complete');
         
       
-        //updating sync key
-        if (isNotNull(referalResponse['data']['sync']) && isNotNull(referalResponse['data']['sync']['key'])) {
-          // Identifying this patient with not synced data
-          await PatientReposioryLocal().updateLocalStatus(referralData['meta']['patient_id'], true);
-          var updateSync = await SyncRepository().updateLatestLocalSyncKey(referalResponse['data']['sync']['key']);
-        }
-      } 
-    }
+    //     //updating sync key
+    //     if (isNotNull(referalResponse['data']['sync']) && isNotNull(referalResponse['data']['sync']['key'])) {
+    //       // Identifying this patient with not synced data
+    //       await PatientReposioryLocal().updateLocalStatus(referralData['meta']['patient_id'], true);
+    //       var updateSync = await SyncRepository().updateLatestLocalSyncKey(referalResponse['data']['sync']['key']);
+    //     }
+    //   } 
+    // }
     return response;
   }
 
