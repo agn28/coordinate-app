@@ -34,6 +34,7 @@ class SyncController extends GetxController {
   var isSyncing = false.obs;
   var isSyncingToLive = false.obs;
   var isSyncingToLocal = false.obs;
+  var showSyncInfoflag = false.obs;
 
   var syncs = 0.obs;
   var localNotSyncedPatients = [].obs;
@@ -227,6 +228,7 @@ class SyncController extends GetxController {
   }
   initializeLiveToLocalSync() async {
     isSyncing.value = true;
+    showSyncInfoflag.value = true;
     await checkLocationData();
     await checkCenterData();
     var flag = true;
