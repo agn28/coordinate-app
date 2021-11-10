@@ -494,25 +494,42 @@ class _ChcpHomeState extends State<ChcpHomeScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              IconButton(
-                                icon: Icon(
-                                  Icons.arrow_upward_outlined,
-                                  size: 50,
+                              Container(
+                                decoration: BoxDecoration(
                                   color: kPrimaryGreenColor,
+                                  shape: BoxShape.circle
                                 ),
-                                onPressed: () {
-                               
-                              }),
+                                alignment: Alignment.center,
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.arrow_upward_outlined,
+                                    size: 30,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+
+                                }),
+                              ),
+
                               SizedBox(width: 30,),
-                              IconButton(
-                                icon: Icon(
-                                  Icons.arrow_downward_outlined,
-                                  size: 50,
+
+                              Container(
+                                decoration: BoxDecoration(
                                   color: kPrimaryYellowColor,
+                                  shape: BoxShape.circle
                                 ),
-                                onPressed: () async{
-                                  await liveToLocalSync();
-                                })
+                                alignment: Alignment.center,
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.arrow_downward_outlined,
+                                    size: 30,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () async{
+                                    await liveToLocalSync();
+                                }),
+                              ),
+
                             ]
                           ),
                           Column(
@@ -579,7 +596,7 @@ class _ChcpHomeState extends State<ChcpHomeScreen> {
                                         CircularProgressIndicator(),
                                       ],
                                     ),
-                                    // else if (syncController.localNotSyncedPatients.value.length > 0 
+                                    // else if (syncController.localNotSyncedPatients.value.length > 0
                                     // || syncController.localNotSyncedAssessments.value.length > 0
                                     // || syncController.localNotSyncedObservations.value.length > 0
                                     // || syncController.localNotSyncedReferrals.value.length > 0
@@ -606,7 +623,7 @@ class _ChcpHomeState extends State<ChcpHomeScreen> {
                                     //       ],
                                     //     ),
                                     //   )
-                                    // else 
+                                    // else
                                     if (syncController.syncs.value > 0)
                                       Container(
                                         width: 300,

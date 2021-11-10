@@ -343,169 +343,183 @@ class _HomeState extends State<HomeScreen> {
                       ],
                     ),
                   ),
-                  Obx(
-                    () => Container(
-                      alignment: Alignment.center,
-                      margin: EdgeInsets.only(left: 40, right: 40),
-                      width: double.infinity,
-                      child: Column(
-                        children: <Widget>[
+                  Container(
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.only(left: 40, right: 40),
+                    width: double.infinity,
+                    child: Column(
+                      children: <Widget>[
 
-                          SizedBox(height: 60,),
+                        SizedBox(height: 60,),
 
-                          Row(
-                            children: [
-                              Expanded(
-                                child: InkWell(
+                        Row(
+                          children: [
+                            Expanded(
+                              child: InkWell(
 
-                                  onTap: () async {
-                                    Navigator.of(context).pushNamed(FollowupSearchScreen.path);
-                                  },
-                                  child: Container(
-                                    height: 150,
-                                    width: double.infinity,
-                                    child: Card(
-                                      elevation: 2,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Image.asset('assets/images/icons/inventory.png', width: 50,),
-                                          SizedBox(height: 15,),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              Text(AppLocalizations.of(context).translate('followupVisit'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
+                                onTap: () async {
+                                  Navigator.of(context).pushNamed(FollowupSearchScreen.path);
+                                },
+                                child: Container(
+                                  height: 150,
+                                  width: double.infinity,
+                                  child: Card(
+                                    elevation: 2,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Image.asset('assets/images/icons/inventory.png', width: 50,),
+                                        SizedBox(height: 15,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text(AppLocalizations.of(context).translate('followupVisit'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
 
-                                            ],
-                                          ),
-                                        ],
-                                      )
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 20,),
+                            Expanded(
+                              child: InkWell(
+                                // onTap: () => Navigator.of(context).pushNamed('/chwNavigation', arguments: 1),
+                                onTap: () => Navigator.of(context).pushNamed('/firstCenterSearch'),
+                                child: Container(
+                                  height: 150,
+                                  width: double.infinity,
+                                  alignment: Alignment.center,
+                                  child: Card(
+                                    elevation: 2,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Icon(Icons.group, color: kPrimaryColor, size: 60),
+                                        SizedBox(height: 10,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+
+                                            Text(AppLocalizations.of(context).translate('fullCenterAssessment'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
+
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
                               ),
-                              SizedBox(width: 20,),
-                              Expanded(
-                                child: InkWell(
-                                  // onTap: () => Navigator.of(context).pushNamed('/chwNavigation', arguments: 1),
-                                  onTap: () => Navigator.of(context).pushNamed('/firstCenterSearch'),
-                                  child: Container(
-                                    height: 150,
-                                    width: double.infinity,
-                                    alignment: Alignment.center,
-                                    child: Card(
-                                      elevation: 2,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Icon(Icons.group, color: kPrimaryColor, size: 60),
-                                          SizedBox(height: 10,),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: <Widget>[
-
-                                              Text(AppLocalizations.of(context).translate('fullCenterAssessment'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
-
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
+                            )
+                          ],
+                        ),
 
 
-                          SizedBox(height: 20,),
+                        SizedBox(height: 20,),
 
-                          Row(
-                            children: [
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () => Navigator.of(context).push(RegisterPatientScreen()),
-                                  child: Container(
-                                    height: 140,
-                                    width: double.infinity,
-                                    child: Card(
-                                      elevation: 2,
-                                      child: Column(
-                                        children: <Widget>[
-                                          Icon(Icons.person_add_alt_1, color: kPrimaryColor, size: 70,),
-                                          SizedBox(height: 5),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              Text(AppLocalizations.of(context).translate('newRegistration'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: () => Navigator.of(context).push(RegisterPatientScreen()),
+                                child: Container(
+                                  height: 140,
+                                  width: double.infinity,
+                                  child: Card(
+                                    elevation: 2,
+                                    child: Column(
+                                      children: <Widget>[
+                                        Icon(Icons.person_add_alt_1, color: kPrimaryColor, size: 70,),
+                                        SizedBox(height: 5),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text(AppLocalizations.of(context).translate('newRegistration'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
                               ),
-                              SizedBox(width: 20,),
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () => Navigator.of(context).pushNamed('/chwReferralPatients'),
-                                  child: Container(
-                                    height: 140,
-                                    width: double.infinity,
-                                    alignment: Alignment.center,
-                                    child: Card(
-                                      elevation: 2,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Image.asset('assets/images/icons/questionnaire.png'),
-                                          SizedBox(height: 10,),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              Text(AppLocalizations.of(context).translate('referralList'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                            ),
+                            SizedBox(width: 20,),
+                            Expanded(
+                              child: InkWell(
+                                onTap: () => Navigator.of(context).pushNamed('/chwReferralPatients'),
+                                child: Container(
+                                  height: 140,
+                                  width: double.infinity,
+                                  alignment: Alignment.center,
+                                  child: Card(
+                                    elevation: 2,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Image.asset('assets/images/icons/questionnaire.png'),
+                                        SizedBox(height: 10,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text(AppLocalizations.of(context).translate('referralList'), textAlign: TextAlign.right, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w600, fontSize: 20),),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
+                        ),
 
-                          SizedBox(height: 50,),
+                        SizedBox(height: 50,),
 
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              IconButton(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                color: kPrimaryGreenColor,
+                                shape: BoxShape.circle
+                              ),
+                              alignment: Alignment.center,
+                              child: IconButton(
                                 icon: Icon(
                                   Icons.arrow_upward_outlined,
-                                  size: 50,
-                                  color: kPrimaryGreenColor,
+                                  size: 30,
+                                  color: Colors.white,
                                 ),
                                 onPressed: () {
-                               
+                              
                               }),
-                              SizedBox(width: 30,),
-                              IconButton(
+                            ),
+                            
+                            SizedBox(width: 30,),
+
+                            Container(
+                              decoration: BoxDecoration(
+                                color: kPrimaryYellowColor,
+                                shape: BoxShape.circle
+                              ),
+                              alignment: Alignment.center,
+                              child: IconButton(
                                 icon: Icon(
                                   Icons.arrow_downward_outlined,
-                                  size: 50,
-                                  color: kPrimaryYellowColor,
+                                  size: 30,
+                                  color: Colors.white,
                                 ),
                                 onPressed: () {
                                 
-                              })
-                            ]
-                          )
-                        ],
-                      ),
+                              }),
+                            ),
+                          ]
+                        )
+                      ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
