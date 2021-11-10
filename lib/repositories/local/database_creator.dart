@@ -218,7 +218,7 @@ class DatabaseCreator {
 
   Future<void> initDatabase() async {
     final path = await getDatabasePath('coordinate_db');
-    db = await openDatabase(path, version: 4, onCreate: onCreate, onUpgrade: _onUpgrade);
+    db = await openDatabase(path, version: 5, onCreate: onCreate, onUpgrade: _onUpgrade);
   }
 
   // UPGRADE DATABASE TABLES

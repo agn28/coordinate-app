@@ -98,7 +98,7 @@ class ReferralRepositoryLocal {
 
   getNotSyncedReferrals() async {
     final sql =
-        '''SELECT * FROM ${DatabaseCreator.referralTable} WHERE (is_synced=0)''';
+        '''SELECT * FROM ${DatabaseCreator.referralTable} WHERE (is_synced=0) AND (local_status!='incomplete')''';
     var response = await db.rawQuery(sql);
 
     try {

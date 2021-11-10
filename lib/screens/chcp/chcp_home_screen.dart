@@ -546,8 +546,7 @@ class _ChcpHomeState extends State<ChcpHomeScreen> {
 
                             ]
                           ),
-                          syncController.showSyncInfoflag.value
-                          ? Column(
+                          Column(
                             children: [
                               SizedBox(
                                 height: 30,
@@ -655,7 +654,7 @@ class _ChcpHomeState extends State<ChcpHomeScreen> {
                                           CircularProgressIndicator(),
                                           SizedBox(width: 10),
                                           Text(
-                                            '${syncController.syncs.value} server data left',
+                                            'Syncing...',
                                             style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w500),
@@ -702,8 +701,7 @@ class _ChcpHomeState extends State<ChcpHomeScreen> {
                                 ],
                               ),
                             ]
-                          )
-                          : Container(),
+                          ),
 
                           //       //for development
                           //       // Column(

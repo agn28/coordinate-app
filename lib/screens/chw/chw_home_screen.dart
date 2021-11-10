@@ -393,6 +393,8 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                       ],
                     ),
                   ),
+                  Obx(
+                    () => 
                   Container(
                       alignment: Alignment.center,
                       margin: EdgeInsets.only(left: 25, right: 25),
@@ -631,8 +633,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                               ),
                             ]
                           ),
-                          syncController.showSyncInfoflag.value
-                          ? Column(
+                          Column(
                             children: [
                               SizedBox(
                                 height: 30,
@@ -740,7 +741,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                                           CircularProgressIndicator(),
                                           SizedBox(width: 10),
                                           Text(
-                                            '${syncController.syncs.value} server data left',
+                                            'Syncing...',
                                             style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w500),
@@ -788,11 +789,11 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                               ),
                             ]
                           )
-                          : Container(),
                         ],
                       ),
                     ),
-                ],
+                  )
+                  ],
               ),
             ),
           ],

@@ -235,11 +235,11 @@ class SyncController extends GetxController {
     var flag = true;
     var liveSync = true;
     // var num = 0;
-
+    syncs.value = 1;
     while(flag) {
       var response = await fetchLatestSyncs();
       flag = !(response['data'].length == 0);
-      // flag = !(num == 2);
+      // flag = !(num == 0);
       // print(num);
       // num++;
     }
@@ -248,9 +248,11 @@ class SyncController extends GetxController {
       await syncLivePatientsToLocal();
       var syncCount = await syncRepo.checkTempSyncsCount();
       syncs.value = syncCount;
+      print('syncs.value ${syncs.value}');
       liveSync = !(syncCount == 0);
     }
     isSyncing.value = liveSync;
+    showSyncInfoflag.value = liveSync;
   }
 
   syncLocalToLive() async {
