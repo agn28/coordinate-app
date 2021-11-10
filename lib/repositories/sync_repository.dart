@@ -7,6 +7,7 @@ import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/repositories/api_interceptor.dart';
 import 'package:nhealth/services/api_service.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:uuid/uuid.dart';
 import '../constants/constants.dart';
@@ -119,7 +120,7 @@ class SyncRepository {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + authData['accessToken']
         },
-      ).timeout(Duration(seconds: 120));
+      ).timeout(Duration(seconds: 300));
       return json.decode(response.body);
     } on SocketException {
       return {
@@ -211,8 +212,8 @@ class SyncRepository {
     return updateResponse;
   }
 
-  getTempSyncs() async {
-    final sql = '''SELECT * FROM ${DatabaseCreator.latestSyncTable} WHERE is_synced=0''';
+  getTempSyncs(collection, size) async {
+    final sql = '''SELECT * FROM ${DatabaseCreator.latestSyncTable} WHERE is_synced=0 AND collection="$collection" LIMIT $size''';
     try {
       return await db.rawQuery(sql);
     } on DatabaseException catch (error) {
@@ -230,36 +231,100 @@ class SyncRepository {
   }
 
   checkTempSyncsCount() async {
-    final sql = '''SELECT count(*) FROM (select 0 from ${DatabaseCreator.latestSyncTable} limit 1)''';
+    final sql = '''SELECT COUNT(*) FROM ${DatabaseCreator.latestSyncTable} WHERE is_synced=0''';
     try {
-      return await db.rawQuery(sql);
+      return Sqflite.firstIntValue(await db.rawQuery(sql));
     } on DatabaseException catch (error) {
       return;
     }
   }
 
+  updateDeviceIds(ids) async {
+    var authData = await Auth().getStorageAuth();
+
+    var response;
+
+    try {
+      response = await client
+      .post(apiUrl + 'syncs/update',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authData['accessToken']
+          },
+          body: json.encode({
+            "ids": ids,
+            "deviceId": authData['deviceId']
+          }))
+      .timeout(Duration(seconds: httpRequestTimeout));
+
+      return json.decode(response.body);
+    } on SocketException {
+      showErrorSnackBar('Error', 'socketError');
+      return {'exception': true, 'message': 'No internet'};
+    } on TimeoutException {
+      showErrorSnackBar('Error', 'timeoutError');
+      return {'exception': true, 'type': 'poor_network', 'message': 'Slow internet'};
+    } on Error catch (err) {
+      showErrorSnackBar('Error', 'unknownError');
+      return {
+        'exception': true,
+        'type': 'unknown',
+        'message': 'Something went wrong'
+      };
+    }
+  }
+
   createTempSyncs(tempSyncs) async {
     var batchSize = 0;
+    var syncIds = [];
     Batch batch = db.batch();
     final sql = '''INSERT OR REPLACE INTO ${DatabaseCreator.latestSyncTable}
     (id, document_id, collection, action, key, created_at, is_synced)
     VALUES (?, ?, ?, ?, ?, ?, ?)''';
     for (var item in tempSyncs) {
       if (batchSize == 1000) { 
-        await batch.commit(noResult: true);
-        batchSize = 0;
-      } else {
         try {
-          List<dynamic> params = [item['id'], item['document_id'], item['collection'], item['action'], item['key'], item['created_at'], 0];
-          await batch.rawInsert(sql, params);
+          await batch.commit(noResult: true);
         } catch (error) {
           //TODO: create log here
+          print('error $error');
+        } finally {
+          //TODO: insert ids in an array and send req to API to update device_ids
+          print('final $syncIds');
+          await updateDeviceIds(syncIds);
+          syncIds = [];
+          batchSize = 0;
         }
+        print('batch inserted');
+      } else {
+        // try {
+          syncIds.add(item['id']);
+          List<dynamic> params = [item['id'], item['document_id'], item['collection_name'], item['action'], item['key'], item['created_at'], 0];
+          await batch.rawInsert(sql, params);
+        // } 
+        // catch (error) {
+        //   //TODO: create log here
+        //   print('error $error');
+        // } finally {
+        //   //TODO: insert ids in an array and send req to API to update device_ids
+        //   print('final');
+        // }
         batchSize++;
       }
     }
     if (batchSize > 0) { 
-      await batch.commit(noResult: true);
+      try {
+        await batch.commit(noResult: true);
+      } catch (error) {
+        //TODO: create log here
+        print('error $error');
+      } finally {
+        print('final $syncIds');
+        await updateDeviceIds(syncIds);
+        syncIds = [];
+      }
+      print('batch inserted');
     }
   }
 
@@ -271,11 +336,11 @@ class SyncRepository {
       return;
     }
   }
-  updateSyncStatus(id, isSynced) async {
+  updateSyncStatus(documentId, isSynced) async {
     final sql = '''UPDATE ${DatabaseCreator.latestSyncTable} SET
       is_synced = ?
-      WHERE id = ?''';
-    List<dynamic> params = [isSynced, id];
+      WHERE document_id = ?''';
+    List<dynamic> params = [isSynced, documentId];
     var response;
     try {
       response = await db.rawUpdate(sql, params);
@@ -285,22 +350,16 @@ class SyncRepository {
     }
   }
 
-  clearTempSyncs(tempSyncs) async {
+  clearTempSyncs() async {
     await db.transaction((txn) async {
       final batch = txn.batch();
-      // try {
-        for (var item in tempSyncs) {
-          try {  
-            await batch.rawDelete('DELETE FROM ${DatabaseCreator.latestSyncTable} WHERE id = ?', [item['id']]);
-          } catch (error) {
-
-          }
-        }
-      // } on DatabaseException catch (error) {
-      //   print('error $error');
-      // } finally {
-      //   print('temp sync cleared');
-      // }
+      try {
+      await batch.rawDelete('DELETE FROM ${DatabaseCreator.latestSyncTable}');
+      } on DatabaseException catch (error) {
+        print('error $error');
+      } finally {
+        print('${DatabaseCreator.latestSyncTable} cleared');
+      }
       await batch.commit();
     });
   }

@@ -167,13 +167,13 @@ class AssessmentRepository {
     var token = authData['accessToken'];
 
     return client.post(
-      apiUrl + 'assessments/batch',
+      apiUrl + 'assessments/batch-mongo',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
       },
-      body: json.encode({"id": ids}),
+      body: json.encode({"ids": ids}),
     ).then((response) {
       return json.decode(response.body);
     }).catchError((error) {

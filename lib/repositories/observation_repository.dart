@@ -113,13 +113,13 @@ class ObservationRepository {
     var authData = await Auth().getStorageAuth();
     var token = authData['accessToken'];
     return client.post(
-      apiUrl + 'observations/batch',
+      apiUrl + 'observations/batch-mongo',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
       },
-      body: json.encode({"id": ids}),
+      body: json.encode({"ids": ids}),
     ).then((response) {
       return json.decode(response.body);
     }).catchError((error) {
