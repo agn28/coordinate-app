@@ -242,42 +242,24 @@ class AssessmentController {
   }
 
   getIncompleteEncounterWithObservation(patientId, {key: '', value: ''}) async {
-    var apiResponse;
-    var response;
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
-      // I am connected to a mobile network.
-
-      apiResponse = await AssessmentRepository().getIncompleteEncounterWithObservation(patientId, key: key, value: value);
-      return apiResponse;
-    } else {
-      // Scaffold.of(context).showSnackBar(SnackBar(
-      //   content: Text('Warning: No Internet. Using offline...'),
-      //   backgroundColor: kPrimaryYellowColor,
-      // ));
-      var assessment = await AssessmentRepositoryLocal().getIncompleteAssessmentsByPatient(patientId);
-      var observations = await getObservationsByAssessment(assessment.last);
-      if (isNotNull(assessment) && assessment.isNotEmpty) {
-        var parsedAssessment = {
-          'id': assessment.last['id'],
-          'body': jsonDecode(assessment.last['data'])['body'],
-          'meta': jsonDecode(assessment.last['data'])['meta']
-        };
-        var response = {
-          'data': {
-            'assessment': parsedAssessment,
-            'observations':(observations)
-          },
-          'error': false
-        };
-        return response;
-      }
-
+    var assessment = await AssessmentRepositoryLocal().getIncompleteAssessmentsByPatient(patientId);
+    var parsedData = jsonDecode(assessment.last['data']);
+    var observations = await getObservationsByAssessment(parsedData);
+    if (isNotNull(assessment) && assessment.isNotEmpty) {
+      var parsedAssessment = {
+        'id': assessment.last['id'],
+        'body': jsonDecode(assessment.last['data'])['body'],
+        'meta': jsonDecode(assessment.last['data'])['meta']
+      };
+      var response = {
+        'data': {
+          'assessment': parsedAssessment,
+          'observations':(observations)
+        },
+        'error': false
+      };
+      return response;
     }
-    // var assessment = await AssessmentRepository()
-    //     .getIncompleteEncounterWithObservation(patientId);
-
-    // return assessment;
   }
 
   getIncompleteAssessmentsByPatient(patientId) async {

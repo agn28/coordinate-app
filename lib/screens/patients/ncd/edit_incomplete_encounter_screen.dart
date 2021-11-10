@@ -135,6 +135,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
     });
     var patientId = Patient().getPatient()['id'];
     var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
+    print("Asessments ${data}");
     if(data != null && data.isNotEmpty && !data['error']) {
       if(data['data']['assessment']['body']['type'] == 'new ncd center assessment') {
         hasNcdEncounter = true;
