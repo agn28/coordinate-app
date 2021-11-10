@@ -28,7 +28,7 @@ class PatientRepository {
 
     try {
       response = await client
-      .post(apiUrl + 'patients',
+      .post(apiUrl + 'patients/create-mongo',
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',

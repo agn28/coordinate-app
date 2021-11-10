@@ -40,7 +40,7 @@ class AssessmentRepository {
     var response;
     try {
       response = await client
-          .post(apiUrl + 'assessments/except-oha',
+          .post(apiUrl + 'assessments/except-oha-mongo',
               headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',

@@ -8,6 +8,7 @@ import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/controllers/observation_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:nhealth/helpers/functions.dart';
+import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/repositories/assessment_repository.dart';
 import 'package:nhealth/repositories/care_plan_repository.dart';
 import 'package:nhealth/repositories/health_report_repository.dart';
@@ -251,6 +252,101 @@ class SyncController extends GetxController {
     }
     isSyncing.value = liveSync;
   }
+
+  syncLocalToLive() async {
+    var authData = await Auth().getStorageAuth() ;
+    var notSyncedLocalPatients = await patientRepoLocal.getNotSyncedPatients();
+    var notSyncedLocalAssessments = await assessmentRepoLocal.getNotSyncedAssessments();
+    var notSyncedLocalObservations = await observationRepoLocal.getNotSyncedObservations();
+    var notSyncedLocalReferrals = await referralRepoLocal.getNotSyncedReferrals();
+    var notSyncedLocalCareplans = await careplanRepoLocal.getNotSyncedCareplans();
+    
+      if (isNotNull(notSyncedLocalPatients)) {
+        for(var patient in notSyncedLocalPatients){
+          var parsedData = jsonDecode(patient['data']);
+          var data = {
+            'id': patient['id'],
+            'body': parsedData['body'],
+            'meta': parsedData['meta'],
+            'deviceId': authData['deviceId']
+          };
+          
+          var response = await patientRepo.create(data);
+          if(isNotNull(response['error']) && !response['error']){
+            await patientRepoLocal.updateLocalStatus(patient['id'], 1);
+          }
+          
+        }
+      }
+
+      if(isNotNull(notSyncedLocalAssessments)){
+        for(var assessment in notSyncedLocalAssessments){
+          var parsedData = jsonDecode(assessment['data']);
+          var data = {
+            'id': assessment['id'],
+            'body': parsedData['body'],
+            'meta': parsedData['meta'],
+            'deviceId': authData['deviceId']
+          };
+          var response = await assessmentRepo.create(data);
+          if(isNotNull(response['error']) && !response['error']){
+            await assessmentRepoLocal.updateLocalStatus(assessment['id'], 1);
+          }
+        }
+      }
+
+      if(isNotNull(notSyncedLocalObservations)){
+        for(var observation in notSyncedLocalObservations){
+          var parsedData = jsonDecode(observation['data']);
+          var data = {
+            'id': observation['id'],
+            'body': parsedData['body'],
+            'meta': parsedData['meta'],
+            'deviceId': authData['deviceId']
+          };
+
+          var response = await observationRepo.create(data);
+          if(isNotNull(response['error']) && !response['error']){
+            await observationRepoLocal.updateLocalStatus(observation['id'], 1);
+          }
+        }
+      }
+
+      if(isNotNull(notSyncedLocalReferrals)){
+        for(var referral in notSyncedLocalReferrals){
+          var parsedData = jsonDecode(referral['data']);
+          var data = {
+            'id': referral['id'],
+            'body': parsedData['body'],
+            'meta': parsedData['meta'],
+            'deviceId': authData['deviceId']
+          };
+
+          var response = await referralRepo.create(data);
+          if(isNotNull(response['error']) && !response['error']){
+            await referralRepoLocal.updateLocalStatus(referral['id'], 1);
+          }
+          
+        }
+      }
+
+      if(isNotNull(notSyncedLocalCareplans)){
+        for(var careplan in notSyncedLocalCareplans){
+          var parsedData = jsonDecode(careplan['data']);
+          var data = {
+            'id': careplan['id'],
+            'body': parsedData['body'],
+            'meta': parsedData['meta'],
+            'deviceId': authData['deviceId']
+          };
+          var response = await careplanRepo.create(data);
+          if(isNotNull(response['error']) && !response['error']){
+            await careplanRepoLocal.updateLocalStatus(careplan['id'], 1);
+          }
+        }
+      }
+  }
+
   initializeSync() async {
     // if (!isSyncing.value) {
     //   isSyncing.value = true;
@@ -736,6 +832,7 @@ class SyncController extends GetxController {
   // }
 
   syncLocalDataToLive() async {
+    var authData = await Auth().getStorageAuth() ;
     var syncedPatients = 0, syncedAssessments = 0, syncedObservations = 0, syncedReferrals = 0, syncedCareplans = 0;
     if (localNotSyncedPatients.value.isEmpty
         && localNotSyncedAssessments.value.isEmpty

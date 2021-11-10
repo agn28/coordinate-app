@@ -128,6 +128,20 @@ class _ChcpHomeState extends State<ChcpHomeScreen> {
     }
   }
 
+  syncLocalToLive() async {
+    // await syncController.getAllStatsData();
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    // await _updateConnectionStatus(connectivityResult);
+    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+      print('connected');
+      syncController.isConnected.value = true;
+      await syncController.syncLocalToLive();
+    } else {
+      print('not connected');
+      syncController.isConnected.value = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -506,8 +520,8 @@ class _ChcpHomeState extends State<ChcpHomeScreen> {
                                     size: 30,
                                     color: Colors.white,
                                   ),
-                                  onPressed: () {
-
+                                  onPressed: () async {
+                                    await syncLocalToLive();
                                 }),
                               ),
 

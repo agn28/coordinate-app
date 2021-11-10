@@ -35,7 +35,7 @@ class ObservationRepository {
 
     try {
       response = await client
-          .post(apiUrl + 'observations',
+          .post(apiUrl + 'observations/create-mongo',
               headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',

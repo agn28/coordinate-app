@@ -93,7 +93,7 @@ class ObservationRepositoryLocal {
 
   getNotSyncedObservations() async {
     final sql =
-        '''SELECT * FROM ${DatabaseCreator.observationTable} WHERE (is_synced=0) AND (local_status!='incomplete')''';
+        '''SELECT * FROM ${DatabaseCreator.observationTable} WHERE (is_synced=0)''';
     try {
       return await db.rawQuery(sql);
     } catch (error) {
