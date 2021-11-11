@@ -1719,12 +1719,9 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                       var completedAt = status == 'complete' ? completionDateTimeController.text : '';
                                       if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
                                       {
-
                                         // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
-                                          var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations'], completedAt: completedAt);
-
+                                        var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations'], completedAt: completedAt);
                                       } else {
-
                                         // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
                                           var response = await AssessmentController().createAssessmentWithObservationsLive('follow up visit (center)', assessmentStatus: status, createdAt: creationDateTimeController.text, completedAt: completedAt);
                                       }

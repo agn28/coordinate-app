@@ -192,26 +192,6 @@ class SyncRepository {
     return updateResponse;
   }
   
-  updateLatestLocalSync(sync) async {
-    final updateSql = '''UPDATE ${DatabaseCreator.syncTable}
-    SET document_id = ?,
-    collection = ?,
-    key = ?,
-    created_at = ?,
-    action = ?
-    WHERE id = ?''';
-    List<dynamic> params = [sync['document_id'], sync['collection'], sync['key'], sync['created_at'], sync['action'], sync['id']];
-    var updateResponse;
-
-    try {
-      updateResponse = await db.rawUpdate(updateSql, params);
-
-    } catch (error) {
-      return;
-    }
-    return updateResponse;
-  }
-
   getTempSyncs(collection, size) async {
     final sql = '''SELECT * FROM ${DatabaseCreator.latestSyncTable} WHERE is_synced=0 AND collection="$collection" LIMIT $size''';
     try {
@@ -439,6 +419,5 @@ class SyncRepository {
     final referrals = await db.rawQuery('''DELETE FROM ${DatabaseCreator.referralTable}''');
     final care_plans = await db.rawQuery('''DELETE FROM ${DatabaseCreator.careplanTable}''');
     final health_reports = await db.rawQuery('''DELETE FROM ${DatabaseCreator.healthReportTable}''');
-
   }
 }

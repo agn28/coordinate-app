@@ -138,7 +138,7 @@ class DatabaseCreator {
   }
 
   Future<void> createLatestSyncsTable(Database db) async {
-    final sql = '''CREATE TABLE $latestSyncTable
+    final sql = '''CREATE TABLE IF NOT EXISTS $latestSyncTable
     (
       id TEXT PRIMARY KEY,
       document_id TEXT,
@@ -146,7 +146,7 @@ class DatabaseCreator {
       action TEXT,
       key TEXT,
       status TEXT,
-      is_synced BOOLEAN,
+      is_synced BOOLEAN ,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )''';
 
@@ -218,19 +218,13 @@ class DatabaseCreator {
 
   Future<void> initDatabase() async {
     final path = await getDatabasePath('coordinate_db');
-    db = await openDatabase(path, version: 5, onCreate: onCreate, onUpgrade: _onUpgrade);
+    db = await openDatabase(path, version: 6, onCreate: onCreate, onUpgrade: _onUpgrade);
   }
 
   // UPGRADE DATABASE TABLES
   void _onUpgrade(Database db, int oldVersion, int newVersion) {
     if (oldVersion < newVersion) {
-      db.execute("ALTER TABLE $referralTable ADD COLUMN local_status TEXT;");
-      db.execute("ALTER TABLE $syncTable DROP COLUMN data;");
-      db.execute("ALTER TABLE $syncTable ADD COLUMN document_id TEXT;");
-      db.execute("ALTER TABLE $syncTable ADD COLUMN action TEXT;");
-      db.execute("ALTER TABLE $syncTable ADD COLUMN collection TEXT;");
-      db.execute("ALTER TABLE $syncTable ADD COLUMN is_synced BOOLEAN;");
-      db.execute("ALTER TABLE $latestSyncTable ADD COLUMN is_synced BOOLEAN;");
+      
     }
   }
 

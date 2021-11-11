@@ -1713,14 +1713,14 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                     } else if(widget.prevScreen == 'followup') {
                                         var status = widget.encounterData['dataStatus'] == 'incomplete' ? 'incomplete' : 'complete';
                                         var completedAt = status == 'complete' ? completionDateTimeController.text : '';
-                                        // if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
-                                        // {
-                                        //   // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
-                                        //   var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations'], completedAt: completedAt);
-                                        // } else {
-                                        //   // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
-                                        //   var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic followup', assessmentStatus: status, createdAt: creationDateTimeController.text, completedAt: completedAt);
-                                        // }
+                                        if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
+                                        {
+                                          // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
+                                          var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations'], completedAt: completedAt);
+                                        } else {
+                                          // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
+                                          var response = await AssessmentController().createAssessmentWithObservationsLive('community clinic followup', assessmentStatus: status, createdAt: creationDateTimeController.text, completedAt: completedAt);
+                                        }
                                         status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
                                       }
                                       setState(() {

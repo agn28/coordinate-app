@@ -227,7 +227,7 @@ class SyncController extends GetxController {
       var data = jsonDecode(item['data']);
     }
   }
-  initializeLiveToLocalSync() async {
+  initializeLiveToLocalSync(context) async {
     isSyncing.value = true;
     showSyncInfoflag.value = true;
     await checkLocationData();
@@ -251,12 +251,30 @@ class SyncController extends GetxController {
     }
     //TODO: use while loop here
     while(liveSync) {
-      await syncLivePatientsToLocal();
-      var syncCount = await syncRepo.checkTempSyncsCount();
-      syncs.value = syncCount;
-      //TODO: break loop when sync count null
-      print('syncs.value ${syncs.value}');
-      liveSync = !(syncCount == 0);
+      try {
+        var response = await syncLivePatientsToLocal(context);
+        if (response == 'networkIssue') {
+          break;
+        }
+        var syncCount = await syncRepo.checkTempSyncsCount();
+        syncs.value = syncCount;
+        if(syncCount == null) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Error: Nothing to Sync'),
+            backgroundColor: Colors.red,
+          ));
+          break;
+        }
+        //TODO: break loop when sync count null
+        print('syncs.value ${syncs.value}');
+        liveSync = !(syncCount == 0);
+      } catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Error: ${error}'),
+          backgroundColor: Colors.red,
+        ));
+      }
+      
     }
     isSyncing.value = liveSync;
     showSyncInfoflag.value = liveSync;
@@ -400,6 +418,7 @@ class SyncController extends GetxController {
       response = await syncRepo.fetchLatestSyncs();
       await syncRepo.createTempSyncs(response['data']);
     } catch(error) {
+      isPoorNetwork.value = true;
       print('error $error');
     }
     return response;
@@ -1101,19 +1120,14 @@ class SyncController extends GetxController {
     });
     return;
   }
-  checktoSync() async {
-    // if(!isSyncingToLocal.value) {
-      //TODO need to check sync_type later
-      int syncCount = Sqflite.firstIntValue(await syncRepo.getTempSyncsCount());
-      if(syncCount > 0) {
-        syncLivePatientsToLocal();
-      }
-    // }
-  }
 
-  syncLivePatientsToLocal() async {
-    if (isPoorNetwork.value || isSyncingToLocal.value) {
-      return;
+  syncLivePatientsToLocal(context) async {
+    if (isPoorNetwork.value || !isConnected.value) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Error: Poor Network.'),
+        backgroundColor: Colors.red,
+      ));
+      return 'networkIssue';
     }
 
     var subPatients = [];
@@ -1124,60 +1138,66 @@ class SyncController extends GetxController {
     var subHealthReports = [];
 
     isSyncingToLocal.value = true;
+    try {
+      var patientsSync = await syncRepo.getTempSyncs('patients', 1000);
+      for (var patient in patientsSync) {
+        subPatients.add(patient['document_id']);
+      }
 
-    var patientsSync = await syncRepo.getTempSyncs('patients', 1000);
-    for (var patient in patientsSync) {
-      subPatients.add(patient['document_id']);
-    }
-    //TODO: check subpatient empty
-    if(subPatients.length > 0) {
-      await insertPatients(subPatients);
-      subPatients = [];
-    }
+      if(subPatients.length > 0) {
+        await insertPatients(subPatients);
+        subPatients = [];
+      }
 
-    var assessmentsSync = await syncRepo.getTempSyncs('assessments', 1000);
-    for (var assessment in assessmentsSync) {
-      subAssessments.add(assessment['document_id']);
-    }
-    if(subAssessments.length > 0) {
-      await insertAssessments(subAssessments);
-      subAssessments = [];
-    }
+      var assessmentsSync = await syncRepo.getTempSyncs('assessments', 1000);
+      for (var assessment in assessmentsSync) {
+        subAssessments.add(assessment['document_id']);
+      }
+      if(subAssessments.length > 0) {
+        await insertAssessments(subAssessments);
+        subAssessments = [];
+      }
 
-    var observationsSync = await syncRepo.getTempSyncs('observations', 1000);
-    for (var observation in observationsSync) {
-      subObservations.add(observation['document_id']);
-    }
-    if(subObservations.length > 0) {
-      await insertObservations(subObservations);
-      subObservations = [];
-    }
-    
-    var referralsSync = await syncRepo.getTempSyncs('referrals', 10);
-    for (var referral in referralsSync) {
-      subReferrals.add(referral['document_id']);
-    }
-    if(subReferrals.length > 0) {
-      await insertReferrals(subReferrals);
-      subReferrals = [];
-    }
+      var observationsSync = await syncRepo.getTempSyncs('observations', 1000);
+      for (var observation in observationsSync) {
+        subObservations.add(observation['document_id']);
+      }
+      if(subObservations.length > 0) {
+        await insertObservations(subObservations);
+        subObservations = [];
+      }
+      
+      var referralsSync = await syncRepo.getTempSyncs('referrals', 10);
+      for (var referral in referralsSync) {
+        subReferrals.add(referral['document_id']);
+      }
+      if(subReferrals.length > 0) {
+        await insertReferrals(subReferrals);
+        subReferrals = [];
+      }
 
-    var carePlansSync = await syncRepo.getTempSyncs('care_plans', 10);
-    for (var carePlan in carePlansSync) {
-      subCarePlans.add(carePlan['document_id']);
-    }
-    if(subCarePlans.length > 0) {
-      await insertCarePlans(subCarePlans);
-      subCarePlans = [];
-    }
+      var carePlansSync = await syncRepo.getTempSyncs('care_plans', 10);
+      for (var carePlan in carePlansSync) {
+        subCarePlans.add(carePlan['document_id']);
+      }
+      if(subCarePlans.length > 0) {
+        await insertCarePlans(subCarePlans);
+        subCarePlans = [];
+      }
 
-    var healthReportsSync = await syncRepo.getTempSyncs('health_reports', 10);
-    for (var healthReport in healthReportsSync) {
-      subHealthReports.add(healthReport['document_id']);
-    }
-    if(subHealthReports.length > 0) {
-      await insertHealthReports(subHealthReports);
-      subHealthReports = [];
+      var healthReportsSync = await syncRepo.getTempSyncs('health_reports', 10);
+      for (var healthReport in healthReportsSync) {
+        subHealthReports.add(healthReport['document_id']);
+      }
+      if(subHealthReports.length > 0) {
+        await insertHealthReports(subHealthReports);
+        subHealthReports = [];
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Error: ${error}'),
+        backgroundColor: Colors.red,
+      ));
     }
 
     await Future.delayed(const Duration(seconds: 2));
@@ -1189,9 +1209,10 @@ class SyncController extends GetxController {
     var patients = await patientController.getPatientByIds(ids);
 
     if (isNotNull(patients) && isNotNull(patients['error']) && !patients['error'] && isNotNull(patients['data'])) {
-
       await patientRepoLocal.syncFromLive(patients['data']);
-    } 
+    } else {
+      isPoorNetwork.value = true;
+    }
     await syncRepo.updateSyncStatus(ids, 1);
   }
 
@@ -1199,6 +1220,8 @@ class SyncController extends GetxController {
   var assessments = await assessmentController.getAssessmentByIds(ids);
     if (isNotNull(assessments) && isNotNull(assessments['error']) && !assessments['error'] && isNotNull(assessments['data'])) {
       await assessmentRepoLocal.syncFromLive(assessments['data'], true);
+    } else {
+      isPoorNetwork.value = true;
     }
     await syncRepo.updateSyncStatus(ids, 1);
   }
@@ -1207,6 +1230,8 @@ class SyncController extends GetxController {
     var observations = await observationController.getLiveObservationsByIds(ids);
     if (isNotNull(observations) && isNotNull(observations['error']) && !observations['error'] && isNotNull(observations['data'])) {
       await observationRepoLocal.syncFromLive(observations['data'], true);
+    } else {
+      isPoorNetwork.value = true;
     }
     await syncRepo.updateSyncStatus(ids, 1);
   }
@@ -1215,16 +1240,19 @@ class SyncController extends GetxController {
   var referrals = await referralRepo.getReferralByIds(ids);
     if (isNotNull(referrals) && isNotNull(referrals['error']) && !referrals['error'] && isNotNull(referrals['data'])) {
       await referralRepoLocal.syncFromLive(referrals['data'], true);
+    } else {
+      isPoorNetwork.value = true;
     }
     await syncRepo.updateSyncStatus(ids, 1);
   }
-
 
   insertCarePlans(ids) async {
   var careplans = await careplanRepo.getCarePlanByIds(ids);
 
     if (isNotNull(careplans) && isNotNull(careplans['error']) && !careplans['error'] && isNotNull(careplans['data'])) {
       await careplanRepoLocal.syncFromLive(careplans['data'],true);
+    } else {
+      isPoorNetwork.value = true;
     }
     await syncRepo.updateSyncStatus(ids, 1);
   }
@@ -1234,6 +1262,8 @@ class SyncController extends GetxController {
 
     if (isNotNull(healthreports) && isNotNull(healthreports['error']) && !healthreports['error'] && isNotNull(healthreports['data'])) {
       await healthReportRepoLocal.syncFromLive(healthreports['data'], true);
+    } else {
+      isPoorNetwork.value = true;
     }
     await syncRepo.updateSyncStatus(ids, 1);
   }

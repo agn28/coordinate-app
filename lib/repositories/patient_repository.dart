@@ -116,7 +116,7 @@ class PatientRepository {
     ).then((response) {
       return json.decode(response.body);
     }).catchError((error) {
-
+      return error;
     });
   }
 

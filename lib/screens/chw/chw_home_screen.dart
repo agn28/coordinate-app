@@ -114,14 +114,14 @@ class _ChwHomeState extends State<ChwHomeScreen> {
     return StringUtils.capitalize(role);
   }
 
-  liveToLocalSync() async {
+  liveToLocalSync(context) async {
     // await syncController.getAllStatsData();
     var connectivityResult = await (Connectivity().checkConnectivity());
     // await _updateConnectionStatus(connectivityResult);
     if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
       print('connected');
       syncController.isConnected.value = true;
-      await syncController.initializeLiveToLocalSync();
+      await syncController.initializeLiveToLocalSync(context);
     } else {
       print('not connected');
       syncController.isConnected.value = false;
@@ -628,7 +628,7 @@ class _ChwHomeState extends State<ChwHomeScreen> {
                                     color: Colors.white,
                                   ),
                                   onPressed: () async {
-                                    await liveToLocalSync();
+                                    await liveToLocalSync(context);
                                 }),
                               ),
                             ]
