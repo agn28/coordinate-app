@@ -235,7 +235,7 @@ class SyncRepository {
     try {
       return Sqflite.firstIntValue(await db.rawQuery(sql));
     } on DatabaseException catch (error) {
-      return;
+      return 0;
     }
   }
 
