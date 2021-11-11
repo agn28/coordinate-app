@@ -243,6 +243,7 @@ class SyncController extends GetxController {
       } catch (error) {
         //TODO: break loop
         print('error $error');
+        break;
       }
       // flag = !(num == 0);
       // print(num);
