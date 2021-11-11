@@ -98,7 +98,7 @@ class CarePlanRepository {
 
     try {
       response = await client
-      .post(apiUrl + 'care-plans/batch',
+      .post(apiUrl + 'care-plans/batch-mongo',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',

@@ -186,7 +186,7 @@ class HealthReportRepository {
 
     try {
       response = await client
-      .post(apiUrl + 'health-reports/batch',
+      .post(apiUrl + 'health-reports/batch-mongo',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',

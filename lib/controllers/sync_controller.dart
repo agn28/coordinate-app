@@ -230,6 +230,7 @@ class SyncController extends GetxController {
   initializeLiveToLocalSync(context) async {
     isSyncing.value = true;
     showSyncInfoflag.value = true;
+    isPoorNetwork.value = false;
     await checkLocationData();
     await checkCenterData();
     var flag = true;
@@ -254,6 +255,7 @@ class SyncController extends GetxController {
       try {
         var response = await syncLivePatientsToLocal(context);
         if (response == 'networkIssue') {
+          print('networkIssue');
           break;
         }
         var syncCount = await syncRepo.checkTempSyncsCount();
@@ -263,6 +265,7 @@ class SyncController extends GetxController {
             content: Text('Error: Nothing to Sync'),
             backgroundColor: Colors.red,
           ));
+          print('Error: Nothing to Sync');
           break;
         }
         //TODO: break loop when sync count null
@@ -273,9 +276,11 @@ class SyncController extends GetxController {
           content: Text('Error: ${error}'),
           backgroundColor: Colors.red,
         ));
+        print('Error: ${error}');
       }
       
     }
+    syncs.value = 0;
     isSyncing.value = liveSync;
     showSyncInfoflag.value = liveSync;
   }
@@ -1167,7 +1172,7 @@ class SyncController extends GetxController {
         subObservations = [];
       }
       
-      var referralsSync = await syncRepo.getTempSyncs('referrals', 10);
+      var referralsSync = await syncRepo.getTempSyncs('referrals', 1000);
       for (var referral in referralsSync) {
         subReferrals.add(referral['document_id']);
       }
@@ -1176,7 +1181,7 @@ class SyncController extends GetxController {
         subReferrals = [];
       }
 
-      var carePlansSync = await syncRepo.getTempSyncs('care_plans', 10);
+      var carePlansSync = await syncRepo.getTempSyncs('care_plans', 1000);
       for (var carePlan in carePlansSync) {
         subCarePlans.add(carePlan['document_id']);
       }
@@ -1185,7 +1190,7 @@ class SyncController extends GetxController {
         subCarePlans = [];
       }
 
-      var healthReportsSync = await syncRepo.getTempSyncs('health_reports', 10);
+      var healthReportsSync = await syncRepo.getTempSyncs('health_reports', 1000);
       for (var healthReport in healthReportsSync) {
         subHealthReports.add(healthReport['document_id']);
       }

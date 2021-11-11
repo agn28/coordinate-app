@@ -134,7 +134,7 @@ class ReferralRepository {
     var response;
 
     try {
-      response = await client.post(apiUrl + 'followups/batch',
+      response = await client.post(apiUrl + 'followups/batch-mongo',
        headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
