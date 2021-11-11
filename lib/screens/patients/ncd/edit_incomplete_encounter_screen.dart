@@ -735,19 +735,17 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                 onPressed: () async {
                     if (_currentStep == 0) {
                       Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'ncd', '', '', assessmentStatus:'incomplete');
                     }
 
                     if (_currentStep == 1) {
-                      Questionnaire().addNewMedicationNcd(
-                          'medication', medicationAnswers);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                      Questionnaire().addNewMedicationNcd('medication', medicationAnswers);
+                      AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'ncd', '', '', assessmentStatus:'incomplete');
                     }
 
                     if (_currentStep == 2) {
-                      Questionnaire().addNewRiskFactorsNcd(
-                          'risk_factors', riskAnswers);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                      Questionnaire().addNewRiskFactorsNcd('risk_factors', riskAnswers);
+                      AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'ncd', '', '', assessmentStatus:'incomplete');
                     }
 
                     if (_currentStep == 3) {
@@ -786,7 +784,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                                     textColor: Colors.white,
                                     onPressed: () async {
                                       createObservations();
-                                      AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'ncd', '', '', assessmentStatus:'incomplete');
                                       setState(() {
                                         _currentStep = _currentStep + 1;
                                       });
@@ -800,7 +798,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                         );
                       } else {
                         createObservations();
-                        AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'ncd', '', '', assessmentStatus:'incomplete');
                         setState(() {
                           _currentStep = _currentStep + 1;
                         });
@@ -866,7 +864,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                                     textColor: Colors.white,
                                     onPressed: () async{
                                       createObservations();
-                                      AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'ncd', '', '', assessmentStatus:'incomplete');
                                       setState(() {
                                         _currentStep = _currentStep + 1;
                                         nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
@@ -881,7 +879,7 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
                         );
                       } else {
                         createObservations();
-                        AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'ncd', '', '', assessmentStatus:'incomplete');
                         setState(() {
                           _currentStep = _currentStep + 1;
                           nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';

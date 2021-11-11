@@ -237,8 +237,13 @@ class SyncController extends GetxController {
     // var num = 0;
     syncs.value = 1;
     while(flag) {
-      var response = await fetchLatestSyncs();
-      flag = !(response['data'].length == 0);
+      try {
+        var response = await fetchLatestSyncs();
+        flag = !(response['data'].length == 0);
+      } catch (error) {
+        //TODO: break loop
+        print('error $error');
+      }
       // flag = !(num == 0);
       // print(num);
       // num++;
@@ -248,6 +253,7 @@ class SyncController extends GetxController {
       await syncLivePatientsToLocal();
       var syncCount = await syncRepo.checkTempSyncsCount();
       syncs.value = syncCount;
+      //TODO: break loop when sync count null
       print('syncs.value ${syncs.value}');
       liveSync = !(syncCount == 0);
     }
@@ -256,6 +262,7 @@ class SyncController extends GetxController {
   }
 
   syncLocalToLive() async {
+    syncs.value = 1;
     var authData = await Auth().getStorageAuth() ;
     var notSyncedLocalPatients = await patientRepoLocal.getNotSyncedPatients();
     var notSyncedLocalAssessments = await assessmentRepoLocal.getNotSyncedAssessments();
@@ -273,6 +280,7 @@ class SyncController extends GetxController {
             'deviceId': authData['deviceId']
           };
           
+          print("Paitent ${patient}");
           var response = await patientRepo.create(data);
           if(isNotNull(response['error']) && !response['error']){
             await patientRepoLocal.updateLocalStatus(patient['id'], 1);
@@ -290,6 +298,7 @@ class SyncController extends GetxController {
             'meta': parsedData['meta'],
             'deviceId': authData['deviceId']
           };
+          print("Assessments ${assessment}");
           var response = await assessmentRepo.create(data);
           if(isNotNull(response['error']) && !response['error']){
             await assessmentRepoLocal.updateLocalStatus(assessment['id'], 1);
@@ -307,6 +316,7 @@ class SyncController extends GetxController {
             'deviceId': authData['deviceId']
           };
 
+          print("observation ${observation}");
           var response = await observationRepo.create(data);
           if(isNotNull(response['error']) && !response['error']){
             await observationRepoLocal.updateLocalStatus(observation['id'], 1);
@@ -324,6 +334,7 @@ class SyncController extends GetxController {
             'deviceId': authData['deviceId']
           };
 
+          print("referral ${referral}");
           var response = await referralRepo.create(data);
           if(isNotNull(response['error']) && !response['error']){
             await referralRepoLocal.updateLocalStatus(referral['id'], 1);
@@ -341,12 +352,14 @@ class SyncController extends GetxController {
             'meta': parsedData['meta'],
             'deviceId': authData['deviceId']
           };
+          print("careplan ${careplan}");
           var response = await careplanRepo.create(data);
           if(isNotNull(response['error']) && !response['error']){
             await careplanRepoLocal.updateLocalStatus(careplan['id'], 1);
           }
         }
       }
+      syncs.value = 0;
   }
 
   initializeSync() async {

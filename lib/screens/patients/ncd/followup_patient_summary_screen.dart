@@ -1651,15 +1651,16 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                       isLoading = true;
                                     });
                                     if(widget.prevScreen == 'encounter') {
-                                      if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
-                                      {
-                                        var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
+                                      var response = AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'ncd', '', '', assessmentStatus:'incomplete', localStatus:'incomplete');
+                                      // if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
+                                      // {
+                                      //   var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
 
-                                      } else {
+                                      // } else {
 
-                                        // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
-                                        var response = await AssessmentController().createAssessmentWithObservationsLive('new ncd center assessment', assessmentStatus: 'incomplete', createdAt: creationDateTimeController.text);
-                                      }
+                                      //   // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                                      //   var response = await AssessmentController().createAssessmentWithObservationsLive('new ncd center assessment', assessmentStatus: 'incomplete', createdAt: creationDateTimeController.text);
+                                      // }
                                     } else if(widget.prevScreen == 'followup') {
                                       if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
                                       {
@@ -1700,16 +1701,17 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                     if(widget.prevScreen == 'encounter') {
                                       var status = widget.encounterData['dataStatus'] == 'incomplete' ? 'incomplete' : 'complete';
                                       var completedAt = status == 'complete' ? completionDateTimeController.text : '';
-                                      if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
-                                      {
+                                      var response = AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'chcp', '', '', assessmentStatus:'incomplete', localStatus: status);
+                                      // if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
+                                      // {
 
-                                        // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
-                                        var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations'], completedAt: completedAt);
-                                      } else {
+                                      //   // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
+                                      //   var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations'], completedAt: completedAt);
+                                      // } else {
 
-                                        // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', status, '');
-                                        var response = await AssessmentController().createAssessmentWithObservationsLive('new ncd center assessment', assessmentStatus: status, createdAt: creationDateTimeController.text, completedAt: completedAt);
-                                      }
+                                      //   // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', status, '');
+                                      //   var response = await AssessmentController().createAssessmentWithObservationsLive('new ncd center assessment', assessmentStatus: status, createdAt: creationDateTimeController.text, completedAt: completedAt);
+                                      // }
                                       status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
 
                                     } else if(widget.prevScreen == 'followup') {

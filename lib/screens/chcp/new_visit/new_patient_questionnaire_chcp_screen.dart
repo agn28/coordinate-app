@@ -542,21 +542,20 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                 onPressed: () {
                     if (_currentStep == 0) {
                       Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
-
+                      AssessmentController().storeEncounterDataLocal('community clinic assessment', 'chcp', '', '', assessmentStatus:'incomplete');
                     }
 
                     if (_currentStep == 1 ) {
                       Questionnaire().addNewMedicationNcd(
                           'medication', medicationAnswers);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('community clinic assessment', 'chcp', '', '', assessmentStatus:'incomplete');
 
                     }
 
                     if (_currentStep == 2) {
                       Questionnaire().addNewRiskFactorsNcd(
                           'risk_factors', riskAnswers);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('community clinic assessment', 'chcp', '', '', assessmentStatus:'incomplete');
 
                     }
 
@@ -596,7 +595,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                                     textColor: Colors.white,
                                     onPressed: () async {
                                       createObservations();
-                                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('community clinic assessment', 'chcp', '', '', assessmentStatus:'incomplete');
                                       setState(() {
                                         _currentStep = _currentStep + 1;
                                       });
@@ -610,7 +609,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                         );
                       } else {
                         createObservations();
-                        AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('community clinic assessment', 'chcp', '', '', assessmentStatus:'incomplete');
                         setState(() {
                           _currentStep = _currentStep + 1;
                         });
@@ -635,7 +634,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                     }
                     if (_currentStep == 7) {
                       Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('community clinic assessment', 'chcp', '', '', assessmentStatus:'incomplete');
                       setState(() {
                         _currentStep = _currentStep + 1;
                       });
@@ -660,7 +659,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                         'tribe': isTribe
                       };
                       Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('community clinic assessment', 'chcp', '', '', assessmentStatus:'incomplete');
                       setState(() {
                         _currentStep = _currentStep + 1;
                       });
@@ -708,7 +707,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                                     textColor: Colors.white,
                                     onPressed: () async {
                                       createObservations();
-                                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('community clinic assessment', 'chcp', '', '', assessmentStatus:'incomplete');
                                       setState(() {
                                         _currentStep = _currentStep + 1;
                                       });
@@ -722,7 +721,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
                         );
                       } else {
                         createObservations();
-                        AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('community clinic assessment', 'chcp', '', '', assessmentStatus:'incomplete');
                         setState(() {
                           _currentStep = _currentStep + 1;
                         });

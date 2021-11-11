@@ -244,7 +244,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
       // var parseData = jsonDecode(lastEncounter['data']);
       if(lastEncounter['data']['type'] == 'new questionnaire' || (lastEncounter['data']['type'] == 'community clinic assessment' && lastEncounter['local_status'] == 'incomplete')) {
         if(lastEncounter['data']['type'] == 'community clinic assessment')
-          hasIncompleteChcpEncounter = true;
+          {hasIncompleteChcpEncounter = true;}
         encounter = {
           'id': lastEncounter['id'],
           'body': lastEncounter['data'],
@@ -886,17 +886,17 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                     
                     if (_currentStep == 0) {
                       Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('community clinic assessment', 'chcp', '', '', assessmentStatus:'incomplete');
                     }
 
                     if (_currentStep == 1) {
                       Questionnaire().addNewMedicationNcd('medication', medicationAnswers);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('community clinic assessment', 'chcp', '', '', assessmentStatus:'incomplete');
                     }
 
                     if (_currentStep == 2) {
                       Questionnaire().addNewRiskFactorsNcd('risk_factors', riskAnswers);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('community clinic assessment', 'chcp', '', '', assessmentStatus:'incomplete');
                     }
 
                     if (_currentStep == 3) {
@@ -937,7 +937,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                                       
                                       createObservations();
                                       
-                                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('community clinic assessment', 'chcp', '', '', assessmentStatus:'incomplete');
                                       setState(() {
                                         _currentStep = _currentStep + 1;
                                       });
@@ -952,7 +952,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                       } else {
                         createObservations();
                         
-                        AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('community clinic assessment', 'chcp', '', '', assessmentStatus:'incomplete');
                         setState(() {
                           _currentStep = _currentStep + 1;
                         });
@@ -979,7 +979,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                     if (_currentStep == 7) {
                       Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);
                       
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('community clinic assessment', 'chcp', '', '', assessmentStatus:'incomplete');
                       setState(() {
                         _currentStep = _currentStep + 1;
                       });
@@ -1004,7 +1004,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                         'tribe': isTribe
                       };
                       Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('community clinic assessment', 'chcp', '', '', assessmentStatus:'incomplete');
                       setState(() {
                         _currentStep = _currentStep + 1;
                       });
@@ -1052,7 +1052,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                                     textColor: Colors.white,
                                     onPressed: () async {
                                       createObservations();
-                                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('community clinic assessment', 'chcp', '', '', assessmentStatus:'incomplete');
                                       setState(() {
                                         _currentStep = _currentStep + 1;
                                       });
@@ -1066,7 +1066,7 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
                         );
                       } else {
                         createObservations();
-                        AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'chcp', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('community clinic assessment', 'chcp', '', '', assessmentStatus:'incomplete');
                         setState(() {
                           _currentStep = _currentStep + 1;
                         });

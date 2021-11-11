@@ -930,12 +930,70 @@ class AssessmentController {
       }
     } 
   }
+  storeEncounterDataLocal(type, screening_type, comment, nextVisitDate, {assessmentStatus:'incomplete', localStatus:'incomplete', followupType:'', createdAt:'', completedAt:''}) async {
+    var localNotSyncedAssessment = [];
+    localNotSyncedAssessment = await this.getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: type);
+    // existing assessment
+    if(localNotSyncedAssessment.isNotEmpty) {
+      var localNotSyncedObservations = await this.getObservationsByAssessment(localNotSyncedAssessment.first);
+      
+      localNotSyncedAssessment.first['body']['status'] = assessmentStatus;
+      assessmentStatus == 'complete' ? (localNotSyncedAssessment.first['meta']['completed_at'] = (completedAt == '' ?  DateTime.now().toString() : completedAt)) : null;
+      localNotSyncedAssessment.first['meta']['created_at'] = (createdAt == '' ? DateTime.now().toString() : createdAt);
+      var observations = await updateObservations(localNotSyncedAssessment.first['body']['status'], localNotSyncedAssessment.first, localNotSyncedObservations);
+      // Map<String, dynamic> apiData = {
+      //   'assessment': localNotSyncedAssessment.first,
+      //   'observations': apiDataObservations
+      // };
+      await AssessmentRepositoryLocal().updateLocalAssessment(localNotSyncedAssessment.first['id'], localNotSyncedAssessment.first, 0, localStatus: localStatus);
+      
+      for (var observation in observations) {
+        await ObservationRepositoryLocal().update(observation['id'], observation, 0, localStatus: localStatus);
+      }
+      var localNotSyncedReferral = await ReferralController().getReferralByAssessment(localNotSyncedAssessment.first['id']);
+      if(localNotSyncedReferral != null && (localNotSyncedAssessment.first['body']['type'] == 'community clinic assessment' || localNotSyncedAssessment.first['body']['type'] == 'community clinic followup')) {
+        // localNotSyncedReferral['meta']['created_at'] = createdAt == '' ? DateTime.now().toString() : createdAt;
+        // var response = await storeAssessmentWithObservationsLive(localNotSyncedAssessment.first, apiDataObservations, apiData, referralData: localNotSyncedReferral);
+        if(localNotSyncedReferral != '' && localNotSyncedReferral != null && localNotSyncedReferral.isNotEmpty) {
+          await ReferralRepositoryLocal().update(localNotSyncedReferral['id'], localNotSyncedReferral, 0, localStatus: localStatus);
+        }
+      }
+      // else {
+      //   var response = await storeAssessmentWithObservationsLive(localNotSyncedAssessment.first, apiDataObservations, apiData);
+      // }
+    } else {
+      var response;
+      var assessmentData = _prepareData(type, screening_type, comment);
+      assessmentData['body']['status'] = assessmentStatus;
+      assessmentData['body']['next_visit_date'] = nextVisitDate;
+      if (followupType != '') {
+        assessmentData['body']['followup_type'] = followupType;
+      }
+      assessmentData['meta']['created_at'] = createdAt == '' ? DateTime.now().toString() : createdAt;
+      var assessmentId = Uuid().v4();
+
+      // Preparing all observations related to assessment
+      var observations = await AssessmentRepositoryLocal().prepareObservations(assessmentId);
+
+      response = await AssessmentRepositoryLocal().createLocalAssessment(assessmentId, assessmentData, 0, localStatus: localStatus);
+      for (var observation in observations['localData']) {
+        await ObservationRepositoryLocal().create(observation['id'], observation['data'], 0, localStatus: localStatus);
+      }
+      // await PatientReposioryLocal().updateLocalStatus(assessmentData['body']['patient_id'], false);
+    }
+
+    
+    // if (localNotSyncedAssessment.first['body']['status'] == 'complete') {
+    //   await HealthReportController().generateReport(localNotSyncedAssessment.first['body']['patient_id']);
+    // }
+    // Helpers().clearObservationItems();
+  }
 
   createAssessmentWithObservationsLocal(context, type, screening_type, comment, completeStatus, nextVisitDate, {followupType: '', createdAt: ''}) async {
     var incompleteAssessments = [];
     incompleteAssessments = await this.getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: type);
     if(incompleteAssessments.isNotEmpty) {
-      
+
       incompleteAssessments.first['meta']['created_at'] = createdAt == '' ? DateTime.now().toString() : createdAt;
       var obs = await this.getObservationsByAssessment(incompleteAssessments.first);
       var apiDataObservations = await updateObservations(completeStatus, incompleteAssessments.first, obs);
@@ -945,7 +1003,7 @@ class AssessmentController {
       for (var observation in apiDataObservations) {
         await ObservationRepositoryLocal().update(observation['id'], observation, false, localStatus: 'incomplete');
       }
-      await PatientReposioryLocal().updateLocalStatus(incompleteAssessments.first['body']['patient_id'], false);
+      // await PatientReposioryLocal().updateLocalStatus(incompleteAssessments.first['body']['patient_id'], false);
     } else {
       var response;
       var assessmentData = _prepareData(type, screening_type, comment);
@@ -964,7 +1022,7 @@ class AssessmentController {
       for (var observation in observations['localData']) {
         await ObservationRepositoryLocal().create(observation['id'], observation['data'], false, localStatus: 'incomplete');
       }
-      await PatientReposioryLocal().updateLocalStatus(assessmentData['body']['patient_id'], false);
+      // await PatientReposioryLocal().updateLocalStatus(assessmentData['body']['patient_id'], false);
     }
     // var response;
     // var data = _prepareData(type, screening_type, comment);
@@ -1044,7 +1102,7 @@ class AssessmentController {
       await ReferralRepositoryLocal().update(referralData['id'], referralData, false, localStatus: 'complete');
     }
     // Identifying this patient with not synced data
-    await PatientReposioryLocal().updateLocalStatus(assessmentData['body']['patient_id'], false);
+    // await PatientReposioryLocal().updateLocalStatus(assessmentData['body']['patient_id'], false);
       
     // var connectivityResult = await (Connectivity().checkConnectivity());
     // if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
@@ -1296,7 +1354,7 @@ class AssessmentController {
       await ObservationRepositoryLocal().create(observation['id'], observation['data'], isSynced);
     }
     // Identifying this patient with not synced data
-    await PatientReposioryLocal().updateLocalStatus(assessmentData['body']['patient_id'], isSynced);
+    // await PatientReposioryLocal().updateLocalStatus(assessmentData['body']['patient_id'], isSynced);
 
   }
   updateLocalAssessmentWithObservations(assessmentData, observationsData, isSynced) async {
@@ -1306,7 +1364,7 @@ class AssessmentController {
       await ObservationRepositoryLocal().update(observation['id'], observation, isSynced);
     }
     // Identifying this patient with not synced data
-    await PatientReposioryLocal().updateLocalStatus(assessmentData['body']['patient_id'], isSynced);
+    // await PatientReposioryLocal().updateLocalStatus(assessmentData['body']['patient_id'], isSynced);
   }
 
   updateObservations(status, encounter, observations) async {

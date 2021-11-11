@@ -508,19 +508,19 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
                 onPressed: () {
                     if (_currentStep == 0) {
                       Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'ncd', '', '', assessmentStatus:'incomplete');
                     }
 
                     if (_currentStep == 1) {
                       Questionnaire().addNewMedicationNcd(
                           'medication', medicationAnswers);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'ncd', '', '', assessmentStatus:'incomplete');
                     }
 
                     if (_currentStep == 2) {
                       Questionnaire().addNewRiskFactorsNcd(
                           'risk_factors', riskAnswers);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'ncd', '', '', assessmentStatus:'incomplete');
                     }
 
                     if (_currentStep == 3) {
@@ -563,7 +563,7 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
                                         _currentStep = _currentStep + 1;
                                       });
                                       createObservations();
-                                      AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'ncd', '', '', assessmentStatus:'incomplete');
                       
                                       Navigator.of(context).pop(true);
                                     },
@@ -575,7 +575,7 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
                         );
                       } else {
                         createObservations();
-                        AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'ncd', '', '', assessmentStatus:'incomplete');
                         setState(() {
                           _currentStep = _currentStep + 1;
                         });
@@ -594,7 +594,7 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
                         'tribe': isTribe
                       };
                       Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'ncd', '', '', assessmentStatus:'incomplete');
 
                       _completeStep();
                       return;
@@ -645,7 +645,7 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
                                         _currentStep = _currentStep + 1;
                                       });
                                       createObservations();
-                                      AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'ncd', '', '', assessmentStatus:'incomplete');
                                       nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                                       Navigator.of(context).pop(true);
                                     },
@@ -657,7 +657,7 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
                         );
                       } else {
                         createObservations();
-                        AssessmentController().createAssessmentWithObservationsLocal(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'ncd', '', '', assessmentStatus:'incomplete');
                         setState(() {
                           _currentStep = _currentStep + 1;                     
                         });
