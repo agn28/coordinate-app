@@ -1701,7 +1701,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                     if(widget.prevScreen == 'encounter') {
                                       var status = widget.encounterData['dataStatus'] == 'incomplete' ? 'incomplete' : 'complete';
                                       var completedAt = status == 'complete' ? completionDateTimeController.text : '';
-                                      var response = AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'chcp', '', '', assessmentStatus:'incomplete', localStatus: status);
+                                      var response = AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'chcp', '', '', assessmentStatus: status, localStatus: status);
                                       // if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
                                       // {
 
