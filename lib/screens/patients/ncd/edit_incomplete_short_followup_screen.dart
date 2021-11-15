@@ -96,6 +96,7 @@ class _EditIncompleteShortFollowupScreenState extends State<EditIncompleteShortF
     });
     var patientId = Patient().getPatient()['id'];
     var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId, key:'type', value:'follow up visit (center)');
+    print('data: $data');
     setState(() {
       isLoading = false;
     });
@@ -114,6 +115,7 @@ class _EditIncompleteShortFollowupScreenState extends State<EditIncompleteShortF
     setState(() {
       encounter = data['data']['assessment'];
       observations = data['data']['observations'];
+      print('observations: $observations');
     });
 
     populatePreviousAnswers();
@@ -159,18 +161,22 @@ class _EditIncompleteShortFollowupScreenState extends State<EditIncompleteShortF
           if (obsData['name'] == 'height' && obsData['value'] != '') {
             var heightText = obsData['value'];
             heightEditingController.text = '${obsData['value']}';
+            print('heightEditingController.text:${heightEditingController.text}');
           }
           if (obsData['name'] == 'weight' && obsData['value'] != '') {
             var weightText = obsData['value'];
             weightEditingController.text = '${obsData['value']}';
+            print('weightEditingController.text: ${weightEditingController.text}');
           }
           if (obsData['name'] == 'waist' && obsData['value'] != '') {
             var waistText = obsData['value'];
             waistEditingController.text = '${obsData['value']}';
+            print('waistEditingController.text: ${waistEditingController.text}');
           }
           if (obsData['name'] == 'hip' && obsData['value'] != '') {
             var hipText = obsData['value'];
             hipEditingController.text = '${obsData['value']}';
+            print('hipEditingController.text: ${hipEditingController.text}');
           }
         }
       }
@@ -605,14 +611,16 @@ class _EditIncompleteShortFollowupScreenState extends State<EditIncompleteShortF
                               
                               if (_currentStep == 1) {
                                 createObservations();
-                                AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                // AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType: 'short');
                                 _completeStep();
                                 return;
                               }
                               if (_currentStep == 0) {
                                 if(dynamicMedicationTitles.isNotEmpty) {
                                   Questionnaire().addNewDynamicMedicationNcd('dynamic_medication', dynamicMedicationTitles, dynamicMedicationAnswers);
-                                  AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                  // AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                  AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType: 'short');
                                 }
                                 // print(Questionnaire().qnItems);
                                 nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';

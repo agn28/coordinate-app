@@ -11,6 +11,7 @@ import 'package:nhealth/configs/configs.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
+import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
@@ -98,6 +99,7 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
     super.initState();
     _checkAuth();
     clearForm();
+    Helpers().clearObservationItems();
     isLoading = false;
 
     getAuth();
@@ -587,14 +589,16 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
 
                               if (_currentStep == 1) {
                                 createObservations();
-                                AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                // AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType: 'short');
                                 _completeStep();
                                 return;
                               }
                               if (_currentStep == 0) {
                                 if(dynamicMedicationTitles.isNotEmpty) {
                                   Questionnaire().addNewDynamicMedicationNcd('dynamic_medication', dynamicMedicationTitles, dynamicMedicationAnswers);
-                                  AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                  // AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                  AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType: 'short');
                                 }
                                 // print(Questionnaire().qnItems);
                                 nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';

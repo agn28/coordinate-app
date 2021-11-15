@@ -149,15 +149,15 @@ class AssessmentController {
   }
 
   getLastAssessmentByPatient({key: '', value: ''}) async {
-    var response = await AssessmentRepository().getLastAssessment(key: key, value: value);
-    
-    if (response['error'] != null && !response['error']) {
-      return response;
-    }
+    // var response = await AssessmentRepository().getLastAssessment(key: key, value: value);
+    // print('getLastAssessmentByPatient response: $response');
+    // if (response['error'] != null && !response['error']) {
+    //   return response;
+    // }
 
     var data = {};
 
-    if (isNull(response) || isNotNull(response['exception'])) {
+    // if (isNull(response) || isNotNull(response['exception'])) {
       var patientId = Patient().getPatient()['id'];
       var assessments = await AssessmentRepositoryLocal().getAssessmentsByPatient(patientId);
       if (isNotNull(assessments)) {
@@ -187,7 +187,7 @@ class AssessmentController {
         //     });
         //   }
         // });
-    }
+    // }
     return data;
   }
 
@@ -938,6 +938,7 @@ class AssessmentController {
       var localNotSyncedObservations = await this.getObservationsByAssessment(localNotSyncedAssessment.first);
       
       localNotSyncedAssessment.first['body']['status'] = assessmentStatus;
+      localNotSyncedAssessment.first['body']['followup_type'] = followupType;
       assessmentStatus == 'complete' ? (localNotSyncedAssessment.first['meta']['completed_at'] = (completedAt == '' ?  DateTime.now().toString() : completedAt)) : null;
       localNotSyncedAssessment.first['meta']['created_at'] = (createdAt == '' ? DateTime.now().toString() : createdAt);
       var observations = await updateObservations(localNotSyncedAssessment.first['body']['status'], localNotSyncedAssessment.first, localNotSyncedObservations);
@@ -961,7 +962,7 @@ class AssessmentController {
       // else {
       //   var response = await storeAssessmentWithObservationsLive(localNotSyncedAssessment.first, apiDataObservations, apiData);
       // }
-    } else {
+     } else {
       var response;
       var assessmentData = _prepareData(type, screening_type, comment);
       assessmentData['body']['status'] = assessmentStatus;

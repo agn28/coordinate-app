@@ -491,17 +491,20 @@ class _FullAssessmentScreenState extends State<FullAssessmentScreen> {
                             setState(() {
                               if (_currentStep == 0) {
                                 Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
-                                AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                                // AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                                AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType: 'full');
                               }
 
                               if (_currentStep == 1) {
                                 Questionnaire().addNewMedicationNcd('medication', medicationAnswers);
-                                AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                                // AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                                AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType: 'full');
                               }
 
                               if (_currentStep == 2) {
                                 Questionnaire().addNewRiskFactorsNcd('risk_factors', riskAnswers);
-                                AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                                // AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                                AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType: 'full');
                               }
                               if (_currentStep == 3) {
                                 if(diastolicEditingController.text == '' ||
@@ -540,7 +543,8 @@ class _FullAssessmentScreenState extends State<FullAssessmentScreen> {
                                               onPressed: () {
                                                 // Navigator.of(context).pop(true);
                                                 createObservations();
-                                                AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                                                // AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                                                AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType: 'full');
                                                 setState(() {
                                                   _currentStep = _currentStep + 1;
                                                 });
@@ -554,7 +558,8 @@ class _FullAssessmentScreenState extends State<FullAssessmentScreen> {
                                   );
                                 } else {
                                   createObservations();
-                                  AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                                  // AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                                  AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType: 'full');
                                   _currentStep = _currentStep + 1;
                                   return;
                                 }
@@ -573,7 +578,8 @@ class _FullAssessmentScreenState extends State<FullAssessmentScreen> {
                                   'tribe': isTribe
                                 };
                                 Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
-                                AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                                // AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                                AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType: 'full');
                                 _completeStep();
                                 return;
                               }
@@ -620,7 +626,8 @@ class _FullAssessmentScreenState extends State<FullAssessmentScreen> {
                                               onPressed: () {
                                                 // Navigator.of(context).pop(true);
                                                 createObservations();
-                                                AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                                                // AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                                                AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType: 'full');
                                                 setState(() {
                                                   _currentStep = _currentStep + 1;
                                                 });
@@ -635,7 +642,8 @@ class _FullAssessmentScreenState extends State<FullAssessmentScreen> {
                                   );
                                 } else {
                                   createObservations();
-                                  AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                                  // AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                                  AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType: 'full');
                                   nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                                   _currentStep = _currentStep + 1;
                                   return;
