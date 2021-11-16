@@ -67,7 +67,6 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
   var conditions = [];
   var medications = [];
   var allergies = [];
-  var users = [];
   var report;
   var bmi;
   var cholesterol;
@@ -98,7 +97,6 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
     _checkAuth();
     getLastAssessment();
     getLastFollowup();
-    getUsers();
     getAssessmentDueDate();
     _getCarePlan();
     getReferrals();
@@ -113,6 +111,7 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
 
     creationDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
     completionDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
+    isLoading = false;
   }
 
   getIncompleteAssessment() async {
@@ -174,26 +173,6 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
     
 
     return count.toString();
-  }
-
-  getUsers() async {
-  
-    var data = await UserController().getUsers();
-
-
-    setState(() {
-      users = data;
-      isLoading = false;
-    });
-  }
-
-  getUser(uid) {
-    var user = users.where((user) => user['uid'] == uid);
-    if (user.isNotEmpty) {
-      return user.first['name'];
-    }
-
-    return '';
   }
 
   getCompletedDate(goal) {
@@ -525,7 +504,6 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
       setState(() {
         carePlans = data['data'];
       });
-      carePlans = data['data'];
       carePlans.forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");
         
