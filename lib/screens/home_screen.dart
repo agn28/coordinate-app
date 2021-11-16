@@ -34,6 +34,7 @@ class _HomeState extends State<HomeScreen> {
   final syncController = Get.put(SyncController());
   String userName = '';
   String role = '';
+
   
   ConnectivityResult _connectionStatus = ConnectivityResult.none;
   final Connectivity _connectivity = Connectivity();
@@ -512,7 +513,9 @@ class _HomeState extends State<HomeScreen> {
                           children: [
                             Container(
                               decoration: BoxDecoration(
-                                color: kPrimaryGreenColor,
+                                color: syncController.syncs.value > 0 
+                                ? Colors.grey
+                                : kPrimaryGreenColor,
                                 shape: BoxShape.circle
                               ),
                               alignment: Alignment.center,
@@ -523,7 +526,9 @@ class _HomeState extends State<HomeScreen> {
                                   color: Colors.white,
                                 ),
                                 onPressed: () async {
-                                  await syncLocalToLive();
+                                  if(syncController.syncs.value == 0){
+                                    await syncLocalToLive();
+                                  }
                               }),
                             ),
                             
@@ -531,9 +536,11 @@ class _HomeState extends State<HomeScreen> {
 
                             Container(
                               decoration: BoxDecoration(
-                                color: kPrimaryYellowColor,
+                                color: syncController.syncs.value > 0 
+                                ? Colors.grey
+                                : kPrimaryYellowColor,
                                 shape: BoxShape.circle
-                              ),
+                            ),
                               alignment: Alignment.center,
                               child: IconButton(
                                 icon: Icon(
@@ -542,7 +549,9 @@ class _HomeState extends State<HomeScreen> {
                                   color: Colors.white,
                                 ),
                                 onPressed: () async {
-                                  await liveToLocalSync(context);
+                                  if(syncController.syncs.value == 0){
+                                    await liveToLocalSync(context);
+                                  }
                               }),
                             ),
                           ]
