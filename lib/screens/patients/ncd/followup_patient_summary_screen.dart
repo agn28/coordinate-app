@@ -1520,7 +1520,6 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                   ),
                                 ),
                                 SizedBox(height: 20,),
-                                // (widget.prevScreen == 'home') && _patient['data']['incomplete_encounter'] != null &&  _patient['data']['incomplete_encounter']
                                 (widget.prevScreen == 'home') && hasPreviousFollowup 
                                 ? Container(
                                   width: double.infinity,
@@ -1685,17 +1684,6 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                     } else if(widget.prevScreen == 'followup') {
                                       var followupType = widget.encounterData['followupType'];
                                       var response = AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'followup', '', '', assessmentStatus:'incomplete', localStatus:'incomplete', followupType: followupType);
-                                      // if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
-                                      // {
-
-                                      //   // var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
-                                      //   var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
-
-                                      // } else {
-                                      //   // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: widget.encounterData['followupType']);
-                                      //     var response = await AssessmentController().createAssessmentWithObservationsLive('follow up visit (center)', assessmentStatus: 'incomplete', createdAt: creationDateTimeController.text);
-                                      // }
-
                                     }
                                     setState(() {
                                       isLoading = false;
@@ -1742,15 +1730,6 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                       var status = widget.encounterData['dataStatus'] == 'incomplete' ? 'incomplete' : 'complete';
                                       var followupType = widget.encounterData['followupType'];
                                       var response = AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'followup', '', '', assessmentStatus: status, localStatus:'complete', followupType: followupType);
-                                      // var completedAt = status == 'complete' ? completionDateTimeController.text : '';
-                                      // if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
-                                      // {
-                                      //   // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
-                                      //   var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations'], completedAt: completedAt);
-                                      // } else {
-                                      //   // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', status, '', followupType: widget.encounterData['followupType']);
-                                          // var response = await AssessmentController().createAssessmentWithObservationsLive('follow up visit (center)', assessmentStatus: status, createdAt: creationDateTimeController.text, completedAt: completedAt);
-                                      // }
                                       status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
                                     }
                                     setState(() {
@@ -2326,7 +2305,6 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: <Widget>[
-                              // (widget.prevScreen == 'home') && _patient['data']['incomplete_encounter'] != null &&  _patient['data']['incomplete_encounter'] ?
                               (widget.prevScreen == 'home') && hasPreviousFollowup
                               ? FloatingButton(text: AppLocalizations.of(context).translate('updateLastFollowUp'), onPressed: () {
                                 Navigator.of(context).pop();

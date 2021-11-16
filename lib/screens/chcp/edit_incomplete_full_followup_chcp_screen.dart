@@ -858,21 +858,18 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                           onPressed: () async {
                               if (_currentStep == 0) {
                                 Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
-                                // AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                                 AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'full');
                               }
 
                               if (_currentStep == 1) {
                                 Questionnaire().addNewMedicationNcd(
                                     'medication', medicationAnswers);
-                                // AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                                 AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'full');
                               }
 
                               if (_currentStep == 2) {
                                 Questionnaire().addNewRiskFactorsNcd(
                                     'risk_factors', riskAnswers);
-                                // AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                                 AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'full');
                               }
                               if (_currentStep == 3) {
@@ -911,7 +908,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                               textColor: Colors.white,
                                               onPressed: () async {
                                                 createObservations();
-                                                // AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '');
                                                 AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'full');
                                                 setState(() {
                                                   _currentStep = _currentStep + 1;
@@ -926,7 +922,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                   );
                                 } else {
                                   createObservations();
-                                  // AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                                   AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'full');
                                   setState(() {
                                     _currentStep = _currentStep + 1;
@@ -943,7 +938,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                               }
                               if (_currentStep == 9) {
                                 if(cpUpdateCount > 0) {
-                                  //Navigator.of(context).pushNamed('/chwPatientSummary');
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
@@ -971,15 +965,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                               textColor: Colors.white,
                                               onPressed: () async {
                                                 Navigator.of(context).pop();
-                                                // var result;
-                                                // setState(() {
-                                                //   isLoading = true;
-                                                // });
-                                                // result = await AssessmentController().createOnlyAssessment(context, 'Care Plan Delivery', 'care-plan-delivered', '', 'complete', '');
-
-                                                // setState(() {
-                                                //   isLoading = false;
-                                                // });
                                                 setState(() {
                                                   _currentStep++;
                                                   nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
@@ -994,15 +979,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                   );
                                 }
                                 else {
-                                  // var result;
-                                  // setState(() {
-                                  //   isLoading = true;
-                                  // });
-                                  // result = await AssessmentController().createOnlyAssessment(context, 'Care Plan Delivery', 'care-plan-delivered', '', 'complete', '');
-
-                                  // setState(() {
-                                  //   isLoading = false;
-                                  // });
                                   setState(() {
                                     _currentStep++;
                                     nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
@@ -1022,7 +998,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                               }
                               if (_currentStep == 7) {
                                 Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);
-                                // AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                                 AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'full');
                                 setState(() {
                                   _currentStep = _currentStep + 1;
@@ -1046,7 +1021,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                   'tribe': isTribe
                                 };
                                 Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
-                                // AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                                 AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'full');
                                 setState(() {
                                   _currentStep = _currentStep + 1;
@@ -1095,7 +1069,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                               textColor: Colors.white,
                                               onPressed: () async {
                                                 createObservations();
-                                                // AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '');
                                                 AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'full');
                                                 setState(() {
                                                   _currentStep = _currentStep + 1;
@@ -1110,7 +1083,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                                   );
                                 } else {
                                   createObservations();
-                                  // AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
                                   AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'full');
                                   setState(() {
                                     _currentStep = _currentStep + 1;

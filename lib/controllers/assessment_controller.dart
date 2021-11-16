@@ -149,45 +149,27 @@ class AssessmentController {
   }
 
   getLastAssessmentByPatient({key: '', value: ''}) async {
-    // var response = await AssessmentRepository().getLastAssessment(key: key, value: value);
-    // print('getLastAssessmentByPatient response: $response');
-    // if (response['error'] != null && !response['error']) {
-    //   return response;
-    // }
-
     var data = {};
 
-    // if (isNull(response) || isNotNull(response['exception'])) {
-      var patientId = Patient().getPatient()['id'];
-      var assessments = await AssessmentRepositoryLocal().getAssessmentsByPatient(patientId);
-      if (isNotNull(assessments)) {
-        var lastAssessment = assessments.first;
-        var parseData = json.decode(lastAssessment['data']);
-        if(key == 'screening_type' && value == 'follow-up') {
-          if(parseData['body']['screening_type'] == 'follow-up') {
-            data = {
-              'id': lastAssessment['id'],
-              'data': parseData,
-            };
-          }
-        } else {
+    var patientId = Patient().getPatient()['id'];
+    var assessments = await AssessmentRepositoryLocal().getAssessmentsByPatient(patientId);
+    if (isNotNull(assessments)) {
+      var lastAssessment = assessments.first;
+      var parseData = json.decode(lastAssessment['data']);
+      if(key == 'screening_type' && value == 'follow-up') {
+        if(parseData['body']['screening_type'] == 'follow-up') {
           data = {
             'id': lastAssessment['id'],
             'data': parseData,
           };
         }
+      } else {
+        data = {
+          'id': lastAssessment['id'],
+          'data': parseData,
+        };
       }
-        // localResponse.forEach((assessment) {
-        //   var parseData = json.decode(assessment['data']);
-        //   if(parseData['body']['screening_type'] == 'follow-up') {
-        //     data.add({
-        //       'id': assessment['id'],
-        //       'data': parseData['body'],
-        //       'meta': parseData['meta']
-        //     });
-        //   }
-        // });
-    // }
+    }
     return data;
   }
 

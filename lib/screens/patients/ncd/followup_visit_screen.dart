@@ -589,7 +589,6 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
 
                               if (_currentStep == 1) {
                                 createObservations();
-                                // AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
                                 AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType: 'short');
                                 _completeStep();
                                 return;
@@ -597,7 +596,6 @@ class _FollowupVisitScreenState extends State<FollowupVisitScreen> {
                               if (_currentStep == 0) {
                                 if(dynamicMedicationTitles.isNotEmpty) {
                                   Questionnaire().addNewDynamicMedicationNcd('dynamic_medication', dynamicMedicationTitles, dynamicMedicationAnswers);
-                                  // AssessmentController().createAssessmentWithObservationsLocal(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
                                   AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType: 'short');
                                 }
                                 // print(Questionnaire().qnItems);
