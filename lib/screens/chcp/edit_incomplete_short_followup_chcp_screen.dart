@@ -857,7 +857,7 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
                               }
                               if (_currentStep == 2) {
                                 createObservations();
-                                AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'short');
                                 _completeStep();
                                 setState(() {
                                   _currentStep = _currentStep + 1;
@@ -914,7 +914,7 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
                                               textColor: Colors.white,
                                               onPressed: () async {
                                                 createObservations();
-                                                AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic assessment', 'follow-up', '', 'incomplete', '');
+                                                AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'short');
                                                 setState(() {
                                                   _currentStep = _currentStep + 1;
                                                 });
@@ -928,7 +928,7 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
                                   );
                                 } else {
                                     createObservations();
-                                    AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                    AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'short');
                                     setState(() {
                                         _currentStep = _currentStep + 1;
                                       });
@@ -939,7 +939,7 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
                               if (_currentStep == 0) {
                                 if(dynamicMedicationTitles.isNotEmpty) {
                                   Questionnaire().addNewDynamicMedicationNcd('dynamic_medication', dynamicMedicationTitles, dynamicMedicationAnswers);
-                                  AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'short');
+                                  AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'short');
                                 }
                                 setState(() {
                                   _currentStep = _currentStep + 1;

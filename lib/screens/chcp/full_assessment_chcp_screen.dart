@@ -583,18 +583,18 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                           onPressed: () {
                     if (_currentStep == 0) {
                       Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                      AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'full');
                     }
 
                     if (_currentStep == 1) {
                       Questionnaire().addNewMedicationNcd('medication', medicationAnswers);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                      AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'full');
                     }
 
                     if (_currentStep == 2) {
                       Questionnaire().addNewRiskFactorsNcd(
                           'risk_factors', riskAnswers);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                      AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'full');
                     }
 
                     if (_currentStep == 3) {
@@ -633,7 +633,7 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                                     textColor: Colors.white,
                                     onPressed: () async {
                                       createObservations();
-                                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '');
+                                      AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'full');
                                       setState(() {
                                         _currentStep = _currentStep + 1;
                                       });
@@ -647,7 +647,7 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                         );
                       } else {
                         createObservations();
-                        AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                        AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'full');
                         setState(() {
                           _currentStep = _currentStep + 1;
                         });
@@ -741,7 +741,7 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
 
                     if (_currentStep == 7) {
                       Questionnaire().addNewCounselling('counselling_provided', counsellingAnswers);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                      AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'full');
                       setState(() {
                         _currentStep = _currentStep + 1;
                       });
@@ -768,7 +768,7 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                         'tribe': isTribe
                       };
                       Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                      AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'full');
                       setState(() {
                         _currentStep = _currentStep + 1;
                       });
@@ -816,7 +816,7 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                                     textColor: Colors.white,
                                     onPressed: () async {
                                       createObservations();
-                                      AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '');
+                                      AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'full');
                                       setState(() {
                                         _currentStep = _currentStep + 1;
                                       });
@@ -830,7 +830,7 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
                         );
                       } else {
                         createObservations();
-                        AssessmentController().createAssessmentWithObservationsLocal(context, 'community clinic followup', 'follow-up', '', 'incomplete', '', followupType: 'full');
+                        AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'full');
                         setState(() {
                           _currentStep = _currentStep + 1;
                         });
