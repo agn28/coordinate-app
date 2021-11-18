@@ -153,14 +153,7 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
   }
 
   getCenters() async {
-    // setState(() {
-    //   isLoading = true;
-    // });
     var centerData = await PatientController().getCenter();
-    // setState(() {
-    //   isLoading = false;
-    // });
-
 
     if (centerData['error'] != null && !centerData['error']) {
       clinicTypes = centerData['data'];

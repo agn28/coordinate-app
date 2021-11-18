@@ -200,14 +200,13 @@ class PatientController {
   //   return response;
   // }
   getCenter() async {
-    var response = await PatientRepository().getCenter();
+    // var response = await PatientRepository().getCenter();
 
-    if (isNotNull(response) && isNull(response['exception'])) {
-      return response;
-    }
+    // if (isNotNull(response) && isNull(response['exception'])) {
+    //   return response;
+    // }
 
     var localResponse = await PatientReposioryLocal().getCenters();
-
 
     if (isNotNull(localResponse) && localResponse.isNotEmpty) {
 
