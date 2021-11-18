@@ -145,16 +145,11 @@ class CarePlanRepositoryLocal {
   getNotSyncedCareplans() async {
     final sql =
         '''SELECT * FROM ${DatabaseCreator.careplanTable} WHERE is_synced=0''';
-    var response = await db.rawQuery(sql);
-
     try {
-      response = await db.rawQuery(sql);
+      return await db.rawQuery(sql);
     } catch (error) {
-
       return;
     }
-
-    return response;
   }
 
   Future<void> updateLocalStatus(uuid, isSynced) async {

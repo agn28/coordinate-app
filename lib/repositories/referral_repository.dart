@@ -22,7 +22,7 @@ class ReferralRepository {
 
     try {
       response = await client
-          .post(apiUrl + 'followups',
+          .post(apiUrl + 'followups/create-mongo',
               headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',

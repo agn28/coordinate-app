@@ -212,7 +212,7 @@ class PatientReposioryLocal {
       return;
     }
     var assessmentData = _prepareAssessmentData('registration', 'registration', data['meta']['created_at'], id);
-    var assessment = await AssessmentRepositoryLocal().createLocalAssessment(assessmentData['id'], assessmentData, synced);
+    var assessment = await AssessmentRepositoryLocal().createLocalAssessment(assessmentData['id'], assessmentData, synced, localStatus:'complete');
     if (isNull(assessment)) {
       Scaffold.of(context).showSnackBar(SnackBar(
         content: Text(

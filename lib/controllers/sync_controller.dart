@@ -377,7 +377,7 @@ class SyncController extends GetxController {
             'deviceId': authData['deviceId']
           };
           print("careplan ${careplan}");
-          var response = await careplanRepo.create(data);
+          var response = await careplanRepo.updateMongo(data);
           if(isNotNull(response['error']) && !response['error']){
             await careplanRepoLocal.updateLocalStatus(careplan['id'], 1);
           }

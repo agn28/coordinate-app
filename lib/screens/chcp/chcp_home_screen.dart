@@ -510,7 +510,9 @@ class _ChcpHomeState extends State<ChcpHomeScreen> {
                             children: [
                               Container(
                                 decoration: BoxDecoration(
-                                  color: kPrimaryGreenColor,
+                                  color: syncController.syncs.value > 0 
+                                        ? Colors.grey
+                                        : kPrimaryGreenColor,
                                   shape: BoxShape.circle
                                 ),
                                 alignment: Alignment.center,
@@ -521,7 +523,9 @@ class _ChcpHomeState extends State<ChcpHomeScreen> {
                                     color: Colors.white,
                                   ),
                                   onPressed: () async {
-                                    await syncLocalToLive();
+                                    if(syncController.syncs.value == 0){
+                                      await syncLocalToLive();
+                                    }
                                 }),
                               ),
 
@@ -529,7 +533,9 @@ class _ChcpHomeState extends State<ChcpHomeScreen> {
 
                               Container(
                                 decoration: BoxDecoration(
-                                  color: kPrimaryYellowColor,
+                                  color: syncController.syncs.value > 0 
+                                        ? Colors.grey
+                                        : kPrimaryYellowColor,
                                   shape: BoxShape.circle
                                 ),
                                 alignment: Alignment.center,
@@ -540,7 +546,9 @@ class _ChcpHomeState extends State<ChcpHomeScreen> {
                                     color: Colors.white,
                                   ),
                                   onPressed: () async{
-                                    await liveToLocalSync(context);
+                                    if(syncController.syncs.value == 0){
+                                      await liveToLocalSync(context);
+                                    }
                                 }),
                               ),
 

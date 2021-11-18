@@ -380,7 +380,7 @@ class PatientRepository {
     var response;
     try {
       response = await client
-        .get(apiUrl + 'patients/status-pending',
+        .get(apiUrl + 'patients/status-pending-mongo',
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',

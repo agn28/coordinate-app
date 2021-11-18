@@ -91,34 +91,23 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
   }
 
   getLivePatients() async {
-    if (Auth().isExpired()) {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    }
-
     setState(() {
       isLoading = true;
     });
-
-    var data = await PatientController().getFollowupPatients();
-    
-    if (data != null && data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    }
-
-    var parsedPatients = [];
     var parsedLocalPatient = [];
-    if (isNull(data) || isNotNull(data['exception']))  {
-      var allLocalPatients = await PatientController().getAllLocalPatients();
-      var assessments = await AssessmentController().getAllAssessments();
-      for(var localPatient in allLocalPatients) {
+    var allLocalPatients = await PatientController().getAllLocalPatients();
+    var assessments = await AssessmentController().getAllAssessments();
+    var authData = await Auth().getStorageAuth();
+
+    for(var localPatient in allLocalPatients) {
+      if(localPatient['data']['address']['district'] == authData['address']['district']) {
         var isListed = false;
         for(var assessment in assessments) {
           if (assessment['data']['patient_id'] == localPatient['id'] 
               && (assessment['data']['screening_type'] == 'follow-up' 
-              || (assessment['data']['screening_type'] == 'ncd' && assessment['data']['status'] == 'complete') 
-              || (assessment['data']['screening_type'] == 'new-questionnaire' && assessment['data']['status'] == 'complete'))){      
+              || ((assessment['data']['screening_type'] == 'new-questionnaire' || assessment['data']['screening_type'] == 'chcp' || assessment['data']['screening_type'] == 'ncd') 
+                  && assessment['data']['status'] == 'complete') 
+              )){      
             var localpatientdata = {
               'id': localPatient['id'],
               'data': localPatient['data'],
@@ -133,27 +122,10 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
         }
         // parsedLocalPatient.add(localpatientdata);
       }
-      setState(() {
-        allPatients = parsedLocalPatient;
-        patients = allPatients;
-        isLoading = false;
-      });
-    } else if (data['data'] != null) {
-      for(var item in data['data']) {
-        parsedPatients.add({
-          'id': item['id'],
-          'data': item['body'],
-          'meta': item['meta']
-        });
-      }
-
-      setState(() {
-        allPatients = parsedPatients;
-        patients = allPatients;
-        isLoading = false;
-      });
     }
     setState(() {
+      allPatients = parsedLocalPatient;
+      patients = allPatients;
       isLoading = false;
     });
   }
