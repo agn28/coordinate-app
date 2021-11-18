@@ -24,15 +24,15 @@ class CarePlanController {
   // }
 
   getCarePlan({checkAssignedTo: ''}) async {
-    var apiResponse = await CarePlanRepository().getCarePlan(checkAssignedTo: checkAssignedTo);
+    // var apiResponse = await CarePlanRepository().getCarePlan(checkAssignedTo: checkAssignedTo);
     
-    if (apiResponse['error'] != null && !apiResponse['error']) {
-      return apiResponse;
-    }
+    // if (apiResponse['error'] != null && !apiResponse['error']) {
+    //   return apiResponse;
+    // }
 
-    var data = [];
+    // var data = [];
 
-    if (isNull(apiResponse) || isNotNull(apiResponse['exception'])) {
+    // if (isNull(apiResponse) || isNotNull(apiResponse['exception'])) {
 
       var patientId = Patient().getPatient()['id'];
       var careplans = await CarePlanRepositoryLocal().getCareplanByPatient(patientId);
@@ -72,7 +72,7 @@ class CarePlanController {
       };
       return response;
       // return data;
-    }
+    // }
   }
 
   getLocalCarePlan() async {
