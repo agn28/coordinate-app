@@ -25,7 +25,6 @@ class CarePlanController {
 
   getCarePlan({checkAssignedTo: ''}) async {
     // var apiResponse = await CarePlanRepository().getCarePlan(checkAssignedTo: checkAssignedTo);
-    
     // if (apiResponse['error'] != null && !apiResponse['error']) {
     //   return apiResponse;
     // }
@@ -36,7 +35,6 @@ class CarePlanController {
 
       var patientId = Patient().getPatient()['id'];
       var careplans = await CarePlanRepositoryLocal().getCareplanByPatient(patientId);
-
       var data = [];
       var parsedData;
 

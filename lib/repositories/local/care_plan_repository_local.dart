@@ -32,7 +32,6 @@ class CarePlanRepositoryLocal {
       response = await db.rawInsert(sql, params);
 
     } catch (error) {
-
     }
     return response;
   }
@@ -122,10 +121,14 @@ class CarePlanRepositoryLocal {
     return careplans;
   }
   getCareplanByPatient(patientId) async {
-    final sqlCareplans = '''SELECT * FROM ${DatabaseCreator.careplanTable} WHERE patient_id="$patientId"''';
-    final careplans = await db.rawQuery(sqlCareplans);
+    final sqlCareplans = '''SELECT * FROM ${DatabaseCreator.careplanTable}''';
+    try {
+      var careplans = await db.rawQuery(sqlCareplans);
+      return careplans;
+    } catch (error) {
 
-    return careplans;
+      return;
+    }
   }
 
   getCareplanById(id) async {

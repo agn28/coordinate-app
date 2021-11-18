@@ -29,17 +29,15 @@ class HealthReportController {
   }
 
   getLastReport(context) async {
-    var response = await HealthReportRepository().getLastReport();
-    
-    if (response['error'] != null && !response['error']) {
-      return response;
-    }
+    // var response = await HealthReportRepository().getLastReport();
+    // if (response['error'] != null && !response['error']) {
+    //   return response;
+    // }
 
     var data = {};
-    if (isNull(response) || isNotNull(response['exception'])) {
+    // if (isNull(response) || isNotNull(response['exception'])) {
       var patientId = Patient().getPatient()['id'];
       var localHealthReport = await HealthReportRepositoryLocal().getLastReport(patientId);
-
       if (localHealthReport.isNotEmpty) {
         var parseData = json.decode(localHealthReport[0]['data']);
 
@@ -52,7 +50,7 @@ class HealthReportController {
           }
         };
       }
-    }
+    // }
     return data;
   }
 

@@ -265,7 +265,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
         cholesterol = report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ? report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] : null;
       });
     }
-
   }
 
   getMedicationsConditions() async {
@@ -399,8 +398,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
   _getCarePlan() async {
 
     var data = await CarePlanController().getCarePlan();
-    print('data: $data');
-    
     if (data != null && data['message'] == 'Unauthorized') {
 
       Auth().logout();
@@ -412,7 +409,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
       // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
       setState(() {
         carePlans = data['data'];
-        print('carePlans: $carePlans');
       });
       // carePlans = data['data'];
       if(data['data'] != null) {
