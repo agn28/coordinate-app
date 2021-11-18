@@ -31,10 +31,8 @@ class NewFollowupChcpScreen extends StatefulWidget {
 }
 
 class _NewFollowupChcpScreenState extends State<NewFollowupChcpScreen> {
-  var _patient;
   bool isLoading = false;
   bool avatarExists = false;
-  var users = [];
   String lastFullAssessmentDate = '';
   String lastShortAssessmentDate = '';
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -43,13 +41,9 @@ class _NewFollowupChcpScreenState extends State<NewFollowupChcpScreen> {
   @override
   void initState() {
     super.initState();
-    _patient = Patient().getPatient();
-    
     _checkAvatar();
     _checkAuth();
-    getUsers();
     getLastAssessments();
-    
   }
 
   getLastAssessments() async {
@@ -83,25 +77,6 @@ class _NewFollowupChcpScreenState extends State<NewFollowupChcpScreen> {
     });
   }
 
-  getUsers() async {
-  
-    var data = await UserController().getUsers();
-
-
-    setState(() {
-      users = data;
-      isLoading = false;
-    });
-  }
-
-  getUser(uid) {
-    var user = users.where((user) => user['uid'] == uid);
-    if (user.isNotEmpty) {
-      return user.first['name'];
-    }
-
-    return '';
-  }
 
   _checkAvatar() async {
     avatarExists = await File(Patient().getPatient()['data']['avatar']).exists();

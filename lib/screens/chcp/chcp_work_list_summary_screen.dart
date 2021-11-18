@@ -33,8 +33,6 @@ import 'followup_patient_chcp_summary_screen.dart';
 var dueCarePlans = [];
 var completedCarePlans = [];
 var upcomingCarePlans = [];
-var referrals = [];
-var pendingReferral;
 
 class ChcpWorkListSummaryScreen extends StatefulWidget {
   var checkInState = false;
@@ -66,7 +64,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
   var conditions = [];
   var medications = [];
   var allergies = [];
-  var users = [];
   var report;
   var bmi;
   var cholesterol;
@@ -85,15 +82,11 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
     completedCarePlans = [];
     upcomingCarePlans = [];
     conditions = [];
-    referrals = [];
-    pendingReferral = null;
     carePlansEmpty = false;
     
     _checkAvatar();
     _checkAuth();
-    getUsers();
     getAssessmentDueDate();
-    getReferrals();
     getMedicationsConditions();
     getReport();
     getLastAssessment();
@@ -101,7 +94,7 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
     // getEncounters();
     // getAssessments();
     _getCarePlan();
-
+    isLoading = false;
   }
   getDate(date) {
      if (date.runtimeType == String && date != null && date != '') {
@@ -211,26 +204,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
     return count.toString();
   }
 
-  getUsers() async {
-  
-    var data = await UserController().getUsers();
-
-
-    setState(() {
-      users = data;
-      isLoading = false;
-    });
-  }
-
-  getUser(uid) {
-    var user = users.where((user) => user['uid'] == uid);
-    if (user.isNotEmpty) {
-      return user.first['name'];
-    }
-
-    return '';
-  }
-
   getCompletedDate(goal) {
     var data = '';
     DateTime date;
@@ -260,38 +233,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
       data = 'Complete By ' + test;
     }
     return data;
-  }
-
-  getReferrals() async {
-
-    setState(() {
-      isLoading = true;
-    });
-
-    var patientID = Patient().getPatient()['id'];
-
-    var data = await FollowupController().getFollowupsByPatient(patientID);
-
-    
-    if (data['error'] == true) {
-
-      // Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
-    } else if (data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    } else {
-      setState(() {
-        referrals = data['data'];
-      });
-    }
-
-    referrals.forEach((referral) {
-      if (referral['meta']['status'] == 'pending') {
-        setState(() {
-          pendingReferral = referral;
-        });
-      }
-    });
   }
 
   getReport() async {
@@ -458,6 +399,7 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
   _getCarePlan() async {
 
     var data = await CarePlanController().getCarePlan();
+    print('data: $data');
     
     if (data != null && data['message'] == 'Unauthorized') {
 
@@ -470,6 +412,7 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
       // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
       setState(() {
         carePlans = data['data'];
+        print('carePlans: $carePlans');
       });
       // carePlans = data['data'];
       if(data['data'] != null) {

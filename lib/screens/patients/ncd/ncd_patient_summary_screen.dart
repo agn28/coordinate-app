@@ -58,7 +58,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
   var conditions = [];
   var medications = [];
   var allergies = [];
-  var users = [];
   var report;
   var bmi;
   var cholesterol;
@@ -84,7 +83,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     
     _checkAvatar();
     _checkAuth();
-    getUsers();
     getAssessmentDueDate();
     _getCarePlan();
     getReferrals();
@@ -142,26 +140,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     
 
     return count.toString();
-  }
-
-  getUsers() async {
-  
-    var data = await UserController().getUsers();
-
-
-    setState(() {
-      users = data;
-      isLoading = false;
-    });
-  }
-
-  getUser(uid) {
-    var user = users.where((user) => user['uid'] == uid);
-    if (user.isNotEmpty) {
-      return user.first['name'];
-    }
-
-    return '';
   }
 
   getIncompleteAssessment() async {

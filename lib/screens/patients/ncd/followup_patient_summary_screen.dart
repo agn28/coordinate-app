@@ -63,7 +63,6 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
   var conditions = [];
   var medications = [];
   var allergies = [];
-  var users = [];
   var report;
   var bmi;
   var cholesterol;
@@ -95,7 +94,6 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     _checkAuth();
     getLastAssessment();
     getLastFollowup();
-    getUsers();
     getAssessmentDueDate();
     _getCarePlan();
     getReferrals();
@@ -172,26 +170,6 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     
 
     return count.toString();
-  }
-
-  getUsers() async {
-  
-    var data = await UserController().getUsers();
-
-
-    setState(() {
-      users = data;
-      isLoading = false;
-    });
-  }
-
-  getUser(uid) {
-    var user = users.where((user) => user['uid'] == uid);
-    if (user.isNotEmpty) {
-      return user.first['name'];
-    }
-
-    return '';
   }
 
   getCompletedDate(goal) {

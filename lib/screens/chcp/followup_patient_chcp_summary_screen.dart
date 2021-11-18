@@ -33,8 +33,7 @@ import 'new_followup_chcp_screen.dart';
 var dueCarePlans = [];
 var completedCarePlans = [];
 var upcomingCarePlans = [];
-var referrals = [];
-var pendingReferral;
+
 
 class FollowupPatientChcpSummaryScreen extends StatefulWidget {
   static const path = '/followupPatientChcpSummary';
@@ -89,8 +88,6 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
     completedCarePlans = [];
     upcomingCarePlans = [];
     conditions = [];
-    referrals = [];
-    pendingReferral = null;
     carePlansEmpty = false;
     
     _checkAvatar();
@@ -99,13 +96,10 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
     getLastFollowup();
     getAssessmentDueDate();
     _getCarePlan();
-    getReferrals();
     // getEncounters();
     // getAssessments();
     getMedicationsConditions();
-    if(widget.prevScreen != 'encounter'){
-      getReport();
-    }
+
 
     getIncompleteAssessment();
 
@@ -206,39 +200,6 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
     return data;
   }
 
-  getReferrals() async {
-
-    setState(() {
-      isLoading = true;
-    });
-
-    var patientID = Patient().getPatient()['id'];
-
-    var data = await FollowupController().getFollowupsByPatient(patientID);
-
-    
-     if (isNull(data) || isNotNull(data['exception'])) {
-
-    }else if (data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    } else if (data['error'] == true) {
-
-      // Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
-    } else {
-      setState(() {
-        referrals = data['data'];
-      });
-    }
-
-    // referrals.forEach((referral) {
-    //   if (referral['meta']['status'] == 'pending') {
-    //     setState(() {
-    //       pendingReferral = referral;
-    //     });
-    //   }
-    // });
-  }
 
   var waitCount = 0;
   waitForReport() async {
@@ -265,37 +226,6 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
       }
 
     
-  }
-
-  getReport() async {
-    // return;
-    setState(() {
-      isLoading = true;
-    });
-
-    var data = await waitForReport();
-    // var data = await HealthReportController().getLastReport(context);
-    
-    // if (data['error'] == true) {
-    //   setState(() {
-    //     carePlansEmpty = true;
-    //   });
-    //   // Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
-    // } else if (data['message'] == 'Unauthorized') {
-    //   Auth().logout();
-    //   Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    // } else {
-    //   setState(() {
-    //     report = data['data'];
-    //   });
-    // }
-    setState(() {
-      // bmi = report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ? report['body']['result']['assessments']['body_composition']['components']['bmi'] : null;
-      // cvd = report['body']['result']['assessments']['cvd'] != null ? report['body']['result']['assessments']['cvd'] : null;
-      // bp = report['body']['result']['assessments']['blood_pressure'] != null ? report['body']['result']['assessments']['blood_pressure'] : null;
-      // cholesterol = report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ? report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] : null;
-    });
-
   }
 
   getMedicationsConditions() async {
@@ -493,7 +423,6 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
   _getCarePlan() async {
 
     var data = await CarePlanController().getCarePlan(checkAssignedTo:'false');
-    
     if (data == null) {
       return;
     } else if (data['error'] != null && data['error']) {
@@ -1735,8 +1664,8 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                                   child: FlatButton(
                                   onPressed: () async {
                                     Navigator.of(context).pop();
-                                    lastFollowupType == 'full' ?
-                                    Navigator.of(context).pushNamed('/editIncompleteFullFollowupChcp',)
+                                    lastFollowupType == 'full' 
+                                    ? Navigator.of(context).pushNamed('/editIncompleteFullFollowupChcp',)
                                     : Navigator.of(context).pushNamed('/editIncompleteShortFollowupChcp',);
                                   },
                                   color: kPrimaryColor,
@@ -2350,9 +2279,9 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
                               (widget.prevScreen == 'home') && hasPreviousFollowup
                               ? FloatingButton(text: AppLocalizations.of(context).translate('updateLastFollowUp'), onPressed: () {
                                   Navigator.of(context).pop();
-                                  lastFollowupType == 'full' 
-                                  ? Navigator.of(context).pushNamed(ChcpFullAssessmentFeelingScreen.path)
-                                  : Navigator.of(context).pushNamed(ChcpShortFollowupFeelingScreen.path);
+                                  lastFollowupType == 'full'
+                                  ? Navigator.of(context).pushNamed('/editIncompleteFullFollowupChcp',)
+                                  : Navigator.of(context).pushNamed('/editIncompleteShortFollowupChcp',);
                                 }, ) : Container(),
                               FloatingButton(text: AppLocalizations.of(context).translate('newFollowUp'), onPressed: () {
                                 Navigator.of(context).pop();

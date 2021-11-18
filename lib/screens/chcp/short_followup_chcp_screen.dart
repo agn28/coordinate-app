@@ -129,14 +129,14 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
 
     prepareQuestions();
     prepareAnswers();
-    getMedications();
     getMedicationsDispense();
 
     getLanguage();
   }
 
-    getMedicationsDispense() async {
+  getMedicationsDispense() async {
     dynamicMedications = [];
+    dynamicMedicationQuestions = {};
 
     if (Auth().isExpired()) {
       Auth().logout();
@@ -164,10 +164,11 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
       return;
     } else if (data['data'] != null) {
       var meds = await prepareDynamicMedications(data['data']);
+      var q = await prepareDynamicMedicationQuestions(data['data']);
       setState(() {
         dynamicMedications = meds;
+        dynamicMedicationQuestions = q;
       });
-
     }
   }
 
@@ -227,42 +228,6 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
   getLanguage() async {
     final prefs = await SharedPreferences.getInstance();
 
-  }
-
-  getMedications() async {
-    dynamicMedicationQuestions = {};
-
-    if (Auth().isExpired()) {
-      Auth().logout();
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    }
-
-    // setState(() {
-    //   isLoading = true;
-    // });
-    var patientId = Patient().getPatient()['id'];
-    var data = await PatientController().getMedicationsByPatient(patientId);
-    // setState(() {
-    //   isLoading = false;
-    // });
-
-    if (data == null) {
-      return;
-    } else if (data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-      return;
-    } else if (data['error'] != null && data['error']) {
-      return;
-    } else if (data['data'] != null) {
-      var q = await prepareDynamicMedicationQuestions(data['data']);
-      setState(() {
-        dynamicMedicationQuestions = q;
-      });
-
-    }
   }
 
   prepareQuestions() {

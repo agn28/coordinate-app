@@ -3769,7 +3769,6 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
   var cvd;
   int interventionIndex = 0;
   bool actionsActive = false;
-  bool carePlansEmpty = false;
   var dueDate = '';
   var smokingAnswer;
   var smokelessTobaccoAnswer;
@@ -3779,7 +3778,6 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
     super.initState();
     // _patient = Patient().getPatient();
     conditions = [];
-    carePlansEmpty = false;
     getRiskQuestionAnswer();
     
     getLastAssessment();
@@ -4885,8 +4883,6 @@ var dueCarePlans = [];
 var cpUpdateCount = 0;
 var completedCarePlans = [];
 var upcomingCarePlans = [];
-var referrals = [];
-var pendingReferral;
 class CareplanDeliveryScreen extends StatefulWidget {
   var checkInState = false;
   CareplanDeliveryScreen({this.checkInState});
@@ -4916,7 +4912,6 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
   var cvd;
   int interventionIndex = 0;
   bool actionsActive = false;
-  bool carePlansEmpty = false;
   var dueDate = '';
 
   @override
@@ -4928,9 +4923,6 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
     completedCarePlans = [];
     upcomingCarePlans = [];
     conditions = [];
-    referrals = [];
-    pendingReferral = null;
-    carePlansEmpty = false;
     
     _checkAvatar();
     _checkAuth();
