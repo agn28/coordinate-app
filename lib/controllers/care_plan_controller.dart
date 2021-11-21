@@ -32,9 +32,9 @@ class CarePlanController {
     // var data = [];
 
     // if (isNull(apiResponse) || isNotNull(apiResponse['exception'])) {
-
       var patientId = Patient().getPatient()['id'];
       var careplans = await CarePlanRepositoryLocal().getCareplanByPatient(patientId);
+      print('careplans: $careplans');
       var data = [];
       var parsedData;
 
@@ -64,12 +64,13 @@ class CarePlanController {
       });
 
 
-      var response = {
-        'data': data,
-        'error': false
-      };
-      return response;
-      // return data;
+      // var response = {
+      //   'data': data,
+      //   'error': false
+      // };
+      // return response;
+      print('data $data');
+      return data;
     // }
   }
 

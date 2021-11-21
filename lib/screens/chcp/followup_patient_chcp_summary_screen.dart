@@ -423,15 +423,13 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
   _getCarePlan() async {
 
     var data = await CarePlanController().getCarePlan(checkAssignedTo:'false');
-    if (data == null) {
-      return;
-    } else if (data['error'] != null && data['error']) {
-      return;
-    } else {
+    print('getCarePlan data: $data');
+    if (data != null) {
       // print( data['data']);
       // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
       setState(() {
-        carePlans = data['data'];
+        carePlans = data;
+        print('carePlans: $carePlans');
       });
       carePlans.forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");

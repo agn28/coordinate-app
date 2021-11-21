@@ -398,21 +398,13 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
   _getCarePlan() async {
 
     var data = await CarePlanController().getCarePlan();
-    if (data != null && data['message'] == 'Unauthorized') {
-
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    } else if (data['error'] == true) {
-
-    } else {
-      // print( data['data']);
-      // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
+    print('cdata $data');
       setState(() {
-        carePlans = data['data'];
+        carePlans = data;
       });
-      // carePlans = data['data'];
-      if(data['data'] != null) {
-        data['data'].forEach( (item) {
+
+      if(data != null) {
+        data.forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");
         
         var todayDate = DateTime.now();
@@ -508,7 +500,7 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
       //   isLoading = false;
       // });
 
-    }
+    // }
   }
 
   convertDateFromSeconds(date) {

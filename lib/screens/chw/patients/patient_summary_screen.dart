@@ -230,6 +230,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     return data;
   }
 
+
   getReport() async {
 
     setState(() {
@@ -393,22 +394,15 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   _getCarePlan() async {
 
     var data = await CarePlanController().getCarePlan();
-    
-    if (data != null && data['message'] == 'Unauthorized') {
-
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    } else if (data['error'] == true) {
-
-    } else {
+    print('_getCarePlan data: $data');
+    if (data != null) {
       // print( data['data']);
       // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
       setState(() {
-        carePlans = data['data'];
+        carePlans = data;
       });
       // carePlans = data['data'];
-      if(data['data'] != null) {
-        data['data'].forEach( (item) {
+      carePlans.forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");
         
         var todayDate = DateTime.now();
@@ -504,7 +498,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
         // }
       });
 
-      }
       
       // setState(() {
       //   carePlans = data['data'];

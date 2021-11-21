@@ -3470,25 +3470,13 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
   }
 
   _getCarePlan() async {
-    // setState(() {
-    //   isLoading = true;
-    // });
-
     var data = await CarePlanController().getCarePlan();
-    
-    // setState(() {
-    //   isLoading = false;
-    // });
-    
-    if (data == null) {
-      return;
-    } else if (data['error'] != null && data['error']) {
-      return;
-    } else {
+
+    if (data != null) {
       // print( data['data']);
       // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
       setState(() {
-        carePlans = data['data'];
+        carePlans = data;
       });
       carePlans.forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");
