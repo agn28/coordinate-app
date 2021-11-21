@@ -72,7 +72,7 @@ class _PatientRecordsState extends State<PatientRecordsScreenOld> {
       isLoading = true;
     });
     encounters = await AssessmentController().getLiveAllAssessmentsByPatient();
-
+    
     setState(() {
       isLoading = false;
     });

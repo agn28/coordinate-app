@@ -72,43 +72,24 @@ class AssessmentController {
   }
 
   getLiveAllAssessmentsByPatient() async {
-    var response = await AssessmentRepository().getAllAssessments();
     var data = [];
-    // if (response == null) {
-    //   return data;
-    // }
+    var patientId = Patient().getPatient()['id'];
+    var localResponse =
+        await AssessmentRepositoryLocal().getAssessmentsByPatient(patientId);
+    if (isNotNull(localResponse)) {
+      localResponse.forEach((assessment) {
+        var parseData = json.decode(assessment['data']);
 
-    if (isNull(response) || isNotNull(response['exception'])) {
-      var patientId = Patient().getPatient()['id'];
-      var localResponse =
-          await AssessmentRepositoryLocal().getAssessmentsByPatient(patientId);
-      if (isNotNull(localResponse)) {
-        localResponse.forEach((assessment) {
-          var parseData = json.decode(assessment['data']);
-
-          data.add({
-            'id': assessment['id'],
-            'data': parseData['body'],
-            'meta': parseData['meta']
-          });
-        });
-      }
-
-      return data;
-    }
-
-    if (response['error'] != null && !response['error']) {
-      await response['data'].forEach((assessment) {
         data.add({
           'id': assessment['id'],
-          'data': assessment['body'],
-          'meta': assessment['meta']
+          'data': parseData['body'],
+          'meta': parseData['meta']
         });
       });
     }
-
     return data;
   }
+  
   getLastAssessmentByPatientLocal({key: '', value: ''}) async {
     
 

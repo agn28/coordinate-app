@@ -28,8 +28,6 @@ import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.
 var dueCarePlans = [];
 var completedCarePlans = [];
 var upcomingCarePlans = [];
-var referrals = [];
-var pendingReferral;
 
 class NcdPatientSummaryScreen extends StatefulWidget {
   var checkInState = false;
@@ -77,15 +75,12 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     completedCarePlans = [];
     upcomingCarePlans = [];
     conditions = [];
-    referrals = [];
-    pendingReferral = null;
     carePlansEmpty = false;
     
     _checkAvatar();
     _checkAuth();
     getAssessmentDueDate();
     _getCarePlan();
-    getReferrals();
     getEncounters();
     // getAssessments();
     getMedicationsConditions();
@@ -209,38 +204,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
       data = 'Complete By ' + test;
     }
     return data;
-  }
-
-  getReferrals() async {
-
-    setState(() {
-      isLoading = true;
-    });
-
-    var patientID = Patient().getPatient()['id'];
-
-    var data = await FollowupController().getFollowupsByPatient(patientID);
-
-    
-    if (data['error'] == true) {
-
-      // Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
-    } else if (data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    } else {
-      setState(() {
-        referrals = data['data'];
-      });
-    }
-
-    referrals.forEach((referral) {
-      if (referral['meta']['status'] == 'pending') {
-        setState(() {
-          pendingReferral = referral;
-        });
-      }
-    });
   }
 
   getReport() async {
