@@ -1000,7 +1000,9 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
                               }
                               if (_currentStep == 6) {
                                 jumpToEnd();
-                                _currentStep = _currentStep + 1;
+                                setState(() {
+                                  _currentStep = _currentStep + 1;
+                                });
                                 return;
                               }
                               if (_currentStep == 5) {
