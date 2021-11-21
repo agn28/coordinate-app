@@ -68,14 +68,6 @@ class SyncController extends GetxController {
   var healthReportRepoLocal = HealthReportRepositoryLocal();
   var healthReportRepo = HealthReportRepository();
 
-  /// Create assessment.
-  /// Assessment [type] and [comment] is required as parameter.
-  create(type, screening_type, comment) async {}
-
-  /// Create assessment.
-  /// Assessment [type] and [comment] is required as parameter.
-  createOnlyAssessment(type, screening_type, comment) async {}
-
   getAllStatsData() async {
     getLocalNotSyncedPatient();
     getLocalNotSyncedAssessments();
