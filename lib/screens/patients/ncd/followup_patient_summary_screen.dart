@@ -29,8 +29,6 @@ import 'package:nhealth/screens/patients/ncd/search/followup_search_screen.dart'
 var dueCarePlans = [];
 var completedCarePlans = [];
 var upcomingCarePlans = [];
-var referrals = [];
-var pendingReferral;
 
 class FollowupPatientSummaryScreen extends StatefulWidget {
   static const path = '/followupPatientSummary';
@@ -86,8 +84,6 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     completedCarePlans = [];
     upcomingCarePlans = [];
     conditions = [];
-    referrals = [];
-    pendingReferral = null;
     carePlansEmpty = false;
     
     _checkAvatar();
@@ -96,7 +92,6 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
     getLastFollowup();
     getAssessmentDueDate();
     _getCarePlan();
-    getReferrals();
     // getEncounters();
     // getAssessments();
     getMedicationsConditions();
@@ -108,6 +103,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
 
     creationDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
     completionDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
+    isLoading = false;
   }
 
     getIncompleteAssessment() async {
@@ -201,40 +197,6 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
       data = 'Complete By ' + test;
     }
     return data;
-  }
-
-  getReferrals() async {
-
-    setState(() {
-      isLoading = true;
-    });
-
-    var patientID = Patient().getPatient()['id'];
-
-    var data = await FollowupController().getFollowupsByPatient(patientID);
-
-    
-     if (isNull(data) || isNotNull(data['exception'])) {
-
-    }else if (data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    } else if (data['error'] == true) {
-
-      // Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
-    } else {
-      setState(() {
-        referrals = data['data'];
-      });
-    }
-
-    // referrals.forEach((referral) {
-    //   if (referral['meta']['status'] == 'pending') {
-    //     setState(() {
-    //       pendingReferral = referral;
-    //     });
-    //   }
-    // });
   }
 
   var waitCount = 0;
@@ -491,17 +453,12 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
 
     var data = await CarePlanController().getCarePlan(checkAssignedTo:'false');
     
-    if (data == null) {
-      return;
-    } else if (data['error'] != null && data['error']) {
-      return;
-    } else {
+    if (data != null) {
       // print( data['data']);
       // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
       setState(() {
-        carePlans = data['data'];
+        carePlans = data;
       });
-      carePlans = data['data'];
       carePlans.forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");
         
@@ -526,6 +483,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
         // check due careplans
         if (item['meta']['status'] == 'pending') {
           if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
+            if(item['body']['goal'] != null){
             var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
             // print(existedCp);
             // print(item['body']['activityDuration']['start']);
@@ -541,6 +499,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
             } else {
               dueCarePlans[dueCarePlans.indexOf(existedCp.first)]['items'].add(item);
 
+            }
             }
           } else if (todayDate.isBefore(startDate)) {
             var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);

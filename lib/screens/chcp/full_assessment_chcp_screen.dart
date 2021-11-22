@@ -5002,15 +5002,11 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
     //   isLoading = false;
     // });
     
-    if (data == null) {
-      return;
-    } else if (data['error'] != null && data['error']) {
-      return;
-    } else {
+    if (data != null) {
       // print( data['data']);
       // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
       setState(() {
-        carePlans = data['data'];
+        carePlans = data;
       });
       carePlans.forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");
@@ -5035,6 +5031,7 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
         if (item['body']['category'] != null && item['body']['category'] != 'investigation') {
           if (item['meta']['status'] == 'pending') {
             if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
+              if(item['body']['goal'] != null){
               var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
               
               if (existedCp.isEmpty) {
@@ -5055,6 +5052,7 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
                 
               }
               cpUpdateCount = dueCarePlans.length;
+              }
             } else if (todayDate.isBefore(startDate)) {
               var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
 

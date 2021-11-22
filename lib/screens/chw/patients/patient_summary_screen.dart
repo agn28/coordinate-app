@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:basic_utils/basic_utils.dart' as basic_utils;
 import 'package:flutter/cupertino.dart';
@@ -30,8 +31,6 @@ import 'package:nhealth/screens/patients/ncd/followup_feeling_screen.dart';
 var dueCarePlans = [];
 var completedCarePlans = [];
 var upcomingCarePlans = [];
-var referrals = [];
-var pendingReferral;
 
 class ChwPatientRecordsScreen extends StatefulWidget {
   var checkInState = false;
@@ -63,7 +62,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   var conditions = [];
   var medications = [];
   var allergies = [];
-  var users = [];
   var report;
   var bmi;
   var cholesterol;
@@ -82,15 +80,11 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     completedCarePlans = [];
     upcomingCarePlans = [];
     conditions = [];
-    referrals = [];
-    pendingReferral = null;
     carePlansEmpty = false;
     
     _checkAvatar();
     _checkAuth();
-    getUsers();
     getAssessmentDueDate();
-    getReferrals();
     getMedicationsConditions();
     getReport();
     getLastAssessment();
@@ -98,7 +92,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     // getEncounters();
     // getAssessments();
     _getCarePlan();
-
+    isLoading = false;
   }
   getDate(date) {
      if (date.runtimeType == String && date != null && date != '') {
@@ -206,26 +200,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     return count.toString();
   }
 
-  getUsers() async {
-  
-    var data = await UserController().getUsers();
-
-
-    setState(() {
-      users = data;
-      isLoading = false;
-    });
-  }
-
-  getUser(uid) {
-    var user = users.where((user) => user['uid'] == uid);
-    if (user.isNotEmpty) {
-      return user.first['name'];
-    }
-
-    return '';
-  }
-
   getCompletedDate(goal) {
     var data = '';
     DateTime date;
@@ -257,37 +231,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
     return data;
   }
 
-  getReferrals() async {
-
-    setState(() {
-      isLoading = true;
-    });
-
-    var patientID = Patient().getPatient()['id'];
-
-    var data = await FollowupController().getFollowupsByPatient(patientID);
-
-    
-    if (data['error'] == true) {
-
-      // Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
-    } else if (data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    } else {
-      setState(() {
-        referrals = data['data'];
-      });
-    }
-
-    referrals.forEach((referral) {
-      if (referral['meta']['status'] == 'pending') {
-        setState(() {
-          pendingReferral = referral;
-        });
-      }
-    });
-  }
 
   getReport() async {
 
@@ -301,14 +244,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
       setState(() {
         carePlansEmpty = true;
       });
-    } else if(isNotNull(data['error']) && data['error']) {
-      setState(() {
-        carePlansEmpty = true;
-      });
-    } else if (data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-      return;
     } else {
       setState(() {
         report = data['data'];
@@ -452,22 +387,14 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   _getCarePlan() async {
 
     var data = await CarePlanController().getCarePlan();
-    
-    if (data != null && data['message'] == 'Unauthorized') {
-
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    } else if (data['error'] == true) {
-
-    } else {
+    if (data != null) {
       // print( data['data']);
       // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
       setState(() {
-        carePlans = data['data'];
+        carePlans = data;
       });
       // carePlans = data['data'];
-      if(data['data'] != null) {
-        data['data'].forEach( (item) {
+      for (var item in carePlans) {
         DateFormat format = new DateFormat("E LLL d y");
         
         var todayDate = DateTime.now();
@@ -489,9 +416,9 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
         // check due careplans
         if (item['meta']['status'] == 'pending') {
           if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
-            var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-            // print(existedCp);
-            // print(item['body']['activityDuration']['start']);
+
+          if(item['body']['goal'] != null){
+              var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
 
             if (existedCp.isEmpty) {
               var items = [];
@@ -505,7 +432,8 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
               dueCarePlans[dueCarePlans.indexOf(existedCp.first)]['items'].add(item);
 
             }
-          } else if (todayDate.isBefore(startDate)) {
+          } 
+          else if (todayDate.isBefore(startDate)) {
             var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
             // print(existedCp);
             // print(item['body']['activityDuration']['start']);
@@ -542,7 +470,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
           }
         }
 
-        
+      }        
         
         // var existedCp = carePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
         // // print(existedCp);
@@ -561,9 +489,8 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
         //   carePlans[carePlans.indexOf(existedCp.first)]['items'].add(item);
 
         // }
-      });
-
       }
+
       
       // setState(() {
       //   carePlans = data['data'];

@@ -28,7 +28,7 @@ class CarePlanRepository {
 
     try {
       response = await client
-      .get(apiUrl + 'care-plans/patient/' + patientID + qParam,
+      .get(apiUrl + 'care-plans/patient/mongo/' + patientID + qParam,
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',

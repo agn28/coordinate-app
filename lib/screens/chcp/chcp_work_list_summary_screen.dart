@@ -398,21 +398,13 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
   _getCarePlan() async {
 
     var data = await CarePlanController().getCarePlan();
-    if (data != null && data['message'] == 'Unauthorized') {
-
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    } else if (data['error'] == true) {
-
-    } else {
-      // print( data['data']);
-      // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
+    print('cdata $data');
       setState(() {
-        carePlans = data['data'];
+        carePlans = data;
       });
-      // carePlans = data['data'];
-      if(data['data'] != null) {
-        data['data'].forEach( (item) {
+
+      if(data != null) {
+        data.forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");
         
         var todayDate = DateTime.now();
@@ -435,19 +427,21 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
         // check due careplans
         if (item['meta']['status'] == 'pending') {
           if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
-            var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-            
-            if (existedCp.isEmpty) {
-              var items = [];
-              items.add(item);
-              dueCarePlans.add({
-                'items': items,
-                'title': item['body']['goal']['title'],
-                'id': item['body']['goal']['id']
-              });
-            } else {
-              dueCarePlans[dueCarePlans.indexOf(existedCp.first)]['items'].add(item);
+            if(item['body']['goal'] != null){
+              var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
+              
+              if (existedCp.isEmpty) {
+                var items = [];
+                items.add(item);
+                dueCarePlans.add({
+                  'items': items,
+                  'title': item['body']['goal']['title'],
+                  'id': item['body']['goal']['id']
+                });
+              } else {
+                dueCarePlans[dueCarePlans.indexOf(existedCp.first)]['items'].add(item);
 
+              }
             }
           } else if (todayDate.isBefore(startDate)) {
             var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
@@ -508,7 +502,7 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
       //   isLoading = false;
       // });
 
-    }
+    // }
   }
 
   convertDateFromSeconds(date) {

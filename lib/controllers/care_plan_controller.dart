@@ -32,9 +32,9 @@ class CarePlanController {
     // var data = [];
 
     // if (isNull(apiResponse) || isNotNull(apiResponse['exception'])) {
-
       var patientId = Patient().getPatient()['id'];
       var careplans = await CarePlanRepositoryLocal().getCareplanByPatient(patientId);
+      // print('careplans: $careplans');
       var data = [];
       var parsedData;
 
@@ -64,12 +64,13 @@ class CarePlanController {
       });
 
 
-      var response = {
-        'data': data,
-        'error': false
-      };
-      return response;
-      // return data;
+      // var response = {
+      //   'data': data,
+      //   'error': false
+      // };
+      // return response;
+      // print('data $data');
+      return data;
     // }
   }
 
@@ -80,85 +81,11 @@ class CarePlanController {
   }
 
   update(context, data, comment) async {
-
-    // var response = await CarePlanRepository().update(data, comment);
-
-    // if (response['error'] == false) {
-    //   return 'success';
-    // }
-
-    // return 'error';
-    
-    var response;
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
-      // I am connected to internet.
-
-      var apiResponse = await CarePlanRepository().update(data, comment);
-
-      //Could not get any response from API
-      if (isNull(apiResponse)) {
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text("Error: ${AppLocalizations.of(context).translate('somethingWrong')}"),
-          backgroundColor: kPrimaryRedColor,
-        ));
-        return 'error';
-      }
-      //API did not respond due to handled exception
-      else if (apiResponse['exception'] != null) {
-        // exception type unknown
-        if (apiResponse['type'] == 'unknown') {
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text('Error: ${apiResponse['message']}'),
-            backgroundColor: kPrimaryRedColor,
-          ));
-          return 'error';
-        }
-        // exception type known (e.g: slow/no net)
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text('Warning: ${apiResponse['message']}. Using offline...'),
-          backgroundColor: kPrimaryYellowColor,
-        ));
-        // creating local careplan with not synced status
-        response = await CarePlanRepositoryLocal().completeLocalCarePlan(data['id'], data, comment, false);
-        // Identifying this patient with not synced data
-        await PatientReposioryLocal().updateLocalStatus(data['body']['patient_id'], false);
-        return 'success';
-      }
-      //API responded with error
-      else if (apiResponse['error'] != null && apiResponse['error']) {
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text("Error: ${apiResponse['message']}"),
-          backgroundColor: kPrimaryRedColor,
-        ));
-        return 'error';
-      }
-      //API responded success with no error
-      else if (apiResponse['error'] != null && !apiResponse['error']) {
-        // creating local careplan with synced status
-        response = await CarePlanRepositoryLocal().completeLocalCarePlan(data['id'], data, comment, true);
-
-        //updating sync key
-        if (isNotNull(apiResponse['data']['sync']) &&
-            isNotNull(apiResponse['data']['sync']['key'])) {
-          var updateSync = await SyncRepository()
-              .updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
-        }
-        return 'success';
-      }
-      return 'error';
-    } else {
-      // return;
-      // Scaffold.of(context).showSnackBar(SnackBar(
-      //   content: Text('Warning: No Internet. Using offline...'),
-      //   backgroundColor: kPrimaryYellowColor,
-      // ));
-      // creating local careplan with not synced status
-      response = await CarePlanRepositoryLocal().completeLocalCarePlan(data['id'], data, comment, false);
-      // Identifying this patient with not synced data
-      await PatientReposioryLocal().updateLocalStatus(data['body']['patient_id'], false);
+    try { 
+      await CarePlanRepositoryLocal().completeLocalCarePlan(data['id'], data, comment, false);
       return 'success';
+    } catch (error) {
+      return error;
     }
   }
 

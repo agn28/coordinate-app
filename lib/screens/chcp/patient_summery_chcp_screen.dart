@@ -503,11 +503,7 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
 
     var data = await CarePlanController().getCarePlan(checkAssignedTo:'false');
     
-    if (data == null) {
-      return;
-    } else if (data['error'] != null && data['error']) {
-      return;
-    } else {
+    if (data != null) {
       // print( data['data']);
       // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
       setState(() {
@@ -537,6 +533,7 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
         // check due careplans
         if (item['meta']['status'] == 'pending') {
           if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
+            if(item['body']['goal'] != null){
             var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
             
             if (existedCp.isEmpty) {
@@ -550,6 +547,7 @@ class _PatientSummeryChcpScreenState extends State<PatientSummeryChcpScreen> {
             } else {
               dueCarePlans[dueCarePlans.indexOf(existedCp.first)]['items'].add(item);
 
+            }
             }
           } else if (todayDate.isBefore(startDate)) {
             var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);

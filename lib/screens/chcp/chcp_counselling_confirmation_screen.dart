@@ -173,21 +173,17 @@ class _ChcpCounsellingConfirmationState extends State<ChcpCounsellingConfirmatio
                                         setState(() {
                                           isLoading = true;
                                         });
-                                        // var result = await Questionnaire().addCounselling(withFramework, widget.data);
-                                        // print(result);
-
                                         var response = await CarePlanController().update(context, widget.data, commentController.text);
-                                        // print('response $response');
                                         setState(() {
                                           isLoading = false;
                                         });
-                                        int count = 0;
                                         Navigator.of(context).pop();
-                                        if (response == 'success') {
-
-                                        // Navigator.of(context).pop();
-                                        } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
-
+                                        if (response != 'success') {
+                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                            content: Text('Error! ${response}'),
+                                            backgroundColor: Colors.red,
+                                          ));
+                                        }
                                       },
                                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                       child: Text(AppLocalizations.of(context).translate('completeAction').toUpperCase(), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)

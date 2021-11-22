@@ -25,11 +25,6 @@ import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_questionnair
 import 'package:nhealth/screens/nurse/new_patient_questionnairs/new_questionnaire_feeling_screen.dart';
 import 'package:nhealth/screens/patients/manage/encounters/new_encounter_screen.dart';
 
-var dueCarePlans = [];
-var completedCarePlans = [];
-var upcomingCarePlans = [];
-var referrals = [];
-var pendingReferral;
 
 class NcdPatientSummaryScreen extends StatefulWidget {
   var checkInState = false;
@@ -73,19 +68,12 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     super.initState();
 
     _patient = Patient().getPatient();
-    dueCarePlans = [];
-    completedCarePlans = [];
-    upcomingCarePlans = [];
     conditions = [];
-    referrals = [];
-    pendingReferral = null;
     carePlansEmpty = false;
     
     _checkAvatar();
     _checkAuth();
     getAssessmentDueDate();
-    _getCarePlan();
-    getReferrals();
     getEncounters();
     // getAssessments();
     getMedicationsConditions();
@@ -209,38 +197,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
       data = 'Complete By ' + test;
     }
     return data;
-  }
-
-  getReferrals() async {
-
-    setState(() {
-      isLoading = true;
-    });
-
-    var patientID = Patient().getPatient()['id'];
-
-    var data = await FollowupController().getFollowupsByPatient(patientID);
-
-    
-    if (data['error'] == true) {
-
-      // Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
-    } else if (data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    } else {
-      setState(() {
-        referrals = data['data'];
-      });
-    }
-
-    referrals.forEach((referral) {
-      if (referral['meta']['status'] == 'pending') {
-        setState(() {
-          pendingReferral = referral;
-        });
-      }
-    });
   }
 
   getReport() async {
@@ -437,122 +393,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     }
   }
 
-  _getCarePlan() async {
-
-    var data = await CarePlanController().getCarePlan();
-    
-    if (data != null && data['message'] == 'Unauthorized') {
-
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    } else if (data == null || data['error'] == true) {
-
-    } else {
-      // print( data['data']);
-      // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
-      setState(() {
-        carePlans = data['data'];
-      });
-      // carePlans = data['data'];
-      data['data'].forEach( (item) {
-        DateFormat format = new DateFormat("E LLL d y");
-        
-        var todayDate = DateTime.now();
-
-        var endDate;
-        var startDate;
-
-        try {
-          endDate = format.parse(item['body']['activityDuration']['end']);
-          startDate = format.parse(item['body']['activityDuration']['start']);
-        } catch(err) {
-          DateFormat newFormat = new DateFormat("yyyy-MM-dd");
-          endDate = DateTime.parse(item['body']['activityDuration']['end']);
-          startDate = DateTime.parse(item['body']['activityDuration']['start']);
-          // startDate = DateTime.parse(item['body']['activityDuration']['start']);
-          
-        }
-
-        // check due careplans
-        if (item['meta']['status'] == 'pending') {
-          if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
-            var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-          
-            if (existedCp.isEmpty) {
-              var items = [];
-              items.add(item);
-              dueCarePlans.add({
-                'items': items,
-                'title': item['body']['goal']['title'],
-                'id': item['body']['goal']['id']
-              });
-            } else {
-              dueCarePlans[dueCarePlans.indexOf(existedCp.first)]['items'].add(item);
-
-            }
-          } else if (todayDate.isBefore(startDate)) {
-            var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-          
-            if (existedCp.isEmpty) {
-              var items = [];
-              items.add(item);
-              upcomingCarePlans.add({
-                'items': items,
-                'title': item['body']['goal']['title'],
-                'id': item['body']['goal']['id']
-              });
-            } else {
-              upcomingCarePlans[upcomingCarePlans.indexOf(existedCp.first)]['items'].add(item);
-
-            }
-          }
-        } else {
-          var existedCp = completedCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-          // print(existedCp);
-          // print(item['body']['activityDuration']['start']);
-
-          if (existedCp.isEmpty) {
-            var items = [];
-            items.add(item);
-            completedCarePlans.add({
-              'items': items,
-              'title': item['body']['goal']['title'],
-              'id': item['body']['goal']['id']
-            });
-          } else {
-            completedCarePlans[completedCarePlans.indexOf(existedCp.first)]['items'].add(item);
-
-          }
-        }
-
-        
-        
-        // var existedCp = carePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-        // // print(existedCp);
-        // // print(item['body']['activityDuration']['start']);
-        
-
-        // if (existedCp.isEmpty) {
-        //   var items = [];
-        //   items.add(item);
-        //   carePlans.add({
-        //     'items': items,
-        //     'title': item['body']['goal']['title'],
-        //     'id': item['body']['goal']['id']
-        //   });
-        // } else {
-        //   carePlans[carePlans.indexOf(existedCp.first)]['items'].add(item);
-
-        // }
-      });
-
-      // setState(() {
-      //   carePlans = data['data'];
-      //   isLoading = false;
-      // });
-
-    }
-  }
 
   convertDateFromSeconds(date) {
     if (date['_seconds'] != null) {
