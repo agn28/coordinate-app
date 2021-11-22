@@ -426,76 +426,28 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                                 data['body']['location']['clinic_name'] = clinicNameController.text;
                                 data['body']['follow_up_date'] = nextVisitDate;
 
-                                        setState(() {
-                                          isLoading = true;
-                                        });
-                                        var response =
-                                            await ReferralController()
-                                                .create(context, data);
-                                        setState(() {
-                                          isLoading = false;
-                                        });
-                                        // return;
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+                                  await ReferralController().create(data, true, localStatus: 'complete');
+                                  setState(() {
+                                    isLoading = false;
+                                  });
 
-                                        if (response.runtimeType != int &&
-                                            response != null &&
-                                            response['error'] == true &&
-                                            response['message'] ==
-                                                'referral exists') {
-                                          await showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              // return object of type Dialog
-                                              return AlertDialog(
-                                                content: new Text(
-                                                  AppLocalizations.of(context)
-                                                      .translate(
-                                                          "referralAlreadyExists"),
-                                                  style:
-                                                      TextStyle(fontSize: 20),
-                                                ),
-                                                actions: <Widget>[
-                                                  // usually buttons at the bottom of the dialog
-                                                  new FlatButton(
-                                                    child: new Text(
-                                                        AppLocalizations.of(
-                                                                context)
-                                                            .translate(
-                                                                "referralUpdate"),
-                                                        style: TextStyle(
-                                                            color:
-                                                                kPrimaryColor)),
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                      Navigator.of(context)
-                                                          .pushNamed(
-                                                        '/referralList',
-                                                      );
-                                                    },
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
-                                        } else {
-                                          Navigator.of(context).pushNamed(
-                                            '/chwHome',
-                                          );
-                                        }
-                                      },
-                                      materialTapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
-                                      child: Text(
-                                        AppLocalizations.of(context)
-                                            .translate('referralCreate')
-                                            .toUpperCase(),
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.normal),
-                                      )),
-                                ),
+                                  Navigator.of(context).pushNamed('/chwHome',);
+                              },
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              child: Text(
+                                AppLocalizations.of(context)
+                                    .translate('referralCreate')
+                                    .toUpperCase(),
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.normal),
+                              )),
+                              ),
                               ),
                             ],
                           ),

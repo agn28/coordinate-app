@@ -97,79 +97,44 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
   }
   /// Get all the worklist
   _getPatients() async {
-
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
-      var pending = await PatientController().getPatientsPendingWorklist(context);
-      var completed = await PatientController().getPatientsWorklist(context, 'completed');
-      var past = await PatientController().getPatientsWorklist(context, 'past');
-      
-
-      if (pending['error'] != null && !pending['error'] && pending['data'].isNotEmpty) {
-        setState(() {
-          allPendingPatients = pending['data'];
-          // pendingPatientsSort();
-          pendingPatients = allPendingPatients;
-        });
-      }
-      if (completed['error'] != null && !completed['error']) {
-        setState(() {
-          allCompletedPatients = completed['data'];
-          completedPatientsSort();
-          completedPatients = allCompletedPatients;
-        });
-      }
-      if (past['error'] != null && !past['error']) {
-        setState(() {
-          allPastPatients = past['data'];
-          pastPatientsSort();
-          pastPatients = allPastPatients;
-        });
-      }
-      setState(() {
-        isLoading = false;
-      });
-    }
-    else {
-      var allLocalPatients = await PatientController().getAllLocalPatients();
-      var localPatientPending = [];
-      for(var localPatient in allLocalPatients) {
-        if(isNotNull(localPatient["meta"]["has_pending"]) && localPatient["meta"]["has_pending"]) {
-          var isAssigned = false;
-          var careplans = await CarePlanRepositoryLocal().getCareplanByPatient(localPatient['id']);
-          var parsedData;
-          for(var careplan in careplans) {
-            parsedData = jsonDecode(careplan['data']);
-            if (parsedData['meta']['status'] == 'pending'
-            && parsedData['meta']['assigned_to'].contains(Auth().getAuth()['uid'])) {
-              isAssigned = true;
-              break;
-            }
-          }
-          if(isAssigned) {
-            var localpatientdata = {
-              'id': localPatient['id'],
-              'body': localPatient['data'],
-              'meta': localPatient['meta']
-            };
-            localPatientPending.add(localpatientdata);
+    setState(() {
+      isLoading = true;
+    });
+    var allLocalPatients = await PatientController().getAllLocalPatients();
+    var localPatientPending = [];
+    var authData = await Auth().getStorageAuth();
+    for(var localPatient in allLocalPatients) {
+      var isAssigned = false;
+      if(localPatient['data']['address']['district'] == authData['address']['district'] 
+          && isNotNull(localPatient["meta"]["has_pending"]) && localPatient["meta"]["has_pending"]) {
+        var careplans = await CarePlanRepositoryLocal().getCareplanByPatient(localPatient['id']);
+        var parsedData;
+        for(var careplan in careplans) {
+          parsedData = jsonDecode(careplan['data']);
+          if (parsedData['meta']['status'] == 'pending'
+          && parsedData['meta']['assigned_to'].contains(Auth().getAuth()['uid'])) {
+            isAssigned = true;
+            break;
           }
         }
+        if(isAssigned) {
+          var localpatientdata = {
+            'id': localPatient['id'],
+            'body': localPatient['data'],
+            'meta': localPatient['meta']
+          };
+          localPatientPending.add(localpatientdata);
+        }
       }
-      setState(() {
-        allPendingPatients = localPatientPending;
-        pendingPatientsSort();
-        pendingPatients = allPendingPatients;
-      });
-      setState(() {
-        isLoading = false;
-      });
     }
-
+    setState(() {
+      allPendingPatients = localPatientPending;
+      pendingPatientsSort();
+      pendingPatients = allPendingPatients;
+    });
     setState(() {
       isLoading = false;
     });
-
   }
 
   pendingPatientsSort() {
