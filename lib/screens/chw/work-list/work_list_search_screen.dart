@@ -89,9 +89,22 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
   /// Get all the worklist
   _getPatients() async {
     setState(() {
-        isLoading = true;
-      });
-    var allLocalPatients = await PatientController().getAllLocalPatients();
+      isLoading = true;
+    });
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+      var pending = await PatientController().getPatientsPendingWorklist(context);
+      
+      if (pending['error'] != null && !pending['error'] && pending['data'].isNotEmpty) {
+        setState(() {
+          allPendingPatients = pending['data'];
+          // pendingPatientsSort();
+          pendingPatients = allPendingPatients;
+        });
+      }
+    }
+    else {
+      var allLocalPatients = await PatientController().getAllLocalPatients();
       var localPatientPending = [];
       var authData = await Auth().getStorageAuth();
       for(var localPatient in allLocalPatients) {
@@ -123,9 +136,10 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
         pendingPatientsSort();
         pendingPatients = allPendingPatients;
       });
-      setState(() {
-        isLoading = false;
-      });
+    }
+    setState(() {
+      isLoading = false;
+    });
 
   }
 

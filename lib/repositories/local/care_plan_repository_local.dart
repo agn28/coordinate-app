@@ -121,12 +121,10 @@ class CarePlanRepositoryLocal {
     return careplans;
   }
   getCareplanByPatient(patientId) async {
-    final sqlCareplans = '''SELECT * FROM ${DatabaseCreator.careplanTable}''';
+    final sqlCareplans = '''SELECT * FROM ${DatabaseCreator.careplanTable} WHERE patient_id="$patientId"''';
     try {
-      var careplans = await db.rawQuery(sqlCareplans);
-      return careplans;
+      return await db.rawQuery(sqlCareplans);
     } catch (error) {
-
       return;
     }
   }
