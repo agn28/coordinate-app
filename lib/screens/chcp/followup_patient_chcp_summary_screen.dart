@@ -423,13 +423,11 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
   _getCarePlan() async {
 
     var data = await CarePlanController().getCarePlan(checkAssignedTo:'false');
-    print('getCarePlan data: $data');
     if (data != null) {
       // print( data['data']);
       // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
       setState(() {
         carePlans = data;
-        print('carePlans: $carePlans');
       });
       carePlans.forEach( (item) {
         DateFormat format = new DateFormat("E LLL d y");
@@ -454,6 +452,7 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
         // check due careplans
         if (item['meta']['status'] == 'pending') {
           if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
+            if(item['body']['goal'] != null){
             var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
 
             if (existedCp.isEmpty) {
@@ -467,6 +466,7 @@ class _FollowupPatientChcpSummaryScreenState extends State<FollowupPatientChcpSu
             } else {
               dueCarePlans[dueCarePlans.indexOf(existedCp.first)]['items'].add(item);
 
+            }
             }
           } else if (todayDate.isBefore(startDate)) {
             var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);

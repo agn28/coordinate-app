@@ -483,6 +483,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
         // check due careplans
         if (item['meta']['status'] == 'pending') {
           if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
+            if(item['body']['goal'] != null){
             var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
             // print(existedCp);
             // print(item['body']['activityDuration']['start']);
@@ -498,6 +499,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
             } else {
               dueCarePlans[dueCarePlans.indexOf(existedCp.first)]['items'].add(item);
 
+            }
             }
           } else if (todayDate.isBefore(startDate)) {
             var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);

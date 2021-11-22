@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:basic_utils/basic_utils.dart' as basic_utils;
 import 'package:flutter/cupertino.dart';
@@ -243,14 +244,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
       setState(() {
         carePlansEmpty = true;
       });
-    } else if(isNotNull(data['error']) && data['error']) {
-      setState(() {
-        carePlansEmpty = true;
-      });
-    } else if (data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-      return;
     } else {
       setState(() {
         report = data['data'];
@@ -394,7 +387,6 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
   _getCarePlan() async {
 
     var data = await CarePlanController().getCarePlan();
-    print('_getCarePlan data: $data');
     if (data != null) {
       // print( data['data']);
       // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
@@ -402,7 +394,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
         carePlans = data;
       });
       // carePlans = data['data'];
-      carePlans.forEach( (item) {
+      for (var item in carePlans) {
         DateFormat format = new DateFormat("E LLL d y");
         
         var todayDate = DateTime.now();
@@ -424,9 +416,9 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
         // check due careplans
         if (item['meta']['status'] == 'pending') {
           if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
-            var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-            // print(existedCp);
-            // print(item['body']['activityDuration']['start']);
+
+          if(item['body']['goal'] != null){
+              var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
 
             if (existedCp.isEmpty) {
               var items = [];
@@ -440,7 +432,8 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
               dueCarePlans[dueCarePlans.indexOf(existedCp.first)]['items'].add(item);
 
             }
-          } else if (todayDate.isBefore(startDate)) {
+          } 
+          else if (todayDate.isBefore(startDate)) {
             var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
             // print(existedCp);
             // print(item['body']['activityDuration']['start']);
@@ -477,7 +470,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
           }
         }
 
-        
+      }        
         
         // var existedCp = carePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
         // // print(existedCp);
@@ -496,7 +489,7 @@ class _PatientRecordsState extends State<ChwPatientRecordsScreen> {
         //   carePlans[carePlans.indexOf(existedCp.first)]['items'].add(item);
 
         // }
-      });
+      }
 
       
       // setState(() {

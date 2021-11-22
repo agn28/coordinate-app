@@ -427,19 +427,21 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
         // check due careplans
         if (item['meta']['status'] == 'pending') {
           if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
-            var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-            
-            if (existedCp.isEmpty) {
-              var items = [];
-              items.add(item);
-              dueCarePlans.add({
-                'items': items,
-                'title': item['body']['goal']['title'],
-                'id': item['body']['goal']['id']
-              });
-            } else {
-              dueCarePlans[dueCarePlans.indexOf(existedCp.first)]['items'].add(item);
+            if(item['body']['goal'] != null){
+              var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
+              
+              if (existedCp.isEmpty) {
+                var items = [];
+                items.add(item);
+                dueCarePlans.add({
+                  'items': items,
+                  'title': item['body']['goal']['title'],
+                  'id': item['body']['goal']['id']
+                });
+              } else {
+                dueCarePlans[dueCarePlans.indexOf(existedCp.first)]['items'].add(item);
 
+              }
             }
           } else if (todayDate.isBefore(startDate)) {
             var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);

@@ -212,6 +212,7 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
         if (item['body']['category'] != null && item['body']['category'] != 'investigation') {
           if (item['meta']['status'] == 'pending') {
             if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
+              if(item['body']['goal'] != null){
               var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
               
               if (existedCp.isEmpty) {
@@ -232,6 +233,7 @@ class _ChwCareplanDeliveryScreenState extends State<ChwCareplanDeliveryScreen> {
                 
               }
               cpUpdateCount = dueCarePlans.length;
+              }
             } else if (todayDate.isBefore(startDate)) {
               var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
              

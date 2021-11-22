@@ -185,7 +185,6 @@ class _ChcpCareplanDeliveryScreenState extends State<ChcpCareplanDeliveryScreen>
 
   _getCarePlan() async {
     var data = await CarePlanController().getCarePlan();
-    print('delivery careplan data: $data');
     if (data != null) {
       // print( data['data']);
       // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
@@ -219,6 +218,7 @@ class _ChcpCareplanDeliveryScreenState extends State<ChcpCareplanDeliveryScreen>
         if (item['body']['category'] != null && item['body']['category'] != 'investigation') {
           if (item['meta']['status'] == 'pending') {
             if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
+              if(item['body']['goal'] != null){
               var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
 
               // print(item['body']['activityDuration']['start']);
@@ -241,6 +241,7 @@ class _ChcpCareplanDeliveryScreenState extends State<ChcpCareplanDeliveryScreen>
                 
               }
               cpUpdateCount = dueCarePlans.length;
+              }
 
             } else if (todayDate.isBefore(startDate)) {
               var existedCp = upcomingCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
