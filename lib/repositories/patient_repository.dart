@@ -531,7 +531,7 @@ class PatientRepository {
 
 
     try {
-      response = await client.put(apiUrl + 'patients/' + medId + '/dispense-medication/',
+      response = await client.put(apiUrl + 'patients/' + medId + '/dispense-medication-mongo/',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
