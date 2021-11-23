@@ -781,7 +781,7 @@ class _EditIncompleteEncounterChwScreenState
     var patient = Patient().getPatient();
 
     var status = hasMissingData ? 'incomplete' : 'complete';
-    var response = await AssessmentController().storeEncounterDataLocal('new questionnaire', 'new-questionnaire', '', '', localStatus: 'complete', createdAt: creationDateTimeController.text, completedAt:'');
+    var response = await AssessmentController().storeEncounterDataLocal('new questionnaire', 'new-questionnaire', '', '', localStatus: 'complete', createdAt: creationDateTimeController.text, completedAt: completionDateTimeController.text);
     // var response = await AssessmentController().createOnlyAssessmentWithStatus('new questionnaire', 'new-questionnaire', '', 'incomplete', nextVisitDate);
 
     setLoader(false);
@@ -2414,6 +2414,7 @@ var isReferralRequired = null;
 bool dietTitleAdded = false;
 bool tobaccoTitleAdded = false;
 var creationDateTimeController = TextEditingController();
+var completionDateTimeController = TextEditingController();
 
 class _RecommendedCounsellingState extends State<RecommendedCounselling> {
 
@@ -2426,6 +2427,7 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
     tobaccoTitleAdded = false;
     isReferralRequired = null;
     creationDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
+    completionDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
   }
 
   checkCounsellingQuestions(counsellingQuestion) {
@@ -2852,6 +2854,56 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
                                             //     initialDate: currentValue ?? DateTime.now(),
                                             //     lastDate: DateTime(2100));
                                           },
+                                        ),
+                                      ),
+                                      SizedBox(height: 20,),
+                                      Text(AppLocalizations.of(context).translate('completionDateAndTime'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                                      Container(
+                                        width: double.infinity,
+                                        child: Container(
+                                          child: DateTimeField(
+                                            resetIcon: null,
+                                            format: DateFormat("yyyy-MM-dd HH:mm"),
+                                            controller: completionDateTimeController,
+                                            decoration: InputDecoration(
+                                              // hintText: AppLocalizations.of(context).translate("lastVisitDate"),
+                                              hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                                              contentPadding: EdgeInsets.only(top: 18, bottom: 18),
+                                              prefixIcon: Icon(Icons.date_range),
+                                              filled: true,
+                                              fillColor: kSecondaryTextField,
+                                              border: new UnderlineInputBorder(
+                                                borderSide: new BorderSide(color: Colors.white),
+                                                borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(4),
+                                                  topRight: Radius.circular(4),
+                                                )
+                                              ),
+                                            ),
+
+                                            onShowPicker: (context, currentValue) async  {
+                                              final date = await showDatePicker(
+                                                  context: context,
+                                                  firstDate: DateTime(1900),
+                                                  initialDate: currentValue ?? DateTime.now(),
+                                                  lastDate: DateTime(2100));
+                                              if (date != null) {
+                                                final time = await showTimePicker(
+                                                  context: context,
+                                                  initialTime:
+                                                      TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                                                );
+                                                return DateTimeField.combine(date, time);
+                                              } else {
+                                                return currentValue;
+                                              }
+                                              // return showDatePicker(
+                                              //     context: context,
+                                              //     firstDate: DateTime(1900),
+                                              //     initialDate: currentValue ?? DateTime.now(),
+                                              //     lastDate: DateTime(2100));
+                                            },
+                                          ),
                                         ),
                                       ),
                                     ]
