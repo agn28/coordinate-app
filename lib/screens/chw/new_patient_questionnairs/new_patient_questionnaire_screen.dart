@@ -443,20 +443,20 @@ class _NewPatientQuestionnaireScreenState
                 onPressed: () {
                   if (_currentStep == 0) {
                       Questionnaire().addNewMedicalHistoryNcd('medical_history', medicalHistoryAnswers);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');   
+                      AssessmentController().storeEncounterDataLocal('new questionnaire', 'new-questionnaire', '', '');
                     }
 
                     if (_currentStep == 1) {
                       Questionnaire().addNewMedicationNcd(
                           'medication', medicationAnswers);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('new questionnaire', 'new-questionnaire', '', '');
 
                     }
 
                     if (_currentStep == 2) {
                       Questionnaire().addNewRiskFactorsNcd(
                           'risk_factors', riskAnswers);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('new questionnaire', 'new-questionnaire', '', '');
 
                     }
 
@@ -478,7 +478,7 @@ class _NewPatientQuestionnaireScreenState
                         'tribe': isTribe
                       };
                       Questionnaire().addNewPersonalHistory('relative_problems', relativeAnswers, relativeAdditionalData);
-                      AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('new questionnaire', 'new-questionnaire', '', '');
                       setState(() {
                         _currentStep = _currentStep + 1;
                         nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
@@ -522,7 +522,7 @@ class _NewPatientQuestionnaireScreenState
                                     onPressed: () async{
                                       // Navigator.of(context).pop(true);
                                       createObservations();
-                                      AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
+                      AssessmentController().storeEncounterDataLocal('new questionnaire', 'new-questionnaire', '', '');
                                       setState(() {
                                         _currentStep = _currentStep + 1;
                                       });
@@ -536,7 +536,7 @@ class _NewPatientQuestionnaireScreenState
                         );
                       } else {
                         createObservations();
-                        AssessmentController().createAssessmentWithObservationsLocal(context, 'new questionnaire', 'new-questionnaire', '', 'incomplete', '');
+                        AssessmentController().storeEncounterDataLocal('new questionnaire', 'new-questionnaire', '', '');
                       
                         setState(() {
                           nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
@@ -630,7 +630,7 @@ class _NewPatientQuestionnaireScreenState
     var patient = Patient().getPatient();
 
     var status = hasMissingData ? 'incomplete' : 'complete';
-    var response = await AssessmentController().createAssessmentWithObservationsLive('new questionnaire', createdAt: creationDateTimeController.text);
+    var response = await AssessmentController().storeEncounterDataLocal('new questionnaire', 'new-questionnaire', '', '', localStatus: 'complete', createdAt: creationDateTimeController.text, completedAt:'');
     // var response = await AssessmentController().createOnlyAssessmentWithStatus('new questionnaire', 'new-questionnaire', '', 'incomplete', nextVisitDate);
 
     setLoader(false);

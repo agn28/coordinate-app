@@ -922,10 +922,8 @@ class AssessmentController {
      } else {
       var response;
       var assessmentId = Uuid().v4();
-      var assessmentData = _prepareData(type, screening_type, comment);
-      assessmentData['body']['status'] = assessmentStatus;
-      assessmentData['body']['next_visit_date'] = nextVisitDate;
-      assessmentData['meta']['created_at'] = createdAt != '' ? createdAt : assessmentData['meta']['created_at'];
+      var created_at = createdAt == '' ? DateTime.now().toString() : createdAt;
+      var assessmentData = _prepareAssessmentData(type, screening_type, assessmentStatus, created_at);
       if (followupType != '') {
         assessmentData['body']['followup_type'] = followupType;
       }
@@ -1595,6 +1593,26 @@ class AssessmentController {
         "assessment_date": Assessment().getSelectedAssessment()['data']
             ['assessment_date'],
         "patient_id": Assessment().getSelectedAssessment()['data']['patient_id']
+      }
+    };
+
+    return data;
+  }
+
+  _prepareAssessmentData(type, screening_type, status, created_at) {
+    var data = {
+      "meta": {
+        "collected_by": Auth().getAuth()['uid'],
+        "created_at": created_at != '' ? created_at : DateTime.now().toString()
+      },
+      "body": {
+        "type": type,
+        "screening_type": screening_type,
+        "comment": '',
+        "performed_by": Auth().getAuth()['uid'],
+        "assessment_date": DateFormat('y-MM-dd').format(DateTime.parse(created_at)),
+        "patient_id": Patient().getPatient()['id'],
+        "status": status
       }
     };
 
