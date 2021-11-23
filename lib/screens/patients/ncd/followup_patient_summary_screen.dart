@@ -101,9 +101,23 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
 
     getIncompleteAssessment();
 
-    creationDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
-    completionDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
+    populateDateTime();
+    // creationDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
+    // completionDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
     isLoading = false;
+  }
+
+  populateDateTime(){
+    print('widget encounterData : ${widget.encounterData}');
+    if(widget.encounterData.isNotEmpty && widget.encounterData['encounter'] != null && widget.encounterData['encounter']['meta'] != null){
+      // print('widget encounterData[meta]: ${widget.encounterData['encounter']['meta']}');
+      // print('widget encounterData[meta][createdAt]: ${widget.encounterData['encounter']['meta']['created_at']}');
+      creationDateTimeController.text = widget.encounterData['encounter']['meta']['created_at'];
+    }
+    else{
+      creationDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
+    }
+    completionDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
   }
 
     getIncompleteAssessment() async {
@@ -1478,7 +1492,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                   ),
                                 ) : Container(),
                                 SizedBox(height: 20,),
-                                ((widget.prevScreen == 'encounter' || widget.prevScreen == 'followup') && (!(widget.encounterData).containsKey("encounter") && !(widget.encounterData).containsKey("observations")))
+                                (widget.prevScreen == 'encounter' || widget.prevScreen == 'followup') 
                                 ? Container(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1535,7 +1549,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                   )
                                 : Container(),
                                 SizedBox(height: 20,),
-                                ((widget.prevScreen == 'encounter' || widget.prevScreen == 'followup') && widget.encounterData['dataStatus'] != 'incomplete')
+                                (widget.prevScreen == 'encounter' || widget.prevScreen == 'followup')
                                 ? Container(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1608,7 +1622,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                       isLoading = true;
                                     });
                                     if(widget.prevScreen == 'encounter') {
-                                      var response = AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'ncd', '', '', assessmentStatus:'incomplete', localStatus:'incomplete');
+                                      var response = AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'ncd', '', '', assessmentStatus:'incomplete', localStatus:'incomplete', createdAt: creationDateTimeController.text);
                                       // if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
                                       // {
                                       //   var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
@@ -1620,7 +1634,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                       // }
                                     } else if(widget.prevScreen == 'followup') {
                                       var followupType = widget.encounterData['followupType'];
-                                      var response = AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'followup', '', '', assessmentStatus:'incomplete', localStatus:'incomplete', followupType: followupType);
+                                      var response = AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'followup', '', '', assessmentStatus:'incomplete', localStatus:'incomplete', followupType: followupType, createdAt: creationDateTimeController.text);
                                     }
                                     setState(() {
                                       isLoading = false;
@@ -1650,7 +1664,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                     if(widget.prevScreen == 'encounter') {
                                       var status = widget.encounterData['dataStatus'] == 'incomplete' ? 'incomplete' : 'complete';
                                       var completedAt = status == 'complete' ? completionDateTimeController.text : '';
-                                      var response = AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'chcp', '', '', assessmentStatus: status, localStatus: status);
+                                      var response = AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'chcp', '', '', assessmentStatus: status, localStatus: status, createdAt: creationDateTimeController.text, completedAt: completionDateTimeController.text);
                                       // if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
                                       // {
 
@@ -1666,7 +1680,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                     } else if(widget.prevScreen == 'followup') {
                                       var status = widget.encounterData['dataStatus'] == 'incomplete' ? 'incomplete' : 'complete';
                                       var followupType = widget.encounterData['followupType'];
-                                      var response = AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'followup', '', '', assessmentStatus: status, localStatus:'complete', followupType: followupType);
+                                      var response = AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'followup', '', '', assessmentStatus: status, localStatus:'complete', followupType: followupType, createdAt: creationDateTimeController.text, completedAt: completionDateTimeController.text);
                                       status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
                                     }
                                     setState(() {
