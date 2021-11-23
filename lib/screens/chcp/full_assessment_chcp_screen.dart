@@ -154,8 +154,9 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
 
   getCenters() async {
     var centerData = await PatientController().getCenter();
+    print('centerData: $centerData');
 
-    if (centerData['error'] != null && !centerData['error']) {
+    if (centerData != null ) {
       clinicTypes = centerData['data'];
       for(var center in clinicTypes) {
         if(isNotNull(_patient['data']['center']) && center['id'] == _patient['data']['center']['id']) {

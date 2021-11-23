@@ -3970,12 +3970,14 @@ class _CreateReferState extends State<CreateRefer> {
     //   isLoading = true;
     // });
     var centerData = await PatientController().getCenter();
+    print('centerData: $centerData');
     // setState(() {
     //   isLoading = false;
     // });
 
-    if (centerData['error'] != null && !centerData['error']) {
+    if (centerData != null) {
       clinicTypes = centerData['data'];
+      print('clinicTypes: $clinicTypes');
       for(var center in clinicTypes) {
         if(isNotNull(_patient['data']['center']) && center['id'] == _patient['data']['center']['id']) {
           setState(() {

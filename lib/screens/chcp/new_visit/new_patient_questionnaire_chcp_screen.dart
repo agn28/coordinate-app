@@ -179,7 +179,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
     //   isLoading = false;
     // });
 
-    if (centerData['error'] != null && !centerData['error']) {
+    if (centerData != null) {
       clinicTypes = centerData['data'];
       for(var center in clinicTypes) {
         if(isNotNull(_patient['data']['center']) && center['id'] == _patient['data']['center']['id']) {

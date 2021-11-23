@@ -1310,8 +1310,7 @@ class SyncController extends GetxController {
     syncCenterData();
   }
   syncCenterData() async {
-    var response = await patientController.getCenter();
-
+    var response = await patientController.getCenterOnline();
     if (isNotNull(response) && isNotNull(response['error']) && !response['error']) {
       createCenters(response['data']);
     }

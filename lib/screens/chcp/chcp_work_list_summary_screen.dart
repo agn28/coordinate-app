@@ -247,15 +247,8 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
       setState(() {
         carePlansEmpty = true;
       });
-    } else if(isNotNull(data['error']) && data['error']) {
-      setState(() {
-        carePlansEmpty = true;
-      });
-    } else if (data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-      return;
-    } else {
+    } 
+    else {
 
       setState(() {
         report = data['data'];
@@ -398,7 +391,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
   _getCarePlan() async {
 
     var data = await CarePlanController().getCarePlan();
-    print('cdata $data');
       setState(() {
         carePlans = data;
       });

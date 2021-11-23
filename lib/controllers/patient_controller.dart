@@ -199,6 +199,13 @@ class PatientController {
   //   }
   //   return response;
   // }
+  getCenterOnline() async {
+    var response = await PatientRepository().getCenter();
+    if (isNotNull(response) && isNull(response['exception'])) {
+      return response;
+    }
+  }
+
   getCenter() async {
     // var response = await PatientRepository().getCenter();
 
@@ -207,14 +214,12 @@ class PatientController {
     // }
 
     var localResponse = await PatientReposioryLocal().getCenters();
-
     if (isNotNull(localResponse) && localResponse.isNotEmpty) {
 
       var locations = {
         'data': jsonDecode(localResponse[0]['data']),
         'error': false
       };
-
       return locations;
     }
 

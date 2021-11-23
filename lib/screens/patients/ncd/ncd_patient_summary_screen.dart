@@ -200,33 +200,23 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
   }
 
   getReport() async {
-
-    setState(() {
-      isLoading = true;
-    });
-
     var data = await HealthReportController().getLastReport(context);
     
-    if (data['error'] == true) {
+    if (data.isEmpty) {
       setState(() {
         carePlansEmpty = true;
       });
-      // Toast.show('No Health assessment found', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
-    } else if (data['message'] == 'Unauthorized') {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    } else {
+    } 
+    else {
       setState(() {
+        print('heere');
         report = data['data'];
-      });
+        bmi = report != null && report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ? report['body']['result']['assessments']['body_composition']['components']['bmi'] : null;
+        cvd = report != null && report['body']['result']['assessments']['cvd'] != null ? report['body']['result']['assessments']['cvd'] : null;
+        bp = report != null && report['body']['result']['assessments']['blood_pressure'] != null ? report['body']['result']['assessments']['blood_pressure'] : null;
+        cholesterol = report != null && report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ? report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] : null;
+        });
     }
-    setState(() {
-      bmi = report != null && report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ? report['body']['result']['assessments']['body_composition']['components']['bmi'] : null;
-      cvd = report != null && report['body']['result']['assessments']['cvd'] != null ? report['body']['result']['assessments']['cvd'] : null;
-      bp = report != null && report['body']['result']['assessments']['blood_pressure'] != null ? report['body']['result']['assessments']['blood_pressure'] : null;
-      cholesterol = report != null && report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ? report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] : null;
-    });
-
   }
 
   getMedicationsConditions() async {
