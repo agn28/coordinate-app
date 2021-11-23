@@ -100,19 +100,6 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
     setState(() {
       isLoading = true;
     });
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
-      var pending = await PatientController().getPatientsPendingWorklist(context);
-      
-      if (pending['error'] != null && !pending['error'] && pending['data'].isNotEmpty) {
-        setState(() {
-          allPendingPatients = pending['data'];
-          // pendingPatientsSort();
-          pendingPatients = allPendingPatients;
-        });
-      }
-    }
-    else {
       var allLocalPatients = await PatientController().getAllLocalPatients();
       var localPatientPending = [];
       var authData = await Auth().getStorageAuth();
@@ -120,7 +107,9 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
         var isAssigned = false;
         if(localPatient['data']['address']['district'] == authData['address']['district'] 
             && isNotNull(localPatient["meta"]["has_pending"]) && localPatient["meta"]["has_pending"]) {
+          print('pat ${localPatient['data']['first_name']} ${localPatient['id']}');
           var careplans = await CarePlanRepositoryLocal().getCareplanByPatient(localPatient['id']);
+          print('patcp ${careplans}');
           var parsedData;
           for(var careplan in careplans) {
             parsedData = jsonDecode(careplan['data']);
@@ -145,7 +134,6 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
         pendingPatientsSort();
         pendingPatients = allPendingPatients;
       });
-    }
     setState(() {
       isLoading = false;
     });

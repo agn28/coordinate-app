@@ -48,7 +48,7 @@ class CarePlanRepositoryLocal {
     )
     VALUES (?,?,?,?,?)''';
     for (var item in tempSyncs) {
-      List<dynamic> params = [item['id'], jsonEncode(item), item['body']['patient_id'], '', isSynced];
+      List<dynamic> params = [item['id'], jsonEncode(item), item['body']['patient_id'], item['meta']['status'], isSynced];
       await batch.rawInsert(sql, params);
       print('rawInsert');
     }
