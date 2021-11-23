@@ -1002,7 +1002,7 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
       var referralType;
       if(role == 'chw')
       {
-        referralType = 'community';
+        referralType = 'chw';
       } else if(role == 'nurse'){
         referralType = 'center';
       }  else if(role == 'chcp'){
@@ -4027,7 +4027,7 @@ class _CreateReferState extends State<CreateRefer> {
                           //         var referralType;
                           //         if(role == 'chw')
                           //         {
-                          //           referralType = 'community';
+                          //           referralType = 'chw';
                           //         } else if(role == 'nurse'){
                           //           referralType = 'center';
                           //         }  else if(role == 'chcp'){

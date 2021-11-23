@@ -232,7 +232,7 @@ class SyncController extends GetxController {
     while(flag) {
       try {
         var response = await fetchLatestSyncs();
-        flag = !(response['data'].length == 0);
+        flag = !(response['data'].length == 0 || response == null);
       } catch (error) {
         //TODO: break loop
         print('error $error');
@@ -1137,18 +1137,21 @@ class SyncController extends GetxController {
     isSyncingToLocal.value = true;
     try {
       var patientsSync = await syncRepo.getTempSyncs('patients', 1000);
-      for (var patient in patientsSync) {
-        subPatients.add(patient['document_id']);
+      if(isNotNull(patientsSync)) {
+        for (var patient in patientsSync) {
+          subPatients.add(patient['document_id']);
+        }
       }
-
       if(subPatients.length > 0) {
         await insertPatients(subPatients);
         subPatients = [];
       }
 
       var assessmentsSync = await syncRepo.getTempSyncs('assessments', 1000);
-      for (var assessment in assessmentsSync) {
-        subAssessments.add(assessment['document_id']);
+      if(isNotNull(assessmentsSync)) {
+        for (var assessment in assessmentsSync) {
+          subAssessments.add(assessment['document_id']);
+        }
       }
       if(subAssessments.length > 0) {
         await insertAssessments(subAssessments);
@@ -1156,8 +1159,10 @@ class SyncController extends GetxController {
       }
 
       var observationsSync = await syncRepo.getTempSyncs('observations', 1000);
-      for (var observation in observationsSync) {
-        subObservations.add(observation['document_id']);
+      if(isNotNull(observationsSync)) {
+        for (var observation in observationsSync) {
+          subObservations.add(observation['document_id']);
+        }
       }
       if(subObservations.length > 0) {
         await insertObservations(subObservations);
@@ -1165,8 +1170,10 @@ class SyncController extends GetxController {
       }
       
       var referralsSync = await syncRepo.getTempSyncs('referrals', 1000);
-      for (var referral in referralsSync) {
-        subReferrals.add(referral['document_id']);
+      if(isNotNull(referralsSync)) {
+        for (var referral in referralsSync) {
+          subReferrals.add(referral['document_id']);
+        }
       }
       if(subReferrals.length > 0) {
         await insertReferrals(subReferrals);
@@ -1174,8 +1181,10 @@ class SyncController extends GetxController {
       }
 
       var carePlansSync = await syncRepo.getTempSyncs('care_plans', 1000);
-      for (var carePlan in carePlansSync) {
-        subCarePlans.add(carePlan['document_id']);
+      if(isNotNull(carePlansSync)) {
+        for (var carePlan in carePlansSync) {
+          subCarePlans.add(carePlan['document_id']);
+        }
       }
       if(subCarePlans.length > 0) {
         await insertCarePlans(subCarePlans);
@@ -1183,8 +1192,10 @@ class SyncController extends GetxController {
       }
 
       var healthReportsSync = await syncRepo.getTempSyncs('health_reports', 1000);
-      for (var healthReport in healthReportsSync) {
-        subHealthReports.add(healthReport['document_id']);
+      if(isNotNull(healthReportsSync)) {
+        for (var healthReport in healthReportsSync) {
+          subHealthReports.add(healthReport['document_id']);
+        }
       }
       if(subHealthReports.length > 0) {
         await insertHealthReports(subHealthReports);
@@ -1192,7 +1203,7 @@ class SyncController extends GetxController {
       }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Error: ${error}'),
+        content: Text('Error! ${error}'),
         backgroundColor: Colors.red,
       ));
     }

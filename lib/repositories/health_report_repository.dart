@@ -76,7 +76,7 @@ class HealthReportRepository {
 
     try {
       response = await client
-        .get(apiUrl + 'health-reports/patient/' + patientID + '?filter=last',
+        .get(apiUrl + 'health-reports/patient/mongo/' + patientID + '/last',
             headers: {
               'Accept': 'application/json',
               'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ class HealthReportRepository {
     var token = authData['accessToken'];
     var patientID = Patient().getPatient()['id'];
     return await client.get(
-      apiUrl + 'health-reports/patient/' + patientID,
+      apiUrl + 'health-reports/patient/mongo/' + patientID,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',

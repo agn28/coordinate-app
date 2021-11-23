@@ -1173,7 +1173,7 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
       var referralType;
       if(role == 'chw')
       {
-        referralType = 'community';
+        referralType = 'chw';
       } else if(role == 'nurse'){
         referralType = 'center';
       }  else if(role == 'chcp'){

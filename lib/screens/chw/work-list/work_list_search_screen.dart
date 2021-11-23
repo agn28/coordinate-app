@@ -68,12 +68,6 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
     patientSortActive = false;
     dueDateSortActive = false;
   }
-  
-  loaderHandle(value) {
-    setState(() {
-      isLoading = value;
-    });
-  }
 
   _getAuthUserName() {
     var name = '';
@@ -94,14 +88,13 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
   }
   /// Get all the worklist
   _getPatients() async {
-
+    setState(() {
+      isLoading = true;
+    });
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
       var pending = await PatientController().getPatientsPendingWorklist(context);
-      var completed = await PatientController().getPatientsWorklist(context, 'completed');
-      var past = await PatientController().getPatientsWorklist(context, 'past');
-
-
+      
       if (pending['error'] != null && !pending['error'] && pending['data'].isNotEmpty) {
         setState(() {
           allPendingPatients = pending['data'];
@@ -109,32 +102,15 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
           pendingPatients = allPendingPatients;
         });
       }
-      if (completed['error'] != null && !completed['error']) {
-        setState(() {
-          allCompletedPatients = completed['data'];
-          completedPatientsSort();
-          completedPatients = allCompletedPatients;
-        });
-      }
-      if (past['error'] != null && !past['error']) {
-        setState(() {
-          allPastPatients = past['data'];
-          pastPatientsSort();
-          pastPatients = allPastPatients;
-        });
-      }
-      setState(() {
-        isLoading = false;
-      });
     }
     else {
       var allLocalPatients = await PatientController().getAllLocalPatients();
       var localPatientPending = [];
       var authData = await Auth().getStorageAuth();
       for(var localPatient in allLocalPatients) {
+        var isAssigned = false;
         if(localPatient['data']['address']['district'] == authData['address']['district'] 
           && isNotNull(localPatient["meta"]["has_pending"]) && localPatient["meta"]["has_pending"]) {
-          var isAssigned = false;
           var careplans = await CarePlanRepositoryLocal().getCareplanByPatient(localPatient['id']);
           var parsedData;
           for(var careplan in careplans) {
@@ -160,11 +136,7 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
         pendingPatientsSort();
         pendingPatients = allPendingPatients;
       });
-      setState(() {
-        isLoading = false;
-      });
     }
-
     setState(() {
       isLoading = false;
     });

@@ -279,9 +279,12 @@ class SyncRepository {
         print('batch inserted');
       } else {
         // try {
-          syncIds.add(item['id']);
-          List<dynamic> params = [item['id'], item['document_id'], item['collection_name'], item['action'], item['key'], item['created_at'], 0];
-          await batch.rawInsert(sql, params);
+          if(isNotNull(item['id']) && isNotNull(item['document_id']) && isNotNull(item['collection_name'])) {
+            syncIds.add(item['id']);
+            List<dynamic> params = [item['id'], item['document_id'], item['collection_name'], item['action'], item['key'], item['created_at'], 0];
+            await batch.rawInsert(sql, params);
+            batchSize++;
+          }
         // } 
         // catch (error) {
         //   //TODO: create log here
@@ -290,7 +293,6 @@ class SyncRepository {
         //   //TODO: insert ids in an array and send req to API to update device_ids
         //   print('final');
         // }
-        batchSize++;
       }
     }
     if (batchSize > 0) { 
@@ -318,7 +320,9 @@ class SyncRepository {
   }
   updateSyncStatus(documentIds, isSynced) async {
     var ids = documentIds.map((item){
-      return "'" + item + "'";
+      if(item != null) {
+        return "'" + item + "'";
+      }
     }).join(",");
     final sql = '''UPDATE ${DatabaseCreator.latestSyncTable} SET is_synced = ? WHERE document_id IN (${ids})''';
     

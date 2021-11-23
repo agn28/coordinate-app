@@ -17,72 +17,9 @@ class ReferralController {
   var referralRepoLocal = ReferralRepositoryLocal();
 
   /// Get all the patients
-  create(context, data) async {
+  create(data, isSynced, {localStatus: ''}) async {
     var referralId = Uuid().v4();
-
-    var response;
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
-      // I am connected to a mobile network.
-
-      var apiData = data;
-      // apiData['id'] = referralId;
-
-      var apiResponse = await ReferralRepository().create(apiData);
-
-      if (isNull(apiResponse)) {
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text(
-              "Error: ${AppLocalizations.of(context).translate('somethingWrong')}"),
-          backgroundColor: kPrimaryRedColor,
-        ));
-        return;
-      } else if (apiResponse['exception'] != null) {
-        if (apiResponse['type'] == 'unknown') {
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text('Error: ${apiResponse['message']}'),
-            backgroundColor: kPrimaryRedColor,
-          ));
-          return;
-        }
-
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text('Warning: ${apiResponse['message']}. Using offline...'),
-          backgroundColor: kPrimaryYellowColor,
-        ));
-
-        response = await referralRepoLocal.create(referralId, data, false);
-        // Identifying this patient with not synced data
-        await PatientReposioryLocal().updateLocalStatus(data['meta']['patient_id'], false);
-        return response;
-      } else if (apiResponse['error'] != null && apiResponse['error']) {
-        // Scaffold.of(context).showSnackBar(SnackBar(
-        //   content: Text("Error: ${apiResponse['message']}"),
-        //   backgroundColor: kPrimaryRedColor,
-        // ));
-        return;
-      } else if (apiResponse['error'] != null && !apiResponse['error']) {
-        response = await referralRepoLocal.create(referralId, data, true);
-
-        if (isNotNull(apiResponse['data']['sync']) &&
-            isNotNull(apiResponse['data']['sync']['key'])) {
-          var updateSync = await SyncRepository()
-              .updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
-        }
-        return response;
-      }
-      return response;
-    } else {
-      // Scaffold.of(context).showSnackBar(SnackBar(
-      //   content: Text('Warning: No Internet. Using offline...'),
-      //   backgroundColor: kPrimaryYellowColor,
-      // ));
-      response = await referralRepoLocal.create(referralId, data, false);
-      // Identifying this patient with not synced data
-      await PatientReposioryLocal().updateLocalStatus(data['meta']['patient_id'], false);
-      return response;
-    }
+    await referralRepoLocal.create(referralId, data, isSynced, localStatus: localStatus);
   }
 
   update(data) async {
