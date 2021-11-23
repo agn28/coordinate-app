@@ -583,7 +583,7 @@ class _RegisterPatientState extends State<RegisterPatient> {
       'brac_id': bracPatientIdContoller.text,
       'creationDateTime' : creationDateTimeController.text,
 
-      'registration_date': DateFormat('y-MM-dd').format(DateTime.now()),
+      'registration_date': DateFormat('y-MM-dd').format(DateTime.parse(creationDateTimeController.text)),
       'address': {
         'district': selectedDistrict['name'],
         'postal_code': postalCodeController.text,
