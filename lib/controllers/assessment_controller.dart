@@ -902,13 +902,10 @@ class AssessmentController {
       
       localNotSyncedAssessment.first['body']['status'] = assessmentStatus;
       localNotSyncedAssessment.first['body']['followup_type'] = followupType;
-      assessmentStatus == 'complete' ? (localNotSyncedAssessment.first['meta']['completed_at'] = (completedAt == '' ?  DateTime.now().toString() : completedAt)) : null;
-      localNotSyncedAssessment.first['meta']['created_at'] = (createdAt == '' ? DateTime.now().toString() : createdAt);
+      localStatus == 'complete' ? (localNotSyncedAssessment.first['meta']['completed_at'] = (completedAt == '' ?  DateTime.now().toString() : completedAt)) : null;
+      localNotSyncedAssessment.first['meta']['created_at'] = createdAt != '' ? createdAt : localNotSyncedAssessment.first['meta']['created_at'];
       var observations = await updateObservations(localNotSyncedAssessment.first['body']['status'], localNotSyncedAssessment.first, localNotSyncedObservations);
-      // Map<String, dynamic> apiData = {
-      //   'assessment': localNotSyncedAssessment.first,
-      //   'observations': apiDataObservations
-      // };
+
       await AssessmentRepositoryLocal().updateLocalAssessment(localNotSyncedAssessment.first['id'], localNotSyncedAssessment.first, 0, localStatus: localStatus);
       
       for (var observation in observations) {
@@ -922,19 +919,16 @@ class AssessmentController {
           await ReferralRepositoryLocal().update(localNotSyncedReferral['id'], localNotSyncedReferral, 0, localStatus: localStatus);
         }
       }
-      // else {
-      //   var response = await storeAssessmentWithObservationsLive(localNotSyncedAssessment.first, apiDataObservations, apiData);
-      // }
      } else {
       var response;
+      var assessmentId = Uuid().v4();
       var assessmentData = _prepareData(type, screening_type, comment);
       assessmentData['body']['status'] = assessmentStatus;
       assessmentData['body']['next_visit_date'] = nextVisitDate;
+      assessmentData['meta']['created_at'] = createdAt != '' ? createdAt : assessmentData['meta']['created_at'];
       if (followupType != '') {
         assessmentData['body']['followup_type'] = followupType;
       }
-      assessmentData['meta']['created_at'] = createdAt == '' ? DateTime.now().toString() : createdAt;
-      var assessmentId = Uuid().v4();
 
       // Preparing all observations related to assessment
       var observations = await AssessmentRepositoryLocal().prepareObservations(assessmentId);
@@ -943,14 +937,7 @@ class AssessmentController {
       for (var observation in observations['localData']) {
         await ObservationRepositoryLocal().create(observation['id'], observation['data'], 0, localStatus: localStatus);
       }
-      // await PatientReposioryLocal().updateLocalStatus(assessmentData['body']['patient_id'], false);
     }
-
-    
-    // if (localNotSyncedAssessment.first['body']['status'] == 'complete') {
-    //   await HealthReportController().generateReport(localNotSyncedAssessment.first['body']['patient_id']);
-    // }
-    // Helpers().clearObservationItems();
   }
 
   createAssessmentWithObservationsLocal(context, type, screening_type, comment, completeStatus, nextVisitDate, {followupType: '', createdAt: ''}) async {
