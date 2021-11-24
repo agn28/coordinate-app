@@ -36,7 +36,6 @@ import '../../../custom-classes/custom_stepper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../short_followup_chcp_screen.dart';
-import '../patient_summery_chcp_screen.dart';
 
 final _temperatureController = TextEditingController();
 final _systolicController = TextEditingController();

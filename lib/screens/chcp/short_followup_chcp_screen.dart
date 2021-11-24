@@ -34,7 +34,6 @@ import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'followup_patient_chcp_summary_screen.dart';
-import 'patient_summery_chcp_screen.dart';
 
 final _temperatureController = TextEditingController();
 final _systolicController = TextEditingController();
