@@ -74,7 +74,6 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
     super.initState();
 
     _patient = Patient().getPatient();
-
     dueCarePlans = [];
     completedCarePlans = [];
     upcomingCarePlans = [];
@@ -411,7 +410,11 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
 
   getDate(date) {
     if (date.runtimeType == String && date != null && date != '') {
-      return DateFormat("MMMM d, y").format(DateTime.parse(date)).toString();
+      try{
+        return DateFormat("MMMM d, y").format(DateTime.parse(date)).toString();
+      } on FormatException {
+        return 'invalid data format';
+      } 
     } else if (date['_seconds'] != null) {
       var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
 
@@ -422,7 +425,6 @@ class _ChcpPatientSummaryScreenState extends State<ChcpPatientSummaryScreen> {
 
   getLastAssessment() async {
     lastAssessment = await AssessmentController().getLastAssessmentByPatient();
-
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
       // lastEncounterDate = lastAssessment['data']['meta']['created_at'];
       // nextVisitDate = lastAssessment['data']['body']['next_visit_date'];

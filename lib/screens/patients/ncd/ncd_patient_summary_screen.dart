@@ -50,7 +50,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
   var performer;
   String performerName = '';
   String performerRole = '';
-  var conditions = [];
   var medications = [];
   var allergies = [];
   var report;
@@ -68,7 +67,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     super.initState();
 
     _patient = Patient().getPatient();
-    conditions = [];
     carePlansEmpty = false;
     
     _checkAvatar();
@@ -76,7 +74,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     getAssessmentDueDate();
     getEncounters();
     // getAssessments();
-    getMedicationsConditions();
     getReport();
     getIncompleteAssessment();
     getLastAssessment();
@@ -217,43 +214,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
         cholesterol = report != null && report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ? report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] : null;
         });
     }
-  }
-
-  getMedicationsConditions() async {
-    isLoading = true;
-    if (Auth().isExpired()) {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    }
-    var fetchedSurveys = await ObservationController().getLiveSurveysByPatient();
-
-    if(fetchedSurveys.isNotEmpty) {
-      fetchedSurveys.forEach((item) {
-        if (item['data']['name'] == 'medical_history') {
-
-          allergies = item['data']['allergy_types'] != null ? item['data']['allergy_types'] : [];
-
-          item['data'].keys.toList().forEach((key) {
-            if (item['data'][key] == 'yes') {
-              setState(() {
-                var text = key.replaceAll('_', ' ');
-                var upperCased = text[0].toUpperCase() + text.substring(1);
-                if (!conditions.contains(upperCased)) {
-                  conditions.add(upperCased);
-                }
-                
-              });
-            }
-          });
-        }
-        if (item['data']['name'] == 'current_medication' && item['data']['medications'].isNotEmpty) {
-          setState(() {
-            medications = item['data']['medications'];
-          });
-        }
-      });
-    }
-
   }
 
   getAssessments() async {

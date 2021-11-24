@@ -451,6 +451,23 @@ class ObservationController {
     return {};
   }
 
+  getLocalSurveysByPatient(id) async {
+    var observations = await observationRepoLocal.getObservationsByPatient(id);
+    var data = [];
+    if (observations == null) {
+      return data;
+    }
+
+    var parsedData;
+    await observations.forEach((obs) {
+      parsedData = jsonDecode(obs['data']);
+      if (parsedData['body']['type'] == 'survey') {
+        data.add(parsedData['body']);
+      }
+    });
+    return data;
+  }
+
   /// Get all the assessments.
   getLiveSurveysByPatient() async {
     var observations = await ObservationRepository().getObservations();
@@ -459,8 +476,7 @@ class ObservationController {
       return data;
     }
     await observations['data'].forEach((obs) {
-      if (obs['body']['patient_id'] == Patient().getPatient()['id'] &&
-          obs['body']['type'] == 'survey') {
+      if (obs['body']['type'] == 'survey') {
         data.add(obs['body']);
       }
     });

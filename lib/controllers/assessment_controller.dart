@@ -941,7 +941,7 @@ class AssessmentController {
      } else {
       var response;
       var assessmentId = Uuid().v4();
-      var created_at = createdAt == '' ? DateTime.now().toString() : createdAt;
+      var created_at = createdAt == '' ? DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now()).toString() : createdAt;
       var assessmentData = _prepareAssessmentData(type, screening_type, assessmentStatus, created_at);
       if (followupType != '') {
         assessmentData['body']['followup_type'] = followupType;
@@ -1622,7 +1622,7 @@ class AssessmentController {
     var data = {
       "meta": {
         "collected_by": Auth().getAuth()['uid'],
-        "created_at": created_at != '' ? created_at : DateTime.now().toString()
+        "created_at": created_at != '' ? created_at : DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now()).toString()
       },
       "body": {
         "type": type,
