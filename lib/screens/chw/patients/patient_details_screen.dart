@@ -99,7 +99,8 @@ class _PatientDetailsState extends State<PatientDetailsScreen> {
       }
       return Toast.show('Server Error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
     }
-    var fetchedSurveys = await ObservationController().getLiveSurveysByPatient();
+    var patientId = Patient().getPatient()['id'];
+    var fetchedSurveys = await ObservationController().getLocalSurveysByPatient(patientId);
 
     if(fetchedSurveys.isNotEmpty) {
       fetchedSurveys.forEach((item) {
