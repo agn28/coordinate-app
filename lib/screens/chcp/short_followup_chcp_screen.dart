@@ -738,7 +738,7 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
                               }
                               if (_currentStep == 2) {
                                 createObservations();
-                                AssessmentController().storeEncounterDataLocal('community clinic followup', 'chcp', '', '', assessmentStatus:'incomplete', followupType:'short');
+                                AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'short');
                                 _completeStep();
                                 setState(() {
                                   _currentStep = _currentStep + 1;
@@ -819,7 +819,7 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
                               if (_currentStep == 0) {
                                 if(dynamicMedicationTitles.isNotEmpty) {
                                   Questionnaire().addNewDynamicMedicationNcd('dynamic_medication', dynamicMedicationTitles, dynamicMedicationAnswers);
-                                  AssessmentController().storeEncounterDataLocal('community clinic followup', 'chcp', '', '', assessmentStatus:'incomplete', followupType:'short');
+                                  AssessmentController().storeEncounterDataLocal('community clinic followup', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'short');
                                 }
                                 setState(() {
                                   _currentStep = _currentStep + 1;

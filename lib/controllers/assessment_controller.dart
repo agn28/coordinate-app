@@ -71,6 +71,25 @@ class AssessmentController {
     return data;
   }
 
+  getCarePlanAssessmentsByPatient(patientId) async {
+    var data = {};
+    var assessments = await AssessmentRepositoryLocal().getAssessmentsByPatient(patientId);
+    if (isNotNull(assessments)) {
+      for (var assessment in assessments) {
+        var parseData = json.decode(assessment['data']);
+        if(parseData['body']['type'] == "care plan generated") {
+          data = {
+            'id': assessment['id'],
+            'data': parseData['body'],
+            'meta': parseData['meta']
+          };
+        }
+      }
+    }
+
+    return data;
+  }
+
   getLiveAllAssessmentsByPatient() async {
     var data = [];
     var patientId = Patient().getPatient()['id'];

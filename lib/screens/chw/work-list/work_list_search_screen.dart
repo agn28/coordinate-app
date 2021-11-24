@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:nhealth/controllers/sync_controller.dart';
@@ -91,52 +92,45 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
     setState(() {
       isLoading = true;
     });
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
-      var pending = await PatientController().getPatientsPendingWorklist(context);
-      
-      if (pending['error'] != null && !pending['error'] && pending['data'].isNotEmpty) {
-        setState(() {
-          allPendingPatients = pending['data'];
-          // pendingPatientsSort();
-          pendingPatients = allPendingPatients;
-        });
-      }
-    }
-    else {
-      var allLocalPatients = await PatientController().getAllLocalPatients();
-      var localPatientPending = [];
-      var authData = await Auth().getStorageAuth();
-      for(var localPatient in allLocalPatients) {
-        var isAssigned = false;
-        if(localPatient['data']['address']['district'] == authData['address']['district'] 
-          && isNotNull(localPatient["meta"]["has_pending"]) && localPatient["meta"]["has_pending"]) {
-          var careplans = await CarePlanRepositoryLocal().getCareplanByPatient(localPatient['id']);
-          var parsedData;
-          for(var careplan in careplans) {
-            parsedData = jsonDecode(careplan['data']);
-            if (parsedData['meta']['status'] == 'pending'
-            && parsedData['meta']['assigned_to'].contains(Auth().getAuth()['uid'])) {
-              isAssigned = true;
-              break;
-            }
-          }
-          if(isAssigned) {
-            var localpatientdata = {
-              'id': localPatient['id'],
-              'body': localPatient['data'],
-              'meta': localPatient['meta']
-            };
-            localPatientPending.add(localpatientdata);
+    var allLocalPatients = await PatientController().getAllLocalPatients();
+    var localPatientPending = [];
+    var authData = await Auth().getStorageAuth();
+    for(var localPatient in allLocalPatients) {
+      var isAssigned = false;
+      if(localPatient['data']['address']['district'] == authData['address']['district'] 
+        && isNotNull(localPatient["meta"]["has_pending"]) && localPatient["meta"]["has_pending"]) {
+        var careplans = await CarePlanRepositoryLocal().getCareplanByPatient(localPatient['id']);
+        var careplanAssessment = await AssessmentController().getCarePlanAssessmentsByPatient(localPatient['id']);
+        var ccFollowup = careplanAssessment['data']['follow_up_info'].where((item) => item['type'] == "cc").first;
+        localPatient['data']['appointment_date'] = ccFollowup['date'];
+        var parsedData;
+        for(var careplan in careplans) {
+          parsedData = jsonDecode(careplan['data']);
+          if (parsedData['meta']['status'] == 'pending'
+          && parsedData['meta']['assigned_to'].contains(Auth().getAuth()['uid'])) {
+            isAssigned = true;
+            break;
           }
         }
+        if(isAssigned) {
+          var localpatientdata = {
+            'id': localPatient['id'],
+            'body': localPatient['data'],
+            'meta': localPatient['meta']
+          };
+          localPatientPending.add(localpatientdata);
+        }
       }
-      setState(() {
-        allPendingPatients = localPatientPending;
-        pendingPatientsSort();
-        pendingPatients = allPendingPatients;
-      });
     }
+    localPatientPending.sort((a, b) {
+      return DateTime.parse(b['body']['appointment_date']).compareTo(DateTime.parse(a['body']['appointment_date']));
+    });
+    setState(() {
+      allPendingPatients = localPatientPending;
+      // pendingPatientsSort();
+      pendingPatients = allPendingPatients;
+    });
+    
     setState(() {
       isLoading = false;
     });

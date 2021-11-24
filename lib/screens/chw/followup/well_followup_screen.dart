@@ -1559,14 +1559,7 @@ class _MeasurementsState extends State<Measurements> {
                                           .addItem('weight', weightEditingController.text, 'kg', '', '');
                                     }
                                     BodyMeasurement().addBmItem();
-
-                                    await getIncompleteFollowup();
-                                    if(encounter != null) {
-                                      var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
-                                    } else {
-                                      var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
-                                    }
-                                    
+                                    AssessmentController().storeEncounterDataLocal('follow up visit (community)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'short');
                                     {
                                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                         content: Text(AppLocalizations.of(context).translate('dataSaved')),
@@ -1819,12 +1812,7 @@ class _MeasurementsState extends State<Measurements> {
                                 };
 
                                 BloodPressure().addBloodPressure(formData);
-                                await getIncompleteFollowup();
-                                if(encounter != null) {
-                                  var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
-                                } else {
-                                  var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
-                                }
+                                AssessmentController().storeEncounterDataLocal('follow up visit (community)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'short');
                                 {
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                     content: Text(AppLocalizations.of(context).translate('dataSaved')),
@@ -2223,12 +2211,7 @@ class _MeasurementsState extends State<Measurements> {
                                     .addItem('a1c', hba1cController.text, selectedHba1cUnit, '', '');
                               }
                               BloodTest().addBtItem();
-                              await getIncompleteFollowup();
-                              if(encounter != null) {
-                                var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
-                              } else {
-                                var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
-                              }
+                              AssessmentController().storeEncounterDataLocal('follow up visit (community)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'short');
                               
                               {
                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -2599,12 +2582,8 @@ class _MeasurementsState extends State<Measurements> {
                                           .addItem('triglycerides', tgController.text, selectedTgUnit, '', '');
                                     }
                                     BloodTest().addBtItem();  
-                                    await getIncompleteFollowup();
-                                    if(encounter != null) {
-                                      var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
-                                    } else {
-                                      var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
-                                    }
+                                    
+                                    AssessmentController().storeEncounterDataLocal('follow up visit (community)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'short');
                                     
                                     {
                                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -3055,12 +3034,8 @@ class _MeasurementsState extends State<Measurements> {
                                           'protein', proteinController.text, selectedProteinUnit, '', '');
                                     }
                                     BloodTest().addBtItem();
-                                    await getIncompleteFollowup();
-                                    if(encounter != null) {
-                                      var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
-                                    } else {
-                                      var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow-up', '', 'incomplete', '', followupType: 'short');
-                                    }
+                                    
+                                    AssessmentController().storeEncounterDataLocal('follow up visit (community)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType:'short');
                                     
                                     {
                                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

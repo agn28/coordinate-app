@@ -1622,19 +1622,10 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                       isLoading = true;
                                     });
                                     if(widget.prevScreen == 'encounter') {
-                                      var response = AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'ncd', '', '', assessmentStatus:'incomplete', localStatus:'incomplete', createdAt: creationDateTimeController.text);
-                                      // if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
-                                      // {
-                                      //   var response = await AssessmentController().updateAssessmentWithObservationsLive('incomplete', widget.encounterData['encounter'], widget.encounterData['observations']);
-
-                                      // } else {
-
-                                      //   // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', 'incomplete', '');
-                                      //   var response = await AssessmentController().createAssessmentWithObservationsLive('new ncd center assessment', assessmentStatus: 'incomplete', createdAt: creationDateTimeController.text);
-                                      // }
+                                      AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'ncd', '', '', assessmentStatus:'incomplete', localStatus:'incomplete', createdAt: creationDateTimeController.text);
                                     } else if(widget.prevScreen == 'followup') {
                                       var followupType = widget.encounterData['followupType'];
-                                      var response = AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'followup', '', '', assessmentStatus:'incomplete', localStatus:'incomplete', followupType: followupType, createdAt: creationDateTimeController.text);
+                                      AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'follow-up', '', '', assessmentStatus:'incomplete', localStatus:'incomplete', followupType: followupType, createdAt: creationDateTimeController.text);
                                     }
                                     setState(() {
                                       isLoading = false;
@@ -1661,28 +1652,13 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                                     setState(() {
                                       isLoading = true;
                                     });
+                                    var status = widget.encounterData['dataStatus'] == 'incomplete' ? 'incomplete' : 'complete';
                                     if(widget.prevScreen == 'encounter') {
-                                      var status = widget.encounterData['dataStatus'] == 'incomplete' ? 'incomplete' : 'complete';
-                                      var completedAt = status == 'complete' ? completionDateTimeController.text : '';
-                                      var response = AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'chcp', '', '', assessmentStatus: status, localStatus: status, createdAt: creationDateTimeController.text, completedAt: completionDateTimeController.text);
-                                      // if((widget.encounterData).containsKey("encounter") && (widget.encounterData).containsKey("observations"))
-                                      // {
-
-                                      //   // var response = await AssessmentController().updateAssessmentWithObservations(context, status, widget.encounterData['encounter'], widget.encounterData['observations']);
-                                      //   var response = await AssessmentController().updateAssessmentWithObservationsLive(status, widget.encounterData['encounter'], widget.encounterData['observations'], completedAt: completedAt);
-                                      // } else {
-
-                                      //   // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', status, '');
-                                      //   var response = await AssessmentController().createAssessmentWithObservationsLive('new ncd center assessment', assessmentStatus: status, createdAt: creationDateTimeController.text, completedAt: completedAt);
-                                      // }
-                                      status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
-
+                                      AssessmentController().storeEncounterDataLocal('new ncd center assessment', 'chcp', '', '', assessmentStatus: status, localStatus: 'complete', createdAt: creationDateTimeController.text, completedAt: completionDateTimeController.text);
                                     } else if(widget.prevScreen == 'followup') {
-                                      var status = widget.encounterData['dataStatus'] == 'incomplete' ? 'incomplete' : 'complete';
-                                      var followupType = widget.encounterData['followupType'];
-                                      var response = AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'followup', '', '', assessmentStatus: status, localStatus:'complete', followupType: followupType, createdAt: creationDateTimeController.text, completedAt: completionDateTimeController.text);
-                                      status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
+                                      AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'follow-up', '', '', assessmentStatus: status, localStatus: 'complete', followupType: widget.encounterData['followupType'], createdAt: creationDateTimeController.text, completedAt: completionDateTimeController.text);
                                     }
+                                    status == 'complete' ? Patient().setPatientReviewRequiredTrue() : null;
                                     setState(() {
                                       isLoading = false;
                                     });

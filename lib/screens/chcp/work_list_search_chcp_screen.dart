@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:nhealth/controllers/sync_controller.dart';
@@ -16,6 +17,7 @@ import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
+import 'package:nhealth/repositories/local/assessment_repository_local.dart';
 import 'package:nhealth/repositories/local/care_plan_repository_local.dart';
 import 'package:nhealth/screens/chw/patients/patient_summary_screen.dart';
 import 'package:get/get.dart';
@@ -107,9 +109,10 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
         var isAssigned = false;
         if(localPatient['data']['address']['district'] == authData['address']['district'] 
             && isNotNull(localPatient["meta"]["has_pending"]) && localPatient["meta"]["has_pending"]) {
-          print('pat ${localPatient['data']['first_name']} ${localPatient['id']}');
           var careplans = await CarePlanRepositoryLocal().getCareplanByPatient(localPatient['id']);
-          print('patcp ${careplans}');
+          var careplanAssessment = await AssessmentController().getCarePlanAssessmentsByPatient(localPatient['id']);
+          var ccFollowup = careplanAssessment['data']['follow_up_info'].where((item) => item['type'] == "cc").first;
+          localPatient['data']['appointment_date'] = ccFollowup['date'];
           var parsedData;
           for(var careplan in careplans) {
             parsedData = jsonDecode(careplan['data']);
@@ -129,9 +132,12 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
           }
         }
       }
+      localPatientPending.sort((a, b) {
+        return DateTime.parse(b['body']['appointment_date']).compareTo(DateTime.parse(a['body']['appointment_date']));
+      });
       setState(() {
         allPendingPatients = localPatientPending;
-        pendingPatientsSort();
+        // pendingPatientsSort();
         pendingPatients = allPendingPatients;
       });
     setState(() {
