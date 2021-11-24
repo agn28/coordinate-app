@@ -223,12 +223,8 @@ class _PatientRecordsState extends State<PatientRecordsScreen> {
   }
 
   getMedicationsConditions() async {
-    isLoading = true;
-    if (Auth().isExpired()) {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    }
-    var fetchedSurveys = await ObservationController().getLiveSurveysByPatient();
+    var patientId = Patient().getPatient()['id'];
+    var fetchedSurveys = await ObservationController().getLocalSurveysByPatient(patientId);
 
     if(fetchedSurveys.isNotEmpty) {
       fetchedSurveys.forEach((item) {
