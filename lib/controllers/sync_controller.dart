@@ -250,7 +250,7 @@ class SyncController extends GetxController {
           print('networkIssue');
           break;
         }
-        var syncCount = await syncRepo.checkTempSyncsCount();
+        var syncCount = await syncRepo.getTempSyncsCount();
         syncs.value = syncCount;
         if(syncCount == null) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -403,14 +403,18 @@ class SyncController extends GetxController {
   }
 
   fetchLatestSyncs() async {
-    var dbEmpty = await syncRepo.checkTempSyncsCount();
+    var localSync = await syncRepo.checkLocalSyncEmpty();
     var response;
-    // if(dbEmpty == 0) {
-    //   print('dbEmpty');
-    //   // TODO: call another api to fetch all data for first time
-    //   // response = await syncRepo.fetchLatestSyncs();
-    // } else {
-    // }
+    if(localSync == 0) {
+      //api call to remove device id from all sync in server
+      print('dbEmpty');
+      try {
+        await syncRepo.removeDeviceIdFromSync();
+      } catch(error) {
+        isPoorNetwork.value = true;
+        print('deviceId remove $error');
+      }
+    } 
     try {
       response = await syncRepo.fetchLatestSyncs();
       await syncRepo.createTempSyncs(response['data']);

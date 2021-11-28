@@ -202,20 +202,50 @@ class SyncRepository {
   }
 
   getTempSyncsCount() async {
-    final sql = '''SELECT count(*) FROM ${DatabaseCreator.latestSyncTable} WHERE is_synced=0''';
-    try {
-      return await db.rawQuery(sql);
-    } on DatabaseException catch (error) {
-      return;
-    }
-  }
-
-  checkTempSyncsCount() async {
     final sql = '''SELECT COUNT(*) FROM ${DatabaseCreator.latestSyncTable} WHERE is_synced=0''';
     try {
       return Sqflite.firstIntValue(await db.rawQuery(sql));
     } on DatabaseException catch (error) {
       return 0;
+    }
+  }
+
+  checkLocalSyncEmpty() async {
+    final sql = '''SELECT COUNT(*) FROM (select 0 from ${DatabaseCreator.latestSyncTable} limit 1)''';
+    try {
+      return Sqflite.firstIntValue(await db.rawQuery(sql));
+    } on DatabaseException catch (error) {
+      return 0;
+    }
+  }
+
+  removeDeviceIdFromSync() async {
+    var authData = await Auth().getStorageAuth();
+    var response;
+    try {
+      response = await client
+      .put(apiUrl + 'syncs/remove/'+ authData['deviceId'],
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authData['accessToken']
+          },)
+      .timeout(Duration(seconds: httpRequestTimeout));
+
+      return json.decode(response.body);
+    } on SocketException {
+      showErrorSnackBar('Error', 'socketError');
+      return {'exception': true, 'message': 'No internet'};
+    } on TimeoutException {
+      showErrorSnackBar('Error', 'timeoutError');
+      return {'exception': true, 'type': 'poor_network', 'message': 'Slow internet'};
+    } on Error catch (err) {
+      showErrorSnackBar('Error', 'unknownError');
+      return {
+        'exception': true,
+        'type': 'unknown',
+        'message': 'Something went wrong'
+      };
     }
   }
 
