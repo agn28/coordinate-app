@@ -508,7 +508,7 @@ class PatientRepository {
     var authData = await Auth().getStorageAuth() ;
     var token = authData['accessToken'];
     return client.get(
-      apiUrl + 'patients/' + patientId + '/medications/',
+      apiUrl + 'patients/' + patientId + '/latest-medications-mongo/',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
