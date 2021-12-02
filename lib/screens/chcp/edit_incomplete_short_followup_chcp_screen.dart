@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:basic_utils/basic_utils.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -57,7 +58,7 @@ var selectedtype;
 var clinicNameController = TextEditingController();
 
 var _patient;
-
+var nextVisitDateController = TextEditingController();
 var clinicTypes = [];
 
 bool refer = false;
@@ -285,8 +286,10 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
     }
     if(isNotNull(referral['body'])) {
       setState(() {
+        refer = true;
         clinicNameController.text = referral['body']['location']['clinic_name'];
         selectedReason = referral['body']['reason'];
+        nextVisitDateController.text = referral['body']['follow_up_date'];
       });
     }
   }
@@ -511,6 +514,12 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
     selectedPotassiumUnit = 'mmol/L';
     selectedKetonesUnit = 'mmol/L';
     selectedProteinUnit = 'mmol/L';
+
+    refer = false;
+    selectedReason = null;
+    selectedtype = null;
+    clinicNameController.text = '';
+    nextVisitDateController.text = '${DateFormat("yyyy-MM-dd").format(DateTime.now())}';
   }
 
   _checkAuth() {
@@ -998,6 +1007,7 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
       referralData['body']['reason'] = selectedReason;
       referralData['body']['location']['clinic_type'] = selectedtype;
       referralData['body']['location']['clinic_name'] = clinicNameController.text;
+      referralData['body']['follow_up_date'] = nextVisitDateController.text;
     } else if (refer) {
       var referralType;
       if(role == 'chw')
@@ -1025,6 +1035,7 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
             'clinic_type' : selectedtype,
             'clinic_name' : clinicNameController.text,
           },
+          'follow_up_date': nextVisitDateController.text,
         },
         'referred_from': 'community clinic',
       };
@@ -4007,186 +4018,46 @@ class _CreateReferState extends State<CreateRefer> {
                             ),
                           )
                         ),
+                        SizedBox(height: 30,),
+                        
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(AppLocalizations.of(context).translate("followupIn"), style: TextStyle(color: Colors.black, fontSize: 20)),
+                        ),
+                        SizedBox(height: 10,),
+
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 25),
+                          child: DateTimeField(
+                            resetIcon: null,
+                            format: DateFormat("yyyy-MM-dd"),
+                            controller: nextVisitDateController,
+                            decoration: InputDecoration(
+                              hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                              contentPadding: EdgeInsets.only(top: 18, bottom: 18),
+                              prefixIcon: Icon(Icons.date_range),
+                              filled: true,
+                              fillColor: kSecondaryTextField,
+                              border: new UnderlineInputBorder(
+                                borderSide: new BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(4),
+                                  topRight: Radius.circular(4),
+                                )
+                              ),
+                            ),
+                            
+                            onShowPicker: (context, currentValue) async  {
+                              return showDatePicker(
+                                  context: context,
+                                  firstDate: DateTime(1900),
+                                  initialDate: currentValue ?? DateTime.now(),
+                                  lastDate: DateTime(2100));
+                            },
+                          ),
+                        ),
 
                         SizedBox(height: 50,),
-                        Row(
-                        children: <Widget>[
-                          // Expanded(
-                          //   child: Container(
-                          //     width: double.infinity,
-                          //     margin: EdgeInsets.only(left: 20, right: 20),
-                          //     height: 50,
-                          //     decoration: BoxDecoration(
-                          //       color: kPrimaryColor,
-                          //       borderRadius: BorderRadius.circular(3)
-                          //     ),
-                          //     child: FlatButton(
-                          //       onPressed: () async {
-                          //         // Navigator.of(context).pushNamed('/chwNavigation',);
-
-                          //         var referralType;
-                          //         if(role == 'chw')
-                          //         {
-                          //           referralType = 'chw';
-                          //         } else if(role == 'nurse'){
-                          //           referralType = 'center';
-                          //         }  else if(role == 'chcp'){
-                          //           referralType = 'chcp';
-                          //         } else{
-                          //           referralType = '';
-                          //         }
-
-                          //         var data = {
-                          //           'meta': {
-                          //             'patient_id': Patient().getPatient()['id'],
-                          //             "collected_by": Auth().getAuth()['uid'],
-                          //             "status": "pending",
-                          //             "created_at": DateTime.now().toString()
-                          //           },
-                          //           'body': {
-                          //             'reason': selectedReason,
-                          //             'type' : referralType,
-                          //             'location' : {
-                          //               'clinic_type' : selectedtype,
-                          //               'clinic_name' : clinicNameController,
-                          //             },
-                          //           },
-                          //           'referred_from': 'new questionnaire chcp',
-                          //         };
-
-                          //         // data['body']['reason'] = selectedReason;
-                          //         // data['body']['type'] = referralType;
-                          //         // data['body']['location'] = {};
-                          //         // data['body']['location']['clinic_type'] = selectedtype;
-                          //         // data['body']['location']['clinic_name'] = clinicNameController.text;
-
-                          //         print(data);
-
-                          //         // setState(() {
-                          //         //   isLoading = true;
-                          //         // });
-                          //         // var response =
-                          //         //     await ReferralController()
-                          //         //         .create(context, data);
-                          //         // setState(() {
-                          //         //   isLoading = false;
-                          //         // });
-                          //         // print('response');
-                          //         // print(response.runtimeType);
-
-                          //         // return;
-
-                          //         // if (response.runtimeType != int &&
-                          //         //     response != null &&
-                          //         //     response['error'] == true &&
-                          //         //     response['message'] ==
-                          //         //         'referral exists') {
-                          //         //   await showDialog(
-                          //         //     context: context,
-                          //         //     builder: (BuildContext context) {
-                          //         //       // return object of type Dialog
-                          //         //       return AlertDialog(
-                          //         //         content: new Text(
-                          //         //           AppLocalizations.of(context)
-                          //         //               .translate(
-                          //         //                   "referralAlreadyExists"),
-                          //         //           style:
-                          //         //               TextStyle(fontSize: 20),
-                          //         //         ),
-                          //         //         actions: <Widget>[
-                          //         //           // usually buttons at the bottom of the dialog
-                          //         //           new FlatButton(
-                          //         //             child: new Text(
-                          //         //                 AppLocalizations.of(
-                          //         //                         context)
-                          //         //                     .translate(
-                          //         //                         "referralUpdate"),
-                          //         //                 style: TextStyle(
-                          //         //                     color:
-                          //         //                         kPrimaryColor)),
-                          //         //             onPressed: () {
-                          //         //               Navigator.of(context)
-                          //         //                   .pop();
-                          //         //               Navigator.of(context)
-                          //         //                   .pushNamed(
-                          //         //                 '/referralList',
-                          //         //               );
-                          //         //             },
-                          //         //           ),
-                          //         //         ],
-                          //         //       );
-                          //         //     },
-                          //         //   );
-                          //         // } else {
-                          //         //   Navigator.of(context).pushNamed(
-                          //         //     '/chwHome',
-                          //         //   );
-                          //         // }
-
-                          //         await showDialog(
-                          //           context: context,
-                          //           builder: (BuildContext context) {
-                          //             // return object of type Dialog
-                          //             return AlertDialog(
-                          //               content: new Text(
-                          //                 AppLocalizations.of(context).translate("wantToCompleteVisit"),
-                          //                 style: TextStyle(fontSize: 20),
-                          //               ),
-                          //               actions: <Widget>[
-                          //                 // usually buttons at the bottom of the dialog
-                          //                 FlatButton(
-                          //                   child: new Text(AppLocalizations.of(context).translate("yes"),
-                          //                       style: TextStyle(color: kPrimaryColor)),
-                          //                   onPressed: () {
-                          //                     // Navigator.of(context).pop(false);
-                          //                     Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
-                          //                   },
-                          //                 ),
-                          //                 FlatButton(
-                          //                   child: new Text(
-                          //                       AppLocalizations.of(context).translate("NO"),
-                          //                       style: TextStyle(color: kPrimaryColor)),
-                          //                   onPressed: () {
-                          //                     Navigator.of(context).pop(false);
-                          //                   },
-                          //                 ),
-                          //               ],
-                          //             );
-                          //         });
-                          //       },
-                          //       materialTapTargetSize:
-                          //           MaterialTapTargetSize.shrinkWrap,
-                          //       child: Text(
-                          //         AppLocalizations.of(context)
-                          //             .translate('referralCreate')
-                          //             .toUpperCase(),
-                          //         style: TextStyle(
-                          //             fontSize: 14,
-                          //             color: Colors.white,
-                          //             fontWeight: FontWeight.normal),
-                          //         )),
-                          //         ),
-                          //       ),
-                              ],
-                            ),
-                            isLoading
-                            ? Container(
-                                height: MediaQuery.of(context).size.height,
-                                width: double.infinity,
-                                color: Color(0x90FFFFFF),
-                                child: Center(
-                                    child: CircularProgressIndicator(
-                                  valueColor:
-                                      AlwaysStoppedAnimation<Color>(kPrimaryColor),
-                                  backgroundColor: Color(0x30FFFFFF),
-                                )),
-                              )
-                            : Container(),
-                        // Container(
-                        //   height: 300,
-                        //   width: double.infinity,
-                        //   color: Colors.black12,
-                        // )
                       ],
                     )
                     : Container(),

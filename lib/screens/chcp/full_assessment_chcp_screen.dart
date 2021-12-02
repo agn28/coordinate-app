@@ -76,7 +76,6 @@ bool isLoading = false;
 
 var encounterData;
 
-var selectedReferralRole;
 var selectedReason;
 var selectedtype;
 var clinicNameController = TextEditingController();
@@ -275,11 +274,11 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
     selectedBloodGroup = null;
     isTribe = null;
 
-    selectedReferralRole = null;
+    refer = false;
     selectedReason = null;
     selectedtype = null;
     clinicNameController.text = '';
-    nextVisitDateController.text = '';
+    nextVisitDateController.text = '${DateFormat("yyyy-MM-dd").format(DateTime.now())}';
   }
 
   _checkAuth() {
@@ -5482,7 +5481,6 @@ class _CreateReferState extends State<CreateRefer> {
     referralReasons = referralReasonOptions['options']; 
     referralToRoles = referralToRolesOptions['options']; 
     // print('encounterData $encounterData');
-    nextVisitDateController.text = '${DateFormat("yyyy-MM-dd").format(DateTime.now())}';
   }
 
   // _getAuthData() async {
