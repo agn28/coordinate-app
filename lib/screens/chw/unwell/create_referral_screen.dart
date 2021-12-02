@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:basic_utils/basic_utils.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -17,6 +18,8 @@ import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
+
+
 
 getDropdownOptionText(context, list, value) {
   var locale = Localizations.localeOf(context);
@@ -56,6 +59,8 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
   bool isLoading = false;
   bool avatarExists = false;
 
+  var nextVisitDateController = TextEditingController();
+
   var referralReasonOptions = {
     'options': ['Urgent medical attempt required', 'NCD screening required'],
     'options_bn': ['তাৎক্ষণিক মেডিকেল প্রচেষ্টা প্রয়োজন', 'এনসিডি স্ক্রিনিং প্রয়োজন']
@@ -78,13 +83,6 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
   };
   List referralToRoles;
 
-  var followupInOptions = {
-    'options': ['1 week', '2 weeks', '3 weeks', '1 month', '3 months', '6 months', '1 year'],
-    'options_bn': ['1 সপ্তাহ', '2 সপ্তাহ', '3 সপ্তাহ', '1 মাস', '3 মাস', '6 মাস', '1 বছর']
-  };
-  List followupIn;
-
-  var nextVisitDate = '';
 
   @override
   void initState() {
@@ -95,8 +93,8 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
     getCenters();  
     referralReasons = referralReasonOptions['options'];
     referralToRoles = referralToRolesOptions['options']; 
-    followupIn = followupInOptions['options'];
     // clinicTypes = clinicTypeOptions['options'];
+    nextVisitDateController.text = '${DateFormat("yyyy-MM-dd").format(DateTime.now())}';
   }
 
   _getAuthData() async {
@@ -138,37 +136,6 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
         }
       }
     }
-  }
-
-  getNextVisitDate() {
-    // ['1 week', '2 weeks', '1 month', '2 months', '3 months', '6 months', '1 year'];
-    var date = '';
-    if (selectedFollowupIn == '1 week') {
-      date = DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().add(Duration(days: 7)));
-    } else if (selectedFollowupIn == '2 weeks') {
-      date = DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().add(Duration(days: 14)));
-    } else if (selectedFollowupIn == '3 weeks') {
-      date = DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().add(Duration(days: 14)));
-    } else if (selectedFollowupIn == '1 month') {
-      date = DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().add(Duration(days: 30)));
-    } else if (selectedFollowupIn == '3 months') {
-      date = DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().add(Duration(days: 90)));
-    } else if (selectedFollowupIn == '6 months') {
-      date = DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().add(Duration(days: 180)));
-    } else if (selectedFollowupIn == '1 year') {
-      date = DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().add(Duration(days: 365)));
-    }
-
-    setState(() {
-      nextVisitDate = date;
-    });
   }
 
   @override
@@ -340,53 +307,44 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                       ),
                     ),
 
+
                     SizedBox(height: 30,),
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 20),
                       child: Text(AppLocalizations.of(context).translate("followupIn"), style: TextStyle(color: Colors.black, fontSize: 20)),
                     ),
-                      
                     SizedBox(height: 10,),
-                    
+
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 20),
-                      padding: EdgeInsets.symmetric(horizontal: 15),
-                      color: kSecondaryTextField,
-                      child: DropdownButtonFormField(
-                        hint: Text(AppLocalizations.of(context).translate("followupIn"), style: TextStyle(fontSize: 20, color: kTextGrey),),
+                      margin: EdgeInsets.symmetric(horizontal: 25),
+                      child: DateTimeField(
+                        resetIcon: null,
+                        format: DateFormat("yyyy-MM-dd"),
+                        controller: nextVisitDateController,
+                        decoration: InputDecoration(
+                          hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                          contentPadding: EdgeInsets.only(top: 18, bottom: 18),
+                          prefixIcon: Icon(Icons.date_range),
+                          filled: true,
+                          fillColor: kSecondaryTextField,
+                          border: new UnderlineInputBorder(
+                            borderSide: new BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(4),
+                              topRight: Radius.circular(4),
+                            )
+                          ),
+                        ),
                         
-                        items: followupIn.map((value) {
-                          return DropdownMenuItem(
-                            value: value,
-                            child: Text(getDropdownOptionText(context, followupInOptions, value)),
-                          );
-                        }).toList(),
-                        value: selectedFollowupIn,
-                        onChanged: (newValue) {
-                          setState(() {
-                            selectedFollowupIn = newValue;
-                            getNextVisitDate();
-                          });
+                        onShowPicker: (context, currentValue) async  {
+                          return showDatePicker(
+                              context: context,
+                              firstDate: DateTime(1900),
+                              initialDate: currentValue ?? DateTime.now(),
+                              lastDate: DateTime(2100));
                         },
                       ),
-                    ),
-                    nextVisitDate != ''
-                    ? Container(
-                        margin: EdgeInsets.symmetric(vertical: 10),
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                  AppLocalizations.of(context)
-                                      .translate("nextVisitDate")+nextVisitDate,
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 16)),
-                              SizedBox(
-                                width: 30,
-                              ),
-                            ]))
-                    : Container(),
+                    ),                           
 
                     SizedBox(height: 50,),
 
@@ -424,7 +382,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                                 data['body']['location'] = {};
                                 data['body']['location']['clinic_type'] = selectedtype;
                                 data['body']['location']['clinic_name'] = clinicNameController.text;
-                                data['body']['follow_up_date'] = nextVisitDate;
+                                data['body']['follow_up_date'] = nextVisitDateController.text;
 
                                   setState(() {
                                     isLoading = true;

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:basic_utils/basic_utils.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -68,13 +69,12 @@ bool isLoading = false;
 
 var encounterData;
 
-var selectedReferralRole;
 var selectedReason;
 var selectedtype;
 var clinicNameController = TextEditingController();
 var clinicTypes = [];
 var _patient;
-
+var nextVisitDateController = TextEditingController();
 bool refer = false;
 
 getQuestionText(context, question) {
@@ -257,10 +257,11 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
     selectedBloodGroup = null;
     isTribe = null;
 
-    selectedReferralRole = null;
+    refer = false;
     selectedReason = null;
     selectedtype = null;
     clinicNameController.text = '';
+    nextVisitDateController.text = '${DateFormat("yyyy-MM-dd").format(DateTime.now())}';
   }
 
   _checkAuth() {
@@ -827,6 +828,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
           'clinic_type' : selectedtype,
           'clinic_name' : clinicNameController.text,
         },
+        'follow_up_date': nextVisitDateController.text,
       },
       'referred_from': 'community clinic',
     };
@@ -4818,6 +4820,8 @@ class _CreateReferState extends State<CreateRefer> {
   // var selectedtype;
   // var _patient;
 
+    
+
   @override
   void initState() {
     super.initState();
@@ -5012,6 +5016,44 @@ class _CreateReferState extends State<CreateRefer> {
                               hintStyle: TextStyle(fontSize: 18)
                             ),
                           )
+                        ),
+                        SizedBox(height: 30,),
+                        
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(AppLocalizations.of(context).translate("followupIn"), style: TextStyle(color: Colors.black, fontSize: 20)),
+                        ),
+                        SizedBox(height: 10,),
+
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 25),
+                          child: DateTimeField(
+                            resetIcon: null,
+                            format: DateFormat("yyyy-MM-dd"),
+                            controller: nextVisitDateController,
+                            decoration: InputDecoration(
+                              hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
+                              contentPadding: EdgeInsets.only(top: 18, bottom: 18),
+                              prefixIcon: Icon(Icons.date_range),
+                              filled: true,
+                              fillColor: kSecondaryTextField,
+                              border: new UnderlineInputBorder(
+                                borderSide: new BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(4),
+                                  topRight: Radius.circular(4),
+                                )
+                              ),
+                            ),
+                            
+                            onShowPicker: (context, currentValue) async  {
+                              return showDatePicker(
+                                  context: context,
+                                  firstDate: DateTime(1900),
+                                  initialDate: currentValue ?? DateTime.now(),
+                                  lastDate: DateTime(2100));
+                            },
+                          ),
                         ),
                         SizedBox(height: 50,),
                       ],
