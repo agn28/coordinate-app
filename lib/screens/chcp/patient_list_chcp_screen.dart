@@ -58,17 +58,13 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
   @override
   initState() {
     super.initState();
-    setState(() {
-      searchController.text = '';
-    });
-    // getPatients();
-    isLoading = true;
     clearFilters();
-    getLivePatients();
+    getPatients();
   }
 
   clearFilters() {
     setState(() {
+      searchController.text = '';
       ageFromController.clear();
       ageToController.clear();
       selectedUpazila = {};
@@ -84,156 +80,64 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
   }
 
   getPatients() async {
-    
-    var data = await PatientController().getAllPatients();
-
-    setState(() {
-      allPatients = data;
-      patients = allPatients;
-    });
-  }
-
-  getLivePatients() async {
     setState(() {
       isLoading = true;
       searchController.text = '';
+      print('getPatients before query : ${DateTime.now()}');
     });
     
-    // var data = await PatientController().getChcpPatients();
-
-    // if (data != null && data['message'] == 'Unauthorized') {
-    //   Auth().logout();
-    //   Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    // }
-
-    var parsedPatients = [];
     var parsedLocalPatient = [];
-    // if (isNull(data) || isNotNull(data['exception']))  {
-      var allLocalPatients = await PatientController().getAllLocalPatients();
-      var assessments = await AssessmentController().getAllLocalAssessments(localStatus: true);
-      var authData = await Auth().getStorageAuth();
+    var allLocalPatients = await PatientController().getAllLocalPatients();
+    var assessments = await AssessmentController().getAllLocalAssessments(localStatus: true);
+    var authData = await Auth().getStorageAuth();
 
-      for(var localPatient in allLocalPatients) {
-        if(localPatient['data']['address']['district'] == authData['address']['district']) {
-          
-          var hasEncounter = assessments.firstWhere((assessment) {
-            if (assessment['data']['patient_id'] == localPatient['id']) {
-              if (assessment['data']['type'] != 'registration') {
-                if (assessment['data']['type'] == 'follow up visit (center)' || assessment['data']['type'] == 'follow up visit (community)') {
-                  return true;
-                }
-                if (assessment['data']['status'] == null || assessment['data']['status'] == "") {
-                  return true;
-                }
-                return false; 
-              } return false; 
-            } return false; 
-          }, orElse: () => false);
-          
-          if (hasEncounter.runtimeType == bool && !hasEncounter) {
-            localPatient['data']['incomplete_encounter'] = false;
-            localPatient['data']['chcp_encounter_status'] = '';
+    for(var localPatient in allLocalPatients) {
+      if(localPatient['data']['address']['district'] == authData['address']['district']) {
+        
+        localPatient['data']['incomplete_encounter'] = false;
+        localPatient['data']['chcp_encounter_status'] = '';
+        var hasEncounter = assessments.firstWhere((assessment) {
+          if (assessment['data']['patient_id'] == localPatient['id']) {
+            if (assessment['data']['type'] != 'registration') {
+              if (assessment['data']['type'] == 'follow up visit (center)' || assessment['data']['type'] == 'follow up visit (community)') {
+                return true;
+              }
+              if (assessment['data']['status'] == null || assessment['data']['status'] == "") {
+                return true;
+              }
 
-            //check patient has incomplete encounter
-            assessments.firstWhere((assessment) {
-              if (assessment['data']['patient_id'] == localPatient['id']) {
-                // if(assessment['data']['type'] == 'community clinic assessment') {
-                //   localPatient['data']['chcp_encounter_status'] =  assessment['data']['status'];
-                //   localPatient['data']['incomplete_encounter'] = assessment['data']['status'] == 'incomplete' ? true : false;
-                //   return true;
-                // }
-                // //TODO
-                // if ((assessment['data']['type'] == 'new ncd center assessment' || assessment['data']['type'] == 'new questionnaire') && assessment['data']['status'] == 'incomplete') {
-                //   localPatient['data']['incomplete_encounter'] = true;
-                //   return true;
-                // }
-                if(assessment['data']['status'] == 'incomplete' && assessment['local_status'] == 'incomplete') {
-                  localPatient['data']['incomplete_encounter'] = true;
-                  if(assessment['data']['type'] == 'community clinic assessment' || assessment['data']['type'] == 'community clinic followup') {
-                    localPatient['data']['chcp_encounter_type'] =  assessment['data']['type'];
-                    localPatient['data']['chcp_encounter_status'] =  assessment['data']['status'];
-                  }
-                  return true;
-                } else if (assessment['data']['status'] == 'complete') {
+              //check patient has incomplete encounter
+              if(assessment['data']['status'] == 'incomplete' && assessment['local_status'] == 'incomplete') {
+                localPatient['data']['incomplete_encounter'] = true;
+                if(assessment['data']['type'] == 'community clinic assessment' || assessment['data']['type'] == 'community clinic followup') {
                   localPatient['data']['chcp_encounter_type'] =  assessment['data']['type'];
                   localPatient['data']['chcp_encounter_status'] =  assessment['data']['status'];
-                  return true;
-                } return false; 
-              } return false; 
-            }, orElse: () => false);
-            var localpatientdata = {
-              'id': localPatient['id'],
-              'data': localPatient['data'],
-              'meta': localPatient['meta']
-            };
-            parsedLocalPatient.add(localpatientdata);
-          }
+                }
+              } else if (assessment['data']['status'] == 'complete') {
+                localPatient['data']['chcp_encounter_type'] =  assessment['data']['type'];
+                localPatient['data']['chcp_encounter_status'] =  assessment['data']['status'];
+              }
 
-          
-         //----------------------
-          // var isListed = false;
-          // var isOnlyRegistered = false;
-          // for(var assessment in assessments) {
-          //   print(assessment);
-          //   // matched assessment
-          //   if(assessment['data']['patient_id'] == localPatient['id']) {
-          //     if(assessment['data']['screening_type'] != 'follow-up' 
-          //       && assessment['data']['status'] == 'incomplete') {
-          //         //add to list
-          //         var localpatientdata = {
-          //           'id': localPatient['id'],
-          //           'data': localPatient['data'],
-          //           'meta': localPatient['meta']
-          //         };
-          //         if(isNotNull(assessment['data']['status']) && assessment['data']['status'] == 'incomplete') {
-          //           print('status: ${assessment['data']['status']}');
-          //           localpatientdata['data']['incomplete_encounter'] = true;
-          //         }
-          //         print('localpatientdata $localpatientdata');
-          //         !isListed ? parsedLocalPatient.add(localpatientdata) : '';
-          //         isListed = true;
-
-          //     } else if(assessment['data']['screening_type'] == 'registration') {
-          //       isOnlyRegistered = true;
-          //     } else {
-          //       isOnlyRegistered = false;
-          //     }
-          //   }
-          // }
-          // if(isOnlyRegistered && !isListed) {
-          //   var localpatientdata = {
-          //     'id': localPatient['id'],
-          //     'data': localPatient['data'],
-          //     'meta': localPatient['meta']
-          //   };
-          //   print('localpatientdata $localpatientdata');
-          //   parsedLocalPatient.add(localpatientdata);
-          //   isListed = true;
-          // }
+              return false; 
+            } return false; 
+          } return false; 
+        }, orElse: () => false);
+        
+        if (hasEncounter.runtimeType == bool && !hasEncounter) {
+          var localpatientdata = {
+            'id': localPatient['id'],
+            'data': localPatient['data'],
+            'meta': localPatient['meta']
+          };
+          parsedLocalPatient.add(localpatientdata);
         }
       }
-      setState(() {
-        allPatients = parsedLocalPatient;
-        patients = allPatients;
-        isLoading = false;
-      });
-    // } else if (data['data'] != null) {
-    //   for(var item in data['data']) {
-    //     parsedPatients.add({
-    //       'id': item['id'],
-    //       'data': item['body'],
-    //       'meta': item['meta']
-    //     });
-    //   }
-
-    //   setState(() {
-    //     allPatients = parsedPatients;
-    //     patients = allPatients;
-    //     isLoading = false;
-    //   });
-    // }
+    }
     setState(() {
+      allPatients = parsedLocalPatient;
+      patients = allPatients;
       isLoading = false;
+      print('getPatients after query : ${DateTime.now()}');
     });
   }
 
@@ -312,10 +216,7 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
             ) : Container()
           ],
         ),
-        body: Stack(
-          children: <Widget>[
-            !isLoading ? SingleChildScrollView(
-              child: Column(
+        body: Column(
                 children: <Widget>[
                   Container(
                     // padding: EdgeInsets.symmetric(vertical: 20),
@@ -468,92 +369,108 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                       ],
                     ),
                   ) ,
-                  ...patients.map((item) => GestureDetector(
-                    onTap: () {
-                      Patient().setPatient(item);
-                      ((item['data']['chcp_encounter_status'] != null && item['data']['chcp_encounter_status'] == 'complete') 
-                      || (item['data']['chcp_encounter_type'] != null && item['data']['chcp_encounter_type'] == 'community clinic followup')) 
-                      ? Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : 'home', 'encounterData': {},})
-                      : Navigator.of(context).pushNamed('/chcpPatientSummary');
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      height: 50,
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            flex: 2,
-                            child: Text(item['data']['first_name'] + ' ' + item['data']['last_name'],
-                              style: TextStyle(color: Colors.black87, fontSize: 18),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Text(item['data']['gender'] == 'male' 
-                                ? item['data']['father_name']
-                                : item['data']['husband_name'] != null && item['data']['husband_name'].isNotEmpty ? item['data']['husband_name'] : 'n/a',
-                              style: TextStyle(color: Colors.black87, fontSize: 18),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Text(item['data']['age'].toString(), 
-                            style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w400
-                              ), 
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Text(item['data']['address']['street_name'],
-                              style: TextStyle(color: Colors.black87, fontSize: 18),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),                      
-                          Expanded(
-                            flex: 2,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                // item['data']['incomplete_encounter'] != null && item['data']['incomplete_encounter'] ?
-                                item['data']['chcp_encounter_status'] != null && item['data']['chcp_encounter_status'] == 'complete'
-                                && (item['data']['chcp_encounter_type'] != null && item['data']['chcp_encounter_type'] == 'community clinic assessment') ?
-                                Container(
-                                    alignment: Alignment.center,
-                                    width: 160,
-                                    height: 24,
-
-                                    // padding: EdgeInsets.symmetric(vertical: 5),
-                                    color: Colors.green[400],
-                                    child: Text(AppLocalizations.of(context).translate('completed'),
-                                      style: TextStyle(color: Colors.white, fontSize: 15),
-                                    ),
-                                ) : Container(),
-                                item['data']['chcp_encounter_status'] != null && item['data']['chcp_encounter_status'] == 'incomplete' 
-                                && (item['data']['chcp_encounter_type'] != null && item['data']['chcp_encounter_type'] == 'community clinic assessment') ?
-                                Container(
-                                    alignment: Alignment.center,
-                                    width: 160,
-                                    height: 24,
-
-                                    // padding: EdgeInsets.symmetric(vertical: 5),
-                                    color: Colors.red[400],
-                                    child: Text(AppLocalizations.of(context).translate('incomplete'),
-                                      style: TextStyle(color: Colors.white, fontSize: 15),
-                                    ),
-                                ) : Container(),
+                  !isLoading ? Flexible(
+                    child: ListView.builder(
+                      itemCount: patients.length,
+                      itemBuilder: (BuildContext context, int index){
+                      return GestureDetector(
+                          onTap: () {
+                            Patient().setPatient(patients[index]);
+                            ((patients[index]['data']['chcp_encounter_status'] != null && patients[index]['data']['chcp_encounter_status'] == 'complete') 
+                            || (patients[index]['data']['chcp_encounter_type'] != null && patients[index]['data']['chcp_encounter_type'] == 'community clinic followup')) 
+                            ? Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : 'home', 'encounterData': {},})
+                            : Navigator.of(context).pushNamed('/chcpPatientSummary');
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            height: 50,
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(patients[index]['data']['first_name'] + ' ' + patients[index]['data']['last_name'],
+                                    style: TextStyle(color: Colors.black87, fontSize: 18),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(patients[index]['data']['gender'] == 'male' 
+                                      ? patients[index]['data']['father_name']
+                                      : patients[index]['data']['husband_name'] != null && patients[index]['data']['husband_name'].isNotEmpty ? patients[index]['data']['husband_name'] : 'n/a',
+                                    style: TextStyle(color: Colors.black87, fontSize: 18),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(patients[index]['data']['age'].toString(), 
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400
+                                    ), 
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(patients[index]['data']['address']['street_name'],
+                                    style: TextStyle(color: Colors.black87, fontSize: 18),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),                      
+                                Expanded(
+                                  flex: 2,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      // item['data']['incomplete_encounter'] != null && item['data']['incomplete_encounter'] ?
+                                      patients[index]['data']['chcp_encounter_status'] != null && patients[index]['data']['chcp_encounter_status'] == 'complete'
+                                      && (patients[index]['data']['chcp_encounter_type'] != null && patients[index]['data']['chcp_encounter_type'] == 'community clinic assessment') ?
+                                      Container(
+                                          alignment: Alignment.center,
+                                          width: 160,
+                                          height: 24,
+                  
+                                          // padding: EdgeInsets.symmetric(vertical: 5),
+                                          color: Colors.green[400],
+                                          child: Text(AppLocalizations.of(context).translate('completed'),
+                                            style: TextStyle(color: Colors.white, fontSize: 15),
+                                          ),
+                                      ) : Container(),
+                                      patients[index]['data']['chcp_encounter_status'] != null && patients[index]['data']['chcp_encounter_status'] == 'incomplete' 
+                                      && (patients[index]['data']['chcp_encounter_type'] != null && patients[index]['data']['chcp_encounter_type'] == 'community clinic assessment') ?
+                                      Container(
+                                          alignment: Alignment.center,
+                                          width: 160,
+                                          height: 24,
+                  
+                                          // padding: EdgeInsets.symmetric(vertical: 5),
+                                          color: Colors.red[400],
+                                          child: Text(AppLocalizations.of(context).translate('incomplete'),
+                                            style: TextStyle(color: Colors.white, fontSize: 15),
+                                          ),
+                                      ) : Container(),
+                                    ],
+                                  ),
+                                ),
+                                
                               ],
                             ),
                           ),
-                          
-                        ],
+                        );
+                      },       
+                    ),
+                  )
+                  : Container(
+                      height: double.infinity,
+                      width: double.infinity,
+                      color: Color(0x20FFFFFF),
+                      child: Center(
+                        child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),backgroundColor: Color(0x30FFFFFF),)
                       ),
                     ),
-                  )).toList(),
+                  
                   patients.length == 0 ? Container(
                     alignment: Alignment.centerLeft,
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -561,16 +478,6 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                   ) : Container()
                 ],
               ),
-            ) : Container(
-              height: double.infinity,
-              width: double.infinity,
-              color: Color(0x20FFFFFF),
-              child: Center(
-                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),backgroundColor: Color(0x30FFFFFF),)
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -917,7 +824,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
   }
 
   applyFilter() async {
-    await this.widget.parent.getLivePatients();
+    await this.widget.parent.getPatients();
 
     allPatients.forEach((patient) {
     });
@@ -1020,7 +927,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
               GestureDetector(
                 onTap: () async {
                   this.widget.parent.clearFilters();
-                  await this.widget.parent.getLivePatients();
+                  await this.widget.parent.getPatients();
                   Navigator.of(context).pop();
                 },
                 child: Container(
