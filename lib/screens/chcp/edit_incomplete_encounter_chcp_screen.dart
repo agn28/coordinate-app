@@ -67,6 +67,8 @@ var relativeAnswers = [];
 var counsellingAnswers = [];
 var answers = [];
 
+var dynamicMedications = [];
+
 int _firstQuestionOption = 1;
 int _secondQuestionOption = 1;
 int _thirdQuestionOption = 1;
@@ -155,8 +157,8 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
     //   hasIncompleteChcpEncounter = false;
     // }
     getIncompleteAssessmentLocal();
-
     _getAuthData();
+    getMedicationsDispense();
   }
 
   getCenters() async {
@@ -180,58 +182,75 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
     }
   }
 
-  // getIncompleteAssessment() async {
-  //   print("getIncompleteAssessment");
+  getMedicationsDispense() async {
+    dynamicMedications = [];
 
-  //   if (Auth().isExpired()) {
-  //     Auth().logout();
-  //     Navigator.pushReplacement(
-  //         context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-  //   }
+    if (Auth().isExpired()) {
+      Auth().logout();
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+    }
 
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-  //   var patientId = Patient().getPatient()['id'];
-  //   print('patientId $patientId');
-  //   var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
-  //   if(data != null && data.isNotEmpty && !data['error']) {
-  //     if(data['data']['assessment']['body']['type'] == 'community clinic assessment') {
-  //       hasChwEncounter = true;
-  //     }
-  //   }
-  //   print('hasChwEncounter $hasChwEncounter');
-  //   setState(() {
-  //     isLoading = false;
-  //   });
+    var patientId = Patient().getPatient()['id'];
+    var data = await PatientController().getMedicationsByPatient(patientId);
 
-  //   if (data == null) {
-  //     return;
-  //   } else if (data['message'] == 'Unauthorized') {
-  //     Auth().logout();
-  //     Navigator.pushReplacement(
-  //         context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-  //     return;
-  //   } else if (data['error'] != null && data['error']) {
-  //     return;
-  //   }
+    if (data == null) {
+      return;
+    } else if (data['message'] == 'Unauthorized') {
+      Auth().logout();
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+      return;
+    } else if (data['error'] != null && data['error']) {
+      return;
+    } else if (data['data'] != null) {
+      var meds = await prepareDynamicMedications(data['data']);
+      setState(() {
+        dynamicMedications = meds;
+      });
 
-  //   setState(() {
-  //     encounter = data['data']['assessment'];
-  //     print("encounter: $encounter");
-  //     observations = data['data']['observations'];
-  //     print("observations: $observations");
-  //   });
+    }
+  }
 
-  //   // for (var key in obs) {
-  //   //   print(key);
-  //   // }
+  prepareDynamicMedications(medications) {
+    var prepareMedication = [];
+    var serial = 1;
 
-  //   // var keys = obs.keys();
-  //   print("observations: $observations");
+    for(var item in medications) {
+      var textEditingController = new TextEditingController();
+      textEditingControllers.putIfAbsent(item['id'], ()=>textEditingController);
+      prepareMedication.add({
+        'medId': item['id'],
+        'medInfo': '${serial}. Tab ${item['body']['title']}: ${item['body']['dosage']}${item['body']['unit']} ${item['body']['activityDuration']['repeat']['frequency']} time(s) ${preparePeriodUnits(item['body']['activityDuration']['repeat']['periodUnit'], 'repeat')} - continue ${item['body']['activityDuration']['review']['period']} ${preparePeriodUnits(item['body']['activityDuration']['review']['periodUnit'], 'review')}'
+      });
+      serial++;
+    }
+    dynamicMedications = prepareMedication;
+    return dynamicMedications;
+  }
 
-  //   populatePreviousAnswers();
-  // }
+  preparePeriodUnits(unit, type) {
+    if(unit == 'd')
+      if(type == 'repeat') return 'daily';
+      else if(type == 'review') return 'day(s)';
+      else return '';
+    else if(unit == 'w')
+      if(type == 'repeat') return 'weekly';
+      else if(type == 'review') return 'week(s)';
+      else return '';
+    else if(unit == 'm')
+      if(type == 'repeat') return 'monthly';
+      else if(type == 'review') return 'month(s)';
+      else return '';
+    else if(unit == 'y')
+      if(type == 'repeat') return 'yearly';
+      else if(type == 'review') return 'year(s)';
+      else return '';
+    else
+      return '';
+
+  }
+
 
   getIncompleteAssessmentLocal() async {
     // encounter = await AssessmentController().getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: 'community clinic assessment');
