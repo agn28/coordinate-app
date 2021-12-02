@@ -326,50 +326,56 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                     )
                   ),
                   // SizedBox(height: 20,),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                    color: Colors.grey.withOpacity(0.15),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 2,
-                            child: Container(
-                            child: Text(AppLocalizations.of(context).translate('name'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                  Expanded(
+                    flex: 0,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                      color: Colors.grey.withOpacity(0.15),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 2,
+                              child: Container(
+                              child: Text(AppLocalizations.of(context).translate('name'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 5,),
-                        Expanded(
-                          flex: 2,
-                            child: Container(
-                            child: Text(AppLocalizations.of(context).translate('fathersOrHusbandsName'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                          SizedBox(width: 5,),
+                          Expanded(
+                            flex: 2,
+                              child: Container(
+                              child: Text(AppLocalizations.of(context).translate('fathersOrHusbandsName'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 5,),
-                        Expanded(
-                          flex: 1,
-                            child: Container(
-                            child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
+                          SizedBox(width: 5,),
+                          Expanded(
+                            flex: 1,
+                              child: Container(
+                              child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 5,),
-                        Expanded(
-                          flex: 2,
-                            child: Container(
-                            child: Text(AppLocalizations.of(context).translate('streetPara'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
+                          SizedBox(width: 5,),
+                          Expanded(
+                            flex: 2,
+                              child: Container(
+                              child: Text(AppLocalizations.of(context).translate('streetPara'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 5,),
-                        Expanded(
-                          flex: 2,
-                            child: Container(
-                            child: Text(AppLocalizations.of(context).translate('status'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),textAlign: TextAlign.center),
+                          SizedBox(width: 5,),
+                          Expanded(
+                            flex: 2,
+                              child: Container(
+                              child: Text(AppLocalizations.of(context).translate('status'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),textAlign: TextAlign.center),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ) ,
-                  !isLoading ? Expanded(
+                  isLoading ? Center(
+                      child: CircularProgressIndicator(),
+                    ) 
+                    : Expanded(
                     child: ListView.builder(
                       itemCount: patients.length,
                       shrinkWrap: true,
@@ -462,15 +468,7 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                         );
                       },       
                     ),
-                  )
-                  : Container(
-                      height: double.infinity,
-                      width: double.infinity,
-                      color: Color(0x20FFFFFF),
-                      child: Center(
-                        child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),backgroundColor: Color(0x30FFFFFF),)
-                      ),
-                    ),
+                  ),
                   
                   patients.length == 0 ? Container(
                     alignment: Alignment.centerLeft,
