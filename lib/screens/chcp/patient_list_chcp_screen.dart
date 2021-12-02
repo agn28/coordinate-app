@@ -104,8 +104,7 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
     var authData = await Auth().getStorageAuth();
     for(var localPatient in allLocalPatients) {
       if(localPatient['data']['address']['district'] == authData['address']['district']) {
-        var assessments = await AssessmentController().getAssessmentsByPatient(localPatient['id']);
-        var lastAssessment = assessments.first;
+        var lastAssessment = await AssessmentController().getLastEncounterByPatient(localPatient['id']);
         var hasEncounter = false;
          
         if (lastAssessment['data']['type'] != 'registration') {

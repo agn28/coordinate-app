@@ -89,19 +89,17 @@ class AssessmentController {
 
     return data;
   }
-  getAssessmentsByPatient(patientId) async {
-    var data = [];
-    var assessments = await AssessmentRepositoryLocal().getAssessmentsByPatient(patientId);
-    if (isNotNull(assessments)) {
-      assessments.forEach((assessment) {
-        var parseData = json.decode(assessment['data']);
-        data.add({
-          'id': assessment['id'],
-          'data': parseData['body'],
-          'meta': parseData['meta'],
-          'local_status': assessment['local_status']
-        });
-      });
+  getLastEncounterByPatient(patientId) async {
+    var data = {};
+    var assessment = await AssessmentRepositoryLocal().getLastEncounterByPatient(patientId);
+    if (isNotNull(assessment)) {
+      var parseData = json.decode(assessment['data']);
+      data = {
+        'id': assessment['id'],
+        'data': parseData['body'],
+        'meta': parseData['meta'],
+        'local_status': assessment['local_status']
+      };
     }
     return data;
   }

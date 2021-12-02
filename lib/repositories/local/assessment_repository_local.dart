@@ -49,6 +49,14 @@ class AssessmentRepositoryLocal {
     }
     return assessments;
   }
+  getLastEncounterByPatient(id) async {
+    final sql = '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE patient_id="$id" ORDER BY created_at DESC LIMIT 1''';
+    try {
+      return await db.rawQuery(sql);
+    } catch (error) {
+      return;
+    }
+  }
 
   getAssessmentsByPatient(id) async {
     final sql =
