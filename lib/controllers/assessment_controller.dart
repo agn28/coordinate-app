@@ -89,7 +89,22 @@ class AssessmentController {
 
     return data;
   }
-
+  getAssessmentsByPatient(patientId) async {
+    var data = [];
+    var assessments = await AssessmentRepositoryLocal().getAssessmentsByPatient(patientId);
+    if (isNotNull(assessments)) {
+      assessments.forEach((assessment) {
+        var parseData = json.decode(assessment['data']);
+        data.add({
+          'id': assessment['id'],
+          'data': parseData['body'],
+          'meta': parseData['meta']
+        });
+      });
+    }
+    return data;
+  }
+  
   getLiveAllAssessmentsByPatient() async {
     var data = [];
     var patientId = Patient().getPatient()['id'];

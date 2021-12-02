@@ -115,7 +115,8 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
 
       for(var localPatient in allLocalPatients) {
         if(localPatient['data']['address']['district'] == authData['address']['district']) {
-          
+          var assess = await AssessmentController().getAssessmentsByPatient(localPatient['id']);
+      
           var hasEncounter = assessments.firstWhere((assessment) {
             if (assessment['data']['patient_id'] == localPatient['id']) {
               if (assessment['data']['type'] != 'registration') {
