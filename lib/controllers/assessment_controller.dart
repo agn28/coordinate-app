@@ -98,7 +98,8 @@ class AssessmentController {
         data.add({
           'id': assessment['id'],
           'data': parseData['body'],
-          'meta': parseData['meta']
+          'meta': parseData['meta'],
+          'local_status': assessment['local_status']
         });
       });
     }

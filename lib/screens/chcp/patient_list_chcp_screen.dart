@@ -105,33 +105,56 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
     for(var localPatient in allLocalPatients) {
       if(localPatient['data']['address']['district'] == authData['address']['district']) {
         var assessments = await AssessmentController().getAssessmentsByPatient(localPatient['id']);
-      
-        localPatient['data']['incomplete_encounter'] = false;
-        localPatient['data']['chcp_encounter_status'] = '';
-        var hasEncounter = assessments.firstWhere((assessment) {
-          if (assessment['data']['patient_id'] == localPatient['id']) {
-            if (assessment['data']['type'] != 'registration') {
-              if (assessment['data']['type'] == 'follow up visit (center)' || assessment['data']['type'] == 'follow up visit (community)') {
-                return true;
+        var lastAssessment = assessments.first;
+        var hasEncounter = false;
+         
+        if (lastAssessment['data']['type'] != 'registration') {
+          if (lastAssessment['data']['type'] == 'follow up visit (center)' || lastAssessment['data']['type'] == 'follow up visit (community)') {
+            hasEncounter = true;
+          } else if (lastAssessment['data']['status'] == null || lastAssessment['data']['status'] == "") {
+            hasEncounter = true;
+          } else {
+            //check patient has incomplete encounter
+            if(lastAssessment['data']['status'] == 'incomplete' && lastAssessment['local_status'] == 'incomplete') {
+              localPatient['data']['incomplete_encounter'] = true;
+              if(lastAssessment['data']['type'] == 'community clinic assessment' || lastAssessment['data']['type'] == 'community clinic followup') {
+                localPatient['data']['chcp_encounter_type'] =  lastAssessment['data']['type'];
+                localPatient['data']['chcp_encounter_status'] =  lastAssessment['data']['status'];
               }
-              if (assessment['data']['status'] == null || assessment['data']['status'] == "") {
-                return true;
-              }
-              //check patient has incomplete encounter
-              if(assessment['data']['status'] == 'incomplete' && assessment['local_status'] == 'incomplete') {
-                localPatient['data']['incomplete_encounter'] = true;
-                if(assessment['data']['type'] == 'community clinic assessment' || assessment['data']['type'] == 'community clinic followup') {
-                  localPatient['data']['chcp_encounter_type'] =  assessment['data']['type'];
-                  localPatient['data']['chcp_encounter_status'] =  assessment['data']['status'];
-                }
-              } else if (assessment['data']['status'] == 'complete') {
-                localPatient['data']['chcp_encounter_type'] =  assessment['data']['type'];
-                localPatient['data']['chcp_encounter_status'] =  assessment['data']['status'];
-              }
-              return false;
-            } return false;
-          } return false;
-        }, orElse: () => false);
+            } else if (lastAssessment['data']['status'] == 'complete') {
+              localPatient['data']['chcp_encounter_type'] =  lastAssessment['data']['type'];
+              localPatient['data']['chcp_encounter_status'] =  lastAssessment['data']['status'];
+            }
+            hasEncounter = false; 
+          }
+        }
+
+        // localPatient['data']['incomplete_encounter'] = false;
+        // localPatient['data']['chcp_encounter_status'] = '';
+        // var hasEncounter = assessments.firstWhere((assessment) {
+        //   if (assessment['data']['patient_id'] == localPatient['id']) {
+        //     if (assessment['data']['type'] != 'registration') {
+        //       if (assessment['data']['type'] == 'follow up visit (center)' || assessment['data']['type'] == 'follow up visit (community)') {
+        //         return true;
+        //       }
+        //       if (assessment['data']['status'] == null || assessment['data']['status'] == "") {
+        //         return true;
+        //       }
+        //       //check patient has incomplete encounter
+        //       if(assessment['data']['status'] == 'incomplete' && assessment['local_status'] == 'incomplete') {
+        //         localPatient['data']['incomplete_encounter'] = true;
+        //         if(assessment['data']['type'] == 'community clinic assessment' || assessment['data']['type'] == 'community clinic followup') {
+        //           localPatient['data']['chcp_encounter_type'] =  assessment['data']['type'];
+        //           localPatient['data']['chcp_encounter_status'] =  assessment['data']['status'];
+        //         }
+        //       } else if (assessment['data']['status'] == 'complete') {
+        //         localPatient['data']['chcp_encounter_type'] =  assessment['data']['type'];
+        //         localPatient['data']['chcp_encounter_status'] =  assessment['data']['status'];
+        //       }
+        //       return false;
+        //     } return false;
+        //   } return false;
+        // }, orElse: () => false);
         if (hasEncounter.runtimeType == bool && !hasEncounter) {
           var localpatientdata = {
             'id': localPatient['id'],
