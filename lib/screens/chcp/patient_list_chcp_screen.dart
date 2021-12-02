@@ -369,9 +369,10 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                       ],
                     ),
                   ) ,
-                  !isLoading ? Flexible(
+                  !isLoading ? Expanded(
                     child: ListView.builder(
                       itemCount: patients.length,
+                      shrinkWrap: true,
                       itemBuilder: (BuildContext context, int index){
                       return GestureDetector(
                           onTap: () {
