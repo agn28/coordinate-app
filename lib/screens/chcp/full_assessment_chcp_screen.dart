@@ -180,14 +180,8 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
           context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
     }
 
-    // setState(() {
-    //   isLoading = true;
-    // });
     var patientId = Patient().getPatient()['id'];
     var data = await PatientController().getMedicationsByPatient(patientId);
-    // setState(() {
-    //   isLoading = false;
-    // });
 
     if (data == null) {
       return;
@@ -210,21 +204,15 @@ class _FullAssessmentChcpScreenState extends State<FullAssessmentChcpScreen> {
   prepareDynamicMedications(medications) {
     var prepareMedication = [];
     var serial = 1;
-    // dynamicMedicationTitles = [];
-    // dynamicMedicationAnswers = [];
+
     for(var item in medications) {
-      // dynamicMedications.forEach((item) {
       var textEditingController = new TextEditingController();
       textEditingControllers.putIfAbsent(item['id'], ()=>textEditingController);
-      //   // return textFields.add( TextField(controller: textEditingController));
-      // });
-      // dynamicMedicationTitles.add(item['body']['title']);
       prepareMedication.add({
         'medId': item['id'],
         'medInfo': '${serial}. Tab ${item['body']['title']}: ${item['body']['dosage']}${item['body']['unit']} ${item['body']['activityDuration']['repeat']['frequency']} time(s) ${preparePeriodUnits(item['body']['activityDuration']['repeat']['periodUnit'], 'repeat')} - continue ${item['body']['activityDuration']['review']['period']} ${preparePeriodUnits(item['body']['activityDuration']['review']['periodUnit'], 'review')}'
       });
       serial++;
-      // dynamicMedicationAnswers.add('');
     }
     dynamicMedications = prepareMedication;
     return dynamicMedications;

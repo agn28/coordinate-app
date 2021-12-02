@@ -191,14 +191,8 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
           context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
     }
 
-    // setState(() {
-    //   isLoading = true;
-    // });
     var patientId = Patient().getPatient()['id'];
     var data = await PatientController().getMedicationsByPatient(patientId);
-    // setState(() {
-    //   isLoading = false;
-    // });
 
     if (data == null) {
       return;
@@ -221,21 +215,15 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
   prepareDynamicMedications(medications) {
     var prepareMedication = [];
     var serial = 1;
-    // dynamicMedicationTitles = [];
-    // dynamicMedicationAnswers = [];
+
     for(var item in medications) {
-      // dynamicMedications.forEach((item) {
       var textEditingController = new TextEditingController();
       textEditingControllers.putIfAbsent(item['id'], ()=>textEditingController);
-      //   // return textFields.add( TextField(controller: textEditingController));
-      // });
-      // dynamicMedicationTitles.add(item['body']['title']);
       prepareMedication.add({
         'medId': item['id'],
         'medInfo': '${serial}. Tab ${item['body']['title']}: ${item['body']['dosage']}${item['body']['unit']} ${item['body']['activityDuration']['repeat']['frequency']} time(s) ${preparePeriodUnits(item['body']['activityDuration']['repeat']['periodUnit'], 'repeat')} - continue ${item['body']['activityDuration']['review']['period']} ${preparePeriodUnits(item['body']['activityDuration']['review']['periodUnit'], 'review')}'
       });
       serial++;
-      // dynamicMedicationAnswers.add('');
     }
     dynamicMedications = prepareMedication;
     return dynamicMedications;
@@ -263,58 +251,6 @@ class _EditIncompleteEncounterChcpScreenState extends State<EditIncompleteEncoun
 
   }
 
-  // getIncompleteAssessment() async {
-  //   print("getIncompleteAssessment");
-
-  //   if (Auth().isExpired()) {
-  //     Auth().logout();
-  //     Navigator.pushReplacement(
-  //         context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-  //   }
-
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-  //   var patientId = Patient().getPatient()['id'];
-  //   print('patientId $patientId');
-  //   var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
-  //   if(data != null && data.isNotEmpty && !data['error']) {
-  //     if(data['data']['assessment']['body']['type'] == 'community clinic assessment') {
-  //       hasChwEncounter = true;
-  //     }
-  //   }
-  //   print('hasChwEncounter $hasChwEncounter');
-  //   setState(() {
-  //     isLoading = false;
-  //   });
-
-  //   if (data == null) {
-  //     return;
-  //   } else if (data['message'] == 'Unauthorized') {
-  //     Auth().logout();
-  //     Navigator.pushReplacement(
-  //         context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-  //     return;
-  //   } else if (data['error'] != null && data['error']) {
-  //     return;
-  //   }
-
-  //   setState(() {
-  //     encounter = data['data']['assessment'];
-  //     print("encounter: $encounter");
-  //     observations = data['data']['observations'];
-  //     print("observations: $observations");
-  //   });
-
-  //   // for (var key in obs) {
-  //   //   print(key);
-  //   // }
-
-  //   // var keys = obs.keys();
-  //   print("observations: $observations");
-
-  //   populatePreviousAnswers();
-  // }
 
   getIncompleteAssessmentLocal() async {
     // encounter = await AssessmentController().getAssessmentsByPatientWithLocalStatus('incomplete', assessmentType: 'community clinic assessment');
