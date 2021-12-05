@@ -373,10 +373,12 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                       ),
                     ),
                   ) ,
-                  isLoading ? Center(
-                      child: CircularProgressIndicator(),
-                    )
-                    : Expanded(
+                  isLoading ? Container(
+                    margin: const EdgeInsets.only(top: 100),
+                    child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                  ) : patients.length > 0 ? Expanded(
                     child: ListView.builder(
                       itemCount: patients.length,
                       shrinkWrap: true,
@@ -469,9 +471,9 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                         );
                       },
                     ),
-                  ),
+                  ) : Container(),
 
-                  patients.length == 0 ? Container(
+                  (patients.length == 0 && !isLoading) ? Container(
                     alignment: Alignment.centerLeft,
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                     child: Text(AppLocalizations.of(context).translate('noPatientFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
