@@ -403,208 +403,223 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
                                         
                         children: [
                           Container(
-                            child: ListView(
+                            child: Column(
                               children: <Widget>[
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                                  color: Colors.grey.withOpacity(0.15),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        flex: 2,
-                                          child: Container(
-                                          child: Text(AppLocalizations.of(context).translate('name'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
-                                        ),
-                                      ),
-                                      SizedBox(width: 5,),
-                                      Expanded(
-                                        flex: 2,
-                                          child: Container(
-                                          child: Text(AppLocalizations.of(context).translate('fathersOrHusbandsName'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
-                                        ),
-                                      ),
-                                      SizedBox(width: 5,),
-                                      Expanded(
-                                        flex: 1,
-                                          child: Container(
-                                          child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
-                                        ),
-                                      ),
-                                      SizedBox(width: 5,),
-                                      Expanded(
-                                        flex: 2,
-                                          child: Container(
-                                          child: Text(AppLocalizations.of(context).translate('streetPara'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ) ,
-                                // SizedBox(height: 20,),
-                                ...newPatients.map((item) => GestureDetector(
-                                  onTap: () {
-                                      Patient().setPatient(item);
-                                      Navigator.of(context).pushNamed('/patientOverview', arguments: {'prevScreen' : 'home'});
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                                    height: 50,
+                                Expanded(
+                                  flex: 0,
+                                  child:Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                                    color: Colors.grey.withOpacity(0.15),
                                     child: Row(
-                                      children: <Widget>[
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
                                         Expanded(
                                           flex: 2,
-                                          child: Text(item['data']['first_name'] + ' ' + item['data']['last_name'],
-                                            style: TextStyle(color: Colors.black87, fontSize: 18),
+                                            child: Container(
+                                            child: Text(AppLocalizations.of(context).translate('name'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
                                           ),
                                         ),
+                                        SizedBox(width: 5,),
                                         Expanded(
                                           flex: 2,
-                                          child: Text(item['data']['gender'] == 'male' 
-                                              ? item['data']['father_name']
-                                              : item['data']['husband_name'] != null && item['data']['husband_name'].isNotEmpty ? item['data']['husband_name'] : 'n/a',
-                                            style: TextStyle(color: Colors.black87, fontSize: 18),
-                                            textAlign: TextAlign.center,
+                                            child: Container(
+                                            child: Text(AppLocalizations.of(context).translate('fathersOrHusbandsName'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
                                           ),
                                         ),
+                                        SizedBox(width: 5,),
                                         Expanded(
                                           flex: 1,
-                                          child: Text(item['data']['age'].toString(), 
-                                          style: TextStyle(
-                                              color: Colors.black87,
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w400
-                                            ), 
-                                            textAlign: TextAlign.center,
+                                            child: Container(
+                                            child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
                                           ),
                                         ),
+                                        SizedBox(width: 5,),
                                         Expanded(
                                           flex: 2,
-                                          child: Text(item['data']['address']['street_name'],
-                                            style: TextStyle(color: Colors.black87, fontSize: 18),
-                                            textAlign: TextAlign.center,
+                                            child: Container(
+                                            child: Text(AppLocalizations.of(context).translate('streetPara'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
                                           ),
-                                        ),                      
+                                        ),
                                       ],
                                     ),
+                                  ) ,
+                                ),
+
+                                newPatients.length > 0 ? Expanded(
+                                  child: ListView.builder(
+                                    itemCount: newPatients.length,
+                                    shrinkWrap: true,
+                                    itemBuilder: (BuildContext context, int index){
+                                      return GestureDetector(
+                                        onTap: () {
+                                            Patient().setPatient(newPatients[index]);
+                                            Navigator.of(context).pushNamed('/patientOverview', arguments: {'prevScreen' : 'home'});
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                                          height: 50,
+                                          child: Row(
+                                            children: <Widget>[
+                                              Expanded(
+                                                flex: 2,
+                                                child: Text(newPatients[index]['data']['first_name'] + ' ' + newPatients[index]['data']['last_name'],
+                                                  style: TextStyle(color: Colors.black87, fontSize: 18),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                flex: 2,
+                                                child: Text(newPatients[index]['data']['gender'] == 'male' 
+                                                    ? newPatients[index]['data']['father_name']
+                                                    : newPatients[index]['data']['husband_name'] != null && newPatients[index]['data']['husband_name'].isNotEmpty ? newPatients[index]['data']['husband_name'] : 'n/a',
+                                                  style: TextStyle(color: Colors.black87, fontSize: 18),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                              Expanded(
+                                                flex: 1,
+                                                child: Text(newPatients[index]['data']['age'].toString(), 
+                                                style: TextStyle(
+                                                    color: Colors.black87,
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w400
+                                                  ), 
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                              Expanded(
+                                                flex: 2,
+                                                child: Text(newPatients[index]['data']['address']['street_name'],
+                                                  style: TextStyle(color: Colors.black87, fontSize: 18),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),                      
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }
                                   ),
-                                )).toList(),
+                                ) : Container(
+                                  alignment: Alignment.centerLeft,
+                                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                                  child: Text(AppLocalizations.of(context).translate('noPatientFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
+                                ),
                               ],
                             )
                           ),
                           
                           
                           Container(
-                            child: ListView(
+                            child: Column(
                               children: <Widget>[
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                                  color: Colors.grey.withOpacity(0.15),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        flex: 2,
-                                          child: Container(
-                                          child: Text(AppLocalizations.of(context).translate('name'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
-                                        ),
-                                      ),
-                                      SizedBox(width: 5,),
-                                      Expanded(
-                                        flex: 2,
-                                          child: Container(
-                                          child: Text(AppLocalizations.of(context).translate('fathersOrHusbandsName'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
-                                        ),
-                                      ),
-                                      SizedBox(width: 5,),
-                                      Expanded(
-                                        flex: 1,
-                                          child: Container(
-                                          child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
-                                        ),
-                                      ),
-                                      SizedBox(width: 5,),
-                                      Expanded(
-                                        flex: 2,
-                                          child: Container(
-                                          child: Text(AppLocalizations.of(context).translate('streetPara'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ) ,
-                                // SizedBox(height: 20,),
-                                ...existingPatients.map((item) => GestureDetector(
-                                  // onTap: () {
-                                  //     Patient().setPatient(item);
-                                  //     Navigator.of(context).pushNamed('/patientOverview');
-                                  // },
-                                  onTap: () {
-                                    // Patient().setPatientModify(item);
-                                    Patient().setPatient(item);
-                                    // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
-                                    Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : 'home', 'encounterData': {}});
-                                  },
+                                Expanded(
+                                  flex: 0,
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                                    height: 50,
+                                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                                    color: Colors.grey.withOpacity(0.15),
                                     child: Row(
-                                      children: <Widget>[
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
                                         Expanded(
                                           flex: 2,
-                                          child: Text(item['data']['first_name'] + ' ' + item['data']['last_name'],
-                                            style: TextStyle(color: Colors.black87, fontSize: 18),
+                                            child: Container(
+                                            child: Text(AppLocalizations.of(context).translate('name'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
                                           ),
                                         ),
+                                        SizedBox(width: 5,),
                                         Expanded(
                                           flex: 2,
-                                          child: Text(item['data']['gender'] == 'male' 
-                                              ? item['data']['father_name']
-                                              : item['data']['husband_name'] != null && item['data']['husband_name'].isNotEmpty ? item['data']['husband_name'] : 'n/a',
-                                            style: TextStyle(color: Colors.black87, fontSize: 18),
-                                            textAlign: TextAlign.center,
+                                            child: Container(
+                                            child: Text(AppLocalizations.of(context).translate('fathersOrHusbandsName'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
                                           ),
                                         ),
+                                        SizedBox(width: 5,),
                                         Expanded(
                                           flex: 1,
-                                          child: Text(item['data']['age'].toString(), 
-                                          style: TextStyle(
-                                              color: Colors.black87,
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w400
-                                            ), 
-                                            textAlign: TextAlign.center,
+                                            child: Container(
+                                            child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
                                           ),
                                         ),
+                                        SizedBox(width: 5,),
                                         Expanded(
                                           flex: 2,
-                                          child: Text(item['data']['address']['street_name'],
-                                            style: TextStyle(color: Colors.black87, fontSize: 18),
-                                            textAlign: TextAlign.center,
+                                            child: Container(
+                                            child: Text(AppLocalizations.of(context).translate('streetPara'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
                                           ),
-                                        ),                      
+                                        ),
                                       ],
                                     ),
                                   ),
-                                )).toList(),
+                                ) ,
+
+                                existingPatients.length > 0 ? Expanded(
+                                  child: ListView.builder(
+                                    itemCount: existingPatients.length,
+                                    shrinkWrap: true,
+                                    itemBuilder: (BuildContext context, int index){
+                                      return GestureDetector(
+                                        onTap: () {
+                                          Patient().setPatient(existingPatients[index]);
+                                          Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : 'home', 'encounterData': {}});
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                                          height: 50,
+                                          child: Row(
+                                            children: <Widget>[
+                                              Expanded(
+                                                flex: 2,
+                                                child: Text(existingPatients[index]['data']['first_name'] + ' ' + existingPatients[index]['data']['last_name'],
+                                                  style: TextStyle(color: Colors.black87, fontSize: 18),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                flex: 2,
+                                                child: Text(existingPatients[index]['data']['gender'] == 'male' 
+                                                    ? existingPatients[index]['data']['father_name']
+                                                    : existingPatients[index]['data']['husband_name'] != null && existingPatients[index]['data']['husband_name'].isNotEmpty ? existingPatients[index]['data']['husband_name'] : 'n/a',
+                                                  style: TextStyle(color: Colors.black87, fontSize: 18),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                              Expanded(
+                                                flex: 1,
+                                                child: Text(existingPatients[index]['data']['age'].toString(), 
+                                                style: TextStyle(
+                                                    color: Colors.black87,
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w400
+                                                  ), 
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                              Expanded(
+                                                flex: 2,
+                                                child: Text(existingPatients[index]['data']['address']['street_name'],
+                                                  style: TextStyle(color: Colors.black87, fontSize: 18),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),                      
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  ),
+                                ) : Container(
+                                  alignment: Alignment.centerLeft,
+                                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                                  child: Text(AppLocalizations.of(context).translate('noPatientFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
+                                ),
                               ],
                             )
                           ),
-
-                          
                         ],
                       ),
                     ),
                   ),
                 ),
-                
-                
-                
-                newPatients.length == 0 ? Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  child: Text(AppLocalizations.of(context).translate('noPatientFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
-                ) : Container()
+
               ],
             ),
           ) : Container(

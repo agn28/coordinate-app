@@ -87,8 +87,9 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
       });
 
       var parsedLocalPatient = [];
-      var allLocalPatients = await PatientController().getAllLocalPatients();
-      var assessments = await AssessmentController().getAllLocalAssessments(localStatus: true);
+      var allLocalPatients=[], assessments=[];
+      // var allLocalPatients = await PatientController().getAllLocalPatients();
+      // var assessments = await AssessmentController().getAllLocalAssessments(localStatus: true);
       var authData = await Auth().getStorageAuth();
 
       for(var localPatient in allLocalPatients) {
@@ -471,13 +472,11 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                         );
                       },
                     ),
-                  ) : Container(),
-
-                  (patients.length == 0 && !isLoading) ? Container(
+                  ) : Container(
                     alignment: Alignment.centerLeft,
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                     child: Text(AppLocalizations.of(context).translate('noPatientFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
-                  ) : Container()
+                  ),
                 ],
               ),
       ),
