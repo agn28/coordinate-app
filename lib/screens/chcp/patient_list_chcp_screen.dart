@@ -87,9 +87,8 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
       });
 
       var parsedLocalPatient = [];
-      var allLocalPatients=[], assessments=[];
-      // var allLocalPatients = await PatientController().getAllLocalPatients();
-      // var assessments = await AssessmentController().getAllLocalAssessments(localStatus: true);
+      var allLocalPatients = await PatientController().getAllLocalPatients();
+      var assessments = await AssessmentController().getAllLocalAssessments(localStatus: true);
       var authData = await Auth().getStorageAuth();
 
       for(var localPatient in allLocalPatients) {

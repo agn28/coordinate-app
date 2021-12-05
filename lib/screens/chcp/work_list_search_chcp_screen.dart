@@ -56,7 +56,6 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
   var bp;
   var cvd;
   var authUser;
-  TabController _tabController;
 
   @override
   initState() {
@@ -481,20 +480,15 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
         bottom: PreferredSize(child: Container(color: kPrimaryColor, height: 1.0,), preferredSize: Size.fromHeight(1.0)),
 
       ),
-      body: SingleChildScrollView(
-        child: Stack(
-          children: <Widget>[
-            !isLoading ? Column(
+      body: Column(
               children: <Widget>[
                 Container(
-                  // padding: EdgeInsets.symmetric(vertical: 20),
                   color: kPrimaryColor,
                   child: Column(
                     children: <Widget>[
                       Container(
                         margin: EdgeInsets.only(left: 15, right: 15, top: 10,),
                         decoration: BoxDecoration(
-                          // border: Border( bottom: BorderSide(color: kPrimaryColor))
                         ),
                         child: TextField(
                           controller: searchController,
@@ -543,168 +537,134 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
                     ],
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                  color: Colors.grey.withOpacity(0.15),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 2,
-                          child: Container(
-                          child: Text(AppLocalizations.of(context).translate('appointmentDate'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                Expanded(
+                  flex: 0,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                    color: Colors.grey.withOpacity(0.15),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 2,
+                            child: Container(
+                            child: Text(AppLocalizations.of(context).translate('appointmentDate'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                          ),
                         ),
-                      ),
-                      // SizedBox(width: 5,),
-                      // Expanded(
-                      //   flex: 2,
-                      //     child: Container(
-                      //     child: Text(AppLocalizations.of(context).translate('village'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
-                      //   ),
-                      // ),
-                      SizedBox(width: 5,),
-                      Expanded(
-                        flex: 2,
-                          child: Container(
-                          child: Text(AppLocalizations.of(context).translate('name'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center,),
+                        SizedBox(width: 5,),
+                        Expanded(
+                          flex: 2,
+                            child: Container(
+                            child: Text(AppLocalizations.of(context).translate('name'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center,),
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 5,),
-                      Expanded(
-                        flex: 2,
-                          child: Container(
-                          child: Text(AppLocalizations.of(context).translate('fathersOrHusbandsName'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center,),
+                        SizedBox(width: 5,),
+                        Expanded(
+                          flex: 2,
+                            child: Container(
+                            child: Text(AppLocalizations.of(context).translate('fathersOrHusbandsName'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center,),
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 5,),
-                      Expanded(
-                        flex: 1,
-                          child: Container(
-                          child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),textAlign: TextAlign.center,),
+                        SizedBox(width: 5,),
+                        Expanded(
+                          flex: 1,
+                            child: Container(
+                            child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),textAlign: TextAlign.center,),
+                          ),
                         ),
-                      ),
-                      // SizedBox(width: 5,),
-                      // Expanded(
-                      //   flex: 1,
-                      //     child: Container(
-                      //     child: Text(AppLocalizations.of(context).translate('gender'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),),
-                      //   ),
-                      // )
-                      SizedBox(width: 5,),
-                      Expanded(
-                        flex: 2,
-                          child: Container(
-                          child: Text(AppLocalizations.of(context).translate('streetPara'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
+                        SizedBox(width: 5,),
+                        Expanded(
+                          flex: 2,
+                            child: Container(
+                            child: Text(AppLocalizations.of(context).translate('streetPara'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ) ,
 
-
-                ...pendingPatients.map((item) =>  Column(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Patient().setPatientModify(item);
-                        // // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
-                        
-                        
-                        // Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : '/chcpHome', 'encounterData': {},});
-                        // // Navigator.of(context).pushNamed(NewFollowupChcpScreen.path);
-                        Navigator.of(context).pushNamed('/chcpWorkListSummary', arguments: {'prevScreen' : 'home', 'encounterData': {}});
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                        //color: Colors.teal.withOpacity(0.25),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                child: Text("${item['body']['appointment_date'] ?? 'N/A'}", style: TextStyle(fontSize: 14, color: Colors.black),),
-                                // child: Text("${item['body']['follow_up_info'][item['body']['follow_up_info'].indexWhere((t)=> t['type'] == 'chw')]['date'] ?? 'N/A'}", style: TextStyle(fontSize: 14, color: Colors.black),),
-                              ),
-                            ),
-                            // SizedBox(width: 5,),
-                            // Expanded(
-                            //   flex: 2,
-                            //     child: Container(
-                            //     child: Text(item['body']['address']['village'], style: TextStyle(fontSize: 14, color: Colors.black),),
-                            //   ),
-                            // ),
-                            SizedBox(width: 5,),
-                            Expanded(
-                              flex: 2,
-                                child: Container(
-                                child: Text(item['body']['first_name'] + ' ' + item['body']['last_name'], style: TextStyle(fontSize: 14, color: Colors.black,),textAlign: TextAlign.center,),
-                              ),
-                            ),
-                            SizedBox(width: 5,),
-                            Expanded(
-                              flex: 2,
-                                child: Container(
-                                  child: Text(item['body']['gender'] == 'male' 
-                                  ? item['body']['father_name']
-                                  : item['body']['husband_name'] != null && item['body']['husband_name'].isNotEmpty ? item['body']['husband_name'] : 'n/a',
-                                style: TextStyle(color: Colors.black87, fontSize: 18),
-                                textAlign: TextAlign.center,
+                isLoading ? Container(
+                    margin: const EdgeInsets.only(top: 100),
+                    child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                  ) : pendingPatients.length > 0 ? Expanded(
+                  child: ListView.builder(
+                      itemCount: pendingPatients.length,
+                      shrinkWrap: true,
+                      itemBuilder: (BuildContext context, int index){
+                        return GestureDetector(
+                        onTap: () {
+                            Patient().setPatientModify(pendingPatients[index]);
+                            Navigator.of(context).pushNamed('/chcpWorkListSummary', arguments: {'prevScreen' : 'home', 'encounterData': {}});
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                            child: Column(
+                              children : [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      flex: 2,
+                                      child: Container(
+                                        child: Text("${pendingPatients[index]['body']['appointment_date'] ?? 'N/A'}", style: TextStyle(fontSize: 14, color: Colors.black),),
+                                      ),
+                                    ),
+                                    SizedBox(width: 5,),
+                                    Expanded(
+                                      flex: 2,
+                                        child: Container(
+                                        child: Text(pendingPatients[index]['body']['first_name'] + ' ' + pendingPatients[index]['body']['last_name'], style: TextStyle(fontSize: 14, color: Colors.black,),textAlign: TextAlign.center,),
+                                      ),
+                                    ),
+                                    SizedBox(width: 5,),
+                                    Expanded(
+                                      flex: 2,
+                                        child: Container(
+                                          child: Text(pendingPatients[index]['body']['gender'] == 'male' 
+                                          ? pendingPatients[index]['body']['father_name']
+                                          : pendingPatients[index]['body']['husband_name'] != null && pendingPatients[index]['body']['husband_name'].isNotEmpty ? pendingPatients[index]['body']['husband_name'] : 'n/a',
+                                        style: TextStyle(color: Colors.black87, fontSize: 18),
+                                        textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 5,),
+                                    Expanded(
+                                      flex: 1,
+                                        child: Container(
+                                        child: Text(pendingPatients[index]['body']['age'].toString(), style: TextStyle(fontSize: 14, color: Colors.black),textAlign: TextAlign.center,),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(pendingPatients[index]['body']['address']['street_name'],
+                                        style: TextStyle(color: Colors.black87, fontSize: 18),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),  
+                                  ],
                                 ),
-                              ),
+                                Divider(
+                                  height: 0,
+                                  thickness: 0.5,
+                                  color: Colors.grey.withOpacity(0.50)
+                                ),
+                              ], 
                             ),
-                            SizedBox(width: 5,),
-                            Expanded(
-                              flex: 1,
-                                child: Container(
-                                child: Text(item['body']['age'].toString(), style: TextStyle(fontSize: 14, color: Colors.black),textAlign: TextAlign.center,),
-                              ),
-                            ),
-                            // SizedBox(width: 5,),
-                            // Expanded(
-                            //   flex: 1,
-                            //     child: Container(
-                            //     child: Text(item['body']['gender'], style: TextStyle(fontSize: 14, color: Colors.black),),
-                            //   ),
-                            // )
-                            Expanded(
-                              flex: 2,
-                              child: Text(item['body']['address']['street_name'],
-                                style: TextStyle(color: Colors.black87, fontSize: 18),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),  
-                          ],
-                        ),
-                       ),
-                    ),
-                     Divider(
-                       height: 0,
-                       thickness: 0.5,
-                       color: Colors.grey.withOpacity(0.50)
-                     )
-                  ],
-                ),
-               ).toList(),
-               pendingPatients.length == 0 ? Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  child: Text(AppLocalizations.of(context).translate('noPatientFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
-                ) : Container()
+                          ),
+                        );
+                      },
+                  ),
+                ) : Container(
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    child: Text(AppLocalizations.of(context).translate('noPatientFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
+                  ),
               ],
             )
-          
-            : Container(
-              height: MediaQuery.of(context).size.height,
-              width: double.infinity,
-              color: Color(0x90FFFFFF),
-              child: Center(
-                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),backgroundColor: Color(0x30FFFFFF),)
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
