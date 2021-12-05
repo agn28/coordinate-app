@@ -6,9 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
-// import 'package:barcode_scan/barcode_scan.dart';
 import 'package:barcode_scan_fix/barcode_scan.dart';
-// import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/configs/configs.dart';
@@ -18,14 +16,12 @@ import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/controllers/sync_controller.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
-import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:get/get.dart';
-import 'package:nhealth/screens/chw/patients/patient_summary_screen.dart';
 
 
 import '../../../app_localizations.dart';
@@ -72,7 +68,6 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
     setState(() {
       searchController.text = '';
     });
-    // getPatients();
     selectedTab = 0;
     _getAuthUser();
     clearFilters();
@@ -126,16 +121,6 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
     }
 
   }
-
-  // getPatients() async {
-    
-  //   var data = await PatientController().getAllPatients();
-
-  //   setState(() {
-  //     allNewPatients = data;
-  //     newPatients = allNewPatients;
-  //   });
-  // }
  
   getLivePatients() async {
     setState(() {
@@ -671,78 +656,6 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
     );
   }
 }
-
-// Column(
-//   children: <Widget>[
-//     CustomSearchWidget(
-//       listContainerHeight: 500,
-//       dataList: [...patients],
-//       hideSearchBoxWhenItemSelected: false,
-//       queryBuilder: (query, list) {
-//         return [...patients]
-//           .where((item) => item['data']['name']
-//           .toLowerCase()
-//           .contains(query.toLowerCase()))
-//           .toList();
-//       },
-//       popupListItemBuilder: (item) {
-//         print(item);
-//         return PopupListItemWidget(item);
-//       },
-//       selectedItemBuilder: (selectedItem, deleteSelectedItem) {
-//         return SelectedItemWidget(selectedItem, deleteSelectedItem);
-//       },
-//       // widget customization
-//       // noItemsFoundWidget: NoItemsFound(),
-//       textFieldBuilder: (controller, focusNode) {
-//         return MyTextField(controller, focusNode);
-//       },
-//       onItemSelected: (item) {
-//         setState(() {
-//           _selectedItem = item;
-//         });
-//       },
-//     ),
-//     Row(
-//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//       children: <Widget>[
-//         patients.length == 0 ? Container(
-//           alignment: Alignment.centerLeft,
-//           padding: EdgeInsets.only(top: 15),
-//           child: Text('No patient found', style: TextStyle(color: Colors.white, fontSize: 20),),
-//         ) :
-//         Container(
-//           alignment: Alignment.centerLeft,
-//           padding: EdgeInsets.only(top: 15),
-//           child: Text('Pending Recommendations Only', style: TextStyle(color: Colors.white),),
-//         ),
-        
-//         Container(
-//             alignment: Alignment.centerLeft,
-//             padding: EdgeInsets.only(top: 15),
-//             child: GestureDetector(
-//               onTap: () async {
-//               showDialog(
-//                 context: context,
-//                 builder: (BuildContext context) {
-//                   return FiltersDialog(parent: this,);
-//                 },
-//               );
-//               },
-//               child: Row(
-//                 children: <Widget>[
-//                   Icon(Icons.filter_list, color: Colors.white,),
-//                   SizedBox(width: 10),
-//                   Text('Filters', style: TextStyle(color: Colors.white),)
-//                 ],
-//               )
-//             ),
-//           ),
-//       ],
-//     )
-//   ],
-// )
-
 
 class DiseasesDialog extends StatefulWidget {
   _FiltersDialogState parent;

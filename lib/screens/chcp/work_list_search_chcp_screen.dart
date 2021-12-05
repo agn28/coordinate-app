@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -17,13 +15,9 @@ import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
-import 'package:nhealth/repositories/local/assessment_repository_local.dart';
 import 'package:nhealth/repositories/local/care_plan_repository_local.dart';
-import 'package:nhealth/screens/chw/patients/patient_summary_screen.dart';
 import 'package:get/get.dart';
 
-import 'followup_patient_chcp_summary_screen.dart';
-import 'new_followup_chcp_screen.dart';
 
 final searchController = TextEditingController();
 List allWorklist = [];
@@ -841,132 +835,6 @@ class _PatientItemState extends State<PatientItem> {
                                 Text(widget.item['body']['mobile'], style: TextStyle(fontSize: 16, color: Colors.black87),),
                               ],
                             ) 
-                            // Row(
-                            //   children: <Widget>[
-                            //     widget.item['body']['assessments'] != null && widget.item['body']['assessments']['body_composition']['components']['bmi'] != null ?
-                            //     Container(
-                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                            //       decoration: BoxDecoration(
-                            //         border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['body_composition']['components']['bmi']['tfl']]),
-                            //         borderRadius: BorderRadius.circular(2)
-                            //       ),
-                            //       child: Text('BMI',style: TextStyle(
-                            //           color: ColorUtils.statusColor[widget.item['body']['assessments']['body_composition']['components']['bmi']['tfl']],
-                            //           fontWeight: FontWeight.w500
-                            //         )  
-                            //       ),
-                            //     ) : Container(),
-                            //     SizedBox(width: 7,),
-
-                            //     widget.item['body']['assessments'] != null && widget.item['body']['assessments']['blood_pressure'] != null ?
-                            //     Container(
-                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                            //       decoration: BoxDecoration(
-                            //         border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['blood_pressure']['tfl']]),
-                            //         borderRadius: BorderRadius.circular(2)
-                            //       ),
-                            //       child: Text('BP',style: TextStyle(
-                            //           color: ColorUtils.statusColor[widget.item['body']['assessments']['blood_pressure']['tfl']],
-                            //           fontWeight: FontWeight.w500
-                            //         )  
-                            //       ),
-                            //     ) : Container(),
-                            //     SizedBox(width: 7,),
-
-
-                            //     // widget.item['body']['assessments'] != null && widget.item['body']['assessments']['cvd'] != null ?
-                            //     // Container(
-                            //     //   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                            //     //   decoration: BoxDecoration(
-                            //     //     border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['cvd']['tfl']]),
-                            //     //     borderRadius: BorderRadius.circular(2)
-                            //     //   ),
-                            //     //   child: Text('CVD Risk',style: TextStyle(
-                            //     //       color: ColorUtils.statusColor[widget.item['body']['assessments']['cvd']['tfl']],
-                            //     //       fontWeight: FontWeight.w500
-                            //     //     )  
-                            //     //   ),
-                            //     // ) : Container(),
-                            //     // SizedBox(width: 7,),
-
-
-                            //     widget.item['body']['assessments'] != null && widget.item['body']['assessments']['cholesterol']['components']['total_cholesterol'] != null ?
-                            //     Container(
-                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                            //       decoration: BoxDecoration(
-                            //         border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['cholesterol']['components']['total_cholesterol']['tfl']]),
-                            //         borderRadius: BorderRadius.circular(2)
-                            //       ),
-                            //       child: Text('Cholesterol',style: TextStyle(
-                            //           color: ColorUtils.statusColor[widget.item['body']['assessments']['cholesterol']['components']['total_cholesterol']['tfl']],
-                            //           fontWeight: FontWeight.w500
-                            //         )  
-                            //       ),
-                            //     ) : Container(),
-                            //   ],
-                            // ),
-                            // Row(
-                            //   children: <Widget>[
-                            //     report != null && bmi != null ?
-                            //     Container(
-                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                            //       decoration: BoxDecoration(
-                            //         border: Border.all(width: 1, color: ColorUtils.statusColor[bmi['tfl']]),
-                            //         borderRadius: BorderRadius.circular(2)
-                            //       ),
-                            //       child: Text('BMI',style: TextStyle(
-                            //           color: ColorUtils.statusColor[bmi['tfl']],
-                            //           fontWeight: FontWeight.w500
-                            //         )  
-                            //       ),
-                            //     ) 
-                            //     : Container(),
-                            //     SizedBox(width: 7,),
-                            //     report != null && bp != null ?
-                            //     Container(
-                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                            //       decoration: BoxDecoration(
-                            //         border: Border.all(width: 1, color: ColorUtils.statusColor[bp['tfl']]),
-                            //         borderRadius: BorderRadius.circular(2)
-                            //       ),
-                            //       child: Text('BP',style: TextStyle(
-                            //           color: ColorUtils.statusColor[bmi['tfl']],
-                            //           fontWeight: FontWeight.w500
-                            //         )  
-                            //       ),
-                            //     ) : Container(),
-                            //     SizedBox(width: 7,),
-                            //     report != null && cvd != null ?
-                            //     Container(
-                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                            //       decoration: BoxDecoration(
-                            //         border: Border.all(width: 1, color: ColorUtils.statusColor[cvd['tfl']]),
-                            //         borderRadius: BorderRadius.circular(2)
-                            //       ),
-                            //       child: Text('CVD Risk',style: TextStyle(
-                            //           color: ColorUtils.statusColor[cvd['tfl']],
-                            //           fontWeight: FontWeight.w500
-                            //         )  
-                            //       ),
-                            //     ) : Container(),
-                            //     SizedBox(width: 7,),
-                            //     report != null && cholesterol != null ?
-                            //     Container(
-                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                            //       decoration: BoxDecoration(
-                            //         border: Border.all(width: 1, color: ColorUtils.statusColor[cholesterol['tfl']]),
-                            //         borderRadius: BorderRadius.circular(2)
-                            //       ),
-                            //       child: Text('Cholesterol',style: TextStyle(
-                            //           color: ColorUtils.statusColor[cholesterol['tfl']],
-                            //           fontWeight: FontWeight.w500
-                            //         )  
-                            //       ),
-                            //     ) : Container(),
-                            //   ],
-                            // ),
-
-                            // Text('Registered on Jan 5, 2019', style: TextStyle(color: Colors.white70, fontSize: 17, fontWeight: FontWeight.w400),),
                           ],
                         ),
                       

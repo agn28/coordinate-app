@@ -12,7 +12,6 @@ import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
-import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
@@ -38,11 +37,6 @@ List allPatients = [];
 final searchController = TextEditingController();
 bool isPendingRecommendation = false;
 
-// class PatientSearchScreen extends CupertinoPageRoute {
-//   PatientSearchScreen()
-//       : super(builder: (BuildContext context) => new PatientSearch());
-
-// }
 
 class FollowupSearchScreen extends StatefulWidget {
   static const path = '/followupSearchScreen';
@@ -59,7 +53,6 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
     setState(() {
       searchController.text = '';
     });
-    // getPatients();
     isLoading = true;
     clearFilters();
     getLivePatients();
@@ -77,16 +70,6 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
       birthYearController.clear();
       lastVisitDateController.clear();
       selectedDiseases = [];
-    });
-  }
-
-  getPatients() async {
-    
-    var data = await PatientController().getAllPatients();
-
-    setState(() {
-      allPatients = data;
-      patients = allPatients;
     });
   }
 

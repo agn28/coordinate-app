@@ -21,7 +21,6 @@ import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:get/get.dart';
-import 'package:nhealth/helpers/functions.dart';
 
 import 'followup_patient_chcp_summary_screen.dart';
 
@@ -482,78 +481,6 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
     );
   }
 }
-
-// Column(
-//   children: <Widget>[
-//     CustomSearchWidget(
-//       listContainerHeight: 500,
-//       dataList: [...patients],
-//       hideSearchBoxWhenItemSelected: false,
-//       queryBuilder: (query, list) {
-//         return [...patients]
-//           .where((item) => item['data']['name']
-//           .toLowerCase()
-//           .contains(query.toLowerCase()))
-//           .toList();
-//       },
-//       popupListItemBuilder: (item) {
-//         print(item);
-//         return PopupListItemWidget(item);
-//       },
-//       selectedItemBuilder: (selectedItem, deleteSelectedItem) {
-//         return SelectedItemWidget(selectedItem, deleteSelectedItem);
-//       },
-//       // widget customization
-//       // noItemsFoundWidget: NoItemsFound(),
-//       textFieldBuilder: (controller, focusNode) {
-//         return MyTextField(controller, focusNode);
-//       },
-//       onItemSelected: (item) {
-//         setState(() {
-//           _selectedItem = item;
-//         });
-//       },
-//     ),
-//     Row(
-//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//       children: <Widget>[
-//         patients.length == 0 ? Container(
-//           alignment: Alignment.centerLeft,
-//           padding: EdgeInsets.only(top: 15),
-//           child: Text('No patient found', style: TextStyle(color: Colors.white, fontSize: 20),),
-//         ) :
-//         Container(
-//           alignment: Alignment.centerLeft,
-//           padding: EdgeInsets.only(top: 15),
-//           child: Text('Pending Recommendations Only', style: TextStyle(color: Colors.white),),
-//         ),
-        
-//         Container(
-//             alignment: Alignment.centerLeft,
-//             padding: EdgeInsets.only(top: 15),
-//             child: GestureDetector(
-//               onTap: () async {
-//               showDialog(
-//                 context: context,
-//                 builder: (BuildContext context) {
-//                   return FiltersDialog(parent: this,);
-//                 },
-//               );
-//               },
-//               child: Row(
-//                 children: <Widget>[
-//                   Icon(Icons.filter_list, color: Colors.white,),
-//                   SizedBox(width: 10),
-//                   Text('Filters', style: TextStyle(color: Colors.white),)
-//                 ],
-//               )
-//             ),
-//           ),
-//       ],
-//     )
-//   ],
-// )
-
 
 class DiseasesDialog extends StatefulWidget {
   _FiltersDialogState parent;
