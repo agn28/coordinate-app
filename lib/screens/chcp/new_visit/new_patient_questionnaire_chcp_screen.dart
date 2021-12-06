@@ -3478,9 +3478,6 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                 ),
                                 SizedBox(width: 10),
                                 Expanded(
-                                  // padding: EdgeInsets.symmetric(vertical: 9),
-                                  // child: Text('dummy age', style: TextStyle(fontSize: 17,)),
-                                  // Text(Helpers().getPatientAgeAndGender(Patient().getPatient()),)
                                   child: 
                                     Text(
                                       Helpers().getPatientAge(Patient().getPatient()) != '' &&
@@ -3506,7 +3503,6 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Row(
-                                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       Text(AppLocalizations.of(context).translate('gender')+":", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                       SizedBox(width: 10),
@@ -4251,7 +4247,6 @@ class _CreateReferState extends State<CreateRefer> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    // PatientTopbar(),
                     SizedBox(height: 30,),
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 20),
@@ -4259,7 +4254,6 @@ class _CreateReferState extends State<CreateRefer> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Container(
-                            // padding: EdgeInsets.symmetric(horizontal: 20),
                             child: Text(AppLocalizations.of(context).translate("referralRequired"), style: TextStyle(fontSize: 20),)
                           ),
                           SizedBox(width: 30,),
