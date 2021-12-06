@@ -1,6 +1,5 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
@@ -38,12 +37,6 @@ List patients = [];
 List allPatients = [];
 final searchController = TextEditingController();
 bool isPendingRecommendation = false;
-
-// class PatientSearchScreen extends CupertinoPageRoute {
-//   PatientSearchScreen()
-//       : super(builder: (BuildContext context) => new PatientSearch());
-
-// }
 
 class PatientListChcpScreen extends StatefulWidget {
   static const path = '/patientListChcp';
@@ -136,7 +129,7 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
         allPatients = parsedLocalPatient;
         patients = allPatients;
         isLoading = false;
-        print('getPatients after query : ${DateTime.now()}');
+        print('getPatients ${parsedLocalPatient.length} after query : ${DateTime.now()}');
       });
     }
 
@@ -157,8 +150,6 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
         .toList();
     });
   }
-
-  LeaderBoard _selectedItem;
 
   @override
   Widget build(BuildContext context) {
@@ -1189,8 +1180,6 @@ class _FiltersDialogState extends State<FiltersDialog> {
       
     );
   }
-
-
 }
 
 Widget _customPopupItemBuilderExample2(
@@ -1211,113 +1200,4 @@ Widget _customPopupItemBuilderExample2(
       ),
     ),
   );
-}
-
-class LeaderBoard {
-  LeaderBoard(this.username, this.score);
-
-  final String username;
-  final double score;
-}
-
-class SelectedItemWidget extends StatelessWidget {
-  const SelectedItemWidget(this.selectedItem, this.deleteSelectedItem);
-
-  final selectedItem;
-  final VoidCallback deleteSelectedItem;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-
-    );
-  }
-}
-
-class MyTextField extends StatelessWidget {
-  const MyTextField(this.controller, this.focusNode);
-
-  final TextEditingController controller;
-  final FocusNode focusNode;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-      child: TextField(
-        controller: controller,
-        focusNode: focusNode,
-        autofocus: true,
-        style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-        decoration: InputDecoration(
-          fillColor: Colors.white,
-          filled: true,
-          enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Color(0x4437474F),
-            ),
-            borderRadius: BorderRadius.all(
-              Radius.circular(5)
-            )
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).primaryColor),
-          ),
-          prefixIcon: Icon(Icons.search),
-          suffixIcon: IconButton(
-            onPressed: () { 
-              controller.text = '';
-             },
-            icon: Icon(Icons.cancel, color: kTextGrey, size: 25,)
-          ),
-          border: InputBorder.none,
-          hintText: "AppLocalizations.of(context).translate('searchHere')",
-          contentPadding: const EdgeInsets.only(
-            left: 16,
-            right: 20,
-            top: 14,
-            bottom: 14,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-
-class PopupListItemWidget extends StatelessWidget {
-  const PopupListItemWidget(this.item);
-
-  final item;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Patient().setPatient(item);
-        Navigator.of(context).pushNamed('/patientOverview');
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: Text(item['data']['name'],
-                style: TextStyle(color: Colors.black87, fontSize: 18),
-              ),
-            ),
-            Expanded(
-              child: Text(item['data']['age'].toString() + 'Y ' + '${item['data']['gender'][0].toUpperCase()}' + ' - ' + item['data']['nid'].toString(), 
-              style: TextStyle(
-                  color: Colors.black38,
-                  fontWeight: FontWeight.w400
-                ), 
-                textAlign: TextAlign.right,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

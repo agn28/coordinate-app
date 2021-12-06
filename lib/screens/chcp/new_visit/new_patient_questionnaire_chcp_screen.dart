@@ -1,54 +1,40 @@
-import 'dart:io';
-
 import 'package:basic_utils/basic_utils.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
-import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/configs/configs.dart';
-
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
-import 'package:nhealth/controllers/care_plan_controller.dart';
-import 'package:nhealth/controllers/followup_controller.dart';
-import 'package:nhealth/controllers/health_report_controller.dart';
-import 'package:nhealth/controllers/observation_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
-import 'package:nhealth/controllers/user_controller.dart';
 import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
 import 'package:nhealth/models/body_measurement.dart';
-import 'package:nhealth/models/devices.dart';
 import 'package:nhealth/models/language.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chcp/followup_patient_chcp_summary_screen.dart';
 import 'package:nhealth/screens/chw/unwell/create_referral_screen.dart';
-import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
-import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import '../../../custom-classes/custom_stepper.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../short_followup_chcp_screen.dart';
 
 final _temperatureController = TextEditingController();
 final _systolicController = TextEditingController();
 final _diastolicController = TextEditingController();
 final _pulseController = TextEditingController();
 final _glucoseController = TextEditingController();
-final _deviceController = TextEditingController();
+
 List causes = ['Fever', 'Shortness of breath', 'Feeling faint', 'Stomach discomfort'];
 List issues = ['Vision', 'Smell', 'Mental Health', 'Other'];
 List selectedCauses = [];
 List selectedIssues = [];
-final otherIssuesController = TextEditingController();
+
 String selectedArm = 'left';
 String selectedGlucoseType = 'fasting';
 String selectedGlucoseUnit = 'mg/dL';
@@ -102,7 +88,6 @@ getOptionText(context, question, option) {
 
 
 class NewPatientQuestionnaireChcpScreen extends StatefulWidget {
-
   static const path = '/newPatientQuestionnaireChcp';
   @override
   _NewPatientQuestionnaireChcpScreenState createState() => _NewPatientQuestionnaireChcpScreenState();
@@ -129,16 +114,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
     prepareQuestions();
     prepareAnswers();
     getCenters();
-
-    getLanguage();
   }
-
-  getLanguage() async {
-    final prefs = await SharedPreferences.getInstance();
-
-  }
-
-
 
   prepareQuestions() {
     medicalHistoryQuestions = Questionnaire().questions['new_patient']['medical_history'];
@@ -172,14 +148,7 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
   }
 
   getCenters() async {
-    // setState(() {
-    //   isLoading = true;
-    // });
     var centerData = await PatientController().getCenter();
-    // setState(() {
-    //   isLoading = false;
-    // });
-
     if (centerData != null) {
       clinicTypes = centerData['data'];
       for(var center in clinicTypes) {
@@ -190,86 +159,6 @@ class _NewPatientQuestionnaireChcpScreenState extends State<NewPatientQuestionna
         }
       }
     }
-  }
-
-getMedicationsDispense() async {
-  dynamicMedications = [];
-
-  if (Auth().isExpired()) {
-    Auth().logout();
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-  }
-
-  var patientId = Patient().getPatient()['id'];
-  var data = await PatientController().getMedicationsByPatient(patientId);
-  if (data == null) {
-    return;
-  } else if (data['message'] == 'Unauthorized') {
-    Auth().logout();
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    return;
-  } else if (data['error'] != null && data['error']) {
-    return;
-  } else if (data['data'] != null) {
-    var meds = await prepareDynamicMedications(data['data']);
-    setState(() {
-      dynamicMedications = meds;
-    });
-
-  }
-}
-
-prepareDynamicMedications(medications) {
-  var prepareMedication = [];
-  var serial = 1;
-  for(var item in medications) {
-    var textEditingController = new TextEditingController();
-    textEditingControllers.putIfAbsent(item['id'], ()=>textEditingController);
-    prepareMedication.add({
-      'medId': item['id'],
-      'medInfo': '${serial}. Tab ${item['body']['title']}: ${item['body']['dosage']}${item['body']['unit']} ${item['body']['activityDuration']['repeat']['frequency']} time(s) ${preparePeriodUnits(item['body']['activityDuration']['repeat']['periodUnit'], 'repeat')} - continue ${item['body']['activityDuration']['review']['period']} ${preparePeriodUnits(item['body']['activityDuration']['review']['periodUnit'], 'review')}'
-    });
-    serial++;
-  }
-  dynamicMedications = prepareMedication;
-  return dynamicMedications;
-}
-
-preparePeriodUnits(unit, type) {
-  if(unit == 'd')
-    if(type == 'repeat') return 'daily';
-    else if(type == 'review') return 'day(s)';
-    else return '';
-  else if(unit == 'w')
-    if(type == 'repeat') return 'weekly';
-    else if(type == 'review') return 'week(s)';
-    else return '';
-  else if(unit == 'm')
-    if(type == 'repeat') return 'monthly';
-    else if(type == 'review') return 'month(s)';
-    else return '';
-  else if(unit == 'y')
-    if(type == 'repeat') return 'yearly';
-    else if(type == 'review') return 'year(s)';
-    else return '';
-  else
-    return '';
-
-}
-
-  nextStep() {
-    setState(() {
-      if (_currentStep == 3) {
-        _currentStep = _currentStep + 1;
-        nextText = 'COMPLETE';
-      } else if (_currentStep == 4) {
-        checkData();
-      } else {
-        _currentStep = _currentStep + 1;
-      }
-    });
   }
 
   clearForm() {
@@ -340,86 +229,7 @@ preparePeriodUnits(unit, type) {
     }
   }
 
-  setLoader(value) {
-    setState(() {
-      isLoading = value;
-    });
-  }
-
-  goToHome(recommendation, data) {
-    if (recommendation) {
-      Navigator.of(context).pushReplacementNamed(
-          MedicalRecommendationScreen.path,
-          arguments: data);
-    } else {
-      Navigator.of(context).pushNamed(
-        '/chcpHome',
-      );
-    }
-  }
-
-  checkData() async {
-    int temp = 0;
-    int systolic = 0;
-    int diastolic = 0;
-    int glucose = 0;
-
-    var data = {
-      'meta': {
-        'patient_id': Patient().getPatient()['id'],
-        "collected_by": Auth().getAuth()['uid'],
-        "status": "pending"
-      },
-      'body': {
-        'causes': selectedCauses,
-        'issues': selectedIssues,
-        'blood_pressure': {
-          'arm': selectedArm,
-          'systolic': _systolicController.text,
-          'diastolic': _diastolicController.text,
-        },
-        'fasting_glucose': {
-          'type': selectedGlucoseType,
-          'value': _glucoseController.text,
-          'unit': selectedGlucoseUnit
-        },
-        'chest_pain': {
-          'value': firstAnswer,
-        },
-        'weekness': {
-          'value': secondAnswer,
-        }
-      }
-    };
-    if (_temperatureController.text != '') {
-      temp = int.parse(_temperatureController.text);
-    }
-    if (_systolicController.text != '') {
-      // print(_systolicController.text);
-      systolic = int.parse(_systolicController.text);
-    }
-    if (_diastolicController.text != '') {
-      diastolic = int.parse(_diastolicController.text);
-    }
-    if (_glucoseController.text != '') {
-      glucose = int.parse(_glucoseController.text);
-    }
-
-    if (temp > 39 || glucose > 250 || systolic > 160 || diastolic > 100 || firstAnswer == 'yes' || secondAnswer == 'yes') {
-      // var response = FollowupController().create(data);
-      // print(response);
-      // if (response['error'] != null && !response['error'])
-        Navigator.of(context).pushReplacementNamed('/medicalRecommendation', arguments: data);
-    } else {
-      // var response = FollowupController().create(data);
-      // print(response);
-      // if (response['error'] != null && !response['error'])
-        Navigator.of(context).pushReplacementNamed('/chwContinue');
-    }
-  }
-
   createObservations() {
-
     if (diastolicEditingController.text != '' && systolicEditingController.text != '' && pulseRateEditingController.text != "") {
     BloodPressure().addItem('left', int.parse(systolicEditingController.text), int.parse(diastolicEditingController.text), int.tryParse(pulseRateEditingController.text), null);
       var formData = {
@@ -429,11 +239,8 @@ preparePeriodUnits(unit, type) {
         'device': '',
         'performed_by': '',
       };
-
       BloodPressure().addBloodPressure(formData);
-    }
-
-
+    } 
 
     if (heightEditingController.text != '') {
       BodyMeasurement().addItem('height', heightEditingController.text, 'cm', '', '');
@@ -617,14 +424,12 @@ preparePeriodUnits(unit, type) {
                       Questionnaire().addNewMedicationNcd(
                           'medication', medicationAnswers);
                       AssessmentController().storeEncounterDataLocal('community clinic assessment', 'chcp', '', '', assessmentStatus:'incomplete');
-
                     }
 
                     if (_currentStep == 2) {
                       Questionnaire().addNewRiskFactorsNcd(
                           'risk_factors', riskAnswers);
                       AssessmentController().storeEncounterDataLocal('community clinic assessment', 'chcp', '', '', assessmentStatus:'incomplete');
-
                     }
 
                     if (_currentStep == 3) {
@@ -821,45 +626,6 @@ preparePeriodUnits(unit, type) {
     );
   }
 
-  missingDataAlert() async {
-   var response = await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          content: new Text(AppLocalizations.of(context).translate("incompleteNcd"), style: TextStyle(fontSize: 22),),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-             Container(  
-              margin: EdgeInsets.all(20),  
-              child:FlatButton(
-                child: new Text(AppLocalizations.of(context).translate("back"), style: TextStyle(fontSize: 20),),
-                color: kPrimaryColor,  
-                textColor: Colors.white,
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                },
-              ),
-            ),
-            Container(  
-              margin: EdgeInsets.all(20),  
-              child:FlatButton(
-                child: new Text(AppLocalizations.of(context).translate("continue"), style: TextStyle(fontSize: 20),),
-                color: kPrimaryColor,  
-                textColor: Colors.white,
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
-              ),
-            ),
-          ],
-        );
-      }
-    );
-    return response;
-  }
-
-
   var role = '';
   _getAuthData() async {
     var data = await Auth().getStorageAuth();
@@ -946,70 +712,16 @@ preparePeriodUnits(unit, type) {
   }
 
   Future _completeStep() async {
-    
     var hasMissingData = checkMissingData();
     var hasOptionalMissingData = checkOptionalMissingData();
-
-    // if (hasMissingData) {
-    //   var continueMissing = await missingDataAlert();
-    //   if (!continueMissing) {
-    //     return;
-    //   }
-    // }
-
-    // setLoader(true);
 
     var patient = Patient().getPatient();
 
     var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
-    // if (nextVisitDate != '') {
-    //   encounter['body']['next_visit_date'] = nextVisitDate;
-    // }
     encounterData = {
         'context': context,
         'dataStatus': 'incomplete',
       };
-    
-    // var response = await AssessmentController().updateAssessmentWithObservations(status, encounter, observations);
-    // var response = await AssessmentController().createOnlyAssessmentWithStatus('ncd center assessment', 'ncd', '', 'incomplete');
-    // !hasMissingData ? Patient().setPatientReviewRequiredTrue() : null;
-    // setLoader(false);
-
-    // if age greater than 40 redirect to referral page
-    // if (patient['data']['age'] != null && patient['data']['age'] > 40) {
-    //   var data = {
-    //     'meta': {
-    //       'patient_id': Patient().getPatient()['id'],
-    //       "collected_by": Auth().getAuth()['uid'],
-    //       "status": "pending"
-    //     },
-    //     'body': {},
-    //     'referred_from': 'new questionnaire'
-    //   };
-    //   goToHome(true, data);
-
-    //   return;
-    // }
-
-    // if (isReferralRequired) {
-    //   var data = {
-    //     'meta': {
-    //       'patient_id': Patient().getPatient()['id'],
-    //       "collected_by": Auth().getAuth()['uid'],
-    //       "status": "pending"
-    //     },
-    //     'body': {},
-    //     'referred_from': 'new questionnaire'
-    //   };
-    //   goToHome(true, data);
-
-    //   return;
-    // }
-  
-    // Navigator.of(context).pushNamed(PatientSummeryChcpScreen.path, arguments: {'prevScreen' : 'encounter', 'encounterData': encounterData ,});
-    // Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: 'encounter');
-    // Navigator.of(context).pushNamed('/ncdPatientSummary');
-    // goToHome(false, null);
   }
 
   List<CustomStep> _mySteps() {
@@ -1066,18 +778,6 @@ preparePeriodUnits(unit, type) {
         content: CreateRefer(),
         isActive: _currentStep >= 2,
       ),
-
-      // CustomStep(
-      //   title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
-      //   content: Followup(parent: this),
-      //   isActive: _currentStep >= 2,
-      // ),
-
-      // CustomStep(
-      //   title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
-      //   content: InitialCounselling(parent: this),
-      //   isActive: _currentStep >= 3,
-      // ),
     ];
 
     if (Configs().configAvailable('isThumbprint')) {
@@ -1170,7 +870,6 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                   height: 20,
                 ),
                 Container(
-                  // alignment: Alignment.center,
                   margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
                   child: Text(
                     AppLocalizations.of(context).translate('medicalHistory'),
@@ -1321,14 +1020,6 @@ class _MedicationState extends State<Medication> {
   bool isEmpty = true;
 
   checkMedicalHistoryAnswers(medicationQuestion) {
-    // if (medicationQuestions['items'].length -1 == medicationQuestions['items'].indexOf(medicationQuestion)) {
-    //   if (showLastMedicationQuestion) {
-    //     return true;
-    //   }
-
-    // }
-    // return true;
-
     // check if any medical histroy answer is yes. then return true if medication question is aspirin, or lower fat
     if (medicationQuestion['type'] == 'heart' || medicationQuestion['type'] == 'heart_bp_diabetes') {
       var medicalHistoryasYes = medicalHistoryAnswers.where((item) => item == 'yes');
@@ -1378,7 +1069,6 @@ class _MedicationState extends State<Medication> {
     }
 
     if (matchedQuestion != null) {
-      // print(matchedQuestion.first);
       var answer = medicalHistoryAnswers[
           medicalHistoryQuestions['items'].indexOf(matchedQuestion)];
       if (answer == 'yes') {
@@ -1386,31 +1076,6 @@ class _MedicationState extends State<Medication> {
       }
     }
     return false;
-  }
-
-  checkAnswer() {
-    setState(() {});
-
-    return;
-
-    var isPositive = false;
-    var answersLength = medicationAnswers.length;
-
-    for (var answer in medicationAnswers) {
-      if (medicationAnswers.indexOf(answer) != answersLength - 1) {
-        if (answer == 'yes') {
-          setState(() {
-            isPositive = true;
-          });
-          break;
-        }
-      }
-    }
-
-    setState(() {
-      showLastMedicationQuestion = isPositive;
-    });
-
   }
 
   @override
@@ -1430,7 +1095,6 @@ class _MedicationState extends State<Medication> {
                   height: 30,
                 ),
                 Container(
-                  // alignment: Alignment.center,
                   margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
                   child: Text(
                     AppLocalizations.of(context).translate('medicationTitle'),
@@ -1527,9 +1191,6 @@ class _MedicationState extends State<Medication> {
                                                                       'options']
                                                                   .indexOf(
                                                                       option)];
-                                                              checkAnswer();
-                                                              // print(medicalHistoryAnswers);
-                                                              // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
                                                             });
                                                           },
                                                           materialTapTargetSize:
@@ -1656,7 +1317,6 @@ class _MeasurementsState extends State<Measurements> {
                           children: [
                             Container(
                               child: Row(
-                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
                                     child: Row(
@@ -1694,7 +1354,6 @@ class _MeasurementsState extends State<Measurements> {
                                       ],
                                     ),
                                   ),
-                                  //Spacer(),
                                   SizedBox(width: 50),
                                   Container(
                                       child: Row(
@@ -3681,7 +3340,6 @@ class ChcpPatientRecordsScreen extends StatefulWidget {
 }
 
 class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
-  // bool isLoading = true;
   var carePlans = [];
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   
@@ -3751,9 +3409,6 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
   }
 
   getLastAssessment() async {
-    // setState(() {
-    //   isLoading = true;
-    // });
     lastAssessment = await AssessmentController().getLastAssessmentByPatient();
 
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
@@ -3779,148 +3434,7 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
         lastEncounterDate = getDate(lastAssessment['data']['meta']['created_at']);
       });
     }
-    // setState(() {
-    //   isLoading = false;
-    // });
-    
   }
-
-
-  getStatus(item) {
-    var status = 'completed';
-    item['items'].forEach( (goal) {
-      if (goal['meta']['status'] == 'pending') {
-        setState(() {
-          status = 'pending';
-        });
-      }
-    });
-
-    return status;
-  }
-
-  getCount(item) {
-    var count = 0;
-
-    item['items'].forEach( (goal) {
-      setState(() {
-        count += 1;
-      });
-    });
-    
-
-    return count.toString();
-  }
-
-
-
-  getCompletedDate(goal) {
-    var data = '';
-    DateTime date;
-    // print(goal['items']);
-    goal['items'].forEach((item) {
-      // print(item['body']['activityDuration']['end']);
-      DateFormat format = new DateFormat("E LLL d y");
-      var endDate;
-      try {
-        endDate = format.parse(item['body']['activityDuration']['end']);
-      } catch(err) {
-        endDate = DateTime.parse(item['body']['activityDuration']['end']);
-      }
-      // print(endDate);
-      date = endDate;
-      if (date != null) {
-        date  = endDate;
-      } else {
-        if (endDate.isBefore(date)) {
-          date = endDate;
-        }
-      }
-      
-    });
-    if (date != null) {
-      var test = DateFormat('MMMM d, y').format(date);
-      data = 'Complete By ' + test;
-    }
-    return data;
-  }
-
-
-
-  getDueCounts() {
-    var goalCount = 0;
-    var actionCount = 0;
-    carePlans.forEach((item) {
-      if(item['meta']['status'] == 'pending') {
-        goalCount = goalCount + 1;
-        if (item['body']['components'] != null) {
-          actionCount = actionCount + item['body']['components'].length;
-        }
-      }
-    });
-
-    return "$goalCount goals & $actionCount actions";
-  }
-
-
-  getObservations(assessment) async {
-    // _observations =  await AssessmentController().getObservationsByAssessment(widget.assessment);
-    var data =  await AssessmentController().getLiveObservationsByAssessment(assessment);
-    // print(data);
-    return data;
-
-  }
-
-
-  convertDateFromSeconds(date) {
-    if (date['_seconds'] != null) {
-      var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
-
-      return DateFormat("MMMM d, y").format(parsedDate).toString();
-    }
-    return '';
-  }
-
-  getTitle(encounter) {
-    var screening_type =  encounter['data']['screening_type'];
-    if (screening_type != null && screening_type != '') {
-      if (screening_type == 'ncd') {
-        screening_type = screening_type.toUpperCase() + ' ';
-      } else {
-        screening_type = screening_type[0].toUpperCase() + screening_type.substring(1) + ' ';
-      }
-      
-      return screening_type + 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
-    }
-    
-    return 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
-  }
-
-    String getLastVisitDate() {
-    var date = '';
-
-    if (encounters.length > 0) {
-      var lastEncounter = encounters[0];
-      var parsedDate = DateTime.tryParse(lastEncounter['meta']['created_at']);
-      if (parsedDate != null) {
-        date = DateFormat('yyyy-MM-dd').format(parsedDate);
-      }
-    }
-
-    return date;
-  }
-  String getNextVisitDate() {
-    var date = '';
-
-    if (encounters.length > 0) {
-      var lastEncounter = encounters[0];
-      date = lastEncounter['data']['next_visit_date'] ?? '';
-    }
-
-    return date;
-  } 
-
-
 
 
   @override
@@ -3937,15 +3451,6 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
       },
       child: Scaffold(
         key: _scaffoldKey,
-        // appBar: new AppBar(
-        //   title: new Text(AppLocalizations.of(context).translate('patientSummary'), style: TextStyle(color: Colors.white, fontSize: 20),),
-        //   backgroundColor: kPrimaryColor,
-        //   elevation: 0.0,
-        //   iconTheme: IconThemeData(color: Colors.white),
-        //   actions: <Widget>[
-
-        //   ],
-        // ),
         body: isLoading ? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
           child: SingleChildScrollView(
             child: Stack(
@@ -4187,11 +3692,6 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
                     ),
 
                     Container(
-                      // decoration: BoxDecoration(
-                      //   border: Border(
-                      //     top: BorderSide(width: 4, color: kBorderLighter)
-                      //   ),
-                      // ),
                       padding: EdgeInsets.only(top: 15, left: 10, right: 10),
                       child: Column(
                         children: <Widget>[
@@ -4280,7 +3780,6 @@ class RecommendedCounsellingChcp extends StatefulWidget {
   _RecommendedCounsellingChcpState createState() => _RecommendedCounsellingChcpState();
 }
 
-// var isReferralRequired = null;
 bool dietTitleAdded = false;
 bool tobaccoTitleAdded = false;
 var dietCurrentCount = 0;
@@ -4295,17 +3794,9 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
     super.initState();
     dietTitleAdded = false;
     tobaccoTitleAdded = false;
-    // isReferralRequired = null;
   }
 
   checkCounsellingQuestions(counsellingQuestion) {
-    // if (medicationQuestions['items'].length - 1 == medicationQuestions['items'].indexOf(medicationQuestion)) {
-    //   if (showLastMedicationQuestion) {
-    //     return true;
-    //   }
-
-    // }
-
     if (counsellingQuestion['type'] == 'medical-adherence') {
       if (medicationAnswers[1] == 'no' || medicationAnswers[3] == 'no' ||medicationAnswers[5] == 'no' || medicationAnswers[7] == 'no') {
         return true;
@@ -4335,7 +3826,6 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
     });
 
     if (matchedQuestion != null) {
-      // print(matchedQuestion.first);
       var answer = riskAnswers[riskQuestions['items'].indexOf(matchedQuestion)];
       if ((matchedQuestion['type'] == 'eat-vegetables' ||
           matchedQuestion['type'] == 'physical-activity-high')) {
@@ -4453,16 +3943,10 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
                   height: 30,
                 ),
                 Container(
-                    // alignment: Alignment.center,
                     margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        // Text(
-                        //   AppLocalizations.of(context).translate('tobaccoUse'),
-                        //   style: TextStyle(
-                        //       fontSize: 20, fontWeight: FontWeight.w500),
-                        // ),
                         Text(
                           AppLocalizations.of(context)
                               .translate('wasCounsellingProvided'),
@@ -4575,127 +4059,6 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
                                 else
                                   return Container();
                               }).toList(),
-                              // Column(
-                              //   crossAxisAlignment: CrossAxisAlignment.start,
-                              //   children: <Widget>[
-                              //     SizedBox(height: 20),
-                              //     Container(
-                              //         child: Row(
-                              //       mainAxisAlignment:
-                              //           MainAxisAlignment.spaceBetween,
-                              //       children: [
-                              //         Text(
-                              //           AppLocalizations.of(context)
-                              //               .translate('referralRequired'),
-                              //           style: TextStyle(
-                              //               fontSize: 18,
-                              //               height: 1.7,
-                              //               fontWeight: FontWeight.w500),
-                              //         ),
-                              //         Container(
-                              //             width: 240,
-                              //             child: Row(
-                              //               children: <Widget>[
-                              //                 Expanded(
-                              //                     child: Container(
-                              //                   height: 25,
-                              //                   width: 100,
-                              //                   margin: EdgeInsets.only(
-                              //                       right: 20, left: 0),
-                              //                   decoration: BoxDecoration(
-                              //                       border: Border.all(
-                              //                           width: 1,
-                              //                           color: (isReferralRequired !=
-                              //                                       null &&
-                              //                                   isReferralRequired)
-                              //                               ? Color(0xFF01579B)
-                              //                               : Colors.black),
-                              //                       borderRadius:
-                              //                           BorderRadius.circular(
-                              //                               3),
-                              //                       color: (isReferralRequired !=
-                              //                                   null &&
-                              //                               isReferralRequired)
-                              //                           ? Color(0xFFE1F5FE)
-                              //                           : null),
-                              //                   child: FlatButton(
-                              //                     onPressed: () {
-                              //                       setState(() {
-                              //                         dietTitleAdded = false;
-                              //                         tobaccoTitleAdded = false;
-                              //                         isReferralRequired = true;
-                              //                       });
-                              //                     },
-                              //                     materialTapTargetSize:
-                              //                         MaterialTapTargetSize
-                              //                             .shrinkWrap,
-                              //                     child: Text(
-                              //                       AppLocalizations.of(context)
-                              //                           .translate('yes'),
-                              //                       style: TextStyle(
-                              //                           color: (isReferralRequired !=
-                              //                                       null &&
-                              //                                   isReferralRequired)
-                              //                               ? kPrimaryColor
-                              //                               : null),
-                              //                     ),
-                              //                   ),
-                              //                 )),
-                              //                 Expanded(
-                              //                     child: Container(
-                              //                   height: 25,
-                              //                   width: 100,
-                              //                   margin: EdgeInsets.only(
-                              //                       right: 20, left: 0),
-                              //                   decoration: BoxDecoration(
-                              //                       border: Border.all(
-                              //                           width: 1,
-                              //                           color: (isReferralRequired ==
-                              //                                       null ||
-                              //                                   isReferralRequired)
-                              //                               ? Colors.black
-                              //                               : Color(
-                              //                                   0xFF01579B)),
-                              //                       borderRadius:
-                              //                           BorderRadius.circular(
-                              //                               3),
-                              //                       color: (isReferralRequired ==
-                              //                                   null ||
-                              //                               isReferralRequired)
-                              //                           ? null
-                              //                           : Color(0xFFE1F5FE)),
-                              //                   child: FlatButton(
-                              //                     onPressed: () {
-                              //                       setState(() {
-                              //                         dietTitleAdded = false;
-                              //                         tobaccoTitleAdded = false;
-                              //                         isReferralRequired = false;
-                              //                       });
-                              //                     },
-                              //                     materialTapTargetSize:
-                              //                         MaterialTapTargetSize
-                              //                             .shrinkWrap,
-                              //                     child: Text(
-                              //                       AppLocalizations.of(context)
-                              //                           .translate('NO'),
-                              //                       style: TextStyle(
-                              //                           color: (isReferralRequired ==
-                              //                                       null ||
-                              //                                   isReferralRequired)
-                              //                               ? null
-                              //                               : kPrimaryColor),
-                              //                     ),
-                              //                   ),
-                              //                 )),
-                              //               ],
-                              //             )),
-                              //       ],
-                              //     )),
-                              //     SizedBox(
-                              //       height: 20,
-                              //     )
-                              //   ],
-                              // ),
                             ],
                           )),
                     ],
@@ -4754,18 +4117,6 @@ class _MedicationsDispenseState extends State<MedicationsDispense> {
                         ),                       
 
                       ),
-                      // SizedBox(height: 24),
-
-                      // Container(
-                      //     child: Text(
-                      //         'Serial Name    Dose Unit    Frequancy    Duration',
-                      //         style: TextStyle(
-                      //         color: Colors.black,
-                      //         fontSize: 18,
-                      //         // fontWeight: FontWeight.w500
-                      //         ),
-                      //       ),
-                      // ),
                       SizedBox(height: 24),
                       if(dynamicMedications != null)
                       ...dynamicMedications.map((item) {
@@ -4834,10 +4185,6 @@ class _MedicationsDispenseState extends State<MedicationsDispense> {
                                           backgroundColor: kPrimaryRedColor,
                                         ));
                                       }
-                                      // Navigator.of(context).pop();
-                                      // if (response == 'success') {
-                                      // // Navigator.of(context).pop();
-                                      // } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
                                     },
                                     child: Text(AppLocalizations.of(context).translate('submit')),
                                   )
@@ -4883,34 +4230,14 @@ class _CreateReferState extends State<CreateRefer> {
   'options_bn': ['chcp', 'chw']
   };
   List referralToRoles;
-  // var selectedReason;
-  // var clinicNameController = TextEditingController();
-  // var selectedtype;
-  // var _patient;
-
     
 
   @override
   void initState() {
     super.initState();
-    // _patient = Patient().getPatient();
-    // _getAuthData();
-    // getCenters();
     referralReasons = referralReasonOptions['options'];
     referralToRoles = referralToRolesOptions['options']; 
-    // print('encounterData $encounterData');
   }
-
-  // _getAuthData() async {
-  //   var data = await Auth().getStorageAuth();
-
-  //   print('role');
-  //   print(data['role']);
-  //   setState(() {
-  //     role = data['role'];
-  //   });
-  // }
-
   
   @override
   Widget build(BuildContext context) {
@@ -5304,1223 +4631,5 @@ class _RiskFactorsState extends State<RiskFactors> {
             ),
           )),
     );
-  }
-}
-
-class InitialCounselling extends StatefulWidget {
-  _NewPatientQuestionnaireChcpScreenState parent;
-  InitialCounselling({this.parent});
-  @override
-  _InitialCounsellingState createState() => _InitialCounsellingState();
-}
-
-class _InitialCounsellingState extends State<InitialCounselling> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-        child: Form(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              PatientTopbar(),
-              SizedBox(
-                height: 30,
-              ),
-              Container(
-                // alignment: Alignment.center,
-                margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
-                child: Text(
-                  AppLocalizations.of(context).translate("requiredDevice"),
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                        padding: EdgeInsets.only(bottom: 35, top: 20),
-                        decoration: BoxDecoration(),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              child: ExpandableNotifier(
-                                  child: Padding(
-                                padding: const EdgeInsets.all(0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1, color: kBorderLighter)),
-                                  child: Column(
-                                    children: <Widget>[
-                                      ScrollOnExpand(
-                                        scrollOnExpand: true,
-                                        scrollOnCollapse: false,
-                                        child: ExpandablePanel(
-                                          theme: const ExpandableThemeData(
-                                            headerAlignment:
-                                                ExpandablePanelHeaderAlignment
-                                                    .center,
-                                            tapBodyToCollapse: true,
-                                          ),
-                                          header: Container(
-                                            padding: EdgeInsets.only(
-                                                top: 10, left: 10),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                Text(
-                                                  AppLocalizations.of(context)
-                                                      .translate(
-                                                          'smokingCessation'),
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontSize: 17),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          expanded: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Row(
-                                                children: <Widget>[
-                                                  Checkbox(
-                                                    activeColor: kPrimaryColor,
-                                                    value: false,
-                                                    onChanged: (value) {},
-                                                  ),
-                                                  Text(
-                                                      AppLocalizations.of(
-                                                              context)
-                                                          .translate(
-                                                              "harmSmoking"),
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 18)),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: <Widget>[
-                                                  Checkbox(
-                                                    activeColor: kPrimaryColor,
-                                                    value: true,
-                                                    onChanged: (value) {},
-                                                  ),
-                                                  Text(
-                                                      AppLocalizations.of(
-                                                              context)
-                                                          .translate(
-                                                              "stopSmoking"),
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 18)),
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                height: 20,
-                                              ),
-                                              Text(
-                                                  AppLocalizations.of(context)
-                                                      .translate(
-                                                          "givenPatient"),
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 18)),
-                                              SizedBox(
-                                                height: 20,
-                                              ),
-                                              Container(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      .5,
-                                                  child: Row(
-                                                    children: <Widget>[
-                                                      Expanded(
-                                                          child: Container(
-                                                        height: 40,
-                                                        margin: EdgeInsets.only(
-                                                            right: 20, left: 0),
-                                                        decoration: BoxDecoration(
-                                                            border: Border.all(
-                                                                width: 1,
-                                                                color:
-                                                                    kPrimaryColor),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        3),
-                                                            color: Color(
-                                                                0xFFE1F5FE)),
-                                                        child: FlatButton(
-                                                          onPressed: () {
-                                                            setState(() {
-                                                              // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
-                                                            });
-                                                          },
-                                                          materialTapTargetSize:
-                                                              MaterialTapTargetSize
-                                                                  .shrinkWrap,
-                                                          child: Text(
-                                                            AppLocalizations.of(
-                                                                    context)
-                                                                .translate(
-                                                                    "yes"),
-                                                            style: TextStyle(
-                                                                color:
-                                                                    kPrimaryColor),
-                                                          ),
-                                                        ),
-                                                      )),
-                                                      Expanded(
-                                                          child: Container(
-                                                        height: 40,
-                                                        margin: EdgeInsets.only(
-                                                            right: 20, left: 0),
-                                                        decoration: BoxDecoration(
-                                                            border: Border.all(
-                                                                width: 1,
-                                                                color: Colors
-                                                                    .black),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        3),
-                                                            color: null),
-                                                        child: FlatButton(
-                                                          onPressed: () {
-                                                            setState(() {
-                                                              // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
-                                                            });
-                                                          },
-                                                          materialTapTargetSize:
-                                                              MaterialTapTargetSize
-                                                                  .shrinkWrap,
-                                                          child: Text(
-                                                            AppLocalizations.of(
-                                                                    context)
-                                                                .translate(
-                                                                    "no"),
-                                                            style: TextStyle(
-                                                                color: null),
-                                                          ),
-                                                        ),
-                                                      )),
-                                                    ],
-                                                  )),
-                                              SizedBox(
-                                                height: 20,
-                                              ),
-                                            ],
-                                          ),
-                                          builder: (_, collapsed, expanded) {
-                                            return Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: 10,
-                                                  right: 10,
-                                                  bottom: 10),
-                                              child: Expandable(
-                                                collapsed: collapsed,
-                                                expanded: expanded,
-                                                theme:
-                                                    const ExpandableThemeData(
-                                                        crossFadePoint: 0),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )),
-                            ),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            Container(
-                              child: ExpandableNotifier(
-                                  child: Padding(
-                                padding: const EdgeInsets.all(0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1, color: kBorderLighter)),
-                                  child: Column(
-                                    children: <Widget>[
-                                      ScrollOnExpand(
-                                        scrollOnExpand: true,
-                                        scrollOnCollapse: false,
-                                        child: ExpandablePanel(
-                                          theme: const ExpandableThemeData(
-                                            headerAlignment:
-                                                ExpandablePanelHeaderAlignment
-                                                    .center,
-                                            tapBodyToCollapse: true,
-                                          ),
-                                          header: Container(
-                                            padding: EdgeInsets.only(
-                                                top: 10, left: 10),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                Text(
-                                                  AppLocalizations.of(context)
-                                                      .translate("diet"),
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontSize: 17),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          expanded: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              SizedBox(
-                                                height: 20,
-                                              ),
-                                            ],
-                                          ),
-                                          builder: (_, collapsed, expanded) {
-                                            return Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: 10,
-                                                  right: 10,
-                                                  bottom: 10),
-                                              child: Expandable(
-                                                collapsed: collapsed,
-                                                expanded: expanded,
-                                                theme:
-                                                    const ExpandableThemeData(
-                                                        crossFadePoint: 0),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )),
-                            ),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            Container(
-                              child: ExpandableNotifier(
-                                  child: Padding(
-                                padding: const EdgeInsets.all(0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1, color: kBorderLighter)),
-                                  child: Column(
-                                    children: <Widget>[
-                                      ScrollOnExpand(
-                                        scrollOnExpand: true,
-                                        scrollOnCollapse: false,
-                                        child: ExpandablePanel(
-                                          theme: const ExpandableThemeData(
-                                            headerAlignment:
-                                                ExpandablePanelHeaderAlignment
-                                                    .center,
-                                            tapBodyToCollapse: true,
-                                          ),
-                                          header: Container(
-                                            padding: EdgeInsets.only(
-                                                top: 10, left: 10),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                Text(
-                                                  AppLocalizations.of(context)
-                                                      .translate(
-                                                          "physicalActivity"),
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontSize: 17),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          expanded: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              SizedBox(
-                                                height: 20,
-                                              ),
-                                            ],
-                                          ),
-                                          builder: (_, collapsed, expanded) {
-                                            return Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: 10,
-                                                  right: 10,
-                                                  bottom: 10),
-                                              child: Expandable(
-                                                collapsed: collapsed,
-                                                expanded: expanded,
-                                                theme:
-                                                    const ExpandableThemeData(
-                                                        crossFadePoint: 0),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )),
-                            ),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            Container(
-                              child: ExpandableNotifier(
-                                  child: Padding(
-                                padding: const EdgeInsets.all(0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1, color: kBorderLighter)),
-                                  child: Column(
-                                    children: <Widget>[
-                                      ScrollOnExpand(
-                                        scrollOnExpand: true,
-                                        scrollOnCollapse: false,
-                                        child: ExpandablePanel(
-                                          theme: const ExpandableThemeData(
-                                            headerAlignment:
-                                                ExpandablePanelHeaderAlignment
-                                                    .center,
-                                            tapBodyToCollapse: true,
-                                          ),
-                                          header: Container(
-                                            padding: EdgeInsets.only(
-                                                top: 10, left: 10),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                Text(
-                                                  AppLocalizations.of(context)
-                                                      .translate(
-                                                          "medicationAdherence"),
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontSize: 17),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          expanded: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              SizedBox(
-                                                height: 20,
-                                              ),
-                                            ],
-                                          ),
-                                          builder: (_, collapsed, expanded) {
-                                            return Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: 10,
-                                                  right: 10,
-                                                  bottom: 10),
-                                              child: Expandable(
-                                                collapsed: collapsed,
-                                                expanded: expanded,
-                                                theme:
-                                                    const ExpandableThemeData(
-                                                        crossFadePoint: 0),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )),
-                            ),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            Container(
-                              child: ExpandableNotifier(
-                                  child: Padding(
-                                padding: const EdgeInsets.all(0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1, color: kBorderLighter)),
-                                  child: Column(
-                                    children: <Widget>[
-                                      ScrollOnExpand(
-                                        scrollOnExpand: true,
-                                        scrollOnCollapse: false,
-                                        child: ExpandablePanel(
-                                          theme: const ExpandableThemeData(
-                                            headerAlignment:
-                                                ExpandablePanelHeaderAlignment
-                                                    .center,
-                                            tapBodyToCollapse: true,
-                                          ),
-                                          header: Container(
-                                            padding: EdgeInsets.only(
-                                                top: 10, left: 10),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                Text(
-                                                  AppLocalizations.of(context)
-                                                      .translate("alcohol"),
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontSize: 17),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          expanded: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              SizedBox(
-                                                height: 20,
-                                              ),
-                                            ],
-                                          ),
-                                          builder: (_, collapsed, expanded) {
-                                            return Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: 10,
-                                                  right: 10,
-                                                  bottom: 10),
-                                              child: Expandable(
-                                                collapsed: collapsed,
-                                                expanded: expanded,
-                                                theme:
-                                                    const ExpandableThemeData(
-                                                        crossFadePoint: 0),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )),
-                            ),
-                            SizedBox(
-                              height: 50,
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Expanded(
-                                  child: Container(
-                                    width: double.infinity,
-                                    margin:
-                                        EdgeInsets.only(left: 20, right: 20),
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                        color: kPrimaryColor,
-                                        borderRadius: BorderRadius.circular(3)),
-                                    child: FlatButton(
-                                        onPressed: () async {
-                                          
-                                          widget.parent.setLoader(true);
-
-                                          var patient = Patient().getPatient();
-
-                                          // return;
-                                          // var response = await AssessmentController().createOnlyAssessment('new patient questionnaire', '', '');
-
-                                          widget.parent.setLoader(false);
-                                          return;
-
-                                          if (patient['data']['age'] != null &&
-                                              patient['data']['age'] > 40) {
-                                            var data = {
-                                              'meta': {
-                                                'patient_id': Patient()
-                                                    .getPatient()['id'],
-                                                "collected_by":
-                                                    Auth().getAuth()['uid'],
-                                                "status": "pending"
-                                              },
-                                              'body': {},
-                                              'referred_from':
-                                                  'new questionnaire'
-                                            };
-                                            widget.parent.goToHome(true, data);
-
-                                            return;
-                                          }
-
-                                          widget.parent.goToHome(false, null);
-
-                                          // print(response);
-                                        },
-                                        materialTapTargetSize:
-                                            MaterialTapTargetSize.shrinkWrap,
-                                        child: Text(
-                                          AppLocalizations.of(context)
-                                              .translate(
-                                                  'completeQuestionnaire')
-                                              .toUpperCase(),
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.normal),
-                                        )),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        )),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ));
-  }
-}
-
-class Temperature extends StatefulWidget {
-  Temperature({this.parent});
-  final parent;
-
-  @override
-  _TemperatureState createState() => _TemperatureState();
-}
-
-class _TemperatureState extends State<Temperature> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-        child: Form(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              PatientTopbar(),
-              SizedBox(
-                height: 30,
-              ),
-              Container(
-                alignment: Alignment.center,
-                child: Text(
-                  AppLocalizations.of(context).translate("patientTemperature"),
-                  style: TextStyle(fontSize: 21),
-                ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 30),
-                child: PrimaryTextField(
-                  hintText:
-                      AppLocalizations.of(context).translate('tempReading'),
-                  controller: _temperatureController,
-                  topPaadding: 10,
-                  bottomPadding: 10,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              InkWell(
-                onTap: () {
-                  widget.parent.nextStep();
-                },
-                child: Container(
-                  // margin: EdgeInsets.symmetric(horizontal: 30),
-                  alignment: Alignment.center,
-                  child: Text(
-                      AppLocalizations.of(context)
-                          .translate('skipDeviceUnavailable'),
-                      style: TextStyle(
-                        color: kPrimaryColor,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                      )),
-                ),
-              )
-            ],
-          ),
-        ));
-  }
-}
-
-class BloodPressures extends StatefulWidget {
-  BloodPressures({this.parent});
-  final parent;
-
-  @override
-  _BloodPressureState createState() => _BloodPressureState();
-}
-
-class _BloodPressureState extends State<BloodPressures> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-        child: Form(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              PatientTopbar(),
-              SizedBox(
-                height: 30,
-              ),
-              Container(
-                alignment: Alignment.center,
-                child: Text(
-                  AppLocalizations.of(context).translate("whatPressure"),
-                  style: TextStyle(fontSize: 21),
-                ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 170),
-                width: 300,
-                alignment: Alignment.center,
-                child: Row(
-                  children: <Widget>[
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Radio(
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      value: 'left',
-                      groupValue: selectedArm,
-                      activeColor: kPrimaryColor,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedArm = value;
-                        });
-                      },
-                    ),
-                    Text(AppLocalizations.of(context).translate("leftArm"),
-                        style: TextStyle(color: Colors.black)),
-                    SizedBox(
-                      width: 30,
-                    ),
-                    Radio(
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      value: 'right',
-                      groupValue: selectedArm,
-                      activeColor: kPrimaryColor,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedArm = value;
-                        });
-                      },
-                    ),
-                    Text(AppLocalizations.of(context).translate("leftArm"),
-                        style: TextStyle(color: Colors.black)),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 170),
-                alignment: Alignment.center,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: PrimaryTextField(
-                        hintText:
-                            AppLocalizations.of(context).translate('systolic'),
-                        controller: _systolicController,
-                        topPaadding: 10,
-                        bottomPadding: 10,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      '/',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      child: PrimaryTextField(
-                        hintText:
-                            AppLocalizations.of(context).translate('diastolic'),
-                        controller: _diastolicController,
-                        topPaadding: 10,
-                        bottomPadding: 10,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 240),
-                alignment: Alignment.center,
-                child: PrimaryTextField(
-                  hintText: 'Pulse Rate',
-                  controller: _pulseController,
-                  topPaadding: 10,
-                  bottomPadding: 10,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              InkWell(
-                onTap: () {
-                  widget.parent.nextStep();
-                },
-                child: Container(
-                  // margin: EdgeInsets.symmetric(horizontal: 30),
-                  alignment: Alignment.center,
-                  child: Text(
-                      AppLocalizations.of(context)
-                          .translate('skipDeviceUnavailable'),
-                      style: TextStyle(
-                        color: kPrimaryColor,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                      )),
-                ),
-              )
-            ],
-          ),
-        ));
-  }
-}
-
-class AcuteIssues extends StatefulWidget {
-  AcuteIssues({this.parent});
-  final parent;
-
-  @override
-  _AcuteIssuesState createState() => _AcuteIssuesState();
-}
-
-var firstQuestionText = 'Are you having any pain or discomfort or pressure or heaviness in your chest?';
-var secondQuestionText = 'Are you having any difficulty in talking, or any weakness or numbness of arms, legs or face?';
-var firstQuestionOptions = ['yes', 'no'];
-var secondQuestionOptions = ['yes', 'no'];
-
-var firstAnswer = 'no';
-var secondAnswer = 'no';
-
-class _AcuteIssuesState extends State<AcuteIssues> {
-  List devices = [];
-
-  var selectedDevice = 0;
-
-  @override
-  initState() {
-    super.initState();
-    firstAnswer = 'no';
-    secondAnswer = 'no';
-
-    devices = Device().getDevices();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-        child: Form(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              PatientTopbar(),
-              SizedBox(
-                height: 30,
-              ),
-              Container(
-                  padding: EdgeInsets.only(bottom: 35, top: 20),
-                  decoration: BoxDecoration(
-                      border:
-                          Border(bottom: BorderSide(color: kBorderLighter))),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                          margin:
-                              EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-                          // child: Text(_questions['items'][0]['question'],
-                          child: Text(
-                            firstQuestionText,
-                            style: TextStyle(
-                                fontSize: 18,
-                                height: 1.7,
-                                fontWeight: FontWeight.w500),
-                          )),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                          margin:
-                              EdgeInsets.symmetric(vertical: 0, horizontal: 25),
-                          width: MediaQuery.of(context).size.width * .5,
-                          child: Row(
-                            children: <Widget>[
-                              ...firstQuestionOptions
-                                  .map(
-                                    (option) => Expanded(
-                                        child: Container(
-                                      height: 40,
-                                      margin:
-                                          EdgeInsets.only(right: 10, left: 10),
-                                      decoration: BoxDecoration(
-                                          // border: Border.all(width: 1, color:  Color(0xFF01579B)),
-                                          border: Border.all(
-                                              width: 1,
-                                              color: firstAnswer == option
-                                                  ? Color(0xFF01579B)
-                                                  : Colors.black),
-                                          borderRadius:
-                                              BorderRadius.circular(3),
-                                          color: firstAnswer == option
-                                              ? Color(0xFFE1F5FE)
-                                              : null
-                                          // color: Color(0xFFE1F5FE)
-                                          ),
-                                      child: FlatButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            firstAnswer = option;
-                                          });
-                                        },
-                                        materialTapTargetSize:
-                                            MaterialTapTargetSize.shrinkWrap,
-                                        child: Text(
-                                          option.toUpperCase(),
-                                          style: TextStyle(
-                                              color: firstAnswer == option
-                                                  ? kPrimaryColor
-                                                  : null),
-                                          // style: TextStyle(color: kPrimaryColor),
-                                        ),
-                                      ),
-                                    )),
-                                  )
-                                  .toList()
-                            ],
-                          )),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Container(
-                          margin:
-                              EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-                          // child: Text(_questions['items'][0]['question'],
-                          child: Text(
-                            secondQuestionText,
-                            style: TextStyle(
-                                fontSize: 18,
-                                height: 1.7,
-                                fontWeight: FontWeight.w500),
-                          )),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                          margin:
-                              EdgeInsets.symmetric(vertical: 0, horizontal: 25),
-                          width: MediaQuery.of(context).size.width * .5,
-                          child: Row(
-                            children: <Widget>[
-                              ...secondQuestionOptions
-                                  .map(
-                                    (option) => Expanded(
-                                        child: Container(
-                                      height: 40,
-                                      margin:
-                                          EdgeInsets.only(right: 10, left: 10),
-                                      decoration: BoxDecoration(
-                                          // border: Border.all(width: 1, color:  Color(0xFF01579B)),
-                                          border: Border.all(
-                                              width: 1,
-                                              color: secondAnswer == option
-                                                  ? Color(0xFF01579B)
-                                                  : Colors.black),
-                                          borderRadius:
-                                              BorderRadius.circular(3),
-                                          color: secondAnswer == option
-                                              ? Color(0xFFE1F5FE)
-                                              : null
-                                          // color: Color(0xFFE1F5FE)
-                                          ),
-                                      child: FlatButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            secondAnswer = option;
-                                          });
-                                        },
-                                        materialTapTargetSize:
-                                            MaterialTapTargetSize.shrinkWrap,
-                                        child: Text(
-                                          option.toUpperCase(),
-                                          style: TextStyle(
-                                              color: secondAnswer == option
-                                                  ? kPrimaryColor
-                                                  : null),
-                                          // style: TextStyle(color: kPrimaryColor),
-                                        ),
-                                      ),
-                                    )),
-                                  )
-                                  .toList()
-                            ],
-                          )),
-                    ],
-                  )),
-            ],
-          ),
-        ));
-  }
-}
-
-class Glucose extends StatefulWidget {
-  Glucose({this.parent});
-  final parent;
-
-  @override
-  _GlucoseState createState() => _GlucoseState();
-}
-
-class _GlucoseState extends State<Glucose> {
-  List devices = [];
-
-  var selectedDevice = 0;
-
-  @override
-  initState() {
-    super.initState();
-
-    devices = Device().getDevices();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-        child: Form(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              PatientTopbar(),
-              SizedBox(
-                height: 30,
-              ),
-              Container(
-                alignment: Alignment.center,
-                child: Text(
-                  AppLocalizations.of(context).translate("bloodGlucoseLevel"),
-                  style: TextStyle(fontSize: 21),
-                ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 80),
-                width: 300,
-                alignment: Alignment.center,
-                child: Row(
-                  children: <Widget>[
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Radio(
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      value: 'fasting',
-                      groupValue: selectedGlucoseType,
-                      activeColor: kPrimaryColor,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedGlucoseType = value;
-                        });
-                      },
-                    ),
-                    Text(AppLocalizations.of(context).translate('fasting'),
-                        style: TextStyle(color: Colors.black)),
-                    SizedBox(
-                      width: 30,
-                    ),
-                    Radio(
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      value: 'random',
-                      groupValue: selectedGlucoseType,
-                      activeColor: kPrimaryColor,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedGlucoseType = value;
-                        });
-                      },
-                    ),
-                    Text(AppLocalizations.of(context).translate('random'),
-                        style: TextStyle(color: Colors.black)),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 80),
-                alignment: Alignment.center,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: PrimaryTextField(
-                        hintText: 'Fasting Glucose',
-                        controller: _glucoseController,
-                        topPaadding: 10,
-                        bottomPadding: 10,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Radio(
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      value: 'mg/dL',
-                      groupValue: selectedGlucoseUnit,
-                      activeColor: kPrimaryColor,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedGlucoseUnit = value;
-                        });
-                      },
-                    ),
-                    Text('mg/dL', style: TextStyle(color: Colors.black)),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Radio(
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      value: 'mmol/L',
-                      groupValue: selectedGlucoseUnit,
-                      activeColor: kPrimaryColor,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedGlucoseUnit = value;
-                        });
-                      },
-                    ),
-                    Text('mmol/L', style: TextStyle(color: Colors.black)),
-                  ],
-                ),
-              ),
-              Container(
-                color: kSecondaryTextField,
-                margin: EdgeInsets.symmetric(horizontal: 100),
-                child: DropdownButtonFormField(
-                  hint: Text(
-                    AppLocalizations.of(context).translate("selectDevice"),
-                    style: TextStyle(fontSize: 20, color: kTextGrey),
-                  ),
-                  decoration: InputDecoration(
-                    fillColor: kSecondaryTextField,
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                    border: UnderlineInputBorder(
-                        borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(4),
-                      topRight: Radius.circular(4),
-                    )),
-                  ),
-                  items: [
-                    ...devices
-                        .map((item) => DropdownMenuItem(
-                            child: Text(item['name']),
-                            value: devices.indexOf(item)))
-                        .toList(),
-                  ],
-                  value: selectedDevice,
-                  isExpanded: true,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedDevice = value;
-                    });
-                  },
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              InkWell(
-                onTap: () {
-                  widget.parent.nextStep();
-                },
-                child: Container(
-                  // margin: EdgeInsets.symmetric(horizontal: 30),
-                  alignment: Alignment.center,
-                  child: Text(
-                      AppLocalizations.of(context)
-                          .translate('skipDeviceUnavailable'),
-                      style: TextStyle(
-                        color: kPrimaryColor,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                      )),
-                ),
-              )
-            ],
-          ),
-        ));
   }
 }
