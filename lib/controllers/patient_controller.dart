@@ -38,31 +38,17 @@ class PatientController {
 
   getPatientsWithAssesments() async {
     var patients = await PatientReposioryLocal().getPatientsWithAssesments();
-    var authData = await Auth().getStorageAuth();
-    print('len ${patients.length}');
     var data = [];
     for (var patient in patients) {
-      // if(patient['district'] == authData['address']['district']) 
-      {
-        print('patient ${patient['id']} ${patient['assessment_type']} ${patient['assessment_created_at']}');
-        // if(patient['assessment_status'] == 'incomplete' && patient['assessment_local_status'] == 'incomplete') {
-        //   parsedData['body']['incomplete_encounter'] = true;
-        // } else{
-        //   parsedData['body']['incomplete_encounter'] = false;
-        // }
-        if(!data.any((item) => item.containsValue(patient['id'])))
-        {
-          var parsedData = jsonDecode(patient['data']);
-          data.add({
-            'id': patient['id'],
-            'data': parsedData['body'],
-            'meta': parsedData['meta'],
-            'assessment_type': patient['assessment_type'],
-            'assessment_status': patient['assessment_status'],
-            'assessment_local_status': patient['assessment_local_status'],
-          });
-        }
-      }
+      var parsedData = jsonDecode(patient['data']);
+      data.add({
+        'id': patient['id'],
+        'data': parsedData['body'],
+        'meta': parsedData['meta'],
+        'assessment_type': patient['assessment_type'],
+        'assessment_status': patient['assessment_status'],
+        'assessment_local_status': patient['assessment_local_status'],
+      });
     }
 
     return data;

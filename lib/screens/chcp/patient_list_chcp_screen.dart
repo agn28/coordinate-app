@@ -84,59 +84,7 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
         searchController.text = '';
         print('getPatients before query : ${DateTime.now()}');
       });
-      var parsedLocalPatient = [];
       var allLocalPatients = await PatientController().getPatientsWithAssesments();
-      // var assessments = await AssessmentController().getAllLocalAssessments(localStatus: true);
-      // var authData = await Auth().getStorageAuth();
-
-          // allLocalPatients.firstWhere((localPatient) {
-          //   if(localPatient['data']['address']['district'] == authData['address']['district']) {
-          //   }
-          //   localPatient['data']['incomplete_encounter'] = false;
-          //   if(localPatient['assessment_status'] == 'incomplete' && localPatient['assessment_local_status'] == 'incomplete') {
-          //     localPatient['data']['incomplete_encounter'] = true;
-          //   }
-          //   return localPatient;
-          // });
-          // parsedLocalPatient = allLocalPatients.where((localPatient) {
-          //   if(localPatient['data']['address']['district'] == authData['address']['district']) {
-
-          //     return true;
-          //   }
-          //   return false;
-          // }).toList();
-          // parsedLocalPatient.add(localPatient);
-          // if (hasEncounter.runtimeType == bool && !hasEncounter) {
-          //   parsedLocalPatient.add(localpatientdata);
-          // }
-
-      // for(var localPatient in allLocalPatients) {
-      //   if(localPatient['data']['address']['district'] == authData['address']['district']) {
-      //     // var lastAssessment = await AssessmentController().getLastEncounterByPatient(localPatient['id']);
-      //     // var hasEncounter = false;
-
-      //     // if (lastAssessment['data']['type'] != 'registration') {
-      //     //   if (lastAssessment['data']['type'] == 'follow up visit (center)' || lastAssessment['data']['type'] == 'follow up visit (community)') {
-      //     //     hasEncounter = true;
-      //     //   } else if (lastAssessment['data']['status'] == null || lastAssessment['data']['status'] == "") {
-      //     //     hasEncounter = true;
-      //     //   } else {
-      //     //     //check patient has incomplete encounter
-      //     //     if(lastAssessment['data']['status'] == 'incomplete' && lastAssessment['local_status'] == 'incomplete') {
-      //     //       localPatient['data']['incomplete_encounter'] = true;
-      //     //       if(lastAssessment['data']['type'] == 'community clinic assessment' || lastAssessment['data']['type'] == 'community clinic followup') {
-      //     //         localPatient['assessment_type'] =  lastAssessment['data']['type'];
-      //     //         localPatient['assessment_status'] =  lastAssessment['data']['status'];
-      //     //       }
-      //     //     } else if (lastAssessment['data']['status'] == 'complete') {
-      //     //       localPatient['assessment_type'] =  lastAssessment['data']['type'];
-      //     //       localPatient['assessment_status'] =  lastAssessment['data']['status'];
-      //     //     }
-      //     //     hasEncounter = false;
-      //     //   }
-      //     // }
-      //   }
-      // }
       setState(() {
         allPatients = allLocalPatients;
         patients = allPatients;
@@ -390,8 +338,8 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                       return GestureDetector(
                           onTap: () {
                             Patient().setPatient(patients[index]);
-                            ((patients[index]['data']['chcp_encounter_status'] != null && patients[index]['data']['chcp_encounter_status'] == 'complete')
-                            || (patients[index]['data']['chcp_encounter_type'] != null && patients[index]['data']['chcp_encounter_type'] == 'community clinic followup'))
+                            ((patients[index]['assessment_status'] != null && patients[index]['assessment_status'] == 'complete')
+                            || (patients[index]['assessment_type'] != null && patients[index]['assessment_type'] == 'community clinic followup'))
                             ? Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : 'home', 'encounterData': {},})
                             : Navigator.of(context).pushNamed('/chcpPatientSummary');
                           },
@@ -439,8 +387,8 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       // item['data']['incomplete_encounter'] != null && item['data']['incomplete_encounter'] ?
-                                      patients[index]['data']['chcp_encounter_status'] != null && patients[index]['data']['chcp_encounter_status'] == 'complete'
-                                      && (patients[index]['data']['chcp_encounter_type'] != null && patients[index]['data']['chcp_encounter_type'] == 'community clinic assessment') ?
+                                      patients[index]['assessment_local_status'] != null && patients[index]['assessment_local_status'] == 'complete'
+                                      && (patients[index]['assessment_type'] != null && patients[index]['assessment_type'] == 'community clinic assessment') ?
                                       Container(
                                           alignment: Alignment.center,
                                           width: 160,
@@ -452,8 +400,8 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                                       style: TextStyle(color: Colors.white, fontSize: 15),
                                     ),
                                 ) : Container(),
-                                item['assessment_status'] != null && item['assessment_status'] == 'incomplete'
-                                && (item['assessment_type'] != null && item['assessment_type'] == 'community clinic assessment') ?
+                                patients[index]['assessment_local_status'] != null && patients[index]['assessment_local_status'] == 'incomplete'
+                                && (patients[index]['assessment_type'] != null && patients[index]['assessment_type'] == 'community clinic assessment') ?
                                 Container(
                                     alignment: Alignment.center,
                                     width: 160,
