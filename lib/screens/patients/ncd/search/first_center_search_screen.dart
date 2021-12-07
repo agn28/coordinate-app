@@ -215,13 +215,9 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
             ) : Container()
           ],
         ),
-        body: Stack(
-          children: <Widget>[
-            !isLoading ? SingleChildScrollView(
-              child: Column(
+        body: Column(
                 children: <Widget>[
                   Container(
-                    // padding: EdgeInsets.symmetric(vertical: 20),
                     color: kPrimaryColor,
                     child: Column(
                       children: <Widget>[
@@ -327,130 +323,133 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
                       ],
                     )
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                    color: Colors.grey.withOpacity(0.15),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 2,
-                            child: Container(
-                            child: Text(AppLocalizations.of(context).translate('name'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
-                          ),
-                        ),
-                        SizedBox(width: 5,),
-                        Expanded(
-                          flex: 2,
-                            child: Container(
-                            child: Text(AppLocalizations.of(context).translate('fathersOrHusbandsName'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
-                          ),
-                        ),
-                        SizedBox(width: 5,),
-                        Expanded(
-                          flex: 1,
-                            child: Container(
-                            child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
-                          ),
-                        ),
-                        SizedBox(width: 5,),
-                        Expanded(
-                          flex: 2,
-                            child: Container(
-                            child: Text(AppLocalizations.of(context).translate('streetPara'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
-                          ),
-                        ),
-                        SizedBox(width: 5,),
-                        Expanded(
-                          flex: 3,
-                            child: Container(
-                            child: Text(AppLocalizations.of(context).translate('status'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),textAlign: TextAlign.center),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ) ,
-                  // SizedBox(height: 20,),
-                  ...patients.map((item) => GestureDetector(
-                    onTap: () {
-                      Patient().setPatient(item);
-                      Navigator.of(context).pushNamed('/ncdPatientSummary');
-                    },
+                  Expanded(
+                    flex: 0,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      height: 50,
+                      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                      color: Colors.grey.withOpacity(0.15),
                       child: Row(
-                        children: <Widget>[
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Expanded(
                             flex: 2,
-                            child: Text(item['data']['first_name'] + ' ' + item['data']['last_name'],
-                              style: TextStyle(color: Colors.black87, fontSize: 18),
+                              child: Container(
+                              child: Text(AppLocalizations.of(context).translate('name'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
                             ),
                           ),
+                          SizedBox(width: 5,),
                           Expanded(
                             flex: 2,
-                            child: Text(item['data']['gender'] == 'male' 
-                                ? item['data']['father_name']
-                                : item['data']['husband_name'] != null && item['data']['husband_name'].isNotEmpty ? item['data']['husband_name'] : 'n/a',
-                              style: TextStyle(color: Colors.black87, fontSize: 18),
-                              textAlign: TextAlign.center,
+                              child: Container(
+                              child: Text(AppLocalizations.of(context).translate('fathersOrHusbandsName'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
                             ),
                           ),
+                          SizedBox(width: 5,),
                           Expanded(
                             flex: 1,
-                            child: Text(item['data']['age'].toString(), 
-                            style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w400
-                              ), 
-                              textAlign: TextAlign.center,
+                              child: Container(
+                              child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
                             ),
                           ),
+                          SizedBox(width: 5,),
                           Expanded(
                             flex: 2,
-                            child: Text(item['data']['address']['street_name'],
-                              style: TextStyle(color: Colors.black87, fontSize: 18),
-                              textAlign: TextAlign.center,
+                              child: Container(
+                              child: Text(AppLocalizations.of(context).translate('streetPara'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
                             ),
-                          ),                      
+                          ),
+                          SizedBox(width: 5,),
                           Expanded(
                             flex: 3,
-                            child: item['data']['incomplete_encounter'] != null && item['data']['incomplete_encounter'] ? 
-                              Container(
-                                  alignment: Alignment.center,
-                                  width: 160,
-                                  height: 24,
-
-                                  // padding: EdgeInsets.symmetric(vertical: 5),
-                                  color: Colors.red[400],
-                                  child: Text(AppLocalizations.of(context).translate('incompleteEncounter'),
-                                    style: TextStyle(color: Colors.white, fontSize: 15),
-                                  ),
-                              ) : Container(),
+                              child: Container(
+                              child: Text(AppLocalizations.of(context).translate('status'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),textAlign: TextAlign.center),
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  )).toList(),
-                  
-                  patients.length == 0 ? Container(
+                  ) ,
+                  isLoading ? Container(
+                    margin: const EdgeInsets.only(top: 100),
+                    child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                  ) : patients.length > 0 ? Expanded(
+                    child: ListView.builder(
+                      itemCount: patients.length,
+                      shrinkWrap: true,
+                      itemBuilder: (BuildContext context, int index){
+                        return GestureDetector(
+                          onTap: () {
+                            Patient().setPatient(patients[index]);
+                            Navigator.of(context).pushNamed('/ncdPatientSummary');
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            height: 50,
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(patients[index]['data']['first_name'] + ' ' + patients[index]['data']['last_name'],
+                                    style: TextStyle(color: Colors.black87, fontSize: 18),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(patients[index]['data']['gender'] == 'male' 
+                                      ? patients[index]['data']['father_name']
+                                      : patients[index]['data']['husband_name'] != null && patients[index]['data']['husband_name'].isNotEmpty ? patients[index]['data']['husband_name'] : 'n/a',
+                                    style: TextStyle(color: Colors.black87, fontSize: 18),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(patients[index]['data']['age'].toString(), 
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400
+                                    ), 
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(patients[index]['data']['address']['street_name'],
+                                    style: TextStyle(color: Colors.black87, fontSize: 18),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),                      
+                                Expanded(
+                                  flex: 3,
+                                  child: patients[index]['data']['incomplete_encounter'] != null && patients[index]['data']['incomplete_encounter'] ? 
+                                    Container(
+                                        alignment: Alignment.center,
+                                        width: 160,
+                                        height: 24,
+
+                                        // padding: EdgeInsets.symmetric(vertical: 5),
+                                        color: Colors.red[400],
+                                        child: Text(AppLocalizations.of(context).translate('incompleteEncounter'),
+                                          style: TextStyle(color: Colors.white, fontSize: 15),
+                                        ),
+                                    ) : Container(),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                    ),
+                  ) : Container(
                     alignment: Alignment.centerLeft,
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                     child: Text(AppLocalizations.of(context).translate('noPatientFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
-                  ) : Container()
+                  ), 
                 ],
               ),
-            ) : Container(
-              height: double.infinity,
-              width: double.infinity,
-              color: Color(0x20FFFFFF),
-              child: Center(
-                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),backgroundColor: Color(0x30FFFFFF),)
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

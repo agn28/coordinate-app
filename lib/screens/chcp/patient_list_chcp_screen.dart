@@ -21,7 +21,6 @@ import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:get/get.dart';
-import 'package:nhealth/helpers/functions.dart';
 
 import 'followup_patient_chcp_summary_screen.dart';
 
@@ -58,17 +57,13 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
   @override
   initState() {
     super.initState();
-    setState(() {
-      searchController.text = '';
-    });
-    // getPatients();
-    isLoading = true;
     clearFilters();
-    getLivePatients();
+    getPatients();
   }
 
   clearFilters() {
     setState(() {
+      searchController.text = '';
       ageFromController.clear();
       ageToController.clear();
       selectedUpazila = {};
@@ -84,80 +79,73 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
   }
 
   getPatients() async {
-    
-    var data = await PatientController().getAllPatients();
+      setState(() {
+        isLoading = true;
+        searchController.text = '';
+        print('getPatients before query : ${DateTime.now()}');
+      });
+      var parsedLocalPatient = [];
+      var allLocalPatients = await PatientController().getPatientsWithAssesments();
+      // var assessments = await AssessmentController().getAllLocalAssessments(localStatus: true);
+      // var authData = await Auth().getStorageAuth();
 
-    setState(() {
-      allPatients = data;
-      patients = allPatients;
-    });
-  }
-  getLivePatients() async {
-    setState(() {
-      isLoading = true;
-      searchController.text = '';
-      print('getPatients before query : ${DateTime.now()}');
-    });
-    var parsedLocalPatient = [];
-    var allLocalPatients = await PatientController().getPatientsWithAssesments();
-    // var assessments = await AssessmentController().getAllLocalAssessments(localStatus: true);
-    // var authData = await Auth().getStorageAuth();
-    
-        // allLocalPatients.firstWhere((localPatient) {
-        //   if(localPatient['data']['address']['district'] == authData['address']['district']) {
-        //   }
-        //   localPatient['data']['incomplete_encounter'] = false;
-        //   if(localPatient['assessment_status'] == 'incomplete' && localPatient['assessment_local_status'] == 'incomplete') {
-        //     localPatient['data']['incomplete_encounter'] = true;
-        //   }
-        //   return localPatient;
-        // });
-        // parsedLocalPatient = allLocalPatients.where((localPatient) {
-        //   if(localPatient['data']['address']['district'] == authData['address']['district']) {
-            
-        //     return true;
-        //   }
-        //   return false;
-        // }).toList();
-        // parsedLocalPatient.add(localPatient);
-        // if (hasEncounter.runtimeType == bool && !hasEncounter) {
-        //   parsedLocalPatient.add(localpatientdata);
-        // }
+          // allLocalPatients.firstWhere((localPatient) {
+          //   if(localPatient['data']['address']['district'] == authData['address']['district']) {
+          //   }
+          //   localPatient['data']['incomplete_encounter'] = false;
+          //   if(localPatient['assessment_status'] == 'incomplete' && localPatient['assessment_local_status'] == 'incomplete') {
+          //     localPatient['data']['incomplete_encounter'] = true;
+          //   }
+          //   return localPatient;
+          // });
+          // parsedLocalPatient = allLocalPatients.where((localPatient) {
+          //   if(localPatient['data']['address']['district'] == authData['address']['district']) {
 
-    // for(var localPatient in allLocalPatients) {
-    //   if(localPatient['data']['address']['district'] == authData['address']['district']) {
-    //     // var lastAssessment = await AssessmentController().getLastEncounterByPatient(localPatient['id']);
-    //     // var hasEncounter = false;
-         
-    //     // if (lastAssessment['data']['type'] != 'registration') {
-    //     //   if (lastAssessment['data']['type'] == 'follow up visit (center)' || lastAssessment['data']['type'] == 'follow up visit (community)') {
-    //     //     hasEncounter = true;
-    //     //   } else if (lastAssessment['data']['status'] == null || lastAssessment['data']['status'] == "") {
-    //     //     hasEncounter = true;
-    //     //   } else {
-    //     //     //check patient has incomplete encounter
-    //     //     if(lastAssessment['data']['status'] == 'incomplete' && lastAssessment['local_status'] == 'incomplete') {
-    //     //       localPatient['data']['incomplete_encounter'] = true;
-    //     //       if(lastAssessment['data']['type'] == 'community clinic assessment' || lastAssessment['data']['type'] == 'community clinic followup') {
-    //     //         localPatient['assessment_type'] =  lastAssessment['data']['type'];
-    //     //         localPatient['assessment_status'] =  lastAssessment['data']['status'];
-    //     //       }
-    //     //     } else if (lastAssessment['data']['status'] == 'complete') {
-    //     //       localPatient['assessment_type'] =  lastAssessment['data']['type'];
-    //     //       localPatient['assessment_status'] =  lastAssessment['data']['status'];
-    //     //     }
-    //     //     hasEncounter = false; 
-    //     //   }
-    //     // }
-    //   }
-    // }
-    setState(() {
-      allPatients = allLocalPatients;
-      patients = allPatients;
-      isLoading = false;
-      print('getPatients ${allPatients.length} after query : ${DateTime.now()}');
-    });
-  }
+          //     return true;
+          //   }
+          //   return false;
+          // }).toList();
+          // parsedLocalPatient.add(localPatient);
+          // if (hasEncounter.runtimeType == bool && !hasEncounter) {
+          //   parsedLocalPatient.add(localpatientdata);
+          // }
+
+      // for(var localPatient in allLocalPatients) {
+      //   if(localPatient['data']['address']['district'] == authData['address']['district']) {
+      //     // var lastAssessment = await AssessmentController().getLastEncounterByPatient(localPatient['id']);
+      //     // var hasEncounter = false;
+
+      //     // if (lastAssessment['data']['type'] != 'registration') {
+      //     //   if (lastAssessment['data']['type'] == 'follow up visit (center)' || lastAssessment['data']['type'] == 'follow up visit (community)') {
+      //     //     hasEncounter = true;
+      //     //   } else if (lastAssessment['data']['status'] == null || lastAssessment['data']['status'] == "") {
+      //     //     hasEncounter = true;
+      //     //   } else {
+      //     //     //check patient has incomplete encounter
+      //     //     if(lastAssessment['data']['status'] == 'incomplete' && lastAssessment['local_status'] == 'incomplete') {
+      //     //       localPatient['data']['incomplete_encounter'] = true;
+      //     //       if(lastAssessment['data']['type'] == 'community clinic assessment' || lastAssessment['data']['type'] == 'community clinic followup') {
+      //     //         localPatient['assessment_type'] =  lastAssessment['data']['type'];
+      //     //         localPatient['assessment_status'] =  lastAssessment['data']['status'];
+      //     //       }
+      //     //     } else if (lastAssessment['data']['status'] == 'complete') {
+      //     //       localPatient['assessment_type'] =  lastAssessment['data']['type'];
+      //     //       localPatient['assessment_status'] =  lastAssessment['data']['status'];
+      //     //     }
+      //     //     hasEncounter = false;
+      //     //   }
+      //     // }
+      //   }
+      // }
+      setState(() {
+        allPatients = allLocalPatients;
+        patients = allPatients;
+        isLoading = false;
+        print('getPatients ${allPatients.length} after query : ${DateTime.now()}');
+      });
+    }
+
+
   search(query) {
     var searchKey = Helpers().isNumeric(query) ? 'mobile' : 'name';
 
@@ -233,10 +221,7 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
             ) : Container()
           ],
         ),
-        body: Stack(
-          children: <Widget>[
-            !isLoading ? SingleChildScrollView(
-              child: Column(
+        body: Column(
                 children: <Widget>[
                   Container(
                     // padding: EdgeInsets.symmetric(vertical: 20),
@@ -346,107 +331,120 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                     )
                   ),
                   // SizedBox(height: 20,),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                    color: Colors.grey.withOpacity(0.15),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 2,
-                            child: Container(
-                            child: Text(AppLocalizations.of(context).translate('name'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
-                          ),
-                        ),
-                        SizedBox(width: 5,),
-                        Expanded(
-                          flex: 2,
-                            child: Container(
-                            child: Text(AppLocalizations.of(context).translate('fathersOrHusbandsName'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
-                          ),
-                        ),
-                        SizedBox(width: 5,),
-                        Expanded(
-                          flex: 1,
-                            child: Container(
-                            child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
-                          ),
-                        ),
-                        SizedBox(width: 5,),
-                        Expanded(
-                          flex: 2,
-                            child: Container(
-                            child: Text(AppLocalizations.of(context).translate('streetPara'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
-                          ),
-                        ),
-                        SizedBox(width: 5,),
-                        Expanded(
-                          flex: 2,
-                            child: Container(
-                            child: Text(AppLocalizations.of(context).translate('status'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),textAlign: TextAlign.center),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ) ,
-                  ...patients.map((item) => GestureDetector(
-                    onTap: () {
-                      Patient().setPatient(item);
-                      ((item['assessment_status'] != null && item['assessment_status'] == 'complete') 
-                      || (item['assessment_type'] != null && item['assessment_type'] == 'community clinic followup')) 
-                      ? Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : 'home', 'encounterData': {},})
-                      : Navigator.of(context).pushNamed('/chcpPatientSummary');
-                    },
+                  Expanded(
+                    flex: 0,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      height: 50,
+                      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                      color: Colors.grey.withOpacity(0.15),
                       child: Row(
-                        children: <Widget>[
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Expanded(
                             flex: 2,
-                            child: Text(item['data']['first_name'] + ' ' + item['data']['last_name'],
-                              style: TextStyle(color: Colors.black87, fontSize: 18),
+                              child: Container(
+                              child: Text(AppLocalizations.of(context).translate('name'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
                             ),
                           ),
+                          SizedBox(width: 5,),
                           Expanded(
                             flex: 2,
-                            child: Text(item['data']['gender'] == 'male' 
-                                ? item['data']['father_name']
-                                : item['data']['husband_name'] != null && item['data']['husband_name'].isNotEmpty ? item['data']['husband_name'] : 'n/a',
-                              style: TextStyle(color: Colors.black87, fontSize: 18),
-                              textAlign: TextAlign.center,
+                              child: Container(
+                              child: Text(AppLocalizations.of(context).translate('fathersOrHusbandsName'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
                             ),
                           ),
+                          SizedBox(width: 5,),
                           Expanded(
                             flex: 1,
-                            child: Text(item['data']['age'].toString(), 
-                            style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w400
-                              ), 
-                              textAlign: TextAlign.center,
+                              child: Container(
+                              child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
                             ),
                           ),
+                          SizedBox(width: 5,),
                           Expanded(
                             flex: 2,
-                            child: Text(item['data']['address']['street_name'],
-                              style: TextStyle(color: Colors.black87, fontSize: 18),
-                              textAlign: TextAlign.center,
+                              child: Container(
+                              child: Text(AppLocalizations.of(context).translate('streetPara'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
                             ),
-                          ),                      
+                          ),
+                          SizedBox(width: 5,),
                           Expanded(
                             flex: 2,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                // item['data']['incomplete_encounter'] != null && item['data']['incomplete_encounter'] ?
-                                item['assessment_status'] != null && item['assessment_status'] == 'complete'
-                                && (item['assessment_type'] != null && item['assessment_type'] == 'community clinic assessment') ?
-                                Container(
-                                    alignment: Alignment.center,
-                                    width: 160,
-                                    height: 24,
+                              child: Container(
+                              child: Text(AppLocalizations.of(context).translate('status'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),textAlign: TextAlign.center),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ) ,
+                  isLoading ? Container(
+                    margin: const EdgeInsets.only(top: 100),
+                    child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                  ) : patients.length > 0 ? Expanded(
+                    child: ListView.builder(
+                      itemCount: patients.length,
+                      shrinkWrap: true,
+                      itemBuilder: (BuildContext context, int index){
+                      return GestureDetector(
+                          onTap: () {
+                            Patient().setPatient(patients[index]);
+                            ((patients[index]['data']['chcp_encounter_status'] != null && patients[index]['data']['chcp_encounter_status'] == 'complete')
+                            || (patients[index]['data']['chcp_encounter_type'] != null && patients[index]['data']['chcp_encounter_type'] == 'community clinic followup'))
+                            ? Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : 'home', 'encounterData': {},})
+                            : Navigator.of(context).pushNamed('/chcpPatientSummary');
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            height: 50,
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(patients[index]['data']['first_name'] + ' ' + patients[index]['data']['last_name'],
+                                    style: TextStyle(color: Colors.black87, fontSize: 18),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(patients[index]['data']['gender'] == 'male'
+                                      ? patients[index]['data']['father_name']
+                                      : patients[index]['data']['husband_name'] != null && patients[index]['data']['husband_name'].isNotEmpty ? patients[index]['data']['husband_name'] : 'n/a',
+                                    style: TextStyle(color: Colors.black87, fontSize: 18),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(patients[index]['data']['age'].toString(),
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(patients[index]['data']['address']['street_name'],
+                                    style: TextStyle(color: Colors.black87, fontSize: 18),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      // item['data']['incomplete_encounter'] != null && item['data']['incomplete_encounter'] ?
+                                      patients[index]['data']['chcp_encounter_status'] != null && patients[index]['data']['chcp_encounter_status'] == 'complete'
+                                      && (patients[index]['data']['chcp_encounter_type'] != null && patients[index]['data']['chcp_encounter_type'] == 'community clinic assessment') ?
+                                      Container(
+                                          alignment: Alignment.center,
+                                          width: 160,
+                                          height: 24,
 
                                     // padding: EdgeInsets.symmetric(vertical: 5),
                                     color: Colors.green[400],
@@ -454,120 +452,40 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                                       style: TextStyle(color: Colors.white, fontSize: 15),
                                     ),
                                 ) : Container(),
-                                item['assessment_status'] != null && item['assessment_status'] == 'incomplete' 
+                                item['assessment_status'] != null && item['assessment_status'] == 'incomplete'
                                 && (item['assessment_type'] != null && item['assessment_type'] == 'community clinic assessment') ?
                                 Container(
                                     alignment: Alignment.center,
                                     width: 160,
                                     height: 24,
 
-                                    // padding: EdgeInsets.symmetric(vertical: 5),
-                                    color: Colors.red[400],
-                                    child: Text(AppLocalizations.of(context).translate('incomplete'),
-                                      style: TextStyle(color: Colors.white, fontSize: 15),
-                                    ),
-                                ) : Container(),
+                                          // padding: EdgeInsets.symmetric(vertical: 5),
+                                          color: Colors.red[400],
+                                          child: Text(AppLocalizations.of(context).translate('incomplete'),
+                                            style: TextStyle(color: Colors.white, fontSize: 15),
+                                          ),
+                                      ) : Container(),
+                                    ],
+                                  ),
+                                ),
+
                               ],
                             ),
                           ),
-                          
-                        ],
-                      ),
+                        );
+                      },
                     ),
-                  )).toList(),
-                  patients.length == 0 ? Container(
+                  ) : Container(
                     alignment: Alignment.centerLeft,
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                     child: Text(AppLocalizations.of(context).translate('noPatientFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
-                  ) : Container()
+                  ),
                 ],
               ),
-            ) : Container(
-              height: double.infinity,
-              width: double.infinity,
-              color: Color(0x20FFFFFF),
-              child: Center(
-                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),backgroundColor: Color(0x30FFFFFF),)
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
 }
-
-// Column(
-//   children: <Widget>[
-//     CustomSearchWidget(
-//       listContainerHeight: 500,
-//       dataList: [...patients],
-//       hideSearchBoxWhenItemSelected: false,
-//       queryBuilder: (query, list) {
-//         return [...patients]
-//           .where((item) => item['data']['name']
-//           .toLowerCase()
-//           .contains(query.toLowerCase()))
-//           .toList();
-//       },
-//       popupListItemBuilder: (item) {
-//         print(item);
-//         return PopupListItemWidget(item);
-//       },
-//       selectedItemBuilder: (selectedItem, deleteSelectedItem) {
-//         return SelectedItemWidget(selectedItem, deleteSelectedItem);
-//       },
-//       // widget customization
-//       // noItemsFoundWidget: NoItemsFound(),
-//       textFieldBuilder: (controller, focusNode) {
-//         return MyTextField(controller, focusNode);
-//       },
-//       onItemSelected: (item) {
-//         setState(() {
-//           _selectedItem = item;
-//         });
-//       },
-//     ),
-//     Row(
-//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//       children: <Widget>[
-//         patients.length == 0 ? Container(
-//           alignment: Alignment.centerLeft,
-//           padding: EdgeInsets.only(top: 15),
-//           child: Text('No patient found', style: TextStyle(color: Colors.white, fontSize: 20),),
-//         ) :
-//         Container(
-//           alignment: Alignment.centerLeft,
-//           padding: EdgeInsets.only(top: 15),
-//           child: Text('Pending Recommendations Only', style: TextStyle(color: Colors.white),),
-//         ),
-        
-//         Container(
-//             alignment: Alignment.centerLeft,
-//             padding: EdgeInsets.only(top: 15),
-//             child: GestureDetector(
-//               onTap: () async {
-//               showDialog(
-//                 context: context,
-//                 builder: (BuildContext context) {
-//                   return FiltersDialog(parent: this,);
-//                 },
-//               );
-//               },
-//               child: Row(
-//                 children: <Widget>[
-//                   Icon(Icons.filter_list, color: Colors.white,),
-//                   SizedBox(width: 10),
-//                   Text('Filters', style: TextStyle(color: Colors.white),)
-//                 ],
-//               )
-//             ),
-//           ),
-//       ],
-//     )
-//   ],
-// )
-
 
 class DiseasesDialog extends StatefulWidget {
   _FiltersDialogState parent;
@@ -838,7 +756,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
   }
 
   applyFilter() async {
-    await this.widget.parent.getLivePatients();
+    await this.widget.parent.getPatients();
 
     allPatients.forEach((patient) {
     });
@@ -941,7 +859,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
               GestureDetector(
                 onTap: () async {
                   this.widget.parent.clearFilters();
-                  await this.widget.parent.getLivePatients();
+                  await this.widget.parent.getPatients();
                   Navigator.of(context).pop();
                 },
                 child: Container(

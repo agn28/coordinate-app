@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -18,7 +16,6 @@ import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/repositories/local/care_plan_repository_local.dart';
-import 'package:nhealth/screens/chw/patients/patient_summary_screen.dart';
 import 'package:get/get.dart';
 
 final searchController = TextEditingController();
@@ -473,20 +470,15 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
         bottom: PreferredSize(child: Container(color: kPrimaryColor, height: 1.0,), preferredSize: Size.fromHeight(1.0)),
 
       ),
-      body: SingleChildScrollView(
-        child: Stack(
-          children: <Widget>[
-            !isLoading ? Column(
+      body: Column(
               children: <Widget>[
                 Container(
-                  // padding: EdgeInsets.symmetric(vertical: 20),
                   color: kPrimaryColor,
                   child: Column(
                     children: <Widget>[
                       Container(
                         margin: EdgeInsets.only(left: 15, right: 15, top: 10,),
                         decoration: BoxDecoration(
-                          // border: Border( bottom: BorderSide(color: kPrimaryColor))
                         ),
                         child: TextField(
                           controller: searchController,
@@ -535,149 +527,150 @@ class _ChwWorkListSearchScreenState extends State<ChwWorkListSearchScreen> {
                     ],
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                  color: Colors.grey.withOpacity(0.15),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 2,
-                          child: Container(
-                          child: Text(AppLocalizations.of(context).translate('appointmentDate'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                Expanded(
+                  flex: 0,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                    color: Colors.grey.withOpacity(0.15),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 2,
+                            child: Container(
+                            child: Text(AppLocalizations.of(context).translate('appointmentDate'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 5,),
-                      Expanded(
-                        flex: 2,
-                          child: Container(
-                          child: Text(AppLocalizations.of(context).translate('village'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                        SizedBox(width: 5,),
+                        Expanded(
+                          flex: 2,
+                            child: Container(
+                            child: Text(AppLocalizations.of(context).translate('village'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 5,),
-                      Expanded(
-                        flex: 2,
-                          child: Container(
-                          child: Text(AppLocalizations.of(context).translate('name'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                        SizedBox(width: 5,),
+                        Expanded(
+                          flex: 2,
+                            child: Container(
+                            child: Text(AppLocalizations.of(context).translate('name'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 5,),
-                      Expanded(
-                        flex: 2,
-                          child: Container(
-                          child: Text(AppLocalizations.of(context).translate('fathersOrHusbandsName'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                        SizedBox(width: 5,),
+                        Expanded(
+                          flex: 2,
+                            child: Container(
+                            child: Text(AppLocalizations.of(context).translate('fathersOrHusbandsName'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 5,),
-                      Expanded(
-                        flex: 1,
-                          child: Container(
-                          child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),),
+                        SizedBox(width: 5,),
+                        Expanded(
+                          flex: 1,
+                            child: Container(
+                            child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),),
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 5,),
-                      Expanded(
-                        flex: 1,
-                          child: Container(
-                          child: Text(AppLocalizations.of(context).translate('gender'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),),
-                        ),
-                      )
-                    ],
+                        SizedBox(width: 5,),
+                        Expanded(
+                          flex: 1,
+                            child: Container(
+                            child: Text(AppLocalizations.of(context).translate('gender'), style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ) ,
 
 
-                ...pendingPatients.map((item) =>  Column(
-                  children: [
-                    GestureDetector(
+                isLoading ? Container(
+                    margin: const EdgeInsets.only(top: 100),
+                    child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                  ) : pendingPatients.length > 0 ? Expanded(
+                  child: ListView.builder(
+                      itemCount: pendingPatients.length,
+                      shrinkWrap: true,
+                      itemBuilder: (BuildContext context, int index){
+                        return GestureDetector(
                       onTap: () {
-                        Patient().setPatientModify(item);
+                        Patient().setPatientModify(pendingPatients[index]);
                         // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChwPatientRecordsScreen()));
     Navigator.of(context).pushNamed('/chwPatientSummary', arguments: {'prevScreen' : 'home', 'encounterData': {}});
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                        //color: Colors.teal.withOpacity(0.25),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Column(
                           children: [
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                child: Text("${item['body']['appointment_date'] ?? 'N/A'}", style: TextStyle(fontSize: 14, color: Colors.black),),
-                              ),
-                            ),
-                            SizedBox(width: 5,),
-                            Expanded(
-                              flex: 2,
-                                child: Container(
-                                child: Text(item['body']['address']['village'], style: TextStyle(fontSize: 14, color: Colors.black),),
-                              ),
-                            ),
-                            SizedBox(width: 5,),
-                            Expanded(
-                              flex: 2,
-                                child: Container(
-                                child: Text(item['body']['first_name'] + ' ' + item['body']['last_name'], style: TextStyle(fontSize: 14, color: Colors.black,),),
-                              ),
-                            ),
-                            SizedBox(width: 5,),
-                            Expanded(
-                              flex: 2,
-                                child: Container(
-                                  child: Text(item['body']['gender'] == 'male' 
-                                    ? item['body']['father_name']
-                                    : item['body']['husband_name'] != null && item['body']['husband_name'].isNotEmpty ? item['body']['husband_name'] : 'n/a',
-                                  style: TextStyle(color: Colors.black87, fontSize: 18),
-                                  textAlign: TextAlign.center,
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: Container(
+                                    child: Text("${pendingPatients[index]['body']['appointment_date'] ?? 'N/A'}", style: TextStyle(fontSize: 14, color: Colors.black),),
+                                  ),
                                 ),
-                              ),
+                                SizedBox(width: 5,),
+                                Expanded(
+                                  flex: 2,
+                                    child: Container(
+                                    child: Text(pendingPatients[index]['body']['address']['village'], style: TextStyle(fontSize: 14, color: Colors.black),),
+                                  ),
+                                ),
+                                SizedBox(width: 5,),
+                                Expanded(
+                                  flex: 2,
+                                    child: Container(
+                                    child: Text(pendingPatients[index]['body']['first_name'] + ' ' + pendingPatients[index]['body']['last_name'], style: TextStyle(fontSize: 14, color: Colors.black,),),
+                                  ),
+                                ),
+                                SizedBox(width: 5,),
+                                Expanded(
+                                  flex: 2,
+                                    child: Container(
+                                      child: Text(pendingPatients[index]['body']['gender'] == 'male' 
+                                        ? pendingPatients[index]['body']['father_name']
+                                        : pendingPatients[index]['body']['husband_name'] != null && pendingPatients[index]['body']['husband_name'].isNotEmpty ? pendingPatients[index]['body']['husband_name'] : 'n/a',
+                                      style: TextStyle(color: Colors.black87, fontSize: 18),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 5,),
+                                Expanded(
+                                  flex: 1,
+                                    child: Container(
+                                    child: Text(pendingPatients[index]['body']['age'].toString(), style: TextStyle(fontSize: 14, color: Colors.black),),
+                                  ),
+                                ),
+                                SizedBox(width: 5,),
+                                Expanded(
+                                  flex: 1,
+                                    child: Container(
+                                    child: Text(pendingPatients[index]['body']['gender'], style: TextStyle(fontSize: 14, color: Colors.black),),
+                                  ),
+                                )
+                              ],
                             ),
-                            SizedBox(width: 5,),
-                            Expanded(
-                              flex: 1,
-                                child: Container(
-                                child: Text(item['body']['age'].toString(), style: TextStyle(fontSize: 14, color: Colors.black),),
-                              ),
+                            Divider(
+                              height: 0,
+                              thickness: 0.5,
+                              color: Colors.grey.withOpacity(0.50)
                             ),
-                            SizedBox(width: 5,),
-                            Expanded(
-                              flex: 1,
-                                child: Container(
-                                child: Text(item['body']['gender'], style: TextStyle(fontSize: 14, color: Colors.black),),
-                              ),
-                            )
                           ],
-                        ),
+                        ), 
                        ),
-                    ),
-                     Divider(
-                       height: 0,
-                       thickness: 0.5,
-                       color: Colors.grey.withOpacity(0.50)
-                     )
-                  ],
+                    );
+                  },
                 ),
-               ).toList(),
-               pendingPatients.length == 0 ? Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  child: Text(AppLocalizations.of(context).translate('noPatientFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
-                ) : Container()
-              ],
-            )
-          
-            : Container(
-              height: MediaQuery.of(context).size.height,
-              width: double.infinity,
-              color: Color(0x90FFFFFF),
-              child: Center(
-                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),backgroundColor: Color(0x30FFFFFF),)
-              ),
-            ),
-          ],
-        ),
-      ),
+              ) : Container(
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    child: Text(AppLocalizations.of(context).translate('noPatientFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
+                  ),
+            ],
+          ),
     );
   }
 }
@@ -787,34 +780,6 @@ class _PatientItemState extends State<PatientItem> {
                                 Text(widget.item['body']['age'].toString() + 'Y ' + ' - ' + widget.item['body']['gender'], style: TextStyle(fontSize: 16, color: kTextGrey),),
                                 SizedBox(width: 10,),
                                 SizedBox(width: 10,),
-                                
-                                // Row(
-                                //   children: <Widget>[
-
-                                //     widget.item['body']['assessments'] != null && widget.item['body']['assessments']['lifestyle']['components']['diet'] != null && widget.item['body']['assessments']['lifestyle']['components']['diet']['components']['fruit'] != null ?
-                                //     CircleAvatar(
-                                //       child: Image.asset('assets/images/icons/fruit.png', width: 11,),
-                                //       radius: 11,
-                                //       backgroundColor: ColorUtils.statusColor[widget.item['body']['assessments']['lifestyle']['components']['diet']['components']['fruit']['tfl']],
-                                //     ) : Container(),
-                                //     SizedBox(width: 5,),
-
-                                //     widget.item['body']['assessments'] != null && widget.item['body']['assessments']['lifestyle']['components']['diet'] != null && widget.item['body']['assessments']['lifestyle']['components']['diet']['components']['vegetable'] != null ?
-                                //     CircleAvatar(
-                                //       child: Image.asset('assets/images/icons/vegetables.png', width: 11,),
-                                //       radius: 11,
-                                //       backgroundColor: ColorUtils.statusColor[widget.item['body']['assessments']['lifestyle']['components']['diet']['components']['vegetable']['tfl']],
-                                //     ) : Container(),
-                                //     SizedBox(width: 5,),
-
-                                //     widget.item['body']['assessments'] != null && widget.item['body']['assessments']['lifestyle']['components']['physical_activity'] != null ?
-                                //     CircleAvatar(
-                                //       child: Image.asset('assets/images/icons/activity.png', width: 11,),
-                                //       radius: 11,
-                                //       backgroundColor: ColorUtils.statusColor[widget.item['body']['assessments']['lifestyle']['components']['physical_activity']['tfl']],
-                                //     ) : Container()
-                                //   ],
-                                // ),
                               ],
                             ),
                             SizedBox(height: 5,),
@@ -854,132 +819,6 @@ class _PatientItemState extends State<PatientItem> {
                                 Text(widget.item['body']['mobile'], style: TextStyle(fontSize: 16, color: Colors.black87),),
                               ],
                             ) 
-                            // Row(
-                            //   children: <Widget>[
-                            //     widget.item['body']['assessments'] != null && widget.item['body']['assessments']['body_composition']['components']['bmi'] != null ?
-                            //     Container(
-                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                            //       decoration: BoxDecoration(
-                            //         border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['body_composition']['components']['bmi']['tfl']]),
-                            //         borderRadius: BorderRadius.circular(2)
-                            //       ),
-                            //       child: Text('BMI',style: TextStyle(
-                            //           color: ColorUtils.statusColor[widget.item['body']['assessments']['body_composition']['components']['bmi']['tfl']],
-                            //           fontWeight: FontWeight.w500
-                            //         )  
-                            //       ),
-                            //     ) : Container(),
-                            //     SizedBox(width: 7,),
-
-                            //     widget.item['body']['assessments'] != null && widget.item['body']['assessments']['blood_pressure'] != null ?
-                            //     Container(
-                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                            //       decoration: BoxDecoration(
-                            //         border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['blood_pressure']['tfl']]),
-                            //         borderRadius: BorderRadius.circular(2)
-                            //       ),
-                            //       child: Text('BP',style: TextStyle(
-                            //           color: ColorUtils.statusColor[widget.item['body']['assessments']['blood_pressure']['tfl']],
-                            //           fontWeight: FontWeight.w500
-                            //         )  
-                            //       ),
-                            //     ) : Container(),
-                            //     SizedBox(width: 7,),
-
-
-                            //     // widget.item['body']['assessments'] != null && widget.item['body']['assessments']['cvd'] != null ?
-                            //     // Container(
-                            //     //   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                            //     //   decoration: BoxDecoration(
-                            //     //     border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['cvd']['tfl']]),
-                            //     //     borderRadius: BorderRadius.circular(2)
-                            //     //   ),
-                            //     //   child: Text('CVD Risk',style: TextStyle(
-                            //     //       color: ColorUtils.statusColor[widget.item['body']['assessments']['cvd']['tfl']],
-                            //     //       fontWeight: FontWeight.w500
-                            //     //     )  
-                            //     //   ),
-                            //     // ) : Container(),
-                            //     // SizedBox(width: 7,),
-
-
-                            //     widget.item['body']['assessments'] != null && widget.item['body']['assessments']['cholesterol']['components']['total_cholesterol'] != null ?
-                            //     Container(
-                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                            //       decoration: BoxDecoration(
-                            //         border: Border.all(width: 1, color: ColorUtils.statusColor[widget.item['body']['assessments']['cholesterol']['components']['total_cholesterol']['tfl']]),
-                            //         borderRadius: BorderRadius.circular(2)
-                            //       ),
-                            //       child: Text('Cholesterol',style: TextStyle(
-                            //           color: ColorUtils.statusColor[widget.item['body']['assessments']['cholesterol']['components']['total_cholesterol']['tfl']],
-                            //           fontWeight: FontWeight.w500
-                            //         )  
-                            //       ),
-                            //     ) : Container(),
-                            //   ],
-                            // ),
-                            // Row(
-                            //   children: <Widget>[
-                            //     report != null && bmi != null ?
-                            //     Container(
-                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                            //       decoration: BoxDecoration(
-                            //         border: Border.all(width: 1, color: ColorUtils.statusColor[bmi['tfl']]),
-                            //         borderRadius: BorderRadius.circular(2)
-                            //       ),
-                            //       child: Text('BMI',style: TextStyle(
-                            //           color: ColorUtils.statusColor[bmi['tfl']],
-                            //           fontWeight: FontWeight.w500
-                            //         )  
-                            //       ),
-                            //     ) 
-                            //     : Container(),
-                            //     SizedBox(width: 7,),
-                            //     report != null && bp != null ?
-                            //     Container(
-                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                            //       decoration: BoxDecoration(
-                            //         border: Border.all(width: 1, color: ColorUtils.statusColor[bp['tfl']]),
-                            //         borderRadius: BorderRadius.circular(2)
-                            //       ),
-                            //       child: Text('BP',style: TextStyle(
-                            //           color: ColorUtils.statusColor[bmi['tfl']],
-                            //           fontWeight: FontWeight.w500
-                            //         )  
-                            //       ),
-                            //     ) : Container(),
-                            //     SizedBox(width: 7,),
-                            //     report != null && cvd != null ?
-                            //     Container(
-                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                            //       decoration: BoxDecoration(
-                            //         border: Border.all(width: 1, color: ColorUtils.statusColor[cvd['tfl']]),
-                            //         borderRadius: BorderRadius.circular(2)
-                            //       ),
-                            //       child: Text('CVD Risk',style: TextStyle(
-                            //           color: ColorUtils.statusColor[cvd['tfl']],
-                            //           fontWeight: FontWeight.w500
-                            //         )  
-                            //       ),
-                            //     ) : Container(),
-                            //     SizedBox(width: 7,),
-                            //     report != null && cholesterol != null ?
-                            //     Container(
-                            //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                            //       decoration: BoxDecoration(
-                            //         border: Border.all(width: 1, color: ColorUtils.statusColor[cholesterol['tfl']]),
-                            //         borderRadius: BorderRadius.circular(2)
-                            //       ),
-                            //       child: Text('Cholesterol',style: TextStyle(
-                            //           color: ColorUtils.statusColor[cholesterol['tfl']],
-                            //           fontWeight: FontWeight.w500
-                            //         )  
-                            //       ),
-                            //     ) : Container(),
-                            //   ],
-                            // ),
-
-                            // Text('Registered on Jan 5, 2019', style: TextStyle(color: Colors.white70, fontSize: 17, fontWeight: FontWeight.w400),),
                           ],
                         ),
                       

@@ -12,7 +12,6 @@ import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/patient_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nhealth/custom-classes/custom_toast.dart';
-import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
@@ -38,11 +37,6 @@ List allPatients = [];
 final searchController = TextEditingController();
 bool isPendingRecommendation = false;
 
-// class PatientSearchScreen extends CupertinoPageRoute {
-//   PatientSearchScreen()
-//       : super(builder: (BuildContext context) => new PatientSearch());
-
-// }
 
 class FollowupSearchScreen extends StatefulWidget {
   static const path = '/followupSearchScreen';
@@ -59,7 +53,6 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
     setState(() {
       searchController.text = '';
     });
-    // getPatients();
     isLoading = true;
     clearFilters();
     getLivePatients();
@@ -77,16 +70,6 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
       birthYearController.clear();
       lastVisitDateController.clear();
       selectedDiseases = [];
-    });
-  }
-
-  getPatients() async {
-    
-    var data = await PatientController().getAllPatients();
-
-    setState(() {
-      allPatients = data;
-      patients = allPatients;
     });
   }
 
@@ -205,13 +188,9 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
             ) : Container()
           ],
         ),
-        body: Stack(
-          children: <Widget>[
-            !isLoading ? SingleChildScrollView(
-              child: Column(
+        body: Column(
                 children: <Widget>[
                   Container(
-                    // padding: EdgeInsets.symmetric(vertical: 20),
                     color: kPrimaryColor,
                     child: Column(
                       children: <Widget>[
@@ -318,185 +297,117 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
                     )
                   ),
 
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                    color: Colors.grey.withOpacity(0.15),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 2,
-                            child: Container(
-                            child: Text(AppLocalizations.of(context).translate('name'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
-                          ),
-                        ),
-                        SizedBox(width: 5,),
-                        Expanded(
-                          flex: 2,
-                            child: Container(
-                            child: Text(AppLocalizations.of(context).translate('fathersOrHusbandsName'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
-                          ),
-                        ),
-                        SizedBox(width: 5,),
-                        Expanded(
-                          flex: 1,
-                            child: Container(
-                            child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
-                          ),
-                        ),
-                        SizedBox(width: 5,),
-                        Expanded(
-                          flex: 2,
-                            child: Container(
-                            child: Text(AppLocalizations.of(context).translate('streetPara'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
-                          ),
-                        ),
-                        
-                      ],
-                    ),
-                  ) ,
-
-                  // SizedBox(height: 20,),
-                  ...patients.map((item) => GestureDetector(
-                    onTap: () {
-                      Patient().setPatient(item);
-                      Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'home', 'encounterData': {},});
-                    },
+                  Expanded(
+                    flex: 0,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      height: 50,
+                      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                      color: Colors.grey.withOpacity(0.15),
                       child: Row(
-                        children: <Widget>[
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Expanded(
                             flex: 2,
-                            child: Text(item['data']['first_name'] + ' ' + item['data']['last_name'],
-                              style: TextStyle(color: Colors.black87, fontSize: 18),
+                              child: Container(
+                              child: Text(AppLocalizations.of(context).translate('name'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
                             ),
                           ),
+                          SizedBox(width: 5,),
                           Expanded(
                             flex: 2,
-                            child: Text(item['data']['gender'] == 'male' 
-                                ? item['data']['father_name']
-                                : item['data']['husband_name'] != null && item['data']['husband_name'].isNotEmpty ? item['data']['husband_name'] : 'n/a',
-                              style: TextStyle(color: Colors.black87, fontSize: 18),
-                              textAlign: TextAlign.center,
+                              child: Container(
+                              child: Text(AppLocalizations.of(context).translate('fathersOrHusbandsName'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
                             ),
                           ),
+                          SizedBox(width: 5,),
                           Expanded(
                             flex: 1,
-                            child: Text(item['data']['age'].toString(), 
-                            style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w400
-                              ), 
-                              textAlign: TextAlign.center,
+                              child: Container(
+                              child: Text(AppLocalizations.of(context).translate('age'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
                             ),
                           ),
+                          SizedBox(width: 5,),
                           Expanded(
                             flex: 2,
-                            child: Text(item['data']['address']['street_name'],
-                              style: TextStyle(color: Colors.black87, fontSize: 18),
-                              textAlign: TextAlign.center,
+                              child: Container(
+                              child: Text(AppLocalizations.of(context).translate('streetPara'), style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),textAlign: TextAlign.center),
                             ),
-                          ),                      
+                          ),
+                          
                         ],
                       ),
                     ),
-                  )).toList(),
-                  patients.length == 0 ? Container(
+                  ) ,
+
+                  isLoading ? Container(
+                    margin: const EdgeInsets.only(top: 100),
+                    child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                  ) : patients.length > 0 ? Expanded(
+                    child: ListView.builder(
+                      itemCount: patients.length,
+                      shrinkWrap: true,
+                      itemBuilder: (BuildContext context, int index){
+                        return GestureDetector(
+                          onTap: () {
+                            Patient().setPatient(patients[index]);
+                            Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'home', 'encounterData': {},});
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            height: 50,
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(patients[index]['data']['first_name'] + ' ' + patients[index]['data']['last_name'],
+                                    style: TextStyle(color: Colors.black87, fontSize: 18),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(patients[index]['data']['gender'] == 'male' 
+                                      ? patients[index]['data']['father_name']
+                                      : patients[index]['data']['husband_name'] != null && patients[index]['data']['husband_name'].isNotEmpty ? patients[index]['data']['husband_name'] : 'n/a',
+                                    style: TextStyle(color: Colors.black87, fontSize: 18),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(patients[index]['data']['age'].toString(), 
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400
+                                    ), 
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(patients[index]['data']['address']['street_name'],
+                                    style: TextStyle(color: Colors.black87, fontSize: 18),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),                      
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ) : Container(
                     alignment: Alignment.centerLeft,
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                     child: Text(AppLocalizations.of(context).translate('noPatientFound'), style: TextStyle(color: Colors.black87, fontSize: 20),),
-                  ) : Container()
+                  ), 
                 ],
               ),
-            ) : Container(
-              height: double.infinity,
-              width: double.infinity,
-              color: Color(0x20FFFFFF),
-              child: Center(
-                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),backgroundColor: Color(0x30FFFFFF),)
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
 }
-
-// Column(
-//   children: <Widget>[
-//     CustomSearchWidget(
-//       listContainerHeight: 500,
-//       dataList: [...patients],
-//       hideSearchBoxWhenItemSelected: false,
-//       queryBuilder: (query, list) {
-//         return [...patients]
-//           .where((item) => item['data']['name']
-//           .toLowerCase()
-//           .contains(query.toLowerCase()))
-//           .toList();
-//       },
-//       popupListItemBuilder: (item) {
-//         print(item);
-//         return PopupListItemWidget(item);
-//       },
-//       selectedItemBuilder: (selectedItem, deleteSelectedItem) {
-//         return SelectedItemWidget(selectedItem, deleteSelectedItem);
-//       },
-//       // widget customization
-//       // noItemsFoundWidget: NoItemsFound(),
-//       textFieldBuilder: (controller, focusNode) {
-//         return MyTextField(controller, focusNode);
-//       },
-//       onItemSelected: (item) {
-//         setState(() {
-//           _selectedItem = item;
-//         });
-//       },
-//     ),
-//     Row(
-//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//       children: <Widget>[
-//         patients.length == 0 ? Container(
-//           alignment: Alignment.centerLeft,
-//           padding: EdgeInsets.only(top: 15),
-//           child: Text('No patient found', style: TextStyle(color: Colors.white, fontSize: 20),),
-//         ) :
-//         Container(
-//           alignment: Alignment.centerLeft,
-//           padding: EdgeInsets.only(top: 15),
-//           child: Text('Pending Recommendations Only', style: TextStyle(color: Colors.white),),
-//         ),
-        
-//         Container(
-//             alignment: Alignment.centerLeft,
-//             padding: EdgeInsets.only(top: 15),
-//             child: GestureDetector(
-//               onTap: () async {
-//               showDialog(
-//                 context: context,
-//                 builder: (BuildContext context) {
-//                   return FiltersDialog(parent: this,);
-//                 },
-//               );
-//               },
-//               child: Row(
-//                 children: <Widget>[
-//                   Icon(Icons.filter_list, color: Colors.white,),
-//                   SizedBox(width: 10),
-//                   Text('Filters', style: TextStyle(color: Colors.white),)
-//                 ],
-//               )
-//             ),
-//           ),
-//       ],
-//     )
-//   ],
-// )
-
 
 class DiseasesDialog extends StatefulWidget {
   _FiltersDialogState parent;
