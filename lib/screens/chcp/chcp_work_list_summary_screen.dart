@@ -1,32 +1,17 @@
 import 'dart:io';
-import 'package:basic_utils/basic_utils.dart' as basic_utils;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'dart:math';
-import 'package:expandable/expandable.dart';
-
-
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/care_plan_controller.dart';
-import 'package:nhealth/controllers/followup_controller.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
 import 'package:nhealth/controllers/observation_controller.dart';
-import 'package:nhealth/controllers/user_controller.dart';
-import 'package:nhealth/custom-classes/custom_toast.dart';
-import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/chw/careplan_actions/careplan_feeling_screen.dart';
-import 'package:nhealth/screens/chw/careplan_actions/careplan_delivery_screen.dart';
-import 'package:nhealth/screens/chw/counselling_framework/counselling_framwork_screen.dart';
-import 'package:nhealth/screens/chw/followup/edit_followup_screen.dart';
-import 'package:nhealth/screens/patients/ncd/followup_feeling_screen.dart';
-
 import 'chcp_careplan_feeling_screen.dart';
 import 'followup_patient_chcp_summary_screen.dart';
 
@@ -50,7 +35,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   
   bool avatarExists = false;
-  var encounters = [];
   var lastAssessment;
   var lastFollowup;
   bool hasIncompleteFollowup = false;
@@ -60,7 +44,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
   String nextVisitPlaceChw = '';
   String nextVisitDateCc = '';
   String nextVisitPlaceCc = '';
-  String lastCarePlanDate = '';
   var conditions = [];
   var medications = [];
   var allergies = [];
@@ -69,8 +52,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
   var cholesterol;
   var bp;
   var cvd;
-  int interventionIndex = 0;
-  bool actionsActive = false;
   bool carePlansEmpty = false;
   var dueDate = '';
 
@@ -91,8 +72,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
     getReport();
     getLastAssessment();
     getLastFollowup();
-    // getEncounters();
-    // getAssessments();
     _getCarePlan();
     isLoading = false;
   }
@@ -153,13 +132,10 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
           });
         }
     }
-    
   }
 
 
   getAssessmentDueDate() {
-    // print(DateFormat("MMMM d, y").format(DateTime.parse(_patient['data']['next_assignment']['body']['activityDuration']['start'])));
-
     if (_patient != null && _patient['data']['next_assignment'] != null && _patient['data']['next_assignment']['body']['activityDuration']['start'] != null) {
       setState(() {
         DateFormat format = new DateFormat("E LLL d y");
@@ -171,85 +147,19 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
         }
       });
     }
-    
-
-    // if (_patient['data']['body']['activityDuration'] != null && item['body']['activityDuration']['start'] != '' && item['body']['activityDuration']['end'] != '') {
-    //   var start = DateTime.parse(item['body']['activityDuration']['start']);
-    // }
-  }
-
-  getStatus(item) {
-    var status = 'completed';
-    item['items'].forEach( (goal) {
-      if (goal['meta']['status'] == 'pending') {
-        setState(() {
-          status = 'pending';
-        });
-      }
-    });
-
-    return status;
-  }
-
-  getCount(item) {
-    var count = 0;
-
-    item['items'].forEach( (goal) {
-      setState(() {
-        count += 1;
-      });
-    });
-    
-
-    return count.toString();
-  }
-
-  getCompletedDate(goal) {
-    var data = '';
-    DateTime date;
-    // print(goal['items']);
-    goal['items'].forEach((item) {
-      // print(item['body']['activityDuration']['end']);
-      DateFormat format = new DateFormat("E LLL d y");
-      var endDate;
-      try {
-        endDate = format.parse(item['body']['activityDuration']['end']);
-      } catch(err) {
-        endDate = DateTime.parse(item['body']['activityDuration']['end']);
-      }
-      // print(endDate);
-      date = endDate;
-      if (date != null) {
-        date  = endDate;
-      } else {
-        if (endDate.isBefore(date)) {
-          date = endDate;
-        }
-      }
-      
-    });
-    if (date != null) {
-      var test = DateFormat('MMMM d, y').format(date);
-      data = 'Complete By ' + test;
-    }
-    return data;
   }
 
   getReport() async {
-
     setState(() {
       isLoading = true;
     });
-
     var data = await HealthReportController().getLastReport(context);
-    // return;
     if (data.isEmpty) {
       setState(() {
         carePlansEmpty = true;
       });
     } 
     else {
-
       setState(() {
         report = data['data'];
         bmi = report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ? report['body']['result']['assessments']['body_composition']['components']['bmi'] : null;
@@ -293,86 +203,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
 
   }
 
-  getAssessments() async {
-    setState(() {
-      isLoading = true;
-    });
-    var response = await HealthReportController().getLastReport(context);
-    if (response == null) {
-      return;
-    }
-    if (response['error']) {
-      return;
-    }
-
-    setState(() {
-      // lastAssessmentdDate = '';
-      // lastAssessmentdDate = DateFormat("MMMM d, y").format(DateTime.parse(response['data']['meta']['created_at']));
-    });
-
-  }
-
-  getDueCounts() {
-    var goalCount = 0;
-    var actionCount = 0;
-    carePlans.forEach((item) {
-      if(item['meta']['status'] == 'pending') {
-        goalCount = goalCount + 1;
-        if (item['body']['components'] != null) {
-          actionCount = actionCount + item['body']['components'].length;
-        }
-      }
-    });
-
-    return "$goalCount goals & $actionCount actions";
-  }
-
-  getEncounters() async {
-    setState(() {
-      isLoading = true;
-    });
-    encounters = await AssessmentController().getLiveAllAssessmentsByPatient();
-
-
-    if (encounters.isNotEmpty) {
-      var allEncounters = encounters;
-      await Future.forEach(allEncounters, (item) async {
-        var data = await getObservations(item);
-        var completed_observations = [];
-        if (data.isNotEmpty) {
-          data.forEach((obs) {
-            
-            if (obs['body']['type'] == 'survey') {
-              if (!completed_observations.contains(obs['body']['data']['name'])) {
-                completed_observations.add(obs['body']['data']['name']);
-              }
-            } else  {
-              if (!completed_observations.contains(obs['body']['type'])) {
-                completed_observations.add(obs['body']['type']);
-              }
-            }
-          });
-        }
-        encounters[encounters.indexOf(item)]['completed_observations'] = completed_observations;
-      });
-      // print(encounters);
-      encounters.sort((a, b) {
-        return DateTime.parse(b['meta']['created_at']).compareTo(DateTime.parse(a['meta']['created_at']));
-      });
-
-
-    }
-    
-  }
-
-  getObservations(assessment) async {
-    // _observations =  await AssessmentController().getObservationsByAssessment(widget.assessment);
-    var data =  await AssessmentController().getLiveObservationsByAssessment(assessment);
-    // print(data);
-    return data;
-
-  }
-
   _checkAvatar() async {
     avatarExists = await File(Patient().getPatient()['data']['avatar']).exists();
   }
@@ -408,8 +238,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
           DateFormat newFormat = new DateFormat("yyyy-MM-dd");
           endDate = DateTime.parse(item['body']['activityDuration']['end']);
           startDate = DateTime.parse(item['body']['activityDuration']['start']);
-          // startDate = DateTime.parse(item['body']['activityDuration']['start']);
-          
         }
 
         // check due careplans
@@ -463,84 +291,9 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
 
           }
         }
-
-        
-        
-        // var existedCp = carePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-        
-
-        // if (existedCp.isEmpty) {
-        //   var items = [];
-        //   items.add(item);
-        //   carePlans.add({
-        //     'items': items,
-        //     'title': item['body']['goal']['title'],
-        //     'id': item['body']['goal']['id']
-        //   });
-        // } else {
-        //   carePlans[carePlans.indexOf(existedCp.first)]['items'].add(item);
-
-        // }
-      });
-
+        });
       }
-      
-      // setState(() {
-      //   carePlans = data['data'];
-      //   isLoading = false;
-      // });
-
-    // }
   }
-
-  convertDateFromSeconds(date) {
-    if (date['_seconds'] != null) {
-      var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
-
-      return DateFormat("MMMM d, y").format(parsedDate).toString();
-    }
-    return '';
-  }
-
-  getTitle(encounter) {
-    var screening_type =  encounter['data']['screening_type'];
-    if (screening_type != null && screening_type != '') {
-      if (screening_type == 'ncd') {
-        screening_type = screening_type.toUpperCase() + ' ';
-      } else {
-        screening_type = screening_type[0].toUpperCase() + screening_type.substring(1) + ' ';
-      }
-      
-      return screening_type + 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
-    }
-    
-    return 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
-  }
-
-    String getLastVisitDate() {
-    var date = '';
-
-    if (encounters.length > 0) {
-      var lastEncounter = encounters[0];
-      var parsedDate = DateTime.tryParse(lastEncounter['meta']['created_at']);
-      if (parsedDate != null) {
-        date = DateFormat('yyyy-MM-dd').format(parsedDate);
-      }
-    }
-
-    return date;
-  }
-  String getNextVisitDate() {
-    var date = '';
-
-    if (encounters.length > 0) {
-      var lastEncounter = encounters[0];
-      date = lastEncounter['data']['next_visit_date'] ?? '';
-    }
-
-    return date;
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -661,7 +414,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
                           ),
                           SizedBox(width: 20),
                           Expanded(
-                            // padding: EdgeInsets.symmetric(vertical: 9),
                             child: Wrap(
                               children: <Widget>[
                                 ...conditions.map((item) {
@@ -686,7 +438,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Row(
-                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Text(AppLocalizations.of(context).translate('cvdRisk')+": ", style: TextStyle(fontSize: 17)),
                                 SizedBox(width: 20),
@@ -929,9 +680,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
                         ),
                       ) : Container(),
 
-
-
-
                     Container(
                       decoration: BoxDecoration(
                         border: Border(
@@ -1078,7 +826,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
                                 (widget.prevScreen == 'followup')?
                                 Container(
                                   width: double.infinity,
-                                    //margin: EdgeInsets.only(left: 15, right: 15),
                                   height: 50,
                                   decoration: BoxDecoration(
                                     color: kPrimaryColor,
@@ -1152,38 +899,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: <Widget>[
                               FloatingButton(text: AppLocalizations.of(context).translate('followUp'), onPressed: () {
-                                // // Navigator.of(context).pop();
-                                // // Navigator.of(context).pushNamed(FollowupFeelingScreen.path);
-                                // hasIncompleteFollowup ?
-                                // showDialog(
-                                //   context: context,
-                                //   builder: (BuildContext context){
-                                //     return AlertDialog(
-                                //       content: new Text(AppLocalizations.of(context).translate("editExistingAssessment"), style: TextStyle(fontSize: 20),),
-                                //       actions: <Widget>[
-                                //         // usually buttons at the bottom of the dialog
-                                //         FlatButton(
-                                //           child: new Text(AppLocalizations.of(context).translate("edit"), style: TextStyle(color: kPrimaryColor)),
-                                //           onPressed: () {
-                                //             Navigator.of(context).pushNamed(EditFollowupScreen.path);
-                                //           },
-                                //         ),
-                                //         FlatButton(
-                                //           child: new Text(AppLocalizations.of(context).translate("newFollowUp"), style: TextStyle(color: kPrimaryColor)),
-                                //           onPressed: () async {
-                                //             await AssessmentController().deleteAssessment(lastFollowup['data']['id']);
-                                //             setState(() {
-                                //               lastFollowup = {};
-                                //             });
-                                //             Navigator.of(context).pushNamed(FollowupFeelingScreen.path);
-                                //           },
-                                //         ),
-                                //       ],
-                                //     );     
-                                //   }
-                                // ) :
-                                // // Navigator.of(context).pop();
-                                // Navigator.of(context).pushNamed(FollowupFeelingScreen.path);
                                 Navigator.of(context).pushNamed(FollowupPatientChcpSummaryScreen.path, arguments: {'prevScreen' : 'home', 'encounterData': {},});
                               }, ),
 
@@ -1202,9 +917,6 @@ class _ChcpWorkListSummaryScreenState extends State<ChcpWorkListSummaryScreen> {
               }
             );
           },
-          // icon: Icon(Icons.add),
-          // label: null,
-          // backgroundColor: kPrimaryColor,
           child: Container(
             height: 50,
             width: 50,
@@ -1259,16 +971,3 @@ class FloatingButton extends StatelessWidget {
   }
 }
 
-class CustomClipPath extends CustomClipper<Path> {
-  var radius=10.0;
-  @override
-  Path getClip(Size size) {
-    Path path = Path();
-    path.lineTo(size.width / 2, size.height);
-    path.lineTo(size.width, 0.0);
-    return path;
-  }
-  
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-}

@@ -1,11 +1,7 @@
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
-import 'package:nhealth/models/auth.dart';
-import 'package:nhealth/models/patient.dart';
-import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import 'new_patient_questionnaire_chcp_screen.dart';
 import 'new_visit_unwell_chcp_screen.dart';
@@ -20,24 +16,10 @@ class NewVisitChcpFeelingScreen extends StatefulWidget {
 }
 
 class _NewVisitChcpFeelingScreenState extends State<NewVisitChcpFeelingScreen> {
-  var _patient;
-  bool avatarExists = false;
 
   @override
   void initState() {
     super.initState();
-    _patient = Patient().getPatient();
-  }
-
-  _checkAvatar() async {
-    avatarExists = await File(Patient().getPatient()['data']['avatar']).exists();
-  }
-
-  _checkAuth() {
-    if (Auth().isExpired()) {
-      Auth().logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    }
   }
 
   @override
