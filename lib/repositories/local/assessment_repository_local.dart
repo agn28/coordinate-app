@@ -453,19 +453,25 @@ class AssessmentRepositoryLocal {
       id,
       data,
       patient_id,
+      type,
+      screening_type,
       status,
       is_synced,
-      local_status
+      local_status,
+      created_at
     )
-    VALUES (?,?,?,?,?,?)''';
+    VALUES (?,?,?,?,?,?,?,?,?)''';
 
     List<dynamic> params = [
       id,
       jsonEncode(data),
       data['body']['patient_id'],
       data['body']['status'],
+      data['body']['screening_type'],
+      data['body']['status'],
       isSynced,
-      localStatus
+      localStatus,
+      data['meta']['created_at']
     ];
     var response;
 
@@ -485,13 +491,24 @@ class AssessmentRepositoryLocal {
       id,
       data,
       patient_id,
+      type,
+      screening_type,
       status,
       is_synced,
-      local_status
+      local_status,
+      created_at
     )
-    VALUES (?,?,?,?,?,?)''';
+    VALUES (?,?,?,?,?,?,?,?,?)''';
     for (var item in tempSyncs) {
-      List<dynamic> params = [item['id'], jsonEncode(item), item['body']['patient_id'], item['body']['status'], isSynced, localStatus];
+      List<dynamic> params = [item['id'], 
+      jsonEncode(item), 
+      item['body']['patient_id'], 
+      item['body']['type'], 
+      item['body']['screening_type'], 
+      item['body']['status'], 
+      isSynced, 
+      localStatus,
+      item['meta']['created_at']];
       await batch.rawInsert(sql, params);
       print('rawInsert');
     }
@@ -510,12 +527,23 @@ class AssessmentRepositoryLocal {
     final sql = '''UPDATE ${DatabaseCreator.assessmentTable} SET
       data = ? ,
       patient_id = ?,
+      type = ?,
+      screening_type = ?,
       status = ?,
       is_synced = ?,
       local_status = ?
+      created_at = ?
       WHERE id = ?''';
-    List<dynamic> params = [jsonEncode(data), data['body']['patient_id'],
-      data['body']['status'], isSynced, localStatus, id];
+    List<dynamic> params = [
+    jsonEncode(data), 
+    data['body']['patient_id'],
+    data['body']['type'], 
+    data['body']['screening_type'], 
+    data['body']['status'], 
+    isSynced, 
+    localStatus, 
+    data['meta']['created_at'], 
+    id];
     var response;
     try {
       response = await db.rawUpdate(sql, params);

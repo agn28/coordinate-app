@@ -37,6 +37,7 @@ class DatabaseCreator {
       id TEXT PRIMARY KEY,
       data TEXT,
       nid,
+      district TEXT,
       status TEXT,
       is_synced BOOLEAN
     )''';
@@ -51,6 +52,8 @@ class DatabaseCreator {
       id TEXT PRIMARY KEY,
       data TEXT,
       patient_id TEXT,
+      type TEXT,
+      screening_type TEXT,
       status TEXT,
       is_synced BOOLEAN,
       local_status TEXT,

@@ -25,6 +25,18 @@ class PatientReposioryLocal {
       return;
     }
   }
+  
+  getPatientsWithAssesments() async {
+    var authData = await Auth().getStorageAuth();
+    try {
+      return await db.rawQuery('''SELECT p.*, a.id as assessment_id, a.type as assessment_type, a.status as assessment_status, a.local_status as assessment_local_status, a.created_at as assessment_created_at FROM ${DatabaseCreator.patientTable} AS p 
+      INNER JOIN (SELECT * FROM ${DatabaseCreator.assessmentTable} ORDER BY created_at DESC) as a
+      ON p.id = a.patient_id
+      WHERE p.district = "${authData['address']['district']}"''');
+    } catch (error) {
+      return;
+    }
+  }
 
   getNewPatients() async {
     final sql = '''SELECT * FROM ${DatabaseCreator.patientTable}''';
@@ -137,9 +149,9 @@ class PatientReposioryLocal {
   syncFromLive(tempSyncs) async {
     Batch batch = db.batch();
     final sql = '''INSERT OR REPLACE INTO ${DatabaseCreator.patientTable}
-    (id, data, nid, status, is_synced) VALUES (?,?,?,?,?)''';
+    (id, data, nid, district, status, is_synced) VALUES (?,?,?,?,?,?)''';
     for (var item in tempSyncs) {
-      List<dynamic> params = [item['id'], jsonEncode(item), item['body']['nid'], '', true];
+      List<dynamic> params = [item['id'], jsonEncode(item), item['body']['nid'], item['body']['address']['district'], '', true];
       await batch.rawInsert(sql, params);
     }
     try {
@@ -182,14 +194,16 @@ class PatientReposioryLocal {
       id,
       data,
       nid,
+      district,
       status,
       is_synced
     )
-    VALUES (?,?,?,?,?)''';
+    VALUES (?,?,?,?,?,?)''';
     List<dynamic> params = [
       id,
       jsonEncode(data),
       data['body']['nid'],
+      data['body']['address']['district'],
       '',
       synced
     ];
