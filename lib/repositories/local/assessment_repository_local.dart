@@ -509,6 +509,7 @@ class AssessmentRepositoryLocal {
       isSynced, 
       localStatus,
       item['meta']['created_at']];
+      // DateFormat("dd-MM-yyyy HH:mm:ss").format(DateTime.parse(item['meta']['created_at']))];
       await batch.rawInsert(sql, params);
       print('rawInsert');
     }

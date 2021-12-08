@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:basic_utils/basic_utils.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/foundation.dart';
@@ -92,9 +94,33 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
     setState(() {
       isLoading = true;
       searchController.text = '';
+      print('getPatients before query : ${DateTime.now()}');
     });
 
     var parsedLocalPatient = [];
+    // var allLocalPatients = await PatientController().getPatientsWithAssesments();
+    // for(var localPatient in allLocalPatients) {
+    //   print('p ${localPatient['id']} ${localPatient['assessment_type']} ${localPatient['assessment_created_at']}');
+    //   var parsedData = jsonDecode(localPatient['data']);
+    //   if (localPatient['assessment_type'] == 'registration'
+    //     || localPatient['assessment_screening_type'] != 'follow-up'
+    //     && (localPatient['assessment_status'] != null || localPatient['assessment_status'] != "" || localPatient['assessment_status'] != "complete")) {
+    //     //TODO: Will remove this later
+    //     if(localPatient['assessment_status'] == 'incomplete') {
+    //       parsedData['body']['incomplete_encounter'] = true;
+    //     }
+    //     parsedLocalPatient.add({
+    //       'id': localPatient['id'],
+    //       'data': parsedData['body'],
+    //       'meta': parsedData['meta'],
+    //       'assessment_type': localPatient['assessment_type'],
+    //       'assessment_status': localPatient['assessment_status'],
+    //       'assessment_local_status': localPatient['assessment_local_status'],
+    //     });
+        
+    //   }
+    // }
+
     var allLocalPatients = await PatientController().getAllLocalPatients();
     var assessments = await AssessmentController().getAllAssessments();
     var authData = await Auth().getStorageAuth();
@@ -137,6 +163,7 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
       allPatients = parsedLocalPatient;
       patients = allPatients;
       isLoading = false;
+      print('getPatients after query : ${DateTime.now()} ${patients.length}');
     });
   }
 

@@ -29,8 +29,8 @@ class PatientReposioryLocal {
   getPatientsWithAssesments() async {
     var authData = await Auth().getStorageAuth();
     try {
-      return await db.rawQuery('''SELECT p.*, a.id as assessment_id, a.type as assessment_type, a.status as assessment_status, a.local_status as assessment_local_status, a.created_at as assessment_created_at FROM ${DatabaseCreator.patientTable} AS p 
-      INNER JOIN (SELECT * FROM ${DatabaseCreator.assessmentTable} ORDER BY created_at DESC) as a
+      return await db.rawQuery('''SELECT p.*, a.id as assessment_id, a.type as assessment_type, a.screening_type as assessment_screening_type, a.status as assessment_status, a.local_status as assessment_local_status, a.created_at as assessment_created_at FROM ${DatabaseCreator.patientTable} AS p 
+      INNER JOIN (SELECT * FROM ${DatabaseCreator.assessmentTable} ORDER BY datetime(created_at) DESC) as a
       ON p.id = a.patient_id
       WHERE p.district = "${authData['address']['district']}"
       GROUP BY a.patient_id''');

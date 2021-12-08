@@ -1542,7 +1542,7 @@ class _ViewSummaryState extends State<ViewSummary> {
   initState() {
     super.initState();
     _isRegisterButtonDisabled = false;
-    creationDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
+    creationDateTimeController.text = '${DateFormat("dd-MM-yyyy HH:mm:ss").format(DateTime.now())}';
   }
 
   uploadImage() async {
@@ -1970,7 +1970,7 @@ class _ViewSummaryState extends State<ViewSummary> {
                               // margin: EdgeInsets.symmetric(horizontal: 10),
                               child: DateTimeField(
                                 resetIcon: null,
-                                format: DateFormat("yyyy-MM-dd HH:mm"),
+                                format: DateFormat("dd-MM-yyyy HH:mm:ss"),
                                 controller: creationDateTimeController,
                                 decoration: InputDecoration(
                                   // hintText: '${DateTime.now()}',//AppLocalizations.of(context).translate("lastVisitDate"),

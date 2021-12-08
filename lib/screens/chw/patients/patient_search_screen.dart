@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:basic_utils/basic_utils.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/foundation.dart';
@@ -124,45 +126,71 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
  
   getLivePatients() async {
     setState(() {
+      print('getPatients before query : ${DateTime.now()}');
       isLoading = true;
     });
     var parsedLocalNewPatients = [];
     var parsedLocalExistingPatients = [];
-    var allLocalPatients = await PatientController().getAllLocalPatients();
-    var assessments = await AssessmentController().getAllAssessments();
-      
-    var authData = await Auth().getStorageAuth();
-    for(var localPatient in allLocalPatients) {
-      if(localPatient['data']['address']['district'] == authData['address']['district']) {
-        var hasEncounter = assessments.firstWhere((assessment) {
-          if (assessment['data']['patient_id'] == localPatient['id'] && assessment['data']['type'] != 'registration') {
-            return true;
-          } return false; 
-        }, orElse: () => false);
-
-        if(hasEncounter.runtimeType == bool && !hasEncounter) {
-          var localNewPatientdata = {
-            'id': localPatient['id'],
-            'data': localPatient['data'],
-            'meta': localPatient['meta']
-          };
-          parsedLocalNewPatients.add(localNewPatientdata);
-        } else {
-          var localExistingPatientdata = {
-            'id': localPatient['id'],
-            'data': localPatient['data'],
-            'meta': localPatient['meta']
-          };
-          parsedLocalExistingPatients.add(localExistingPatientdata);
-        }
+    var allLocalPatients = await PatientController().getPatientsWithAssesments();
+    for (var patient in allLocalPatients) {
+      print('p ${patient['id']} ${patient['assessment_type']} ${patient['assessment_created_at']}');
+      var parsedData = jsonDecode(patient['data']);
+      if (patient['assessment_type'] != 'registration') {
+        parsedLocalExistingPatients.add({
+          'id': patient['id'],
+          'data': parsedData['body'],
+          'meta': parsedData['meta'],
+          'assessment_type': patient['assessment_type'],
+          'assessment_status': patient['assessment_status'],
+          'assessment_local_status': patient['assessment_local_status'],
+        });
+      } else {
+        parsedLocalNewPatients.add({
+          'id': patient['id'],
+          'data': parsedData['body'],
+          'meta': parsedData['meta'],
+          'assessment_type': patient['assessment_type'],
+          'assessment_status': patient['assessment_status'],
+          'assessment_local_status': patient['assessment_local_status'],
+        });
       }
     }
+
+    // var allLocalPatients = await PatientController().getAllPatients();
+    // var assessments = await AssessmentController().getAllAssessments();
+    // var authData = await Auth().getStorageAuth();
+    // for(var localPatient in allLocalPatients) {
+    //   if(localPatient['data']['address']['district'] == authData['address']['district']) {
+    //     var hasEncounter = assessments.firstWhere((assessment) {
+    //       if (assessment['data']['patient_id'] == localPatient['id'] && assessment['data']['type'] != 'registration') {
+    //         return true;
+    //       } return false; 
+    //     }, orElse: () => false);
+
+    //     if(hasEncounter.runtimeType == bool && !hasEncounter) {
+    //       var localNewPatientdata = {
+    //         'id': localPatient['id'],
+    //         'data': localPatient['data'],
+    //         'meta': localPatient['meta']
+    //       };
+    //       parsedLocalNewPatients.add(localNewPatientdata);
+    //     } else {
+    //       var localExistingPatientdata = {
+    //         'id': localPatient['id'],
+    //         'data': localPatient['data'],
+    //         'meta': localPatient['meta']
+    //       };
+    //       parsedLocalExistingPatients.add(localExistingPatientdata);
+    //     }
+    //   }
+    // }
     setState(() {
       allNewPatients = parsedLocalNewPatients;
       newPatients = allNewPatients;
       allExistingPatients = parsedLocalExistingPatients;
       existingPatients = allExistingPatients;
       isLoading = false;
+      print('getPatients before query : ${DateTime.now()} ${newPatients.length} ${existingPatients.length}');
     });
   }
 

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:basic_utils/basic_utils.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/foundation.dart';
@@ -84,9 +86,21 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
         searchController.text = '';
         print('getPatients before query : ${DateTime.now()}');
       });
+      var parsedLocalPatients = [];
       var allLocalPatients = await PatientController().getPatientsWithAssesments();
+      for (var patient in allLocalPatients) {
+        var parsedData = jsonDecode(patient['data']);
+        parsedLocalPatients.add({
+          'id': patient['id'],
+          'data': parsedData['body'],
+          'meta': parsedData['meta'],
+          'assessment_type': patient['assessment_type'],
+          'assessment_status': patient['assessment_status'],
+          'assessment_local_status': patient['assessment_local_status'],
+        });
+      }
       setState(() {
-        allPatients = allLocalPatients;
+        allPatients = parsedLocalPatients;
         patients = allPatients;
         isLoading = false;
         print('getPatients ${allPatients.length} after query : ${DateTime.now()}');

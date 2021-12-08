@@ -2426,8 +2426,8 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
     dietTitleAdded = false;
     tobaccoTitleAdded = false;
     isReferralRequired = null;
-    creationDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
-    completionDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
+    creationDateTimeController.text = '${DateFormat("dd-MM-yyyy HH:mm:ss").format(DateTime.now())}';
+    completionDateTimeController.text = '${DateFormat("dd-MM-yyyy HH:mm:ss").format(DateTime.now())}';
   }
 
   checkCounsellingQuestions(counsellingQuestion) {
@@ -2814,7 +2814,7 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
                                         // margin: EdgeInsets.symmetric(horizontal: 25),
                                         child: DateTimeField(
                                           resetIcon: null,
-                                          format: DateFormat("yyyy-MM-dd HH:mm"),
+                                          format: DateFormat("dd-MM-yyyy HH:mm:ss"),
                                           controller: creationDateTimeController,
                                           decoration: InputDecoration(
                                             // hintText: AppLocalizations.of(context).translate("lastVisitDate"),
@@ -2863,7 +2863,7 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
                                         child: Container(
                                           child: DateTimeField(
                                             resetIcon: null,
-                                            format: DateFormat("yyyy-MM-dd HH:mm"),
+                                            format: DateFormat("dd-MM-yyyy HH:mm:ss"),
                                             controller: completionDateTimeController,
                                             decoration: InputDecoration(
                                               // hintText: AppLocalizations.of(context).translate("lastVisitDate"),

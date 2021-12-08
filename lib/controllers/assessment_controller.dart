@@ -239,9 +239,10 @@ class AssessmentController {
 
   getIncompleteEncounterWithObservation(patientId, {key: '', value: ''}) async {
     var assessment = await AssessmentRepositoryLocal().getIncompleteAssessmentsByPatient(patientId);
-    var parsedData = jsonDecode(assessment.last['data']);
-    var observations = await getObservationsByAssessment(parsedData);
     if (isNotNull(assessment) && assessment.isNotEmpty) {
+      var parsedData = jsonDecode(assessment.last['data']);
+      var observations = await getObservationsByAssessment(parsedData);
+    
       var parsedAssessment = {
         'id': assessment.last['id'],
         'body': jsonDecode(assessment.last['data'])['body'],
@@ -955,7 +956,7 @@ class AssessmentController {
      } else {
       var response;
       var assessmentId = Uuid().v4();
-      var created_at = createdAt == '' ? DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now()).toString() : createdAt;
+      var created_at = createdAt == '' ? DateFormat("dd-MM-yyyy HH:mm:ss").format(DateTime.now()).toString() : createdAt;
       var assessmentData = _prepareAssessmentData(type, screening_type, assessmentStatus, created_at);
       if (followupType != '') {
         assessmentData['body']['followup_type'] = followupType;
@@ -1636,7 +1637,7 @@ class AssessmentController {
     var data = {
       "meta": {
         "collected_by": Auth().getAuth()['uid'],
-        "created_at": created_at != '' ? created_at : DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now()).toString()
+        "created_at": created_at != '' ? created_at : DateFormat("dd-MM-yyyy HH:mm:ss").format(DateTime.now()).toString()
       },
       "body": {
         "type": type,

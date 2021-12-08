@@ -148,7 +148,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     // }
     setState(() {
       isLoading = false;
-      incompleteEncounterDate = !data['error'] && data['data'] != null ? DateFormat("MMMM d, y").format(DateTime.parse(data['data']['assessment']['meta']['created_at'])) : '';
+      // incompleteEncounterDate = !data['error'] && data['data'] != null ? DateFormat("MMMM d, y").format(DateTime.parse(data['data']['assessment']['meta']['created_at'])) : '';
       performerName = performer != null ? performer['data']['name'] : '';
       performerRole = performer != null ? performer['data']['role'] : '';
     });

@@ -2266,7 +2266,7 @@ var creationDateTimeController = TextEditingController();
 var completionDateTimeController = TextEditingController();
 
 class _RecommendedCounsellingState extends State<RecommendedCounselling> {
-  final format = DateFormat("yyyy-MM-dd HH:mm");
+  final format = DateFormat("dd-MM-yyyy HH:mm:ss");
   bool activityTitleAdded = false;
 
   @override
@@ -2275,8 +2275,8 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
     dietTitleAdded = false;
     tobaccoTitleAdded = false;
     isReferralRequired = null;
-    creationDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
-    completionDateTimeController.text = '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now())}';
+    creationDateTimeController.text = '${DateFormat("dd-MM-yyyy HH:mm:ss").format(DateTime.now())}';
+    completionDateTimeController.text = '${DateFormat("dd-MM-yyyy HH:mm:ss").format(DateTime.now())}';
   }
 
   checkCounsellingQuestions(counsellingQuestion) {
@@ -2713,7 +2713,7 @@ class _RecommendedCounsellingState extends State<RecommendedCounselling> {
                                     child: Container(
                                       child: DateTimeField(
                                         resetIcon: null,
-                                        format: DateFormat("yyyy-MM-dd HH:mm"),
+                                        format: DateFormat("dd-MM-yyyy HH:mm:ss"),
                                         controller: completionDateTimeController,
                                         decoration: InputDecoration(
                                           // hintText: AppLocalizations.of(context).translate("lastVisitDate"),

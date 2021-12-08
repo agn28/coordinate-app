@@ -37,21 +37,7 @@ class PatientController {
   }
 
   getPatientsWithAssesments() async {
-    var patients = await PatientReposioryLocal().getPatientsWithAssesments();
-    var data = [];
-    for (var patient in patients) {
-      var parsedData = jsonDecode(patient['data']);
-      data.add({
-        'id': patient['id'],
-        'data': parsedData['body'],
-        'meta': parsedData['meta'],
-        'assessment_type': patient['assessment_type'],
-        'assessment_status': patient['assessment_status'],
-        'assessment_local_status': patient['assessment_local_status'],
-      });
-    }
-
-    return data;
+    return await PatientReposioryLocal().getPatientsWithAssesments();
   }
 
   getAllLocalPatients() async {
