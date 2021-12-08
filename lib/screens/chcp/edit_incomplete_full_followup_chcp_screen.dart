@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:basic_utils/basic_utils.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,10 +25,8 @@ import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/repositories/local/assessment_repository_local.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chcp/chcp_counselling_confirmation_screen.dart';
-import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import 'followup_patient_chcp_summary_screen.dart';
-
 
 
 var medicalHistoryQuestions = {};
@@ -40,7 +37,6 @@ var riskQuestions = {};
 var riskAnswers = [];
 var relativeQuestions = {};
 var relativeAnswers = [];
-// var personalQuestions = {};
 var counsellingQuestions = {};
 var counsellingAnswers = [];
 
@@ -121,7 +117,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
     hasIncompleteChcpEncounter = false;
     prepareQuestions();
     prepareAnswers();
-    // getCenters();
     if(_patient['data']['chcp_encounter_status'] != null && _patient['data']['chcp_encounter_status'] == 'incomplete') {
       hasIncompleteChcpEncounter = true;
     } else {
@@ -132,86 +127,58 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
 
     getMedicationsDispense();
 
-    // getCenters();
 
     nextText = (Language().getLanguage() == 'Bengali') ? 'পরবর্তী' : 'NEXT';
   }
 
-  getCenters() async {
-    var centerData = await PatientController().getCenter();
+  getMedicationsDispense() async {
+    dynamicMedications = [];
 
-    if (centerData['error'] != null && !centerData['error']) {
-      clinicTypes = centerData['data'];
-      for(var center in clinicTypes) {
-        if(isNotNull(_patient['data']['center']) && center['id'] == _patient['data']['center']['id']) {
-          setState(() {
-            selectedtype = center;
-          });
-        }
-      }
+    if (Auth().isExpired()) {
+      Auth().logout();
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
     }
-  }
 
-    getMedicationsDispense() async {
-      dynamicMedications = [];
+    var patientId = Patient().getPatient()['id'];
+    var data = await PatientController().getMedicationsByPatient(patientId);
 
-      if (Auth().isExpired()) {
-        Auth().logout();
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-      }
+    if (data == null) {
+      return;
+    } else if (data['message'] == 'Unauthorized') {
+      Auth().logout();
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
+      return;
+    } else if (data['error'] != null && data['error']) {
+      return;
+    } else if (data['data'] != null) {
+      var meds = await prepareDynamicMedications(data['data']);
+      setState(() {
+        dynamicMedications = meds;
+      });
 
-      // setState(() {
-      //   isLoading = true;
-      // });
-      var patientId = Patient().getPatient()['id'];
-      var data = await PatientController().getMedicationsByPatient(patientId);
-      // setState(() {
-      //   isLoading = false;
-      // });
-
-      if (data == null) {
-        return;
-      } else if (data['message'] == 'Unauthorized') {
-        Auth().logout();
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-        return;
-      } else if (data['error'] != null && data['error']) {
-        return;
-      } else if (data['data'] != null) {
-        var meds = await prepareDynamicMedications(data['data']);
-        setState(() {
-          dynamicMedications = meds;
-        });
-
-      }
+    }
   }
 
   prepareDynamicMedications(medications) {
     var prepareMedication = [];
     var serial = 1;
-    // dynamicMedicationTitles = [];
-    // dynamicMedicationAnswers = [];
     for(var item in medications) {
-      // dynamicMedications.forEach((item) {
       var textEditingController = new TextEditingController();
       textEditingControllers.putIfAbsent(item['id'], ()=>textEditingController);
-      //   // return textFields.add( TextField(controller: textEditingController));
-      // });
-      // dynamicMedicationTitles.add(item['body']['title']);
+
       prepareMedication.add({
         'medId': item['id'],
         'medInfo': '${serial}. Tab ${item['body']['title']}: ${item['body']['dosage']}${item['body']['unit']} ${item['body']['activityDuration']['repeat']['frequency']} time(s) ${preparePeriodUnits(item['body']['activityDuration']['repeat']['periodUnit'], 'repeat')} - continue ${item['body']['activityDuration']['review']['period']} ${preparePeriodUnits(item['body']['activityDuration']['review']['periodUnit'], 'review')}'
       });
       serial++;
-      // dynamicMedicationAnswers.add('');
     }
     dynamicMedications = prepareMedication;
     return dynamicMedications;
   }
 
-    preparePeriodUnits(unit, type) {
+  preparePeriodUnits(unit, type) {
     if(unit == 'd')
       if(type == 'repeat') return 'daily';
       else if(type == 'review') return 'day(s)';
@@ -230,7 +197,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
       else return '';
     else
       return '';
-
   }
 
   getIncompleteAssessmentLocal() async {
@@ -274,48 +240,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
       });
     }
   }
-
-
-  // getIncompleteFollowup() async {
-  //   print("getIncompleteFollowup");
-
-  //   if (Auth().isExpired()) {
-  //     Auth().logout();
-  //     Navigator.pushReplacement(
-  //         context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-  //   }
-
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-  //   var patientId = Patient().getPatient()['id'];
-  //   var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
-  //   setState(() {
-  //     isLoading = false;
-  //   });
-
-  //   if (data == null) {
-  //     return;
-  //   } else if (data['message'] == 'Unauthorized') {
-  //     Auth().logout();
-  //     Navigator.pushReplacement(
-  //         context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-  //     return;
-  //   } else if (data['error'] != null && data['error']) {
-  //     return;
-  //   }
-
-  //   setState(() {
-  //     encounter = data['data']['assessment'];
-  //     print("encounter: $encounter");
-  //     observations = data['data']['observations'];
-  //     print("observations: $observations");
-  //   });
-
-  //   print("observations: $observations");
-
-  //   populatePreviousAnswers();
-  // }
 
   populatePreviousAnswers() {
     observations.forEach((obs) {
@@ -607,24 +531,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
       Auth().logout();
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    }
-  }
-
-  setLoader(value) {
-    setState(() {
-      isLoading = value;
-    });
-  }
-
-  goToHome(recommendation, data) {
-    if (recommendation) {
-      Navigator.of(context).pushReplacementNamed(
-          MedicalRecommendationScreen.path,
-          arguments: data);
-    } else {
-      Navigator.of(context).pushNamed(
-        '/chcpHome',
-      );
     }
   }
 
@@ -1114,50 +1020,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
     );
   }
 
-
-  missingDataAlert() async {
-    var response = await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          // return object of type Dialog
-          return AlertDialog(
-            content: new Text(
-              AppLocalizations.of(context).translate("incompleteNcd"),
-              style: TextStyle(fontSize: 22),
-            ),
-            actions: <Widget>[
-              // usually buttons at the bottom of the dialog
-              Container(  
-                margin: EdgeInsets.all(20),  
-                child:FlatButton(
-                  child: new Text(AppLocalizations.of(context).translate("back"),
-                      style: TextStyle(fontSize: 20),),
-                  color: kPrimaryColor,  
-                  textColor: Colors.white,
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
-                ),
-              ),
-              Container(  
-                margin: EdgeInsets.all(20),  
-                child:FlatButton(
-                  child: new Text(
-                      AppLocalizations.of(context).translate("continue"),
-                      style: TextStyle(fontSize: 20),),
-                  color: kPrimaryColor,  
-                  textColor: Colors.white,
-                  onPressed: () {
-                    Navigator.of(context).pop(true);
-                  },
-                ),
-              ),
-            ],
-          );
-        });
-    return response;
-  }
-
   var role = '';
   _getAuthData() async {
     var data = await Auth().getStorageAuth();
@@ -1257,15 +1119,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
     var hasMissingData = checkMissingData();
     var hasOptionalMissingData = checkOptionalMissingData();
 
-    // if (hasMissingData) {
-    //   var continueMissing = await missingDataAlert();
-    //   if (!continueMissing) {
-    //     return;
-    //   }
-    // }
-
-    // setLoader(true);
-
     var patient = Patient().getPatient();
 
     var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
@@ -1283,8 +1136,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
         'followupType': 'full'
       };
     }
-  
-    // Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': encounterData ,});
   }
 
   List<CustomStep> _mySteps() {
@@ -1364,18 +1215,6 @@ class _EditIncompleteFullFollowupChcpScreenState extends State<EditIncompleteFul
         content: CreateRefer(),
         isActive: _currentStep >= 2,
       ),
-
-      // CustomStep(
-      //   title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
-      //   content: Followup(parent: this),
-      //   isActive: _currentStep >= 2,
-      // ),
-
-      // CustomStep(
-      //   title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
-      //   content: InitialCounselling(parent: this),
-      //   isActive: _currentStep >= 3,
-      // ),
     ];
 
     if (Configs().configAvailable('isThumbprint')) {
@@ -1466,7 +1305,6 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                   height: 20,
                 ),
                 Container(
-                  // alignment: Alignment.center,
                   margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
                   child: Text(
                     AppLocalizations.of(context).translate('medicalHistory'),
@@ -1616,13 +1454,6 @@ class _MedicationState extends State<Medication> {
   bool isEmpty = true;
 
   checkMedicalHistoryAnswers(medicationQuestion) {
-    // if (medicationQuestions['items'].length -1 == medicationQuestions['items'].indexOf(medicationQuestion)) {
-    //   if (showLastMedicationQuestion) {
-    //     return true;
-    //   }
-
-    // }
-    // return true;
 
     // check if any medical histroy answer is yes. then return true if medication question is aspirin, or lower fat
     if (medicationQuestion['type'] == 'heart' || medicationQuestion['type'] == 'heart_bp_diabetes') {
@@ -1682,30 +1513,6 @@ class _MedicationState extends State<Medication> {
     return false;
   }
 
-  checkAnswer() {
-    setState(() {});
-
-    return;
-
-    var isPositive = false;
-    var answersLength = medicationAnswers.length;
-
-    for (var answer in medicationAnswers) {
-      if (medicationAnswers.indexOf(answer) != answersLength - 1) {
-        if (answer == 'yes') {
-          setState(() {
-            isPositive = true;
-          });
-          break;
-        }
-      }
-    }
-
-    setState(() {
-      showLastMedicationQuestion = isPositive;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -1722,7 +1529,6 @@ class _MedicationState extends State<Medication> {
                   height: 30,
                 ),
                 Container(
-                  // alignment: Alignment.center,
                   margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
                   child: Text(
                     AppLocalizations.of(context).translate('medicationTitle'),
@@ -1819,7 +1625,6 @@ class _MedicationState extends State<Medication> {
                                                                       'options']
                                                                   .indexOf(
                                                                       option)];
-                                                              checkAnswer();
                                                               // print(medicalHistoryAnswers);
                                                               // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
                                                             });
@@ -1881,7 +1686,6 @@ class _MedicationState extends State<Medication> {
   }
 }
 
-String selectedBloodSugarType = 'FBS';
 var systolicEditingController = TextEditingController();
 var pulseRateEditingController = TextEditingController();
 var diastolicEditingController = TextEditingController();
@@ -1947,7 +1751,6 @@ class _MeasurementsState extends State<Measurements> {
                           children: [
                             Container(
                               child: Row(
-                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
                                     child: Row(
@@ -3980,8 +3783,6 @@ class ChcpPatientRecordsScreen extends StatefulWidget {
 }
 
 class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
-  // var _patient;
-  // bool isLoading = true;
   var carePlans = [];
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   
@@ -4005,11 +3806,8 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
   var bmi;
   var cholesterol;
   var bp;
-  var cvd;
   int interventionIndex = 0;
   bool actionsActive = false;
-  bool carePlansEmpty = false;
-  var dueDate = '';
   var smokingAnswer;
   var smokelessTobaccoAnswer;
 
@@ -4024,7 +3822,6 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
     conditions = [];
     referrals = [];
     pendingReferral = null;
-    carePlansEmpty = false;
     getRiskQuestionAnswer();
     
     getLastAssessment();
@@ -4033,9 +3830,7 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
 
 
   getRiskQuestionAnswer(){
-    // print('getRiskQuestionAnswer');
     var riskQuestions = Questionnaire().questions['new_patient']['risk_factors'];
-    // print('riskQuestions $riskQuestions');
     riskQuestions['items'].forEach((item) {
       if(item['type'] == 'smoking'){
        smokingAnswer = riskAnswers[riskQuestions['items'].indexOf(item)];
@@ -4059,9 +3854,6 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
   }
 
   getLastAssessment() async {
-    // setState(() {
-    //   isLoading = true;
-    // });
     lastAssessment = await AssessmentController().getLastAssessmentByPatient();
 
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
@@ -4087,105 +3879,7 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
         lastEncounterDate = getDate(lastAssessment['data']['meta']['created_at']);
       });
     }
-    // setState(() {
-    //   isLoading = false;
-    // });
-    
   }
-
-  getCompletedDate(goal) {
-    var data = '';
-    DateTime date;
-    // print(goal['items']);
-    goal['items'].forEach((item) {
-      // print(item['body']['activityDuration']['end']);
-      DateFormat format = new DateFormat("E LLL d y");
-      var endDate;
-      try {
-        endDate = format.parse(item['body']['activityDuration']['end']);
-      } catch(err) {
-        endDate = DateTime.parse(item['body']['activityDuration']['end']);
-      }
-      // print(endDate);
-      date = endDate;
-      if (date != null) {
-        date  = endDate;
-      } else {
-        if (endDate.isBefore(date)) {
-          date = endDate;
-        }
-      }
-      
-    });
-    if (date != null) {
-      var test = DateFormat('MMMM d, y').format(date);
-      data = 'Complete By ' + test;
-    }
-    return data;
-  }
-
-
-
-  getObservations(assessment) async {
-    // _observations =  await AssessmentController().getObservationsByAssessment(widget.assessment);
-    var data =  await AssessmentController().getLiveObservationsByAssessment(assessment);
-    // print(data);
-    return data;
-
-  }
-
-  
-
-  convertDateFromSeconds(date) {
-    if (date['_seconds'] != null) {
-      var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
-
-      return DateFormat("MMMM d, y").format(parsedDate).toString();
-    }
-    return '';
-  }
-
-  getTitle(encounter) {
-    var screening_type =  encounter['data']['screening_type'];
-    if (screening_type != null && screening_type != '') {
-      if (screening_type == 'ncd') {
-        screening_type = screening_type.toUpperCase() + ' ';
-      } else {
-        screening_type = screening_type[0].toUpperCase() + screening_type.substring(1) + ' ';
-      }
-      
-      return screening_type + 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
-    }
-    
-    return 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
-  }
-
-    String getLastVisitDate() {
-    var date = '';
-
-    if (encounters.length > 0) {
-      var lastEncounter = encounters[0];
-      var parsedDate = DateTime.tryParse(lastEncounter['meta']['created_at']);
-      if (parsedDate != null) {
-        date = DateFormat('yyyy-MM-dd').format(parsedDate);
-      }
-    }
-
-    return date;
-  }
-  String getNextVisitDate() {
-    var date = '';
-
-    if (encounters.length > 0) {
-      var lastEncounter = encounters[0];
-      date = lastEncounter['data']['next_visit_date'] ?? '';
-    }
-
-    return date;
-  }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -4238,9 +3932,6 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                 ),
                                 SizedBox(width: 10),
                                 Expanded(
-                                  // padding: EdgeInsets.symmetric(vertical: 9),
-                                  // child: Text('dummy age', style: TextStyle(fontSize: 17,)),
-                                  // Text(Helpers().getPatientAgeAndGender(Patient().getPatient()),)
                                   child: 
                                     Text(
                                       Helpers().getPatientAge(Patient().getPatient()) != '' &&
@@ -4266,7 +3957,6 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Row(
-                                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       Text(AppLocalizations.of(context).translate('gender')+":", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                       SizedBox(width: 10),
@@ -4452,11 +4142,6 @@ class _ChcpPatientRecordsState extends State<ChcpPatientRecordsScreen> {
                     ),
 
                     Container(
-                      // decoration: BoxDecoration(
-                      //   border: Border(
-                      //     top: BorderSide(width: 4, color: kBorderLighter)
-                      //   ),
-                      // ),
                       padding: EdgeInsets.only(top: 15, left: 10, right: 10),
                       child: Column(
                         children: <Widget>[
@@ -4545,7 +4230,6 @@ class RecommendedCounsellingChcp extends StatefulWidget {
   _RecommendedCounsellingChcpState createState() => _RecommendedCounsellingChcpState();
 }
 
-// var isReferralRequired = null;
 bool dietTitleAdded = false;
 bool tobaccoTitleAdded = false;
 var dietCurrentCount = 0;
@@ -4560,17 +4244,9 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
     super.initState();
     dietTitleAdded = false;
     tobaccoTitleAdded = false;
-    // isReferralRequired = null;
   }
 
   checkCounsellingQuestions(counsellingQuestion) {
-    // if (medicationQuestions['items'].length - 1 == medicationQuestions['items'].indexOf(medicationQuestion)) {
-    //   if (showLastMedicationQuestion) {
-    //     return true;
-    //   }
-
-    // }
-
     if (counsellingQuestion['type'] == 'medical-adherence') {
       if (medicationAnswers[1] == 'no' || medicationAnswers[3] == 'no' ||medicationAnswers[5] == 'no' || medicationAnswers[7] == 'no') {
         return true;
@@ -4600,7 +4276,6 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
     });
 
     if (matchedQuestion != null) {
-      // print(matchedQuestion.first);
       var answer = riskAnswers[riskQuestions['items'].indexOf(matchedQuestion)];
       if ((matchedQuestion['type'] == 'eat-vegetables' ||
           matchedQuestion['type'] == 'physical-activity-high')) {
@@ -4688,19 +4363,6 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
     return Container();
   }
 
-  Widget titleWidget(title) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Divider(),
-        Container(
-            margin: EdgeInsets.only(top: 25, bottom: 30),
-            child: Text('$title',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500))),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -4717,16 +4379,10 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
                   height: 30,
                 ),
                 Container(
-                    // alignment: Alignment.center,
                     margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        // Text(
-                        //   AppLocalizations.of(context).translate('tobaccoUse'),
-                        //   style: TextStyle(
-                        //       fontSize: 20, fontWeight: FontWeight.w500),
-                        // ),
                         Text(
                           AppLocalizations.of(context)
                               .translate('wasCounsellingProvided'),
@@ -4839,127 +4495,6 @@ class _RecommendedCounsellingChcpState extends State<RecommendedCounsellingChcp>
                                 else
                                   return Container();
                               }).toList(),
-                              // Column(
-                              //   crossAxisAlignment: CrossAxisAlignment.start,
-                              //   children: <Widget>[
-                              //     SizedBox(height: 20),
-                              //     Container(
-                              //         child: Row(
-                              //       mainAxisAlignment:
-                              //           MainAxisAlignment.spaceBetween,
-                              //       children: [
-                              //         Text(
-                              //           AppLocalizations.of(context)
-                              //               .translate('referralRequired'),
-                              //           style: TextStyle(
-                              //               fontSize: 18,
-                              //               height: 1.7,
-                              //               fontWeight: FontWeight.w500),
-                              //         ),
-                              //         Container(
-                              //             width: 240,
-                              //             child: Row(
-                              //               children: <Widget>[
-                              //                 Expanded(
-                              //                     child: Container(
-                              //                   height: 25,
-                              //                   width: 100,
-                              //                   margin: EdgeInsets.only(
-                              //                       right: 20, left: 0),
-                              //                   decoration: BoxDecoration(
-                              //                       border: Border.all(
-                              //                           width: 1,
-                              //                           color: (isReferralRequired !=
-                              //                                       null &&
-                              //                                   isReferralRequired)
-                              //                               ? Color(0xFF01579B)
-                              //                               : Colors.black),
-                              //                       borderRadius:
-                              //                           BorderRadius.circular(
-                              //                               3),
-                              //                       color: (isReferralRequired !=
-                              //                                   null &&
-                              //                               isReferralRequired)
-                              //                           ? Color(0xFFE1F5FE)
-                              //                           : null),
-                              //                   child: FlatButton(
-                              //                     onPressed: () {
-                              //                       setState(() {
-                              //                         dietTitleAdded = false;
-                              //                         tobaccoTitleAdded = false;
-                              //                         isReferralRequired = true;
-                              //                       });
-                              //                     },
-                              //                     materialTapTargetSize:
-                              //                         MaterialTapTargetSize
-                              //                             .shrinkWrap,
-                              //                     child: Text(
-                              //                       AppLocalizations.of(context)
-                              //                           .translate('yes'),
-                              //                       style: TextStyle(
-                              //                           color: (isReferralRequired !=
-                              //                                       null &&
-                              //                                   isReferralRequired)
-                              //                               ? kPrimaryColor
-                              //                               : null),
-                              //                     ),
-                              //                   ),
-                              //                 )),
-                              //                 Expanded(
-                              //                     child: Container(
-                              //                   height: 25,
-                              //                   width: 100,
-                              //                   margin: EdgeInsets.only(
-                              //                       right: 20, left: 0),
-                              //                   decoration: BoxDecoration(
-                              //                       border: Border.all(
-                              //                           width: 1,
-                              //                           color: (isReferralRequired ==
-                              //                                       null ||
-                              //                                   isReferralRequired)
-                              //                               ? Colors.black
-                              //                               : Color(
-                              //                                   0xFF01579B)),
-                              //                       borderRadius:
-                              //                           BorderRadius.circular(
-                              //                               3),
-                              //                       color: (isReferralRequired ==
-                              //                                   null ||
-                              //                               isReferralRequired)
-                              //                           ? null
-                              //                           : Color(0xFFE1F5FE)),
-                              //                   child: FlatButton(
-                              //                     onPressed: () {
-                              //                       setState(() {
-                              //                         dietTitleAdded = false;
-                              //                         tobaccoTitleAdded = false;
-                              //                         isReferralRequired = false;
-                              //                       });
-                              //                     },
-                              //                     materialTapTargetSize:
-                              //                         MaterialTapTargetSize
-                              //                             .shrinkWrap,
-                              //                     child: Text(
-                              //                       AppLocalizations.of(context)
-                              //                           .translate('NO'),
-                              //                       style: TextStyle(
-                              //                           color: (isReferralRequired ==
-                              //                                       null ||
-                              //                                   isReferralRequired)
-                              //                               ? null
-                              //                               : kPrimaryColor),
-                              //                     ),
-                              //                   ),
-                              //                 )),
-                              //               ],
-                              //             )),
-                              //       ],
-                              //     )),
-                              //     SizedBox(
-                              //       height: 20,
-                              //     )
-                              //   ],
-                              // ),
                             ],
                           )),
                     ],
@@ -5018,18 +4553,6 @@ class _MedicationsDispenseState extends State<MedicationsDispense> {
                         ),                       
 
                       ),
-                      // SizedBox(height: 24),
-
-                      // Container(
-                      //     child: Text(
-                      //         'Serial Name    Dose Unit    Frequancy    Duration',
-                      //         style: TextStyle(
-                      //         color: Colors.black,
-                      //         fontSize: 18,
-                      //         // fontWeight: FontWeight.w500
-                      //         ),
-                      //       ),
-                      // ),
                       SizedBox(height: 24),
                       if(dynamicMedications != null)
                       ...dynamicMedications.map((item) {
@@ -5098,10 +4621,6 @@ class _MedicationsDispenseState extends State<MedicationsDispense> {
                                           backgroundColor: kPrimaryRedColor,
                                         ));
                                       }
-                                      // Navigator.of(context).pop();
-                                      // if (response == 'success') {
-                                      // // Navigator.of(context).pop();
-                                      // } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
                                     },
                                     child: Text(AppLocalizations.of(context).translate('submit')),
                                   )
@@ -5121,12 +4640,10 @@ class _MedicationsDispenseState extends State<MedicationsDispense> {
               ),
           ),
       ),
-
     );
   }
 
 }
-
 
 var dueCarePlans = [];
 var cpUpdateCount = 0;
@@ -5142,7 +4659,6 @@ class CareplanDeliveryScreen extends StatefulWidget {
 }
 
 class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
-  var _patient;
   bool isLoading = false;
   var carePlans = [];
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -5155,21 +4671,17 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
   var conditions = [];
   var medications = [];
   var allergies = [];
-  var users = [];
   var report;
   var bmi;
   var cholesterol;
   var bp;
-  var cvd;
   int interventionIndex = 0;
   bool actionsActive = false;
   bool carePlansEmpty = false;
-  var dueDate = '';
 
   @override
   void initState() {
     super.initState();
-    _patient = Patient().getPatient();
     dueCarePlans = [];
     cpUpdateCount = 0;
     completedCarePlans = [];
@@ -5185,66 +4697,6 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
     
   }
 
-  getStatus(item) {
-    var status = 'completed';
-    item['items'].forEach( (goal) {
-      if (goal['meta']['status'] == 'pending') {
-        setState(() {
-          status = 'pending';
-        });
-      }
-    });
-
-    return status;
-  }
-
-  getCompletedDate(goal) {
-    var data = '';
-    DateTime date;
-    // print(goal['items']);
-    goal['items'].forEach((item) {
-      // print(item['body']['activityDuration']['end']);
-      DateFormat format = new DateFormat("E LLL d y");
-      var endDate;
-      try {
-        endDate = format.parse(item['body']['activityDuration']['end']);
-      } catch(err) {
-        endDate = DateTime.parse(item['body']['activityDuration']['end']);
-      }
-      // print(endDate);
-      date = endDate;
-      if (date != null) {
-        date  = endDate;
-      } else {
-        if (endDate.isBefore(date)) {
-          date = endDate;
-        }
-      }
-      
-    });
-    if (date != null) {
-      var test = DateFormat('MMMM d, y').format(date);
-      data = 'Complete By ' + test;
-    }
-    return data;
-  }
-
-
-  getDueCounts() {
-    var goalCount = 0;
-    var actionCount = 0;
-    carePlans.forEach((item) {
-      if(item['meta']['status'] == 'pending') {
-        goalCount = goalCount + 1;
-        if (item['body']['components'] != null) {
-          actionCount = actionCount + item['body']['components'].length;
-        }
-      }
-    });
-
-    return "$goalCount goals & $actionCount actions";
-  }
-
   _checkAvatar() async {
     avatarExists = await File(Patient().getPatient()['data']['avatar']).exists();
   }
@@ -5257,19 +4709,9 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
   }
 
   _getCarePlan() async {
-    // setState(() {
-    //   isLoading = true;
-    // });
-
     var data = await CarePlanController().getCarePlan();
     
-    // setState(() {
-    //   isLoading = false;
-    // });
-    
     if (data != null) {
-      // print( data['data']);
-      // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
       setState(() {
         carePlans = data;
       });
@@ -5288,8 +4730,6 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
           DateFormat newFormat = new DateFormat("yyyy-MM-dd");
           endDate = DateTime.parse(item['body']['activityDuration']['end']);
           startDate = DateTime.parse(item['body']['activityDuration']['start']);
-          // startDate = DateTime.parse(item['body']['activityDuration']['start']);
-          
         }
 
         // check due careplans
@@ -5298,8 +4738,7 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
             if (todayDate.isAfter(startDate) && todayDate.isBefore(endDate)) {
               if(item['body']['goal'] != null){
               var existedCp = dueCarePlans.where( (cp) => cp['id'] == item['body']['goal']['id']);
-              // print(item['body']['activityDuration']['start']);
-
+              
               if (existedCp.isEmpty) {
                 var items = [];
                 items.add(item);
@@ -5310,12 +4749,10 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
                     'id': item['body']['goal']['id']
                   });
                 });
-                
               } else {
                 setState(() {
                   dueCarePlans[dueCarePlans.indexOf(existedCp.first)]['items'].add(item);
                 });
-                
               }
               cpUpdateCount = dueCarePlans.length;
               }
@@ -5332,7 +4769,6 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
                 });
               } else {
                 upcomingCarePlans[upcomingCarePlans.indexOf(existedCp.first)]['items'].add(item);
-
               }
             }
           } else {
@@ -5383,11 +4819,6 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
                         : Container(
                           child: Text(AppLocalizations.of(context).translate('noConfirmedCarePlan'), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500)),
                         ),
-                        // upcomingCarePlans.length > 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: upcomingCarePlans, text: AppLocalizations.of(context).translate('upComing')) : Container(),
-                        // completedCarePlans.length> 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: completedCarePlans, text: AppLocalizations.of(context).translate('complete')) : Container(),
-
-                        // SizedBox(height: 20,),
-
 
                         //previous patient history steps
                       dueCarePlans.length > 0 
@@ -5431,7 +4862,6 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
 }
 
 class CareplanAction extends StatefulWidget {
-
   bool checkInState;
   final carePlans;
   String text = '';
@@ -5445,41 +4875,6 @@ class _CareplanActionState extends State<CareplanAction> {
   @override
   void initState() {
     super.initState();
-    
-  }
-
-  getCompletedDate(goal) {
-    var data = '';
-    DateTime date;
-    // print(goal['items']);
-    goal['items'].forEach((item) {
-      // print(item['body']['activityDuration']['end']);
-      if (item['meta']['status'] != 'completed') {
-        DateFormat format = new DateFormat("E LLL d y");
-        var endDate;
-        try {
-          endDate = format.parse(item['body']['activityDuration']['end']);
-        } catch(err) {
-          endDate = DateTime.parse(item['body']['activityDuration']['end']);
-        }
-        
-        // print(endDate);
-        date = endDate;
-        if (date != null) {
-          date  = endDate;
-        } else {
-          if (endDate.isBefore(date)) {
-            date = endDate;
-          }
-        }
-      }
-      
-    });
-    if (date != null) {
-      var test = DateFormat('MMMM d, y').format(date);
-      data = 'Complete By ' + test;
-    }
-    return data;
   }
 
   @override
@@ -5538,10 +4933,6 @@ class _GoalItemState extends State<GoalItem> {
       }
     });
   }
-  setStatus(completedItem) {
-   
-    
-  }
   
   getCompletedDate(goal) {
     var data = '';
@@ -5554,7 +4945,6 @@ class _GoalItemState extends State<GoalItem> {
         } catch(err) {
           endDate = DateTime.parse(item['body']['activityDuration']['end']);
         }
-      // print(endDate);
       date = endDate;
       if (date != null) {
         date  = endDate;
@@ -5651,29 +5041,11 @@ class _ActionItemState extends State<ActionItem> {
     });
   }
 
-  isCounselling() {
-    return widget.item['body']['title'].split(" ").contains('Counseling') || widget.item['body']['title'].split(" ").contains('Counselling');
-  }
-
-  setStatus() {
-    setState(() {
-      btnDisabled = false;
-      status = 'completed';
-      cpUpdateCount--;
-    });
-
-    widget.parent.setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // if (isCounselling()) {
-          Navigator.of(context).pushNamed(ChcpCounsellingConfirmation.path, arguments: { 'data': widget.item, 'parent': this});
-          // return;
-        // }
-        // Navigator.of(context).pushNamed('/chwActionsSwipper', arguments: { 'data': widget.item, 'parent': this});
+        Navigator.of(context).pushNamed(ChcpCounsellingConfirmation.path, arguments: { 'data': widget.item, 'parent': this});
       },
       child: Container(
         padding: EdgeInsets.only(top: 20, bottom: 5, left: 20, right: 20),
@@ -5706,7 +5078,6 @@ class _ActionItemState extends State<ActionItem> {
               ),
             ),
             SizedBox(height: 20,),
-            
           ],
         ),
       ),
@@ -5735,32 +5106,14 @@ class _CreateReferState extends State<CreateRefer> {
   'options_bn': ['chcp', 'chw']
   };
   List referralToRoles;
-  // var selectedReason;
-  // var clinicNameController = TextEditingController();
-  // var clinicTypes = [];
-  // var selectedtype;
-  // var _patient;
 
   @override
   void initState() {
     super.initState();
-    // _patient = Patient().getPatient();
-    // _getAuthData();
-    // getCenters();
     referralReasons = referralReasonOptions['options'];
     referralToRoles = referralToRolesOptions['options']; 
-    // print('encounterData $encounterData');
   }
 
-  // _getAuthData() async {
-  //   var data = await Auth().getStorageAuth();
-
-  //   print('role');
-  //   print(data['role']);
-  //   setState(() {
-  //     role = data['role'];
-  //   });
-  // }
 
   
 
@@ -5776,7 +5129,6 @@ class _CreateReferState extends State<CreateRefer> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    // PatientTopbar(),
                     SizedBox(height: 30,),
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 20),
@@ -5784,7 +5136,6 @@ class _CreateReferState extends State<CreateRefer> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Container(
-                            // padding: EdgeInsets.symmetric(horizontal: 20),
                             child: Text(AppLocalizations.of(context).translate("referralRequired"), style: TextStyle(fontSize: 20),)
                           ),
                           SizedBox(width: 30,),
@@ -6034,7 +5385,6 @@ class _RiskFactorsState extends State<RiskFactors> {
                   height: 30,
                 ),
                 Container(
-                  // alignment: Alignment.center,
                   margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
                   child: Text(
                     AppLocalizations.of(context).translate('riskFactors'),

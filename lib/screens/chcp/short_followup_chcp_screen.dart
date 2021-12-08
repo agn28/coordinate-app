@@ -24,9 +24,7 @@ import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/screens/chcp/chcp_counselling_confirmation_screen.dart';
 import 'package:nhealth/screens/chw/unwell/create_referral_screen.dart';
-import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'followup_patient_chcp_summary_screen.dart';
 
 final _temperatureController = TextEditingController();
@@ -135,8 +133,6 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
     prepareQuestions();
     prepareAnswers();
     getMedicationsDispense();
-
-    getLanguage();
   }
 
   getMedicationsDispense() async {
@@ -149,14 +145,8 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
           context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
     }
 
-    // setState(() {
-    //   isLoading = true;
-    // });
     var patientId = Patient().getPatient()['id'];
     var data = await PatientController().getMedicationsByPatient(patientId);
-    // setState(() {
-    //   isLoading = false;
-    // });
 
     if (data == null) {
       return;
@@ -181,21 +171,15 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
   prepareDynamicMedications(medications) {
     var prepareMedication = [];
     var serial = 1;
-    // dynamicMedicationTitles = [];
-    // dynamicMedicationAnswers = [];
+
     for(var item in medications) {
-      // dynamicMedications.forEach((item) {
       var textEditingController = new TextEditingController();
       textEditingControllers.putIfAbsent(item['id'], ()=>textEditingController);
-      //   // return textFields.add( TextField(controller: textEditingController));
-      // });
-      // dynamicMedicationTitles.add(item['body']['title']);
       prepareMedication.add({
         'medId': item['id'],
         'medInfo': '${serial}. Tab ${item['body']['title']}: ${item['body']['dosage']}${item['body']['unit']} ${item['body']['activityDuration']['repeat']['frequency']} time(s) ${preparePeriodUnits(item['body']['activityDuration']['repeat']['periodUnit'], 'repeat')} - continue ${item['body']['activityDuration']['review']['period']} ${preparePeriodUnits(item['body']['activityDuration']['review']['periodUnit'], 'review')}'
       });
       serial++;
-      // dynamicMedicationAnswers.add('');
     }
     dynamicMedications = prepareMedication;
     return dynamicMedications;
@@ -228,11 +212,6 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
     setState(() {
       authUser = data;
     });
-  }
-
-  getLanguage() async {
-    final prefs = await SharedPreferences.getInstance();
-
   }
 
   prepareQuestions() {
@@ -351,28 +330,6 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
     }
   }
 
-  setLoader(value) {
-    setState(() {
-      isLoading = value;
-    });
-  }
-
-  goToHome(recommendation, data) {
-    
-    if (recommendation) {
-      Navigator.of(context).pushReplacementNamed(
-          MedicalRecommendationScreen.path,
-          arguments: data);
-    } else {
-      if (authUser['role'] == 'chw') {
-        Navigator.of(context).pushNamed('/chwPatientSummary');
-        return;
-      }
-      Navigator.of(context).pushNamed(
-        '/home',
-      );
-    }
-  }
   createObservations() {
     if (diastolicEditingController.text != '' &&
         systolicEditingController.text != '') {
@@ -613,15 +570,6 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
                                               textColor: Colors.white,
                                               onPressed: () async {
                                                 Navigator.of(context).pop();
-                                                // var result;
-                                                // setState(() {
-                                                //   isLoading = true;
-                                                // });
-                                                // result = await AssessmentController().createOnlyAssessment(context, 'Care Plan Delivery', 'care-plan-delivered', '', 'complete', '');
-
-                                                // setState(() {
-                                                //   isLoading = false;
-                                                // });
                                                 setState(() {
                                                   _currentStep++;
                                                   nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
@@ -636,15 +584,6 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
                                   );
                                 }
                                 else {
-                                  // var result;
-                                  // setState(() {
-                                  //   isLoading = true;
-                                  // });
-                                  // result = await AssessmentController().createOnlyAssessment(context, 'Care Plan Delivery', 'care-plan-delivered', '', 'complete', '');
-
-                                  // setState(() {
-                                  //   isLoading = false;
-                                  // });
                                     setState(() {
                                       _currentStep++;
                                       nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
@@ -742,15 +681,7 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
                                   _currentStep = _currentStep + 1;
                                 });
                                 return;
-                                // print(Questionnaire().qnItems);
-                                // nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                               }
-                              // if (_currentStep < 4) {
-                              //   // If the form is valid, display a Snackbar.
-                              //   setState(() {
-                              //     _currentStep = _currentStep + 1;
-                              //   });
-                              // }
                            
                           },
                           materialTapTargetSize:
@@ -767,49 +698,6 @@ class _FollowupVisitChcpScreenState extends State<FollowupVisitChcpScreen> {
             ],
           )),
     );
-  }
-
-  missingDataAlert() async {
-    var response = await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          // return object of type Dialog
-          return AlertDialog(
-            content: new Text(
-              AppLocalizations.of(context).translate("incompleteNcdFollowup"),
-              style: TextStyle(fontSize: 22),
-            ),
-            actions: <Widget>[
-              // usually buttons at the bottom of the dialog
-               Container(  
-                margin: EdgeInsets.all(20),  
-                child:FlatButton(
-                  child: new Text(AppLocalizations.of(context).translate("back"),
-                      style: TextStyle(fontSize: 20),),
-                  color: kPrimaryColor,  
-                  textColor: Colors.white,
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
-                ),
-              ),
-              Container(  
-                margin: EdgeInsets.all(20),  
-                child:FlatButton(
-                  child: new Text(
-                      AppLocalizations.of(context).translate("continue"),
-                      style: TextStyle(fontSize: 20),),
-                  color: kPrimaryColor,  
-                  textColor: Colors.white,
-                  onPressed: () {
-                    Navigator.of(context).pop(true);
-                  },
-                ),
-              ),
-            ],
-          );
-        });
-    return response;
   }
 
 var role = '';
@@ -853,13 +741,6 @@ var role = '';
       'referred_from': 'new questionnaire chcp',
     };
 
-    // data['body']['reason'] = selectedReason;
-    // data['body']['type'] = referralType;
-    // data['body']['location'] = {};
-    // data['body']['location']['clinic_type'] = selectedtype;
-    // data['body']['location']['clinic_name'] = clinicNameController.text;
-
-    
     await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -910,62 +791,15 @@ var role = '';
     var hasMissingData = checkMissingData();
     var hasOptionalMissingData = checkOptionalMissingData();
 
-    // if (hasMissingData) {
-    //   var continueMissing = await missingDataAlert();
-    //   if (!continueMissing) {
-    //     return;
-    //   }
-    // }
-
-    // setLoader(true);
-
     var patient = Patient().getPatient();
 
     var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
-    // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow up center', '', status, nextVisitDate, followupType: 'short');
-    // !hasMissingData ? Patient().setPatientReviewRequiredTrue() : null;
 
     encounterData = {
       'context': context,
       'dataStatus': dataStatus,
       'followupType': 'short'
     };
-    // setLoader(false);
-
-    // if age greater than 40 redirect to referral page
-    // if (patient['data']['age'] != null && patient['data']['age'] > 40) {
-    //   var data = {
-    //     'meta': {
-    //       'patient_id': Patient().getPatient()['id'],
-    //       "collected_by": Auth().getAuth()['uid'],
-    //       "status": "pending"
-    //     },
-    //     'body': {},
-    //     'referred_from': 'new questionnaire'
-    //   };
-    //   goToHome(true, data);
-
-    //   return;
-    // }
-
-    // if (isReferralRequired) {
-    //   var data = {
-    //     'meta': {
-    //       'patient_id': Patient().getPatient()['id'],
-    //       "collected_by": Auth().getAuth()['uid'],
-    //       "status": "pending"
-    //     },
-    //     'body': {},
-    //     'referred_from': 'new questionnaire'
-    //   };
-    //   goToHome(true, data);
-
-    //   return;
-    // }
-
-    // Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': {},});
-    // Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': encounterData ,});
-    // goToHome(false, null);
   }
 
   List<CustomStep> _mySteps() {
@@ -1077,100 +911,7 @@ class Medication extends StatefulWidget {
 }
 
 class _MedicationState extends State<Medication> {
-  bool showLastMedicationQuestion = false;
   bool isEmpty = true;
-
-  checkMedicalHistoryAnswers(medicationQuestion) {
-    // if (medicationQuestions['items'].length -1 == medicationQuestions['items'].indexOf(medicationQuestion)) {
-    //   if (showLastMedicationQuestion) {
-    //     return true;
-    //   }
-
-    // }
-    // return true;
-
-    // check if any medical histroy answer is yes. then return true if medication question is aspirin, or lower fat
-    if (medicationQuestion['type'] == 'heart' || medicationQuestion['type'] == 'heart_bp_diabetes') {
-      var medicalHistoryasYes = medicalHistoryAnswers.where((item) => item == 'yes');
-      if (medicalHistoryasYes.isNotEmpty) {
-        return true;
-      }
-    }
-
-    if (medicationQuestion['type'].contains('medication')) {
-      var mainType =
-          medicationQuestion['type'].replaceAll('_regular_medication', '');
-      var matchedMedicationQuestion = medicationQuestions['items']
-          .where((item) => item['type'] == mainType)
-          .first;
-      var medicationAnswer = medicationAnswers[
-          medicationQuestions['items'].indexOf(matchedMedicationQuestion)];
-      if (medicationAnswer == 'yes') {
-        return true;
-      }
-
-      return false;
-    }
-
-    var matchedQuestion;
-    bool matchedHBD = false;
-    medicalHistoryQuestions['items'].forEach((item) {
-      if (item['type'] != null && item['type'] == medicationQuestion['type']) {
-        matchedQuestion = item;
-      } else if (medicationQuestion['type'] == 'heart_bp_diabetes') {
-        if (item['type'] == 'stroke' ||
-            item['type'] == 'stroke' ||
-            item['type'] == 'heart' ||
-            item['type'] == 'blood_pressure' ||
-            item['type'] == 'diabetes') {
-          var answer = medicalHistoryAnswers[
-              medicalHistoryQuestions['items'].indexOf(item)];
-          if (answer == 'yes') {
-            matchedHBD = true;
-            // return true;
-          }
-        }
-      }
-    });
-
-    if (matchedHBD) {
-      return true;
-    }
-
-    if (matchedQuestion != null) {
-      // print(matchedQuestion.first);
-      var answer = medicalHistoryAnswers[
-          medicalHistoryQuestions['items'].indexOf(matchedQuestion)];
-      if (answer == 'yes') {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  checkAnswer() {
-    setState(() {});
-
-    return;
-
-    var isPositive = false;
-    var answersLength = medicationAnswers.length;
-
-    for (var answer in medicationAnswers) {
-      if (medicationAnswers.indexOf(answer) != answersLength - 1) {
-        if (answer == 'yes') {
-          setState(() {
-            isPositive = true;
-          });
-          break;
-        }
-      }
-    }
-
-    setState(() {
-      showLastMedicationQuestion = isPositive;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -1188,7 +929,6 @@ class _MedicationState extends State<Medication> {
                   height: 30,
                 ),
                 Container(
-                  // alignment: Alignment.center,
                   margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
                   child: Text(
                     AppLocalizations.of(context).translate('medicationTitle'),
@@ -1208,105 +948,6 @@ class _MedicationState extends State<Medication> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // ...dynamicMedicationQuestions['items'].map((question) {
-                              //   return Column(
-                              //     crossAxisAlignment: CrossAxisAlignment.start,
-                              //     children: <Widget>[
-                              //       Container(
-                              //           child: Text(getQuestionText(context, question),style:TextStyle(fontSize: 18, height: 1.7),
-                              //       )),
-                              //       SizedBox(height: 20,),
-                              //       // Container(
-                              //       //   width:MediaQuery.of(context).size.width *.5,
-                              //       //   child: Row(
-                              //       //     children: <Widget>[
-                              //       //       ...question['options'].map((option) =>
-                              //       //         Expanded(
-                              //       //           child: Container(
-                              //       //             height: 40,
-                              //       //             margin: EdgeInsets.only(right: 20, left: 0),
-                              //       //             decoration: BoxDecoration(
-                              //       //             border: Border.all(
-                              //       //               width: 1,color: medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)] == question['options'][question['options'].indexOf(option)] ? Color(0xFF01579B): Colors.black),
-                              //       //               borderRadius: BorderRadius.circular(3),
-                              //       //               color: medicalHistoryAnswers[
-                              //       //                               medicalHistoryQuestions['items'].indexOf(
-                              //       //                                     question)] ==
-                              //       //                             question['options'][
-                              //       //                                 question['options']
-                              //       //                                     .indexOf(option)]
-                              //       //                         ? Color(0xFFE1F5FE)
-                              //       //                         : null),
-                              //       //                 child: FlatButton(
-                              //       //                   onPressed: () {
-                              //       //                     setState(() {
-                              //       //                       medicalHistoryAnswers[
-                              //       //                           medicalHistoryQuestions[
-                              //       //                                   'items']
-                              //       //                               .indexOf(
-                              //       //                                   question)] = question[
-                              //       //                               'options'][
-                              //       //                           question[
-                              //       //                                   'options']
-                              //       //                               .indexOf(
-                              //       //                                   option)];
-
-                              //       //                         var selectedOption = medicalHistoryAnswers[medicalHistoryQuestions['items'].indexOf(question)];
-                              //       //                         print('selectedOption $selectedOption');
-                              //       //                         medicationQuestions['items'].forEach((qtn) {
-                              //       //                           if(qtn['type'].contains('heart') || qtn['type'].contains('heart_bp_diabetes')) {
-
-                              //       //                             var medicalHistoryAnswerYes = false;
-                              //       //                             medicalHistoryAnswers.forEach((ans) {
-                              //       //                               if(ans == 'yes') {
-                              //       //                                 medicalHistoryAnswerYes = true;
-                              //       //                                 print('medicalHistoryAnswerYes $ans');
-                              //       //                               }
-                              //       //                             });
-                              //       //                             if (!medicalHistoryAnswerYes) {
-                              //       //                               medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
-                              //       //                               print('exceptional if');
-                              //       //                             }
-                              //       //                           } else if(qtn['type'].contains(question['type']) && selectedOption == 'no') {
-                              //       //                             medicationAnswers[medicationQuestions['items'].indexOf(qtn)] = '';
-                              //       //                             print('if');
-                              //       //                           }
-                              //       //                           print(qtn['type']);
-                              //       //                           print(question['type']);
-                              //       //                           print('qtn $qtn');
-                              //       //                           print('medicationAnswers ${medicationAnswers}');
-                              //       //                         });
-                              //       //                     });
-                              //       //                   },
-                              //       //                   materialTapTargetSize:
-                              //       //                       MaterialTapTargetSize
-                              //       //                           .shrinkWrap,
-                              //       //                   child: Text(
-                              //       //                     getOptionText(context,
-                              //       //                         question, option),
-                              //       //                     style: TextStyle(
-                              //       //                         color: medicalHistoryAnswers[medicalHistoryQuestions[
-                              //       //                                         'items']
-                              //       //                                     .indexOf(
-                              //       //                                         question)] ==
-                              //       //                                 question[
-                              //       //                                     'options'][question[
-                              //       //                                         'options']
-                              //       //                                     .indexOf(
-                              //       //                                         option)]
-                              //       //                             ? kPrimaryColor
-                              //       //                             : null),
-                              //       //                   ),
-                              //       //                 ),
-                              //       //               )),
-                              //       //             )
-                              //       //             .toList()
-                              //       //       ],
-                              //       //     )),
-                              //       SizedBox(height: 20,)
-                              //     ],
-                              //   );
-                              // }).toList()
                               if(dynamicMedicationQuestions['items'] != null)
                               ...dynamicMedicationQuestions['items'].map((question) {
                                 // if (checkMedicalHistoryAnswers(question)) {
@@ -1348,7 +989,6 @@ class _MedicationState extends State<Medication> {
                                                                       'options']
                                                                   .indexOf(
                                                                       option)];
-                                                              checkAnswer();
                                                               // print(medicalHistoryAnswers);
                                                               // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
                                                             });
@@ -1482,7 +1122,6 @@ class _MeasurementsState extends State<Measurements> {
                           children: [
                             Container(
                               child: Row(
-                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
                                     child: Row(
@@ -1520,7 +1159,6 @@ class _MeasurementsState extends State<Measurements> {
                                       ],
                                     ),
                                   ),
-                                  //Spacer(),
                                   SizedBox(width: 50),
                                   Container(
                                       child: Row(
@@ -2973,20 +2611,7 @@ class _MedicationsDispenseState extends State<MedicationsDispense> {
                             ),
                           ],  
                         ),                       
-
                       ),
-                      // SizedBox(height: 24),
-
-                      // Container(
-                      //     child: Text(
-                      //         'Serial Name    Dose Unit    Frequancy    Duration',
-                      //         style: TextStyle(
-                      //         color: Colors.black,
-                      //         fontSize: 18,
-                      //         // fontWeight: FontWeight.w500
-                      //         ),
-                      //       ),
-                      // ),
                       SizedBox(height: 24),
                       if(dynamicMedications != null)
                       ...dynamicMedications.map((item) {
@@ -3055,10 +2680,6 @@ class _MedicationsDispenseState extends State<MedicationsDispense> {
                                           backgroundColor: kPrimaryRedColor,
                                         ));
                                       }
-                                      // Navigator.of(context).pop();
-                                      // if (response == 'success') {
-                                      // // Navigator.of(context).pop();
-                                      // } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
                                     },
                                     child: Text(AppLocalizations.of(context).translate('submit')),
                                   )
@@ -3081,17 +2702,13 @@ class _MedicationsDispenseState extends State<MedicationsDispense> {
 
     );
   }
-
 }
-
 
 
 var dueCarePlans = [];
 var cpUpdateCount = 0;
 var completedCarePlans = [];
 var upcomingCarePlans = [];
-var referrals = [];
-var pendingReferral;
 class CareplanDeliveryScreen extends StatefulWidget {
   var checkInState = false;
   CareplanDeliveryScreen({this.checkInState});
@@ -3100,7 +2717,6 @@ class CareplanDeliveryScreen extends StatefulWidget {
 }
 
 class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
-  var _patient;
   bool isLoading = false;
   var carePlans = [];
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -3127,80 +2743,17 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
   @override
   void initState() {
     super.initState();
-    _patient = Patient().getPatient();
     dueCarePlans = [];
     cpUpdateCount = 0;
     completedCarePlans = [];
     upcomingCarePlans = [];
     conditions = [];
-    referrals = [];
-    pendingReferral = null;
     carePlansEmpty = false;
     
     _checkAvatar();
     _checkAuth();
     _getCarePlan();
     
-  }
-
-  getStatus(item) {
-    var status = 'completed';
-    item['items'].forEach( (goal) {
-      if (goal['meta']['status'] == 'pending') {
-        setState(() {
-          status = 'pending';
-        });
-      }
-    });
-
-    return status;
-  }
-
-  getCompletedDate(goal) {
-    var data = '';
-    DateTime date;
-    // print(goal['items']);
-    goal['items'].forEach((item) {
-      // print(item['body']['activityDuration']['end']);
-      DateFormat format = new DateFormat("E LLL d y");
-      var endDate;
-      try {
-        endDate = format.parse(item['body']['activityDuration']['end']);
-      } catch(err) {
-        endDate = DateTime.parse(item['body']['activityDuration']['end']);
-      }
-      // print(endDate);
-      date = endDate;
-      if (date != null) {
-        date  = endDate;
-      } else {
-        if (endDate.isBefore(date)) {
-          date = endDate;
-        }
-      }
-      
-    });
-    if (date != null) {
-      var test = DateFormat('MMMM d, y').format(date);
-      data = 'Complete By ' + test;
-    }
-    return data;
-  }
-
-
-  getDueCounts() {
-    var goalCount = 0;
-    var actionCount = 0;
-    carePlans.forEach((item) {
-      if(item['meta']['status'] == 'pending') {
-        goalCount = goalCount + 1;
-        if (item['body']['components'] != null) {
-          actionCount = actionCount + item['body']['components'].length;
-        }
-      }
-    });
-
-    return "$goalCount goals & $actionCount actions";
   }
 
   _checkAvatar() async {
@@ -3218,8 +2771,6 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
     var data = await CarePlanController().getCarePlan();
 
     if (data != null) {
-      // print( data['data']);
-      // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
       setState(() {
         carePlans = data;
       });
@@ -3238,8 +2789,6 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
           DateFormat newFormat = new DateFormat("yyyy-MM-dd");
           endDate = DateTime.parse(item['body']['activityDuration']['end']);
           startDate = DateTime.parse(item['body']['activityDuration']['start']);
-          // startDate = DateTime.parse(item['body']['activityDuration']['start']);
-          
         }
 
       
@@ -3317,7 +2866,6 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
             children: <Widget>[
               Column(
                 children: <Widget>[
-
                   Container(
                     decoration: BoxDecoration(
                       border: Border(
@@ -3327,16 +2875,11 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
                     padding: EdgeInsets.only(top: 15, left: 10, right: 10),
                     child: Column(
                       children: <Widget>[
-                        
                         dueCarePlans.length > 0 ?
                         CareplanAction(checkInState: false, carePlans: dueCarePlans, text: AppLocalizations.of(context).translate('dueToday'))
                         : Container(
                           child: Text(AppLocalizations.of(context).translate('noConfirmedCarePlan'), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500)),
                         ),
-                        // upcomingCarePlans.length > 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: upcomingCarePlans, text: AppLocalizations.of(context).translate('upComing')) : Container(),
-                        // completedCarePlans.length> 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: completedCarePlans, text: AppLocalizations.of(context).translate('complete')) : Container(),
-
-                        // SizedBox(height: 20,),
 
 
                         //previous patient history steps
@@ -3361,8 +2904,7 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
                     )
                   ),
                   SizedBox(height: 15,),
-                ], 
-                
+                ],  
               ),
               isLoading ? Container(
                 height: MediaQuery.of(context).size.height,
@@ -3395,41 +2937,6 @@ class _CareplanActionState extends State<CareplanAction> {
   @override
   void initState() {
     super.initState();
-    
-  }
-
-  getCompletedDate(goal) {
-    var data = '';
-    DateTime date;
-    // print(goal['items']);
-    goal['items'].forEach((item) {
-      // print(item['body']['activityDuration']['end']);
-      if (item['meta']['status'] != 'completed') {
-        DateFormat format = new DateFormat("E LLL d y");
-        var endDate;
-        try {
-          endDate = format.parse(item['body']['activityDuration']['end']);
-        } catch(err) {
-          endDate = DateTime.parse(item['body']['activityDuration']['end']);
-        }
-        
-        // print(endDate);
-        date = endDate;
-        if (date != null) {
-          date  = endDate;
-        } else {
-          if (endDate.isBefore(date)) {
-            date = endDate;
-          }
-        }
-      }
-      
-    });
-    if (date != null) {
-      var test = DateFormat('MMMM d, y').format(date);
-      data = 'Complete By ' + test;
-    }
-    return data;
   }
 
   @override
@@ -3446,15 +2953,12 @@ class _CareplanActionState extends State<CareplanAction> {
                     ...widget.carePlans.map( (item) {                     
                       return GoalItem(item: item);
                     }).toList()
-                    
                   ],
                 ),
               ),
-              
             ],
           ),
         ),
-
       ],
     );
   }
@@ -3488,9 +2992,7 @@ class _GoalItemState extends State<GoalItem> {
       }
     });
   }
-  setStatus(completedItem) {
-  }
-  
+
   getCompletedDate(goal) {
     var data = '';
     DateTime date;
@@ -3502,7 +3004,6 @@ class _GoalItemState extends State<GoalItem> {
         } catch(err) {
           endDate = DateTime.parse(item['body']['activityDuration']['end']);
         }
-      // print(endDate);
       date = endDate;
       if (date != null) {
         date  = endDate;
@@ -3554,7 +3055,6 @@ class _GoalItemState extends State<GoalItem> {
             ],),
           ),
         
-        
           Column(
             children: <Widget>[
               ...widget.item['items'].map((item) {
@@ -3562,15 +3062,12 @@ class _GoalItemState extends State<GoalItem> {
               }).toList(),
             ],
           ),
-          
         ],
       ),
     );
-  }
-  
+  }  
 }
 
-bool btnDisabled = true;
 class ActionItem extends StatefulWidget {
   const ActionItem({
     this.item,
@@ -3599,29 +3096,11 @@ class _ActionItemState extends State<ActionItem> {
     });
   }
 
-  isCounselling() {
-    return widget.item['body']['title'].split(" ").contains('Counseling') || widget.item['body']['title'].split(" ").contains('Counselling');
-  }
-
-  setStatus() {
-    setState(() {
-      btnDisabled = false;
-      status = 'completed';
-      cpUpdateCount--;
-    });
-
-    widget.parent.setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // if (isCounselling()) {
-          Navigator.of(context).pushNamed(ChcpCounsellingConfirmation.path, arguments: { 'data': widget.item, 'parent': this});
-          // return;
-        // }
-        // Navigator.of(context).pushNamed('/chwActionsSwipper', arguments: { 'data': widget.item, 'parent': this});
+        Navigator.of(context).pushNamed(ChcpCounsellingConfirmation.path, arguments: { 'data': widget.item, 'parent': this});
       },
       child: Container(
         padding: EdgeInsets.only(top: 20, bottom: 5, left: 20, right: 20),
@@ -3654,7 +3133,6 @@ class _ActionItemState extends State<ActionItem> {
               ),
             ),
             SizedBox(height: 20,),
-            
           ],
         ),
       ),
@@ -3683,46 +3161,23 @@ class _CreateReferState extends State<CreateRefer> {
   'options_bn': ['chcp', 'chw']
   };
   List referralToRoles;
-  // var selectedReason;
-  // var clinicNameController = TextEditingController();
   var clinicTypes = [];
-  // var selectedtype;
   var _patient;
 
   @override
   void initState() {
     super.initState();
     _patient = Patient().getPatient();
-    // _getAuthData();
     getCenters();
     referralReasons = referralReasonOptions['options']; 
     referralToRoles = referralToRolesOptions['options']; 
-    // print('encounterData $encounterData');
   }
 
-  // _getAuthData() async {
-  //   var data = await Auth().getStorageAuth();
-
-  //   print('role');
-  //   print(data['role']);
-  //   setState(() {
-  //     role = data['role'];
-  //   });
-  // }
-
   getCenters() async {
-    // setState(() {
-    //   isLoading = true;
-    // });
     var centerData = await PatientController().getCenter();
-    print('centerData: $centerData');
-    // setState(() {
-    //   isLoading = false;
-    // });
-
+    
     if (centerData != null) {
       clinicTypes = centerData['data'];
-      print('clinicTypes: $clinicTypes');
       for(var center in clinicTypes) {
         if(isNotNull(_patient['data']['center']) && center['id'] == _patient['data']['center']['id']) {
           setState(() {
@@ -3739,13 +3194,11 @@ class _CreateReferState extends State<CreateRefer> {
        child: SingleChildScrollView(
           child: Stack(
             children: <Widget>[
-              Container(
-                
+              Container(                
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    // PatientTopbar(),
                     SizedBox(height: 30,),
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 20),
@@ -3753,7 +3206,6 @@ class _CreateReferState extends State<CreateRefer> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Container(
-                            // padding: EdgeInsets.symmetric(horizontal: 20),
                             child: Text(AppLocalizations.of(context).translate("referralRequired"), style: TextStyle(fontSize: 20),)
                           ),
                           SizedBox(width: 30,),
@@ -3851,7 +3303,6 @@ class _CreateReferState extends State<CreateRefer> {
                             },
                           ),
                         ),
-
 
                         SizedBox(height: 30,),
                         Container(

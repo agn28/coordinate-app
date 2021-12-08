@@ -2,24 +2,15 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
-import 'package:nhealth/controllers/user_controller.dart';
-import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/nurse/new_patient_questionnairs/followup/full_assessment_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
-import 'package:nhealth/screens/patients/ncd/followup_visit_screen.dart';
-
 import 'chcp_full_assessment_feeling_screen.dart';
 import 'chcp_short_followup_feeling_screen.dart';
-import 'short_followup_chcp_screen.dart';
-import 'full_assessment_chcp_screen.dart';
 
 class NewFollowupChcpScreen extends StatefulWidget {
   static const path = '/newFollowupChcp';
@@ -31,13 +22,11 @@ class NewFollowupChcpScreen extends StatefulWidget {
 }
 
 class _NewFollowupChcpScreenState extends State<NewFollowupChcpScreen> {
-  bool isLoading = false;
   bool avatarExists = false;
   String lastFullAssessmentDate = '';
   String lastShortAssessmentDate = '';
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   
-
   @override
   void initState() {
     super.initState();
@@ -47,7 +36,6 @@ class _NewFollowupChcpScreenState extends State<NewFollowupChcpScreen> {
   }
 
   getLastAssessments() async {
-  
     var lastFullAssessment = await AssessmentController().getLastAssessmentByPatient(key:'followup_type', value:'full');
     
     if (lastFullAssessment['error'] == true) {
@@ -72,11 +60,7 @@ class _NewFollowupChcpScreenState extends State<NewFollowupChcpScreen> {
         lastShortAssessmentDate = DateFormat("MMMM d, y").format(DateTime.parse(lastShortAssessment['data']['meta']['created_at']));
       });
     }
-    setState(() {
-      isLoading = false;
-    });
   }
-
 
   _checkAvatar() async {
     avatarExists = await File(Patient().getPatient()['data']['avatar']).exists();
@@ -88,45 +72,6 @@ class _NewFollowupChcpScreenState extends State<NewFollowupChcpScreen> {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
     }
   }
-
-  convertDateFromSeconds(date) {
-    if (date['_seconds'] != null) {
-      var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
-
-      return DateFormat("MMMM d, y").format(parsedDate).toString();
-    }
-    return '';
-  }
-
-  getTitle(encounter) {
-    var screening_type =  encounter['data']['screening_type'];
-    if (screening_type != null && screening_type != '') {
-      if (screening_type == 'ncd') {
-        screening_type = screening_type.toUpperCase() + ' ';
-      } else {
-        screening_type = screening_type[0].toUpperCase() + screening_type.substring(1) + ' ';
-      }
-      
-      return screening_type + 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
-    }
-    
-    return 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
-  }
-
-  // String getLastVisitDate() {
-  //   var date = '';
-
-  //   if (encounters.length > 0) {
-  //     var lastEncounter = encounters[0];
-  //     var parsedDate = DateTime.tryParse(lastEncounter['meta']['created_at']);
-  //     if (parsedDate != null) {
-  //       date = DateFormat('yyyy-MM-dd').format(parsedDate);
-  //     }
-  //   }
-
-  //   return date;
-  // }
-
 
   @override
   Widget build(BuildContext context) {
@@ -141,9 +86,7 @@ class _NewFollowupChcpScreenState extends State<NewFollowupChcpScreen> {
 
         ],
       ),
-      body: isLoading ? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
-        child: SingleChildScrollView(
-          child: Stack(
+      body: Stack(
             children: <Widget>[
               Column(
                 children: <Widget>[
@@ -170,39 +113,10 @@ class _NewFollowupChcpScreenState extends State<NewFollowupChcpScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   SizedBox(height: 20,),
-                                  // Column(
-                                  //   crossAxisAlignment: CrossAxisAlignment.start,
-                                  //   children: <Widget>[
-                                  //     Text("What was the outcome?", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-                                  //     SizedBox(height: 20,),
-                                  //     TextField(
-                                  //       keyboardType: TextInputType.multiline,
-                                  //       maxLines: 5,
-                                  //       style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
-                                  //       // controller: commentController,
-                                  //       decoration: InputDecoration(
-                                  //         contentPadding: const EdgeInsets.only(top: 25.0, bottom: 25.0, left: 20, right: 20),
-                                  //         filled: true,
-                                  //         fillColor: kSecondaryTextField,
-                                  //         border: new UnderlineInputBorder(
-                                  //           borderSide: new BorderSide(color: Colors.white),
-                                  //           borderRadius: BorderRadius.only(
-                                  //             topLeft: Radius.circular(4),
-                                  //             topRight: Radius.circular(4),
-                                  //           )
-                                  //         ),
-                                        
-                                  //         hintText: '',
-                                  //         hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
-                                  //       ),
-                                  //     ),
-                                  //   ],
-                                  // ),
                                   Text(AppLocalizations.of(context).translate('selectPurpose'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
                                   SizedBox(height: 20,),
                                   Container(
                                     width: double.infinity,
-                                      //margin: EdgeInsets.only(left: 15, right: 15),
                                     height: 50,
                                     decoration: BoxDecoration(
                                       color: kPrimaryColor,
@@ -210,7 +124,6 @@ class _NewFollowupChcpScreenState extends State<NewFollowupChcpScreen> {
                                     ),
                                     child: FlatButton(
                                       onPressed: () async {
-                                        // Navigator.of(context).pushNamed(FullAssessmentChcpScreen.path);
                                         Navigator.of(context).pushNamed(ChcpFullAssessmentFeelingScreen.path);
                                       },
                                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -222,7 +135,6 @@ class _NewFollowupChcpScreenState extends State<NewFollowupChcpScreen> {
                                   SizedBox(height: 20,),
                                   Container(
                                     width: double.infinity,
-                                      //margin: EdgeInsets.only(left: 15, right: 15),
                                     height: 50,
                                     decoration: BoxDecoration(
                                       color: kPrimaryColor,
@@ -230,7 +142,6 @@ class _NewFollowupChcpScreenState extends State<NewFollowupChcpScreen> {
                                     ),
                                     child: FlatButton(
                                       onPressed: () async {
-                                        // Navigator.of(context).pushNamed(FollowupVisitChcpScreen.path);
                                         Navigator.of(context).pushNamed(ChcpShortFollowupFeelingScreen.path);
                                       },
                                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -251,20 +162,9 @@ class _NewFollowupChcpScreenState extends State<NewFollowupChcpScreen> {
                   ),
                 )
                 ], 
-                
               ),
-              isLoading ? Container(
-                height: MediaQuery.of(context).size.height,
-                width: double.infinity,
-                color: Color(0x90FFFFFF),
-                child: Center(
-                  child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),backgroundColor: Color(0x30FFFFFF),)
-                ),
-              ) : Container(),
             ],
           ),
-        ),
-      ),
     );
   }
 }
