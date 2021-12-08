@@ -1,22 +1,10 @@
-import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
-
-import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/models/auth.dart';
-import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/chw/patients/patient_search_screen.dart';
-import 'package:nhealth/screens/chw/work-list/work_list_search_screen.dart';
-import 'package:nhealth/screens/patients/manage/patient_search_screen.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
-import 'package:nhealth/screens/settings/settings_screen.dart';
-import 'package:nhealth/screens/work-list/work_list_search_screen.dart';
 import 'package:nhealth/app_localizations.dart';
-
 import 'patient_list_chcp_screen.dart';
 import 'work_list_search_chcp_screen.dart';
-
 
 class ChcpNavigationScreen extends StatefulWidget {
   final pageIndex;

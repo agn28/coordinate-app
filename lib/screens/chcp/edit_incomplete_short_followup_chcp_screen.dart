@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:basic_utils/basic_utils.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,7 +17,6 @@ import 'package:nhealth/helpers/functions.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/repositories/local/assessment_repository_local.dart';
 import 'package:nhealth/screens/chcp/chcp_counselling_confirmation_screen.dart';
-import 'package:nhealth/screens/patients/ncd/followup_patient_summary_screen.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/blood_pressure.dart';
 import 'package:nhealth/models/blood_test.dart';
@@ -27,23 +25,14 @@ import 'package:nhealth/models/language.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import 'followup_patient_chcp_summary_screen.dart';
 
-
-// var medicalHistoryQuestions = {};
-// var medicalHistoryAnswers = [];
 var medicationQuestions = {};
 var medicationAnswers = [];
 var dynamicMedicationTitles = [];
 var dynamicMedicationQuestions = {};
 var dynamicMedicationAnswers = [];
-// var riskQuestions = {};
-// var riskAnswers = [];
-// var relativeQuestions = {};
-// var relativeAnswers = [];
-// var personalQuestions = {};
 
 bool hasIncompleteChcpEncounter = false;
 
@@ -110,7 +99,6 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
     prepareQuestions();
     prepareAnswers();
     getMedicationsDispense();
-    // getIncompleteFollowup();
     hasIncompleteChcpEncounter = false;
      if(_patient['data']['chcp_encounter_status'] != null && _patient['data']['chcp_encounter_status'] == 'incomplete') {	
       hasIncompleteChcpEncounter = true;	
@@ -133,15 +121,8 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
           context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
     }
 
-    // setState(() {
-    //   isLoading = true;
-    // });
     var patientId = Patient().getPatient()['id'];
     var data = await PatientController().getMedicationsByPatient(patientId);
-    // print("medication: ${data['data']}");
-    // setState(() {
-    //   isLoading = false;
-    // });
 
     if (data == null) {
       return;
@@ -159,7 +140,6 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
         dynamicMedications = meds;
         dynamicMedicationQuestions = q;
       });
-
     }
   }
 
@@ -167,24 +147,16 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
   prepareDynamicMedications(medications) {
     var prepareMedication = [];
     var serial = 1;
-    // dynamicMedicationTitles = [];
-    // dynamicMedicationAnswers = [];
     for(var item in medications) {
-      // dynamicMedications.forEach((item) {
       var textEditingController = new TextEditingController();
       textEditingControllers.putIfAbsent(item['id'], ()=>textEditingController);
-      //   // return textFields.add( TextField(controller: textEditingController));
-      // });
-      // dynamicMedicationTitles.add(item['body']['title']);
       prepareMedication.add({
         'medId': item['id'],
         'medInfo': '${serial}. Tab ${item['body']['title']}: ${item['body']['dosage']}${item['body']['unit']} ${item['body']['activityDuration']['repeat']['frequency']} time(s) ${preparePeriodUnits(item['body']['activityDuration']['repeat']['periodUnit'], 'repeat')} - continue ${item['body']['activityDuration']['review']['period']} ${preparePeriodUnits(item['body']['activityDuration']['review']['periodUnit'], 'review')}'
       });
       serial++;
-      // dynamicMedicationAnswers.add('');
     }
     dynamicMedications = prepareMedication;
-    // print(dynamicMedicationTitles);
     return dynamicMedications;
   }
 
@@ -210,49 +182,7 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
 
   }
 
-
-  // getIncompleteFollowup() async {
-  //   print("getIncompleteFollowup");
-
-  //   if (Auth().isExpired()) {
-  //     Auth().logout();
-  //     Navigator.pushReplacement(
-  //         context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-  //   }
-
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-  //   var patientId = Patient().getPatient()['id'];
-  //   var data = await AssessmentController().getIncompleteEncounterWithObservation(patientId);
-  //   setState(() {
-  //     isLoading = false;
-  //   });
-
-  //   if (data == null) {
-  //     return;
-  //   } else if (data['message'] == 'Unauthorized') {
-  //     Auth().logout();
-  //     Navigator.pushReplacement(
-  //         context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-  //     return;
-  //   } else if (data['error'] != null && data['error']) {
-  //     return;
-  //   }
-
-  //   setState(() {
-  //     encounter = data['data']['assessment'];
-  //     print("encounter: $encounter");
-  //     observations = data['data']['observations'];
-  //     print("observations: $observations");
-  //   });
-
-  //   print("observations: $observations");
-
-  //   populatePreviousAnswers();
-  // }
-
-    getIncompleteAssessmentLocal() async {
+  getIncompleteAssessmentLocal() async {
     var patientId = Patient().getPatient()['id'];
     encounter = await AssessmentRepositoryLocal().getIncompleteAssessmentsByPatient(patientId);
     if(encounter.isNotEmpty) {
@@ -271,7 +201,7 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
     populateReferral();
   }
 
-    populateReferral() async {
+  populateReferral() async {
     var centerData = await PatientController().getCenter();
 
     if (centerData['error'] != null && !centerData['error']) {
@@ -309,7 +239,6 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
                   matchedMhq = matchedMhq.first;
                   setState(() {
                     dynamicMedicationAnswers[dynamicMedicationQuestions['items'].indexOf(matchedMhq)] = obsData[key];
-                    //print(medicationAnswers[medicationQuestions['items'].indexOf(matchedMhq)]);
                   });
                 }
               }
@@ -320,9 +249,6 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
       if (obs['body']['type'] == 'blood_pressure') {
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
-          var systolicText = obsData['systolic'];
-          var diastolicText = obsData['diastolic'];
-          var pulseRateText = obsData['pulse_rate'];
           systolicEditingController.text = '${obsData['systolic']}';
           pulseRateEditingController.text = '${obsData['pulse_rate']}';
           diastolicEditingController.text = '${obsData['diastolic']}';
@@ -332,23 +258,18 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
           if (obsData['name'] == 'height' && obsData['value'] != '') {
-            var heightText = obsData['value'];
             heightEditingController.text = '${obsData['value']}';
           }
           if (obsData['name'] == 'weight' && obsData['value'] != '') {
-            var weightText = obsData['value'];
             weightEditingController.text = '${obsData['value']}';
           }
           if (obsData['name'] == 'waist' && obsData['value'] != '') {
-            var waistText = obsData['value'];
             waistEditingController.text = '${obsData['value']}';
           }
           if (obsData['name'] == 'hip' && obsData['value'] != '') {
-            var hipText = obsData['value'];
             hipEditingController.text = '${obsData['value']}';
           }
           if (obsData['name'] == 'bmi' && obsData['value'] != '') {	
-            var bmiText = obsData['value'];	
             bmiEditingController.text = '${obsData['value']}';	
           }
         }
@@ -357,73 +278,59 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
           if (obsData['name'] == 'creatinine' && obsData['value'] != '') {
-            var creatinineText = obsData['value'];
             creatinineController.text = '${obsData['value']}';
             selectedCreatinineUnit = obsData['unit'];
           }
           if (obsData['name'] == 'a1c' && obsData['value'] != '') {
-            var hba1cText = obsData['value'];
             hba1cController.text = '${obsData['value']}';
             selectedHba1cUnit = obsData['unit'];
           }
           if (obsData['name'] == 'total_cholesterol' &&
               obsData['value'] != '') {
-            var totalCholesterolText = obsData['value'];
             cholesterolController.text = '${obsData['value']}';
             selectedCholesterolUnit = obsData['unit'];
           }
           if (obsData['name'] == 'potassium' && obsData['value'] != '') {
-            var potassiumText = obsData['value'];
             potassiumController.text = '${obsData['value']}';
             selectedPotassiumUnit = obsData['unit'];
           }
           if (obsData['name'] == 'ldl' && obsData['value'] != '') {
-            var ldlText = obsData['value'];
             ldlController.text = '${obsData['value']}';
             selectedLdlUnit = obsData['unit'];
           }
           if (obsData['name'] == 'blood_sugar' && obsData['type'] == null && obsData['value'] != '') {
-            var bloodSugarText = obsData['value'];
             randomBloodController.text = '${obsData['value']}';
             selectedRandomBloodUnit = obsData['unit'];
           }
           if ((obsData['name'] == 'blood_glucose' || obsData['name'] == 'blood_sugar') && (obsData['type'] != null && obsData['type'] == 'fasting') && obsData['value'] != '') {
-            var bloodGlucoseText = obsData['value'];
             fastingBloodController.text = '${obsData['value']}';
             selectedFastingBloodUnit = obsData['unit'];
           }
           if (obsData['name'] == 'hdl' && obsData['value'] != '') {
-            var hdlText = obsData['value'];
             hdlController.text = '${obsData['value']}';
             selectedHdlUnit = obsData['unit'];
           }
           if (obsData['name'] == 'ketones' && obsData['value'] != '') {
-            var ketonesText = obsData['value'];
             ketonesController.text = '${obsData['value']}';
             selectedKetonesUnit = obsData['unit'];
           }
           if (obsData['name'] == 'protein' && obsData['value'] != '') {
-            var proteinText = obsData['value'];
             proteinController.text = '${obsData['value']}';
             selectedProteinUnit = obsData['unit'];
           }
           if (obsData['name'] == 'sodium' && obsData['value'] != '') {
-            var sodiumText = obsData['value'];
             sodiumController.text = '${obsData['value']}';
             selectedSodiumUnit = obsData['unit'];
           }
           if ((obsData['name'] == 'blood_glucose' || obsData['name'] == 'blood_sugar') && (obsData['type'] != null && obsData['type'] == 'fasting') && obsData['value'] != '') {
-            var bloodGlucoseText = obsData['value'];
             fastingBloodController.text = '${obsData['value']}';
             selectedFastingBloodUnit = obsData['unit'];
           }
           if (obsData['name'] == 'triglycerides' && obsData['value'] != '') {
-            var triglyceridesText = obsData['value'];
             tgController.text = '${obsData['value']}';
             selectedTgUnit = obsData['unit'];
           }
           if (obsData['name'] == '2habf' && obsData['value'] != '') {
-            var habfText = obsData['value'];
             habfController.text = '${obsData['value']}';
             selectedHabfUnit = obsData['unit'];
           }
@@ -452,29 +359,14 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
   }
 
   prepareQuestions() {
-    // medicalHistoryQuestions = Questionnaire().questions['new_patient']['medical_history'];
     medicationQuestions = Questionnaire().questions['new_patient']['medication'];
-    // riskQuestions = Questionnaire().questions['new_patient']['risk_factors'];
-    // relativeQuestions = Questionnaire().questions['new_patient']['relative_problems'];
   }
 
   prepareAnswers() {
-    // medicalHistoryAnswers = [];
     medicationAnswers = [];
-    // riskAnswers = [];
-    // relativeAnswers = [];
-    // medicalHistoryQuestions['items'].forEach((qtn) {
-    //   medicalHistoryAnswers.add('');
-    // });
     medicationQuestions['items'].forEach((qtn) {
       medicationAnswers.add('');
     });
-    // riskQuestions['items'].forEach((qtn) {
-    //   riskAnswers.add('');
-    // });
-    // relativeQuestions['items'].forEach((qtn) {
-    //   relativeAnswers.add('');
-    // });
   }
 
   clearForm() {
@@ -527,24 +419,6 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
       Auth().logout();
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    }
-  }
-
-  setLoader(value) {
-    setState(() {
-      isLoading = value;
-    });
-  }
-
-  goToHome(recommendation, data) {
-    if (recommendation) {
-      Navigator.of(context).pushReplacementNamed(
-          MedicalRecommendationScreen.path,
-          arguments: data);
-    } else {
-      Navigator.of(context).pushNamed(
-        '/chcpHome',
-      );
     }
   }
 
@@ -755,15 +629,12 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
                   child: _currentStep < _mySteps().length || nextHide
                       ? FlatButton(
                           onPressed: () {
-                            // setState(() {
-
                               if (_currentStep == 4) {
                                 _completeRefer();
                                 return;
                               }
                               if (_currentStep == 3) {
                                 if(cpUpdateCount > 0) {
-                                  //Navigator.of(context).pushNamed('/chwPatientSummary');
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
@@ -791,15 +662,6 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
                                               textColor: Colors.white,
                                               onPressed: () {
                                                 Navigator.of(context).pop();
-                                                // var result;
-                                                // setState(() {
-                                                //   isLoading = true;
-                                                // });
-                                                // result = await AssessmentController().createOnlyAssessment(context, 'Care Plan Delivery', 'care-plan-delivered', '', 'complete', '');
-
-                                                // setState(() {
-                                                //   isLoading = false;
-                                                // });
                                                 setState(() {
                                                   _currentStep++;
                                                   nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
@@ -814,15 +676,6 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
                                   );
                                 }
                                 else {
-                                  // var result;
-                                  // setState(() {
-                                  //   isLoading = true;
-                                  // });
-                                  // result = await AssessmentController().createOnlyAssessment(context, 'Care Plan Delivery', 'care-plan-delivered', '', 'complete', '');
-
-                                  // setState(() {
-                                  //   isLoading = false;
-                                  // });
                                     setState(() {
                                       _currentStep++;
                                       nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
@@ -838,7 +691,6 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
                                 setState(() {
                                   _currentStep = _currentStep + 1;
                                 });
-
                                 return;
                               }
                               if(_currentStep == 1){
@@ -921,16 +773,7 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
                                   _currentStep = _currentStep + 1;
                                 });
                                 return;
-                                // print(Questionnaire().qnItems);
-                                // nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                               }
-                              // if (_currentStep < 4) {
-                              //   // If the form is valid, display a Snackbar.
-                              //   setState(() {
-                              //     _currentStep = _currentStep + 1;
-                              //   });
-                              // }
-                            // });
                           },
                           materialTapTargetSize:
                               MaterialTapTargetSize.shrinkWrap,
@@ -1091,15 +934,6 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
     var hasMissingData = checkMissingData();
     var hasOptionalMissingData = checkOptionalMissingData();
 
-    // if (hasMissingData) {
-    //   var continueMissing = await missingDataAlert();
-    //   if (!continueMissing) {
-    //     return;
-    //   }
-    // }
-
-    // setLoader(true);
-
     var patient = Patient().getPatient();
 
     var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
@@ -1117,8 +951,6 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
         'followupType': 'short'
       };	
     }
-    // return;
-    // Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': encounterData ,});
   }
 
   List<CustomStep> _mySteps() {
@@ -1167,7 +999,6 @@ class _EditIncompleteShortFollowupChcpScreenState extends State<EditIncompleteSh
         isActive: _currentStep >= 3,
       ));
     }
-
     return _steps;
   }
 }
@@ -1235,100 +1066,6 @@ class _MedicationState extends State<Medication> {
   bool showLastMedicationQuestion = false;
   bool isEmpty = true;
 
-  // checkMedicalHistoryAnswers(medicationQuestion) {
-  //   // if (medicationQuestions['items'].length -1 == medicationQuestions['items'].indexOf(medicationQuestion)) {
-  //   //   if (showLastMedicationQuestion) {
-  //   //     return true;
-  //   //   }
-
-  //   // }
-  //   // return true;
-
-  //   // check if any medical histroy answer is yes. then return true if medication question is aspirin, or lower fat
-  //   if (medicationQuestion['type'] == 'heart' || medicationQuestion['type'] == 'heart_bp_diabetes') {
-  //     var medicalHistoryasYes = medicalHistoryAnswers.where((item) => item == 'yes');
-  //     if (medicalHistoryasYes.isNotEmpty) {
-  //       return true;
-  //     }
-  //   }
-    
-  //   if (medicationQuestion['type'].contains('medication')) {
-  //     var mainType =
-  //         medicationQuestion['type'].replaceAll('_regular_medication', '');
-  //     print('mainType ' + mainType);
-  //     var matchedMedicationQuestion = medicationQuestions['items']
-  //         .where((item) => item['type'] == mainType)
-  //         .first;
-  //     print("matchedMedicationQuestion: $matchedMedicationQuestion");
-  //     var medicationAnswer = medicationAnswers[
-  //         medicationQuestions['items'].indexOf(matchedMedicationQuestion)];
-  //     print("medicationAnswer: $medicationAnswer");
-  //     if (medicationAnswer == 'yes') {
-  //       return true;
-  //     }
-
-  //     return false;
-  //   }
-
-  //   var matchedQuestion;
-  //   bool matchedHBD = false;
-  //   medicalHistoryQuestions['items'].forEach((item) {
-  //     if (item['type'] != null && item['type'] == medicationQuestion['type']) {
-  //       matchedQuestion = item;
-  //     } else if (medicationQuestion['type'] == 'heart_bp_diabetes') {
-  //       if (item['type'] == 'stroke' ||
-  //           item['type'] == 'heart' ||
-  //           item['type'] == 'blood_pressure' ||
-  //           item['type'] == 'diabetes') {
-  //         var answer = medicalHistoryAnswers[
-  //             medicalHistoryQuestions['items'].indexOf(item)];
-  //         if (answer == 'yes') {
-  //           matchedHBD = true;
-  //           // return true;
-  //         }
-  //       }
-  //     }
-  //   });
-
-  //   if (matchedHBD) {
-  //     return true;
-  //   }
-
-  //   if (matchedQuestion != null) {
-  //     // print(matchedQuestion.first);
-  //     var answer = medicalHistoryAnswers[
-  //         medicalHistoryQuestions['items'].indexOf(matchedQuestion)];
-  //     if (answer == 'yes') {
-  //       return true;
-  //     }
-  //   }
-  //   return false;
-  // }
-
-  checkAnswer() {
-    setState(() {});
-
-    return;
-
-    var isPositive = false;
-    var answersLength = medicationAnswers.length;
-
-    for (var answer in medicationAnswers) {
-      if (medicationAnswers.indexOf(answer) != answersLength - 1) {
-        if (answer == 'yes') {
-          setState(() {
-            isPositive = true;
-          });
-          break;
-        }
-      }
-    }
-
-    setState(() {
-      showLastMedicationQuestion = isPositive;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -1345,7 +1082,6 @@ class _MedicationState extends State<Medication> {
                   height: 30,
                 ),
                 Container(
-                  // alignment: Alignment.center,
                   margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
                   child: Text(
                     AppLocalizations.of(context).translate('medicationTitle'),
@@ -1428,7 +1164,6 @@ class _MedicationState extends State<Medication> {
                                                                       'options']
                                                                   .indexOf(
                                                                       option)];
-                                                              checkAnswer();
                                                               // print(medicalHistoryAnswers);
                                                               // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
                                                             });
@@ -1568,7 +1303,6 @@ class _MeasurementsState extends State<Measurements> {
                           children: [
                             Container(
                               child: Row(
-                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
                                     child: Row(
@@ -3059,18 +2793,6 @@ class _MedicationsDispenseState extends State<MedicationsDispense> {
                         ),                       
 
                       ),
-                      // SizedBox(height: 24),
-
-                      // Container(
-                      //     child: Text(
-                      //         'Serial Name    Dose Unit    Frequancy    Duration',
-                      //         style: TextStyle(
-                      //         color: Colors.black,
-                      //         fontSize: 18,
-                      //         // fontWeight: FontWeight.w500
-                      //         ),
-                      //       ),
-                      // ),
                       SizedBox(height: 24),
                       if(dynamicMedications != null)
                       ...dynamicMedications.map((item) {
@@ -3089,7 +2811,6 @@ class _MedicationsDispenseState extends State<MedicationsDispense> {
                               ),
                             ),
                             SizedBox(height: 24),
-
                             Container(
                               padding: EdgeInsets.symmetric(horizontal: 20),
                               child: Row(
@@ -3139,10 +2860,6 @@ class _MedicationsDispenseState extends State<MedicationsDispense> {
                                           backgroundColor: kPrimaryRedColor,
                                         ));
                                       }
-                                      // Navigator.of(context).pop();
-                                      // if (response == 'success') {
-                                      // // Navigator.of(context).pop();
-                                      // } else Toast.show('There is some error', context, duration: Toast.LENGTH_LONG, backgroundColor: kPrimaryRedColor, gravity:  Toast.BOTTOM, backgroundRadius: 5);
                                     },
                                     child: Text(AppLocalizations.of(context).translate('submit')),
                                   )
@@ -3162,10 +2879,8 @@ class _MedicationsDispenseState extends State<MedicationsDispense> {
               ),
           ),
       ),
-
     );
   }
-
 }
 
 
@@ -3226,66 +2941,6 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
     
   }
 
-  getStatus(item) {
-    var status = 'completed';
-    item['items'].forEach( (goal) {
-      if (goal['meta']['status'] == 'pending') {
-        setState(() {
-          status = 'pending';
-        });
-      }
-    });
-
-    return status;
-  }
-
-  getCompletedDate(goal) {
-    var data = '';
-    DateTime date;
-    // print(goal['items']);
-    goal['items'].forEach((item) {
-      // print(item['body']['activityDuration']['end']);
-      DateFormat format = new DateFormat("E LLL d y");
-      var endDate;
-      try {
-        endDate = format.parse(item['body']['activityDuration']['end']);
-      } catch(err) {
-        endDate = DateTime.parse(item['body']['activityDuration']['end']);
-      }
-      // print(endDate);
-      date = endDate;
-      if (date != null) {
-        date  = endDate;
-      } else {
-        if (endDate.isBefore(date)) {
-          date = endDate;
-        }
-      }
-      
-    });
-    if (date != null) {
-      var test = DateFormat('MMMM d, y').format(date);
-      data = 'Complete By ' + test;
-    }
-    return data;
-  }
-
-
-  getDueCounts() {
-    var goalCount = 0;
-    var actionCount = 0;
-    carePlans.forEach((item) {
-      if(item['meta']['status'] == 'pending') {
-        goalCount = goalCount + 1;
-        if (item['body']['components'] != null) {
-          actionCount = actionCount + item['body']['components'].length;
-        }
-      }
-    });
-
-    return "$goalCount goals & $actionCount actions";
-  }
-
   _checkAvatar() async {
     avatarExists = await File(Patient().getPatient()['data']['avatar']).exists();
   }
@@ -3298,19 +2953,9 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
   }
 
   _getCarePlan() async {
-    // setState(() {
-    //   isLoading = true;
-    // });
-
     var data = await CarePlanController().getCarePlan();
     
-    // setState(() {
-    //   isLoading = false;
-    // });
-    
     if (data != null) {
-      // print( data['data']);
-      // DateTime.parse(localAuth['expirationTime']).add(DateTime.now().timeZoneOffset).add(Duration(hours: 12)).isBefore(DateTime.now())
       setState(() {
         carePlans = data;
       });
@@ -3423,11 +3068,6 @@ class _CareplanDeliveryScreenState extends State<CareplanDeliveryScreen> {
                         : Container(
                           child: Text(AppLocalizations.of(context).translate('noConfirmedCarePlan'), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500)),
                         ),
-                        // upcomingCarePlans.length > 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: upcomingCarePlans, text: AppLocalizations.of(context).translate('upComing')) : Container(),
-                        // completedCarePlans.length> 0 ? CareplanAction(checkInState: widget.checkInState, carePlans: completedCarePlans, text: AppLocalizations.of(context).translate('complete')) : Container(),
-
-                        // SizedBox(height: 20,),
-
 
                         //previous patient history steps
                       dueCarePlans.length > 0 
@@ -3484,42 +3124,7 @@ class CareplanAction extends StatefulWidget {
 class _CareplanActionState extends State<CareplanAction> {
   @override
   void initState() {
-    super.initState();
-    
-  }
-
-  getCompletedDate(goal) {
-    var data = '';
-    DateTime date;
-    // print(goal['items']);
-    goal['items'].forEach((item) {
-      // print(item['body']['activityDuration']['end']);
-      if (item['meta']['status'] != 'completed') {
-        DateFormat format = new DateFormat("E LLL d y");
-        var endDate;
-        try {
-          endDate = format.parse(item['body']['activityDuration']['end']);
-        } catch(err) {
-          endDate = DateTime.parse(item['body']['activityDuration']['end']);
-        }
-        
-        // print(endDate);
-        date = endDate;
-        if (date != null) {
-          date  = endDate;
-        } else {
-          if (endDate.isBefore(date)) {
-            date = endDate;
-          }
-        }
-      }
-      
-    });
-    if (date != null) {
-      var test = DateFormat('MMMM d, y').format(date);
-      data = 'Complete By ' + test;
-    }
-    return data;
+    super.initState();  
   }
 
   @override
@@ -3578,9 +3183,6 @@ class _GoalItemState extends State<GoalItem> {
       }
     });
   }
-  setStatus(completedItem) {
-    
-  }
   
   getCompletedDate(goal) {
     var data = '';
@@ -3593,7 +3195,6 @@ class _GoalItemState extends State<GoalItem> {
         } catch(err) {
           endDate = DateTime.parse(item['body']['activityDuration']['end']);
         }
-      // print(endDate);
       date = endDate;
       if (date != null) {
         date  = endDate;
@@ -3690,30 +3291,11 @@ class _ActionItemState extends State<ActionItem> {
     });
   }
 
-  isCounselling() {
-    return widget.item['body']['title'].split(" ").contains('Counseling') || widget.item['body']['title'].split(" ").contains('Counselling');
-  }
-
-  setStatus() {
-    setState(() {
-      btnDisabled = false;
-      status = 'completed';
-      cpUpdateCount--;
-    });
-
-    widget.parent.setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-
-        // if (isCounselling()) {
           Navigator.of(context).pushNamed(ChcpCounsellingConfirmation.path, arguments: { 'data': widget.item, 'parent': this});
-          // return;
-        // }
-        // Navigator.of(context).pushNamed('/chwActionsSwipper', arguments: { 'data': widget.item, 'parent': this});
       },
       child: Container(
         padding: EdgeInsets.only(top: 20, bottom: 5, left: 20, right: 20),
@@ -3794,55 +3376,12 @@ class _CreateReferState extends State<CreateRefer> {
   'options_bn': ['তাৎক্ষণিক মেডিকেল প্রচেষ্টা প্রয়োজন', 'এনসিডি স্ক্রিনিং প্রয়োজন']
   };
   List referralReasons;
-  // var selectedReason;
-  // var clinicNameController = TextEditingController();
-  // var clinicTypes = [];
-  // var selectedtype;
-  // var _patient;
 
   @override
   void initState() {
     super.initState();
-    // _getAuthData();
-    // getCenters();
     referralReasons = referralReasonOptions['options']; 
-    // print('encounterData $encounterData');
   }
-
-  // _getAuthData() async {
-  //   var data = await Auth().getStorageAuth();
-
-  //   print('role');
-  //   print(data['role']);
-  //   setState(() {
-  //     role = data['role'];
-  //   });
-  // }
-
-  // getCenters() async {
-  //   // setState(() {
-  //   //   isLoading = true;
-  //   // });
-  //   var centerData = await PatientController().getCenter();
-  //   // setState(() {
-  //   //   isLoading = false;
-  //   // });
-
-  //   print("CenterData: $centerData");
-
-  //   if (centerData['error'] != null && !centerData['error']) {
-  //     clinicTypes = centerData['data'];
-  //     for(var center in clinicTypes) {
-  //       if(isNotNull(_patient['data']['center']) && center['id'] == _patient['data']['center']['id']) {
-  //         print('selectedCenter $center');
-  //         setState(() {
-  //           selectedtype = center;
-  //         });
-  //       }
-  //     }
-  //   }
-  //   print("center: $clinicTypes");
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -3856,7 +3395,6 @@ class _CreateReferState extends State<CreateRefer> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    // PatientTopbar(),
                     SizedBox(height: 30,),
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 20),
@@ -3864,7 +3402,6 @@ class _CreateReferState extends State<CreateRefer> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Container(
-                            // padding: EdgeInsets.symmetric(horizontal: 20),
                             child: Text(AppLocalizations.of(context).translate("referralRequired"), style: TextStyle(fontSize: 20),)
                           ),
                           SizedBox(width: 30,),
