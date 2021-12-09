@@ -131,7 +131,7 @@ class CarePlanController {
       "id": id,
       "meta": {
         "collected_by": Auth().getAuth()['uid'],
-        "created_at": DateFormat('y-MM-dd').format(DateTime.now()),
+        "created_at": DateFormat('yyyy-MM-dd').format(DateTime.now()),
         "review_required": true
       },
       "body": {
@@ -153,7 +153,7 @@ class CarePlanController {
       "id": id,
       "meta": {
         "collected_by": Auth().getAuth()['uid'],
-        "created_at": DateFormat('y-MM-dd').format(DateTime.now())
+        "created_at": DateFormat('yyyy-MM-dd').format(DateTime.now())
       },
       "body": {
         "patient_id": patietnId,

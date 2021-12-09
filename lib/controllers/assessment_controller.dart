@@ -164,7 +164,6 @@ class AssessmentController {
 
   getLastAssessmentByPatient({key: '', value: ''}) async {
     var data = {};
-
     var patientId = Patient().getPatient()['id'];
     var assessments = await AssessmentRepositoryLocal().getAssessmentsByPatient(patientId);
     if (isNotNull(assessments)) {
@@ -956,7 +955,7 @@ class AssessmentController {
      } else {
       var response;
       var assessmentId = Uuid().v4();
-      var created_at = createdAt == '' ? DateFormat("dd-MM-yyyy HH:mm:ss").format(DateTime.now()).toString() : createdAt;
+      var created_at = createdAt == '' ? DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()).toString() : createdAt;
       var assessmentData = _prepareAssessmentData(type, screening_type, assessmentStatus, created_at);
       if (followupType != '') {
         assessmentData['body']['followup_type'] = followupType;
@@ -1637,14 +1636,14 @@ class AssessmentController {
     var data = {
       "meta": {
         "collected_by": Auth().getAuth()['uid'],
-        "created_at": created_at != '' ? created_at : DateFormat("dd-MM-yyyy HH:mm:ss").format(DateTime.now()).toString()
+        "created_at": created_at != '' ? created_at : DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()).toString()
       },
       "body": {
         "type": type,
         "screening_type": screening_type,
         "comment": '',
         "performed_by": Auth().getAuth()['uid'],
-        "assessment_date": DateFormat('y-MM-dd').format(DateTime.parse(created_at)),
+        "assessment_date": DateFormat('yyyy-MM-dd').format(DateTime.parse(created_at)),
         "patient_id": Patient().getPatient()['id'],
         "status": status
       }
@@ -1666,7 +1665,7 @@ class AssessmentController {
         "screening_type": screening_type,
         "comment": comment,
         "performed_by": Auth().getAuth()['uid'],
-        "assessment_date": DateFormat('y-MM-dd').format(DateTime.now()),
+        "assessment_date": DateFormat('yyyy-MM-dd').format(DateTime.now()),
         "patient_id": Patient().getPatient()['id']
       }
     };

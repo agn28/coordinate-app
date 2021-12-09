@@ -98,67 +98,67 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
     });
 
     var parsedLocalPatient = [];
-    // var allLocalPatients = await PatientController().getPatientsWithAssesments();
-    // for(var localPatient in allLocalPatients) {
-    //   print('p ${localPatient['id']} ${localPatient['assessment_type']} ${localPatient['assessment_created_at']}');
-    //   var parsedData = jsonDecode(localPatient['data']);
-    //   if (localPatient['assessment_type'] == 'registration'
-    //     || localPatient['assessment_screening_type'] != 'follow-up'
-    //     && (localPatient['assessment_status'] != null || localPatient['assessment_status'] != "" || localPatient['assessment_status'] != "complete")) {
-    //     //TODO: Will remove this later
-    //     if(localPatient['assessment_status'] == 'incomplete') {
-    //       parsedData['body']['incomplete_encounter'] = true;
-    //     }
-    //     parsedLocalPatient.add({
-    //       'id': localPatient['id'],
-    //       'data': parsedData['body'],
-    //       'meta': parsedData['meta'],
-    //       'assessment_type': localPatient['assessment_type'],
-    //       'assessment_status': localPatient['assessment_status'],
-    //       'assessment_local_status': localPatient['assessment_local_status'],
-    //     });
-        
-    //   }
-    // }
-
-    var allLocalPatients = await PatientController().getAllLocalPatients();
-    var assessments = await AssessmentController().getAllAssessments();
-    var authData = await Auth().getStorageAuth();
-    
+    var allLocalPatients = await PatientController().getPatientsWithAssesments();
     for(var localPatient in allLocalPatients) {
-      if(localPatient['data']['address']['district'] == authData['address']['district']) {
-        var hasEncounter = assessments.firstWhere((assessment) {
-          if (assessment['data']['patient_id'] == localPatient['id']) {
-            if (assessment['data']['type'] != 'registration') {
-              if (assessment['data']['screening_type'] == 'follow-up') {
-                return true;
-              }
-              if (assessment['data']['status'] == null || assessment['data']['status'] == "" || assessment['data']['status'] == "complete") {
-                return true;
-              }
-              return false; 
-            } return false; 
-          } return false; 
-        }, orElse: () => false);
-
-        if(hasEncounter.runtimeType == bool && !hasEncounter) {
-          assessments.firstWhere((assessment) {
-            if (assessment['data']['patient_id'] == localPatient['id']) {
-              if(assessment['data']['status'] == 'incomplete') {
-                localPatient['data']['incomplete_encounter'] = true;
-                return true;
-              } return false; 
-            } return false; 
-          }, orElse: () => false);
-          var localpatientdata = {
-            'id': localPatient['id'],
-            'data': localPatient['data'],
-            'meta': localPatient['meta']
-          };
-          parsedLocalPatient.add(localpatientdata);
+      print('p ${localPatient['id']} ${localPatient['assessment_type']} ${localPatient['assessment_created_at']}');
+      var parsedData = jsonDecode(localPatient['data']);
+      if (localPatient['assessment_type'] == 'registration'
+        || localPatient['assessment_screening_type'] != 'follow-up'
+        && (localPatient['assessment_status'] != null || localPatient['assessment_status'] != "" || localPatient['assessment_status'] != "complete")) {
+        //TODO: Will remove this later
+        if(localPatient['assessment_status'] == 'incomplete') {
+          parsedData['body']['incomplete_encounter'] = true;
         }
+        parsedLocalPatient.add({
+          'id': localPatient['id'],
+          'data': parsedData['body'],
+          'meta': parsedData['meta'],
+          'assessment_type': localPatient['assessment_type'],
+          'assessment_status': localPatient['assessment_status'],
+          'assessment_local_status': localPatient['assessment_local_status'],
+        });
+        
       }
     }
+
+    // var allLocalPatients = await PatientController().getAllLocalPatients();
+    // var assessments = await AssessmentController().getAllAssessments();
+    // var authData = await Auth().getStorageAuth();
+    
+    // for(var localPatient in allLocalPatients) {
+    //   if(localPatient['data']['address']['district'] == authData['address']['district']) {
+    //     var hasEncounter = assessments.firstWhere((assessment) {
+    //       if (assessment['data']['patient_id'] == localPatient['id']) {
+    //         if (assessment['data']['type'] != 'registration') {
+    //           if (assessment['data']['screening_type'] == 'follow-up') {
+    //             return true;
+    //           }
+    //           if (assessment['data']['status'] == null || assessment['data']['status'] == "" || assessment['data']['status'] == "complete") {
+    //             return true;
+    //           }
+    //           return false; 
+    //         } return false; 
+    //       } return false; 
+    //     }, orElse: () => false);
+
+    //     if(hasEncounter.runtimeType == bool && !hasEncounter) {
+    //       assessments.firstWhere((assessment) {
+    //         if (assessment['data']['patient_id'] == localPatient['id']) {
+    //           if(assessment['data']['status'] == 'incomplete') {
+    //             localPatient['data']['incomplete_encounter'] = true;
+    //             return true;
+    //           } return false; 
+    //         } return false; 
+    //       }, orElse: () => false);
+    //       var localpatientdata = {
+    //         'id': localPatient['id'],
+    //         'data': localPatient['data'],
+    //         'meta': localPatient['meta']
+    //       };
+    //       parsedLocalPatient.add(localpatientdata);
+    //     }
+    //   }
+    // }
     setState(() {
       allPatients = parsedLocalPatient;
       patients = allPatients;

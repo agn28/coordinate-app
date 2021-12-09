@@ -59,17 +59,12 @@ class AssessmentRepositoryLocal {
   }
 
   getAssessmentsByPatient(id) async {
-    final sql =
-        '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE patient_id="$id" ORDER BY created_at DESC''';
-    var assessments;
-
+    final sql = '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE patient_id="$id" ORDER BY created_at DESC''';
     try {
-      assessments = await db.rawQuery(sql);
+      return await db.rawQuery(sql);
     } catch (error) {
-
       return;
     }
-    return assessments;
   }
 
   getAssessmentById(id) async {
@@ -84,20 +79,12 @@ class AssessmentRepositoryLocal {
   }
 
   getIncompleteAssessmentsByPatient(id) async {
-
-    var status = 'incomplete';
-    final sql =
-        '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE (status='incomplete') AND (patient_id='$id') ORDER BY created_at ASC''';
-
-    var assessments;
-
+    final sql = '''SELECT * FROM ${DatabaseCreator.assessmentTable} WHERE (status='incomplete') AND (patient_id='$id') ORDER BY created_at ASC''';
     try {
-      assessments = await db.rawQuery(sql);
-
+      return await db.rawQuery(sql);
     } catch (error) {
       return;
     }
-    return assessments;
   }
 
   getNotSyncedAssessments() async {
@@ -509,7 +496,7 @@ class AssessmentRepositoryLocal {
       isSynced, 
       localStatus,
       item['meta']['created_at']];
-      // DateFormat("dd-MM-yyyy HH:mm:ss").format(DateTime.parse(item['meta']['created_at']))];
+      // DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.parse(item['meta']['created_at']))];
       await batch.rawInsert(sql, params);
       print('rawInsert');
     }
