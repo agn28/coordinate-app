@@ -1291,7 +1291,6 @@ class _MeasurementsState extends State<Measurements> {
 
                                     await getIncompleteFollowup();
                                     if(encounter != null) {
-                                      var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
                                     }
                                     {
                                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -1546,7 +1545,6 @@ class _MeasurementsState extends State<Measurements> {
                                 BloodPressure().addBloodPressure(formData);
                                 await getIncompleteFollowup();
                                 if(encounter != null) {
-                                  var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
                                 }
                                 {
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -1944,7 +1942,6 @@ class _MeasurementsState extends State<Measurements> {
                               BloodTest().addBtItem();
                               await getIncompleteFollowup();
                               if(encounter != null) {
-                                var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
                               }
                               {
                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -2317,7 +2314,7 @@ class _MeasurementsState extends State<Measurements> {
                                     BloodTest().addBtItem();  
                                     await getIncompleteFollowup();
                                     if(encounter != null) {
-                                      var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
+                                     
                                     }
                                     {
                                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -2770,7 +2767,7 @@ class _MeasurementsState extends State<Measurements> {
                                     BloodTest().addBtItem();
                                     await getIncompleteFollowup();
                                     if(encounter != null) {
-                                      var response = await AssessmentController().updateAssessmentWithObservations(context, 'incomplete', encounter, observations);
+                                      
                                     }
                                     {
                                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

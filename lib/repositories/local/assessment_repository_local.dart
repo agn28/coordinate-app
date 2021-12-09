@@ -430,8 +430,7 @@ class AssessmentRepositoryLocal {
 
         apiData.addAll(data);
 
-        await AssessmentRepository().createOnlyAssessment(apiData);
-
+        
   }
 
   createLocalAssessment(id, data, isSynced, {localStatus:''}) async {
