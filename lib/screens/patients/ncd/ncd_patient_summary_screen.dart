@@ -2,13 +2,10 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
 import 'package:nhealth/controllers/health_report_controller.dart';
-import 'package:nhealth/controllers/user_controller.dart';
 import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
@@ -64,32 +61,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     getReport();
     getIncompleteAssessment();
     getLastAssessment();
-
-  }
-  getStatus(item) {
-    var status = 'completed';
-    item['items'].forEach( (goal) {
-      if (goal['meta']['status'] == 'pending') {
-        setState(() {
-          status = 'pending';
-        });
-      }
-    });
-
-    return status;
-  }
-
-  getCount(item) {
-    var count = 0;
-
-    item['items'].forEach( (goal) {
-      setState(() {
-        count += 1;
-      });
-    });
-    
-
-    return count.toString();
   }
 
   getIncompleteAssessment() async {
@@ -145,7 +116,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
     lastAssessment = await AssessmentController().getLastAssessmentByPatient();
     if(lastAssessment != null && lastAssessment.isNotEmpty) {
       setState(() {
-        nextVisitDate = lastAssessment['data']['body']['next_visit_date'] != null && lastAssessment['data']['body']['next_visit_date'] != '' ? DateFormat("MMMM d, y").format(DateTime.parse(lastAssessment['data']['body']['next_visit_date'])):'';
         lastEncounterType = lastAssessment['data']['body']['type'];
         lastEncounterDate = getDate(lastAssessment['data']['meta']['created_at']);
       });
@@ -236,7 +206,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(Helpers().getPatientName(_patient), style: TextStyle( fontSize: 19, fontWeight: FontWeight.w600),),
-                                        
                                         SizedBox(height: 7,),
                                         Row(
                                           children: <Widget>[
@@ -244,10 +213,8 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                                           ],
                                         ),
                                         SizedBox(height: 10,),
-
                                       ],
                                     ),
-                                    
                                     SizedBox(width: 100,),
                                   ],
                                 ),
@@ -269,7 +236,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                   hasIncompleteAssessment ?
                   Container(
                     padding: EdgeInsets.only(left: 20, right: 20, top: 15,),
-
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -380,13 +346,10 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                             )
                           ],
                         ),
-
                         SizedBox(height: 20,),
-
                       ],
                     ),
                   ) : Container(),
-
                   
                   report != null && report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ?
                   Container(
@@ -416,13 +379,10 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                               )
                             ],
                           ),
-
                           SizedBox(height: 20,),
-
                         ],
                       ),
                     ) : Container(),
-
 
                   report != null && report['body']['result']['assessments']['lifestyle'] != null && report['body']['result']['assessments']['lifestyle']['components']['physical_activity'] != null ?
                     Container(
@@ -488,9 +448,7 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                               )
                             ],
                           ),
-
                           SizedBox(height: 20,),
-
                         ],
                       ),
                     ) : Container(),
@@ -558,14 +516,10 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                               )
                             ],
                           ),
-
                           SizedBox(height: 20,),
-
                         ],
                       ),
                     ) : Container(),
-
-
 
                   Container(
                     decoration: BoxDecoration(
@@ -576,14 +530,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                     padding: EdgeInsets.only(top: 15, left: 10, right: 10),
                     child: Column(
                       children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.only(left: 10, right: 10, bottom: 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                            ],
-                          ),
-                        ),
                         SizedBox(height: 30,),
                         widget.checkInState != null && widget.checkInState ? Container(
                           width: double.infinity,
@@ -649,18 +595,14 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                                                       setState(() {
                                                         isLoading = true;
                                                       });
-
                                                       await Future.delayed(const Duration(seconds: 5));
 
-                                                      
                                                       result = await AssessmentController().create('visit', 'follow-up', '');
 
                                                       setState(() {
                                                         isLoading = false;
                                                       });
                                                       Navigator.of(_scaffoldKey.currentContext).pushNamed('/chwNavigation');
-
-                                                      
                                                     },
                                                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                                     child: Text(AppLocalizations.of(context).translate("NO"), style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),)
@@ -685,7 +627,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                   ),
                   SizedBox(height: 15,),
                 ], 
-                
               ),
               isLoading ? Container(
                 height: MediaQuery.of(context).size.height,
@@ -695,11 +636,6 @@ class _NcdPatientSummaryScreenState extends State<NcdPatientSummaryScreen> {
                   child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),backgroundColor: Color(0x30FFFFFF),)
                 ),
               ) : Container(),
-              // Container(
-              //   height: 300,
-              //   width: double.infinity,
-              //   color: Colors.black12,
-              // )
             ],
           ),
         ),

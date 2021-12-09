@@ -1,13 +1,10 @@
 import 'dart:convert';
-
 import 'package:basic_utils/basic_utils.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
-
 import 'package:nhealth/configs/configs.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
@@ -22,7 +19,6 @@ import 'package:nhealth/screens/auth_screen.dart';
 import 'package:nhealth/widgets/primary_textfield_widget.dart';
 import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:get/get.dart';
-import 'package:nhealth/helpers/functions.dart';
 import '../../../../app_localizations.dart';
 
 
@@ -59,7 +55,6 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
     setState(() {
       searchController.text = '';
     });
-    // getPatients();
     isLoading = true;
     clearFilters();
     getLivePatients();
@@ -77,16 +72,6 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
       birthYearController.clear();
       lastVisitDateController.clear();
       selectedDiseases = [];
-    });
-  }
-
-  getPatients() async {
-    
-    var data = await PatientController().getAllPatients();
-
-    setState(() {
-      allPatients = data;
-      patients = allPatients;
     });
   }
 
@@ -121,49 +106,10 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
       }
     }
 
-    // var allLocalPatients = await PatientController().getAllLocalPatients();
-    // var assessments = await AssessmentController().getAllAssessments();
-    // var authData = await Auth().getStorageAuth();
-    
-    // for(var localPatient in allLocalPatients) {
-    //   if(localPatient['data']['address']['district'] == authData['address']['district']) {
-    //     var hasEncounter = assessments.firstWhere((assessment) {
-    //       if (assessment['data']['patient_id'] == localPatient['id']) {
-    //         if (assessment['data']['type'] != 'registration') {
-    //           if (assessment['data']['screening_type'] == 'follow-up') {
-    //             return true;
-    //           }
-    //           if (assessment['data']['status'] == null || assessment['data']['status'] == "" || assessment['data']['status'] == "complete") {
-    //             return true;
-    //           }
-    //           return false; 
-    //         } return false; 
-    //       } return false; 
-    //     }, orElse: () => false);
-
-    //     if(hasEncounter.runtimeType == bool && !hasEncounter) {
-    //       assessments.firstWhere((assessment) {
-    //         if (assessment['data']['patient_id'] == localPatient['id']) {
-    //           if(assessment['data']['status'] == 'incomplete') {
-    //             localPatient['data']['incomplete_encounter'] = true;
-    //             return true;
-    //           } return false; 
-    //         } return false; 
-    //       }, orElse: () => false);
-    //       var localpatientdata = {
-    //         'id': localPatient['id'],
-    //         'data': localPatient['data'],
-    //         'meta': localPatient['meta']
-    //       };
-    //       parsedLocalPatient.add(localpatientdata);
-    //     }
-    //   }
-    // }
     setState(() {
       allPatients = parsedLocalPatient;
       patients = allPatients;
       isLoading = false;
-      print('getPatients after query : ${DateTime.now()} ${patients.length}');
     });
   }
 
@@ -183,8 +129,6 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
         .toList();
     });
   }
-
-  LeaderBoard _selectedItem;
 
   @override
   Widget build(BuildContext context) {
@@ -456,8 +400,6 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
                                         alignment: Alignment.center,
                                         width: 160,
                                         height: 24,
-
-                                        // padding: EdgeInsets.symmetric(vertical: 5),
                                         color: Colors.red[400],
                                         child: Text(AppLocalizations.of(context).translate('incompleteEncounter'),
                                           style: TextStyle(color: Colors.white, fontSize: 15),
@@ -481,77 +423,6 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
     );
   }
 }
-
-// Column(
-//   children: <Widget>[
-//     CustomSearchWidget(
-//       listContainerHeight: 500,
-//       dataList: [...patients],
-//       hideSearchBoxWhenItemSelected: false,
-//       queryBuilder: (query, list) {
-//         return [...patients]
-//           .where((item) => item['data']['name']
-//           .toLowerCase()
-//           .contains(query.toLowerCase()))
-//           .toList();
-//       },
-//       popupListItemBuilder: (item) {
-//         print(item);
-//         return PopupListItemWidget(item);
-//       },
-//       selectedItemBuilder: (selectedItem, deleteSelectedItem) {
-//         return SelectedItemWidget(selectedItem, deleteSelectedItem);
-//       },
-//       // widget customization
-//       // noItemsFoundWidget: NoItemsFound(),
-//       textFieldBuilder: (controller, focusNode) {
-//         return MyTextField(controller, focusNode);
-//       },
-//       onItemSelected: (item) {
-//         setState(() {
-//           _selectedItem = item;
-//         });
-//       },
-//     ),
-//     Row(
-//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//       children: <Widget>[
-//         patients.length == 0 ? Container(
-//           alignment: Alignment.centerLeft,
-//           padding: EdgeInsets.only(top: 15),
-//           child: Text('No patient found', style: TextStyle(color: Colors.white, fontSize: 20),),
-//         ) :
-//         Container(
-//           alignment: Alignment.centerLeft,
-//           padding: EdgeInsets.only(top: 15),
-//           child: Text('Pending Recommendations Only', style: TextStyle(color: Colors.white),),
-//         ),
-        
-//         Container(
-//             alignment: Alignment.centerLeft,
-//             padding: EdgeInsets.only(top: 15),
-//             child: GestureDetector(
-//               onTap: () async {
-//               showDialog(
-//                 context: context,
-//                 builder: (BuildContext context) {
-//                   return FiltersDialog(parent: this,);
-//                 },
-//               );
-//               },
-//               child: Row(
-//                 children: <Widget>[
-//                   Icon(Icons.filter_list, color: Colors.white,),
-//                   SizedBox(width: 10),
-//                   Text('Filters', style: TextStyle(color: Colors.white),)
-//                 ],
-//               )
-//             ),
-//           ),
-//       ],
-//     )
-//   ],
-// )
 
 
 class DiseasesDialog extends StatefulWidget {
@@ -757,7 +628,6 @@ class _FiltersDialogState extends State<FiltersDialog> {
   @override
   void initState() {
     super.initState();
-    // selectedUpazila = {};
     getLocations();
     getSelectedDiseaseText();
   }
@@ -784,10 +654,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
     setState(() {
       filteredUpazilas = [];
       selectedDistrict = {};
-      // selectedUpazila = {};
       if (data['address'].isNotEmpty) {
-        // unionController.text = data['address']['union'] ?? '';
-        // villageController.text = data['address']['village'] ?? '';
         var authUserDistrict = districts.where(
             (district) => district['name'] == data['address']['district']);
         if (authUserDistrict.isNotEmpty) {
@@ -795,8 +662,6 @@ class _FiltersDialogState extends State<FiltersDialog> {
           var authUserUpazila = selectedDistrict['thanas'].where(
               (upazila) => upazila['name'] == data['address']['upazila']);
           if (authUserUpazila.isNotEmpty) {
-            // selectedUpazila = authUserUpazila.first;
-            // selectedUpazila = {};
             filteredUpazilas = selectedDistrict['thanas'];
           } else {
             selectedUpazila = {};
@@ -895,8 +760,6 @@ class _FiltersDialogState extends State<FiltersDialog> {
       });
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -1234,11 +1097,8 @@ class _FiltersDialogState extends State<FiltersDialog> {
           )
         ),
       )
-      
     );
   }
-
-
 }
 
 Widget _customPopupItemBuilderExample2(
@@ -1259,113 +1119,4 @@ Widget _customPopupItemBuilderExample2(
       ),
     ),
   );
-}
-
-class LeaderBoard {
-  LeaderBoard(this.username, this.score);
-
-  final String username;
-  final double score;
-}
-
-class SelectedItemWidget extends StatelessWidget {
-  const SelectedItemWidget(this.selectedItem, this.deleteSelectedItem);
-
-  final selectedItem;
-  final VoidCallback deleteSelectedItem;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-
-    );
-  }
-}
-
-class MyTextField extends StatelessWidget {
-  const MyTextField(this.controller, this.focusNode);
-
-  final TextEditingController controller;
-  final FocusNode focusNode;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-      child: TextField(
-        controller: controller,
-        focusNode: focusNode,
-        autofocus: true,
-        style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-        decoration: InputDecoration(
-          fillColor: Colors.white,
-          filled: true,
-          enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Color(0x4437474F),
-            ),
-            borderRadius: BorderRadius.all(
-              Radius.circular(5)
-            )
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).primaryColor),
-          ),
-          prefixIcon: Icon(Icons.search),
-          suffixIcon: IconButton(
-            onPressed: () { 
-              controller.text = '';
-             },
-            icon: Icon(Icons.cancel, color: kTextGrey, size: 25,)
-          ),
-          border: InputBorder.none,
-          hintText: "AppLocalizations.of(context).translate('searchHere')",
-          contentPadding: const EdgeInsets.only(
-            left: 16,
-            right: 20,
-            top: 14,
-            bottom: 14,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-
-class PopupListItemWidget extends StatelessWidget {
-  const PopupListItemWidget(this.item);
-
-  final item;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Patient().setPatient(item);
-        Navigator.of(context).pushNamed('/patientOverview');
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: Text(item['data']['name'],
-                style: TextStyle(color: Colors.black87, fontSize: 18),
-              ),
-            ),
-            Expanded(
-              child: Text(item['data']['age'].toString() + 'Y ' + '${item['data']['gender'][0].toUpperCase()}' + ' - ' + item['data']['nid'].toString(), 
-              style: TextStyle(
-                  color: Colors.black38,
-                  fontWeight: FontWeight.w400
-                ), 
-                textAlign: TextAlign.right,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

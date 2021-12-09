@@ -14,7 +14,6 @@ import 'package:nhealth/models/language.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import '../../../custom-classes/custom_stepper.dart';
 
@@ -26,7 +25,6 @@ var riskQuestions = {};
 var riskAnswers = [];
 var relativeQuestions = {};
 var relativeAnswers = [];
-// var personalQuestions = {};
 
 bool isLoading = false;
 
@@ -204,9 +202,6 @@ class _EditIncompleteFullFollowupScreenState extends State<EditIncompleteFullFol
       if (obs['body']['type'] == 'blood_pressure') {
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
-          var systolicText = obsData['systolic'];
-          var diastolicText = obsData['diastolic'];
-          var pulseRateText = obsData['pulse_rate'];
           systolicEditingController.text = '${obsData['systolic']}';
           pulseRateEditingController.text = '${obsData['pulse_rate']}';
           diastolicEditingController.text = '${obsData['diastolic']}';
@@ -216,19 +211,15 @@ class _EditIncompleteFullFollowupScreenState extends State<EditIncompleteFullFol
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
           if (obsData['name'] == 'height' && obsData['value'] != '') {
-            var heightText = obsData['value'];
             heightEditingController.text = '${obsData['value']}';
           }
           if (obsData['name'] == 'weight' && obsData['value'] != '') {
-            var weightText = obsData['value'];
             weightEditingController.text = '${obsData['value']}';
           }
           if (obsData['name'] == 'waist' && obsData['value'] != '') {
-            var waistText = obsData['value'];
             waistEditingController.text = '${obsData['value']}';
           }
           if (obsData['name'] == 'hip' && obsData['value'] != '') {
-            var hipText = obsData['value'];
             hipEditingController.text = '${obsData['value']}';
           }
         }
@@ -237,73 +228,59 @@ class _EditIncompleteFullFollowupScreenState extends State<EditIncompleteFullFol
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
           if (obsData['name'] == 'creatinine' && obsData['value'] != '') {
-            var creatinineText = obsData['value'];
             creatinineController.text = '${obsData['value']}';
             selectedCreatinineUnit = obsData['unit'];
           }
           if (obsData['name'] == 'a1c' && obsData['value'] != '') {
-            var hba1cText = obsData['value'];
             hba1cController.text = '${obsData['value']}';
             selectedHba1cUnit = obsData['unit'];
           }
           if (obsData['name'] == 'total_cholesterol' &&
               obsData['value'] != '') {
-            var totalCholesterolText = obsData['value'];
             cholesterolController.text = '${obsData['value']}';
             selectedCholesterolUnit = obsData['unit'];
           }
           if (obsData['name'] == 'potassium' && obsData['value'] != '') {
-            var potassiumText = obsData['value'];
             potassiumController.text = '${obsData['value']}';
             selectedPotassiumUnit = obsData['unit'];
           }
           if (obsData['name'] == 'ldl' && obsData['value'] != '') {
-            var ldlText = obsData['value'];
             ldlController.text = '${obsData['value']}';
             selectedLdlUnit = obsData['unit'];
           }
           if (obsData['name'] == 'blood_sugar' && obsData['type'] == null && obsData['value'] != '') {
-            var bloodSugarText = obsData['value'];
             randomBloodController.text = '${obsData['value']}';
             selectedRandomBloodUnit = obsData['unit'];
           }
           if ((obsData['name'] == 'blood_glucose' || obsData['name'] == 'blood_sugar') && (obsData['type'] != null && obsData['type'] == 'fasting') && obsData['value'] != '') {
-            var bloodGlucoseText = obsData['value'];
             fastingBloodController.text = '${obsData['value']}';
             selectedFastingBloodUnit = obsData['unit'];
           }
           if (obsData['name'] == 'hdl' && obsData['value'] != '') {
-            var hdlText = obsData['value'];
             hdlController.text = '${obsData['value']}';
             selectedHdlUnit = obsData['unit'];
           }
           if (obsData['name'] == 'ketones' && obsData['value'] != '') {
-            var ketonesText = obsData['value'];
             ketonesController.text = '${obsData['value']}';
             selectedKetonesUnit = obsData['unit'];
           }
           if (obsData['name'] == 'protein' && obsData['value'] != '') {
-            var proteinText = obsData['value'];
             proteinController.text = '${obsData['value']}';
             selectedProteinUnit = obsData['unit'];
           }
           if (obsData['name'] == 'sodium' && obsData['value'] != '') {
-            var sodiumText = obsData['value'];
             sodiumController.text = '${obsData['value']}';
             selectedSodiumUnit = obsData['unit'];
           }
           if (obsData['name'] == 'blood_glucose' && obsData['value'] != '') {
-            var bloodGlucoseText = obsData['value'];
             fastingBloodController.text = '${obsData['value']}';
             selectedFastingBloodUnit = obsData['unit'];
           }
           if (obsData['name'] == 'triglycerides' && obsData['value'] != '') {
-            var triglyceridesText = obsData['value'];
             tgController.text = '${obsData['value']}';
             selectedTgUnit = obsData['unit'];
           }
           if (obsData['name'] == '2habf' && obsData['value'] != '') {
-            var habfText = obsData['value'];
             habfController.text = '${obsData['value']}';
             selectedHabfUnit = obsData['unit'];
           }
@@ -389,24 +366,6 @@ class _EditIncompleteFullFollowupScreenState extends State<EditIncompleteFullFol
       Auth().logout();
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    }
-  }
-
-  setLoader(value) {
-    setState(() {
-      isLoading = value;
-    });
-  }
-
-  goToHome(recommendation, data) {
-    if (recommendation) {
-      Navigator.of(context).pushReplacementNamed(
-          MedicalRecommendationScreen.path,
-          arguments: data);
-    } else {
-      Navigator.of(context).pushNamed(
-        '/home',
-      );
     }
   }
 
@@ -664,7 +623,6 @@ class _EditIncompleteFullFollowupScreenState extends State<EditIncompleteFullFol
                                               color: kPrimaryColor,  
                                               textColor: Colors.white,
                                               onPressed: () {
-                                                // Navigator.of(context).pop(true);
                                                 createObservations();
                                                 AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType: 'full');
                                                 setState(() {
@@ -742,7 +700,6 @@ class _EditIncompleteFullFollowupScreenState extends State<EditIncompleteFullFol
                                               color: kPrimaryColor,  
                                               textColor: Colors.white,
                                               onPressed: () {
-                                                // Navigator.of(context).pop(true);
                                                 createObservations();
                                                 AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType: 'full');
                                                 setState(() {
@@ -832,7 +789,6 @@ class _EditIncompleteFullFollowupScreenState extends State<EditIncompleteFullFol
   }
 
   Future _completeStep() async {
-    
     var hasMissingData = checkMissingData();
     var hasOptionalMissingData = checkOptionalMissingData();
 
@@ -842,8 +798,6 @@ class _EditIncompleteFullFollowupScreenState extends State<EditIncompleteFullFol
         return;
       }
     }
-
-    // setLoader(true);
 
     var patient = Patient().getPatient();
 
@@ -910,18 +864,6 @@ class _EditIncompleteFullFollowupScreenState extends State<EditIncompleteFullFol
         content: History(),
         isActive: _currentStep >= 2,
       ),
-
-      // CustomStep(
-      //   title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
-      //   content: Followup(parent: this),
-      //   isActive: _currentStep >= 2,
-      // ),
-
-      // CustomStep(
-      //   title: Text(AppLocalizations.of(context).translate("permission"), textAlign: TextAlign.center,),
-      //   content: InitialCounselling(parent: this),
-      //   isActive: _currentStep >= 3,
-      // ),
     ];
 
     if (Configs().configAvailable('isThumbprint')) {
@@ -1012,7 +954,6 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                   height: 20,
                 ),
                 Container(
-                  // alignment: Alignment.center,
                   margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
                   child: Text(
                     AppLocalizations.of(context).translate('medicalHistory'),
@@ -1162,14 +1103,6 @@ class _MedicationState extends State<Medication> {
   bool isEmpty = true;
 
   checkMedicalHistoryAnswers(medicationQuestion) {
-    // if (medicationQuestions['items'].length -1 == medicationQuestions['items'].indexOf(medicationQuestion)) {
-    //   if (showLastMedicationQuestion) {
-    //     return true;
-    //   }
-
-    // }
-    // return true;
-
     // check if any medical histroy answer is yes. then return true if medication question is aspirin, or lower fat
     if (medicationQuestion['type'] == 'heart' || medicationQuestion['type'] == 'heart_bp_diabetes') {
       var medicalHistoryasYes = medicalHistoryAnswers.where((item) => item == 'yes');
@@ -1228,29 +1161,6 @@ class _MedicationState extends State<Medication> {
     return false;
   }
 
-  checkAnswer() {
-    setState(() {});
-
-    return;
-
-    var isPositive = false;
-    var answersLength = medicationAnswers.length;
-
-    for (var answer in medicationAnswers) {
-      if (medicationAnswers.indexOf(answer) != answersLength - 1) {
-        if (answer == 'yes') {
-          setState(() {
-            isPositive = true;
-          });
-          break;
-        }
-      }
-    }
-
-    setState(() {
-      showLastMedicationQuestion = isPositive;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -1268,7 +1178,6 @@ class _MedicationState extends State<Medication> {
                   height: 30,
                 ),
                 Container(
-                  // alignment: Alignment.center,
                   margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
                   child: Text(
                     AppLocalizations.of(context).translate('medicationTitle'),
@@ -1365,8 +1274,6 @@ class _MedicationState extends State<Medication> {
                                                                       'options']
                                                                   .indexOf(
                                                                       option)];
-                                                              checkAnswer();
-                                                              // print(medicalHistoryAnswers);
                                                               // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
                                                             });
                                                           },
@@ -1493,7 +1400,6 @@ class _MeasurementsState extends State<Measurements> {
                           children: [
                             Container(
                               child: Row(
-                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
                                     child: Row(
@@ -1531,7 +1437,6 @@ class _MeasurementsState extends State<Measurements> {
                                       ],
                                     ),
                                   ),
-                                  //Spacer(),
                                   SizedBox(width: 50),
                                   Container(
                                     child: Row(

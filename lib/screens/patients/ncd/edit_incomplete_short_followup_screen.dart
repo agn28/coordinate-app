@@ -15,22 +15,15 @@ import 'package:nhealth/models/language.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/models/questionnaire.dart';
 import 'package:nhealth/screens/auth_screen.dart';
-import 'package:nhealth/screens/chw/unwell/medical_recomendation_screen.dart';
 import 'package:nhealth/widgets/patient_topbar_widget.dart';
 import '../../../custom-classes/custom_stepper.dart';
 
-// var medicalHistoryQuestions = {};
-// var medicalHistoryAnswers = [];
+
 var medicationQuestions = {};
 var medicationAnswers = [];
 var dynamicMedicationTitles = [];
 var dynamicMedicationQuestions = {};
 var dynamicMedicationAnswers = [];
-// var riskQuestions = {};
-// var riskAnswers = [];
-// var relativeQuestions = {};
-// var relativeAnswers = [];
-// var personalQuestions = {};
 
 bool isLoading = false;
 
@@ -134,7 +127,6 @@ class _EditIncompleteShortFollowupScreenState extends State<EditIncompleteShortF
                   matchedMhq = matchedMhq.first;
                   setState(() {
                     dynamicMedicationAnswers[dynamicMedicationQuestions['items'].indexOf(matchedMhq)] = obsData[key];
-                    //print(medicationAnswers[medicationQuestions['items'].indexOf(matchedMhq)]);
                   });
                 }
               }
@@ -145,9 +137,6 @@ class _EditIncompleteShortFollowupScreenState extends State<EditIncompleteShortF
       if (obs['body']['type'] == 'blood_pressure') {
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
-          var systolicText = obsData['systolic'];
-          var diastolicText = obsData['diastolic'];
-          var pulseRateText = obsData['pulse_rate'];
           systolicEditingController.text = '${obsData['systolic']}';
           pulseRateEditingController.text = '${obsData['pulse_rate']}';
           diastolicEditingController.text = '${obsData['diastolic']}';
@@ -157,19 +146,15 @@ class _EditIncompleteShortFollowupScreenState extends State<EditIncompleteShortF
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
           if (obsData['name'] == 'height' && obsData['value'] != '') {
-            var heightText = obsData['value'];
             heightEditingController.text = '${obsData['value']}';
           }
           if (obsData['name'] == 'weight' && obsData['value'] != '') {
-            var weightText = obsData['value'];
             weightEditingController.text = '${obsData['value']}';
           }
           if (obsData['name'] == 'waist' && obsData['value'] != '') {
-            var waistText = obsData['value'];
             waistEditingController.text = '${obsData['value']}';
           }
           if (obsData['name'] == 'hip' && obsData['value'] != '') {
-            var hipText = obsData['value'];
             hipEditingController.text = '${obsData['value']}';
           }
         }
@@ -178,73 +163,59 @@ class _EditIncompleteShortFollowupScreenState extends State<EditIncompleteShortF
         var obsData = obs['body']['data'];
         if (obsData.isNotEmpty) {
           if (obsData['name'] == 'creatinine' && obsData['value'] != '') {
-            var creatinineText = obsData['value'];
             creatinineController.text = '${obsData['value']}';
             selectedCreatinineUnit = obsData['unit'];
           }
           if (obsData['name'] == 'a1c' && obsData['value'] != '') {
-            var hba1cText = obsData['value'];
             hba1cController.text = '${obsData['value']}';
             selectedHba1cUnit = obsData['unit'];
           }
           if (obsData['name'] == 'total_cholesterol' &&
               obsData['value'] != '') {
-            var totalCholesterolText = obsData['value'];
             cholesterolController.text = '${obsData['value']}';
             selectedCholesterolUnit = obsData['unit'];
           }
           if (obsData['name'] == 'potassium' && obsData['value'] != '') {
-            var potassiumText = obsData['value'];
             potassiumController.text = '${obsData['value']}';
             selectedPotassiumUnit = obsData['unit'];
           }
           if (obsData['name'] == 'ldl' && obsData['value'] != '') {
-            var ldlText = obsData['value'];
             ldlController.text = '${obsData['value']}';
             selectedLdlUnit = obsData['unit'];
           }
           if (obsData['name'] == 'blood_sugar' && obsData['type'] == null && obsData['value'] != '') {
-            var bloodSugarText = obsData['value'];
             randomBloodController.text = '${obsData['value']}';
             selectedRandomBloodUnit = obsData['unit'];
           }
           if ((obsData['name'] == 'blood_glucose' || obsData['name'] == 'blood_sugar') && (obsData['type'] != null && obsData['type'] == 'fasting') && obsData['value'] != '') {
-            var bloodGlucoseText = obsData['value'];
             fastingBloodController.text = '${obsData['value']}';
             selectedFastingBloodUnit = obsData['unit'];
           }
           if (obsData['name'] == 'hdl' && obsData['value'] != '') {
-            var hdlText = obsData['value'];
             hdlController.text = '${obsData['value']}';
             selectedHdlUnit = obsData['unit'];
           }
           if (obsData['name'] == 'ketones' && obsData['value'] != '') {
-            var ketonesText = obsData['value'];
             ketonesController.text = '${obsData['value']}';
             selectedKetonesUnit = obsData['unit'];
           }
           if (obsData['name'] == 'protein' && obsData['value'] != '') {
-            var proteinText = obsData['value'];
             proteinController.text = '${obsData['value']}';
             selectedProteinUnit = obsData['unit'];
           }
           if (obsData['name'] == 'sodium' && obsData['value'] != '') {
-            var sodiumText = obsData['value'];
             sodiumController.text = '${obsData['value']}';
             selectedSodiumUnit = obsData['unit'];
           }
           if (obsData['name'] == 'blood_glucose' && obsData['value'] != '') {
-            var bloodGlucoseText = obsData['value'];
             fastingBloodController.text = '${obsData['value']}';
             selectedFastingBloodUnit = obsData['unit'];
           }
           if (obsData['name'] == 'triglycerides' && obsData['value'] != '') {
-            var triglyceridesText = obsData['value'];
             tgController.text = '${obsData['value']}';
             selectedTgUnit = obsData['unit'];
           }
           if (obsData['name'] == '2habf' && obsData['value'] != '') {
-            var habfText = obsData['value'];
             habfController.text = '${obsData['value']}';
             selectedHabfUnit = obsData['unit'];
           }
@@ -261,14 +232,8 @@ class _EditIncompleteShortFollowupScreenState extends State<EditIncompleteShortF
           context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
     }
 
-    // setState(() {
-    //   isLoading = true;
-    // });
     var patientId = Patient().getPatient()['id'];
     var data = await PatientController().getMedicationsByPatient(patientId);
-    // setState(() {
-    //   isLoading = false;
-    // });
 
     if (data == null) {
       return;
@@ -308,29 +273,14 @@ class _EditIncompleteShortFollowupScreenState extends State<EditIncompleteShortF
   }
 
   prepareQuestions() {
-    // medicalHistoryQuestions = Questionnaire().questions['new_patient']['medical_history'];
     medicationQuestions = Questionnaire().questions['new_patient']['medication'];
-    // riskQuestions = Questionnaire().questions['new_patient']['risk_factors'];
-    // relativeQuestions = Questionnaire().questions['new_patient']['relative_problems'];
   }
 
   prepareAnswers() {
-    // medicalHistoryAnswers = [];
     medicationAnswers = [];
-    // riskAnswers = [];
-    // relativeAnswers = [];
-    // medicalHistoryQuestions['items'].forEach((qtn) {
-    //   medicalHistoryAnswers.add('');
-    // });
     medicationQuestions['items'].forEach((qtn) {
       medicationAnswers.add('');
     });
-    // riskQuestions['items'].forEach((qtn) {
-    //   riskAnswers.add('');
-    // });
-    // relativeQuestions['items'].forEach((qtn) {
-    //   relativeAnswers.add('');
-    // });
   }
 
   clearForm() {
@@ -376,24 +326,6 @@ class _EditIncompleteShortFollowupScreenState extends State<EditIncompleteShortF
       Auth().logout();
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (ctx) => AuthScreen()));
-    }
-  }
-
-  setLoader(value) {
-    setState(() {
-      isLoading = value;
-    });
-  }
-
-  goToHome(recommendation, data) {
-    if (recommendation) {
-      Navigator.of(context).pushReplacementNamed(
-          MedicalRecommendationScreen.path,
-          arguments: data);
-    } else {
-      Navigator.of(context).pushNamed(
-        '/home',
-      );
     }
   }
 
@@ -614,7 +546,6 @@ class _EditIncompleteShortFollowupScreenState extends State<EditIncompleteShortF
                                   Questionnaire().addNewDynamicMedicationNcd('dynamic_medication', dynamicMedicationTitles, dynamicMedicationAnswers);
                                   AssessmentController().storeEncounterDataLocal('follow up visit (center)', 'follow-up', '', '', assessmentStatus:'incomplete', followupType: 'short');
                                 }
-                                // print(Questionnaire().qnItems);
                                 nextText = (Language().getLanguage() == 'Bengali') ? 'সম্পন্ন করুন' : 'COMPLETE';
                               }
                               if (_currentStep < 2) {
@@ -694,8 +625,6 @@ class _EditIncompleteShortFollowupScreenState extends State<EditIncompleteShortF
       }
     }
 
-    // setLoader(true);
-
     var patient = Patient().getPatient();
 
     var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
@@ -705,7 +634,6 @@ class _EditIncompleteShortFollowupScreenState extends State<EditIncompleteShortF
       'encounter': encounter,
       'observations': observations
     };
-    // return;
     Navigator.of(context).pushNamed(FollowupPatientSummaryScreen.path, arguments: {'prevScreen' : 'followup', 'encounterData': encounterData ,});
   }
 
@@ -804,100 +732,6 @@ class _MedicationState extends State<Medication> {
   bool showLastMedicationQuestion = false;
   bool isEmpty = true;
 
-  // checkMedicalHistoryAnswers(medicationQuestion) {
-  //   // if (medicationQuestions['items'].length -1 == medicationQuestions['items'].indexOf(medicationQuestion)) {
-  //   //   if (showLastMedicationQuestion) {
-  //   //     return true;
-  //   //   }
-
-  //   // }
-  //   // return true;
-
-  //   // check if any medical histroy answer is yes. then return true if medication question is aspirin, or lower fat
-  //   if (medicationQuestion['type'] == 'heart' || medicationQuestion['type'] == 'heart_bp_diabetes') {
-  //     var medicalHistoryasYes = medicalHistoryAnswers.where((item) => item == 'yes');
-  //     if (medicalHistoryasYes.isNotEmpty) {
-  //       return true;
-  //     }
-  //   }
-    
-  //   if (medicationQuestion['type'].contains('medication')) {
-  //     var mainType =
-  //         medicationQuestion['type'].replaceAll('_regular_medication', '');
-  //     print('mainType ' + mainType);
-  //     var matchedMedicationQuestion = medicationQuestions['items']
-  //         .where((item) => item['type'] == mainType)
-  //         .first;
-  //     print("matchedMedicationQuestion: $matchedMedicationQuestion");
-  //     var medicationAnswer = medicationAnswers[
-  //         medicationQuestions['items'].indexOf(matchedMedicationQuestion)];
-  //     print("medicationAnswer: $medicationAnswer");
-  //     if (medicationAnswer == 'yes') {
-  //       return true;
-  //     }
-
-  //     return false;
-  //   }
-
-  //   var matchedQuestion;
-  //   bool matchedHBD = false;
-  //   medicalHistoryQuestions['items'].forEach((item) {
-  //     if (item['type'] != null && item['type'] == medicationQuestion['type']) {
-  //       matchedQuestion = item;
-  //     } else if (medicationQuestion['type'] == 'heart_bp_diabetes') {
-  //       if (item['type'] == 'stroke' ||
-  //           item['type'] == 'heart' ||
-  //           item['type'] == 'blood_pressure' ||
-  //           item['type'] == 'diabetes') {
-  //         var answer = medicalHistoryAnswers[
-  //             medicalHistoryQuestions['items'].indexOf(item)];
-  //         if (answer == 'yes') {
-  //           matchedHBD = true;
-  //           // return true;
-  //         }
-  //       }
-  //     }
-  //   });
-
-  //   if (matchedHBD) {
-  //     return true;
-  //   }
-
-  //   if (matchedQuestion != null) {
-  //     // print(matchedQuestion.first);
-  //     var answer = medicalHistoryAnswers[
-  //         medicalHistoryQuestions['items'].indexOf(matchedQuestion)];
-  //     if (answer == 'yes') {
-  //       return true;
-  //     }
-  //   }
-  //   return false;
-  // }
-
-  checkAnswer() {
-    setState(() {});
-
-    return;
-
-    var isPositive = false;
-    var answersLength = medicationAnswers.length;
-
-    for (var answer in medicationAnswers) {
-      if (medicationAnswers.indexOf(answer) != answersLength - 1) {
-        if (answer == 'yes') {
-          setState(() {
-            isPositive = true;
-          });
-          break;
-        }
-      }
-    }
-
-    setState(() {
-      showLastMedicationQuestion = isPositive;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -914,7 +748,6 @@ class _MedicationState extends State<Medication> {
                   height: 30,
                 ),
                 Container(
-                  // alignment: Alignment.center,
                   margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
                   child: Text(
                     AppLocalizations.of(context).translate('medicationTitle'),
@@ -998,8 +831,6 @@ class _MedicationState extends State<Medication> {
                                                                       'options']
                                                                   .indexOf(
                                                                       option)];
-                                                              checkAnswer();
-                                                              // print(medicalHistoryAnswers);
                                                               // _firstQuestionOption = _questions['items'][0]['options'].indexOf(option);
                                                             });
                                                           },
@@ -1138,7 +969,6 @@ class _MeasurementsState extends State<Measurements> {
                           children: [
                             Container(
                               child: Row(
-                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
                                     child: Row(
@@ -1176,7 +1006,6 @@ class _MeasurementsState extends State<Measurements> {
                                       ],
                                     ),
                                   ),
-                                  //Spacer(),
                                   SizedBox(width: 50),
                                   Container(
                                       child: Row(

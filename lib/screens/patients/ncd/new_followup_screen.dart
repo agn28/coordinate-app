@@ -2,13 +2,9 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-
 import 'package:nhealth/app_localizations.dart';
 import 'package:nhealth/constants/constants.dart';
 import 'package:nhealth/controllers/assessment_controller.dart';
-import 'package:nhealth/controllers/user_controller.dart';
-import 'package:nhealth/helpers/helpers.dart';
 import 'package:nhealth/models/auth.dart';
 import 'package:nhealth/models/patient.dart';
 import 'package:nhealth/screens/auth_screen.dart';
@@ -86,45 +82,6 @@ class _NewFollowupScreenState extends State<NewFollowupScreen> {
     }
   }
 
-  convertDateFromSeconds(date) {
-    if (date['_seconds'] != null) {
-      var parsedDate = DateTime.fromMillisecondsSinceEpoch(date['_seconds'] * 1000);
-
-      return DateFormat("MMMM d, y").format(parsedDate).toString();
-    }
-    return '';
-  }
-
-  getTitle(encounter) {
-    var screening_type =  encounter['data']['screening_type'];
-    if (screening_type != null && screening_type != '') {
-      if (screening_type == 'ncd') {
-        screening_type = screening_type.toUpperCase() + ' ';
-      } else {
-        screening_type = screening_type[0].toUpperCase() + screening_type.substring(1) + ' ';
-      }
-      
-      return screening_type + 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
-    }
-    
-    return 'Encounter: ' + encounter['data']['type'][0].toUpperCase() + encounter['data']['type'].substring(1);
-  }
-
-  // String getLastVisitDate() {
-  //   var date = '';
-
-  //   if (encounters.length > 0) {
-  //     var lastEncounter = encounters[0];
-  //     var parsedDate = DateTime.tryParse(lastEncounter['meta']['created_at']);
-  //     if (parsedDate != null) {
-  //       date = DateFormat('yyyy-MM-dd').format(parsedDate);
-  //     }
-  //   }
-
-  //   return date;
-  // }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -167,39 +124,10 @@ class _NewFollowupScreenState extends State<NewFollowupScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   SizedBox(height: 20,),
-                                  // Column(
-                                  //   crossAxisAlignment: CrossAxisAlignment.start,
-                                  //   children: <Widget>[
-                                  //     Text("What was the outcome?", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-                                  //     SizedBox(height: 20,),
-                                  //     TextField(
-                                  //       keyboardType: TextInputType.multiline,
-                                  //       maxLines: 5,
-                                  //       style: TextStyle(color: kPrimaryColor, fontSize: 20.0,),
-                                  //       // controller: commentController,
-                                  //       decoration: InputDecoration(
-                                  //         contentPadding: const EdgeInsets.only(top: 25.0, bottom: 25.0, left: 20, right: 20),
-                                  //         filled: true,
-                                  //         fillColor: kSecondaryTextField,
-                                  //         border: new UnderlineInputBorder(
-                                  //           borderSide: new BorderSide(color: Colors.white),
-                                  //           borderRadius: BorderRadius.only(
-                                  //             topLeft: Radius.circular(4),
-                                  //             topRight: Radius.circular(4),
-                                  //           )
-                                  //         ),
-                                        
-                                  //         hintText: '',
-                                  //         hintStyle: TextStyle(color: Colors.black45, fontSize: 19.0),
-                                  //       ),
-                                  //     ),
-                                  //   ],
-                                  // ),
                                   Text(AppLocalizations.of(context).translate('selectPurpose'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
                                   SizedBox(height: 20,),
                                   Container(
                                     width: double.infinity,
-                                      //margin: EdgeInsets.only(left: 15, right: 15),
                                     height: 50,
                                     decoration: BoxDecoration(
                                       color: kPrimaryColor,
@@ -218,7 +146,6 @@ class _NewFollowupScreenState extends State<NewFollowupScreen> {
                                   SizedBox(height: 20,),
                                   Container(
                                     width: double.infinity,
-                                      //margin: EdgeInsets.only(left: 15, right: 15),
                                     height: 50,
                                     decoration: BoxDecoration(
                                       color: kPrimaryColor,
@@ -241,12 +168,10 @@ class _NewFollowupScreenState extends State<NewFollowupScreen> {
                           ],
                         )
                       ),
-
                     ],
                   ),
                 )
                 ], 
-                
               ),
               isLoading ? Container(
                 height: MediaQuery.of(context).size.height,
