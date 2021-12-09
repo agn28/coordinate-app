@@ -743,10 +743,7 @@ class _NewPatientQuestionnaireNurseScreenState extends State<NewPatientQuestionn
     var patient = Patient().getPatient();
 
     var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
-    if(dataStatus == 'incomplete' || dataStatus == 'complete'){
-      // var response = await AssessmentController().createAssessmentWithObservations(context, 'new ncd center assessment', 'ncd', '', dataStatus, '');
-    }
-
+    
     var encounterData = {
       'context': context,
       'dataStatus': dataStatus
@@ -4375,8 +4372,6 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                           widget.parent.setLoader(true);
 
                                           var patient = Patient().getPatient();
-// return;
-                                          // var response = await AssessmentController().createOnlyAssessment('new patient questionnaire', '', '');
 
                                           widget.parent.setLoader(false);
                                           return;

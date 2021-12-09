@@ -723,7 +723,6 @@ class _FullAssessmentScreenState extends State<FullAssessmentScreen> {
 
     var dataStatus = hasMissingData ? 'incomplete' : hasOptionalMissingData ? 'partial' : 'complete';
 
-    // var response = await AssessmentController().createAssessmentWithObservations(context, 'follow up visit (center)', 'follow up center', '', status, nextVisitDate, followupType: 'full');
     !hasMissingData ? Patient().setPatientReviewRequiredTrue() : null;
     var encounterData = {
       'context': context,
@@ -4319,8 +4318,6 @@ class _InitialCounsellingState extends State<InitialCounselling> {
                                           widget.parent.setLoader(true);
 
                                           var patient = Patient().getPatient();
-// return;
-                                          // var response = await AssessmentController().createOnlyAssessment('follow up visit (center)', '', '');
 
                                           widget.parent.setLoader(false);
                                           return;

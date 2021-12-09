@@ -186,10 +186,6 @@ class AssessmentController {
     return data;
   }
 
-  getAssessmentById(id) async {
-    return await AssessmentRepository().getAssessmentsById(id); 
-  }
-
   getAssessmentByIds(ids) async {
     return await AssessmentRepository().getAssessmentsByIds(ids); 
   }
@@ -420,113 +416,6 @@ class AssessmentController {
 
     return status;
   }
-
-  /// Create assessment.
-  /// Assessment [type] and [comment] is required as parameter.
-  createOnlyAssessment(context, type, screening_type, comment, status, nextVisitDate, {followupType: ''}) async 
-  {
-    var response;
-    var data = _prepareData(type, screening_type, comment);
-    data['body']['status'] = status;
-    data['body']['next_visit_date'] = nextVisitDate;
-    if (followupType != '') {
-      data['body']['followup_type'] = followupType;
-    }
-
-    var assessmentId = Uuid().v4();
-    Map<String, dynamic> apiData = {'id': assessmentId};
-    apiData.addAll(data);
-
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
-
-      var apiResponse = await AssessmentRepository().create(apiData);
-
-      //Could not get any response from API
-      if (isNull(apiResponse)) {
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text(
-              "Error: ${AppLocalizations.of(context).translate('somethingWrong')}"),
-          backgroundColor: kPrimaryRedColor,
-        ));
-        return;
-      }
-      //API did not respond due to handled exception
-      else if (apiResponse['exception'] != null) {
-        // exception type unknown
-        if (apiResponse['type'] == 'unknown') {
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text('Error: ${apiResponse['message']}'),
-            backgroundColor: kPrimaryRedColor,
-          ));
-          return;
-        }
-        // exception type known (e.g: slow/no net)
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text('Warning: ${apiResponse['message']}. Using offline...'),
-          backgroundColor: kPrimaryYellowColor,
-        ));
-        // creating local assessment with not synced status
-        response = await AssessmentRepositoryLocal().createLocalAssessment(assessmentId, data, false);
-        // Identifying this patient with not synced data
-        await PatientReposioryLocal().updateLocalStatus(data['body']['patient_id'], false);
-      
-        return response;
-      }
-      //API responded with error
-      else if (apiResponse['error'] != null && apiResponse['error']) {
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text("Error: ${apiResponse['message']}"),
-          backgroundColor: kPrimaryRedColor,
-        ));
-        return;
-      }
-      //API responded success with no error
-      else if (apiResponse['error'] != null && !apiResponse['error']) {
-        // creating local assessment with synced status
-        response = await AssessmentRepositoryLocal().createLocalAssessment(assessmentId, data, true);
-
-        //updating sync key
-        if (isNotNull(apiResponse['data']['sync']) && isNotNull(apiResponse['data']['sync']['key'])) {
-          var updateSync = await SyncRepository().updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
-        }
-        return response;
-      }
-      return response;
-    } else {
-      // return;
-      // Scaffold.of(context).showSnackBar(SnackBar(
-      //   content: Text('Warning: No Internet. Using offline...'),
-      //   backgroundColor: kPrimaryYellowColor,
-      // ));
-      // creating local assessment with not synced status
-      response = await AssessmentRepositoryLocal().createLocalAssessment(assessmentId, data, false);
-      // Identifying this patient with not synced data
-      await PatientReposioryLocal().updateLocalStatus(data['body']['patient_id'], false);
-      return response;
-    }
-  }
-
-  // createSyncAssessment(context, type, screening_type, comment) async {
-
-  //   var data = _prepareData(type, screening_type, comment);
-
-  //   var assessmentId = Uuid().v4();
-
-  //   Map<String, dynamic> apiData = {
-  //     'id': assessmentId
-  //   };
-
-  //   apiData.addAll(data);
-
-  //   var response = await createAssessment(context, assessmentId, data, apiData);
-
-  //   if (isNotNull(response)) {
-  //     await ObservationController().prepareAndCreateObservations(context, assessmentId);
-  //   }
-
-  // }
 
   createAssessment(context, assessmentId, data, apiData) async {
     var response;
@@ -906,12 +795,6 @@ class AssessmentController {
     }
   }
 
-  updateIncompleteAssessmentData(status, encounter, observations) async {
-    createObservations(status, encounter, observations);
-    await AssessmentRepository().createOnlyAssessment(encounter);
-
-    return 'success';
-  }
   createReferralByAssessmentLocal(type, referralData) async {
     var referral = await ReferralRepositoryLocal().getReferralById(referralData['id']);
     if(isNotNull(referral) && referral.isNotEmpty) {
@@ -1089,7 +972,6 @@ class AssessmentController {
     // var connectivityResult = await (Connectivity().checkConnectivity());
     // if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
     //   // I am connected to internet.
-    //   var apiResponse = await AssessmentRepository().createAssessmentWithObservations(apiData);
     //   //API responded success with no error
     //   if (apiResponse['error'] != null && !apiResponse['error']) {
     //     // updating local assessment with synced status
@@ -1153,180 +1035,6 @@ class AssessmentController {
     }
 
     return data;
-  }
-
-  createAssessmentWithObservations(context, type, screening_type, comment, completeStatus, nextVisitDate, {followupType: ''}) async {
-    var response;
-    var data = _prepareData(type, screening_type, comment);
-    data['body']['status'] = completeStatus;
-    data['body']['next_visit_date'] = nextVisitDate;
-    if (followupType != '') {
-      data['body']['followup_type'] = followupType;
-    }
-
-    // Preparing assessment data for API
-    var assessmentId = Uuid().v4();
-    Map<String, dynamic> apiDataAssessment = {'id': assessmentId};
-    apiDataAssessment.addAll(data);
-
-    // await AssessmentRepositoryLocal().createLocalAssessment(assessmentId, data, false);
-
-    // Preparing all observations related to assessment
-    var observations = await AssessmentRepositoryLocal().prepareObservations(assessmentId);
-
-    // Preparing API request data
-    Map<String, dynamic> apiData = {
-      'assessment': apiDataAssessment,
-      'observations': observations['apiData']
-    };
-    response = await storeAssessmentWithObservations(context, assessmentId, data, observations['localData'], apiData);
-
-    //TODO: online offline generate
-    if (completeStatus == 'complete') {
-      await HealthReportController().generateReport(data['body']['patient_id']);
-    }
-
-    Helpers().clearObservationItems();
-
-    return response;
-  }
-
-  storeAssessmentWithObservations(context, assessmentId, assessmentData, observationsData, apiData) async {
-    var response;
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
-      // I am connected to internet.
-
-
-      var apiResponse = await AssessmentRepository().createAssessmentWithObservations(apiData);
-
-      //Could not get any response from API
-      if (isNull(apiResponse)) {
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text("Error: ${AppLocalizations.of(context).translate('somethingWrong')}"),
-          backgroundColor: kPrimaryRedColor,
-        ));
-        return;
-      }
-      //API did not respond due to handled exception
-      else if (apiResponse['exception'] != null) {
-        // exception type unknown
-        if (apiResponse['type'] == 'unknown') {
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text('Error: ${apiResponse['message']}'),
-            backgroundColor: kPrimaryRedColor,
-          ));
-          return;
-        }
-        // exception type known (e.g: slow/no net)
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text('Warning: ${apiResponse['message']}. Using offline...'),
-          backgroundColor: kPrimaryYellowColor,
-        ));
-        // creating local assessment with not synced status
-        // response = await AssessmentRepositoryLocal().createLocalAssessment(assessmentId, data, false);
-        response = await storeLocalAssessmentWithObservations(assessmentId, assessmentData, observationsData, false);
-        return response;
-      }
-      //API responded with error
-      else if (apiResponse['error'] != null && apiResponse['error']) {
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text("Error: ${apiResponse['message']}"),
-          backgroundColor: kPrimaryRedColor,
-        ));
-        return;
-      }
-      //API responded success with no error
-      else if (apiResponse['error'] != null && !apiResponse['error']) {
-
-        //updating sync key
-        if (isNotNull(apiResponse['data']['sync']) && isNotNull(apiResponse['data']['sync']['key'])) {
-          // creating local assessment with synced status
-          response = await storeLocalAssessmentWithObservations(assessmentId, assessmentData, observationsData, true);
-          var updateSync = await SyncRepository().updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
-        }
-        return response;
-      }
-      return response;
-    } else {
-      // return;
-      // Scaffold.of(context).showSnackBar(SnackBar(
-      //   content: Text('Warning: No Internet. Using offline...'),
-      //   backgroundColor: kPrimaryYellowColor,
-      // ));
-      // creating local assessment with not synced status
-      response = await storeLocalAssessmentWithObservations(assessmentId, assessmentData, observationsData, false);
-      return response;
-    }
-  }
-
-  storeUpdatedAssessmentWithObservations(context, assessmentData, observationsData, apiData) async {
-    var response;
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
-      // I am connected to internet.
-
-      var apiResponse = await AssessmentRepository().createAssessmentWithObservations(apiData);
-
-      //Could not get any response from API
-      if (isNull(apiResponse)) {
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text("Error: ${AppLocalizations.of(context).translate('somethingWrong')}"),
-          backgroundColor: kPrimaryRedColor,
-        ));
-        return;
-      }
-      //API did not respond due to handled exception
-      else if (apiResponse['exception'] != null) {
-        // exception type unknown
-        if (apiResponse['type'] == 'unknown') {
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text('Error: ${apiResponse['message']}'),
-            backgroundColor: kPrimaryRedColor,
-          ));
-          return;
-        }
-        // exception type known (e.g: slow/no net)
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Warning: ${apiResponse['message']}. Using offline...'),
-          backgroundColor: kPrimaryYellowColor,
-        ));
-        // creating local assessment with not synced status
-        // response = await AssessmentRepositoryLocal().createLocalAssessment(assessmentId, data, false);
-        response = await updateLocalAssessmentWithObservations(assessmentData, observationsData, false);
-        return response;
-      }
-      //API responded with error
-      else if (apiResponse['error'] != null && apiResponse['error']) {
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text("Error: ${apiResponse['message']}"),
-          backgroundColor: kPrimaryRedColor,
-        ));
-        return;
-      }
-      //API responded success with no error
-      else if (apiResponse['error'] != null && !apiResponse['error']) {
-
-        //updating sync key
-        if (isNotNull(apiResponse['data']['sync']) && isNotNull(apiResponse['data']['sync']['key'])) {
-
-          // creating local assessment with synced status
-          response = await updateLocalAssessmentWithObservations(assessmentData, observationsData, true);
-          var updateSync = await SyncRepository().updateLatestLocalSyncKey(apiResponse['data']['sync']['key']);
-        }
-        return response;
-      }
-      return response;
-    } else {
-      // return;
-      // Scaffold.of(context).showSnackBar(SnackBar(
-      //   content: Text('Warning: No Internet. Using offline...'),
-      //   backgroundColor: kPrimaryYellowColor,
-      // ));
-      // creating local assessment with not synced status
-      response = await updateLocalAssessmentWithObservations(assessmentData, observationsData, false);
-      return response;
-    }
   }
 
   storeLocalAssessmentWithObservations(assessmentId, assessmentData, observationsData, isSynced) async {
@@ -1528,81 +1236,6 @@ class AssessmentController {
 
     return apiDataObservations;
   }
-
-  updateAssessmentWithObservations(context, status, encounter, observations) async {
-    var response;
-    // Preparing all observations related to assessment
-    // var observations = await AssessmentRepositoryLocal().prepareObservations(assessmentId);
-    var apiDataObservations = await updateObservations(status, encounter, observations);
-
-    // Preparing API request data
-    Map<String, dynamic> apiData = {
-      'assessment': encounter,
-      'observations': apiDataObservations
-    };
-
-    response = await storeUpdatedAssessmentWithObservations(context, encounter, apiDataObservations, apiData);
-
-    if (status == 'complete') {
-      await HealthReportController().generateReport(encounter['body']['patient_id']);
-    }
-    Helpers().clearObservationItems();
-    return response;
-
-    // return;
-    // var apiDataObservations = await updateObservations(status, encounter, observations);
-
-    // // Preparing API request data
-    // Map<String, dynamic> apiData = {
-    //   'assessment': encounter,
-    //   'observations': apiDataObservations
-    // };
-
-    // // Call API
-    // var apiResponse = await AssessmentRepository().createAssessmentWithObservations(apiData);
-    // //Could not get any response from API
-    // if (apiResponse == null) {
-    //   Scaffold.of(context).showSnackBar(SnackBar(
-    //     content: Text(
-    //         "Error: ${AppLocalizations.of(context).translate('somethingWrong')}"),
-    //     backgroundColor: kPrimaryRedColor,
-    //   ));
-    //   // return;
-    // }
-    // //API did not respond due to handled exception
-    // else if (apiResponse['exception'] != null) {
-    //   Scaffold.of(context).showSnackBar(SnackBar(
-    //     content: Text('Error: ${apiResponse['message']}'),
-    //     backgroundColor: kPrimaryRedColor,
-    //   ));
-    //   // return;
-    // }
-    // //API responded with error
-    // else if (apiResponse['error'] != null && apiResponse['error']) {
-    //   Scaffold.of(context).showSnackBar(SnackBar(
-    //     content: Text("Error: ${apiResponse['message']}"),
-    //     backgroundColor: kPrimaryRedColor,
-    //   ));
-    //   // return;
-    // }
-    // //API responded success with no error
-    // else if (apiResponse['error'] != null && !apiResponse['error']) {
-
-    //   // creating local assessment with synced status
-    //   // response = await AssessmentRepositoryLocal().createLocalAssessment(assessmentId, data, true);
-
-
-    //   if (status == 'complete') {
-
-    //     HealthReportController().generateReport(encounter['body']['patient_id']);
-
-    //   }
-    //   // return response;
-    // }
-
-    // return;
-  }
-
   update(type, comment) {
     var data = _prepareUpdateData(type, comment);
     var status = AssessmentRepositoryLocal().update(data);

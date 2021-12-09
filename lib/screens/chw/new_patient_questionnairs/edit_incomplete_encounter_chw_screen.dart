@@ -728,8 +728,7 @@ class _EditIncompleteEncounterChwScreenState
   //   var patient = Patient().getPatient();
 
   //   print(patient['data']['age']);
-  //   var response = await AssessmentController().createOnlyAssessment('new patient questionnaire', '', '');
-
+  
   //   setLoader(false);
 
   //   // if age greater than 40 redirect to referral page
@@ -3650,9 +3649,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
 
                                           var patient = Patient().getPatient();
 
-                                          // return;
-                                          // var response = await AssessmentController().createOnlyAssessment('new patient questionnaire', '', '');
-
+                                          
                                           widget.parent.setLoader(false);
                                           return;
 

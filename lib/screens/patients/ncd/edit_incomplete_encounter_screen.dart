@@ -981,27 +981,6 @@ class _EditIncompleteEncounterScreenScreenState extends State<EditIncompleteEnco
         'dataStatus': dataStatus,
       };
     }
-    
-    // var response = await AssessmentController().updateAssessmentWithObservations(status, encounter, observations);
-    // var response = await AssessmentController().createOnlyAssessmentWithStatus('ncd center assessment', 'ncd', '', 'incomplete');
-    // !hasMissingData ? Patient().setPatientReviewRequiredTrue() : null;
-    // setLoader(false);
-
-    // if age greater than 40 redirect to referral page
-    // if (patient['data']['age'] != null && patient['data']['age'] > 40) {
-    //   var data = {
-    //     'meta': {
-    //       'patient_id': Patient().getPatient()['id'],
-    //       "collected_by": Auth().getAuth()['uid'],
-    //       "status": "pending"
-    //     },
-    //     'body': {},
-    //     'referred_from': 'new questionnaire'
-    //   };
-    //   goToHome(true, data);
-
-    //   return;
-    // }
 
     if (isReferralRequired) {
       var data = {
@@ -4413,9 +4392,7 @@ class _InitialCounsellingState extends State<InitialCounselling> {
 
                                           var patient = Patient().getPatient();
 
-                                          // return;
-                                          // var response = await AssessmentController().createOnlyAssessment('follow up visit (center)', '', '');
-
+                                          
                                           widget.parent.setLoader(false);
                                           return;
 

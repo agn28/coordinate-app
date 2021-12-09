@@ -246,8 +246,8 @@ class _ChcpCareplanDeliveryScreenState extends State<ChcpCareplanDeliveryScreen>
                                             setState(() {
                                               isLoading = true;
                                             });
-                                            result = await AssessmentController().createOnlyAssessment(context, 'Care Plan Delivery', 'care-plan-delivered', '', 'complete', '');
-
+                                            result = await AssessmentController().storeEncounterDataLocal('Care Plan Delivery', 'care-plan-delivered', '', '', assessmentStatus:'complete', localStatus:'complete');
+  
                                             setState(() {
                                               isLoading = false;
                                             });
@@ -266,8 +266,7 @@ class _ChcpCareplanDeliveryScreenState extends State<ChcpCareplanDeliveryScreen>
                               setState(() {
                                 isLoading = true;
                               });
-                              result = await AssessmentController().createOnlyAssessment(context, 'Care Plan Delivery', 'care-plan-delivered', '', 'complete', '');
-
+                              result = await AssessmentController().storeEncounterDataLocal('Care Plan Delivery', 'care-plan-delivered', '', '', assessmentStatus:'complete', localStatus:'complete');
                               setState(() {
                                 isLoading = false;
                               });
