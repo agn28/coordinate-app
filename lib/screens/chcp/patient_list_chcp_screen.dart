@@ -82,17 +82,21 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
       });
       var parsedLocalPatients = [];
       var allLocalPatients = await PatientController().getPatientsWithAssesments();
-      for (var patient in allLocalPatients) {
-        var parsedData = jsonDecode(patient['data']);
-        parsedLocalPatients.add({
-          'id': patient['id'],
-          'data': parsedData['body'],
-          'meta': parsedData['meta'],
-          'assessment_type': patient['assessment_type'],
-          'assessment_status': patient['assessment_status'],
-          'assessment_local_status': patient['assessment_local_status'],
-        });
+      print('allLocalPatient: $allLocalPatients');
+      if( allLocalPatients != null ){
+        for (var patient in allLocalPatients) {
+          var parsedData = jsonDecode(patient['data']);
+          parsedLocalPatients.add({
+            'id': patient['id'],
+            'data': parsedData['body'],
+            'meta': parsedData['meta'],
+            'assessment_type': patient['assessment_type'],
+            'assessment_status': patient['assessment_status'],
+            'assessment_local_status': patient['assessment_local_status'],
+          });
+        }
       }
+      
       setState(() {
         allPatients = parsedLocalPatients;
         patients = allPatients;

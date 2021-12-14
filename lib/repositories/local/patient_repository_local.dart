@@ -35,6 +35,7 @@ class PatientReposioryLocal {
       WHERE p.district = "${authData['address']['district']}"
       GROUP BY a.patient_id''');
     } catch (error) {
+      print('catch error');
       return;
     }
   }
