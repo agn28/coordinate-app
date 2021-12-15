@@ -518,7 +518,7 @@ class AssessmentRepositoryLocal {
       screening_type = ?,
       status = ?,
       is_synced = ?,
-      local_status = ?
+      local_status = ?,
       created_at = ?
       WHERE id = ?''';
     List<dynamic> params = [
