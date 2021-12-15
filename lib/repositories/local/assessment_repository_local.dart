@@ -452,7 +452,7 @@ class AssessmentRepositoryLocal {
       id,
       jsonEncode(data),
       data['body']['patient_id'],
-      data['body']['status'],
+      data['body']['type'],
       data['body']['screening_type'],
       data['body']['status'],
       isSynced,
