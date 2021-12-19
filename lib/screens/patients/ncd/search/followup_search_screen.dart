@@ -20,7 +20,7 @@ import 'package:nhealth/screens/patients/register_patient_screen.dart';
 import 'package:get/get.dart';
 import 'package:nhealth/controllers/sync_controller.dart';
 import '../../../../app_localizations.dart';
-
+import 'dart:convert';
 
 final birthDateController = TextEditingController();
 final birthmonthController = TextEditingController();
@@ -76,34 +76,72 @@ class _FollowupSearchScreenState extends State<FollowupSearchScreen> {
       isLoading = true;
     });
     var parsedLocalPatient = [];
-    var allLocalPatients = await PatientController().getAllLocalPatients();
-    var assessments = await AssessmentController().getAllAssessments();
-    var authData = await Auth().getStorageAuth();
+    var allLocalPatients = await PatientController().getPatientsWithAssesments();
+    // var assessments = await AssessmentController().getAllAssessments(); 
+    // var authData = await Auth().getStorageAuth(); 
 
     for(var localPatient in allLocalPatients) {
-      if(localPatient['data']['address']['district'] == authData['address']['district']) {
-        var isListed = false;
-        for(var assessment in assessments) {
-          if (assessment['data']['patient_id'] == localPatient['id'] 
-              && (assessment['data']['screening_type'] == 'follow-up' 
-              || ((assessment['data']['screening_type'] == 'new-questionnaire' || assessment['data']['screening_type'] == 'chcp' || assessment['data']['screening_type'] == 'ncd') 
-                  && assessment['data']['status'] == 'complete') 
-              )){      
-            var localpatientdata = {
-              'id': localPatient['id'],
-              'data': localPatient['data'],
-              'meta': localPatient['meta']
-            };
-            if (assessment['data']['status'] == 'incomplete') {
-              localpatientdata['data']['incomplete_encounter'] = true;
+      // print('localPatient id: ${localPatient['id']}  assessment_screening_type: ${localPatient['assessment_screening_type']}   assessment_created_at: ${localPatient['assessment_created_at']}');
+      // if(localPatient['data']['address']['district'] == authData['address']['district']) { 
+        // var isListed = false; //
+        // for(var assessment in assessments) {
+          var parsedData = jsonDecode(localPatient['data']);
+          if (localPatient['assessment_screening_type'] == 'follow-up' 
+              || ((localPatient['assessment_screening_type'] == 'new-questionnaire' || localPatient['assessment_screening_type'] == 'chcp' || localPatient['assessment_screening_type'] == 'ncd') 
+                  && localPatient['assessment_status'] == 'complete') 
+              ){      
+            // var localpatientdata = {
+            //   'id': localPatient['id'],
+            //   'data': parsedData['body'],
+            //   'meta': parsedData['meta']
+            // };
+            if (localPatient['assessment_status'] == 'incomplete') {
+              parsedData['body']['incomplete_encounter'] = true;
             }
-            !isListed ? parsedLocalPatient.add(localpatientdata) : '';
-            isListed = true;
+            parsedLocalPatient.add({
+              'id': localPatient['id'],
+              'data': parsedData['body'],
+              'meta': parsedData['meta'],
+              'assessment_type': localPatient['assessment_type'],
+              'assessment_status': localPatient['assessment_status'],
+              'assessment_local_status': localPatient['assessment_local_status'],
+            });
+            // isListed = true;
           }
-        }
+        // }
         // parsedLocalPatient.add(localpatientdata);
-      }
+      // }
     }
+
+    // var parsedLocalPatient = [];
+    // var allLocalPatients = await PatientController().getAllLocalPatients();
+    // var assessments = await AssessmentController().getAllAssessments();
+    // var authData = await Auth().getStorageAuth();
+
+    // for(var localPatient in allLocalPatients) {
+    //   if(localPatient['data']['address']['district'] == authData['address']['district']) {
+    //     var isListed = false;
+    //     for(var assessment in assessments) {
+    //       if (assessment['data']['patient_id'] == localPatient['id'] 
+    //           && (assessment['data']['screening_type'] == 'follow-up' 
+    //           || ((assessment['data']['screening_type'] == 'new-questionnaire' || assessment['data']['screening_type'] == 'chcp' || assessment['data']['screening_type'] == 'ncd') 
+    //               && assessment['data']['status'] == 'complete') 
+    //           )){      
+    //         var localpatientdata = {
+    //           'id': localPatient['id'],
+    //           'data': localPatient['data'],
+    //           'meta': localPatient['meta']
+    //         };
+    //         if (assessment['data']['status'] == 'incomplete') {
+    //           localpatientdata['data']['incomplete_encounter'] = true;
+    //         }
+    //         !isListed ? parsedLocalPatient.add(localpatientdata) : '';
+    //         isListed = true;
+    //       }
+    //     }
+    //     // parsedLocalPatient.add(localpatientdata);
+    //   }
+    // }
     setState(() {
       allPatients = parsedLocalPatient;
       patients = allPatients;

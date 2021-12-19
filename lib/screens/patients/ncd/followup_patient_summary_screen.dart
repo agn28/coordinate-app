@@ -155,7 +155,6 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
         }
       }
 
-    
   }
 
   getReport() async {
@@ -474,7 +473,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                       ),
                     ) : Container(),
 
-                    report != null && report['body']['result']['assessments']['cvd'] != null ?
+                    report != null && report['body']['result']['assessments']['cvd'] != null && report['body']['result']['assessments']['cvd']['eval'] != null ?
                       Container(
                         padding: EdgeInsets.only(left: 20, right: 20, top: 20,),
                         decoration: BoxDecoration(
@@ -513,7 +512,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                         ),
                       ) : Container(),
 
-                    report != null && report['body']['result']['assessments']['lifestyle'] != null && report['body']['result']['assessments']['lifestyle']['components']['smoking'] != null ?
+                    report != null && report['body']['result']['assessments']['lifestyle'] != null && report['body']['result']['assessments']['lifestyle']['components']['smoking'] != null && report['body']['result']['assessments']['lifestyle']['components']['smoking']['value'] != null ?
                     Container(
                       padding: EdgeInsets.only(left: 20, right: 20),
                       child: Column(
@@ -550,7 +549,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                     ) : Container(),
 
                     
-                    report != null && report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null ?
+                    report != null && report['body']['result']['assessments']['body_composition'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi'] != null && report['body']['result']['assessments']['body_composition']['components']['bmi']['eval'] != null ?
                     Container(
                         padding: EdgeInsets.only(left: 20, right: 20),
                         child: Column(
@@ -586,7 +585,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                       ) : Container(),
 
 
-                    report != null && report['body']['result']['assessments']['lifestyle'] != null && report['body']['result']['assessments']['lifestyle']['components']['physical_activity'] != null ?
+                    report != null && report['body']['result']['assessments']['lifestyle'] != null && report['body']['result']['assessments']['lifestyle']['components']['physical_activity'] != null && report['body']['result']['assessments']['lifestyle']['components']['physical_activity']['eval'] != null ?
                       Container(
                         padding: EdgeInsets.only(left: 20, right: 20),
                         child: Column(
@@ -622,7 +621,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                       ) : Container(),
 
 
-                    report != null && report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null ?
+                    report != null && report['body']['result']['assessments']['cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol'] != null && report['body']['result']['assessments']['cholesterol']['components']['total_cholesterol']['eval'] != null ?
                       Container(
                         padding: EdgeInsets.only(left: 20, right: 20),
                         child: Column(
@@ -657,7 +656,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                         ),
                       ) : Container(),
 
-                    report != null && report['body']['result']['assessments']['blood_pressure'] != null ?
+                    report != null && report['body']['result']['assessments']['blood_pressure'] != null && report['body']['result']['assessments']['blood_pressure']['eval'] != null ?
                       Container(
                         padding: EdgeInsets.only(left: 20, right: 20),
                         child: Column(
@@ -692,7 +691,7 @@ class _FollowupPatientSummaryScreenState extends State<FollowupPatientSummaryScr
                         ),
                       ) : Container(),
 
-                    report != null && report['body']['result']['assessments']['diabetes'] != null ?
+                    report != null && report['body']['result']['assessments']['diabetes'] != null && report['body']['result']['assessments']['diabetes']['eval'] != null ?
                       Container(
                         padding: EdgeInsets.only(left: 20, right: 20),
                         child: Column(
