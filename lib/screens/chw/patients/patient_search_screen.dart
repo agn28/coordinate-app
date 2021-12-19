@@ -313,10 +313,10 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
       body: Stack(
         children: <Widget>[
           !isLoading ? SingleChildScrollView(
+            physics: NeverScrollableScrollPhysics(),
             child: Column(
               children: <Widget>[
                 Container(
-                  // padding: EdgeInsets.symmetric(vertical: 20),
                   color: kPrimaryColor,
                   child: Column(
                     children: <Widget>[
