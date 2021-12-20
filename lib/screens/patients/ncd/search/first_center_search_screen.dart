@@ -85,7 +85,6 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
     var parsedLocalPatient = [];
     var allLocalPatients = await PatientController().getPatientsWithAssesments();
     for(var localPatient in allLocalPatients) {
-      print('p ${localPatient['id']} ${localPatient['assessment_type']} ${localPatient['assessment_created_at']}');
       var parsedData = jsonDecode(localPatient['data']);
       if (localPatient['assessment_type'] == 'registration'
         || localPatient['assessment_screening_type'] != 'follow-up'
@@ -98,11 +97,7 @@ class _FirstCenterSearchState extends State<FirstCenterSearchScreen> {
           'id': localPatient['id'],
           'data': parsedData['body'],
           'meta': parsedData['meta'],
-          'assessment_type': localPatient['assessment_type'],
-          'assessment_status': localPatient['assessment_status'],
-          'assessment_local_status': localPatient['assessment_local_status'],
         });
-        
       }
     }
 

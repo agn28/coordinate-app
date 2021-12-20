@@ -86,9 +86,6 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
         'id': localPatient['id'],
         'body': parsedData['body'],
         'meta': parsedData['meta'],
-        'assessment_type': localPatient['assessment_type'],
-        'assessment_status': localPatient['assessment_status'],
-        'assessment_local_status': localPatient['assessment_local_status'],
       };
       
       if(isNotNull(parsedLocalPatient['meta']['has_pending']) && parsedLocalPatient['meta']['has_pending']) {

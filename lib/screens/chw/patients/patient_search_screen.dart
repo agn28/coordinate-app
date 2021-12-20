@@ -133,25 +133,18 @@ class _PatientSearchState extends State<ChwPatientSearchScreen> {
     var parsedLocalExistingPatients = [];
     var allLocalPatients = await PatientController().getPatientsWithAssesments();
     for (var patient in allLocalPatients) {
-      print('p ${patient['id']} ${patient['assessment_type']} ${patient['assessment_created_at']}');
       var parsedData = jsonDecode(patient['data']);
       if (patient['assessment_type'] != 'registration') {
         parsedLocalExistingPatients.add({
           'id': patient['id'],
           'data': parsedData['body'],
           'meta': parsedData['meta'],
-          'assessment_type': patient['assessment_type'],
-          'assessment_status': patient['assessment_status'],
-          'assessment_local_status': patient['assessment_local_status'],
         });
       } else {
         parsedLocalNewPatients.add({
           'id': patient['id'],
           'data': parsedData['body'],
           'meta': parsedData['meta'],
-          'assessment_type': patient['assessment_type'],
-          'assessment_status': patient['assessment_status'],
-          'assessment_local_status': patient['assessment_local_status'],
         });
       }
     }

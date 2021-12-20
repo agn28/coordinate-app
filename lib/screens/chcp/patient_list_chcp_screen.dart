@@ -75,35 +75,35 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
   }
 
   getPatients() async {
-      setState(() {
-        isLoading = true;
-        searchController.text = '';
-        print('getPatients before query : ${DateTime.now()}');
-      });
-      var parsedLocalPatients = [];
-      var allLocalPatients = await PatientController().getPatientsWithAssesments();
-      print('allLocalPatient: $allLocalPatients');
-      if( allLocalPatients != null ){
-        for (var patient in allLocalPatients) {
-          var parsedData = jsonDecode(patient['data']);
-          parsedLocalPatients.add({
-            'id': patient['id'],
-            'data': parsedData['body'],
-            'meta': parsedData['meta'],
-            'assessment_type': patient['assessment_type'],
-            'assessment_status': patient['assessment_status'],
-            'assessment_local_status': patient['assessment_local_status'],
-          });
-        }
+    setState(() {
+      isLoading = true;
+      searchController.text = '';
+      print('getPatients before query : ${DateTime.now()}');
+    });
+    var parsedLocalPatients = [];
+    var allLocalPatients = await PatientController().getPatientsWithAssesments();
+    print('allLocalPatient: $allLocalPatients');
+    if( allLocalPatients != null ){
+      for (var patient in allLocalPatients) {
+        var parsedData = jsonDecode(patient['data']);
+        parsedLocalPatients.add({
+          'id': patient['id'],
+          'data': parsedData['body'],
+          'meta': parsedData['meta'],
+          'assessment_type': patient['assessment_type'],
+          'assessment_status': patient['assessment_status'],
+          'assessment_local_status': patient['assessment_local_status'],
+        });
       }
-      
-      setState(() {
-        allPatients = parsedLocalPatients;
-        patients = allPatients;
-        isLoading = false;
-        print('getPatients ${allPatients.length} after query : ${DateTime.now()}');
-      });
     }
+    
+    setState(() {
+      allPatients = parsedLocalPatients;
+      patients = allPatients;
+      isLoading = false;
+      print('getPatients ${allPatients.length} after query : ${DateTime.now()}');
+    });
+  }
 
 
   search(query) {
