@@ -76,67 +76,48 @@ class _ChcpWorkListSearchScreenState extends State<ChcpWorkListSearchScreen> {
     setState(() {
       isLoading = true;
     });
-      var allLocalPatients = await PatientController().getAllLocalPatients();
-      var localPatientPending = [];
-      var authData = await Auth().getStorageAuth();
-      for(var localPatient in allLocalPatients) {
-        var isAssigned = false;
-        if(localPatient['data']['address']['district'] == authData['address']['district'] 
-            && isNotNull(localPatient["meta"]["has_pending"]) && localPatient["meta"]["has_pending"]) {
-          var careplans = await CarePlanRepositoryLocal().getCareplanByPatient(localPatient['id']);
-          var careplanAssessment = await AssessmentController().getCarePlanAssessmentsByPatient(localPatient['id']);
-          var ccFollowup = careplanAssessment['data']['follow_up_info'].where((item) => item['type'] == "cc").first;
-          localPatient['data']['appointment_date'] = ccFollowup['date'];
-          var parsedData;
-          for(var careplan in careplans) {
-            parsedData = jsonDecode(careplan['data']);
-            if (parsedData['meta']['status'] == 'pending'
-            && parsedData['meta']['assigned_to'].contains(Auth().getAuth()['uid'])) {
-              isAssigned = true;
-              break;
-            }
-          }
-          if(isAssigned) {
-            var localpatientdata = {
-              'id': localPatient['id'],
-              'body': localPatient['data'],
-              'meta': localPatient['meta']
-            };
-            localPatientPending.add(localpatientdata);
+
+    var allLocalPatients = await PatientController().getPatientsWithAssesments();
+    var localPatientPending = []; 
+    for(var localPatient in allLocalPatients) {
+      var isAssigned = false;
+      var parsedData = jsonDecode(localPatient['data']);
+      var parsedLocalPatient = {
+        'id': localPatient['id'],
+        'body': parsedData['body'],
+        'meta': parsedData['meta'],
+        'assessment_type': localPatient['assessment_type'],
+        'assessment_status': localPatient['assessment_status'],
+        'assessment_local_status': localPatient['assessment_local_status'],
+      };
+      
+      if(isNotNull(parsedLocalPatient['meta']['has_pending']) && parsedLocalPatient['meta']['has_pending']) {
+        var careplans = await CarePlanRepositoryLocal().getCareplanByPatient(parsedLocalPatient['id']);
+        var careplanAssessment = await AssessmentController().getCarePlanAssessmentsByPatient(parsedLocalPatient['id']);
+        var ccFollowup = careplanAssessment['data']['follow_up_info'].where((item) => item['type'] == "cc").first;
+        parsedLocalPatient['body']['appointment_date'] = ccFollowup['date'];
+        var parsedData;
+        for(var careplan in careplans) {
+          parsedData = jsonDecode(careplan['data']);
+          if (parsedData['meta']['status'] == 'pending'
+          && parsedData['meta']['assigned_to'].contains(Auth().getAuth()['uid'])) {
+            isAssigned = true;
+            break;
           }
         }
+        if(isAssigned) {
+          localPatientPending.add(parsedLocalPatient);
+        }
       }
-      localPatientPending.sort((a, b) {
-        return DateTime.parse(b['body']['appointment_date']).compareTo(DateTime.parse(a['body']['appointment_date']));
-      });
-      setState(() {
-        allPendingPatients = localPatientPending;
-        // pendingPatientsSort();
-        pendingPatients = allPendingPatients;
-      });
+    }
+    localPatientPending.sort((a, b) {
+      return DateTime.parse(b['body']['appointment_date']).compareTo(DateTime.parse(a['body']['appointment_date']));
+    });
     setState(() {
+      allPendingPatients = localPatientPending;
+      pendingPatients = allPendingPatients;
       isLoading = false;
     });
-  }
-
-  pendingPatientsSort() {
-    var patientsWithAssignment = [];
-    var patients = [];
-    allPendingPatients.forEach((patient) {
-      if (patient['body']['next_assignment'] != null && patient['body']['next_assignment']['meta']['created_at']['_seconds'] != null) {
-        patientsWithAssignment.add(patient);
-      } else {
-        patients.add(patient);
-      }
-    });
-
-    if (patientsWithAssignment.length > 0) {
-      patientsWithAssignment.sort((a, b) {
-        return DateTime.fromMillisecondsSinceEpoch(b['body']['next_assignment']['meta']['created_at']['_seconds'] * 1000).compareTo(DateTime.fromMillisecondsSinceEpoch(a['body']['next_assignment']['meta']['created_at']['_seconds'] * 1000));
-      });
-      allPendingPatients = [...patientsWithAssignment, ...patients];
-    }
-    
   }
 
   bool isNumeric(String s) {
