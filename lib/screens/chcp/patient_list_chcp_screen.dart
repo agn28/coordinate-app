@@ -88,6 +88,7 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
         var parsedData = jsonDecode(patient['data']);
         parsedLocalPatients.add({
           'id': patient['id'],
+          'age': patient['age'],
           'data': parsedData['body'],
           'meta': parsedData['meta'],
           'assessment_type': patient['assessment_type'],
@@ -375,7 +376,7 @@ class _PatientListChcpState extends State<PatientListChcpScreen> {
                                 ),
                                 Expanded(
                                   flex: 1,
-                                  child: Text(patients[index]['data']['age'].toString(),
+                                  child: Text(patients[index]['age'].toString(),
                                   style: TextStyle(
                                       color: Colors.black87,
                                       fontSize: 18,
@@ -722,7 +723,7 @@ class _FiltersDialogState extends State<FiltersDialog> {
       var filteredPatients = [];
       var startingAge = ageFromController.text != '' ? int.parse(ageFromController.text) : 0 ;
       var endingAge = ageToController.text != '' ? int.parse(ageToController.text) : 150 ;
-      filteredPatients =  allPatients.where((item) => item['data']['age'] >= startingAge && item['data']['age'] <= endingAge).toList();
+      filteredPatients =  allPatients.where((item) => item['age'] >= startingAge && item['age'] <= endingAge).toList();
       this.widget.parent.setState(() => {
         allPatients = filteredPatients,
         patients = allPatients

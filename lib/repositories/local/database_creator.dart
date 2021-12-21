@@ -37,6 +37,7 @@ class DatabaseCreator {
       id TEXT PRIMARY KEY,
       data TEXT,
       nid,
+      age,
       district TEXT,
       status TEXT,
       is_synced BOOLEAN
@@ -221,13 +222,19 @@ class DatabaseCreator {
 
   Future<void> initDatabase() async {
     final path = await getDatabasePath('coordinate_db');
-    db = await openDatabase(path, version: 6, onCreate: onCreate, onUpgrade: _onUpgrade);
+    db = await openDatabase(path, version: 7, onCreate: onCreate, onUpgrade: _onUpgrade);
   }
 
   // UPGRADE DATABASE TABLES
   void _onUpgrade(Database db, int oldVersion, int newVersion) {
     if (oldVersion < newVersion) {
-      
+      try{
+         print('altering');
+        db.execute("ALTER TABLE $patientTable ADD COLUMN age TEXT;");
+      }
+      catch(error) {
+        print(error);
+      }
     }
   }
 

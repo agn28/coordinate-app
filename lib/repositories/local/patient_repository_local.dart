@@ -151,9 +151,9 @@ class PatientReposioryLocal {
   syncFromLive(tempSyncs) async {
     Batch batch = db.batch();
     final sql = '''INSERT OR REPLACE INTO ${DatabaseCreator.patientTable}
-    (id, data, nid, district, status, is_synced) VALUES (?,?,?,?,?,?)''';
+    (id, data, nid, age, district, status, is_synced) VALUES (?,?,?,?,?,?,?)''';
     for (var item in tempSyncs) {
-      List<dynamic> params = [item['id'], jsonEncode(item), item['body']['nid'], item['body']['address']['district'], '', true];
+      List<dynamic> params = [item['id'], jsonEncode(item), item['body']['nid'], item['body']['age'], item['body']['address']['district'], '', true];
       await batch.rawInsert(sql, params);
     }
     try {
@@ -168,7 +168,7 @@ class PatientReposioryLocal {
 
   createNew(context, id, data, synced) async {
 
-    var allPatients = await getAllPatients();
+    // var allPatients = await getAllPatients();
 
     // if (!synced) {
     //   final sql = '''SELECT * FROM ${DatabaseCreator.patientTable} WHERE nid="${data['body']['nid']}"''';
@@ -196,15 +196,17 @@ class PatientReposioryLocal {
       id,
       data,
       nid,
+      age,
       district,
       status,
       is_synced
     )
-    VALUES (?,?,?,?,?,?)''';
+    VALUES (?,?,?,?,?,?,?)''';
     List<dynamic> params = [
       id,
       jsonEncode(data),
       data['body']['nid'],
+      data['body']['age'],
       data['body']['address']['district'],
       '',
       synced
